@@ -1,0 +1,6 @@
+{
+  "name": "Bốc Bài Kinh Dịch",
+  "description": "Ứng dụng bốc bài gieo quẻ Kinh Dịch, tra cứu Thuyết Minh 64 quẻ, kho tàng diễn giải Lục Thập Hoa Giáp (60 Can Chi) & nạp ảnh cá nhân hóa, âm thanh thiền định và lưu trữ lịch sử bói.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

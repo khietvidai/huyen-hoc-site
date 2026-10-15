@@ -1,0 +1,405 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: "Playfair Display", "Lora", "Noto Serif TC", Georgia, "Times New Roman", serif;
+  --font-display: "Playfair Display", "Lora", "Noto Serif TC", Georgia, serif;
+  --font-classic: "Lora", "Playfair Display", "Noto Serif TC", Georgia, serif;
+  --font-book: "Lora", "Playfair Display", "Noto Serif TC", Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+/* Base typography for full Vietnamese diacritics support & refined readability */
+:root {
+  font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body,
+button,
+input,
+select,
+textarea {
+  font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.font-serif {
+  font-family: 'Playfair Display', 'Lora', 'Noto Serif TC', Georgia, Cambria, 'Times New Roman', serif !important;
+}
+
+.font-sans {
+  font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+}
+
+.font-classic,
+.font-book,
+.font-prose-serif {
+  font-family: 'Lora', 'Playfair Display', 'Noto Serif TC', Georgia, serif !important;
+}
+
+.font-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace !important;
+}
+
+@keyframes suspenseShake {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  20% { transform: translate(-2px, 1.5px) rotate(-1.5deg); }
+  40% { transform: translate(2px, -1.5px) rotate(1.5deg); }
+  60% { transform: translate(-2.5px, -1px) rotate(-2deg); }
+  80% { transform: translate(2.5px, 2px) rotate(2deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes suspenseShakeFierce {
+  0% { transform: translate(0, 0) rotate(0deg) scale(1.08); }
+  15% { transform: translate(-3.5px, 2px) rotate(-3deg) scale(1.12); }
+  30% { transform: translate(3.5px, -2px) rotate(3deg) scale(1.13); }
+  45% { transform: translate(-4px, -2.5px) rotate(-3.5deg) scale(1.14); }
+  60% { transform: translate(4px, 2.5px) rotate(3.5deg) scale(1.15); }
+  75% { transform: translate(-3px, 2px) rotate(-2.5deg) scale(1.15); }
+  90% { transform: translate(3px, -2px) rotate(2.5deg) scale(1.15); }
+  100% { transform: translate(0, 0) rotate(0deg) scale(1.15); }
+}
+
+@keyframes auraGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.5), 0 0 30px rgba(212, 175, 55, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.9), 0 0 60px rgba(212, 175, 55, 0.5);
+  }
+}
+
+@keyframes spiritualCardDrawFloat {
+  0% {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  }
+  50% {
+    transform: translateY(-16px) scale(1.08);
+    box-shadow: 0 0 35px rgba(212, 175, 55, 0.85), 0 15px 30px rgba(0, 0, 0, 0.8);
+  }
+  100% {
+    transform: translateY(-8px) scale(1.04);
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.7), 0 10px 20px rgba(0, 0, 0, 0.7);
+  }
+}
+
+@keyframes spiritualBurstAura {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.4);
+  }
+}
+
+@keyframes cardLightSweep {
+  0% {
+    transform: translateX(-150%) skewX(-25deg);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.85;
+  }
+  70% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateX(250%) skewX(-25deg);
+    opacity: 0;
+  }
+}
+
+@keyframes goldenBreathAura {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.35));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.75));
+  }
+}
+
+.animate-suspense-shake {
+  animation: suspenseShake 0.16s linear infinite;
+}
+
+.animate-suspense-shake-fierce {
+  animation: suspenseShakeFierce 0.1s linear infinite;
+}
+
+.animate-aura-glow {
+  animation: auraGlow 1.2s ease-in-out infinite;
+}
+
+.animate-card-draw-float {
+  animation: spiritualCardDrawFloat 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.animate-burst-aura {
+  animation: spiritualBurstAura 0.8s ease-out forwards;
+}
+
+.animate-card-sweep {
+  animation: cardLightSweep 1.1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.animate-golden-breath {
+  animation: goldenBreathAura 3s ease-in-out infinite;
+}
+
+/* ========================================================================== */
+/* SPIRITUAL DIVINATION RITUAL ANIMATIONS (Gieo Quẻ, Cỏ Thi & Đồng Tiền)     */
+/* ========================================================================== */
+@keyframes spiritualSubtleShake {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  15% { transform: translate(-1.2px, 0.8px) rotate(-0.35deg); }
+  30% { transform: translate(1.4px, -1px) rotate(0.4deg); }
+  45% { transform: translate(-1px, -0.6px) rotate(-0.3deg); }
+  60% { transform: translate(1px, 0.8px) rotate(0.3deg); }
+  75% { transform: translate(-0.8px, 0.5px) rotate(-0.2deg); }
+  90% { transform: translate(0.9px, -0.7px) rotate(0.2deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes spiritualCoinTumbleShake {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  12% { transform: translate(-2.2px, 1.6px) rotate(-0.75deg); }
+  25% { transform: translate(2px, -1.8px) rotate(0.85deg); }
+  38% { transform: translate(-2.5px, -1.1px) rotate(-1deg); }
+  50% { transform: translate(2.2px, 1.8px) rotate(0.75deg); }
+  63% { transform: translate(-1.6px, 1px) rotate(-0.5deg); }
+  76% { transform: translate(2.2px, -1.4px) rotate(0.65deg); }
+  88% { transform: translate(-1.1px, -0.9px) rotate(-0.35deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes spiritualMistyBlur {
+  0%, 100% {
+    filter: blur(0px);
+    opacity: 0.95;
+  }
+  50% {
+    filter: blur(1.5px);
+    opacity: 0.7;
+  }
+}
+
+@keyframes spiritualEtherealPulse {
+  0%, 100% {
+    filter: blur(0px) drop-shadow(0 0 10px rgba(212, 175, 55, 0.25));
+    opacity: 0.98;
+  }
+  50% {
+    filter: blur(0.75px) drop-shadow(0 0 30px rgba(212, 175, 55, 0.7));
+    opacity: 0.92;
+  }
+}
+
+@keyframes spiritualEnergyRipple {
+  0% {
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.5);
+    border-color: rgba(212, 175, 55, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 24px 6px rgba(212, 175, 55, 0.3);
+    border-color: rgba(255, 226, 138, 0.9);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
+    border-color: rgba(212, 175, 55, 0.4);
+  }
+}
+
+.animate-spiritual-shake {
+  animation: spiritualSubtleShake 0.22s ease-in-out infinite;
+}
+
+.animate-coin-tumble-shake {
+  animation: spiritualCoinTumbleShake 0.14s ease-in-out infinite;
+}
+
+.animate-misty-blur {
+  animation: spiritualMistyBlur 2.2s ease-in-out infinite;
+}
+
+.animate-ethereal-blur-pulse {
+  animation: spiritualEtherealPulse 1.8s ease-in-out infinite;
+}
+
+.animate-energy-ripple {
+  animation: spiritualEnergyRipple 1.6s ease-in-out infinite;
+}
+
+/* Container Border Breathing Effect (Slow, ethereal glowing border for Divination Arena) */
+@keyframes divinationBorderBreath {
+  0%, 100% {
+    border-color: rgba(212, 175, 55, 0.25);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.1), 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 0 20px rgba(212, 175, 55, 0.03);
+  }
+  50% {
+    border-color: rgba(245, 218, 140, 0.7);
+    box-shadow: 0 0 38px rgba(212, 175, 55, 0.35), 0 0 75px rgba(212, 175, 55, 0.16), 0 12px 42px rgba(0, 0, 0, 0.6), inset 0 0 30px rgba(212, 175, 55, 0.08);
+  }
+}
+
+.animate-divination-breath {
+  animation: divinationBorderBreath 4.5s ease-in-out infinite;
+}
+
+#divination-card-draw-area {
+  background-color: rgba(20, 15, 10, 0.52);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* 3D Card Flip CSS Helpers */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.perspective-600 {
+  perspective: 600px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Force cards to show face-up during screenshot/capture */
+[data-capturing="true"] .flip-card-3d-inner {
+  transform: rotateY(0deg) !important;
+}
+[data-capturing="true"] .flip-card-back-face {
+  display: none !important;
+}
+[data-capturing="true"] .flip-card-front-face {
+  display: block !important;
+  transform: rotateY(0deg) !important;
+  backface-visibility: visible !important;
+  -webkit-backface-visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* ========================================================================== */
+/* LIGHT THEME (NỀN SÁNG THANH NHÃ) STYLES                                    */
+/* ========================================================================== */
+.theme-light {
+  color: #241A11 !important;
+  color-scheme: light;
+}
+
+.theme-light body {
+  background-color: transparent !important;
+  color: #241A11 !important;
+}
+
+body {
+  background-color: transparent !important;
+}
+
+.theme-light h1,
+.theme-light h2,
+.theme-light h3,
+.theme-light h4 {
+  color: #261B10 !important;
+}
+
+.theme-light p {
+  color: #4A3B2A;
+}
+
+.theme-light header {
+  background-color: rgba(250, 245, 236, 0.94) !important;
+  border-color: #D6C7B2 !important;
+  box-shadow: 0 2px 12px rgba(80, 55, 20, 0.06);
+}
+
+.theme-light .text-\[\#EAE2D2\],
+.theme-light .text-\[\#F5EAD4\],
+.theme-light .text-\[\#F8EBD4\],
+.theme-light .text-\[\#F3E7D0\],
+.theme-light .text-\[\#F3E6C8\],
+.theme-light .text-\[\#DECDB5\],
+.theme-light .text-\[\#E0CEB1\],
+.theme-light .text-\[\#E8D9C0\] {
+  color: #261B10 !important;
+}
+
+.theme-light .text-\[\#A89882\],
+.theme-light .text-\[\#B8AA96\],
+.theme-light .text-\[\#8C7D6A\],
+.theme-light .text-\[\#8C7D6B\],
+.theme-light .text-\[\#C4B49D\],
+.theme-light .text-\[\#A69780\],
+.theme-light .text-\[\#BFAFA0\] {
+  color: #5D4B39 !important;
+}
+
+.theme-light .bg-\[\#12100E\]\/90,
+.theme-light .bg-\[\#1A1612\],
+.theme-light .bg-\[\#15120E\],
+.theme-light .bg-\[\#181410\],
+.theme-light .bg-\[\#171410\],
+.theme-light .bg-\[\#1D1711\],
+.theme-light .bg-\[\#14110E\],
+.theme-light .bg-\[\#1B1611\],
+.theme-light .bg-\[\#201811\],
+.theme-light .bg-\[\#1E1914\] {
+  background-color: #FFFFFF !important;
+  border-color: #DCCFBE !important;
+  box-shadow: 0 4px 16px rgba(80, 55, 20, 0.05);
+}
+
+.theme-light .bg-\[\#1C1813\],
+.theme-light .bg-\[\#221A12\],
+.theme-light .bg-\[\#241E17\],
+.theme-light .bg-\[\#2A2117\],
+.theme-light .bg-\[\#20160D\],
+.theme-light .bg-\[\#261B12\] {
+  background-color: #F8F3EA !important;
+  border-color: #D8C7B0 !important;
+}
+
+.theme-light .border-\[\#2C241B\],
+.theme-light .border-\[\#332A1F\],
+.theme-light .border-\[\#3D3121\],
+.theme-light .border-\[\#3E3426\],
+.theme-light .border-\[\#4D3A24\],
+.theme-light .border-\[\#52412B\],
+.theme-light .border-\[\#3E3022\],
+.theme-light .border-\[\#4D3620\] {
+  border-color: #D8C8B5 !important;
+}
+
+.theme-light footer,
+.theme-light .bg-\[\#100E0C\]\/90,
+.theme-light .bg-\[\#100E0C\] {
+  background-color: rgba(246, 240, 230, 0.92) !important;
+  border-color: #DECFC0 !important;
+  color: #6E5D4B !important;
+}
+
+.theme-light .selection\:bg-\[\#C89B3C\] {
+  background-color: #F0D082 !important;
+  color: #241A11 !important;
+}
+
