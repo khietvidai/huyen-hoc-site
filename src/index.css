@@ -624,3 +624,87 @@ body {
     border-color: var(--color-gold-400);
   }
 }
+
+/* ========================================================================== */
+/* HIỆU ỨNG & CHI TIẾT HOÀN THIỆN THƯƠNG HIỆU                                 */
+/* ========================================================================== */
+@keyframes royalReveal {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes royalSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes royalSheen {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@layer components {
+  .royal-reveal {
+    opacity: 0;
+    animation: royalReveal 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  }
+
+  .royal-spin-slow {
+    animation: royalSpin 240s linear infinite;
+  }
+
+  /* Chữ vàng ánh kim, ánh sáng lướt rất chậm */
+  .royal-gold-text {
+    background: linear-gradient(100deg, #b8924a 0%, #e9d6a6 30%, #c9a55a 50%, #f1e2bb 70%, #b8924a 100%);
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: royalSheen 9s ease-in-out infinite;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: #0b0a08;
+}
+
+::selection {
+  background: rgba(201, 165, 90, 0.32);
+  color: #f2ebdd;
+}
+
+:focus-visible {
+  outline: 1px solid #d6b97a;
+  outline-offset: 3px;
+}
+
+/* Thanh cuộn mảnh tông sơn mài */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #4a3c26 transparent;
+}
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #3d3020; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #6e5730; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .royal-reveal { opacity: 1; animation: none; }
+  .royal-spin-slow,
+  .royal-gold-text { animation: none; }
+}
+
+@media (max-width: 639px) {
+  .royal-eyebrow {
+    gap: 0.5rem;
+    font-size: 0.625rem;
+    letter-spacing: 0.18em;
+    text-align: center;
+  }
+  .royal-eyebrow::before,
+  .royal-eyebrow::after {
+    width: 1rem;
+    flex-shrink: 0;
+  }
+}

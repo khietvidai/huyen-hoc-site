@@ -36,6 +36,7 @@ import {
   Lock,
 } from "lucide-react";
 import { NavTab } from "./Header";
+import { BrandMark, LuopanRing } from "./BrandMark";
 import { getDailyHexagramData } from "../utils/dailyHexagram";
 import { getThongThuDayDetails } from "../utils/thongThuDungSu";
 import { AppUser } from "../services/authService";
@@ -456,61 +457,104 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
   ];
 
   return (
-    <div className="space-y-16 sm:space-y-20 animate-in fade-in duration-300">
+    <div className="space-y-16 sm:space-y-24 animate-in fade-in duration-300">
       {/* ================= HERO ================= */}
-      <section className="royal-frame px-6 py-14 sm:px-12 sm:py-20 text-center overflow-hidden">
+      <section className="royal-frame relative px-6 pt-16 pb-12 sm:px-12 sm:pt-24 sm:pb-16 text-center overflow-hidden">
         <span className="royal-corner tl" />
         <span className="royal-corner tr" />
         <span className="royal-corner bl" />
         <span className="royal-corner br" />
 
-        <div className="relative max-w-3xl mx-auto">
-          <div className="royal-eyebrow">Cửu Nhị · Phong Thủy Mệnh Lý</div>
+        {/* La bàn Bát Quái chìm phía sau */}
+        <LuopanRing className="pointer-events-none absolute left-1/2 top-[40%] -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[720px] max-w-none opacity-[0.09]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_55%_45%_at_50%_45%,rgba(11,10,8,0.85),transparent_75%)]" />
 
-          <h1 className="royal-title mt-6 text-4xl sm:text-6xl md:text-[4.25rem]">
+        <div className="relative max-w-3xl mx-auto">
+          <div className="royal-reveal" style={{ animationDelay: "0ms" }}>
+            <BrandMark size={56} className="mx-auto" />
+          </div>
+
+          <div className="royal-reveal mt-7" style={{ animationDelay: "60ms" }}>
+            <div className="royal-eyebrow">Mệnh Lý · Phong Thủy · Kinh Dịch</div>
+          </div>
+
+          <h1
+            className="royal-reveal royal-title mt-6 [text-wrap:balance] text-[2.6rem] sm:text-6xl md:text-[4.75rem] !leading-[1.05]"
+            style={{ animationDelay: "120ms" }}
+          >
             Tinh hoa huyền học
-            <span className="block italic text-gold-300">phương Đông</span>
+            <span className="block italic royal-gold-text">phương Đông</span>
           </h1>
 
-          <div className="mt-7 flex items-center justify-center gap-4">
-            <span className="h-px w-10 sm:w-16 bg-gold-700" />
-            <span className="font-serif text-lg sm:text-2xl tracking-[0.35em] text-gold-400">
-              玖貳命理風水
-            </span>
-            <span className="h-px w-10 sm:w-16 bg-gold-700" />
+          <div className="royal-reveal mt-8 flex items-center justify-center gap-4" style={{ animationDelay: "180ms" }}>
+            <span className="h-px w-10 sm:w-20 bg-gradient-to-r from-transparent to-gold-700" />
+            <span className="font-serif text-base sm:text-xl tracking-[0.4em] text-gold-400 pl-[0.4em]">玖貳命理風水</span>
+            <span className="h-px w-10 sm:w-20 bg-gradient-to-l from-transparent to-gold-700" />
           </div>
 
-          <p className="mt-7 text-sm sm:text-[15px] leading-relaxed text-ivory-300 font-serif max-w-2xl mx-auto">
-            Chào mừng quý khách đến với Cửu Nhị — nơi hội tụ Chu Dịch Chiêm Bốc, Hiệp Kỷ Biện Phương Thư,
-            Tứ Trụ Bát Tự và Phong Thủy Dương Trạch. Thuận theo Thiên Thời, Địa Lợi, Nhân Hòa để định
-            hướng nhân sinh an nhiên.
+          <p
+            className="royal-reveal mt-8 text-[15px] sm:text-[17px] leading-[1.8] text-ivory-300 font-serif max-w-2xl mx-auto"
+            style={{ animationDelay: "240ms" }}
+          >
+            Luận giải riêng tư theo nguyên bản cổ thư — Chu Dịch Chiêm Bốc, Hiệp Kỷ Biện Phương Thư,
+            Tứ Trụ Bát Tự và Phong Thủy Dương Trạch — dành cho những quyết định hệ trọng của
+            đời người, gia đạo và cơ nghiệp.
           </p>
 
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <button type="button" onClick={() => onNavigateTab("divination")} className="royal-btn w-full sm:w-auto">
-              Bốc quẻ Kinh Dịch
+          <div
+            className="royal-reveal mt-11 flex flex-col sm:flex-row items-center justify-center gap-3"
+            style={{ animationDelay: "300ms" }}
+          >
+            <a href="#dich-vu-tra-phi" className="royal-btn w-full sm:w-auto">
+              Đặt lịch luận giải riêng
               <ArrowRight className="w-4 h-4" />
-            </button>
-            <a href="#dich-vu-tra-phi" className="royal-btn-ghost w-full sm:w-auto">
-              Dịch vụ luận giải
             </a>
+            <button type="button" onClick={() => onNavigateTab("divination")} className="royal-btn-ghost w-full sm:w-auto">
+              Bốc quẻ Kinh Dịch
+            </button>
           </div>
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+          <div
+            className="royal-reveal mt-9 flex flex-wrap items-center justify-center gap-x-8 gap-y-3"
+            style={{ animationDelay: "360ms" }}
+          >
             <button type="button" onClick={onOpenDailyHexagram} className="royal-link cursor-pointer">
               <Sun className="w-3.5 h-3.5 text-gold-500" />
               Quẻ ngày hôm nay
             </button>
-            <a href="#cac-phan-he-hoc-thuat" className="royal-link">
-              <Compass className="w-3.5 h-3.5 text-gold-500" />
-              Các phân hệ học thuật
-            </a>
             <a href={ZALO_LINK} target="_blank" rel="noopener noreferrer" className="royal-link">
               <MessageSquare className="w-3.5 h-3.5 text-gold-500" />
-              Zalo tư vấn <span className="tabular-nums">{ZALO_PHONE}</span>
+              Zalo riêng <span className="tabular-nums">{ZALO_PHONE}</span>
             </a>
           </div>
         </div>
+
+        {/* Dải số liệu học thuật */}
+        <dl
+          className="royal-reveal relative mt-14 sm:mt-16 pt-8 border-t border-gold-800 grid grid-cols-2 md:grid-cols-4 gap-y-7 max-w-4xl mx-auto"
+          style={{ animationDelay: "420ms" }}
+        >
+          {[
+            { value: "64", label: "Quẻ Kinh Dịch", chinese: "六十四卦" },
+            { value: "60", label: "Hoa Giáp", chinese: "六十花甲" },
+            { value: "8", label: "Phép chiêm đoán", chinese: "八法起卦" },
+            { value: "7", label: "Dịch vụ chuyên sâu", chinese: "七項服務" },
+          ].map((stat, index) => (
+            <div
+              key={stat.label}
+              className={`px-3 ${index % 2 === 1 ? "border-l border-gold-800" : ""} ${
+                index === 2 ? "md:border-l md:border-gold-800" : ""
+              }`}
+            >
+              <dt className="sr-only">{stat.label}</dt>
+              <dd className="font-display text-4xl sm:text-5xl text-gold-300 leading-none tabular-nums">{stat.value}</dd>
+              <dd className="mt-2.5 text-[10px] sm:text-[11px] font-sans uppercase tracking-[0.12em] sm:tracking-[0.2em] text-ivory-300 whitespace-nowrap">
+                {stat.label}
+              </dd>
+              <dd className="mt-1 text-[11px] font-serif tracking-[0.3em] text-gold-700">{stat.chinese}</dd>
+            </div>
+          ))}
+        </dl>
       </section>
 
       {/* ================= CÁC PHÂN HỆ HỌC THUẬT ================= */}
@@ -1118,12 +1162,16 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
       {/* ================= CỬU NHỊ PHILOSOPHY FOOTER BANNER ================= */}
       <section className="py-10 sm:py-14 text-center space-y-5 border-t border-gold-800/80">
         <div className="royal-eyebrow">Ý nghĩa danh xưng · 玖貳</div>
-        <span className="royal-seal !flex w-12 h-12 text-base [writing-mode:vertical-rl] mx-auto">玖貳</span>
+        <BrandMark size={88} className="mx-auto" />
         <div className="font-display italic text-2xl sm:text-[2rem] leading-snug text-ivory-100 max-w-2xl mx-auto">
           "Cửu Nhị: Hiện long tại điền, lợi kiến đại nhân."
         </div>
         <div className="text-sm text-ivory-500 font-serif max-w-xl mx-auto leading-relaxed">
           Trong Kinh Dịch, hào Cửu Nhị của quẻ Càn là rồng đã hiện ra trên đồng ruộng, đức trạch bao la, người quân tử giữ lòng chân chính để phụng sự đạo lý, hướng tới sự hanh thông và trí tuệ sáng suốt.
+        </div>
+        <div className="text-[11px] font-sans uppercase tracking-[0.24em] text-gold-600 max-w-lg mx-auto leading-loose">
+          Biểu tượng Cửu Nhị: sáu hào dương của quẻ Càn trong khung Bát Quái —{" "}
+          <span className="text-cinnabar-400">hào thứ hai điểm son</span>
         </div>
       </section>
 

@@ -27,6 +27,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { ZenAudioPlayer } from "./ZenAudioPlayer";
+import { BrandLockup } from "./BrandMark";
 import { AppUser } from "../services/authService";
 
 export type NavTab =
@@ -184,24 +185,14 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="sticky top-0 z-40 bg-[#0B0A08]/95">
       <div className="max-w-6xl mx-auto px-4 h-16 sm:h-[72px] flex items-center justify-between gap-3">
-        {/* Brand: ấn triện son + tên hiệu */}
+        {/* Logo: quẻ Càn với hào Cửu Nhị điểm son */}
         <button
           type="button"
           onClick={() => handleSelectTab("home")}
-          className="flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none group min-w-0"
+          className="cursor-pointer select-none min-w-0 hover:brightness-110 transition"
           title="Về Trang Chủ Cửu Nhị"
         >
-          <span className="royal-seal w-8 h-8 sm:w-10 sm:h-10 text-[12px] sm:text-sm shrink-0 [writing-mode:vertical-rl] tracking-[-0.05em] group-hover:brightness-110 transition">
-            玖貳
-          </span>
-          <span className="min-w-0 text-left">
-            <span className="block font-display text-lg sm:text-2xl font-semibold tracking-[0.12em] sm:tracking-[0.18em] text-ivory-100 leading-none whitespace-nowrap">
-              CỬU NHỊ
-            </span>
-            <span className="hidden sm:block mt-1 text-[10px] font-sans uppercase tracking-[0.32em] text-gold-600 truncate">
-              Phong Thủy · Mệnh Lý · Kinh Dịch
-            </span>
-          </span>
+          <BrandLockup markSize={38} />
         </button>
 
         {/* Hành động bên phải */}
