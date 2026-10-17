@@ -858,6 +858,11 @@ ${contextDescription}`;
   }
 });
 
+// Static assets serving for Decks and Jiazi images
+const publicDir = path.join(process.cwd(), "public");
+app.use("/decks", express.static(path.join(publicDir, "decks"), { maxAge: "7d" }));
+app.use("/images/jiazi", express.static(path.join(publicDir, "images", "jiazi"), { maxAge: "7d" }));
+
 // Vite or Static file serving
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {

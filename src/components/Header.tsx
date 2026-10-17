@@ -35,6 +35,7 @@ export type NavTab =
   | "manual"
   | "jiazi"
   | "calendar"
+  | "hannhiet"
   | "detail"
   | "library"
   | "decks"
@@ -148,6 +149,13 @@ export const Header: React.FC<HeaderProps> = ({
       chinese: "用事曆",
       desc: "Can Chi, Trực Nhật Tinh & 12 Giờ Tâm Ấn Phú",
       icon: CalendarDays,
+    },
+    {
+      id: "hannhiet",
+      label: "Hàn Nhiệt Mệnh",
+      chinese: "寒熱命",
+      desc: "Bát Tự Hàn Nhiệt Tô Dân Phong, Cửu Cung Phi Tinh & Vận Trình 2027",
+      icon: Flame,
     },
     {
       id: "detail",

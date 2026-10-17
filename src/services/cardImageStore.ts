@@ -180,45 +180,52 @@ export const PRESET_CARD_BACKS: Record<string, string> = {
 `)}`,
 };
 
+export const PRESET_DECK_CONFIG: Record<string, { ext: string; back: string }> = {
+  deck_bo_1: { ext: "png", back: "/decks/deck_bo_1/back.jpg" },
+  deck_bo_2: { ext: "png", back: "/decks/deck_bo_2/back.svg" },
+  deck_bo_khong_chu: { ext: "png", back: "/decks/deck_bo_khong_chu/back.jpg" },
+  deck_quan_tu: { ext: "jpg", back: "/decks/deck_quan_tu/back.svg" },
+};
+
 export const INITIAL_PRESET_DECKS: DeckInfo[] = [
   {
-    id: "deck_golden",
-    name: "Hoàng Kim Thần Dịch",
-    description: "Bộ bài cổ điển hoàng gia sơn son thếp vàng, Bát Quái đồ và Thái Cực tôn nghiêm.",
+    id: "deck_bo_1",
+    name: "Bộ 1 (Nguyên Bản Có Chữ)",
+    description: "Bộ bài Kinh Dịch 64 quẻ nguyên bản có chữ giải nghĩa và quẻ hào chi tiết.",
     isPreset: true,
     themeStyle: "golden",
-    cardBackImage: null,
-    cardCount: 0,
+    cardBackImage: "/decks/deck_bo_1/back.jpg",
+    cardCount: 64,
     createdAt: 1700000000000,
   },
   {
-    id: "deck_ink",
-    name: "Thủy Mặc Sơn Thủy",
-    description: "Họa pháp thủy mặc thanh tao, khí vận sông núi mây khói hòa quyện thiên địa nhân.",
+    id: "deck_bo_2",
+    name: "Bộ 2 (Có Chữ)",
+    description: "Bộ bài Kinh Dịch 64 quẻ hoa văn cổ thư đồ họa có chữ sắc nét.",
     isPreset: true,
-    themeStyle: "ink",
-    cardBackImage: null,
-    cardCount: 0,
+    themeStyle: "golden",
+    cardBackImage: "/decks/deck_bo_2/back.svg",
+    cardCount: 64,
     createdAt: 1700000001000,
   },
   {
-    id: "deck_woodblock",
-    name: "Cổ Thư Mộc Bản",
-    description: "Phong cách mộc bản cổ thư kinh viện, dấu triện chu sa thâm trầm uy nghiêm.",
+    id: "deck_bo_khong_chu",
+    name: "Bộ Không Chữ (Nguyên Bản)",
+    description: "Bộ bài Kinh Dịch 64 quẻ không in chữ, tranh thủy mặc và biểu tượng quẻ nguyên sơ thuần khiết.",
     isPreset: true,
-    themeStyle: "woodblock",
-    cardBackImage: null,
-    cardCount: 0,
+    themeStyle: "golden",
+    cardBackImage: "/decks/deck_bo_khong_chu/back.jpg",
+    cardCount: 64,
     createdAt: 1700000002000,
   },
   {
-    id: "deck_mystic",
-    name: "Huyền Bí Tinh Tú",
-    description: "Dạ nguyệt chiêm tinh, thiên văn tinh tú và vòng tinh bàn bát quái huyền ảo.",
+    id: "deck_quan_tu",
+    name: "Bộ Quân Tử (64 Quẻ)",
+    description: "Bộ bài Quân Tử 64 quẻ phong cách chiêm tinh huyền bí, hàm súc đạo lý người quân tử.",
     isPreset: true,
     themeStyle: "mystic",
-    cardBackImage: null,
-    cardCount: 0,
+    cardBackImage: "/decks/deck_quan_tu/back.svg",
+    cardCount: 64,
     createdAt: 1700000003000,
   },
 ];
@@ -249,12 +256,14 @@ function openDB(): Promise<IDBDatabase> {
   });
 }
 
+const LEGACY_OLD_PRESET_IDS = new Set(["deck_golden", "deck_ink", "deck_woodblock", "deck_mystic"]);
+
 /**
  * Get active deck ID (sync with localStorage)
  */
 export async function getActiveDeckId(): Promise<string> {
   const local = typeof window !== "undefined" ? localStorage.getItem(ACTIVE_DECK_STORAGE_KEY) : null;
-  if (local) return local;
+  if (local && !LEGACY_OLD_PRESET_IDS.has(local)) return local;
 
   try {
     const db = await openDB();
@@ -262,16 +271,19 @@ export async function getActiveDeckId(): Promise<string> {
       const tx = db.transaction([STORE_NAME], "readonly");
       const req = tx.objectStore(STORE_NAME).get("_system_active_deck_id");
       req.onsuccess = () => {
-        const id = (req.result as string) || "deck_golden";
+        let id = (req.result as string) || "deck_bo_1";
+        if (LEGACY_OLD_PRESET_IDS.has(id)) {
+          id = "deck_bo_1";
+        }
         if (typeof window !== "undefined") {
           localStorage.setItem(ACTIVE_DECK_STORAGE_KEY, id);
         }
         resolve(id);
       };
-      req.onerror = () => resolve("deck_golden");
+      req.onerror = () => resolve("deck_bo_1");
     });
   } catch {
-    return "deck_golden";
+    return "deck_bo_1";
   }
 }
 
@@ -308,36 +320,31 @@ export async function getDeckList(): Promise<DeckInfo[]> {
       const req = store.get("_system_decks_meta");
 
       req.onsuccess = async () => {
-        let list: DeckInfo[] = req.result as DeckInfo[];
-        if (!list || !Array.isArray(list) || list.length === 0) {
-          // Initialize defaults and perform migration of any existing legacy cards
-          list = [...INITIAL_PRESET_DECKS];
+        let storedList: DeckInfo[] = req.result as DeckInfo[];
 
-          // Check if legacy keys exist: card_1..64
-          let legacyCount = 0;
-          for (let i = 1; i <= 64; i++) {
-            const legacyReq = store.get(`card_${i}`);
-            legacyReq.onsuccess = () => {
-              if (legacyReq.result) {
-                store.put(legacyReq.result, `deck_golden_card_${i}`);
-                legacyCount++;
-              }
-            };
-          }
-          const legacyBackReq = store.get("card_back");
-          legacyBackReq.onsuccess = () => {
-            if (legacyBackReq.result) {
-              store.put(legacyBackReq.result, "deck_golden_back");
-            }
-          };
+        // Retain any custom user-created decks
+        const customDecks = Array.isArray(storedList)
+          ? storedList.filter((d) => !d.isPreset && !LEGACY_OLD_PRESET_IDS.has(d.id))
+          : [];
 
-          list[0].cardCount = legacyCount;
-          store.put(list, "_system_decks_meta");
-          store.put("deck_golden", "_system_active_deck_id");
+        // Build current preset decks with exact 64 card count
+        const presets = INITIAL_PRESET_DECKS.map((preset) => ({ ...preset }));
+
+        // Combined list
+        const mergedList = [...presets, ...customDecks];
+
+        // If stored list was empty or still had old presets, update database
+        const needsUpdate =
+          !storedList ||
+          !Array.isArray(storedList) ||
+          storedList.some((d) => LEGACY_OLD_PRESET_IDS.has(d.id)) ||
+          !storedList.some((d) => d.id === "deck_bo_1");
+
+        if (needsUpdate) {
+          store.put(mergedList, "_system_decks_meta");
         }
 
-        // Compute updated card counts for each deck
-        resolve(list);
+        resolve(mergedList);
       };
 
       req.onerror = () => {
@@ -433,7 +440,7 @@ export async function deleteDeck(deckId: string): Promise<void> {
 
   const currentActive = await getActiveDeckId();
   if (currentActive === deckId) {
-    await setActiveDeckId("deck_golden");
+    await setActiveDeckId("deck_bo_1");
   } else {
     notifyListeners(undefined, deckId);
   }
@@ -487,12 +494,21 @@ export async function duplicateDeck(deckId: string, newName?: string): Promise<D
  * Get card images for a specific deck
  */
 export async function getDeckImages(deckId: string): Promise<Record<number, string>> {
+  const presetConfig = PRESET_DECK_CONFIG[deckId];
+  const results: Record<number, string> = {};
+
+  // If this is a preset deck, populate default static paths for all 64 cards
+  if (presetConfig) {
+    for (let i = 1; i <= 64; i++) {
+      results[i] = `/decks/${deckId}/${i}.${presetConfig.ext}`;
+    }
+  }
+
   try {
     const db = await openDB();
     return new Promise((resolve) => {
       const tx = db.transaction([STORE_NAME], "readonly");
       const store = tx.objectStore(STORE_NAME);
-      const results: Record<number, string> = {};
 
       const req = store.openCursor();
       req.onsuccess = (event) => {
@@ -502,7 +518,7 @@ export async function getDeckImages(deckId: string): Promise<Record<number, stri
           const prefix = `${deckId}_card_`;
           if (key.startsWith(prefix)) {
             const num = parseInt(key.replace(prefix, ""), 10);
-            if (!isNaN(num) && num >= 1 && num <= 64) {
+            if (!isNaN(num) && num >= 1 && num <= 64 && cursor.value) {
               results[num] = cursor.value;
             }
           }
@@ -511,11 +527,11 @@ export async function getDeckImages(deckId: string): Promise<Record<number, stri
           resolve(results);
         }
       };
-      req.onerror = () => resolve({});
+      req.onerror = () => resolve(results);
     });
   } catch (err) {
     console.error("Failed to load deck images", err);
-    return {};
+    return results;
   }
 }
 
@@ -564,25 +580,27 @@ export async function removeDeckCardImage(deckId: string, cardNumber: number): P
 export async function getDeckCardBack(deckId: string): Promise<string | null> {
   try {
     const db = await openDB();
-    return new Promise((resolve) => {
+    const customBack = await new Promise<string | null>((resolve) => {
       const tx = db.transaction([STORE_NAME], "readonly");
       const req = tx.objectStore(STORE_NAME).get(`${deckId}_back`);
-      req.onsuccess = async () => {
-        if (req.result) {
-          resolve(req.result as string);
-          return;
-        }
-        // If not custom back, resolve default preset back if available
-        const decks = await getDeckList();
-        const deck = decks.find((d) => d.id === deckId);
-        const style = deck?.themeStyle || "golden";
-        resolve(PRESET_CARD_BACKS[style] || PRESET_CARD_BACKS.golden);
-      };
-      req.onerror = () => resolve(PRESET_CARD_BACKS.golden);
+      req.onsuccess = () => resolve((req.result as string) || null);
+      req.onerror = () => resolve(null);
     });
+    if (customBack) return customBack;
   } catch {
-    return PRESET_CARD_BACKS.golden;
+    // Ignore error
   }
+
+  // Preset deck configured back
+  if (PRESET_DECK_CONFIG[deckId]) {
+    return PRESET_DECK_CONFIG[deckId].back;
+  }
+
+  // Fallback to preset style SVG if available
+  const decks = await getDeckList();
+  const deck = decks.find((d) => d.id === deckId);
+  const style = deck?.themeStyle || "golden";
+  return PRESET_CARD_BACKS[style] || PRESET_CARD_BACKS.golden;
 }
 
 /**
@@ -708,15 +726,21 @@ export async function getCardImage(cardNumber: number): Promise<string | null> {
   const activeDeckId = await getActiveDeckId();
   try {
     const db = await openDB();
-    return new Promise((resolve) => {
+    const custom = await new Promise<string | null>((resolve) => {
       const tx = db.transaction([STORE_NAME], "readonly");
       const req = tx.objectStore(STORE_NAME).get(`${activeDeckId}_card_${cardNumber}`);
       req.onsuccess = () => resolve((req.result as string) || null);
       req.onerror = () => resolve(null);
     });
+    if (custom) return custom;
   } catch {
-    return null;
+    // ignore
   }
+
+  if (PRESET_DECK_CONFIG[activeDeckId]) {
+    return `/decks/${activeDeckId}/${cardNumber}.${PRESET_DECK_CONFIG[activeDeckId].ext}`;
+  }
+  return null;
 }
 
 export async function getAllCardImages(): Promise<Record<number, string>> {
@@ -918,6 +942,7 @@ export const cardImageStore = {
   importDeckBundle,
   PRESET_CARD_BACKS,
   INITIAL_PRESET_DECKS,
+  PRESET_DECK_CONFIG,
 
   // Active-deck APIs
   getImage: getCardImage,

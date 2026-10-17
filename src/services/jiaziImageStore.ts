@@ -4,6 +4,8 @@
  * and supports individual and batch image management.
  */
 
+import { SIXTY_JIAZI } from "../data/jiazi";
+
 const DB_NAME = "IChingSixtyJiaziDB";
 const DB_VERSION = 1;
 const STORE_NAME = "jiazi_images";
@@ -87,7 +89,7 @@ export async function saveJiaziImage(canChiId: string, dataUrl: string): Promise
 export async function getJiaziImage(canChiId: string): Promise<string | null> {
   try {
     const db = await openDB();
-    return await new Promise<string | null>((resolve) => {
+    const custom = await new Promise<string | null>((resolve) => {
       const tx = db.transaction(STORE_NAME, "readonly");
       const store = tx.objectStore(STORE_NAME);
       const req = store.get(canChiId);
@@ -106,9 +108,14 @@ export async function getJiaziImage(canChiId: string): Promise<string | null> {
         resolve(local);
       };
     });
+    if (custom) return custom;
   } catch {
-    return localStorage.getItem(`jiazi_img_${canChiId}`);
+    const local = localStorage.getItem(`jiazi_img_${canChiId}`);
+    if (local) return local;
   }
+
+  // Fallback to static preset image
+  return `/images/jiazi/${canChiId}.jpg`;
 }
 
 /**
@@ -116,6 +123,11 @@ export async function getJiaziImage(canChiId: string): Promise<string | null> {
  */
 export async function getAllJiaziImages(): Promise<Record<string, string>> {
   const result: Record<string, string> = {};
+
+  // Initialize with all 60 preset static images
+  for (const item of SIXTY_JIAZI) {
+    result[item.id] = `/images/jiazi/${item.id}.jpg`;
+  }
 
   try {
     const db = await openDB();
@@ -143,10 +155,8 @@ export async function getAllJiaziImages(): Promise<Record<string, string>> {
       const key = localStorage.key(i);
       if (key && key.startsWith("jiazi_img_")) {
         const id = key.replace("jiazi_img_", "");
-        if (!result[id]) {
-          const val = localStorage.getItem(key);
-          if (val) result[id] = val;
-        }
+        const val = localStorage.getItem(key);
+        if (val) result[id] = val;
       }
     }
   } catch (e) {
@@ -217,7 +227,6 @@ export async function clearAllJiaziImages(): Promise<void> {
   notifyListeners();
 }
 
-import { SIXTY_JIAZI } from "../data/jiazi";
 
 /**
  * Export all uploaded images as a JSON string backup

@@ -535,6 +535,33 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
             </div>
           </div>
 
+          {/* Card: Hàn Nhiệt Mệnh (Tô Dân Phong) */}
+          <div
+            onClick={() => onNavigateTab("hannhiet")}
+            className="group relative p-5 rounded-2xl bg-gradient-to-b from-[#1E150D] to-[#140E08] border border-[#4D361F] hover:border-[#D4AF37] transition-all duration-300 hover:-translate-y-1 shadow-lg cursor-pointer flex flex-col justify-between"
+          >
+            <div className="space-y-3">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-600/30 to-rose-900/30 border border-amber-500/40 flex items-center justify-center text-amber-300 group-hover:scale-110 transition-transform">
+                <Flame className="w-6 h-6 text-amber-400" />
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-serif font-bold text-base text-[#F5EAD4] group-hover:text-amber-200">
+                    Hàn Nhiệt Mệnh & Vận 2027
+                  </h3>
+                  <span className="text-[11px] font-serif text-[#A89882]">寒熱命理</span>
+                </div>
+                <p className="text-xs text-[#B8A790] font-serif leading-relaxed">
+                  Trường phái Tô Dân Phong: Tra cứu Hàn - Nhiệt - Bình Mệnh, Cửu Cung Phi Tinh, Phạm Thái Tuế, Thảm Cửa Vượng Trạch & 12 Con Giáp 2027.
+                </p>
+              </div>
+            </div>
+            <div className="pt-4 flex items-center justify-between text-xs font-serif font-bold text-amber-400 group-hover:text-amber-200">
+              <span>Khám phá Hàn Nhiệt Mệnh</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </div>
+
           {/* Card 3: Lục Thập Hoa Giáp */}
           <div
             onClick={() => onNavigateTab("jiazi")}

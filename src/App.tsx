@@ -43,6 +43,7 @@ import { JiaziSection } from "./components/JiaziSection";
 import { JiaziLucNhamSection } from "./components/JiaziLucNhamSection";
 import { LucNhamHoaDichSection } from "./components/LucNhamHoaDichSection";
 import { LichDungSuSection } from "./components/LichDungSuSection";
+import { HanNhietMenhSection } from "./components/HanNhietMenhSection";
 import { HomeSection } from "./components/HomeSection";
 import { DailyHexagramModal } from "./components/DailyHexagramModal";
 import { DailyHexagramWidget } from "./components/DailyHexagramWidget";
@@ -1940,6 +1941,11 @@ export default function App() {
             onOpenDailyHexagram={() => setIsDailyHexagramOpen(true)}
             cardImages={cardImages}
           />
+        </div>
+
+        {/* TAB: HÀN NHIỆT MỆNH (TÔ DÂN PHONG) */}
+        <div className={currentTab === "hannhiet" ? "block" : "hidden"}>
+          <HanNhietMenhSection />
         </div>
 
         {/* TAB: DETAILED INTERPRETATION (GIẢI NGHĨA QUẺ) */}
