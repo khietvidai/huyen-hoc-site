@@ -5,7 +5,6 @@
 
 import React, { useState, useEffect } from "react";
 import {
-  Sparkles,
   Compass,
   Coins,
   Hash,
@@ -22,11 +21,14 @@ import {
   Clock,
   Palette,
   Lock,
+  ChevronDown,
+  ScrollText,
 } from "lucide-react";
 import { CHI_LIST, CAN_LIST, getCurrentBaziPillars, PillarItem } from "./data/baziConstants";
 import { Hexagram, DivinationRecord, DoubleCardMode, ThreeCardMode, SpreadType, CustomCardPosition } from "./types";
 import { HEXAGRAMS } from "./data/hexagrams";
 import { Header, NavTab } from "./components/Header";
+import { BrandLockup } from "./components/BrandMark";
 import { CardDraw } from "./components/CardDraw";
 import { CoinToss } from "./components/CoinToss";
 import { YarrowDivination } from "./components/YarrowDivination";
@@ -76,9 +78,89 @@ const CATEGORIES = [
   "Khởi sự & Ra quyết định",
 ];
 
+type DivinationMethodId = "cards" | "khongminh" | "yarrow" | "coins" | "maihoa" | "lucnham" | "kymon" | "thaiat";
+
+const DIVINATION_METHODS: {
+  id: DivinationMethodId;
+  numeral: string;
+  title: string;
+  chinese: string;
+  desc: string;
+  toast: string;
+  badge?: string;
+}[] = [
+  {
+    id: "cards",
+    numeral: "壹",
+    title: "Bốc Bài Kinh Dịch",
+    chinese: "周易卜卦",
+    desc: "Đầy đủ các trận pháp từ 1 đến 12 lá bài (Thất Tinh, Cửu Cung, Thập Tinh...)",
+    toast: "Đã chọn hình thức: Bốc Bài Kinh Dịch (Đầy đủ 12 trận pháp)",
+  },
+  {
+    id: "khongminh",
+    numeral: "貳",
+    title: "Xăm Khổng Minh",
+    chinese: "孔明神數",
+    desc: "Bốc 3 lá Tam Tài (Thiên - Địa - Nhân) định hào biến & 384 quẻ xăm linh ứng",
+    toast: "Đã chọn hình thức: Xăm Khổng Minh (Gia Cát Thần Toán)",
+  },
+  {
+    id: "yarrow",
+    numeral: "參",
+    title: "Rút Cỏ Thi",
+    chinese: "大衍筮法",
+    desc: "Đại Diễn 50 cọng cỏ thi nguyên bản, 18 biến đổi định hào",
+    toast: "Đã chọn hình thức: Phép Rút Cỏ Thi 50 Cọng (Đại Diễn) • Cần trai giới mộc dục, tâm tập trung",
+  },
+  {
+    id: "coins",
+    numeral: "肆",
+    title: "Gieo 3 Đồng Xu",
+    chinese: "金錢卦",
+    desc: "Ba đồng Càn Long gieo 6 lần định hào biến & Lục Hào chiêm đoán",
+    toast: "Đã chọn hình thức: Gieo 3 Đồng Tiền Cổ (Lục Hào) • Thời gian gieo quẻ 6 lần",
+  },
+  {
+    id: "maihoa",
+    numeral: "伍",
+    title: "Mai Hoa Dịch Số",
+    chinese: "梅花易數",
+    desc: "Thiệu Khang Tiết • Khởi quẻ thời khắc, con số, trắc tự & Thể Dụng ngũ hành",
+    toast: "Đã chọn hình thức: Mai Hoa Dịch Số (Thiệu Khang Tiết)",
+  },
+  {
+    id: "lucnham",
+    numeral: "陸",
+    title: "Lục Nhâm Đại Độn",
+    chinese: "大六壬",
+    desc: "Thiên Bàn, Tứ Khóa, Tam Truyền, 12 Thần Tướng & Hoạt Thời chiêm đoán",
+    toast: "Đã chọn hình thức: Lục Nhâm Đại Độn (Tam Thức Cổ Truyền)",
+    badge: "Tam Thức",
+  },
+  {
+    id: "kymon",
+    numeral: "柒",
+    title: "Kỳ Môn Độn Giáp",
+    chinese: "奇門遁甲",
+    desc: "Bát Trận Đồ • Cửu Cung Lạc Thư, Cửu Tinh, Bát Môn, Bát Thần & Kỳ Môn Hóa Dịch",
+    toast: "Đã chọn hình thức: Kỳ Môn Độn Giáp (Bát Trận Đồ • Tam Thức Cổ Truyền)",
+    badge: "Tam Thức",
+  },
+  {
+    id: "thaiat",
+    numeral: "捌",
+    title: "Thái Ất Thần Số",
+    chinese: "太乙神數",
+    desc: "Thiên Thời & Vận Thế • Thái Ất Cửu Cung, Chủ Toán - Khách Toán & Thái Ất Hóa Dịch",
+    toast: "Đã chọn hình thức: Thái Ất Thần Số (Thiên Thời Vận Thế • Tam Thức Chi Thượng)",
+    badge: "Tam Thức",
+  },
+];
+
 export default function App() {
   const [currentTab, setCurrentTab] = useState<NavTab>("home");
-  const [divinationMethod, setDivinationMethod] = useState<"cards" | "khongminh" | "yarrow" | "coins" | "maihoa" | "lucnham" | "kymon" | "thaiat" | null>(null);
+  const [divinationMethod, setDivinationMethod] = useState<DivinationMethodId | null>(null);
 
   // Custom loaded card images (64 hexagrams & card back) & active deck
   const [activeDeckId, setActiveDeckId] = useState<string>("deck_golden");
@@ -853,155 +935,164 @@ export default function App() {
           />
 
           {/* Mindful / Traditional Ritual Preparation */}
-            <div className="bg-gradient-to-r from-[#1C1813] via-[#241E17] to-[#1C1813] border border-[#3E3426] rounded-2xl p-6 shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-[#C9A55A]/5 rounded-full blur-3xl pointer-events-none" />
+          <section className="royal-frame px-5 py-10 sm:px-12 sm:py-14">
+            <span className="royal-corner tl" />
+            <span className="royal-corner tr" />
+            <span className="royal-corner bl" />
+            <span className="royal-corner br" />
 
-              <div className="max-w-2xl mx-auto text-center space-y-3">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-serif text-[#C9A55A] bg-[#292217] border border-[#483A26]">
-                  <Sparkles className="w-3.5 h-3.5" /> Thành Tâm Tất Ứng • Tâm Động Quẻ Sinh
-                </span>
+            <div className="max-w-2xl mx-auto text-center">
+              <div className="royal-eyebrow">Thành tâm tất ứng · Tâm động quẻ sinh</div>
 
-                <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#F5EAD4] tracking-wide">
-                  TÂM NIỆM BỐC BÀI KINH DỊCH
-                </h2>
+              <h2 className="royal-title mt-5 text-3xl sm:text-5xl">
+                Tâm niệm bốc bài
+                <span className="block italic text-gold-300">Kinh Dịch</span>
+              </h2>
 
-                <p className="text-xs sm:text-sm text-[#A89A84] leading-relaxed">
-                  Trước khi thỉnh quẻ, cổ nhân luôn nghiêm cẩn thực hành <strong className="text-[#E6D3A3]">Trai Giới Mộc Dục (齋戒沐浴)</strong>: Tắm gội rửa sạch đôi bàn tay (Mộc Dục) và thanh tịnh tâm thức, loại bỏ mọi tạp niệm lo toan (Trai Giới). Thân tâm trong sạch thì quẻ gieo mới linh ứng giao hòa cùng Thiên Địa.
-                </p>
+              <div className="mt-6 flex items-center justify-center gap-4">
+                <span className="h-px w-10 sm:w-16 bg-gold-700" />
+                <span className="font-serif text-base sm:text-lg tracking-[0.35em] text-gold-400">齋戒沐浴</span>
+                <span className="h-px w-10 sm:w-16 bg-gold-700" />
+              </div>
 
-                {/* Trai Giới Mộc Dục Explanatory Accordion Button */}
-                <div className="pt-1">
+              <p className="mt-6 text-sm sm:text-[15px] leading-relaxed text-ivory-300 font-serif">
+                Trước khi thỉnh quẻ, cổ nhân luôn nghiêm cẩn thực hành <strong className="text-gold-300 font-medium">Trai Giới Mộc Dục (齋戒沐浴)</strong>: Tắm gội rửa sạch đôi bàn tay (Mộc Dục) và thanh tịnh tâm thức, loại bỏ mọi tạp niệm lo toan (Trai Giới). Thân tâm trong sạch thì quẻ gieo mới linh ứng giao hòa cùng Thiên Địa.
+              </p>
+
+              {/* Trai Giới Mộc Dục Explanatory Accordion Button */}
+              <button
+                type="button"
+                onClick={() => setShowPurificationGuide(!showPurificationGuide)}
+                className="royal-link mt-6 cursor-pointer text-left"
+              >
+                <ScrollText className="w-3.5 h-3.5 text-gold-500 shrink-0" />
+                <span>Vì sao cần Trai Giới Mộc Dục trước khi gieo quẻ?</span>
+                <ChevronDown className={`w-3.5 h-3.5 text-gold-500 shrink-0 transition-transform ${showPurificationGuide ? "rotate-180" : ""}`} />
+              </button>
+            </div>
+
+            {showPurificationGuide && (
+              <div className="max-w-3xl mx-auto mt-8 text-left border border-gold-800 bg-lacquer-950/70 p-5 sm:p-7 font-serif space-y-5 animate-in fade-in slide-in-from-top-2 duration-300">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <div className="text-[11px] font-sans uppercase tracking-[0.24em] text-gold-500">Cẩm nang nghi lễ</div>
+                    <h3 className="font-display text-2xl text-ivory-100 mt-1">Trai Giới Mộc Dục · 齋戒沐浴</h3>
+                  </div>
                   <button
                     type="button"
-                    onClick={() => setShowPurificationGuide(!showPurificationGuide)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-serif text-[#E0C070] bg-[#1E1711] hover:bg-[#2A1F16] border border-[#48331E] hover:border-[#C9A55A] transition-all cursor-pointer shadow-sm active:scale-95"
+                    onClick={() => setShowPurificationGuide(false)}
+                    className="royal-link cursor-pointer shrink-0"
                   >
-                    <span>📜</span>
-                    <span className="font-semibold underline decoration-dotted">Tìm hiểu: Vì sao cần Trai Giới Mộc Dục trước khi gieo quẻ?</span>
-                    <span className="text-[11px] font-mono text-[#A89882]">{showPurificationGuide ? "▲ Ẩn" : "▼ Chi tiết"}</span>
+                    Đóng
                   </button>
                 </div>
 
-                {showPurificationGuide && (
-                  <div className="mt-3 text-left bg-[#140F0B] border border-[#4D351E] rounded-xl p-4 sm:p-5 shadow-2xl text-xs font-serif text-[#DECAB2] space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
-                    <div className="flex items-center justify-between border-b border-[#302113] pb-2 text-[#E6D3A3] font-bold text-sm">
-                      <span className="flex items-center gap-2">
-                        <span>⛩️</span> CẨM NANG NGHI LỄ: TRAI GIỚI MỘC DỤC (齋戒沐浴)
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => setShowPurificationGuide(false)}
-                        className="text-[#8C7A65] hover:text-[#E6D3A3] text-xs font-sans px-2 py-0.5 rounded cursor-pointer"
-                      >
-                        Đóng ✕
-                      </button>
-                    </div>
+                <blockquote className="border-l border-gold-600 pl-4 italic text-sm text-ivory-300 leading-relaxed">
+                  "Thánh nhân dĩ thử trai giới, dĩ sùng đức quảng nghiệp... Tịch nhiên bất động, cảm nhi toại thông thiên hạ chi cố."
+                  <span className="block not-italic text-[11px] font-sans uppercase tracking-[0.18em] text-gold-600 mt-2">Khổng Tử · Kinh Dịch Hệ Từ Thượng</span>
+                </blockquote>
 
-                    <p className="italic text-[#E5D5C0] leading-relaxed">
-                      "Thánh nhân dĩ thử trai giới, dĩ sùng đức quảng nghiệp... Tịch nhiên bất động, cảm nhi toại thông thiên hạ chi cố." (Khổng Tử • Kinh Dịch Hệ Từ Thượng).
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="border border-gold-800 bg-lacquer-900/60 p-4 space-y-2">
+                    <div className="flex items-baseline gap-3">
+                      <span className="font-serif text-xl text-gold-600 leading-none">壹</span>
+                      <strong className="font-display text-lg text-gold-300 font-medium">Mộc Dục · 沐浴</strong>
+                    </div>
+                    <p className="text-[12.5px] leading-relaxed text-ivory-300">
+                      <strong className="text-ivory-100 font-medium">Mộc (沐):</strong> Gội đầu, rửa mặt, súc miệng thanh tịnh, giữ hơi thở thơm sạch.<br/>
+                      <strong className="text-ivory-100 font-medium">Dục (浴):</strong> Tắm gội toàn thân, đặc biệt là <strong className="text-gold-300 font-medium">rửa sạch đôi bàn tay dưới dòng nước mát</strong> trước khi chạm vào cỏ thi, đồng tiền cổ hay thẻ bài Kinh Dịch. Bàn tay là kênh phát xuất trường điện từ sinh học, tay sạch thì trường năng lượng mới tinh khiết không bị tạp nhiễm.<br/>
+                      <strong className="text-ivory-100 font-medium">Y phục:</strong> Ăn mặc ngay ngắn, tề chỉnh, đầu tóc gọn gàng để tỏ lòng tôn kính với Đạo Trời Đất.
                     </p>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                      <div className="bg-[#1C140D] p-3 rounded-lg border border-[#3E2917] space-y-1">
-                        <strong className="text-[#C9A55A] font-bold block text-[13px]">
-                          1. Mộc Dục (沐浴 - Tẩy Rửa Thân Thể Thanh Khiết):
-                        </strong>
-                        <p className="text-[11px] leading-relaxed text-[#BFB09A]">
-                          • <strong>Mộc (沐):</strong> Gội đầu, rửa mặt, súc miệng thanh tịnh, giữ hơi thở thơm sạch.<br/>
-                          • <strong>Dục (浴):</strong> Tắm gội toàn thân, đặc biệt là <strong className="text-[#E6D3A3]">rửa sạch đôi bàn tay dưới dòng nước mát</strong> trước khi chạm vào cỏ thi, đồng tiền cổ hay thẻ bài Kinh Dịch. Bàn tay là kênh phát xuất trường điện từ sinh học, tay sạch thì trường năng lượng mới tinh khiết không bị tạp nhiễm.<br/>
-                          • <strong>Y phục:</strong> Ăn mặc ngay ngắn, tề chỉnh, đầu tóc gọn gàng để tỏ lòng tôn kính với Đạo Trời Đất.
-                        </p>
-                      </div>
-
-                      <div className="bg-[#1C140D] p-3 rounded-lg border border-[#3E2917] space-y-1">
-                        <strong className="text-[#C9A55A] font-bold block text-[13px]">
-                          2. Trai Giới (齋戒 - Tịnh Hóa Tâm Ý Hư Tĩnh):
-                        </strong>
-                        <p className="text-[11px] leading-relaxed text-[#BFB09A]">
-                          • <strong>Trai (齋):</strong> Trai tịnh tâm can, kiêng rượu nồng, chất kích thích và các thú vui ồn ào trước giờ bốc.<br/>
-                          • <strong>Giới (戒):</strong> Ngăn ngừa tà niệm, dứt bỏ tham sân si, dục vọng vị kỷ, lo âu, sân hận hoặc toan tính vụ lợi.<br/>
-                          • Đưa tâm thức về trạng thái <em>Hư Tĩnh</em> (như mặt gương sáng không dính bụi), nhất tâm hướng trọn ý thức về câu hỏi cần thỉnh vấn.
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Tứ Bất Bốc */}
-                    <div className="p-3 rounded-lg bg-[#20140A] border border-[#482F18] space-y-1.5 text-[11px]">
-                      <span className="text-xs font-serif font-bold text-[#E6D3A3] flex items-center gap-1.5">
-                        <span>📜</span> KHẨU QUYẾT CỔ NHÂN: "TỨ BẤT BỐC" (4 ĐIỀU TUYỆT ĐỐI KHÔNG BỐC QUẺ)
-                      </span>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-[#D2C3AB] pt-1">
-                        <div className="bg-[#140D07] p-2 rounded border border-[#382312]">
-                          <strong className="text-[#C9A55A] block mb-0.5">1. Bất thành bất bốc:</strong>
-                          Lòng không chí thành, bói chơi đùa thì không ứng.
-                        </div>
-                        <div className="bg-[#140D07] p-2 rounded border border-[#382312]">
-                          <strong className="text-[#C9A55A] block mb-0.5">2. Bất nghi bất bốc:</strong>
-                          Lòng không có điều thực sự băn khoăn thì không bốc.
-                        </div>
-                        <div className="bg-[#140D07] p-2 rounded border border-[#382312]">
-                          <strong className="text-[#C9A55A] block mb-0.5">3. Phi nghĩa bất bốc:</strong>
-                          Hỏi việc thất đức, hại người, phi pháp thì không bốc.
-                        </div>
-                        <div className="bg-[#140D07] p-2 rounded border border-[#382312]">
-                          <strong className="text-[#C9A55A] block mb-0.5">4. Độc tắc bất cáo:</strong>
-                          Cùng một việc bốc đi bốc lại ép quẻ tốt thì quẻ sẽ loạn.
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="p-2.5 rounded-lg bg-[#23170D] border border-[#482E18] text-[11px] leading-relaxed text-[#EAD8B5]">
-                      💡 <strong>Nguyên lý "Chí Thành Thông Thần":</strong> Kinh Dịch không phải là trò bói toán may rủi tầm thường, mà là sự phản ánh giao cảm vi tế giữa trường năng lượng ý thức con người và quy luật Càn Khôn. Thân sạch (Mộc Dục) và Tâm sáng (Trai Giới) chính là chiếc chìa khóa để linh khí câu thông, quẻ định chuẩn xác nhất.
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Question & Category Input Box */}
-              <div className="max-w-2xl mx-auto mt-6 space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="sm:col-span-2">
-                    <label className="block text-xs font-semibold text-[#C9A55A] mb-1.5">
-                      Nội dung tâm niệm / Câu hỏi:
-                    </label>
-                    <input
-                      type="text"
-                      value={question}
-                      onChange={(e) => setQuestion(e.target.value)}
-                      placeholder="VD: Định hướng công việc và tài vận trong năm nay..."
-                      className="w-full bg-[#12100E] border border-[#3D3325] focus:border-[#C89B3C] rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-[#F0E4D0] outline-none shadow-inner"
-                    />
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-[#C9A55A] mb-1.5">
-                      Lĩnh vực thỉnh vấn:
-                    </label>
-                    <select
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
-                      className="w-full bg-[#12100E] border border-[#3D3325] focus:border-[#C89B3C] rounded-xl px-3 py-2.5 text-xs sm:text-sm text-[#F0E4D0] outline-none cursor-pointer"
-                    >
-                      {CATEGORIES.map((cat) => (
-                        <option key={cat} value={cat} className="bg-[#1C1814]">
-                          {cat}
-                        </option>
-                      ))}
-                    </select>
+                  <div className="border border-gold-800 bg-lacquer-900/60 p-4 space-y-2">
+                    <div className="flex items-baseline gap-3">
+                      <span className="font-serif text-xl text-gold-600 leading-none">貳</span>
+                      <strong className="font-display text-lg text-gold-300 font-medium">Trai Giới · 齋戒</strong>
+                    </div>
+                    <p className="text-[12.5px] leading-relaxed text-ivory-300">
+                      <strong className="text-ivory-100 font-medium">Trai (齋):</strong> Trai tịnh tâm can, kiêng rượu nồng, chất kích thích và các thú vui ồn ào trước giờ bốc.<br/>
+                      <strong className="text-ivory-100 font-medium">Giới (戒):</strong> Ngăn ngừa tà niệm, dứt bỏ tham sân si, dục vọng vị kỷ, lo âu, sân hận hoặc toan tính vụ lợi.<br/>
+                      Đưa tâm thức về trạng thái <em>Hư Tĩnh</em> (như mặt gương sáng không dính bụi), nhất tâm hướng trọn ý thức về câu hỏi cần thỉnh vấn.
+                    </p>
                   </div>
                 </div>
 
-                {/* Quick suggestions */}
-                <div className="flex items-center gap-1.5 flex-wrap pt-1 border-t border-[#2F261C]">
-                  <span className="text-[11px] text-[#7A6D5A] flex items-center gap-1">
-                    <HelpCircle className="w-3 h-3" /> Gợi ý câu hỏi chuẩn:
-                  </span>
+                {/* Tứ Bất Bốc */}
+                <div className="space-y-3">
+                  <div className="royal-rule text-[11px] font-sans uppercase tracking-[0.22em] text-gold-500">
+                    Khẩu quyết cổ nhân · Tứ Bất Bốc
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-[12px] text-ivory-300 leading-relaxed">
+                    {[
+                      ["Bất thành bất bốc", "Lòng không chí thành, bói chơi đùa thì không ứng."],
+                      ["Bất nghi bất bốc", "Lòng không có điều thực sự băn khoăn thì không bốc."],
+                      ["Phi nghĩa bất bốc", "Hỏi việc thất đức, hại người, phi pháp thì không bốc."],
+                      ["Độc tắc bất cáo", "Cùng một việc bốc đi bốc lại ép quẻ tốt thì quẻ sẽ loạn."],
+                    ].map(([title, desc], idx) => (
+                      <div key={title} className="border-t border-gold-700 pt-3">
+                        <strong className="text-gold-300 font-medium block mb-1">{idx + 1}. {title}</strong>
+                        {desc}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="border border-cinnabar-600/40 bg-cinnabar-600/5 p-4 text-[12.5px] leading-relaxed text-ivory-300 flex gap-3">
+                  <span className="royal-seal w-7 h-7 text-xs shrink-0">誠</span>
+                  <p>
+                    <strong className="text-gold-300 font-medium">Nguyên lý "Chí Thành Thông Thần":</strong> Kinh Dịch không phải là trò bói toán may rủi tầm thường, mà là sự phản ánh giao cảm vi tế giữa trường năng lượng ý thức con người và quy luật Càn Khôn. Thân sạch (Mộc Dục) và Tâm sáng (Trai Giới) chính là chiếc chìa khóa để linh khí câu thông, quẻ định chuẩn xác nhất.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Question & Category Input Box */}
+            <div className="max-w-2xl mx-auto mt-10 pt-8 border-t border-gold-800/70 space-y-5">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="sm:col-span-2">
+                  <label className="block text-[11px] font-medium uppercase tracking-[0.2em] text-gold-500 mb-2">
+                    Nội dung tâm niệm / Câu hỏi
+                  </label>
+                  <input
+                    type="text"
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
+                    placeholder="VD: Định hướng công việc và tài vận trong năm nay..."
+                    className="w-full bg-lacquer-950 border border-gold-800 focus:border-gold-500 rounded-sm px-4 py-3 text-sm font-serif text-ivory-100 placeholder:text-ivory-500/70 outline-none transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-medium uppercase tracking-[0.2em] text-gold-500 mb-2">
+                    Lĩnh vực thỉnh vấn
+                  </label>
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full bg-lacquer-950 border border-gold-800 focus:border-gold-500 rounded-sm px-3 py-3 text-sm font-serif text-ivory-100 outline-none cursor-pointer transition-colors"
+                  >
+                    {CATEGORIES.map((cat) => (
+                      <option key={cat} value={cat} className="bg-lacquer-800">
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Quick suggestions */}
+              <div className="space-y-2.5">
+                <span className="text-[11px] uppercase tracking-[0.18em] text-ivory-500 flex items-center gap-1.5">
+                  <HelpCircle className="w-3 h-3 text-gold-600" /> Gợi ý câu hỏi chuẩn
+                </span>
+                <div className="flex flex-wrap gap-2">
                   {QUESTION_SUGGESTIONS.map((sug, i) => (
                     <button
                       key={i}
                       type="button"
                       onClick={() => setQuestion(sug)}
-                      className="text-[11px] text-[#B8AA94] hover:text-[#FFF] bg-[#221C16] hover:bg-[#30261D] border border-[#382F22] px-2.5 py-1 rounded-lg transition-colors cursor-pointer"
+                      className="text-left text-[12px] font-serif text-ivory-300 hover:text-gold-200 border border-gold-800 hover:border-gold-500 hover:bg-gold-500/5 rounded-sm px-3 py-1.5 transition-colors cursor-pointer"
                     >
                       {sug}
                     </button>
@@ -1009,389 +1100,121 @@ export default function App() {
                 </div>
               </div>
             </div>
+          </section>
 
-              {/* Divination Method Switcher */}
-              <div className="bg-[#191511] border border-[#3D3121] rounded-2xl p-2.5 sm:p-3 shadow-xl">
-                <div className="text-[11px] font-mono text-[#A89882] uppercase tracking-wider px-2 pt-1 pb-2.5 flex flex-wrap items-center justify-between gap-2 border-b border-[#2C2116] mb-2.5">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="flex items-center gap-1.5 text-[#C9A55A] font-bold text-xs">
-                      <Sparkles className="w-3.5 h-3.5" /> Phương Thức Thỉnh Quẻ:
-                    </span>
-                    <span className="text-[10px] font-serif px-2 py-0.5 rounded-full bg-amber-950/80 text-amber-300 border border-amber-600/50">
-                      Toàn Bộ 8 Phương Thức Khởi Quẻ
-                    </span>
-                  </div>
-
-                  {/* Nút Trạng Thái Hiện Quẻ (Mở Luôn / Úp Bài) & Nút Xem Thuận Nghịch */}
-                  <div className="flex items-center gap-2 flex-wrap">
-                    {/* Nút Trạng Thái Hiện Quẻ: Mở Luôn (Mặc định) hay Úp Bài */}
-                    <button
-                      type="button"
-                      onClick={handleToggleDefaultCardFaceOpen}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer shadow active:scale-95 border ${
-                        defaultCardFaceOpen
-                          ? "bg-[#2A1E12] text-[#E6D3A3] border-[#C9A55A] ring-1 ring-[#C9A55A]/50"
-                          : "bg-[#16120E] text-[#8C7D6A] border-[#382C1E] hover:text-[#C5B49D]"
-                      }`}
-                      title={
-                        defaultCardFaceOpen
-                          ? "Khi hiện quẻ: Đang ở trạng thái Mở Luôn (Mặt trước). Bấm để chuyển sang Úp Bài."
-                          : "Khi hiện quẻ: Đang ở trạng thái Úp Bài (Mặt Bát Quái). Bấm để chuyển sang Mở Luôn."
-                      }
-                    >
-                      <span className="text-xs">{defaultCardFaceOpen ? "📖" : "🎴"}</span>
-                      <span><strong>{defaultCardFaceOpen ? "Mở Luôn" : "Úp Bài"}</strong></span>
-                    </button>
-
-                    {/* Nút Xem Thuận Nghịch / Chỉ Xem Thuận */}
-                    <button
-                      type="button"
-                      onClick={handleToggleAllowReversedCards}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer shadow active:scale-95 border ${
-                        allowReversedCards
-                          ? "bg-[#2A1E12] text-[#E6D3A3] border-[#C9A55A] ring-1 ring-[#C9A55A]/50"
-                          : "bg-[#16120E] text-[#8C7D6A] border-[#382C1E] hover:text-[#C5B49D]"
-                      }`}
-                      title={allowReversedCards ? "Xem Thuận Nghịch" : "Chỉ Xem Thuận"}
-                    >
-                      <RotateCw className={`w-3.5 h-3.5 transition-transform duration-300 ${allowReversedCards ? "text-[#C9A55A] rotate-180" : "text-[#756552]"}`} />
-                      <span><strong>{allowReversedCards ? "Xem Thuận Nghịch" : "Chỉ Xem Thuận"}</strong></span>
-                    </button>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-7 gap-2 sm:gap-2.5">
-                  {/* 1. Bốc Bài Kinh Dịch */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const next = divinationMethod === "cards" ? null : "cards";
-                      setDivinationMethod(next);
-                      if (next) {
-                        showToast("Đã chọn hình thức: Bốc Bài Kinh Dịch (Đầy đủ 12 trận pháp)");
-                      }
-                    }}
-                    className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
-                      divinationMethod === "cards"
-                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#C9A55A]/50"
-                        : "bg-[#14100C] border-[#2C2014] hover:border-[#4B3722] opacity-80 hover:opacity-100"
-                    }`}
-                  >
-                    <span className="text-2xl mt-0.5">🎴</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-1">
-                        <span className="text-sm font-serif font-bold text-[#F5EAD4]">
-                          Bốc Bài Kinh Dịch
-                        </span>
-                        {divinationMethod === "cards" && (
-                          <span className="w-2 h-2 rounded-full bg-[#C9A55A] shadow-[0_0_6px_#C9A55A]" />
-                        )}
-                      </div>
-                      <p className="text-[11px] text-[#A89882] font-serif leading-tight mt-1">
-                        Đầy đủ các trận pháp từ 1 đến 12 lá bài (Thất Tinh, Cửu Cung, Thập Tinh...)
-                      </p>
-                    </div>
-                  </button>
-
-                  {/* 2. Xăm Khổng Minh */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const next = divinationMethod === "khongminh" ? null : "khongminh";
-                      setDivinationMethod(next);
-                      if (next) showToast("Đã chọn hình thức: Xăm Khổng Minh (Gia Cát Thần Toán)");
-                    }}
-                    className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
-                      divinationMethod === "khongminh"
-                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#C9A55A]/50"
-                        : "bg-[#14100C] border-[#2C2014] hover:border-[#4B3722] opacity-80 hover:opacity-100"
-                    }`}
-                  >
-                    <span className="text-2xl mt-0.5">📜</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-1">
-                        <span className="text-sm font-serif font-bold text-[#F5EAD4]">
-                          Xăm Khổng Minh
-                        </span>
-                        {divinationMethod === "khongminh" && (
-                          <span className="w-2 h-2 rounded-full bg-[#C9A55A] shadow-[0_0_6px_#C9A55A]" />
-                        )}
-                      </div>
-                      <p className="text-[11px] text-[#A89882] font-serif leading-tight mt-1">
-                        Bốc 3 lá Tam Tài (Thiên - Địa - Nhân) định hào biến & 384 quẻ xăm linh ứng
-                      </p>
-                    </div>
-                  </button>
-
-                  {/* 3. Rút Cỏ Thi */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const next = divinationMethod === "yarrow" ? null : "yarrow";
-                      setDivinationMethod(next);
-                      if (next) showToast("Đã chọn hình thức: Phép Rút Cỏ Thi 50 Cọng (Đại Diễn) • Cần trai giới mộc dục, tâm tập trung");
-                    }}
-                    className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
-                      divinationMethod === "yarrow"
-                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#C9A55A]/50"
-                        : "bg-[#14100C] border-[#2C2014] hover:border-[#4B3722] opacity-80 hover:opacity-100"
-                    }`}
-                  >
-                    <span className="text-2xl mt-0.5">🌾</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-1">
-                        <span className="text-sm font-serif font-bold text-[#F5EAD4]">
-                          Rút Cỏ Thi
-                        </span>
-                        {divinationMethod === "yarrow" && (
-                          <span className="w-2 h-2 rounded-full bg-[#C9A55A] shadow-[0_0_6px_#C9A55A]" />
-                        )}
-                      </div>
-                      <p className="text-[11px] text-[#A89882] font-serif leading-tight mt-1">
-                        Đại Diễn 50 cọng cỏ thi nguyên bản, 18 biến đổi định hào
-                      </p>
-                    </div>
-                  </button>
-
-                  {/* 4. Gieo 3 Đồng Xu */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const next = divinationMethod === "coins" ? null : "coins";
-                      setDivinationMethod(next);
-                      if (next) showToast("Đã chọn hình thức: Gieo 3 Đồng Tiền Cổ (Lục Hào) • Thời gian gieo quẻ 6 lần");
-                    }}
-                    className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
-                      divinationMethod === "coins"
-                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#C9A55A]/50"
-                        : "bg-[#14100C] border-[#2C2014] hover:border-[#4B3722] opacity-80 hover:opacity-100"
-                    }`}
-                  >
-                    <span className="text-2xl mt-0.5">🪙</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-1">
-                        <span className="text-sm font-serif font-bold text-[#F5EAD4]">
-                          Gieo 3 Đồng Xu
-                        </span>
-                        {divinationMethod === "coins" && (
-                          <span className="w-2 h-2 rounded-full bg-[#C9A55A] shadow-[0_0_6px_#C9A55A]" />
-                        )}
-                      </div>
-                      <p className="text-[11px] text-[#A89882] font-serif leading-tight mt-1">
-                        Ba đồng Càn Long gieo 6 lần định hào biến & Lục Hào chiêm đoán
-                      </p>
-                    </div>
-                  </button>
-
-                  {/* 5. Mai Hoa Dịch Số */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const next = divinationMethod === "maihoa" ? null : "maihoa";
-                      setDivinationMethod(next);
-                      if (next) showToast("Đã chọn hình thức: Mai Hoa Dịch Số (Thiệu Khang Tiết)");
-                    }}
-                    className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
-                      divinationMethod === "maihoa"
-                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#C9A55A]/50"
-                        : "bg-[#14100C] border-[#2C2014] hover:border-[#4B3722] opacity-80 hover:opacity-100"
-                    }`}
-                  >
-                    <span className="text-2xl mt-0.5">🌸</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-1">
-                        <span className="text-sm font-serif font-bold text-[#F5EAD4]">
-                          Mai Hoa Dịch Số
-                        </span>
-                        {divinationMethod === "maihoa" && (
-                          <span className="w-2 h-2 rounded-full bg-[#C9A55A] shadow-[0_0_6px_#C9A55A]" />
-                        )}
-                      </div>
-                      <p className="text-[11px] text-[#A89882] font-serif leading-tight mt-1">
-                        Thiệu Khang Tiết • Khởi quẻ thời khắc, con số, trắc tự & Thể Dụng ngũ hành
-                      </p>
-                    </div>
-                  </button>
-
-                  {/* 6. Lục Nhâm Đại Độn */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const next = divinationMethod === "lucnham" ? null : "lucnham";
-                      setDivinationMethod(next);
-                      if (next) showToast("Đã chọn hình thức: Lục Nhâm Đại Độn (Tam Thức Cổ Truyền)");
-                    }}
-                    className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
-                      divinationMethod === "lucnham"
-                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#C9A55A]/50"
-                        : "bg-[#14100C] border-[#2C2014] hover:border-[#C9A55A] hover:bg-[#1E160F] opacity-90 hover:opacity-100"
-                    }`}
-                  >
-                    <span className="text-2xl mt-0.5">🧭</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-1">
-                        <span className="text-sm font-serif font-bold text-[#F5EAD4]">
-                          Lục Nhâm Đại Độn
-                        </span>
-                        {divinationMethod === "lucnham" ? (
-                          <span className="w-2 h-2 rounded-full bg-[#C9A55A] shadow-[0_0_6px_#C9A55A]" />
-                        ) : (
-                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-950/80 text-amber-200 border border-amber-600/70 font-medium">
-                            Tam Thức
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-[11px] text-[#A89882] font-serif leading-tight mt-1">
-                        Thiên Bàn, Tứ Khóa, Tam Truyền, 12 Thần Tướng & Hoạt Thời chiêm đoán
-                      </p>
-                    </div>
-                  </button>
-
-                  {/* 7. Kỳ Môn Độn Giáp */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const next = divinationMethod === "kymon" ? null : "kymon";
-                      setDivinationMethod(next);
-                      if (next) showToast("Đã chọn hình thức: Kỳ Môn Độn Giáp (Bát Trận Đồ • Tam Thức Cổ Truyền)");
-                    }}
-                    className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
-                      divinationMethod === "kymon"
-                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#C9A55A]/50"
-                        : "bg-[#14100C] border-[#2C2014] hover:border-[#C9A55A] hover:bg-[#1E160F] opacity-90 hover:opacity-100"
-                    }`}
-                  >
-                    <span className="text-2xl mt-0.5">⛩️</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-1">
-                        <span className="text-sm font-serif font-bold text-[#F5EAD4]">
-                          Kỳ Môn Độn Giáp
-                        </span>
-                        {divinationMethod === "kymon" ? (
-                          <span className="w-2 h-2 rounded-full bg-[#C9A55A] shadow-[0_0_6px_#C9A55A]" />
-                        ) : (
-                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-950/80 text-amber-200 border border-amber-600/70 font-medium">
-                            Tam Thức
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-[11px] text-[#A89882] font-serif leading-tight mt-1">
-                        Bát Trận Đồ • Cửu Cung Lạc Thư, Cửu Tinh, Bát Môn, Bát Thần & Kỳ Môn Hóa Dịch
-                      </p>
-                    </div>
-                  </button>
-
-                  {/* 8. Thái Ất Thần Số */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const next = divinationMethod === "thaiat" ? null : "thaiat";
-                      setDivinationMethod(next);
-                      if (next) showToast("Đã chọn hình thức: Thái Ất Thần Số (Thiên Thời Vận Thế • Tam Thức Chi Thượng)");
-                    }}
-                    className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
-                      divinationMethod === "thaiat"
-                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#C9A55A]/50"
-                        : "bg-[#14100C] border-[#2C2014] hover:border-[#C9A55A] hover:bg-[#1E160F] opacity-90 hover:opacity-100"
-                    }`}
-                  >
-                    <span className="text-2xl mt-0.5">👑</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-1">
-                        <span className="text-sm font-serif font-bold text-[#F5EAD4]">
-                          Thái Ất Thần Số
-                        </span>
-                        {divinationMethod === "thaiat" ? (
-                          <span className="w-2 h-2 rounded-full bg-[#C9A55A] shadow-[0_0_6px_#C9A55A]" />
-                        ) : (
-                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-950/80 text-amber-200 border border-amber-600/70 font-medium">
-                            Tam Thức
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-[11px] text-[#A89882] font-serif leading-tight mt-1">
-                        Thiên Thời & Vận Thế • Thái Ất Cửu Cung, Chủ Toán - Khách Toán & Thái Ất Hóa Dịch
-                      </p>
-                    </div>
-                  </button>
-                </div>
+          {/* Divination Method Switcher */}
+          <section className="space-y-6 pt-4">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5">
+              <div className="text-center lg:text-left">
+                <div className="royal-eyebrow lg:before:hidden">Phương thức thỉnh quẻ</div>
+                <h2 className="royal-title mt-3 text-3xl sm:text-4xl">Tám phép khởi quẻ</h2>
+                <p className="mt-2 text-[13px] text-ivory-500 font-serif">
+                  Chọn một phương thức chiêm đoán để bắt đầu. Bấm lần nữa để bỏ chọn.
+                </p>
               </div>
+
+              {/* Nút Trạng Thái Hiện Quẻ (Mở Luôn / Úp Bài) & Nút Xem Thuận Nghịch */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleToggleDefaultCardFaceOpen}
+                  className={`royal-btn-ghost !px-4 !py-2 !text-[11px] ${
+                    defaultCardFaceOpen ? "!border-gold-400 !text-gold-200 !bg-gold-500/10" : "!text-ivory-500"
+                  }`}
+                  title={
+                    defaultCardFaceOpen
+                      ? "Khi hiện quẻ: Đang ở trạng thái Mở Luôn (Mặt trước). Bấm để chuyển sang Úp Bài."
+                      : "Khi hiện quẻ: Đang ở trạng thái Úp Bài (Mặt Bát Quái). Bấm để chuyển sang Mở Luôn."
+                  }
+                >
+                  {defaultCardFaceOpen ? <BookOpen className="w-3.5 h-3.5" /> : <Layers className="w-3.5 h-3.5" />}
+                  <span>{defaultCardFaceOpen ? "Mở Luôn" : "Úp Bài"}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleToggleAllowReversedCards}
+                  className={`royal-btn-ghost !px-4 !py-2 !text-[11px] ${
+                    allowReversedCards ? "!border-gold-400 !text-gold-200 !bg-gold-500/10" : "!text-ivory-500"
+                  }`}
+                  title={allowReversedCards ? "Xem Thuận Nghịch" : "Chỉ Xem Thuận"}
+                >
+                  <RotateCw className={`w-3.5 h-3.5 transition-transform duration-300 ${allowReversedCards ? "rotate-180" : ""}`} />
+                  <span>{allowReversedCards ? "Xem Thuận Nghịch" : "Chỉ Xem Thuận"}</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {DIVINATION_METHODS.map((method) => {
+                const isActive = divinationMethod === method.id;
+                return (
+                  <button
+                    key={method.id}
+                    type="button"
+                    aria-pressed={isActive}
+                    onClick={() => {
+                      const next = isActive ? null : method.id;
+                      setDivinationMethod(next);
+                      if (next) showToast(method.toast);
+                    }}
+                    className={`royal-card group p-5 text-left flex flex-col cursor-pointer ${
+                      isActive ? "!border-gold-400 shadow-[inset_0_0_0_1px_rgba(201,165,90,0.35)] before:!w-full" : ""
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <span className={`font-serif text-2xl leading-none transition-colors ${isActive ? "text-gold-400" : "text-gold-700 group-hover:text-gold-500"}`}>
+                        {method.numeral}
+                      </span>
+                      {isActive ? (
+                        <span className="royal-seal w-6 h-6 text-[11px]">選</span>
+                      ) : method.badge ? (
+                        <span className="text-[10px] uppercase tracking-[0.18em] text-gold-600 border border-gold-800 rounded-sm px-1.5 py-0.5">
+                          {method.badge}
+                        </span>
+                      ) : null}
+                    </div>
+                    <h3 className="font-display text-xl text-ivory-100 mt-4 leading-tight">{method.title}</h3>
+                    <div className="text-[11px] font-serif tracking-[0.3em] text-gold-600 mt-1">{method.chinese}</div>
+                    <p className="mt-3 text-[12.5px] text-ivory-500 font-serif leading-relaxed">{method.desc}</p>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
 
             {/* Divination Component Rendering */}
             <div
               id="divination-card-draw-area"
-              className="relative rounded-3xl bg-[#140F0A]/50 backdrop-blur-md border border-[#C9A55A]/35 p-2.5 sm:p-5 shadow-2xl transition-all duration-700 animate-divination-breath"
+              className="royal-frame relative p-3 sm:p-6 transition-all duration-700"
             >
+              <span className="royal-corner tl" />
+              <span className="royal-corner tr" />
+              <span className="royal-corner bl" />
+              <span className="royal-corner br" />
+
               {divinationMethod === null && (
-                <div className="py-12 sm:py-16 text-center space-y-4 max-w-xl mx-auto">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-[#20170F] border border-[#543E23] flex items-center justify-center text-3xl sm:text-4xl shadow-inner select-none">
-                    ☯️
-                  </div>
-                  <div className="space-y-1.5">
-                    <h3 className="text-lg sm:text-xl font-serif font-bold text-[#F5EAD4] tracking-wide">
-                      TÂM TĨNH KHỞI QUẺ • VẠN SỰ TÙY DUYÊN
-                    </h3>
-                    <p className="text-xs sm:text-sm text-[#A89882] font-serif leading-relaxed px-4">
-                      Tâm thanh tịnh, ý thành kính! Bạn hãy bấm chọn một trong các hình thức chiêm đoán phía trên để bắt đầu gieo quẻ:
-                    </p>
-                  </div>
-                  <div className="pt-2 flex flex-wrap items-center justify-center gap-2 text-xs">
-                    <button
-                      type="button"
-                      onClick={() => setDivinationMethod("cards")}
-                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#E6D3A3] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
-                    >
-                      <span>🎴</span> Bốc Bài Kinh Dịch (Đủ 12 Trận)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setDivinationMethod("khongminh")}
-                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#E6D3A3] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
-                    >
-                      <span>📜</span> Xăm Khổng Minh
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setDivinationMethod("yarrow")}
-                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#E6D3A3] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
-                    >
-                      <span>🌾</span> Rút Cỏ Thi
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setDivinationMethod("coins")}
-                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#E6D3A3] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
-                    >
-                      <span>🪙</span> Gieo Đồng Xu
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setDivinationMethod("maihoa")}
-                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#E6D3A3] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
-                    >
-                      <span>🌸</span> Mai Hoa Dịch Số
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setDivinationMethod("lucnham")}
-                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#E6D3A3] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
-                    >
-                      <span>🧭</span> Lục Nhâm Đại Độn
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setDivinationMethod("kymon")}
-                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#E6D3A3] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
-                    >
-                      <span>⛩️</span> Kỳ Môn Độn Giáp
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setDivinationMethod("thaiat")}
-                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#E6D3A3] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
-                    >
-                      <span>👑</span> Thái Ất Thần Số
-                    </button>
+                <div className="py-12 sm:py-16 px-2 text-center max-w-xl mx-auto">
+                  <span className="royal-seal w-14 h-14 text-2xl select-none">卦</span>
+                  <h3 className="royal-title mt-6 text-2xl sm:text-3xl">
+                    Tâm tĩnh khởi quẻ · Vạn sự tùy duyên
+                  </h3>
+                  <p className="mt-3 text-sm text-ivory-500 font-serif leading-relaxed">
+                    Tâm thanh tịnh, ý thành kính! Bạn hãy bấm chọn một trong các hình thức chiêm đoán phía trên để bắt đầu gieo quẻ:
+                  </p>
+                  <div className="royal-rule mt-6 text-xs">◆</div>
+                  <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+                    {DIVINATION_METHODS.map((method) => (
+                      <button
+                        key={method.id}
+                        type="button"
+                        onClick={() => setDivinationMethod(method.id)}
+                        className="royal-link cursor-pointer"
+                      >
+                        <span className="font-serif text-gold-600">{method.numeral}</span>
+                        {method.id === "cards" ? "Bốc Bài Kinh Dịch (Đủ 12 Trận)" : method.id === "coins" ? "Gieo Đồng Xu" : method.title}
+                      </button>
+                    ))}
                   </div>
                 </div>
               )}
@@ -1820,18 +1643,18 @@ export default function App() {
         {(currentTab === "manual" || currentTab === "decks") && (
           <div className="space-y-5">
             {/* Thanh chuyển đổi phân đoạn Thuyết Minh vs Bộ Hình 64 Quẻ */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#17130F] border border-[#3E2F20] p-2 rounded-2xl shadow-xl">
-              <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-gold-800/80">
+              <div className="flex items-center gap-1 flex-wrap">
                 <button
                   type="button"
                   onClick={() => {
                     setManualSubTab("book");
                     if (currentTab === "decks") setCurrentTab("manual");
                   }}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-serif font-bold transition-all cursor-pointer ${
+                  className={`-mb-px flex items-center gap-2 px-3 sm:px-4 py-3 border-b font-display text-base sm:text-lg transition-colors cursor-pointer ${
                     (manualSubTab === "book" && currentTab !== "decks")
-                      ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F0C] shadow-md scale-[1.01]"
-                      : "text-[#A89882] hover:text-[#FFF] hover:bg-[#241C15]"
+                      ? "border-gold-400 text-gold-200"
+                      : "border-transparent text-ivory-500 hover:text-ivory-100"
                   }`}
                 >
                   <BookOpen className="w-4 h-4" />
@@ -1841,21 +1664,21 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setManualSubTab("decks")}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-serif font-bold transition-all cursor-pointer ${
+                  className={`-mb-px flex items-center gap-2 px-3 sm:px-4 py-3 border-b font-display text-base sm:text-lg transition-colors cursor-pointer ${
                     (manualSubTab === "decks" || currentTab === "decks")
-                      ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F0C] shadow-md scale-[1.01]"
-                      : "text-[#A89882] hover:text-[#FFF] hover:bg-[#241C15]"
+                      ? "border-gold-400 text-gold-200"
+                      : "border-transparent text-ivory-500 hover:text-ivory-100"
                   }`}
                 >
                   <Palette className="w-4 h-4" />
                   <span>Bộ Hình 64 Quẻ</span>
-                  <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-full bg-[#120F0C]/40 text-amber-200 border border-amber-900/50">
+                  <span className="text-[11px] font-display text-gold-600">
                     64
                   </span>
                 </button>
               </div>
 
-              <div className="text-[11px] text-[#8C7D6A] pr-3 hidden md:block">
+              <div className="text-[11px] font-serif italic text-ivory-500 pb-3 hidden md:block">
                 {(manualSubTab === "book" && currentTab !== "decks")
                   ? "Đọc toàn văn 9 chương Thuyết Minh & 64 Quẻ Dịch"
                   : "Quản lý hình ảnh 64 lá bài, mặt sau & nhiều bộ bài Tarot"}
@@ -2058,9 +1881,8 @@ export default function App() {
       <footer className="relative z-10 mt-12 bg-[#0B0A08]/90">
         <div className="h-px bg-gradient-to-r from-transparent via-gold-600/50 to-transparent" />
         <div className="max-w-4xl mx-auto px-4 py-12 text-center space-y-6">
-          <div className="flex items-center justify-center gap-3">
-            <span className="royal-seal w-8 h-8 text-[11px] [writing-mode:vertical-rl]">玖貳</span>
-            <span className="font-display text-xl tracking-[0.2em] text-ivory-100">CỬU NHỊ</span>
+          <div className="flex justify-center">
+            <BrandLockup markSize={44} />
           </div>
           <p className="font-display italic text-lg text-ivory-300 max-w-xl mx-auto leading-relaxed">
             "Thiên hành kiện, quân tử dĩ tự cường bất tức. Địa thế khôn, quân tử dĩ hậu đức tải vật."

@@ -127,28 +127,31 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md bg-[#16110C] border border-[#543D24] rounded-3xl p-5 sm:p-7 shadow-[0_20px_60px_rgba(0,0,0,0.9)] overflow-hidden">
-        {/* Glow decoration */}
-        <div className="absolute top-0 right-0 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-orange-600/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="fixed inset-0 z-50 flex justify-center p-3 sm:p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="royal-frame my-auto w-full max-w-md px-5 py-7 sm:px-8 sm:py-9 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.95)]">
+        <span className="royal-corner tl" />
+        <span className="royal-corner tr" />
+        <span className="royal-corner bl" />
+        <span className="royal-corner br" />
 
         {/* Close Button */}
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 text-[#8A7966] hover:text-[#E6D3A3] p-1.5 rounded-xl hover:bg-[#2A1F14] transition-colors cursor-pointer"
+          className="absolute top-3 right-3 text-ivory-500 hover:text-gold-300 p-1.5 rounded-sm transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Header Title */}
-        <div className="text-center space-y-1 mb-5">
-          <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-br from-[#D6B97A] to-[#75511A] flex items-center justify-center text-[#14120F] shadow-lg border border-[#E6D3A3] mb-2 font-serif font-bold text-xl">
-            {mode === "upgrade" ? <Crown className="w-6 h-6 text-amber-950" /> : regStep === "otp" && mode === "register" ? <KeyRound className="w-6 h-6 text-amber-950" /> : "☯"}
-          </div>
+        <div className="text-center mb-6">
+          <span className="royal-seal w-12 h-12 text-sm">
+            {mode === "upgrade" ? <Crown className="w-5 h-5" /> : regStep === "otp" && mode === "register" ? <KeyRound className="w-5 h-5" /> : <span className="[writing-mode:vertical-rl] leading-none">玖貳</span>}
+          </span>
 
-          <h3 className="text-lg sm:text-xl font-serif font-bold text-[#F5EAD4]">
+          <div className="royal-eyebrow mt-5">Cửu Nhị · Phong Thủy Mệnh Lý</div>
+
+          <h3 className="royal-title mt-3 text-2xl sm:text-[1.75rem] tracking-[0.04em]">
             {mode === "login"
               ? "ĐĂNG NHẬP CỬU NHỊ"
               : mode === "register"
@@ -158,7 +161,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               : "NÂNG CẤP HỘI VIÊN THƯỜNG NIÊN"}
           </h3>
 
-          <p className="text-xs text-[#A89882] font-serif">
+          <p className="mt-2 text-[13px] text-ivory-500 font-serif leading-relaxed">
             {mode === "login"
               ? "Đăng nhập để đọc toàn văn Thuyết Minh & trải nghiệm đầy đủ các tính năng"
               : mode === "register"
@@ -171,14 +174,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
         {/* Mode Selector Tabs (Login vs Register) */}
         {mode !== "upgrade" && (
-          <div className="grid grid-cols-2 p-1 rounded-xl bg-[#20170F] border border-[#3E2D1A] mb-4">
+          <div className="grid grid-cols-2 border-b border-gold-800 mb-5">
             <button
               type="button"
               onClick={() => handleModeChange("login")}
-              className={`py-2 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer ${
+              className={`py-2.5 -mb-px border-b-2 text-[11px] uppercase tracking-[0.18em] transition-colors cursor-pointer ${
                 mode === "login"
-                  ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F0C] shadow"
-                  : "text-[#A89882] hover:text-white"
+                  ? "border-gold-400 text-gold-200"
+                  : "border-transparent text-ivory-500 hover:text-gold-300"
               }`}
             >
               Đăng Nhập
@@ -186,10 +189,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             <button
               type="button"
               onClick={() => handleModeChange("register")}
-              className={`py-2 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer ${
+              className={`py-2.5 -mb-px border-b-2 text-[11px] uppercase tracking-[0.18em] transition-colors cursor-pointer ${
                 mode === "register"
-                  ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F0C] shadow"
-                  : "text-[#A89882] hover:text-white"
+                  ? "border-gold-400 text-gold-200"
+                  : "border-transparent text-ivory-500 hover:text-gold-300"
               }`}
             >
               Đăng Ký Thành Viên
@@ -199,26 +202,26 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
         {/* Benefits Box for Members */}
         {regStep !== "otp" && (
-          <div className="bg-[#1C140D] border border-[#442F1B] rounded-2xl p-3.5 mb-4 text-xs font-serif space-y-2">
-            <div className="text-[11px] font-bold text-[#E6D3A3] uppercase tracking-wider flex items-center gap-1.5">
-              <Crown className="w-3.5 h-3.5 text-amber-400" />
+          <div className="border border-gold-800 bg-lacquer-950/50 p-4 mb-5 text-xs font-serif space-y-2.5">
+            <div className="text-[10.5px] font-sans font-medium text-gold-400 uppercase tracking-[0.2em] flex items-center gap-1.5">
+              <Crown className="w-3.5 h-3.5 text-gold-500" />
               <span>ĐẶC QUYỀN THÀNH VIÊN CỬU NHỊ:</span>
             </div>
-            <div className="space-y-1.5 text-[#D1C2AC]">
+            <div className="space-y-1.5 text-ivory-300">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-gold-500 shrink-0" />
                 <span>
                   <strong>Đọc toàn văn Thuyết Minh:</strong> 64 Quẻ Dịch & Tiên Triết Đạo Học Chu Dịch.
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-gold-500 shrink-0" />
                 <span>
                   <strong>Lưu trữ & tra cứu vô hạn:</strong> Toàn bộ lịch sử thỉnh quẻ chiêm đoán.
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-gold-500 shrink-0" />
                 <span>
                   <strong>Đầy đủ 8 phương thức:</strong> Bốc Bài (12 Trận), Mai Hoa, Lục Hào, Cỏ Thi, Xăm Khổng Minh, Lục Nhâm, Kỳ Môn, Thái Ất.
                 </span>
@@ -228,7 +231,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         )}
 
         {errorMsg && (
-          <div className="p-2.5 rounded-xl bg-rose-950/80 border border-rose-600/70 text-rose-200 text-xs font-serif flex items-center gap-2 mb-4">
+          <div className="p-2.5 rounded-sm bg-rose-950/80 border border-rose-600/70 text-rose-200 text-xs font-serif flex items-center gap-2 mb-4">
             <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
             <span>{errorMsg}</span>
           </div>
@@ -237,13 +240,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         {/* Form Body */}
         {mode === "upgrade" ? (
           <div className="space-y-4">
-            <p className="text-xs text-[#D1C2AC] font-serif leading-relaxed">
+            <p className="text-xs text-ivory-300 font-serif leading-relaxed">
               Bạn đang ở tài khoản thường. Kích hoạt ngay gói <strong>Hội Viên Thường Niên (1.000.000 VNĐ / 1 Năm)</strong> để nhận trọn vẹn đặc quyền đọc thuyết minh toàn thư và trải nghiệm trọn bộ 8 phương thức chiêm đoán.
             </p>
             <button
               type="button"
               onClick={handleSubmit}
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F0C] font-serif font-bold text-sm shadow-lg active:scale-95 cursor-pointer transition-all border border-[#E6D3A3]"
+              className="royal-btn w-full"
             >
               Xác Nhận Kích Hoạt Hội Viên VIP ➔
             </button>
@@ -251,21 +254,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         ) : mode === "register" && regStep === "otp" ? (
           /* GIAO DIỆN BƯỚC 2: NHẬP MÃ 6 SỐ TỪ MAIL */
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="p-3.5 rounded-2xl bg-amber-950/40 border border-amber-600/50 text-xs font-serif space-y-2">
+            <div className="p-4 border border-gold-700 bg-lacquer-950/50 text-xs font-serif space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-[#E6D3A3] font-bold flex items-center gap-1.5">
+                <span className="text-gold-300 font-bold flex items-center gap-1.5">
                   <Mail className="w-3.5 h-3.5 text-amber-400" />
                   Mã xác thực 6 số gửi đến:
                 </span>
                 <span className="text-[10px] text-amber-300 font-mono underline">{email}</span>
               </div>
-              <p className="text-[#CDBEAA] leading-relaxed text-[11px]">
+              <p className="text-ivory-300 leading-relaxed text-[11px]">
                 Vui lòng kiểm tra hộp thư đến (hoặc hòm thư Spam/Quảng cáo). Nhập chính xác dãy 6 chữ số bên dưới để kích hoạt tài khoản và chính thức đăng nhập:
               </p>
               {lastGeneratedOtp && (
-                <div className="p-2 rounded-xl bg-[#140E08] border border-amber-500/40 text-center space-y-1">
-                  <span className="text-[10px] text-[#A89882] block">Mã gửi về email của bạn là:</span>
-                  <div className="font-mono font-black text-xl tracking-[0.3em] text-[#E6D3A3]">
+                <div className="p-2 rounded-sm bg-lacquer-900 border border-amber-500/40 text-center space-y-1">
+                  <span className="text-[10px] text-ivory-500 block">Mã gửi về email của bạn là:</span>
+                  <div className="font-mono font-black text-xl tracking-[0.3em] text-gold-300">
                     {lastGeneratedOtp}
                   </div>
                   <button
@@ -280,7 +283,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-serif text-[#CDBEAA] mb-1.5 text-center">
+              <label className="block text-[10.5px] uppercase tracking-[0.18em] text-gold-500 mb-2 text-center">
                 Nhập 6 số xác thực:
               </label>
               <input
@@ -291,7 +294,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 value={otpCode}
                 onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
                 placeholder="• • • • • •"
-                className="w-full bg-[#110D09] border-2 border-amber-500/80 focus:border-[#E6D3A3] focus:shadow-[0_0_15px_rgba(255,226,138,0.3)] rounded-2xl py-3 text-center text-2xl font-mono font-bold tracking-[0.4em] text-[#E6D3A3] placeholder-[#59442C] outline-none"
+                className="w-full bg-lacquer-950 border border-gold-600 focus:border-gold-400 rounded-sm py-3 text-center text-2xl font-mono font-bold tracking-[0.4em] text-gold-300 placeholder:text-gold-700 outline-none transition-colors"
               />
             </div>
 
@@ -299,7 +302,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <button
                 type="button"
                 onClick={() => setRegStep("form")}
-                className="text-[#A89882] hover:text-white cursor-pointer"
+                className="text-ivory-500 hover:text-gold-200 cursor-pointer"
               >
                 ← Quay lại sửa Email
               </button>
@@ -317,10 +320,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             <button
               type="submit"
               disabled={otpCode.length !== 6}
-              className={`w-full py-3 px-4 rounded-xl font-serif font-bold text-xs sm:text-sm shadow-md active:scale-95 cursor-pointer transition-all border border-[#E6D3A3] flex items-center justify-center gap-2 ${
+              className={`w-full ${
                 otpCode.length === 6
-                  ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] hover:from-[#E6C265] text-[#120F0C]"
-                  : "bg-[#2A1F14] text-[#8A7966] border-[#443120] cursor-not-allowed"
+                  ? "royal-btn"
+                  : "royal-btn-ghost opacity-50 !cursor-not-allowed"
               }`}
             >
               <span>XÁC THỰC & CHÍNH THỨC ĐĂNG NHẬP</span>
@@ -332,18 +335,18 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           <form onSubmit={handleSubmit} className="space-y-3.5">
             {mode === "register" && (
               <div>
-                <label className="block text-xs font-serif text-[#CDBEAA] mb-1">
+                <label className="block text-[10.5px] uppercase tracking-[0.18em] text-gold-500 mb-1.5">
                   Họ và tên / Pháp danh:
                 </label>
                 <div className="relative">
-                  <User className="w-4 h-4 absolute left-3 top-3 text-[#7A6956]" />
+                  <User className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gold-700" />
                   <input
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="VD: Nguyễn Văn An"
-                    className="w-full bg-[#110D09] border border-[#3E2D1A] focus:border-[#C9A55A] rounded-xl pl-9 pr-3 py-2 text-xs text-[#F2E5D2] placeholder-[#665442] outline-none font-serif"
+                    className="w-full bg-lacquer-950 border border-gold-800 focus:border-gold-500 rounded-sm pl-9 pr-3 py-2.5 text-sm text-ivory-100 placeholder:text-ivory-500/60 outline-none font-serif transition-colors"
                   />
                 </div>
               </div>
@@ -351,43 +354,43 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="block text-xs font-serif text-[#CDBEAA]">
+                <label className="block text-[10.5px] uppercase tracking-[0.18em] text-gold-500">
                   {mode === "login" ? "Email hoặc Tên đăng nhập:" : "Địa chỉ Email tiếp nhận mã 6 số:"}
                 </label>
               </div>
               <div className="relative">
-                <Mail className="w-4 h-4 absolute left-3 top-3 text-[#7A6956]" />
+                <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gold-700" />
                 <input
                   type={mode === "login" ? "text" : "email"}
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={mode === "login" ? "name@example.com hoặc cuunhi" : "name@example.com"}
-                  className="w-full bg-[#110D09] border border-[#3E2D1A] focus:border-[#C9A55A] rounded-xl pl-9 pr-3 py-2 text-xs text-[#F2E5D2] placeholder-[#665442] outline-none font-serif"
+                  className="w-full bg-lacquer-950 border border-gold-800 focus:border-gold-500 rounded-sm pl-9 pr-3 py-2.5 text-sm text-ivory-100 placeholder:text-ivory-500/60 outline-none font-serif transition-colors"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-serif text-[#CDBEAA] mb-1">
+              <label className="block text-[10.5px] uppercase tracking-[0.18em] text-gold-500 mb-1.5">
                 Mật khẩu:
               </label>
               <div className="relative">
-                <Lock className="w-4 h-4 absolute left-3 top-3 text-[#7A6956]" />
+                <Lock className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gold-700" />
                 <input
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Mật khẩu của bạn (tối thiểu 6 ký tự)"
-                  className="w-full bg-[#110D09] border border-[#3E2D1A] focus:border-[#C9A55A] rounded-xl pl-9 pr-3 py-2 text-xs text-[#F2E5D2] placeholder-[#665442] outline-none font-serif"
+                  className="w-full bg-lacquer-950 border border-gold-800 focus:border-gold-500 rounded-sm pl-9 pr-3 py-2.5 text-sm text-ivory-100 placeholder:text-ivory-500/60 outline-none font-serif transition-colors"
                 />
               </div>
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#C9A55A] to-[#B38728] hover:from-[#E6C265] hover:to-[#C9A55A] text-[#120F0C] font-serif font-bold text-xs sm:text-sm shadow-md active:scale-95 cursor-pointer transition-all border border-[#E6D3A3] mt-2 flex items-center justify-center gap-2"
+              className="royal-btn w-full !mt-5"
             >
               <span>{mode === "login" ? "ĐĂNG NHẬP NGAY" : "TIẾP TỤC ➔ NHẬN MÃ 6 SỐ QUA EMAIL"}</span>
               <ArrowRight className="w-4 h-4" />
@@ -398,28 +401,28 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         {/* ========================================================
             LINK THAM GIA NHÓM ZALO GIAO LƯU HỌC THUẬT & HỖ TRỢ
             ======================================================== */}
-        <div className="mt-4 pt-3.5 border-t border-[#3A2A1A]">
+        <div className="mt-6 pt-5 border-t border-gold-800">
           <a
             href={ZALO_GROUP_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full flex items-center justify-between p-2.5 rounded-2xl bg-gradient-to-r from-emerald-950/70 via-[#182B1C] to-emerald-950/90 border border-emerald-600/60 hover:border-emerald-400 text-emerald-200 hover:text-white transition-all group shadow-sm"
+            className="w-full flex items-center justify-between p-3 border border-gold-800 hover:border-gold-500 bg-lacquer-950/50 transition-colors group"
           >
             <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <MessageSquare className="w-4 h-4 text-emerald-400" />
+              <div className="w-8 h-8 rounded-sm border border-gold-700 flex items-center justify-center shrink-0">
+                <MessageSquare className="w-4 h-4 text-gold-400" />
               </div>
               <div className="text-left min-w-0">
-                <div className="text-xs font-serif font-bold text-emerald-300 flex items-center gap-1.5 truncate">
+                <div className="text-[13px] font-serif text-ivory-100 group-hover:text-gold-200 flex items-center gap-1.5 truncate">
                   <span>Tham Gia Nhóm Zalo Cửu Nhị</span>
-                  <span className="text-[10px] px-1 py-0.2 rounded bg-emerald-900 text-emerald-200">Official</span>
+                  <span className="text-[9.5px] uppercase tracking-[0.14em] text-gold-600">Official</span>
                 </div>
-                <div className="text-[10px] text-[#A8C4B0] truncate">
+                <div className="text-[11px] text-ivory-500 truncate">
                   Giao lưu luận quẻ, chia sẻ kinh nghiệm & giải đáp
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-1 text-[11px] font-serif font-bold text-emerald-300 shrink-0 ml-2">
+            <div className="flex items-center gap-1 text-[10.5px] uppercase tracking-[0.14em] text-gold-500 group-hover:text-gold-300 shrink-0 ml-2">
               <span>Vào Nhóm</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </div>

@@ -404,29 +404,22 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
   return (
     <div
       id="thuyet-minh"
-      className="bg-[#171410] border border-[#3E3324] rounded-3xl p-5 sm:p-7 shadow-2xl relative overflow-hidden transition-all duration-300"
+      className="royal-frame px-5 py-8 sm:px-10 sm:py-10 transition-all duration-300"
     >
-      {/* Decorative Traditional Border Accent & Glow */}
-      <div className="absolute -top-12 -right-12 w-48 h-48 bg-[#C9A55A]/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-[#C9A55A]/5 rounded-full blur-3xl pointer-events-none" />
+      <span className="royal-corner tl" />
+      <span className="royal-corner tr" />
+      <span className="royal-corner bl" />
+      <span className="royal-corner br" />
 
       {/* Main Header / Title Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#33281B]">
-        <div className="flex items-center gap-3.5">
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#D6B97A] via-[#C89B3C] to-[#6A4B1A] flex items-center justify-center text-[#14120E] shadow-[0_0_20px_rgba(212,175,55,0.4)] border border-[#E6D3A3] shrink-0">
-            <BookOpen className="w-6 h-6" />
-          </div>
+      <div className="flex flex-col gap-6 pb-6 border-b border-gold-800">
+        <div className="flex items-start gap-4">
+          <span className="royal-seal w-12 h-12 text-xl shrink-0 mt-1">說</span>
           <div>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] uppercase font-mono tracking-widest px-2 py-0.5 rounded bg-[#2B2114] text-[#C9A55A] border border-[#483823] font-semibold">
-                SÁCH ĐI KÈM BỘ BÀI 64 QUẺ
-              </span>
-              <span className="text-[10px] text-[#A69780] hidden sm:inline-block">
-                • Tranh khắc gỗ Á Đông
-              </span>
-            </div>
-            <h2 className="text-xl sm:text-2xl font-serif font-bold tracking-wide text-[#F5EAD4] mt-0.5">
-              THUYẾT MINH • BÀI TAROT KINH DỊCH
+            <div className="royal-eyebrow before:hidden">Sách đi kèm bộ bài 64 quẻ · 說卦</div>
+            <h2 className="royal-title mt-2 text-3xl sm:text-4xl">
+              Thuyết minh
+              <span className="italic text-gold-300"> bài Tarot Kinh Dịch</span>
             </h2>
           </div>
         </div>
@@ -437,10 +430,10 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
             <button
               type="button"
               onClick={onOpenDecks}
-              className="flex items-center gap-1.5 px-3 py-2 text-xs font-serif font-bold text-[#EAD8B1] hover:text-[#FFF] bg-[#221B14] hover:bg-[#2F241A] border border-[#53412B] hover:border-[#C9A55A] rounded-xl transition-all shadow cursor-pointer active:scale-95"
+              className="royal-btn-ghost !px-3.5 !py-2 !text-[11px]"
               title="Xem và quản lý các bộ ảnh 64 Quẻ bài Tarot"
             >
-              <Palette className="w-3.5 h-3.5 text-[#C9A55A]" />
+              <Palette className="w-3.5 h-3.5 text-gold-500" />
               <span>Bộ Hình 64 Quẻ</span>
             </button>
           )}
@@ -449,7 +442,7 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
             <button
               type="button"
               onClick={onOpenJiazi}
-              className="flex items-center gap-1.5 px-3 py-2 text-xs font-serif font-bold text-[#120F0C] bg-[#C9A55A] hover:bg-[#E5C255] rounded-xl transition-all shadow cursor-pointer active:scale-95"
+              className="royal-btn-ghost !px-3.5 !py-2 !text-[11px]"
               title="Xem Lục Thập Hoa Giáp & Nạp hình"
             >
               <Compass className="w-3.5 h-3.5" />
@@ -460,15 +453,15 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
           <button
             type="button"
             onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-serif font-bold text-[#EAD8B1] hover:text-[#FFF] bg-[#221B14] hover:bg-[#2F241A] border border-[#53412B] hover:border-[#C9A55A] rounded-xl transition-all shadow cursor-pointer active:scale-95"
+            className="royal-btn !px-4 !py-2 !text-[11px]"
             title={isExpanded ? "Thu gọn Thuyết minh" : "Mở rộng Thuyết minh"}
           >
-            <Bookmark className="w-3.5 h-3.5 text-[#C9A55A]" />
+            <Bookmark className="w-3.5 h-3.5" />
             <span>{isExpanded ? "Thu Gọn Thuyết Minh" : "Mở Xem Thuyết Minh"}</span>
             {isExpanded ? (
-              <ChevronUp className="w-4 h-4 text-[#C9A55A]" />
+              <ChevronUp className="w-4 h-4" />
             ) : (
-              <ChevronDown className="w-4 h-4 text-[#C9A55A]" />
+              <ChevronDown className="w-4 h-4" />
             )}
           </button>
         </div>
@@ -476,14 +469,14 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
 
       {/* Collapsed Preview Teaser */}
       {!isExpanded && (
-        <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-[#A89882]">
-          <p className="font-serif italic line-clamp-2">
+        <div className="pt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-ivory-500">
+          <p className="font-display italic text-lg sm:text-xl text-ivory-300 leading-snug">
             “Kinh Dịch không định đoạt số phận. Nó phản chiếu tình thế hiện tại và gợi mở hướng đi — phần còn lại thuộc về người đọc quẻ.”
           </p>
           <button
             type="button"
             onClick={() => setIsExpanded(true)}
-            className="text-[#C9A55A] hover:underline font-semibold flex items-center gap-1 shrink-0 cursor-pointer"
+            className="royal-link shrink-0 cursor-pointer"
           >
             Đọc toàn bộ nội dung sách <ChevronDown className="w-3.5 h-3.5" />
           </button>
@@ -494,28 +487,28 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
       {isExpanded && (
         <div className="mt-5 space-y-6">
           {/* MỤC LỤC CHƯƠNG HỒI SÁCH THUYẾT MINH (9 CHƯƠNG) */}
-          <div className="bg-[#120F0C] border border-[#33281B] rounded-2xl p-3.5 sm:p-4 shadow-lg space-y-3">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#261E14] pb-2.5">
+          <div className="border border-gold-800 bg-lacquer-950/50 p-4 sm:p-5 space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gold-800 pb-3">
               <div className="flex items-center gap-2">
-                <BookOpen className="w-4 h-4 text-[#C9A55A]" />
-                <h3 className="text-xs sm:text-sm font-serif font-bold text-[#F5EAD4] uppercase tracking-wider">
+                <BookOpen className="w-4 h-4 text-gold-500" />
+                <h3 className="text-sm sm:text-base font-display font-semibold text-ivory-100 uppercase tracking-wider">
                   Mục Lục Sách Thuyết Minh ({MANUAL_SECTIONS.length} Chương)
                 </h3>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#261D13] text-[#C9A55A] border border-[#483723]">
+                <span className="px-2 py-0.5 rounded-sm text-[10px] font-mono font-bold bg-lacquer-700 text-gold-500 border border-gold-800">
                   Chương {currentSectionIndex + 1}/{MANUAL_SECTIONS.length}
                 </span>
               </div>
 
               {/* View mode controls */}
               <div className="flex items-center gap-1.5 self-end sm:self-auto">
-                <div className="flex items-center bg-[#18130E] border border-[#2F2316] rounded-lg p-0.5 text-xs font-serif">
+                <div className="flex items-center border border-gold-800 rounded-sm p-0.5 text-xs font-serif">
                   <button
                     type="button"
                     onClick={() => setChapterNavMode("compact")}
                     className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 cursor-pointer ${
                       chapterNavMode === "compact"
-                        ? "bg-[#C9A55A] text-[#120F0C] font-bold shadow"
-                        : "text-[#9E8E79] hover:text-[#FFF]"
+                        ? "bg-gold-500/15 text-gold-200 font-semibold ring-1 ring-inset ring-gold-500/70"
+                        : "text-ivory-500 hover:text-gold-200"
                     }`}
                     title="Chế độ thanh ngang gọn gàng"
                   >
@@ -527,8 +520,8 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                     onClick={() => setChapterNavMode("grid")}
                     className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 cursor-pointer ${
                       chapterNavMode === "grid"
-                        ? "bg-[#C9A55A] text-[#120F0C] font-bold shadow"
-                        : "text-[#9E8E79] hover:text-[#FFF]"
+                        ? "bg-gold-500/15 text-gold-200 font-semibold ring-1 ring-inset ring-gold-500/70"
+                        : "text-ivory-500 hover:text-gold-200"
                     }`}
                     title="Chế độ lưới chi tiết 9 chương"
                   >
@@ -540,7 +533,7 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowChaptersMenu(!showChaptersMenu)}
-                  className="px-2 py-1 rounded-lg text-xs text-[#C89B3C] hover:text-[#FFF] hover:bg-[#1E1710] font-serif flex items-center gap-1 cursor-pointer"
+                  className="px-2 py-1 rounded-sm text-xs text-gold-500 hover:text-gold-200 hover:bg-lacquer-800 font-serif flex items-center gap-1 cursor-pointer"
                   title={showChaptersMenu ? "Thu gọn menu chương" : "Mở rộng menu chương"}
                 >
                   {showChaptersMenu ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
@@ -562,14 +555,14 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                           key={sec.id}
                           type="button"
                           onClick={() => handleNavigateSection(sec.id)}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-serif font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 shrink-0 border ${
+                          className={`px-3 py-1.5 rounded-sm text-xs font-serif font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 shrink-0 border ${
                             isActive
-                              ? "bg-[#C9A55A] text-[#120F0C] border-[#C9A55A] shadow-md shadow-[#C9A55A]/20"
-                              : "bg-[#18130E] text-[#BFAFA0] border-[#2E2317] hover:border-[#C9A55A]/60 hover:text-[#FFF] hover:bg-[#221A12]"
+                              ? "bg-gold-500/10 text-gold-200 border-gold-500"
+                              : "bg-lacquer-800 text-ivory-300 border-lacquer-700 hover:border-gold-500/60 hover:text-gold-200 hover:bg-lacquer-800"
                           }`}
                         >
-                          <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-mono ${
-                            isActive ? "bg-[#120F0C] text-[#C9A55A]" : "bg-[#251D14] text-[#E5C378]"
+                          <span className={`w-4 h-4 rounded-sm flex items-center justify-center text-[10px] font-mono ${
+                            isActive ? "bg-gold-500 text-lacquer-950" : "border border-gold-800 text-gold-500"
                           }`}>
                             {idx + 1}
                           </span>
@@ -588,29 +581,29 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                           key={sec.id}
                           type="button"
                           onClick={() => handleNavigateSection(sec.id)}
-                          className={`flex items-start gap-2.5 p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                          className={`flex items-start gap-2.5 p-3 rounded-sm border text-left transition-all cursor-pointer ${
                             isActive
-                              ? "bg-[#251D14] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#C9A55A]/50"
-                              : "bg-[#18130E] border-[#2D2216] text-[#A69780] hover:text-[#FFF] hover:bg-[#201912] hover:border-[#4D3A24]"
+                              ? "bg-gold-500/[0.06] border-gold-500"
+                              : "bg-lacquer-800 border-lacquer-700 text-ivory-500 hover:text-gold-200 hover:bg-lacquer-800 hover:border-gold-800"
                           }`}
                         >
-                          <div className={`p-2 rounded-lg shrink-0 mt-0.5 ${
-                            isActive ? "bg-[#C9A55A] text-[#120F0C]" : "bg-[#241C14] text-[#C9A55A]"
+                          <div className={`p-2 rounded-sm shrink-0 mt-0.5 ${
+                            isActive ? "border border-gold-500 text-gold-300" : "border border-gold-800 text-gold-600"
                           }`}>
                             {getSectionIcon(sec.icon)}
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between gap-1 mb-0.5">
                               <span className={`text-xs font-serif font-bold truncate ${
-                                isActive ? "text-[#F5EAD4]" : "text-[#DCD1BD]"
+                                isActive ? "text-ivory-100" : "text-ivory-300"
                               }`}>
                                 {sec.title}
                               </span>
                               {isActive && (
-                                <span className="w-2 h-2 rounded-full bg-[#C9A55A] shrink-0" />
+                                <span className="w-2 h-2 rotate-45 bg-gold-500 shrink-0" />
                               )}
                             </div>
-                            <p className="text-[11px] text-[#8E7E6B] line-clamp-1 leading-snug">
+                            <p className="text-[11px] text-ivory-500 line-clamp-1 leading-snug">
                               {sec.summary}
                             </p>
                           </div>
@@ -624,15 +617,16 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
           </div>
 
           {/* Active Chapter Container */}
-          <div className="bg-[#120F0C] border border-[#2E2418] rounded-2xl p-5 sm:p-7 space-y-6">
+          <div className="border border-gold-800 bg-lacquer-950/40 p-5 sm:p-8 space-y-6">
             {/* Chapter Header Banner with Fast Flipping Buttons & Audio Speak */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#2C2114] pb-4">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 border-b border-gold-800 pb-5">
               <div>
-                <div className="flex items-center gap-2 text-xs font-serif text-[#C9A55A]">
+                <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-gold-500">
                   {getSectionIcon(activeSection.icon)}
-                  <span className="font-bold uppercase tracking-wider">{activeSection.title}</span>
+                  <span>Chương {currentSectionIndex + 1} / {MANUAL_SECTIONS.length}</span>
                 </div>
-                <p className="text-xs text-[#998973] mt-1 font-serif italic">
+                <h3 className="royal-title mt-2 text-2xl sm:text-3xl">{activeSection.title}</h3>
+                <p className="text-sm text-ivory-500 mt-1.5 font-serif italic">
                   {activeSection.summary}
                 </p>
               </div>
@@ -643,10 +637,10 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                 <button
                   type="button"
                   onClick={() => handleToggleSpeakChapter(activeSection)}
-                  className={`px-2.5 py-1.5 rounded-lg text-xs font-serif border flex items-center gap-1.5 transition-all cursor-pointer shadow-xs ${
+                  className={`px-2.5 py-1.5 rounded-sm text-xs font-serif border flex items-center gap-1.5 transition-all cursor-pointer shadow-xs ${
                     isSpeaking && speechTitle === activeSection.title
                       ? "bg-[#3D1414] border-rose-600 text-rose-300 animate-pulse"
-                      : "bg-[#1C1610] hover:bg-[#2A1F16] text-[#E6D3A3] border-[#483520] hover:border-[#C9A55A]"
+                      : "bg-lacquer-800 hover:bg-lacquer-700 text-gold-300 border-gold-800 hover:border-gold-500"
                   }`}
                   title={isSpeaking && speechTitle === activeSection.title ? "Dừng đọc chương" : "Nghe thuyết minh giọng đọc chương này"}
                 >
@@ -657,7 +651,7 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                     </>
                   ) : (
                     <>
-                      <Volume2 className="w-3.5 h-3.5 text-[#C9A55A]" />
+                      <Volume2 className="w-3.5 h-3.5 text-gold-500" />
                       <span className="hidden sm:inline">Nghe Đọc Chương</span>
                     </>
                   )}
@@ -667,18 +661,18 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                   type="button"
                   onClick={handlePrevSection}
                   disabled={!prevSection}
-                  className={`px-2.5 py-1.5 rounded-lg text-xs font-serif border flex items-center gap-1.5 transition-all ${
+                  className={`px-2.5 py-1.5 rounded-sm text-xs font-serif border flex items-center gap-1.5 transition-all ${
                     prevSection
-                      ? "bg-[#1C1610] text-[#EAD8B1] hover:text-[#FFF] border-[#3B2D1E] hover:border-[#C9A55A] cursor-pointer"
-                      : "opacity-40 bg-[#14100C] text-[#6B5E4F] border-transparent cursor-not-allowed"
+                      ? "bg-lacquer-800 text-gold-300 hover:text-gold-200 border-gold-800 hover:border-gold-500 cursor-pointer"
+                      : "opacity-40 bg-lacquer-900 text-gold-700 border-transparent cursor-not-allowed"
                   }`}
                   title={prevSection ? `Chương trước: ${prevSection.title}` : undefined}
                 >
-                  <ArrowLeft className="w-3.5 h-3.5 text-[#C9A55A]" />
+                  <ArrowLeft className="w-3.5 h-3.5 text-gold-500" />
                   <span className="hidden md:inline">Chương trước</span>
                 </button>
 
-                <div className="text-[11px] font-mono text-[#C9A55A] font-bold px-2 py-1 bg-[#1A140F] border border-[#3A2C1B] rounded-lg">
+                <div className="text-[11px] font-mono text-gold-500 font-bold px-2 py-1 bg-lacquer-800 border border-gold-800 rounded-sm">
                   {currentSectionIndex + 1} / {MANUAL_SECTIONS.length}
                 </div>
 
@@ -686,34 +680,34 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                   type="button"
                   onClick={handleNextSection}
                   disabled={!nextSection}
-                  className={`px-2.5 py-1.5 rounded-lg text-xs font-serif border flex items-center gap-1.5 transition-all ${
+                  className={`px-2.5 py-1.5 rounded-sm text-xs font-serif border flex items-center gap-1.5 transition-all ${
                     nextSection
-                      ? "bg-[#1C1610] text-[#EAD8B1] hover:text-[#FFF] border-[#3B2D1E] hover:border-[#C9A55A] cursor-pointer"
-                      : "opacity-40 bg-[#14100C] text-[#6B5E4F] border-transparent cursor-not-allowed"
+                      ? "bg-lacquer-800 text-gold-300 hover:text-gold-200 border-gold-800 hover:border-gold-500 cursor-pointer"
+                      : "opacity-40 bg-lacquer-900 text-gold-700 border-transparent cursor-not-allowed"
                   }`}
                   title={nextSection ? `Chương tiếp: ${nextSection.title}` : undefined}
                 >
                   <span className="hidden md:inline">Chương tiếp</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-[#C9A55A]" />
+                  <ArrowRight className="w-3.5 h-3.5 text-gold-500" />
                 </button>
               </div>
             </div>
 
             {/* FLOATING / STICKY VOICE NARRATION AUDIO BAR */}
             {isSpeaking && (
-              <div className="bg-gradient-to-r from-[#2B1B10] via-[#3D2513] to-[#22150C] border-2 border-[#C9A55A] rounded-xl p-3 sm:p-4 shadow-2xl flex flex-wrap items-center justify-between gap-3 text-xs animate-in fade-in duration-200">
+              <div className="bg-lacquer-950/70 border border-gold-700 border-l-2 border-l-gold-500 rounded-sm p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3 text-xs animate-in fade-in duration-200">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-[#C9A55A] text-[#120F0C] flex items-center justify-center font-bold shadow animate-pulse">
+                  <div className="w-8 h-8 rounded-sm bg-gold-500 text-lacquer-900 flex items-center justify-center font-bold shadow animate-pulse">
                     <Volume2 className="w-4 h-4" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-mono uppercase tracking-wider text-[#C9A55A] font-bold">
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-gold-500 font-bold">
                         Đang Thuyết Minh Giọng Đọc
                       </span>
                       <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
                     </div>
-                    <span className="text-sm font-serif font-bold text-[#FFF] line-clamp-1">
+                    <span className="text-sm font-serif font-bold text-ivory-100 line-clamp-1">
                       {speechTitle}
                     </span>
                   </div>
@@ -723,16 +717,16 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                   <button
                     type="button"
                     onClick={handlePauseResumeSpeech}
-                    className="px-3 py-1.5 rounded-lg bg-[#18110A] hover:bg-[#251A10] border border-[#523B22] text-[#F5EAD4] font-serif flex items-center gap-1.5 cursor-pointer shadow-xs"
+                    className="px-3 py-1.5 rounded-sm bg-lacquer-900 hover:bg-lacquer-800 border border-gold-800 text-ivory-100 font-serif flex items-center gap-1.5 cursor-pointer shadow-xs"
                   >
-                    {isPaused ? <Play className="w-3.5 h-3.5 text-emerald-400" /> : <Pause className="w-3.5 h-3.5 text-[#E6D3A3]" />}
+                    {isPaused ? <Play className="w-3.5 h-3.5 text-emerald-400" /> : <Pause className="w-3.5 h-3.5 text-gold-300" />}
                     <span>{isPaused ? "Tiếp Tục" : "Tạm Dừng"}</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={handleStopSpeech}
-                    className="px-3 py-1.5 rounded-lg bg-[#3A1414] hover:bg-[#4E1B1B] border border-rose-700/80 text-rose-200 font-serif font-bold flex items-center gap-1.5 cursor-pointer shadow-xs"
+                    className="px-3 py-1.5 rounded-sm bg-[#3A1414] hover:bg-[#4E1B1B] border border-rose-700/80 text-rose-200 font-serif font-bold flex items-center gap-1.5 cursor-pointer shadow-xs"
                   >
                     <Square className="w-3 h-3 text-rose-400" />
                     <span>Dừng Đọc</span>
@@ -755,18 +749,18 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
             {activeSection.id === "eight_trigrams" && (
               <div className="space-y-6">
                 {/* Chapter 3 Banner */}
-                <div className="bg-[#17120D] border border-[#332517] rounded-2xl p-5 sm:p-6 space-y-3">
-                  <div className="flex items-center gap-2 text-xs font-serif font-bold text-[#C9A55A] uppercase tracking-wider">
+                <div className="bg-lacquer-900 border border-lacquer-700 rounded-md p-5 sm:p-6 space-y-3">
+                  <div className="flex items-center gap-2 text-xs font-serif font-bold text-gold-500 uppercase tracking-wider">
                     <Layers className="w-4 h-4" />
                     <span>Căn Bản Dịch Học</span>
                   </div>
-                  <h3 className="text-base sm:text-xl font-serif font-bold text-[#F4E8D3]">
+                  <h3 className="text-lg sm:text-2xl font-display font-semibold text-ivory-100">
                     Tiên Thiên Bát Quái Đồ & Ý Tượng Tự Nhiên
                   </h3>
-                  <p className="text-xs sm:text-sm text-[#CDBFA7] font-serif leading-relaxed">
-                    64 quẻ trong Kinh Dịch được tạo thành từ việc xếp chồng Bát quái (8 đơn quái) lên nhau. Vị đế vương thời cổ đại là <strong className="text-[#F5EAD4]">Phục Hy</strong>, qua việc ngẩng lên quan sát thiên văn, cúi xuống khảo sát địa lý và mô phỏng vạn vật, đã vẽ nên <em>“Tiên thiên Bát quái đồ”</em>.
+                  <p className="text-xs sm:text-sm text-ivory-300 font-serif leading-relaxed">
+                    64 quẻ trong Kinh Dịch được tạo thành từ việc xếp chồng Bát quái (8 đơn quái) lên nhau. Vị đế vương thời cổ đại là <strong className="text-ivory-100">Phục Hy</strong>, qua việc ngẩng lên quan sát thiên văn, cúi xuống khảo sát địa lý và mô phỏng vạn vật, đã vẽ nên <em>“Tiên thiên Bát quái đồ”</em>.
                   </p>
-                  <p className="text-xs sm:text-sm text-[#CDBFA7] font-serif leading-relaxed">
+                  <p className="text-xs sm:text-sm text-ivory-300 font-serif leading-relaxed">
                     Nắm vững các đặc tính Bát quái (Lục thân, Bộ phận cơ thể, Phương vị, Ngũ hành, Tượng quẻ) là điều kiện cốt lõi để thấu suốt bản chất từng lá bài Tarot Kinh Dịch.
                   </p>
                 </div>
@@ -774,10 +768,10 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                 {/* Interactive 8 Trigram Browser */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-serif font-bold text-[#F5EAD4] flex items-center gap-2">
-                      <span className="text-[#C9A55A]">☯</span> Bát Đơn Quái Tương Tác: Khảo Sát Lục Thân, Cơ Thể, Phương Vị & Ngũ Hành
+                    <h4 className="text-sm font-serif font-bold text-ivory-100 flex items-center gap-2">
+                      <span className="text-gold-500">☯</span> Bát Đơn Quái Tương Tác: Khảo Sát Lục Thân, Cơ Thể, Phương Vị & Ngũ Hành
                     </h4>
-                    <span className="text-[11px] font-mono text-[#A69780]">8 Đơn Quái</span>
+                    <span className="text-[11px] font-mono text-ivory-500">8 Đơn Quái</span>
                   </div>
 
                   {/* 8 Trigram Selectors */}
@@ -789,79 +783,79 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                           key={tri.id}
                           type="button"
                           onClick={() => setSelectedTrigram(tri)}
-                          className={`flex flex-col items-center justify-center p-2.5 rounded-xl border transition-all cursor-pointer ${
+                          className={`flex flex-col items-center justify-center p-2.5 rounded-sm border transition-all cursor-pointer ${
                             isSelected
-                              ? "bg-[#2A2016] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.4)] scale-105"
-                              : "bg-[#18130E] border-[#362A1B] text-[#9E8E79] hover:border-[#8A7147] hover:text-[#FFF]"
+                              ? "bg-lacquer-700 border-gold-500 scale-105"
+                              : "bg-lacquer-800 border-gold-800 text-ivory-500 hover:border-gold-600 hover:text-gold-200"
                           }`}
                         >
-                          <span className="text-2xl leading-none font-mono text-[#C9A55A] mb-1">
+                          <span className="text-2xl leading-none font-mono text-gold-500 mb-1">
                             {tri.symbol}
                           </span>
-                          <span className="text-xs font-serif font-bold text-[#F0E3CB]">
+                          <span className="text-xs font-serif font-bold text-ivory-100">
                             {tri.name} ({tri.hanzi})
                           </span>
-                          <span className="text-[9px] font-mono text-[#99876E]">{tri.nature}</span>
+                          <span className="text-[9px] font-mono text-ivory-500">{tri.nature}</span>
                         </button>
                       );
                     })}
                   </div>
 
                   {/* Detailed Display of Selected Trigram */}
-                  <div className="bg-[#1A140E] border border-[#3E301F] rounded-2xl p-5 grid grid-cols-1 md:grid-cols-3 gap-5 items-center">
-                    <div className="flex flex-col items-center text-center p-4 bg-[#14100C] rounded-xl border border-[#2D2115]">
-                      <span className="text-4xl text-[#C9A55A] font-mono mb-2">
+                  <div className="bg-lacquer-800 border border-gold-800 rounded-md p-5 grid grid-cols-1 md:grid-cols-3 gap-5 items-center">
+                    <div className="flex flex-col items-center text-center p-4 bg-lacquer-900 rounded-sm border border-lacquer-700">
+                      <span className="text-4xl text-gold-500 font-mono mb-2">
                         {selectedTrigram.symbol}
                       </span>
-                      <h5 className="text-lg font-serif font-bold text-[#F5EAD4]">
+                      <h5 className="text-lg font-serif font-bold text-ivory-100">
                         Quẻ {selectedTrigram.name} • {selectedTrigram.hanzi}
                       </h5>
-                      <span className="text-xs text-[#C9A55A] font-mono mt-0.5">
+                      <span className="text-xs text-gold-500 font-mono mt-0.5">
                         Lấy tượng: {selectedTrigram.nature}
                       </span>
-                      <span className="text-[11px] text-[#8C7A63] font-serif italic mt-1">
+                      <span className="text-[11px] text-ivory-500 font-serif italic mt-1">
                         {selectedTrigram.lines}
                       </span>
-                      <div className="mt-3 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#261D13] text-[#E0B861] border border-[#483723]">
+                      <div className="mt-3 px-2.5 py-0.5 rounded-sm text-[10px] font-mono font-bold bg-lacquer-700 text-gold-400 border border-gold-800">
                         {selectedTrigram.order}
                       </div>
                     </div>
 
                     <div className="md:col-span-2 space-y-3">
-                      <p className="text-xs sm:text-sm text-[#D8C7AA] font-serif leading-relaxed italic border-l-2 border-[#C9A55A] pl-3">
+                      <p className="text-xs sm:text-sm text-ivory-300 font-serif leading-relaxed italic border-l-2 border-gold-500 pl-3">
                         “{selectedTrigram.attribute}”
                       </p>
 
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2">
-                        <div className="bg-[#120F0C] border border-[#2B2014] p-2.5 rounded-xl">
-                          <span className="text-[10px] text-[#8C7A63] uppercase font-mono block">
+                        <div className="bg-lacquer-900 border border-lacquer-700 p-2.5 rounded-sm">
+                          <span className="text-[10px] text-ivory-500 uppercase font-mono block">
                             LỤC THÂN
                           </span>
-                          <span className="text-xs font-serif font-bold text-[#F0E3CC]">
+                          <span className="text-xs font-serif font-bold text-ivory-100">
                             {selectedTrigram.familyRole}
                           </span>
                         </div>
 
-                        <div className="bg-[#120F0C] border border-[#2B2014] p-2.5 rounded-xl">
-                          <span className="text-[10px] text-[#8C7A63] uppercase font-mono block">
+                        <div className="bg-lacquer-900 border border-lacquer-700 p-2.5 rounded-sm">
+                          <span className="text-[10px] text-ivory-500 uppercase font-mono block">
                             NGŨ HÀNH
                           </span>
-                          <span className="text-xs font-serif font-bold text-[#C9A55A]">
+                          <span className="text-xs font-serif font-bold text-gold-500">
                             Hành {selectedTrigram.element}
                           </span>
                         </div>
 
-                        <div className="bg-[#120F0C] border border-[#2B2014] p-2.5 rounded-xl">
-                          <span className="text-[10px] text-[#8C7A63] uppercase font-mono block">
+                        <div className="bg-lacquer-900 border border-lacquer-700 p-2.5 rounded-sm">
+                          <span className="text-[10px] text-ivory-500 uppercase font-mono block">
                             PHƯƠNG VỊ
                           </span>
-                          <span className="text-xs font-serif font-bold text-[#F0E3CC]">
+                          <span className="text-xs font-serif font-bold text-ivory-100">
                             Hướng {selectedTrigram.direction}
                           </span>
                         </div>
 
-                        <div className="bg-[#120F0C] border border-[#2B2014] p-2.5 rounded-xl">
-                          <span className="text-[10px] text-[#8C7A63] uppercase font-mono block">
+                        <div className="bg-lacquer-900 border border-lacquer-700 p-2.5 rounded-sm">
+                          <span className="text-[10px] text-ivory-500 uppercase font-mono block">
                             BỘ PHẬN CƠ THỂ
                           </span>
                           <span className="text-xs font-serif font-bold text-[#E89C7E]">
@@ -926,26 +920,26 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
             {/* SPECIAL INTERACTIVE MODULE: CHAPTER 7 - BẢNG TRA MA TRẬN 64 QUẺ */}
             {activeSection.id === "lookup_matrix" && (
               <div className="space-y-4">
-                <div className="bg-[#17120D] border border-[#332517] rounded-2xl p-4 sm:p-5 space-y-2">
-                  <div className="flex items-center gap-2 text-xs font-serif font-bold text-[#C9A55A] uppercase tracking-wider">
+                <div className="bg-lacquer-900 border border-lacquer-700 rounded-md p-4 sm:p-5 space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-serif font-bold text-gold-500 uppercase tracking-wider">
                     <Hash className="w-4 h-4" />
                     <span>Ma Trận 8 Cung Bát Quái 8x8</span>
                   </div>
-                  <h3 className="text-base sm:text-lg font-serif font-bold text-[#F4E8D3]">
+                  <h3 className="text-lg sm:text-xl font-display font-semibold text-ivory-100">
                     Bảng Tra Cứu Phối Quái 64 Quẻ Kinh Dịch
                   </h3>
-                  <p className="text-xs sm:text-sm text-[#CDBFA7] font-serif leading-relaxed">
+                  <p className="text-xs sm:text-sm text-ivory-300 font-serif leading-relaxed">
                     Tra cứu số quẻ tương ứng bằng cách phối hợp: Hàng ngang là quái <strong>NỘI</strong> (quẻ ở dưới), Cột dọc là quái <strong>NGOẠI</strong> (quẻ ở trên). Nhấp vào bất kỳ ô nào để xem toàn văn trang Thuyết Minh của quẻ đó!
                   </p>
                 </div>
 
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <div className="text-xs text-[#C8B89E] font-serif">
-                    <span className="font-bold text-[#C9A55A]">Hướng dẫn:</span> Hàng ngang là quái
+                  <div className="text-xs text-ivory-300 font-serif">
+                    <span className="font-bold text-gold-500">Hướng dẫn:</span> Hàng ngang là quái
                     NỘI (quẻ dưới), Cột dọc là quái NGOẠI (quẻ trên). Nhấp vào bất kỳ ô nào để tra cứu quẻ!
                   </div>
                   {highlightedHex && (
-                    <div className="text-xs font-serif text-[#C9A55A] flex items-center gap-1.5 font-bold">
+                    <div className="text-xs font-serif text-gold-500 flex items-center gap-1.5 font-bold">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                       <span>
                         Quẻ #{highlightedHex}: {HEXAGRAMS.find((h) => h.number === highlightedHex)?.name}
@@ -954,20 +948,20 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                   )}
                 </div>
 
-                <div className="overflow-x-auto border border-[#3A2D1D] rounded-2xl bg-[#14100C]">
+                <div className="overflow-x-auto border border-gold-800 rounded-md bg-lacquer-900">
                   <table className="w-full text-center text-xs font-serif border-collapse">
                     <thead>
-                      <tr className="bg-[#221A12] border-b border-[#3A2D1D] text-[#C9A55A]">
-                        <th className="p-2 border-r border-[#3A2D1D] font-mono text-[10px]">
+                      <tr className="bg-lacquer-800 border-b border-gold-800 text-gold-500">
+                        <th className="p-2 border-r border-gold-800 font-mono text-[10px]">
                           Nội \ Ngoại
                         </th>
-                        <th className="p-2 border-r border-[#3A2D1D]">Càn☰</th>
-                        <th className="p-2 border-r border-[#3A2D1D]">Đoài☱</th>
-                        <th className="p-2 border-r border-[#3A2D1D]">Ly☲</th>
-                        <th className="p-2 border-r border-[#3A2D1D]">Chấn☳</th>
-                        <th className="p-2 border-r border-[#3A2D1D]">Tốn☴</th>
-                        <th className="p-2 border-r border-[#3A2D1D]">Khảm☵</th>
-                        <th className="p-2 border-r border-[#3A2D1D]">Cấn☶</th>
+                        <th className="p-2 border-r border-gold-800">Càn☰</th>
+                        <th className="p-2 border-r border-gold-800">Đoài☱</th>
+                        <th className="p-2 border-r border-gold-800">Ly☲</th>
+                        <th className="p-2 border-r border-gold-800">Chấn☳</th>
+                        <th className="p-2 border-r border-gold-800">Tốn☴</th>
+                        <th className="p-2 border-r border-gold-800">Khảm☵</th>
+                        <th className="p-2 border-r border-gold-800">Cấn☶</th>
                         <th className="p-2">Khôn☷</th>
                       </tr>
                     </thead>
@@ -975,9 +969,9 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                       {HEXAGRAM_LOOKUP_MATRIX.map((row, rIdx) => (
                         <tr
                           key={rIdx}
-                          className="border-b border-[#261E14] hover:bg-[#1E1710] transition-colors"
+                          className="border-b border-gold-800 hover:bg-lacquer-800 transition-colors"
                         >
-                          <td className="p-2 bg-[#1C1610] font-bold text-[#E5D7BF] border-r border-[#3A2D1D] whitespace-nowrap">
+                          <td className="p-2 bg-lacquer-800 font-bold text-ivory-300 border-r border-gold-800 whitespace-nowrap">
                             {row.inner.name}
                           </td>
                           {row.outers.map((hexNum, cIdx) => {
@@ -993,10 +987,10 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                                   onSelectHexagram?.(hexNum);
                                   scrollToCard();
                                 }}
-                                className={`p-2 border-r border-[#261E14] last:border-r-0 cursor-pointer transition-all ${
+                                className={`p-2 border-r border-lacquer-700 last:border-r-0 cursor-pointer transition-all ${
                                   isSelected
-                                    ? "bg-[#C9A55A] text-[#14120E] font-bold shadow-inner"
-                                    : "text-[#D2C3AA] hover:bg-[#342718] hover:text-[#FFF]"
+                                    ? "bg-gold-500/15 text-gold-200 font-semibold ring-1 ring-inset ring-gold-500/70"
+                                    : "text-ivory-300 hover:bg-gold-800 hover:text-gold-200"
                                 }`}
                                 title={`${hexNum}. ${hex?.name || ""}`}
                               >
@@ -1019,21 +1013,21 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
 
             {/* SPECIAL INTERACTIVE MODULE: CẨM NANG 64 QUẺ CHUẨN SÁCH - PHƠI ĐẦY ĐỦ TOÀN BỘ 64 QUẺ */}
             {activeSection.id === "hexagram_interpretations" && (
-              <div className="mt-6 pt-6 border-t border-[#33271A] space-y-5">
+              <div className="mt-6 pt-6 border-t border-gold-800 space-y-5">
                 {/* Search & Quick Filter Bar */}
-                <div className="bg-[#1A140E] p-4 rounded-2xl border border-[#3A2D1D] space-y-3.5">
+                <div className="bg-lacquer-950/50 p-4 rounded-sm border border-gold-800 space-y-3.5">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div className="flex items-center gap-2">
-                      <BookOpen className="w-4 h-4 text-[#C9A55A]" />
-                      <span className="text-xs sm:text-sm font-serif font-bold text-[#F5EAD4]">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <BookOpen className="w-4 h-4 text-gold-500" />
+                      <span className="text-xs sm:text-sm font-serif font-bold text-ivory-100">
                         Mục Lục 64 Quẻ Thuyết Minh (Đầy Đủ Cả Bộ)
                       </span>
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#2C2114] text-[#C9A55A] border border-[#483723]">
+                      <span className="px-2 py-0.5 rounded-sm text-[10px] font-mono font-bold bg-lacquer-700 text-gold-500 border border-gold-800">
                         {filteredBookHexagrams.length}/64 quẻ
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2 flex-1 max-w-lg justify-end">
+                    <div className="flex flex-wrap items-center gap-2 flex-1 sm:max-w-lg justify-start sm:justify-end">
                       <button
                         type="button"
                         onClick={() => {
@@ -1041,34 +1035,34 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                           const el = document.getElementById("thuyet-minh");
                           if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
                         }}
-                        className="px-3 py-1.5 rounded-xl bg-[#241A12] hover:bg-[#C9A55A] text-[#C9A55A] hover:text-[#14100C] border border-[#483623] hover:border-[#C9A55A] text-xs font-serif font-bold transition-all flex items-center gap-1.5 shrink-0 shadow-sm cursor-pointer"
+                        className="px-3 py-1.5 rounded-sm bg-lacquer-700 hover:bg-gold-500 text-gold-500 hover:text-lacquer-900 border border-gold-800 hover:border-gold-500 text-xs font-serif font-bold transition-all flex items-center gap-1.5 shrink-0 shadow-sm cursor-pointer"
                         title="Đọc thiên sử thi toàn bộ 64 câu chuyện Kinh Dịch"
                       >
                         <Scroll className="w-3.5 h-3.5" />
-                        <span>📖 Đọc Câu Chuyện Kinh Dịch</span>
+                        <span>Đọc Câu Chuyện Kinh Dịch</span>
                       </button>
 
                       {/* Search input */}
                       <div className="relative flex-1 min-w-[180px]">
-                        <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#8C7A65]" />
+                        <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-ivory-500" />
                         <input
                           type="text"
                           value={bookHexSearch}
                           onChange={(e) => setBookHexSearch(e.target.value)}
                           placeholder="Tìm số (1-64), tên quẻ, chữ đỏ..."
-                          className="w-full bg-[#120E0A] border border-[#3D3021] text-xs text-[#EAD8B1] rounded-xl pl-8 pr-3 py-2 focus:outline-none focus:border-[#C89B3C] placeholder-[#6E5E4C]"
+                          className="w-full bg-lacquer-900 border border-gold-800 text-xs text-gold-300 rounded-sm pl-8 pr-3 py-2 focus:outline-none focus:border-gold-500 placeholder-gold-700"
                         />
                       </div>
                     </div>
                   </div>
 
                   {/* Filter Categories: Thượng/Hạ Kinh & BÁT CUNG (8 CUNG) */}
-                  <div className="space-y-2.5 pt-2 border-t border-[#2A2016]">
+                  <div className="space-y-2.5 pt-2 border-t border-lacquer-700">
                     {/* Hàng 1: Tổng Quát (Tất cả, Thượng Kinh, Hạ Kinh) + Chế độ lọc Cung */}
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="text-[11px] text-[#A69780] font-serif flex items-center gap-1 mr-1">
-                          <ListFilter className="w-3 h-3 text-[#C9A55A]" /> Phân loại:
+                        <span className="text-[11px] text-ivory-500 font-serif flex items-center gap-1 mr-1">
+                          <ListFilter className="w-3 h-3 text-gold-500" /> Phân loại:
                         </span>
                         {[
                           { id: "all", label: "Tất cả (64 Quẻ)" },
@@ -1079,10 +1073,10 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                             key={btn.id}
                             type="button"
                             onClick={() => setRangeFilter(btn.id as HexRangeFilter)}
-                            className={`px-2.5 py-1 rounded-lg text-[11px] font-serif transition-all cursor-pointer ${
+                            className={`px-2.5 py-1 rounded-sm text-[11px] font-serif transition-all cursor-pointer ${
                               rangeFilter === btn.id
-                                ? "bg-[#C9A55A] text-[#14120E] font-bold shadow"
-                                : "bg-[#14100D] text-[#9E8E79] hover:text-[#FFF] hover:bg-[#221A12] border border-[#2D2115]"
+                                ? "bg-gold-500/15 text-gold-200 font-semibold ring-1 ring-inset ring-gold-500/70"
+                                : "bg-lacquer-900 text-ivory-500 hover:text-gold-200 hover:bg-lacquer-800 border border-lacquer-700"
                             }`}
                           >
                             {btn.label}
@@ -1092,15 +1086,15 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
 
                       {/* Chế độ tra cứu Cung */}
                       {rangeFilter !== "all" && rangeFilter !== "upper" && rangeFilter !== "lower" && (
-                        <div className="flex items-center gap-1 text-[10px] bg-[#14100C] border border-[#332617] rounded-lg p-0.5">
-                          <span className="text-[#8C7A65] font-serif px-1.5">Cách lọc:</span>
+                        <div className="flex items-center gap-1 text-[10px] bg-lacquer-900 border border-lacquer-700 rounded-sm p-0.5">
+                          <span className="text-ivory-500 font-serif px-1.5">Cách lọc:</span>
                           <button
                             type="button"
                             onClick={() => setCungMatchMode("contains")}
                             className={`px-2 py-0.5 rounded text-[10px] font-serif transition-all cursor-pointer ${
                               cungMatchMode === "contains"
-                                ? "bg-[#C89B3C] text-[#120F0C] font-bold shadow-xs"
-                                : "text-[#9E8E79] hover:text-[#FFF]"
+                                ? "bg-gold-500/15 text-gold-200 font-semibold ring-1 ring-inset ring-gold-500/70"
+                                : "text-ivory-500 hover:text-gold-200"
                             }`}
                             title="Quẻ có Ngoại quái hoặc Nội quái thuộc cung này"
                           >
@@ -1111,8 +1105,8 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                             onClick={() => setCungMatchMode("palace")}
                             className={`px-2 py-0.5 rounded text-[10px] font-serif transition-all cursor-pointer ${
                               cungMatchMode === "palace"
-                                ? "bg-[#C89B3C] text-[#120F0C] font-bold shadow-xs"
-                                : "text-[#9E8E79] hover:text-[#FFF]"
+                                ? "bg-gold-500/15 text-gold-200 font-semibold ring-1 ring-inset ring-gold-500/70"
+                                : "text-ivory-500 hover:text-gold-200"
                             }`}
                             title="Họ quẻ chính thống Bát Cung Kinh Phòng (Chu kỳ 8 quẻ/cung)"
                           >
@@ -1124,8 +1118,8 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
 
                     {/* Hàng 2: THANH LỌC 8 CUNG BÁT QUÁI (CÀN, KHẢM, CẤN, CHẤN, TỐN, LY, KHÔN, ĐOÀI) */}
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="text-[11px] text-[#C9A55A] font-serif font-bold flex items-center gap-1 mr-1">
-                        <Compass className="w-3 h-3 text-[#C9A55A]" /> Lọc theo Cung:
+                      <span className="text-[11px] text-gold-500 font-serif font-bold flex items-center gap-1 mr-1">
+                        <Compass className="w-3 h-3 text-gold-500" /> Lọc theo Cung:
                       </span>
                       {CUNG_INFO_LIST.map((cung) => {
                         const isSelected = rangeFilter === cung.id;
@@ -1134,10 +1128,10 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                             key={cung.id}
                             type="button"
                             onClick={() => setRangeFilter(isSelected ? "all" : (cung.id as HexRangeFilter))}
-                            className={`px-2.5 py-1 rounded-lg text-xs font-serif transition-all cursor-pointer flex items-center gap-1.5 border ${
+                            className={`px-2.5 py-1 rounded-sm text-xs font-serif transition-all cursor-pointer flex items-center gap-1.5 border ${
                               isSelected
-                                ? "bg-gradient-to-r from-[#C9A55A] to-[#E5C378] text-[#14120E] font-bold border-[#F5EAD4] shadow-md scale-105"
-                                : "bg-[#16120D] text-[#C4B49D] hover:text-[#FFF] hover:bg-[#251D14] border-[#332618] hover:border-[#C9A55A]/50"
+                                ? "bg-gold-500/15 text-gold-200 font-semibold border-gold-500"
+                                : "bg-lacquer-900 text-ivory-300 hover:text-gold-200 hover:bg-lacquer-700 border-lacquer-700 hover:border-gold-500/50"
                             }`}
                             title={`${cung.desc} - Hành ${cung.element}`}
                           >
@@ -1154,10 +1148,10 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                 </div>
 
                 {/* MỤC LỤC TRỌN BỘ 64 LÁ BÀI - PHƠI ĐẦY ĐỦ TRÊN GRID */}
-                <div className="bg-[#14100C] border border-[#33281B] rounded-2xl p-4 sm:p-5 space-y-3">
-                  <div className="flex items-center justify-between text-xs text-[#A69780] font-serif">
+                <div className="bg-lacquer-900 border border-gold-800 rounded-md p-4 sm:p-5 space-y-3">
+                  <div className="flex items-center justify-between text-xs text-ivory-500 font-serif">
                     <span>Chọn bất kỳ quẻ nào dưới đây để xem toàn bộ trang thuyết minh:</span>
-                    <span className="text-[#C9A55A] font-bold font-mono">Đang xem Quẻ #{selectedBookHex.number}</span>
+                    <span className="text-gold-500 font-bold font-mono">Đang xem Quẻ #{selectedBookHex.number}</span>
                   </div>
 
                   {/* Responsive Complete Grid: 2 cols on mobile, 4 on tablet, 8 on desktop */}
@@ -1175,25 +1169,25 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                             setSelectedBookHexNum(bHex.number);
                             scrollToCard();
                           }}
-                          className={`flex flex-col p-2 rounded-xl border text-left transition-all cursor-pointer relative group ${
+                          className={`flex flex-col p-2 rounded-sm border text-left transition-all cursor-pointer relative group ${
                             isSelected
-                              ? "bg-gradient-to-b from-[#332616] to-[#251A10] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.35)] ring-1 ring-[#C9A55A]"
-                              : "bg-[#19140F] border-[#2C2114] text-[#BFAFA0] hover:text-[#FFF] hover:bg-[#241C14] hover:border-[#4B3721]"
+                              ? "bg-gradient-to-b from-lacquer-700 to-lacquer-800 border-gold-500 ring-1 ring-gold-500"
+                              : "bg-lacquer-800 border-lacquer-700 text-ivory-300 hover:text-gold-200 hover:bg-lacquer-700 hover:border-gold-800"
                           }`}
                         >
                           <div className="flex items-center justify-between gap-1 mb-1.5">
                             <span className={`font-mono text-[11px] font-bold px-1.5 py-0.5 rounded ${
-                              isSelected ? "bg-[#C9A55A] text-[#120F0C]" : "bg-[#281E15] text-[#C9A55A]"
+                              isSelected ? "bg-gold-500 text-lacquer-900" : "bg-lacquer-700 text-gold-500"
                             }`}>
                               #{bHex.number}
                             </span>
-                            <span className="text-xs font-serif text-[#C8B89E] opacity-70 group-hover:opacity-100">
+                            <span className="text-xs font-serif text-ivory-300 opacity-70 group-hover:opacity-100">
                               {bHex.hanzi}
                             </span>
                           </div>
 
                           {/* Hình thu nhỏ quẻ Kinh Dịch (Card Artwork / Hexagram graphic) */}
-                          <div className="w-full aspect-[2/3] max-h-24 rounded-lg overflow-hidden bg-[#100D09] border border-[#332517] mb-1.5 flex items-center justify-center relative shadow-inner">
+                          <div className="w-full aspect-[2/3] max-h-24 rounded-sm overflow-hidden bg-lacquer-950 border border-lacquer-700 mb-1.5 flex items-center justify-center relative shadow-inner">
                             {customImg ? (
                               <img
                                 src={customImg}
@@ -1202,11 +1196,11 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                               />
                             ) : (
-                              <div className="flex flex-col items-center justify-center p-1 w-full h-full text-center bg-gradient-to-b from-[#1C1610] to-[#120E0A]">
-                                <span className="text-2xl text-[#C9A55A] font-serif leading-none select-none group-hover:scale-110 transition-transform">
+                              <div className="flex flex-col items-center justify-center p-1 w-full h-full text-center bg-gradient-to-b from-lacquer-800 to-lacquer-900">
+                                <span className="text-2xl text-gold-500 font-serif leading-none select-none group-hover:scale-110 transition-transform">
                                   {hexObj?.symbol || "䷀"}
                                 </span>
-                                <span className="text-[8px] text-[#A6957E] font-serif mt-1">
+                                <span className="text-[8px] text-ivory-500 font-serif mt-1">
                                   {hexObj?.upperTrigram}/{hexObj?.lowerTrigram}
                                 </span>
                               </div>
@@ -1214,18 +1208,18 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                           </div>
 
                           <span className={`text-xs font-serif font-bold truncate ${
-                            isSelected ? "text-[#FFF]" : "text-[#E6D7C3]"
+                            isSelected ? "text-ivory-100" : "text-ivory-100"
                           }`}>
                             {bHex.name}
                           </span>
-                          <div className="flex items-center justify-between text-[10px] text-[#8A7964] mt-0.5 gap-1">
+                          <div className="flex items-center justify-between text-[10px] text-ivory-500 mt-0.5 gap-1">
                             <span className="truncate">{bHex.structure}</span>
-                            <span className="shrink-0 px-1 py-0.2 rounded text-[9px] font-serif bg-[#231A11] text-[#C9A55A] border border-[#3E2D1A]">
+                            <span className="shrink-0 px-1 py-0.2 rounded text-[9px] font-serif bg-lacquer-800 text-gold-500 border border-gold-800">
                               {HEX_PALACE_NAME_MAP[bHex.number]}
                             </span>
                           </div>
                           {/* Dòng chữ đỏ tooltip / subtle mark */}
-                          <div className="mt-1 pt-1 border-t border-[#2A1E14] text-[9px] text-[#D97777] truncate font-medium">
+                          <div className="mt-1 pt-1 border-t border-lacquer-700 text-[9px] text-[#D97777] truncate font-medium">
                             {bHex.redHeadline}
                           </div>
                         </button>
@@ -1234,7 +1228,7 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                   </div>
 
                   {filteredBookHexagrams.length === 0 && (
-                    <div className="text-center py-8 text-xs text-[#8A7964] font-serif">
+                    <div className="text-center py-8 text-xs text-ivory-500 font-serif">
                       Không tìm thấy quẻ nào khớp với từ khóa "{bookHexSearch}".
                     </div>
                   )}
@@ -1249,24 +1243,23 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                   return (
                     <div
                       id="selected-hex-card"
-                      className="bg-gradient-to-b from-[#1E1710] to-[#14100C] border-2 border-[#523E26] rounded-2xl p-4 sm:p-6 shadow-2xl relative overflow-hidden transition-all"
+                      className="border border-gold-800 bg-lacquer-950/40 p-4 sm:p-6 relative overflow-hidden transition-all"
                     >
-                      <div className="absolute -top-12 -right-12 w-36 h-36 bg-[#C9A55A]/5 rounded-full blur-2xl pointer-events-none" />
 
                       {/* Top Bar with Prev / Next Fast Flipping Buttons */}
-                      <div className="flex items-center justify-between pb-3.5 mb-5 border-b border-[#332617] text-xs text-[#A89882] font-serif">
+                      <div className="flex items-center justify-between pb-3.5 mb-5 border-b border-gold-800 text-xs text-ivory-500 font-serif">
                         <button
                           type="button"
                           onClick={handlePrevHex}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#221A12] hover:bg-[#302418] border border-[#3E2F1E] hover:border-[#C9A55A] text-[#EAD8B1] hover:text-[#FFF] transition-all cursor-pointer"
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-lacquer-800 hover:bg-lacquer-700 border border-gold-800 hover:border-gold-500 text-gold-300 hover:text-gold-200 transition-all cursor-pointer"
                         >
-                          <ArrowLeft className="w-3.5 h-3.5 text-[#C9A55A]" />
+                          <ArrowLeft className="w-3.5 h-3.5 text-gold-500" />
                           <span>Quẻ Trước (#{selectedBookHexNum > 1 ? selectedBookHexNum - 1 : 64})</span>
                         </button>
 
                         <div className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-[#C9A55A] shadow-[0_0_8px_#C9A55A]" />
-                          <span className="font-mono text-xs text-[#C9A55A] font-bold">
+                          <span className="w-2 h-2 rotate-45 bg-gold-500" />
+                          <span className="font-mono text-xs text-gold-500 font-bold">
                             Quẻ {selectedBookHex.number} / 64
                           </span>
                         </div>
@@ -1274,17 +1267,17 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                         <button
                           type="button"
                           onClick={handleNextHex}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#221A12] hover:bg-[#302418] border border-[#3E2F1E] hover:border-[#C9A55A] text-[#EAD8B1] hover:text-[#FFF] transition-all cursor-pointer"
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-lacquer-800 hover:bg-lacquer-700 border border-gold-800 hover:border-gold-500 text-gold-300 hover:text-gold-200 transition-all cursor-pointer"
                         >
                           <span>Quẻ Tiếp (#{selectedBookHexNum < 64 ? selectedBookHexNum + 1 : 1})</span>
-                          <ArrowRight className="w-3.5 h-3.5 text-[#C9A55A]" />
+                          <ArrowRight className="w-3.5 h-3.5 text-gold-500" />
                         </button>
                       </div>
 
                       {/* 2-Column Responsive Showcase: Hình quẻ bên trái, Thuyết minh bên phải */}
                       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                         {/* CỘT TRÁI: HÌNH LÁ BÀI KINH DỊCH & TƯỢNG QUẺ 6 HÀO */}
-                        <div className="lg:col-span-5 xl:col-span-4 flex flex-col items-center gap-4 bg-[#15110D] border border-[#352719] p-4 rounded-2xl shadow-inner">
+                        <div className="lg:col-span-5 xl:col-span-4 flex flex-col items-center gap-4 bg-lacquer-900 border border-gold-800 p-4 rounded-md shadow-inner">
                           {/* Card Visual với 3D Parallax & Click-to-Zoom */}
                           <div className="flex flex-col items-center w-full">
                             <CardVisual
@@ -1298,8 +1291,8 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                               onVideoUpdated={onVideoUpdated}
                               className="shadow-2xl"
                             />
-                            <div className="flex items-center justify-center gap-1.5 text-[11px] text-[#A89882] font-serif text-center mt-2.5">
-                              <Sparkles className="w-3.5 h-3.5 text-[#C9A55A] shrink-0" />
+                            <div className="flex items-center justify-center gap-1.5 text-[11px] text-ivory-500 font-serif text-center mt-2.5">
+                              <Sparkles className="w-3.5 h-3.5 text-gold-500 shrink-0" />
                               <span>
                                 {cardImage
                                   ? "Lá bài Kinh Dịch (Bấm vào hình để phóng to)"
@@ -1309,13 +1302,13 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                           </div>
 
                           {/* Khối Tượng Quẻ 6 Hào (Hexagram Lines Diagram) */}
-                          <div className="w-full bg-[#18130E] border border-[#352718] rounded-xl p-3.5 space-y-2.5">
-                            <div className="flex items-center justify-between text-xs border-b border-[#2C2014] pb-2">
-                              <span className="font-serif font-bold text-[#EAD8B1] flex items-center gap-1.5">
-                                <Layers className="w-3.5 h-3.5 text-[#C9A55A]" />
+                          <div className="w-full bg-lacquer-800 border border-gold-800 rounded-sm p-3.5 space-y-2.5">
+                            <div className="flex items-center justify-between text-xs border-b border-gold-800 pb-2">
+                              <span className="font-serif font-bold text-gold-300 flex items-center gap-1.5">
+                                <Layers className="w-3.5 h-3.5 text-gold-500" />
                                 Tượng Quẻ 6 Hào
                               </span>
-                              <span className="font-mono text-base text-[#C9A55A] font-bold" title="Ký hiệu quẻ Dịch">
+                              <span className="font-mono text-base text-gold-500 font-bold" title="Ký hiệu quẻ Dịch">
                                 {selectedHex.symbol}
                               </span>
                             </div>
@@ -1326,28 +1319,28 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                             </div>
 
                             {/* Ngoại quái / Nội quái */}
-                            <div className="grid grid-cols-2 gap-2 text-[11px] font-serif pt-1.5 border-t border-[#2C2014]">
-                              <div className="bg-[#201811] p-1.5 rounded border border-[#352618] text-center">
-                                <span className="text-[#8E7E6B] block text-[9px] uppercase tracking-wider">
+                            <div className="grid grid-cols-2 gap-2 text-[11px] font-serif pt-1.5 border-t border-lacquer-700">
+                              <div className="bg-lacquer-800 p-1.5 rounded border border-gold-800 text-center">
+                                <span className="text-ivory-500 block text-[9px] uppercase tracking-wider">
                                   Ngoại Quái (Thượng)
                                 </span>
-                                <span className="font-bold text-[#F5EAD4]">
+                                <span className="font-bold text-ivory-100">
                                   {selectedHex.upperTrigram}
                                 </span>
                               </div>
-                              <div className="bg-[#201811] p-1.5 rounded border border-[#352618] text-center">
-                                <span className="text-[#8E7E6B] block text-[9px] uppercase tracking-wider">
+                              <div className="bg-lacquer-800 p-1.5 rounded border border-gold-800 text-center">
+                                <span className="text-ivory-500 block text-[9px] uppercase tracking-wider">
                                   Nội Quái (Hạ)
                                 </span>
-                                <span className="font-bold text-[#F5EAD4]">
+                                <span className="font-bold text-ivory-100">
                                   {selectedHex.lowerTrigram}
                                 </span>
                               </div>
                             </div>
 
                             {/* Ngũ Hành */}
-                            <div className="text-center text-[11px] font-serif px-1 pt-1 border-t border-[#251B11] text-[#A89882]">
-                              Ngũ Hành: <strong className="text-[#E6C673]">{selectedHex.element}</strong>
+                            <div className="text-center text-[11px] font-serif px-1 pt-1 border-t border-lacquer-700 text-ivory-500">
+                              Ngũ Hành: <strong className="text-gold-400">{selectedHex.element}</strong>
                             </div>
                           </div>
                         </div>
@@ -1355,23 +1348,23 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                         {/* CỘT PHẢI: NỘI DUNG SÁCH THUYẾT MINH CHUẨN */}
                         <div className="lg:col-span-7 xl:col-span-8 space-y-4">
                           {/* Header info */}
-                          <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[#3A2C1C] pb-4">
+                          <div className="flex flex-wrap items-start justify-between gap-3 border-b border-gold-800 pb-4">
                             <div>
                               <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                <span className="px-2 py-0.5 rounded bg-[#332616] text-[#C9A55A] font-mono text-xs font-bold border border-[#523E26]">
+                                <span className="px-2 py-0.5 rounded bg-lacquer-700 text-gold-500 font-mono text-xs font-bold border border-gold-800">
                                   Quẻ #{selectedBookHex.number}
                                 </span>
-                                <span className="px-2 py-0.5 rounded bg-[#271E14] text-[#E5C378] font-serif text-xs font-bold border border-[#483723] flex items-center gap-1">
-                                  <Compass className="w-3 h-3 text-[#C9A55A]" /> Cung {HEX_PALACE_NAME_MAP[selectedBookHex.number]}
+                                <span className="px-2 py-0.5 rounded bg-lacquer-700 text-gold-400 font-serif text-xs font-bold border border-gold-800 flex items-center gap-1">
+                                  <Compass className="w-3 h-3 text-gold-500" /> Cung {HEX_PALACE_NAME_MAP[selectedBookHex.number]}
                                 </span>
-                                <span className="text-xs text-[#A89882] font-serif">
-                                  Cấu trúc: <strong className="text-[#E6C673]">{selectedBookHex.structure}</strong>
+                                <span className="text-xs text-ivory-500 font-serif">
+                                  Cấu trúc: <strong className="text-gold-400">{selectedBookHex.structure}</strong>
                                 </span>
                               </div>
-                              <h4 className="text-xl md:text-2xl font-serif font-bold text-[#F3E5AB]">
+                              <h4 className="text-xl md:text-2xl font-serif font-bold text-gold-200">
                                 {selectedBookHex.name}
                               </h4>
-                              <p className="text-xs font-serif text-[#C4B294] italic mt-0.5">
+                              <p className="text-xs font-serif text-gold-400 italic mt-0.5">
                                 Hán tự: {selectedBookHex.hanzi}
                               </p>
 
@@ -1380,10 +1373,10 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                                 <button
                                   type="button"
                                   onClick={() => handleToggleSpeakHexagram(selectedBookHex)}
-                                  className={`px-3 py-1.5 rounded-xl border text-xs font-serif font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs ${
+                                  className={`px-3 py-1.5 rounded-sm border text-xs font-serif font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs ${
                                     isSpeaking && speechTitle.includes(`Quẻ #${selectedBookHex.number}`)
                                       ? "bg-[#3D1414] border-rose-600 text-rose-300 animate-pulse"
-                                      : "bg-[#241A12] hover:bg-[#322316] text-[#E6D3A3] border-[#4E3720] hover:border-[#C9A55A]"
+                                      : "bg-lacquer-700 hover:bg-lacquer-700 text-gold-300 border-gold-800 hover:border-gold-500"
                                   }`}
                                   title={isSpeaking && speechTitle.includes(`Quẻ #${selectedBookHex.number}`) ? "Dừng nghe thuyết minh" : "Nghe đọc toàn bộ thuyết minh quẻ này"}
                                 >
@@ -1394,7 +1387,7 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                                     </>
                                   ) : (
                                     <>
-                                      <Volume2 className="w-3.5 h-3.5 text-[#C9A55A]" />
+                                      <Volume2 className="w-3.5 h-3.5 text-gold-500" />
                                       <span>🔊 Nghe Thuyết Minh Quẻ #{selectedBookHex.number}</span>
                                     </>
                                   )}
@@ -1403,7 +1396,7 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                             </div>
 
                             {/* DÒNG CHỮ ĐỎ IN HOA TRÊN LÁ BÀI */}
-                            <div className="bg-[#2A1012] border border-rose-900/60 rounded-xl px-4 py-2.5 text-center shadow-inner max-w-md">
+                            <div className="bg-[#2A1012] border border-rose-900/60 rounded-sm px-4 py-2.5 text-center shadow-inner max-w-md">
                               <div className="text-[10px] uppercase font-mono tracking-wider text-rose-300/80 mb-0.5 flex items-center justify-center gap-1.5">
                                 <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
                                 Dòng chữ đỏ trên lá bài (Kim chỉ nam)
@@ -1415,31 +1408,31 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                           </div>
 
                           {/* Body Content from book */}
-                          <div className="space-y-4 text-xs font-serif leading-relaxed text-[#DCD1BC]">
+                          <div className="space-y-4 text-xs font-serif leading-relaxed text-ivory-300">
                             {/* Thơ Hán & Dịch thơ */}
-                            <div className="bg-[#17120D] border border-[#3A2D1F] p-3.5 rounded-xl">
-                              <div className="text-[11px] font-mono uppercase tracking-wider text-[#C9A55A] mb-1 font-bold">
+                            <div className="bg-lacquer-900 border border-gold-800 p-3.5 rounded-sm">
+                              <div className="text-[11px] font-mono uppercase tracking-wider text-gold-500 mb-1 font-bold">
                                 Thơ Tượng & Dịch Nghĩa
                               </div>
-                              <div className="whitespace-pre-line font-medium text-[#F0E6D2] italic pl-2 border-l-2 border-[#C89B3C]">
+                              <div className="whitespace-pre-line font-medium text-ivory-100 italic pl-2 border-l-2 border-gold-500">
                                 {selectedBookHex.poemHan}
                               </div>
-                              <div className="mt-2 text-[#BFAFA0] pl-2">
+                              <div className="mt-2 text-ivory-300 pl-2">
                                 {selectedBookHex.poemMeaning}
                               </div>
                             </div>
 
                             {!currentUser?.isMember ? (
-                              <div className="bg-gradient-to-b from-[#24170E] via-[#1C120B] to-[#120D08] border-2 border-amber-600/70 rounded-2xl p-5 sm:p-6 text-center space-y-3.5 shadow-2xl relative overflow-hidden mt-2">
-                                <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-br from-[#C9A55A] to-[#75511A] flex items-center justify-center text-[#14120F] shadow-lg border border-[#E6D3A3]">
+                              <div className="royal-card p-5 sm:p-6 text-center space-y-3.5 overflow-hidden mt-2">
+                                <div className="w-12 h-12 mx-auto rounded-md bg-gradient-to-br from-gold-500 to-gold-700 flex items-center justify-center text-lacquer-900 shadow-lg border border-gold-300">
                                   <Lock className="w-6 h-6 text-amber-950" />
                                 </div>
 
                                 <div className="space-y-1">
-                                  <h5 className="text-base sm:text-lg font-serif font-bold text-[#E6D3A3]">
+                                  <h5 className="text-base sm:text-lg font-serif font-bold text-gold-300">
                                     TOÀN VĂN THUYẾT MINH DÀNH CHO THÀNH VIÊN
                                   </h5>
-                                  <p className="text-xs sm:text-sm text-[#D6C4AD] font-serif max-w-lg mx-auto leading-relaxed">
+                                  <p className="text-xs sm:text-sm text-ivory-300 font-serif max-w-lg mx-auto leading-relaxed">
                                     Chỉ <strong className="text-amber-300">Thành viên Cửu Nhị</strong> mới được quyền đọc toàn văn Thuyết Minh 64 Quẻ (Đại Tượng, Thời Vận, Tình Duyên, Thoán Từ, 6 Hào Từ Chu Dịch, Tượng Truyện Khổng Tử, Thần Quẻ Khổng Minh & nghe Audio Thuyết Minh).
                                   </p>
                                 </div>
@@ -1448,7 +1441,7 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                                   <button
                                     type="button"
                                     onClick={() => onOpenAuthModal && onOpenAuthModal("login")}
-                                    className="px-4 py-2 rounded-xl bg-[#2C1D11] hover:bg-[#3D2917] text-[#EAD8B1] font-serif font-bold text-xs border border-[#523A20] transition-colors cursor-pointer"
+                                    className="px-4 py-2 rounded-sm bg-lacquer-700 hover:bg-gold-800 text-gold-300 font-serif font-bold text-xs border border-gold-800 transition-colors cursor-pointer"
                                   >
                                     Đăng Nhập
                                   </button>
@@ -1456,7 +1449,7 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                                   <button
                                     type="button"
                                     onClick={() => onOpenAuthModal && onOpenAuthModal("register")}
-                                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#C9A55A] via-[#E6C265] to-[#B38728] hover:from-[#E6D3A3] hover:to-[#C9A55A] text-[#120F0C] font-serif font-bold text-xs sm:text-sm shadow-md active:scale-95 cursor-pointer transition-all border border-[#E6D3A3] flex items-center gap-2"
+                                    className="royal-btn"
                                   >
                                     <Crown className="w-4 h-4 text-amber-950" />
                                     <span>ĐĂNG KÝ THÀNH VIÊN ĐỂ ĐỌC TOÀN VĂN ➔</span>
@@ -1466,29 +1459,29 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                             ) : (
                               <>
                                 {/* Đại tượng */}
-                                <div className="bg-[#17120D]/60 p-3 rounded-xl border border-[#2B2116]">
-                              <div className="text-[11px] font-mono uppercase tracking-wider text-[#C9A55A] mb-1 font-bold">
+                                <div className="bg-lacquer-900/60 p-3 rounded-sm border border-lacquer-700">
+                              <div className="text-[11px] font-mono uppercase tracking-wider text-gold-500 mb-1 font-bold">
                                 Đại Tượng
                               </div>
-                              <p className="text-[#C8BBA5]">{selectedBookHex.bigImage}</p>
+                              <p className="text-ivory-300">{selectedBookHex.bigImage}</p>
                             </div>
 
                             {/* Vận thế & Tình yêu */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
-                              <div className="bg-[#1C150E] p-3.5 rounded-xl border border-[#362819]">
-                                <div className="text-[11px] font-mono uppercase tracking-wider text-[#C89B3C] mb-1 font-bold flex items-center gap-1.5">
+                              <div className="bg-lacquer-800 p-3.5 rounded-sm border border-gold-800">
+                                <div className="text-[11px] font-mono uppercase tracking-wider text-gold-500 mb-1 font-bold flex items-center gap-1.5">
                                   <Compass className="w-3.5 h-3.5" />
                                   Vận Thế (Thời Vận)
                                 </div>
-                                <p className="text-[#D8CDBC]">{selectedBookHex.destiny}</p>
+                                <p className="text-ivory-300">{selectedBookHex.destiny}</p>
                               </div>
 
-                              <div className="bg-[#1C150E] p-3.5 rounded-xl border border-[#362819]">
+                              <div className="bg-lacquer-800 p-3.5 rounded-sm border border-gold-800">
                                 <div className="text-[11px] font-mono uppercase tracking-wider text-rose-400 mb-1 font-bold flex items-center gap-1.5">
                                   <Flame className="w-3.5 h-3.5" />
                                   Tình Yêu & Hôn Nhân
                                 </div>
-                                <p className="text-[#D8CDBC]">{selectedBookHex.love}</p>
+                                <p className="text-ivory-300">{selectedBookHex.love}</p>
                               </div>
                             </div>
 
@@ -1516,10 +1509,10 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                               const story = ICHING_STORIES[selectedBookHex.number];
                               if (!story) return null;
                               return (
-                                <div className="bg-gradient-to-br from-[#1C150E] via-[#16110C] to-[#0E0B08] p-4 sm:p-5 rounded-2xl border border-[#483723] space-y-3.5 shadow-lg relative overflow-hidden">
-                                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#2C1F14] pb-2.5">
-                                    <div className="flex items-center gap-2 text-xs font-serif font-bold text-[#E5C378]">
-                                      <BookOpen className="w-4 h-4 text-[#C9A55A]" />
+                                <div className="bg-gradient-to-br from-lacquer-800 via-lacquer-900 to-lacquer-950 p-4 sm:p-5 rounded-md border border-gold-800 space-y-3.5 shadow-lg relative overflow-hidden">
+                                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gold-800 pb-2.5">
+                                    <div className="flex items-center gap-2 text-xs font-serif font-bold text-gold-400">
+                                      <BookOpen className="w-4 h-4 text-gold-500" />
                                       <span>📖 Câu Chuyện Kinh Dịch Quẻ #{story.number}</span>
                                     </div>
                                     <button
@@ -1529,7 +1522,7 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                                         const el = document.getElementById("thuyet-minh");
                                         if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
                                       }}
-                                      className="text-[11px] font-serif text-[#C9A55A] hover:underline flex items-center gap-1 cursor-pointer bg-[#22170E] px-2.5 py-1 rounded-lg border border-[#3D2C1A]"
+                                      className="text-[11px] font-serif text-gold-500 hover:underline flex items-center gap-1 cursor-pointer bg-lacquer-800 px-2.5 py-1 rounded-sm border border-gold-800"
                                     >
                                       <span>Đọc toàn bộ 64 câu chuyện</span>
                                       <ArrowRight className="w-3 h-3" />
@@ -1537,19 +1530,19 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                                   </div>
 
                                   <div>
-                                    <div className="text-[10px] font-mono text-[#C9A55A] uppercase tracking-wider mb-0.5">
+                                    <div className="text-[10px] font-mono text-gold-500 uppercase tracking-wider mb-0.5">
                                       {story.part === "upper" ? "Thượng Kinh (Đạo Trời Đất)" : "Hạ Kinh (Đạo Nhân Sinh)"} • Tự Quái Truyện
                                     </div>
-                                    <h5 className="text-sm sm:text-base font-serif font-bold text-[#F5EAD4]">
+                                    <h5 className="text-sm sm:text-base font-serif font-bold text-ivory-100">
                                       “{story.storyTitle}”
                                     </h5>
-                                    <p className="text-[11px] font-serif text-[#A6957E] italic mt-0.5">
+                                    <p className="text-[11px] font-serif text-ivory-500 italic mt-0.5">
                                       {story.context}
                                     </p>
                                   </div>
 
-                                  <div className="bg-[#120E0A]/90 p-3.5 rounded-xl border border-[#2B1E13] text-xs font-serif leading-relaxed text-[#DCD1BC] pl-3 border-l-2 border-[#C9A55A]">
-                                    <p className="first-letter:text-xl first-letter:font-bold first-letter:text-[#C9A55A] first-letter:mr-0.5">
+                                  <div className="bg-lacquer-900/90 p-3.5 rounded-sm border border-lacquer-700 text-xs font-serif leading-relaxed text-ivory-300 pl-3 border-l-2 border-gold-500">
+                                    <p className="first-letter:text-xl first-letter:font-bold first-letter:text-gold-500 first-letter:mr-0.5">
                                       {story.story}
                                     </p>
                                   </div>
@@ -1567,28 +1560,28 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                                         <button
                                           type="button"
                                           onClick={handlePrevHex}
-                                          className="bg-[#120E0A] hover:bg-[#201710] p-3 rounded-xl border border-[#332417] hover:border-[#C9A55A] text-left transition-all cursor-pointer group shadow-md hover:shadow-xl active:scale-[0.99] flex flex-col justify-between relative overflow-hidden"
+                                          className="bg-lacquer-900 hover:bg-lacquer-800 p-3 rounded-sm border border-lacquer-700 hover:border-gold-500 text-left transition-all cursor-pointer group shadow-md hover:shadow-xl active:scale-[0.99] flex flex-col justify-between relative overflow-hidden"
                                           title={`Nhấn vào đây để trở về Quẻ trước #${prevNum}: ${prevHexObj?.name || ""}`}
                                         >
                                           <div className="space-y-1.5 w-full">
-                                            <div className="flex items-center justify-between gap-1 pb-1.5 border-b border-[#24180E] group-hover:border-[#3E2C1B]">
-                                              <span className="text-[#C89B3C] group-hover:text-[#F3E5C8] font-mono text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
-                                                <ArrowLeft className="w-3.5 h-3.5 text-[#C9A55A] group-hover:-translate-x-1 transition-transform" />
+                                            <div className="flex items-center justify-between gap-1 pb-1.5 border-b border-gold-800 group-hover:border-gold-800">
+                                              <span className="text-gold-500 group-hover:text-ivory-100 font-mono text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                                                <ArrowLeft className="w-3.5 h-3.5 text-gold-500 group-hover:-translate-x-1 transition-transform" />
                                                 ← TIỀN ĐỀ TỪ QUẺ TRƯỚC:
                                               </span>
-                                              <span className="text-[10px] font-mono text-[#C9A55A] bg-[#22170E] px-2 py-0.5 rounded border border-[#3E2B18] group-hover:bg-[#C9A55A] group-hover:text-[#100D09] font-bold transition-all shrink-0">
+                                              <span className="text-[10px] font-mono text-gold-500 bg-lacquer-800 px-2 py-0.5 rounded border border-gold-800 group-hover:bg-gold-500 group-hover:text-lacquer-950 font-bold transition-all shrink-0">
                                                 ← Quẻ #{prevNum}
                                               </span>
                                             </div>
-                                            <p className="text-[#C8BBA5] group-hover:text-[#F5EAD4] transition-colors leading-relaxed">
+                                            <p className="text-ivory-300 group-hover:text-ivory-100 transition-colors leading-relaxed">
                                               {story.connectionPrev}
                                             </p>
                                           </div>
-                                          <div className="mt-2.5 pt-1.5 border-t border-[#1F150C] group-hover:border-[#382615] flex items-center justify-between text-[10px] text-[#A6957E] group-hover:text-[#C9A55A] font-sans">
+                                          <div className="mt-2.5 pt-1.5 border-t border-lacquer-700 group-hover:border-gold-800 flex items-center justify-between text-[10px] text-ivory-500 group-hover:text-gold-500 font-sans">
                                             <span className="flex items-center gap-1">
-                                              <span className="text-[#C9A55A]">👈</span> <strong>Nhấn vào đây để trở về phần trước</strong> (#{prevNum}: {prevHexObj?.name})
+                                              <span className="text-gold-500">👈</span> <strong>Nhấn vào đây để trở về phần trước</strong> (#{prevNum}: {prevHexObj?.name})
                                             </span>
-                                            <span className="font-mono text-[9px] text-[#8C7A65] group-hover:text-[#C9A55A] underline decoration-dotted">Quẻ trước</span>
+                                            <span className="font-mono text-[9px] text-ivory-500 group-hover:text-gold-500 underline decoration-dotted">Quẻ trước</span>
                                           </div>
                                         </button>
 
@@ -1596,27 +1589,27 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                                         <button
                                           type="button"
                                           onClick={handleNextHex}
-                                          className="bg-[#120E0A] hover:bg-[#201710] p-3 rounded-xl border border-[#332417] hover:border-[#C9A55A] text-left transition-all cursor-pointer group shadow-md hover:shadow-xl active:scale-[0.99] flex flex-col justify-between relative overflow-hidden"
+                                          className="bg-lacquer-900 hover:bg-lacquer-800 p-3 rounded-sm border border-lacquer-700 hover:border-gold-500 text-left transition-all cursor-pointer group shadow-md hover:shadow-xl active:scale-[0.99] flex flex-col justify-between relative overflow-hidden"
                                           title={`Nhấn vào đây để qua Quẻ tiếp theo #${nextNum}: ${nextHexObj?.name || ""}`}
                                         >
                                           <div className="space-y-1.5 w-full">
-                                            <div className="flex items-center justify-between gap-1 pb-1.5 border-b border-[#24180E] group-hover:border-[#3E2C1B]">
-                                              <span className="text-[#C89B3C] group-hover:text-[#F3E5C8] font-mono text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
-                                                <ArrowRight className="w-3.5 h-3.5 text-[#C9A55A] group-hover:translate-x-1 transition-transform order-last sm:order-first" />
+                                            <div className="flex items-center justify-between gap-1 pb-1.5 border-b border-gold-800 group-hover:border-gold-800">
+                                              <span className="text-gold-500 group-hover:text-ivory-100 font-mono text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                                                <ArrowRight className="w-3.5 h-3.5 text-gold-500 group-hover:translate-x-1 transition-transform order-last sm:order-first" />
                                                 → CẦU NỐI SANG QUẺ SAU:
                                               </span>
-                                              <span className="text-[10px] font-mono text-[#C9A55A] bg-[#22170E] px-2 py-0.5 rounded border border-[#3E2B18] group-hover:bg-[#C9A55A] group-hover:text-[#100D09] font-bold transition-all shrink-0">
+                                              <span className="text-[10px] font-mono text-gold-500 bg-lacquer-800 px-2 py-0.5 rounded border border-gold-800 group-hover:bg-gold-500 group-hover:text-lacquer-950 font-bold transition-all shrink-0">
                                                 Quẻ #{nextNum} →
                                               </span>
                                             </div>
-                                            <p className="text-[#C8BBA5] group-hover:text-[#F5EAD4] transition-colors leading-relaxed">
+                                            <p className="text-ivory-300 group-hover:text-ivory-100 transition-colors leading-relaxed">
                                               {story.connectionNext}
                                             </p>
                                           </div>
-                                          <div className="mt-2.5 pt-1.5 border-t border-[#1F150C] group-hover:border-[#382615] flex items-center justify-between text-[10px] text-[#A6957E] group-hover:text-[#C9A55A] font-sans">
-                                            <span className="font-mono text-[9px] text-[#8C7A65] group-hover:text-[#C9A55A] underline decoration-dotted">Quẻ tiếp</span>
+                                          <div className="mt-2.5 pt-1.5 border-t border-lacquer-700 group-hover:border-gold-800 flex items-center justify-between text-[10px] text-ivory-500 group-hover:text-gold-500 font-sans">
+                                            <span className="font-mono text-[9px] text-ivory-500 group-hover:text-gold-500 underline decoration-dotted">Quẻ tiếp</span>
                                             <span className="flex items-center gap-1">
-                                              <strong>Nhấn vào đây để qua phần tiếp theo</strong> (#{nextNum}: {nextHexObj?.name}) <span className="text-[#C9A55A]">👉</span>
+                                              <strong>Nhấn vào đây để qua phần tiếp theo</strong> (#{nextNum}: {nextHexObj?.name}) <span className="text-gold-500">👉</span>
                                             </span>
                                           </div>
                                         </button>
@@ -1625,10 +1618,10 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                                   })()}
 
                                   {/* Bài học nhân sinh */}
-                                  <div className="bg-gradient-to-r from-[#24170D] to-[#18110A] p-3 rounded-xl border border-[#48341F] flex items-start gap-2.5">
-                                    <Sparkles className="w-4 h-4 text-[#C9A55A]" />
-                                    <div className="text-xs font-serif text-[#F0DFBF]">
-                                      <strong className="text-[#C9A55A]">Bài học nhân sinh: </strong>
+                                  <div className="bg-gradient-to-r from-lacquer-800 to-lacquer-900 p-3 rounded-sm border border-gold-800 flex items-start gap-2.5">
+                                    <Sparkles className="w-4 h-4 text-gold-500" />
+                                    <div className="text-xs font-serif text-ivory-100">
+                                      <strong className="text-gold-500">Bài học nhân sinh: </strong>
                                       {story.moral}
                                     </div>
                                   </div>
@@ -1640,8 +1633,8 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                       </div>
 
                           {/* Actions */}
-                          <div className="mt-5 pt-4 border-t border-[#3A2D1F] flex flex-wrap items-center justify-between gap-3">
-                            <span className="text-[11px] text-[#8E7E6B] italic">
+                          <div className="mt-5 pt-4 border-t border-gold-800 flex flex-wrap items-center justify-between gap-3">
+                            <span className="text-[11px] text-ivory-500 italic">
                               Trích từ trang {selectedBookHex.number + 33} của Sách Thuyết Minh Tarot Kinh Dịch
                             </span>
 
@@ -1650,10 +1643,10 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                               <button
                                 type="button"
                                 onClick={() => handleToggleSpeakHexagram(selectedBookHex)}
-                                className={`px-3 py-1.5 rounded-xl border text-xs font-serif font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm ${
+                                className={`px-3 py-1.5 rounded-sm border text-xs font-serif font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm ${
                                   isSpeaking && speechTitle.includes(`Quẻ #${selectedBookHex.number}`)
                                     ? "bg-[#3D1414] border-rose-600 text-rose-300 animate-pulse"
-                                    : "bg-[#22180F] hover:bg-[#2F2115] border-[#4E3720] text-[#E6D3A3]"
+                                    : "bg-lacquer-800 hover:bg-lacquer-700 border-gold-800 text-gold-300"
                                 }`}
                               >
                                 {isSpeaking && speechTitle.includes(`Quẻ #${selectedBookHex.number}`) ? (
@@ -1663,7 +1656,7 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                                   </>
                                 ) : (
                                   <>
-                                    <Volume2 className="w-3.5 h-3.5 text-[#C9A55A]" />
+                                    <Volume2 className="w-3.5 h-3.5 text-gold-500" />
                                     <span>Nghe Thuyết Minh Quẻ</span>
                                   </>
                                 )}
@@ -1674,7 +1667,7 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                                 <button
                                   type="button"
                                   onClick={() => onOpenDetailTab(selectedBookHex.number)}
-                                  className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#8E6C28] to-[#C89B3C] hover:from-[#A07B30] hover:to-[#DDB14D] text-[#120F0B] font-serif font-bold text-xs flex items-center gap-1.5 shadow-md cursor-pointer transition-all hover:scale-105 active:scale-95"
+                                  className="royal-btn !px-3.5 !py-1.5 !text-[11px]"
                                   title="Xem hào động, hào từ và quẻ biến trong tab Luận Giải Chi Tiết"
                                 >
                                   <Sparkles className="w-3.5 h-3.5" />
@@ -1692,18 +1685,18 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
             )}
 
             {/* Bottom Chapter Flip Navigation Footer */}
-            <div className="mt-8 pt-5 border-t border-[#2C2114] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-serif">
+            <div className="mt-8 pt-5 border-t border-lacquer-700 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-serif">
               {prevSection ? (
                 <button
                   type="button"
                   onClick={handlePrevSection}
-                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#18130E] hover:bg-[#241C14] border border-[#352718] hover:border-[#C9A55A] text-[#E5D7BF] hover:text-[#FFF] flex items-center justify-center sm:justify-start gap-2.5 transition-all cursor-pointer shadow-sm group"
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-sm bg-lacquer-800 hover:bg-lacquer-700 border border-gold-800 hover:border-gold-500 text-ivory-300 hover:text-gold-200 flex items-center justify-center sm:justify-start gap-2.5 transition-all cursor-pointer shadow-sm group"
                   title="Nhấn vào đây để trở về phần trước"
                 >
-                  <ArrowLeft className="w-4 h-4 text-[#C9A55A] shrink-0 group-hover:-translate-x-0.5 transition-transform" />
+                  <ArrowLeft className="w-4 h-4 text-gold-500 shrink-0 group-hover:-translate-x-0.5 transition-transform" />
                   <div className="text-left">
-                    <span className="text-[10px] text-[#C9A55A] block font-mono font-bold">👈 NHẤN VÀO ĐÂY ĐỂ TRỞ VỀ PHẦN TRƯỚC</span>
-                    <span className="font-bold text-xs truncate max-w-[240px] block text-[#DDD0BC]">{prevSection.title}</span>
+                    <span className="text-[10px] text-gold-500 block font-mono font-bold">👈 NHẤN VÀO ĐÂY ĐỂ TRỞ VỀ PHẦN TRƯỚC</span>
+                    <span className="font-bold text-xs truncate max-w-[240px] block text-ivory-300">{prevSection.title}</span>
                   </div>
                 </button>
               ) : (
@@ -1714,14 +1707,14 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                 <button
                   type="button"
                   onClick={handleNextSection}
-                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#18130E] hover:bg-[#241C14] border border-[#352718] hover:border-[#C9A55A] text-[#E5D7BF] hover:text-[#FFF] flex items-center justify-center sm:justify-end gap-2.5 transition-all cursor-pointer shadow-sm group ml-auto"
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-sm bg-lacquer-800 hover:bg-lacquer-700 border border-gold-800 hover:border-gold-500 text-ivory-300 hover:text-gold-200 flex items-center justify-center sm:justify-end gap-2.5 transition-all cursor-pointer shadow-sm group ml-auto"
                   title="Nhấn vào đây để qua phần tiếp theo"
                 >
                   <div className="text-right">
-                    <span className="text-[10px] text-[#C9A55A] block font-mono font-bold">NHẤN VÀO ĐÂY ĐỂ QUA PHẦN TIẾP THEO 👉</span>
-                    <span className="font-bold text-xs truncate max-w-[240px] block text-[#DDD0BC]">{nextSection.title}</span>
+                    <span className="text-[10px] text-gold-500 block font-mono font-bold">NHẤN VÀO ĐÂY ĐỂ QUA PHẦN TIẾP THEO 👉</span>
+                    <span className="font-bold text-xs truncate max-w-[240px] block text-ivory-300">{nextSection.title}</span>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-[#C9A55A] shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                  <ArrowRight className="w-4 h-4 text-gold-500 shrink-0 group-hover:translate-x-0.5 transition-transform" />
                 </button>
               )}
             </div>
@@ -1739,21 +1732,21 @@ function formatTextInline(text: string): React.ReactNode {
   return parts.map((part, i) => {
     if (part.startsWith("**") && part.endsWith("**")) {
       return (
-        <strong key={i} className="text-[#F5EAD4] font-bold">
+        <strong key={i} className="text-ivory-100 font-bold">
           {part.slice(2, -2)}
         </strong>
       );
     }
     if (part.startsWith("*") && part.endsWith("*")) {
       return (
-        <em key={i} className="text-[#D8C7AA] italic">
+        <em key={i} className="text-ivory-300 italic">
           {part.slice(1, -1)}
         </em>
       );
     }
     if (part.startsWith("`") && part.endsWith("`")) {
       return (
-        <code key={i} className="px-1 py-0.5 rounded bg-[#2A2016] text-[#C9A55A] font-mono text-[11px]">
+        <code key={i} className="px-1 py-0.5 rounded bg-lacquer-700 text-gold-500 font-mono text-[11px]">
           {part.slice(1, -1)}
         </code>
       );

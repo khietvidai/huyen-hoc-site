@@ -577,24 +577,22 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Top Banner & Control Bar */}
-      <div className="bg-gradient-to-r from-[#1E1710] via-[#2A1F15] to-[#1A140E] border border-[#483724] rounded-2xl p-4 sm:p-5 shadow-2xl relative overflow-hidden">
-        <div className="absolute -right-8 -top-8 w-40 h-40 bg-amber-500/5 rounded-full blur-2xl pointer-events-none" />
+      <div className="royal-frame px-5 py-8 sm:px-10 sm:py-10">
+        <span className="royal-corner tl" />
+        <span className="royal-corner tr" />
+        <span className="royal-corner bl" />
+        <span className="royal-corner br" />
 
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#C9A55A] to-[#8C6B1B] p-0.5 shadow-lg flex items-center justify-center shrink-0">
-              <div className="w-full h-full bg-[#1A140E] rounded-[10px] flex items-center justify-center text-[#E5C158]">
-                <CalendarIcon className="w-6 h-6" />
-              </div>
-            </div>
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-10">
+          <div className="flex items-start gap-4">
+            <span className="royal-seal w-12 h-12 text-xl shrink-0 mt-1">曆</span>
             <div>
-              <h2 className="text-lg sm:text-xl font-serif font-bold text-[#F5EAD4] flex items-center gap-2 flex-wrap">
-                <span>LỊCH DỤNG SỰ & TÂM ẤN PHÚ</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#3D2C1A] text-amber-300 border border-amber-700/60">
-                  Tam Thức Khởi Thời
-                </span>
+              <div className="royal-eyebrow before:hidden">Tam thức khởi thời · 協紀辨方</div>
+              <h2 className="royal-title mt-2 text-3xl sm:text-4xl">
+                Lịch dụng sự
+                <span className="italic text-gold-300"> &amp; Tâm Ấn Phú</span>
               </h2>
-              <p className="text-xs text-[#A89882] mt-0.5">
+              <p className="text-[13px] font-serif text-ivory-500 mt-2">
                 Map 1 tháng Lịch Dương, Ngày Can Chi, Trực Nhật Tinh • Tra cứu 12 Giờ Tâm Ấn Phú ứng Địa Chi
               </p>
             </div>
@@ -605,19 +603,19 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
             <button
               type="button"
               onClick={handleResetToToday}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#281E14] hover:bg-[#382B1E] text-amber-200 border border-[#523F2A] text-xs font-semibold cursor-pointer transition-all active:scale-95 shadow"
+              className="royal-btn-ghost !px-3.5 !py-2 !text-[11px]"
               title="Về ngày giờ hiện tại"
             >
-              <RotateCcw className="w-3.5 h-3.5 text-amber-400" />
+              <RotateCcw className="w-3.5 h-3.5" />
               <span>Hôm Nay</span>
             </button>
 
             {/* Nút Chọn Lịch Dương (Native Date Picker nhanh) */}
             <label
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#281E14] hover:bg-[#382B1E] text-amber-300 border border-[#523F2A] text-xs font-semibold cursor-pointer transition-all active:scale-95 shadow relative"
+              className="royal-btn-ghost !px-3.5 !py-2 !text-[11px] relative"
               title="Chọn nhanh từ hộp thoại Lịch Dương"
             >
-              <CalendarIcon className="w-3.5 h-3.5 text-amber-400" />
+              <CalendarIcon className="w-3.5 h-3.5" />
               <span>Chọn Lịch</span>
               <input
                 type="date"
@@ -631,7 +629,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
               type="button"
               disabled={isCapturing}
               onClick={() => handleCaptureBoard(false)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#C9A55A] to-[#B38728] hover:brightness-110 text-[#120E09] text-xs font-bold cursor-pointer transition-all active:scale-95 shadow shadow-amber-950/40"
+              className="royal-btn !px-3.5 !py-2 !text-[11px]"
               title="Chụp toàn bộ bảng lịch và 12 giờ Tâm Ấn Phú"
             >
               <Camera className="w-3.5 h-3.5" />
@@ -642,7 +640,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
               type="button"
               disabled={isCapturing}
               onClick={() => handleCaptureBoard(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#2C2115] hover:bg-[#3D2E1D] text-amber-300 border border-[#6B512F] text-xs font-bold cursor-pointer transition-all active:scale-95 shadow"
+              className="royal-btn-ghost !px-3.5 !py-2 !text-[11px]"
               title="Tải ảnh PNG về máy tính"
             >
               <Download className="w-3.5 h-3.5" />
@@ -652,11 +650,11 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
         </div>
 
         {/* Bộ chọn Năm, Tháng, Ngày, Giờ (ĐIỀN VÀO TRỰC TIẾP HOẶC TĂNG GIẢM) */}
-        <div className="mt-4 pt-4 border-t border-[#3B2C1C] grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        <div className="mt-8 pt-6 border-t border-gold-800 grid grid-cols-2 sm:grid-cols-4 gap-3">
           {/* 1. Bộ điền Năm */}
-          <div className="bg-[#17120D] border border-[#3A2C1C] rounded-xl p-2.5 flex flex-col justify-between">
+          <div className="bg-lacquer-900 border border-gold-800 rounded-sm p-2.5 flex flex-col justify-between">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] text-[#8C7D6A] font-mono">NĂM (ĐIỀN VÀO)</span>
+              <span className="text-[10px] text-ivory-500 font-mono">NĂM (ĐIỀN VÀO)</span>
               <span className="text-[9px] text-amber-500/80 font-mono">1800-2200</span>
             </div>
             <div className="flex items-center justify-between gap-1 mt-1.5">
@@ -673,7 +671,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                   setManualStarName(null);
                   setIsHourSectionCollapsed(true);
                 }}
-                className="p-1.5 hover:bg-[#2A1F14] text-[#A89882] hover:text-amber-200 rounded-lg cursor-pointer transition-colors shrink-0"
+                className="p-1.5 hover:bg-lacquer-700 text-ivory-500 hover:text-amber-200 rounded-sm cursor-pointer transition-colors shrink-0"
                 title="Năm trước"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -702,7 +700,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                       (e.target as HTMLInputElement).blur();
                     }
                   }}
-                  className="w-full max-w-[105px] text-center bg-[#22180F] border border-amber-800/60 hover:border-amber-500/80 focus:border-amber-400 rounded-lg py-1 px-1 text-amber-300 font-bold font-serif text-sm sm:text-base focus:outline-none focus:ring-1 focus:ring-amber-400/50 shadow-inner"
+                  className="w-full max-w-[105px] text-center bg-lacquer-800 border border-amber-800/60 hover:border-amber-500/80 focus:border-amber-400 rounded-sm py-1 px-1 text-amber-300 font-bold font-serif text-sm sm:text-base focus:outline-none focus:ring-1 focus:ring-amber-400/50 shadow-inner"
                   placeholder="Năm"
                   title="Nhấp để điền năm trực tiếp"
                 />
@@ -720,7 +718,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                   setManualStarName(null);
                   setIsHourSectionCollapsed(true);
                 }}
-                className="p-1.5 hover:bg-[#2A1F14] text-[#A89882] hover:text-amber-200 rounded-lg cursor-pointer transition-colors shrink-0"
+                className="p-1.5 hover:bg-lacquer-700 text-ivory-500 hover:text-amber-200 rounded-sm cursor-pointer transition-colors shrink-0"
                 title="Năm sau"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -729,16 +727,16 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
           </div>
 
           {/* 2. Bộ điền Tháng */}
-          <div className="bg-[#17120D] border border-[#3A2C1C] rounded-xl p-2.5 flex flex-col justify-between">
+          <div className="bg-lacquer-900 border border-gold-800 rounded-sm p-2.5 flex flex-col justify-between">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] text-[#8C7D6A] font-mono">THÁNG (ĐIỀN VÀO)</span>
+              <span className="text-[10px] text-ivory-500 font-mono">THÁNG (ĐIỀN VÀO)</span>
               <span className="text-[9px] text-amber-500/80 font-mono">1-12</span>
             </div>
             <div className="flex items-center justify-between gap-1 mt-1.5">
               <button
                 type="button"
                 onClick={handlePrevMonth}
-                className="p-1.5 hover:bg-[#2A1F14] text-[#A89882] hover:text-amber-200 rounded-lg cursor-pointer transition-colors shrink-0"
+                className="p-1.5 hover:bg-lacquer-700 text-ivory-500 hover:text-amber-200 rounded-sm cursor-pointer transition-colors shrink-0"
                 title="Tháng trước"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -767,7 +765,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                       (e.target as HTMLInputElement).blur();
                     }
                   }}
-                  className="w-full max-w-[85px] text-center bg-[#22180F] border border-amber-800/60 hover:border-amber-500/80 focus:border-amber-400 rounded-lg py-1 px-1 text-amber-300 font-bold font-serif text-sm sm:text-base focus:outline-none focus:ring-1 focus:ring-amber-400/50 shadow-inner"
+                  className="w-full max-w-[85px] text-center bg-lacquer-800 border border-amber-800/60 hover:border-amber-500/80 focus:border-amber-400 rounded-sm py-1 px-1 text-amber-300 font-bold font-serif text-sm sm:text-base focus:outline-none focus:ring-1 focus:ring-amber-400/50 shadow-inner"
                   placeholder="Tháng"
                   title="Nhấp để điền tháng trực tiếp (1-12)"
                 />
@@ -775,7 +773,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
               <button
                 type="button"
                 onClick={handleNextMonth}
-                className="p-1.5 hover:bg-[#2A1F14] text-[#A89882] hover:text-amber-200 rounded-lg cursor-pointer transition-colors shrink-0"
+                className="p-1.5 hover:bg-lacquer-700 text-ivory-500 hover:text-amber-200 rounded-sm cursor-pointer transition-colors shrink-0"
                 title="Tháng sau"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -784,16 +782,16 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
           </div>
 
           {/* 3. Bộ điền Ngày */}
-          <div className="bg-[#17120D] border border-[#3A2C1C] rounded-xl p-2.5 flex flex-col justify-between">
+          <div className="bg-lacquer-900 border border-gold-800 rounded-sm p-2.5 flex flex-col justify-between">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] text-[#8C7D6A] font-mono">NGÀY (ĐIỀN VÀO)</span>
+              <span className="text-[10px] text-ivory-500 font-mono">NGÀY (ĐIỀN VÀO)</span>
               <span className="text-[9px] text-amber-500/80 font-mono">1-{daysInMonth}</span>
             </div>
             <div className="flex items-center justify-between gap-1 mt-1.5">
               <button
                 type="button"
                 onClick={handlePrevDay}
-                className="p-1.5 hover:bg-[#2A1F14] text-[#A89882] hover:text-amber-200 rounded-lg cursor-pointer transition-colors shrink-0"
+                className="p-1.5 hover:bg-lacquer-700 text-ivory-500 hover:text-amber-200 rounded-sm cursor-pointer transition-colors shrink-0"
                 title="Ngày trước"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -820,7 +818,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                       (e.target as HTMLInputElement).blur();
                     }
                   }}
-                  className="w-full max-w-[85px] text-center bg-[#22180F] border border-amber-800/60 hover:border-amber-500/80 focus:border-amber-400 rounded-lg py-1 px-1 text-amber-300 font-bold font-serif text-sm sm:text-base focus:outline-none focus:ring-1 focus:ring-amber-400/50 shadow-inner"
+                  className="w-full max-w-[85px] text-center bg-lacquer-800 border border-amber-800/60 hover:border-amber-500/80 focus:border-amber-400 rounded-sm py-1 px-1 text-amber-300 font-bold font-serif text-sm sm:text-base focus:outline-none focus:ring-1 focus:ring-amber-400/50 shadow-inner"
                   placeholder="Ngày"
                   title={`Nhấp để điền ngày trực tiếp (1-${daysInMonth})`}
                 />
@@ -828,22 +826,22 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
               <button
                 type="button"
                 onClick={handleNextDay}
-                className="p-1.5 hover:bg-[#2A1F14] text-[#A89882] hover:text-amber-200 rounded-lg cursor-pointer transition-colors shrink-0"
+                className="p-1.5 hover:bg-lacquer-700 text-ivory-500 hover:text-amber-200 rounded-sm cursor-pointer transition-colors shrink-0"
                 title="Ngày sau"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
-            <div className="flex items-center justify-between text-[10px] text-[#A89882] pt-1 mt-1 border-t border-[#261A0F]">
+            <div className="flex items-center justify-between text-[10px] text-ivory-500 pt-1 mt-1 border-t border-lacquer-700">
               <span className="text-amber-400 font-serif font-bold truncate max-w-[90px]">{selectedDayInfo.canChi.fullName}</span>
               <span className="font-mono text-amber-300/70">AL: {selectedDayInfo.lunar.day}/{selectedDayInfo.lunar.month}</span>
             </div>
           </div>
 
           {/* 4. Bộ chọn Giờ (12 Địa Chi) */}
-          <div className="bg-[#17120D] border border-[#3A2C1C] rounded-xl p-2.5 flex flex-col justify-between">
+          <div className="bg-lacquer-900 border border-gold-800 rounded-sm p-2.5 flex flex-col justify-between">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] text-[#8C7D6A] font-mono">GIỜ DỤNG SỰ</span>
+              <span className="text-[10px] text-ivory-500 font-mono">GIỜ DỤNG SỰ</span>
               <Clock className="w-3.5 h-3.5 text-amber-400 opacity-80" />
             </div>
             <div className="mt-1.5">
@@ -857,16 +855,16 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                     onSelectHourPillar(h.can, h.chi);
                   }
                 }}
-                className="w-full bg-[#22180F] border border-amber-800/60 hover:border-amber-500/80 rounded-lg py-1 px-2 text-amber-300 font-bold font-serif text-xs sm:text-sm cursor-pointer focus:outline-none focus:border-amber-400"
+                className="w-full bg-lacquer-800 border border-amber-800/60 hover:border-amber-500/80 rounded-sm py-1 px-2 text-amber-300 font-bold font-serif text-xs sm:text-sm cursor-pointer focus:outline-none focus:border-amber-400"
               >
                 {HOUR_BRANCH_RANGES.map((h, idx) => (
-                  <option key={h.branch} value={idx} className="bg-[#1C150F] text-amber-200">
+                  <option key={h.branch} value={idx} className="bg-lacquer-800 text-amber-200">
                     Giờ {h.branch} ({h.range})
                   </option>
                 ))}
               </select>
             </div>
-            <div className="text-[10px] text-amber-300/70 font-mono pt-1 mt-1 border-t border-[#261A0F] truncate">
+            <div className="text-[10px] text-amber-300/70 font-mono pt-1 mt-1 border-t border-lacquer-700 truncate">
               {HOUR_BRANCH_RANGES[selectedHourChiIdx]?.range}
             </div>
           </div>
@@ -874,35 +872,35 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
       </div>
 
       {noticeMessage && (
-        <div className="bg-emerald-950/80 border border-emerald-600/70 text-emerald-200 text-xs px-4 py-2.5 rounded-xl flex items-center gap-2 animate-in fade-in">
+        <div className="bg-emerald-950/80 border border-emerald-600/70 text-emerald-200 text-xs px-4 py-2.5 rounded-sm flex items-center gap-2 animate-in fade-in">
           <Check className="w-4 h-4 text-emerald-400" />
           <span>{noticeMessage}</span>
         </div>
       )}
 
       {/* ================= KHU VỰC CHỤP HÌNH TOÀN BỘ (LỊCH + TÂM ẤN PHÚ) ================= */}
-      <div ref={captureBoardRef} className="space-y-6 bg-[#130E0A] p-2 sm:p-4 rounded-2xl border border-[#382A1B]">
+      <div ref={captureBoardRef} className="space-y-6 bg-lacquer-950 p-2 sm:p-4 rounded-sm border border-gold-800">
         {/* ================= PHẦN 1: MAP 1 THÁNG (MONTHLY CALENDAR GRID) ================= */}
-        <div ref={calendarGridRef} className="bg-[#16110C] border border-[#382A1B] rounded-2xl p-3 sm:p-5 shadow-xl">
+        <div ref={calendarGridRef} className="border border-gold-800 border-t-gold-600 bg-lacquer-900/85 p-4 sm:p-6">
           {/* Header Tháng */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#2D2115] pb-3 mb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gold-800 pb-3 mb-4">
             <div className="flex items-center gap-2.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_#C9A55A]" />
-              <h3 className="text-base sm:text-lg font-serif font-bold text-[#F5EAD4]">
+              <span className="w-2 h-2 rotate-45 bg-gold-500" />
+              <h3 className="text-lg sm:text-xl font-display font-semibold text-ivory-100">
                 BẢN ĐỒ LỊCH THÁNG {selectedMonth} NĂM {selectedYear}
               </h3>
-              <span className="text-xs text-amber-300/80 font-mono bg-[#281D13] px-2 py-0.5 rounded border border-[#483523]">
+              <span className="text-[12px] text-gold-300 font-serif px-2 py-0.5 rounded-sm border border-gold-700">
                 Tháng {selectedDayInfo.lunar.monthFullName} • Năm {selectedDayInfo.lunar.yearFullName}
               </span>
             </div>
 
-            <div className="flex items-center gap-2 text-xs text-[#A89882]">
+            <div className="flex items-center gap-2 text-xs text-ivory-500">
               <span className="flex items-center gap-1">
                 <span className="w-2.5 h-2.5 rounded bg-amber-500/20 border border-amber-500 inline-block" />
                 <span>Ngày chọn</span>
               </span>
               <span className="flex items-center gap-1">
-                <span className="w-2.5 h-2.5 rounded bg-[#C9A55A] inline-block" />
+                <span className="w-2.5 h-2.5 rounded bg-gold-500 inline-block" />
                 <span>Hôm nay</span>
               </span>
             </div>
@@ -914,10 +912,10 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
               (name, i) => (
                 <div
                   key={name}
-                  className={`py-1.5 rounded-lg ${
+                  className={`py-1.5 rounded-sm ${
                     i >= 5
                       ? "text-rose-400 bg-rose-950/20 border border-rose-900/30"
-                      : "text-[#C2B29A] bg-[#1E1710] border border-[#352516]"
+                      : "text-ivory-300 bg-lacquer-800 border border-lacquer-700"
                   }`}
                 >
                   <span className="hidden sm:inline">{name}</span>
@@ -933,7 +931,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
             {Array.from({ length: firstDayWeekday }).map((_, idx) => (
               <div
                 key={`empty-${idx}`}
-                className="h-20 sm:h-24 bg-[#110D09]/40 border border-[#23170E]/50 rounded-xl opacity-30 pointer-events-none"
+                className="h-20 sm:h-24 bg-lacquer-900/40 border border-lacquer-700/50 rounded-sm opacity-30 pointer-events-none"
               />
             ))}
 
@@ -950,12 +948,12 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                     setManualStarName(null);
                     setIsHourSectionCollapsed(true);
                   }}
-                  className={`min-h-[86px] sm:min-h-[105px] p-1.5 sm:p-2 rounded-xl border flex flex-col justify-between transition-all cursor-pointer relative group ${
+                  className={`min-h-[86px] sm:min-h-[105px] p-1.5 sm:p-2 rounded-sm border flex flex-col justify-between transition-all cursor-pointer relative group ${
                     isSelected
-                      ? "bg-gradient-to-b from-[#352617] to-[#22180F] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-amber-400/50 scale-[1.01] z-10"
+                      ? "bg-gradient-to-b from-gold-800 to-lacquer-800 border-gold-500 ring-1 ring-amber-400/50 scale-[1.01] z-10"
                       : isToday
-                      ? "bg-[#251B12] border-amber-600/70 hover:border-amber-500 shadow-sm"
-                      : "bg-[#18120C] border-[#2C2014] hover:bg-[#201810] hover:border-[#4E3924]"
+                      ? "bg-lacquer-700 border-amber-600/70 hover:border-amber-500 shadow-sm"
+                      : "bg-lacquer-900 border-lacquer-700 hover:bg-lacquer-800 hover:border-gold-800"
                   }`}
                 >
                   {/* Dòng đỉnh: Ngày Dương + Ngày Âm */}
@@ -963,10 +961,10 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                     <span
                       className={`font-serif font-black text-sm sm:text-base leading-none ${
                         isSelected
-                          ? "text-[#E6D3A3]"
+                          ? "text-gold-300"
                           : isToday
                           ? "text-amber-300 font-extrabold"
-                          : "text-[#E6D7C3]"
+                          : "text-ivory-100"
                       }`}
                     >
                       {item.day}
@@ -977,7 +975,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                       className={`text-[9px] sm:text-[10px] font-mono px-1 py-0.2 rounded ${
                         item.lunar.day === 1 || item.lunar.day === 15
                           ? "bg-rose-950/80 text-rose-300 font-bold border border-rose-800/60"
-                          : "text-[#8C7D6A] bg-[#22180E]"
+                          : "text-ivory-500 bg-lacquer-800"
                       }`}
                       title={`Âm lịch: Ngày ${item.lunar.day} tháng ${item.lunar.month}`}
                     >
@@ -989,7 +987,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
 
                   {/* Can Chi Ngày */}
                   <div className="my-1">
-                    <span className="text-[10px] sm:text-[11px] font-serif font-bold text-[#E5C37A] block truncate">
+                    <span className="text-[10px] sm:text-[11px] font-serif font-bold text-gold-400 block truncate">
                       {item.canChi.fullName}
                     </span>
                   </div>
@@ -1010,7 +1008,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                     </div>
 
                     {/* Trực + Tú phụ trợ */}
-                    <div className="text-[8.5px] text-[#7A6C58] hidden sm:flex items-center justify-between font-mono px-0.5">
+                    <div className="text-[8.5px] text-gold-700 hidden sm:flex items-center justify-between font-mono px-0.5">
                       <span>{item.truc.name}</span>
                       <span>{item.tu28.name}</span>
                     </div>
@@ -1018,7 +1016,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
 
                   {/* Huy hiệu Hôm Nay */}
                   {isToday && (
-                    <span className="absolute -top-1.5 -right-1 text-[8px] font-bold px-1.5 py-0.2 rounded-full bg-amber-500 text-stone-950 shadow">
+                    <span className="absolute -top-1.5 -right-1 text-[8px] font-bold px-1.5 py-0.2 rounded-sm bg-amber-500 text-stone-950 shadow">
                       Nay
                     </span>
                   )}
@@ -1029,11 +1027,11 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
         </div>
 
         {/* ================= BANNER QUẺ KINH DỊCH CỦA NGÀY (QUẺ NGÀY TƯƠNG HỢP VỚI LỊCH DỤNG SỰ) ================= */}
-        <div className="bg-gradient-to-r from-[#2B1B0E] via-[#20140A] to-[#2B1B0E] border-2 border-amber-600/70 hover:border-amber-400 rounded-2xl p-3 sm:p-4 shadow-xl transition-all">
+        <div className="royal-card p-4 sm:p-5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3 min-w-0">
               {cardImages[dailyHexData.hexNumber] ? (
-                <div className="w-12 h-16 rounded-lg overflow-hidden border border-[#C9A55A] shadow shrink-0">
+                <div className="w-12 h-16 rounded-sm overflow-hidden border border-gold-500 shadow shrink-0">
                   <img
                     src={cardImages[dailyHexData.hexNumber]}
                     alt={dailyHexData.hexagram.name}
@@ -1041,27 +1039,27 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                   />
                 </div>
               ) : (
-                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#D6B97A] to-[#75511A] flex flex-col items-center justify-center text-[#14120F] shadow-[0_0_12px_rgba(226,183,85,0.3)] border border-[#E6D3A3] shrink-0 font-bold">
-                  <span className="text-base leading-none">☯</span>
-                  <span className="text-[9px] font-mono leading-none mt-0.5">#{dailyHexData.hexNumber}</span>
+                <div className="w-12 h-14 shrink-0 border border-gold-600 bg-lacquer-950 flex flex-col items-center justify-center">
+                  <span className="font-serif text-lg text-gold-400 leading-none">卦</span>
+                  <span className="text-[10px] font-mono text-gold-600 leading-none mt-1.5">#{dailyHexData.hexNumber}</span>
                 </div>
               )}
               <div className="min-w-0 space-y-0.5">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[10px] font-mono font-bold px-2 py-0.2 rounded-full bg-[#181109] text-amber-300 border border-amber-600/60 uppercase tracking-wider">
-                    ☀️ QUẺ KINH DỊCH CỦA NGÀY {selectedDay}/{selectedMonth}/{selectedYear}
+                  <span className="w-full text-[10.5px] font-medium uppercase tracking-[0.22em] text-gold-500">
+                    Quẻ Kinh Dịch của ngày {selectedDay}/{selectedMonth}/{selectedYear}
                   </span>
-                  <span className="font-serif font-black text-sm sm:text-base text-[#F5EAD4]">
+                  <span className="font-display text-xl sm:text-2xl text-ivory-100 leading-tight">
                     Quẻ #{dailyHexData.hexNumber}: {dailyHexData.hexagram.name} ({dailyHexData.hexagram.vietnameseName})
                   </span>
-                  <span className="text-[11px] font-serif font-bold text-[#D6B97A] px-2 py-0.2 rounded bg-amber-950/80 border border-amber-500/50">
+                  <span className="text-[12px] font-serif italic text-gold-400 border-l border-gold-700 pl-3">
                     {dailyHexData.advice.headline}
                   </span>
-                  <span className="text-[10px] px-2 py-0.2 rounded-full bg-purple-950 text-purple-200 border border-purple-600 font-mono">
+                  <span className="text-[10px] px-2 py-0.2 rounded-sm bg-purple-950 text-purple-200 border border-purple-600 font-mono">
                     Hào {dailyHexData.changingLine} Động
                   </span>
                 </div>
-                <p className="text-xs text-[#D8C7B0] font-serif line-clamp-2">
+                <p className="text-xs text-ivory-300 font-serif line-clamp-2">
                   {dailyHexData.advice.summary}
                 </p>
               </div>
@@ -1072,7 +1070,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
               <button
                 type="button"
                 onClick={() => setIsDailyHexExpanded(!isDailyHexExpanded)}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-[#26170D] hover:bg-[#382314] text-amber-300 border border-amber-700/60 text-xs font-serif font-bold cursor-pointer transition-all active:scale-95"
+                className="royal-btn-ghost !px-3 !py-1.5 !text-[11px]"
               >
                 <span>{isDailyHexExpanded ? "▲ Thu Gọn Lời Bình" : "▼ Chi Tiết Lời Bình"}</span>
               </button>
@@ -1082,7 +1080,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                 <button
                   type="button"
                   onClick={onOpenDailyHexagram}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#C9A55A] to-[#B38728] hover:brightness-110 text-[#120F0C] text-xs font-serif font-bold shadow cursor-pointer transition-all active:scale-95"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-gradient-to-r from-gold-500 to-gold-600 hover:brightness-110 text-lacquer-900 text-xs font-serif font-bold shadow cursor-pointer transition-all active:scale-95"
                   title="Bấm để mở cửa sổ xem toàn văn lời bình Quẻ Ngày & Lịch Dụng Sự"
                 >
                   <span>Mở Cửa Sổ Quẻ Ngày</span>
@@ -1097,7 +1095,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
             <div className="mt-3 pt-3 border-t border-amber-900/60 space-y-3 animate-in fade-in duration-200">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {/* VIỆC NÊN LÀM */}
-                <div className="p-2.5 rounded-xl bg-[#0F2417]/80 border border-emerald-700/60 space-y-1">
+                <div className="p-2.5 rounded-sm bg-[#0F2417]/80 border border-emerald-700/60 space-y-1">
                   <div className="text-xs font-bold text-emerald-300 flex items-center gap-1.5">
                     <Check className="w-3.5 h-3.5 text-emerald-400" />
                     <span>Việc Nên Làm (Theo Quẻ Dịch Khuyên):</span>
@@ -1113,7 +1111,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                 </div>
 
                 {/* VIỆC CẦN TRÁNH */}
-                <div className="p-2.5 rounded-xl bg-[#261012]/80 border border-rose-700/60 space-y-1">
+                <div className="p-2.5 rounded-sm bg-[#261012]/80 border border-rose-700/60 space-y-1">
                   <div className="text-xs font-bold text-rose-300 flex items-center gap-1.5">
                     <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
                     <span>Việc Cần Tránh (Quẻ Dịch Cảnh Báo):</span>
@@ -1131,19 +1129,19 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
 
               {/* LỜI DẶN CỐT LÕI & TÂM THẾ */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs font-serif">
-                <div className="p-2.5 rounded-xl bg-[#1D140C] border border-[#4D361F] space-y-1">
+                <div className="p-2.5 rounded-sm bg-lacquer-800 border border-gold-800 space-y-1">
                   <span className="text-[10px] uppercase font-bold text-amber-400 font-mono">
                     📜 Lời Dặn Cốt Lõi:
                   </span>
-                  <p className="text-[#F5EAD4] italic pl-2 border-l-2 border-[#C9A55A]">
+                  <p className="text-ivory-100 italic pl-2 border-l-2 border-gold-500">
                     "{dailyHexData.advice.motto}"
                   </p>
                 </div>
-                <div className="p-2.5 rounded-xl bg-[#1D140C] border border-[#4D361F] space-y-1">
-                  <span className="text-[10px] uppercase font-bold text-[#A89882] font-mono">
+                <div className="p-2.5 rounded-sm bg-lacquer-800 border border-gold-800 space-y-1">
+                  <span className="text-[10px] uppercase font-bold text-ivory-500 font-mono">
                     🧘 Tâm Thế Cần Giữ:
                   </span>
-                  <p className="text-[#DDD0BE]">
+                  <p className="text-ivory-300">
                     {dailyHexData.advice.mindset}
                   </p>
                 </div>
@@ -1151,12 +1149,12 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
 
               {/* HÀO ĐỘNG */}
               {dailyHexData.changingLineMeaning && (
-                <div className="p-2.5 rounded-xl bg-purple-950/40 border border-purple-600/50 text-xs font-serif space-y-1">
+                <div className="p-2.5 rounded-sm bg-purple-950/40 border border-purple-600/50 text-xs font-serif space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-purple-300">
                       ✨ Hào Động Ngày: {dailyHexData.changingLineMeaning.name}
                     </span>
-                    <span className="text-[10px] px-2 py-0.2 rounded-full bg-purple-900 text-purple-200 border border-purple-500 font-mono">
+                    <span className="text-[10px] px-2 py-0.2 rounded-sm bg-purple-900 text-purple-200 border border-purple-500 font-mono">
                       Hào #{dailyHexData.changingLine}
                     </span>
                   </div>
@@ -1173,23 +1171,23 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
         </div>
 
         {/* ================= PHẦN: THÔNG THƯ HỶ KỴ NGÀY HÔM ĐÓ (CÁT SỰ NÊN LÀM & HUNG SỰ CẤM KỴ) ================= */}
-        <div className="bg-[#16120D] border border-[#443220] rounded-2xl p-3 sm:p-5 shadow-2xl relative">
+        <div className="border border-gold-800 border-t-gold-600 bg-lacquer-900/85 p-4 sm:p-6 relative">
           {/* Header Thông Thư */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-[#302316] pb-4 mb-4">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-gold-800 pb-4 mb-4">
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="w-3 h-3 rounded-full bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-400 shadow-[0_0_10px_#C9A55A]" />
-                <h3 className="text-base sm:text-xl font-serif font-bold text-[#F5EAD4] flex items-center gap-2 flex-wrap">
+                <span className="w-2 h-2 rotate-45 bg-gold-500" />
+                <h3 className="text-lg sm:text-2xl font-display font-semibold text-ivory-100 flex items-center gap-2 flex-wrap">
                   <span>THÔNG THƯ NGÀY {selectedDay}/{selectedMonth}/{selectedYear} • HỶ KỴ DỤNG SỰ</span>
                 </h3>
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#2A1D13] text-amber-300 border border-amber-600/60 font-serif font-bold">
+                <span className="text-[12px] px-2 py-0.5 rounded-sm text-gold-300 border border-gold-700 font-serif">
                   Ngày {selectedDayInfo.canChi.fullName} • AL: {thongThuData.lunarDate.day}/{thongThuData.lunarDate.month} ({thongThuData.lunarDate.monthFullName})
                 </span>
-                <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold border ${thongThuData.overallAssessment.badgeClass}`}>
+                <span className={`text-xs px-2.5 py-0.5 rounded-sm font-bold border ${thongThuData.overallAssessment.badgeClass}`}>
                   {thongThuData.overallAssessment.title}
                 </span>
               </div>
-              <p className="text-xs text-[#A89882] mt-1">
+              <p className="text-xs text-ivory-500 mt-1">
                 Trích lục tri thức 《Hiệp Kỷ Biện Phương Thư》 &amp; 《Thông Thư Vạn Sự》 • Luận giải Việc Cát Nên Làm (Hỷ) &amp; Việc Hung Cần Tránh (Kỵ) của ngày đang chọn.
               </p>
             </div>
@@ -1197,17 +1195,17 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
             {/* Thanh công cụ / Nút thu gọn mở rộng */}
             <div className="flex items-center gap-2 flex-wrap">
               {/* Nút lọc Tab */}
-              <div className="flex items-center gap-1 bg-[#1F1710] p-1 rounded-xl border border-[#3E2D1C] flex-wrap">
+              <div className="flex items-center gap-1 bg-lacquer-800 p-1 rounded-sm border border-gold-800 flex-wrap">
                 <button
                   type="button"
                   onClick={() => {
                     setThongThuTab("all");
                     setIsThongThuCollapsed(false);
                   }}
-                  className={`px-2.5 py-1 text-xs rounded-lg font-serif font-bold cursor-pointer transition-all ${
+                  className={`px-2.5 py-1 text-xs rounded-sm font-serif font-bold cursor-pointer transition-all ${
                     thongThuTab === "all"
-                      ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F09] shadow"
-                      : "text-amber-200/80 hover:text-amber-100 hover:bg-[#2C2014]"
+                      ? "bg-gradient-to-r from-gold-500 to-gold-600 text-lacquer-900 shadow"
+                      : "text-amber-200/80 hover:text-amber-100 hover:bg-lacquer-700"
                   }`}
                 >
                   Tất Cả ({thongThuData.hyList.length + thongThuData.kyList.length})
@@ -1218,7 +1216,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                     setThongThuTab("hy");
                     setIsThongThuCollapsed(false);
                   }}
-                  className={`px-2.5 py-1 text-xs rounded-lg font-serif font-bold cursor-pointer transition-all flex items-center gap-1 ${
+                  className={`px-2.5 py-1 text-xs rounded-sm font-serif font-bold cursor-pointer transition-all flex items-center gap-1 ${
                     thongThuTab === "hy"
                       ? "bg-emerald-700 text-white shadow"
                       : "text-emerald-300/80 hover:text-emerald-200 hover:bg-emerald-950/40"
@@ -1233,7 +1231,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                     setThongThuTab("ky");
                     setIsThongThuCollapsed(false);
                   }}
-                  className={`px-2.5 py-1 text-xs rounded-lg font-serif font-bold cursor-pointer transition-all flex items-center gap-1 ${
+                  className={`px-2.5 py-1 text-xs rounded-sm font-serif font-bold cursor-pointer transition-all flex items-center gap-1 ${
                     thongThuTab === "ky"
                       ? "bg-rose-800 text-white shadow"
                       : "text-rose-300/80 hover:text-rose-200 hover:bg-rose-950/40"
@@ -1248,9 +1246,9 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                     setThongThuTab("sao");
                     setIsThongThuCollapsed(false);
                   }}
-                  className={`px-2.5 py-1 text-xs rounded-lg font-serif font-bold cursor-pointer transition-all flex items-center gap-1 ${
+                  className={`px-2.5 py-1 text-xs rounded-sm font-serif font-bold cursor-pointer transition-all flex items-center gap-1 ${
                     thongThuTab === "sao"
-                      ? "bg-amber-600 text-[#120F09] shadow font-bold"
+                      ? "bg-amber-600 text-lacquer-900 shadow font-bold"
                       : "text-amber-300/80 hover:text-amber-200 hover:bg-amber-950/40"
                   }`}
                 >
@@ -1262,10 +1260,10 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                     setThongThuTab("xuatHanh");
                     setIsThongThuCollapsed(false);
                   }}
-                  className={`px-2.5 py-1 text-xs rounded-lg font-serif font-bold cursor-pointer transition-all flex items-center gap-1 ${
+                  className={`px-2.5 py-1 text-xs rounded-sm font-serif font-bold cursor-pointer transition-all flex items-center gap-1 ${
                     thongThuTab === "xuatHanh"
-                      ? "bg-[#6A4D27] text-amber-100 shadow"
-                      : "text-amber-200/80 hover:text-amber-100 hover:bg-[#2C2014]"
+                      ? "bg-gold-700 text-amber-100 shadow"
+                      : "text-amber-200/80 hover:text-amber-100 hover:bg-lacquer-700"
                   }`}
                 >
                   <span>🧭 Xuất Hành &amp; Giờ</span>
@@ -1276,7 +1274,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
               <button
                 type="button"
                 onClick={() => setIsThongThuCollapsed(!isThongThuCollapsed)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#251A10] hover:bg-[#342416] text-amber-300 border border-amber-600/60 text-xs font-bold transition-all cursor-pointer shadow active:scale-95 shrink-0"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-lacquer-800 hover:bg-lacquer-700 text-amber-300 border border-amber-600/60 text-xs font-bold transition-all cursor-pointer shadow active:scale-95 shrink-0"
                 title={isThongThuCollapsed ? "Mở rộng bảng Thông Thư Hỷ Kỵ" : "Thu gọn bảng Thông Thư"}
               >
                 {isThongThuCollapsed ? (
@@ -1296,41 +1294,41 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
 
           {/* Dòng Thẻ Tóm Tắt Nhanh Các Yếu Tố Lịch Số Của Ngày */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mb-4 text-xs">
-            <div className="bg-[#1C150E] border border-[#3A291A] rounded-xl p-2.5">
-              <span className="text-[10px] text-[#8C7B68] block font-mono">DƯƠNG LỊCH</span>
+            <div className="bg-lacquer-800 border border-gold-800 rounded-sm p-2.5">
+              <span className="text-[10px] text-ivory-500 block font-mono">DƯƠNG LỊCH</span>
               <span className="text-amber-300 font-bold font-serif text-sm">
                 {selectedDay}/{selectedMonth}/{selectedYear}
               </span>
             </div>
-            <div className="bg-[#1C150E] border border-[#3A291A] rounded-xl p-2.5">
-              <span className="text-[10px] text-[#8C7B68] block font-mono">ÂM LỊCH</span>
+            <div className="bg-lacquer-800 border border-gold-800 rounded-sm p-2.5">
+              <span className="text-[10px] text-ivory-500 block font-mono">ÂM LỊCH</span>
               <span className="text-amber-300 font-bold font-serif text-sm">
                 {thongThuData.lunarDate.day}/{thongThuData.lunarDate.month} ({thongThuData.lunarDate.yearFullName})
               </span>
             </div>
-            <div className="bg-[#1C150E] border border-[#3A291A] rounded-xl p-2.5">
-              <span className="text-[10px] text-[#8C7B68] block font-mono">NẠP ÂM NGŨ HÀNH</span>
+            <div className="bg-lacquer-800 border border-gold-800 rounded-sm p-2.5">
+              <span className="text-[10px] text-ivory-500 block font-mono">NẠP ÂM NGŨ HÀNH</span>
               <span className="text-amber-200 font-bold font-serif text-xs truncate block" title={thongThuData.napAm.desc}>
                 {thongThuData.napAm.napAm}
               </span>
               <span className="text-[10px] text-amber-500/80">({thongThuData.napAm.element})</span>
             </div>
-            <div className="bg-[#1C150E] border border-[#3A291A] rounded-xl p-2.5">
-              <span className="text-[10px] text-[#8C7B68] block font-mono">12 TRỰC</span>
+            <div className="bg-lacquer-800 border border-gold-800 rounded-sm p-2.5">
+              <span className="text-[10px] text-ivory-500 block font-mono">12 TRỰC</span>
               <span className="text-amber-300 font-bold font-serif text-sm">
                 Trực {thongThuData.truc.name}
               </span>
-              <span className="text-[10px] text-[#A89882] block truncate">({thongThuData.truc.nature})</span>
+              <span className="text-[10px] text-ivory-500 block truncate">({thongThuData.truc.nature})</span>
             </div>
-            <div className="bg-[#1C150E] border border-[#3A291A] rounded-xl p-2.5">
-              <span className="text-[10px] text-[#8C7B68] block font-mono">NHỊ THẬP BÁT TÚ</span>
+            <div className="bg-lacquer-800 border border-gold-800 rounded-sm p-2.5">
+              <span className="text-[10px] text-ivory-500 block font-mono">NHỊ THẬP BÁT TÚ</span>
               <span className="text-amber-300 font-bold font-serif text-sm">
                 Sao {thongThuData.tu28.name}
               </span>
-              <span className="text-[10px] text-[#A89882] block truncate">({thongThuData.tu28.animal})</span>
+              <span className="text-[10px] text-ivory-500 block truncate">({thongThuData.tu28.animal})</span>
             </div>
-            <div className="bg-[#1C150E] border border-[#3A291A] rounded-xl p-2.5">
-              <span className="text-[10px] text-[#8C7B68] block font-mono">TRỰC NHẬT TINH</span>
+            <div className="bg-lacquer-800 border border-gold-800 rounded-sm p-2.5">
+              <span className="text-[10px] text-ivory-500 block font-mono">TRỰC NHẬT TINH</span>
               <span className="text-amber-300 font-bold font-serif text-sm truncate block">
                 {thongThuData.trucNhatTinh.name}
               </span>
@@ -1341,7 +1339,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
           </div>
 
           {/* Banner Luận Giải Tổng Thể & Khẩu Quyết Thông Thư */}
-          <div className="bg-gradient-to-r from-[#21170F] via-[#2A1D13] to-[#1E140C] border border-[#523C26] rounded-xl p-3.5 mb-4 shadow-inner flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="bg-gradient-to-r from-lacquer-800 via-lacquer-700 to-lacquer-800 border border-gold-800 rounded-sm p-3.5 mb-4 shadow-inner flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div className="space-y-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-xs font-bold text-amber-400 font-serif">ĐÁNH GIÁ TỔNG QUAN:</span>
@@ -1352,7 +1350,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                   — {thongThuData.overallAssessment.verdict}
                 </span>
               </div>
-              <p className="text-xs text-[#E5D2BA] italic font-serif leading-relaxed">
+              <p className="text-xs text-ivory-300 italic font-serif leading-relaxed">
                 « {thongThuData.overallAssessment.poemOrQuote} »
               </p>
             </div>
@@ -1360,7 +1358,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
 
           {/* Cảnh Báo Hung Sát Trọng Đại (Tam Nương, Nguyệt Kỵ, Nguyệt Phá, Sát Chủ, Thọ Tử) */}
           {thongThuData.specialTaboos.activeWarnings.length > 0 && (
-            <div className="bg-rose-950/40 border border-rose-700/60 rounded-xl p-3 mb-4 text-xs text-rose-200 space-y-1.5 shadow">
+            <div className="bg-rose-950/40 border border-rose-700/60 rounded-sm p-3 mb-4 text-xs text-rose-200 space-y-1.5 shadow">
               <div className="flex items-center gap-2 text-rose-300 font-serif font-bold text-sm">
                 <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
                 <span>CẢNH BÁO HUNG SÁT ĐẶC BIỆT TRONG THÁNG CỦA NGÀY NÀY:</span>
@@ -1386,16 +1384,16 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                 <div className={`grid gap-4 ${thongThuTab === "all" ? "grid-cols-1 lg:grid-cols-2" : "grid-cols-1"}`}>
                   {/* CỘT VIỆC HỶ (CÁT SỰ • NÊN LÀM) */}
                   {(thongThuTab === "all" || thongThuTab === "hy") && (
-                    <div className="bg-[#121912] border border-emerald-800/60 rounded-xl p-3.5 sm:p-4 shadow-xl flex flex-col justify-between">
+                    <div className="bg-[#121912] border border-emerald-800/60 rounded-sm p-3.5 sm:p-4 shadow-xl flex flex-col justify-between">
                       <div>
                         <div className="flex items-center justify-between border-b border-emerald-900/60 pb-2.5 mb-3">
                           <div className="flex items-center gap-2">
-                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34D399]" />
+                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
                             <h4 className="text-sm sm:text-base font-serif font-bold text-emerald-200 flex items-center gap-1.5">
                               <span>VIỆC HỶ (CÁT SỰ • NÊN LÀM)</span>
                             </h4>
                           </div>
-                          <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-700/60 font-bold">
+                          <span className="text-[11px] font-mono px-2 py-0.5 rounded-sm bg-emerald-950 text-emerald-300 border border-emerald-700/60 font-bold">
                             {thongThuData.hyList.length} Việc Lành
                           </span>
                         </div>
@@ -1409,7 +1407,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                             {thongThuData.hyList.map((item) => (
                               <div
                                 key={item.id}
-                                className="bg-[#182318] hover:bg-[#1E2C1E] border border-emerald-800/40 hover:border-emerald-600/70 rounded-xl p-2.5 sm:p-3 transition-colors shadow-sm"
+                                className="bg-[#182318] hover:bg-[#1E2C1E] border border-emerald-800/40 hover:border-emerald-600/70 rounded-sm p-2.5 sm:p-3 transition-colors shadow-sm"
                               >
                                 <div className="flex items-center justify-between gap-2 mb-1.5">
                                   <div className="flex items-center gap-2">
@@ -1419,9 +1417,9 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                                     </span>
                                   </div>
                                   <span
-                                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                                    className={`text-[10px] font-bold px-2 py-0.5 rounded-sm border ${
                                       item.level === "Đại Cát"
-                                        ? "bg-amber-950 text-amber-300 border-amber-600 shadow-[0_0_8px_rgba(212,175,55,0.3)]"
+                                        ? "bg-amber-950 text-amber-300 border-amber-600"
                                         : item.level === "Cát"
                                         ? "bg-emerald-950 text-emerald-300 border-emerald-600"
                                         : "bg-stone-900 text-stone-300 border-stone-700"
@@ -1450,16 +1448,16 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
 
                   {/* CỘT VIỆC KỴ (HUNG SỰ • CẦN TRÁNH) */}
                   {(thongThuTab === "all" || thongThuTab === "ky") && (
-                    <div className="bg-[#1C1214] border border-rose-800/60 rounded-xl p-3.5 sm:p-4 shadow-xl flex flex-col justify-between">
+                    <div className="bg-[#1C1214] border border-rose-800/60 rounded-sm p-3.5 sm:p-4 shadow-xl flex flex-col justify-between">
                       <div>
                         <div className="flex items-center justify-between border-b border-rose-900/60 pb-2.5 mb-3">
                           <div className="flex items-center gap-2">
-                            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_#F43F5E]" />
+                            <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
                             <h4 className="text-sm sm:text-base font-serif font-bold text-rose-200 flex items-center gap-1.5">
                               <span>VIỆC KỴ (HUNG SỰ • CẦN TRÁNH)</span>
                             </h4>
                           </div>
-                          <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-rose-950 text-rose-300 border border-rose-700/60 font-bold">
+                          <span className="text-[11px] font-mono px-2 py-0.5 rounded-sm bg-rose-950 text-rose-300 border border-rose-700/60 font-bold">
                             {thongThuData.kyList.length} Việc Kiêng Cữ
                           </span>
                         </div>
@@ -1473,7 +1471,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                             {thongThuData.kyList.map((item) => (
                               <div
                                 key={item.id}
-                                className="bg-[#24171A] hover:bg-[#2B1B1F] border border-rose-800/40 hover:border-rose-600/70 rounded-xl p-2.5 sm:p-3 transition-colors shadow-sm"
+                                className="bg-[#24171A] hover:bg-[#2B1B1F] border border-rose-800/40 hover:border-rose-600/70 rounded-sm p-2.5 sm:p-3 transition-colors shadow-sm"
                               >
                                 <div className="flex items-center justify-between gap-2 mb-1.5">
                                   <div className="flex items-center gap-2">
@@ -1483,9 +1481,9 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                                     </span>
                                   </div>
                                   <span
-                                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                                    className={`text-[10px] font-bold px-2 py-0.5 rounded-sm border ${
                                       item.level === "Đại Hung"
-                                        ? "bg-rose-950 text-rose-200 border-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.4)] animate-pulse"
+                                        ? "bg-rose-950 text-rose-200 border-rose-500 animate-pulse"
                                         : item.level === "Hung"
                                         ? "bg-rose-950/80 text-rose-300 border-rose-700"
                                         : "bg-stone-900 text-stone-300 border-stone-700"
@@ -1518,13 +1516,13 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
               {(thongThuTab === "all" || thongThuTab === "sao") && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-2">
                   {/* Bảng Sao Tốt (Cát Thần) */}
-                  <div className="bg-[#17130E] border border-amber-800/40 rounded-xl p-3.5 shadow-md">
-                    <div className="flex items-center gap-2 border-b border-[#302316] pb-2 mb-3">
+                  <div className="bg-lacquer-900 border border-amber-800/40 rounded-sm p-3.5 shadow-md">
+                    <div className="flex items-center gap-2 border-b border-gold-800 pb-2 mb-3">
                       <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
                       <h4 className="text-sm font-serif font-bold text-amber-200">
                         CÁT THẦN HỘI TỤ (SAO TỐT LÂM CHIẾU)
                       </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.2 rounded-full bg-amber-950 text-amber-300 border border-amber-700/60">
+                      <span className="text-[10px] font-mono px-2 py-0.2 rounded-sm bg-amber-950 text-amber-300 border border-amber-700/60">
                         {thongThuData.catThanList.length} Sao
                       </span>
                     </div>
@@ -1533,7 +1531,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                       {thongThuData.catThanList.map((star, idx) => (
                         <div
                           key={idx}
-                          className="bg-[#201810] border border-[#3E2D1C] rounded-lg p-2.5 flex items-start justify-between gap-2"
+                          className="bg-lacquer-800 border border-gold-800 rounded-sm p-2.5 flex items-start justify-between gap-2"
                         >
                           <div>
                             <div className="flex items-center gap-2">
@@ -1544,7 +1542,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                                 {star.quality}
                               </span>
                             </div>
-                            <p className="text-[11px] text-[#C2B29A] mt-0.5 leading-snug">
+                            <p className="text-[11px] text-ivory-300 mt-0.5 leading-snug">
                               {star.desc}
                             </p>
                           </div>
@@ -1554,13 +1552,13 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                   </div>
 
                   {/* Bảng Sao Xấu (Hung Thần) */}
-                  <div className="bg-[#17130E] border border-stone-800/60 rounded-xl p-3.5 shadow-md">
-                    <div className="flex items-center gap-2 border-b border-[#302316] pb-2 mb-3">
+                  <div className="bg-lacquer-900 border border-stone-800/60 rounded-sm p-3.5 shadow-md">
+                    <div className="flex items-center gap-2 border-b border-gold-800 pb-2 mb-3">
                       <Shield className="w-4 h-4 text-rose-400" />
                       <h4 className="text-sm font-serif font-bold text-rose-300">
                         HUNG THẦN CHIẾU PHƯƠNG (SAO XẤU CẦN ĐỀ PHÒNG)
                       </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.2 rounded-full bg-rose-950 text-rose-300 border border-rose-700/60">
+                      <span className="text-[10px] font-mono px-2 py-0.2 rounded-sm bg-rose-950 text-rose-300 border border-rose-700/60">
                         {thongThuData.hungThanList.length} Sát
                       </span>
                     </div>
@@ -1569,7 +1567,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                       {thongThuData.hungThanList.map((star, idx) => (
                         <div
                           key={idx}
-                          className="bg-[#201516] border border-rose-950 rounded-lg p-2.5 flex items-start justify-between gap-2"
+                          className="bg-[#201516] border border-rose-950 rounded-sm p-2.5 flex items-start justify-between gap-2"
                         >
                           <div>
                             <div className="flex items-center gap-2">
@@ -1597,49 +1595,49 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                   {/* Grid 3 Card Hướng Xuất Hành & Tuổi Xung */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     {/* Hướng Hỷ Thần */}
-                    <div className="bg-[#18140F] border border-amber-800/50 rounded-xl p-3 flex flex-col justify-between">
+                    <div className="bg-lacquer-800 border border-amber-800/50 rounded-sm p-3 flex flex-col justify-between">
                       <div>
                         <div className="flex items-center justify-between text-xs mb-1.5">
                           <span className="text-amber-400 font-serif font-bold flex items-center gap-1.5">
                             <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400" />
                             <span>HƯỚNG HỶ THẦN</span>
                           </span>
-                          <span className="text-[10px] font-mono text-amber-300/80 bg-[#251A10] px-1.5 py-0.5 rounded border border-[#48331E]">
+                          <span className="text-[10px] font-mono text-amber-300/80 bg-lacquer-800 px-1.5 py-0.5 rounded border border-gold-800">
                             {thongThuData.xuatHanh.hyThan.palace}
                           </span>
                         </div>
-                        <div className="text-base font-serif font-black text-[#E6D3A3]">
+                        <div className="text-base font-serif font-black text-gold-300">
                           Hướng {thongThuData.xuatHanh.hyThan.direction}
                         </div>
-                        <p className="text-[11px] text-[#C2B29A] mt-1 leading-relaxed">
+                        <p className="text-[11px] text-ivory-300 mt-1 leading-relaxed">
                           {thongThuData.xuatHanh.hyThan.desc}. Xuất hành theo hướng này đem lại hỷ khí, hôn nhân hòa thuận, vạn sự thuận lòng.
                         </p>
                       </div>
                     </div>
 
                     {/* Hướng Tài Thần */}
-                    <div className="bg-[#18140F] border border-amber-800/50 rounded-xl p-3 flex flex-col justify-between">
+                    <div className="bg-lacquer-800 border border-amber-800/50 rounded-sm p-3 flex flex-col justify-between">
                       <div>
                         <div className="flex items-center justify-between text-xs mb-1.5">
                           <span className="text-amber-400 font-serif font-bold flex items-center gap-1.5">
                             <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                             <span>HƯỚNG TÀI THẦN</span>
                           </span>
-                          <span className="text-[10px] font-mono text-amber-300/80 bg-[#251A10] px-1.5 py-0.5 rounded border border-[#48331E]">
+                          <span className="text-[10px] font-mono text-amber-300/80 bg-lacquer-800 px-1.5 py-0.5 rounded border border-gold-800">
                             {thongThuData.xuatHanh.taiThan.palace}
                           </span>
                         </div>
-                        <div className="text-base font-serif font-black text-[#E6D3A3]">
+                        <div className="text-base font-serif font-black text-gold-300">
                           Hướng {thongThuData.xuatHanh.taiThan.direction}
                         </div>
-                        <p className="text-[11px] text-[#C2B29A] mt-1 leading-relaxed">
+                        <p className="text-[11px] text-ivory-300 mt-1 leading-relaxed">
                           {thongThuData.xuatHanh.taiThan.desc}. Lên đường kinh doanh, đàm phán hợp đồng, cầu tài lộc nên nghênh hướng này.
                         </p>
                       </div>
                     </div>
 
                     {/* Hướng Hạc Thần (Xấu) & Tuổi Xung Khắc */}
-                    <div className="bg-[#18140F] border border-[#3E2D1C] rounded-xl p-3 flex flex-col justify-between">
+                    <div className="bg-lacquer-800 border border-gold-800 rounded-sm p-3 flex flex-col justify-between">
                       <div>
                         <div className="flex items-center justify-between text-xs mb-1.5">
                           <span className="text-rose-400 font-serif font-bold flex items-center gap-1.5">
@@ -1653,12 +1651,12 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                         <div className="text-base font-serif font-bold text-rose-200">
                           Hướng {thongThuData.xuatHanh.hacThanDirection}
                         </div>
-                        <p className="text-[11px] text-[#A89882] mt-1 leading-relaxed">
+                        <p className="text-[11px] text-ivory-500 mt-1 leading-relaxed">
                           Hạc thần ngự tại hướng {thongThuData.xuatHanh.hacThanDirection}. Khởi hành đầu tiên chớ đi thẳng về hướng này để tránh gặp trắc trở.
                         </p>
                       </div>
 
-                      <div className="mt-2 pt-2 border-t border-[#2C1F14] text-[11px]">
+                      <div className="mt-2 pt-2 border-t border-lacquer-700 text-[11px]">
                         <span className="text-amber-400 font-serif font-bold">Tuổi xung với ngày: </span>
                         <span className="text-rose-300 font-semibold">{thongThuData.tuoiXung.examples.join(", ")}</span>
                       </div>
@@ -1666,8 +1664,8 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                   </div>
 
                   {/* Bảng 12 Giờ Hoàng Đạo & Hắc Đạo Trong Ngày */}
-                  <div className="bg-[#18130E] border border-[#443220] rounded-xl p-3 sm:p-4 shadow-md">
-                    <div className="flex items-center justify-between border-b border-[#2D1F13] pb-2 mb-3">
+                  <div className="bg-lacquer-800 border border-gold-800 rounded-sm p-3 sm:p-4 shadow-md">
+                    <div className="flex items-center justify-between border-b border-gold-800 pb-2 mb-3">
                       <div className="flex items-center gap-2">
                         <Clock className="w-4 h-4 text-amber-400" />
                         <h4 className="text-sm font-serif font-bold text-amber-200">
@@ -1679,8 +1677,8 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                           <span className="w-2.5 h-2.5 rounded bg-amber-500 inline-block" />
                           <span>Hoàng Đạo (Cát)</span>
                         </span>
-                        <span className="flex items-center gap-1 text-[#8C7D6A]">
-                          <span className="w-2.5 h-2.5 rounded bg-[#2D2115] border border-[#443322] inline-block" />
+                        <span className="flex items-center gap-1 text-ivory-500">
+                          <span className="w-2.5 h-2.5 rounded bg-lacquer-700 border border-gold-800 inline-block" />
                           <span>Hắc Đạo</span>
                         </span>
                       </div>
@@ -1697,14 +1695,14 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                               onSelectHourPillar(canChiHour.can, canChiHour.chi);
                             }
                           }}
-                          className={`p-2 rounded-xl border transition-all cursor-pointer ${
+                          className={`p-2 rounded-sm border transition-all cursor-pointer ${
                             h.isHoangDao
-                              ? "bg-gradient-to-b from-[#2B1F13] to-[#1C140C] border-amber-600/70 hover:border-amber-400 shadow-sm hover:scale-[1.02]"
-                              : "bg-[#140F0A] border-[#2A1D12] text-[#8C7D6A] hover:bg-[#1A130D]"
+                              ? "bg-gradient-to-b from-lacquer-700 to-lacquer-800 border-amber-600/70 hover:border-amber-400 shadow-sm hover:scale-[1.02]"
+                              : "bg-lacquer-900 border-lacquer-700 text-ivory-500 hover:bg-lacquer-800"
                           } ${selectedHourChiIdx === h.branchIdx ? "ring-2 ring-amber-400" : ""}`}
                         >
                           <div className="flex items-center justify-between">
-                            <span className={`font-serif font-bold text-sm ${h.isHoangDao ? "text-amber-300" : "text-[#A89882]"}`}>
+                            <span className={`font-serif font-bold text-sm ${h.isHoangDao ? "text-amber-300" : "text-ivory-500"}`}>
                               Giờ {h.branchName}
                             </span>
                             {h.isHoangDao && (
@@ -1713,10 +1711,10 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                               </span>
                             )}
                           </div>
-                          <span className="text-[10px] font-mono text-[#8C7D6A] block mt-0.5">
+                          <span className="text-[10px] font-mono text-ivory-500 block mt-0.5">
                             {h.range}
                           </span>
-                          <span className={`text-[10px] font-serif block mt-1 truncate ${h.isHoangDao ? "text-amber-200/90 font-medium" : "text-[#706250]"}`}>
+                          <span className={`text-[10px] font-serif block mt-1 truncate ${h.isHoangDao ? "text-amber-200/90 font-medium" : "text-gold-700"}`}>
                             {h.starName.split(" ")[0]}
                           </span>
                         </div>
@@ -1730,28 +1728,28 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
         </div>
 
         {/* ================= PHẦN 2: BẢNG 12 ĐỊA CHI ỨNG 12 GIỜ SO VỚI TRỰC NHẬT TINH RA TÊN TÂM ẤN PHÚ ================= */}
-        <div className="bg-[#17120C] border border-[#3E2E1D] rounded-2xl p-3 sm:p-5 shadow-2xl relative">
+        <div className="border border-gold-800 border-t-gold-600 bg-lacquer-900/85 p-4 sm:p-6 relative">
           {/* Header Phần Tâm Ấn Phú */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-[#302316] pb-4 mb-4">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-gold-800 pb-4 mb-4">
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 shadow-[0_0_10px_#C9A55A]" />
-                <h3 className="text-base sm:text-xl font-serif font-bold text-[#F5EAD4] flex items-center gap-2 flex-wrap">
+                <span className="w-2 h-2 rotate-45 bg-gold-500" />
+                <h3 className="text-lg sm:text-2xl font-display font-semibold text-ivory-100 flex items-center gap-2 flex-wrap">
                   <span>BẢNG 12 ĐỊA CHI ỨNG 12 GIỜ • TÂM ẤN PHÚ</span>
                 </h3>
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#2E2013] text-amber-300 border border-amber-600/60 font-serif font-bold">
+                <span className="text-[12px] px-2 py-0.5 rounded-sm text-gold-300 border border-gold-700 font-serif">
                   Ngày {selectedDayInfo.day}/{selectedMonth}/{selectedYear} ({selectedDayInfo.canChi.fullName})
                 </span>
               </div>
-              <p className="text-xs text-[#A89882] mt-1">
+              <p className="text-xs text-ivory-500 mt-1">
                 Chiếu 12 Giờ Địa Chi so với Trực Nhật Tinh 《<strong>{selectedDayInfo.activeStar.name}</strong>》 (ngầm hiểu: <em>{TRUC_NHAT_TINH_TO_THIEN_TUONG_MAP[selectedDayInfo.activeStar.name] || selectedDayInfo.activeStar.name}</em>) ra tên tượng thần, khẩu quyết và ý nghĩa cát hung theo thiên cổ 《Lục Nhâm Thần Khóa • Tâm Ấn Phú》.
               </p>
             </div>
 
             {/* Selector Nhanh 12 Trực Nhật Tinh (Hoàng Đạo / Hắc Đạo) & Nút Thu Gọn */}
             <div className="flex items-center gap-2 flex-wrap">
-              <div className="flex items-center gap-1.5 bg-[#201810] p-1.5 rounded-xl border border-[#42311F] flex-wrap">
-                <span className="text-[11px] text-[#A89882] font-serif font-bold px-1.5">
+              <div className="flex items-center gap-1.5 bg-lacquer-800 p-1.5 rounded-sm border border-gold-800 flex-wrap">
+                <span className="text-[11px] text-ivory-500 font-serif font-bold px-1.5">
                   Trực Nhật Tinh:
                 </span>
                 <div className="flex items-center gap-1 flex-wrap">
@@ -1759,7 +1757,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                     <button
                       type="button"
                       onClick={() => setManualStarName(null)}
-                      className="px-2 py-1 text-[11px] rounded-lg font-mono text-amber-400 bg-[#2E2013] hover:bg-[#3D2C1B] border border-amber-600/50 cursor-pointer transition-all"
+                      className="px-2 py-1 text-[11px] rounded-sm font-mono text-amber-400 bg-lacquer-700 hover:bg-gold-800 border border-amber-600/50 cursor-pointer transition-all"
                       title="Trở về Trực Nhật Tinh tự động theo ngày và tháng"
                     >
                       ↺ Theo Ngày ({selectedDayInfo.defaultStar.name})
@@ -1772,12 +1770,12 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                         key={star.name}
                         type="button"
                         onClick={() => setManualStarName(star.name)}
-                        className={`px-2 py-1 text-xs rounded-lg font-serif font-bold cursor-pointer transition-all ${
+                        className={`px-2 py-1 text-xs rounded-sm font-serif font-bold cursor-pointer transition-all ${
                           isActive
-                            ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F09] shadow-md scale-105"
+                            ? "bg-gradient-to-r from-gold-500 to-gold-600 text-lacquer-900 shadow-md scale-105"
                             : star.nature === "Hoàng Đạo"
-                            ? "text-amber-200/90 hover:text-[#FFF] hover:bg-[#2C2014]"
-                            : "text-rose-300/80 hover:text-[#FFF] hover:bg-[#2C1814]"
+                            ? "text-amber-200/90 hover:text-gold-200 hover:bg-lacquer-700"
+                            : "text-rose-300/80 hover:text-gold-200 hover:bg-[#2C1814]"
                         }`}
                         title={`${star.name} (${star.nature} • ${star.quality}) - ${star.desc}`}
                       >
@@ -1792,7 +1790,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
               <button
                 type="button"
                 onClick={() => setIsHourSectionCollapsed(!isHourSectionCollapsed)}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#281D12] hover:bg-[#382819] text-amber-300 border border-amber-600/70 text-xs font-bold transition-all cursor-pointer shadow hover:border-amber-400 active:scale-95 shrink-0"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-sm bg-lacquer-700 hover:bg-gold-800 text-amber-300 border border-amber-600/70 text-xs font-bold transition-all cursor-pointer shadow hover:border-amber-400 active:scale-95 shrink-0"
                 title={isHourSectionCollapsed ? "Mở rộng xem toàn bộ 12 giờ Địa Chi" : "Thu gọn bảng 12 giờ Địa Chi"}
               >
                 {isHourSectionCollapsed ? (
@@ -1811,9 +1809,9 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
           </div>
 
           {/* Banner Thông Tin Trực Nhật Tinh Đang Chiếu */}
-          <div className="bg-[#201710] border border-amber-800/40 rounded-xl p-3 mb-4 flex items-center justify-between gap-3 flex-wrap">
+          <div className="bg-lacquer-800 border border-amber-800/40 rounded-sm p-3 mb-4 flex items-center justify-between gap-3 flex-wrap">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#382615] to-[#1F150D] border border-amber-600/70 flex items-center justify-center text-amber-300 font-serif font-bold text-base shadow-inner">
+              <div className="w-10 h-10 rounded-sm bg-gradient-to-br from-gold-800 to-lacquer-800 border border-amber-600/70 flex items-center justify-center text-amber-300 font-serif font-bold text-base shadow-inner">
                 {selectedDayInfo.activeStar.name.slice(0, 1)}
               </div>
               <div>
@@ -1824,17 +1822,17 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                   <span className={`text-[10px] font-bold px-2 py-0.2 rounded border ${selectedDayInfo.activeStar.color}`}>
                     {selectedDayInfo.activeStar.nature}
                   </span>
-                  <span className="text-[10px] font-mono text-amber-400/80 bg-[#150F0A] px-1.5 py-0.2 rounded border border-[#3E2D1A]">
+                  <span className="text-[10px] font-mono text-amber-400/80 bg-lacquer-900 px-1.5 py-0.2 rounded border border-gold-800">
                     Hành {selectedDayInfo.activeStar.element}
                   </span>
                 </div>
-                <p className="text-xs text-[#C2B29A] mt-0.5">
+                <p className="text-xs text-ivory-300 mt-0.5">
                   {selectedDayInfo.activeStar.desc}
                 </p>
               </div>
             </div>
 
-            <div className="text-right text-xs text-[#8C7D6A] font-mono">
+            <div className="text-right text-xs text-ivory-500 font-mono">
               <div>Tháng Tiết Khí: <strong className="text-amber-300 font-serif">Tháng {selectedDayInfo.monthBranch}</strong> • Âm Lịch: {selectedDayInfo.lunar.day}/{selectedDayInfo.lunar.month}</div>
               <div className="text-amber-300/80">Trực: {selectedDayInfo.truc.name} • Sao: {selectedDayInfo.tu28.name}</div>
             </div>
@@ -1843,24 +1841,24 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
           {/* ================= NỘI DUNG PHẦN 2: THU GỌN HOẶC MỞ RỘNG BẢNG 12 GIỜ ================= */}
           {isHourSectionCollapsed ? (
             /* Chế độ Thu Gọn: Hiển thị thanh tóm lược tinh gọn & bộ chuyển 12 giờ nhanh */
-            <div className="bg-[#130E09] border border-amber-700/50 rounded-2xl p-3.5 sm:p-4 space-y-3.5 shadow-lg">
+            <div className="bg-lacquer-900 border border-amber-700/50 rounded-md p-3.5 sm:p-4 space-y-3.5 shadow-lg">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#C9A55A] to-[#8C6B1B] p-0.5 flex items-center justify-center shrink-0 shadow-md">
-                    <div className="w-full h-full bg-[#18120C] rounded-[10px] flex items-center justify-center font-serif font-black text-amber-300 text-base">
+                  <div className="w-11 h-11 rounded-sm bg-gradient-to-br from-gold-500 to-gold-700 p-0.5 flex items-center justify-center shrink-0 shadow-md">
+                    <div className="w-full h-full bg-lacquer-900 rounded-[10px] flex items-center justify-center font-serif font-black text-amber-300 text-base">
                       {selectedHourData.branch}
                     </div>
                   </div>
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h4 className="font-serif font-bold text-base text-[#F5EAD4]">
+                      <h4 className="font-serif font-bold text-base text-ivory-100">
                         Giờ {selectedHourData.branch} ({selectedHourData.hourCanChi})
                       </h4>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#261B11] text-amber-300 border border-amber-800/60">
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-lacquer-700 text-amber-300 border border-amber-800/60">
                         {selectedHourData.hourRange}
                       </span>
                       {selectedHourData.entry && (
-                        <span className="text-xs font-serif font-bold text-amber-300 bg-[#352516] px-2.5 py-0.5 rounded-full border border-amber-600/70">
+                        <span className="text-xs font-serif font-bold text-amber-300 bg-lacquer-700 px-2.5 py-0.5 rounded-sm border border-amber-600/70">
                           Tượng: 《{selectedHourData.entry.tuongName}》 ({selectedHourData.entry.tuongChinese})
                         </span>
                       )}
@@ -1886,7 +1884,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                           general: selectedHourData.general!,
                         });
                       }}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#281D12] hover:bg-[#382819] text-amber-300 border border-[#523F2A] text-xs font-semibold cursor-pointer transition-colors shadow-sm"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-lacquer-700 hover:bg-gold-800 text-amber-300 border border-gold-800 text-xs font-semibold cursor-pointer transition-colors shadow-sm"
                     >
                       <Info className="w-3.5 h-3.5 text-amber-400" />
                       <span>Xem Diễn Giải</span>
@@ -1895,7 +1893,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                   <button
                     type="button"
                     onClick={() => setIsHourSectionCollapsed(false)}
-                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F09] font-bold text-xs cursor-pointer shadow hover:brightness-110 active:scale-95"
+                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-sm bg-gradient-to-r from-gold-500 to-gold-600 text-lacquer-900 font-bold text-xs cursor-pointer shadow hover:brightness-110 active:scale-95"
                   >
                     <ChevronDown className="w-3.5 h-3.5" />
                     <span>Mở Rộng 12 Giờ</span>
@@ -1904,8 +1902,8 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
               </div>
 
               {/* Thanh 12 nút chuyển nhanh Giờ Địa Chi */}
-              <div className="pt-2 border-t border-[#2B1F13] flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
-                <span className="text-[11px] text-[#8C7D6A] font-serif font-bold shrink-0 pr-1">
+              <div className="pt-2 border-t border-lacquer-700 flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
+                <span className="text-[11px] text-ivory-500 font-serif font-bold shrink-0 pr-1">
                   Chọn giờ nhanh:
                 </span>
                 {tamAnPhuHourTable.map((h) => {
@@ -1920,10 +1918,10 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                           onSelectHourPillar(h.hourCan, h.hourChi);
                         }
                       }}
-                      className={`px-2.5 py-1 text-xs rounded-lg font-serif font-bold transition-all shrink-0 cursor-pointer ${
+                      className={`px-2.5 py-1 text-xs rounded-sm font-serif font-bold transition-all shrink-0 cursor-pointer ${
                         isActive
-                          ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-stone-950 shadow scale-105"
-                          : "bg-[#1E1711] text-[#B5A593] hover:text-amber-200 hover:bg-[#2C2016] border border-[#3A2A1B]"
+                          ? "bg-gradient-to-r from-gold-500 to-gold-600 text-stone-950 shadow scale-105"
+                          : "bg-lacquer-800 text-ivory-500 hover:text-amber-200 hover:bg-lacquer-700 border border-gold-800"
                       }`}
                       title={`${h.branch} (${h.hourCanChi} • ${h.hourRange})`}
                     >
@@ -1955,21 +1953,21 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                         });
                       }
                     }}
-                    className={`p-3.5 rounded-xl border transition-all cursor-pointer relative group flex flex-col justify-between ${
+                    className={`p-3.5 rounded-sm border transition-all cursor-pointer relative group flex flex-col justify-between ${
                       isSelectedHour
-                        ? "bg-gradient-to-br from-[#2D2014] to-[#1C140D] border-[#C9A55A] shadow-[0_0_18px_rgba(212,175,55,0.2)] ring-1 ring-amber-400/60"
-                        : "bg-[#1A130C] border-[#312316] hover:bg-[#221910] hover:border-[#4E3924]"
+                        ? "bg-gradient-to-br from-lacquer-700 to-lacquer-800 border-gold-500 ring-1 ring-amber-400/60"
+                        : "bg-lacquer-800 border-lacquer-700 hover:bg-lacquer-800 hover:border-gold-800"
                     }`}
                   >
                     {/* Dòng Tiêu Đề: Giờ Địa Chi + Khung Giờ + Can Chi Giờ */}
                     <div>
-                      <div className="flex items-center justify-between border-b border-[#2C1F14] pb-2 mb-2">
+                      <div className="flex items-center justify-between border-b border-gold-800 pb-2 mb-2">
                         <div className="flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-lg bg-[#271C12] border border-[#483523] flex items-center justify-center font-serif font-bold text-amber-300 text-xs">
+                          <div className="w-7 h-7 rounded-sm bg-lacquer-700 border border-gold-800 flex items-center justify-center font-serif font-bold text-amber-300 text-xs">
                             {item.branch}
                           </div>
                           <div>
-                            <span className="font-serif font-bold text-sm text-[#F5EAD4] block leading-none">
+                            <span className="font-serif font-bold text-sm text-ivory-100 block leading-none">
                               Giờ {item.branch}
                             </span>
                             <span className="text-[10px] text-amber-400 font-mono font-semibold">
@@ -1979,19 +1977,19 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                         </div>
 
                         <div className="text-right">
-                          <span className="text-[10px] font-mono text-[#A89882] bg-[#120E0A] px-2 py-0.5 rounded border border-[#352516] block">
+                          <span className="text-[10px] font-mono text-ivory-500 bg-lacquer-900 px-2 py-0.5 rounded border border-lacquer-700 block">
                             {item.hourRange}
                           </span>
-                          <span className="text-[9px] text-[#7A6B57] italic block mt-0.5">
+                          <span className="text-[9px] text-gold-700 italic block mt-0.5">
                             {item.hourDesc.split("•")[0]}
                           </span>
                         </div>
                       </div>
 
                       {/* TÊN TÂM ẤN PHÚ (Điểm Nhấn Trọng Tâm) */}
-                      <div className="bg-[#130E09] border border-amber-900/50 rounded-xl p-2.5 mb-2">
+                      <div className="bg-lacquer-900 border border-amber-900/50 rounded-sm p-2.5 mb-2">
                         <div className="flex items-center justify-between gap-1 flex-wrap">
-                          <div className="text-[10px] text-[#A89882] font-mono flex items-center gap-1">
+                          <div className="text-[10px] text-ivory-500 font-mono flex items-center gap-1">
                             <span>Tượng Thần Tâm Ấn:</span>
                           </div>
                           {entry && (
@@ -2008,7 +2006,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
 
                         {/* Khẩu quyết nguyên văn */}
                         {entry && (
-                          <div className="text-[11px] font-serif italic text-amber-100/90 mt-1 bg-[#1E160F] p-1.5 rounded border border-[#3E2D1D]">
+                          <div className="text-[11px] font-serif italic text-amber-100/90 mt-1 bg-lacquer-800 p-1.5 rounded border border-gold-800">
                             📜 {entry.fullLine}
                           </div>
                         )}
@@ -2016,15 +2014,15 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
 
                       {/* Diễn giải ý nghĩa Tâm Ấn Phú */}
                       {entry && (
-                        <p className="text-[11.5px] text-[#DDD0BE] leading-relaxed line-clamp-3">
+                        <p className="text-[11.5px] text-ivory-300 leading-relaxed line-clamp-3">
                           {entry.meaning}
                         </p>
                       )}
                     </div>
 
                     {/* Dưới cùng: Nút Xem Chi Tiết */}
-                    <div className="mt-3 pt-2 border-t border-[#261B11] flex items-center justify-between text-[10px]">
-                      <span className="text-[#8C7D6A]">
+                    <div className="mt-3 pt-2 border-t border-lacquer-700 flex items-center justify-between text-[10px]">
+                      <span className="text-ivory-500">
                         {selectedDayInfo.activeStar.name}
                         {item.general && item.general.mappedGeneralName !== item.general.name && (
                           <span className="text-amber-400/80"> ({item.general.mappedGeneralName})</span>
@@ -2039,7 +2037,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
 
                     {isSelectedHour && (
                       <div className="absolute top-2 right-2">
-                        <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping inline-block" />
+                        <span className="w-2 h-2 rotate-45 bg-gold-500 animate-ping inline-block" />
                       </div>
                     )}
                   </div>
@@ -2052,18 +2050,18 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
         {/* ================= PHẦN 3: BẢNG BÁT TỰ NGÀY • NGUYỆT TƯỚNG • THỜI GIAN ĐỔI TIẾT KHÍ (3 THÁNG) ================= */}
         <div className="space-y-6">
           {/* ----- MỤC 1: BÁT TỰ TỨ TRỤ NGÀY HÔM ĐÓ ----- */}
-          <div className="bg-[#16110C] border border-[#3E2E1D] rounded-2xl p-4 sm:p-5 shadow-2xl space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#2F2215] pb-3">
+          <div className="border border-gold-800 border-t-gold-600 bg-lacquer-900/85 p-4 sm:p-6 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gold-800 pb-3">
               <div className="flex items-center gap-2.5">
-                <span className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-400 to-amber-600 shadow-[0_0_8px_#C9A55A]" />
+                <span className="w-2 h-2 rotate-45 bg-gold-500" />
                 <div>
-                  <h3 className="text-base sm:text-lg font-serif font-bold text-[#F5EAD4] flex items-center gap-2 flex-wrap">
+                  <h3 className="text-lg sm:text-xl font-display font-semibold text-ivory-100 flex items-center gap-2 flex-wrap">
                     <span>BÁT TỰ TỨ TRỤ NGÀY {selectedDay}/{selectedMonth}/{selectedYear}</span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#2E2013] text-amber-300 border border-amber-700/60 font-semibold">
+                    <span className="text-[11px] font-serif px-2 py-0.5 rounded-sm text-gold-300 border border-gold-700">
                       Giờ {selectedHourData.branch}
                     </span>
                   </h3>
-                  <p className="text-xs text-[#A89882] mt-0.5">
+                  <p className="text-xs text-ivory-500 mt-0.5">
                     Tứ Trụ Can Chi, Nạp Âm Ngũ Hành, Thiên Ất Quý Nhân và Tuần Không của ngày được chọn
                   </p>
                 </div>
@@ -2071,10 +2069,10 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
 
               {/* Badge Tổng Quan */}
               <div className="flex items-center gap-2 text-xs font-mono">
-                <span className="px-2.5 py-1 rounded-lg bg-[#251A10] text-amber-300 border border-[#483523]">
+                <span className="px-2.5 py-1 rounded-sm bg-lacquer-800 text-amber-300 border border-gold-800">
                   Quý Nhân: {baziInfo.nobles.truQuy} (Trú) • {baziInfo.nobles.daQuy} (Dạ)
                 </span>
-                <span className="px-2.5 py-1 rounded-lg bg-[#251A10] text-rose-300 border border-rose-900/40">
+                <span className="px-2.5 py-1 rounded-sm bg-lacquer-800 text-rose-300 border border-rose-900/40">
                   Tuần Không: {baziInfo.emptyBranches[0]}, {baziInfo.emptyBranches[1]}
                 </span>
               </div>
@@ -2083,118 +2081,118 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
             {/* 4 Cột Tứ Trụ (Giờ • Ngày • Tháng • Năm) */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               {/* Trụ Giờ */}
-              <div className="bg-[#1C140D] border border-[#3A2919] hover:border-amber-600/60 rounded-xl p-3.5 space-y-2 transition-all">
-                <div className="flex items-center justify-between border-b border-[#2C1F13] pb-1.5">
-                  <span className="text-[11px] font-mono font-bold text-[#8C7D6A]">THỜI TRỤ (GIỜ)</span>
+              <div className="bg-lacquer-800 border border-gold-800 hover:border-amber-600/60 rounded-sm p-3.5 space-y-2 transition-all">
+                <div className="flex items-center justify-between border-b border-gold-800 pb-1.5">
+                  <span className="text-[11px] font-mono font-bold text-ivory-500">THỜI TRỤ (GIỜ)</span>
                   <span className="text-[10px] text-amber-400/80 font-mono">{selectedHourData.hourRange}</span>
                 </div>
                 <div className="text-center py-1">
-                  <span className="text-lg sm:text-xl font-serif font-black text-[#F5EAD4] block leading-tight">
+                  <span className="text-lg sm:text-xl font-serif font-black text-ivory-100 block leading-tight">
                     {baziInfo.hourPillar.fullName}
                   </span>
                   <span className="text-xs font-serif text-amber-400 font-bold block mt-0.5">
                     {baziInfo.hourPillar.chineseCan} {baziInfo.hourPillar.chineseChi}
                   </span>
                 </div>
-                <div className="bg-[#130E09] p-2 rounded-lg border border-[#302214] text-[11px] space-y-0.5">
+                <div className="bg-lacquer-900 p-2 rounded-sm border border-lacquer-700 text-[11px] space-y-0.5">
                   <div className="flex items-center justify-between font-serif">
-                    <span className="text-[#A89882]">Nạp Âm:</span>
+                    <span className="text-ivory-500">Nạp Âm:</span>
                     <span className="font-bold text-amber-300">{baziInfo.hourPillar.napAm}</span>
                   </div>
-                  <div className="flex items-center justify-between text-[10px] font-mono text-[#8C7D6A]">
+                  <div className="flex items-center justify-between text-[10px] font-mono text-ivory-500">
                     <span>Ngũ Hành:</span>
                     <span className="text-amber-400">Hành {baziInfo.hourPillar.element}</span>
                   </div>
-                  <p className="text-[10px] text-[#8C7D6A] italic pt-1 border-t border-[#24180E] line-clamp-1">
+                  <p className="text-[10px] text-ivory-500 italic pt-1 border-t border-lacquer-700 line-clamp-1">
                     {baziInfo.hourPillar.napAmDesc}
                   </p>
                 </div>
               </div>
 
               {/* Trụ Ngày (Nhật Chủ) */}
-              <div className="bg-gradient-to-b from-[#2B1F13] to-[#1C140D] border border-amber-600/70 shadow-[0_0_15px_rgba(212,175,55,0.15)] rounded-xl p-3.5 space-y-2 transition-all relative">
+              <div className="bg-gradient-to-b from-lacquer-700 to-lacquer-800 border border-amber-600/70 rounded-sm p-3.5 space-y-2 transition-all relative">
                 <span className="absolute top-2 right-2 text-[8px] font-bold px-1.5 py-0.2 rounded bg-amber-500 text-stone-950">
                   Nhật Chủ
                 </span>
-                <div className="flex items-center justify-between border-b border-[#3D2C1B] pb-1.5">
+                <div className="flex items-center justify-between border-b border-gold-800 pb-1.5">
                   <span className="text-[11px] font-mono font-bold text-amber-300">NHẬT TRỤ (NGÀY)</span>
                 </div>
                 <div className="text-center py-1">
-                  <span className="text-lg sm:text-xl font-serif font-black text-[#E6D3A3] block leading-tight">
+                  <span className="text-lg sm:text-xl font-serif font-black text-gold-300 block leading-tight">
                     {baziInfo.dayPillar.fullName}
                   </span>
                   <span className="text-xs font-serif text-amber-300 font-bold block mt-0.5">
                     {baziInfo.dayPillar.chineseCan} {baziInfo.dayPillar.chineseChi}
                   </span>
                 </div>
-                <div className="bg-[#130E09] p-2 rounded-lg border border-amber-900/60 text-[11px] space-y-0.5">
+                <div className="bg-lacquer-900 p-2 rounded-sm border border-amber-900/60 text-[11px] space-y-0.5">
                   <div className="flex items-center justify-between font-serif">
-                    <span className="text-[#A89882]">Nạp Âm:</span>
+                    <span className="text-ivory-500">Nạp Âm:</span>
                     <span className="font-bold text-amber-300">{baziInfo.dayPillar.napAm}</span>
                   </div>
-                  <div className="flex items-center justify-between text-[10px] font-mono text-[#8C7D6A]">
+                  <div className="flex items-center justify-between text-[10px] font-mono text-ivory-500">
                     <span>Ngũ Hành:</span>
                     <span className="text-amber-400">Hành {baziInfo.dayPillar.element}</span>
                   </div>
-                  <p className="text-[10px] text-[#A89882] italic pt-1 border-t border-[#24180E] line-clamp-1">
+                  <p className="text-[10px] text-ivory-500 italic pt-1 border-t border-lacquer-700 line-clamp-1">
                     {baziInfo.dayPillar.napAmDesc}
                   </p>
                 </div>
               </div>
 
               {/* Trụ Tháng */}
-              <div className="bg-[#1C140D] border border-[#3A2919] hover:border-amber-600/60 rounded-xl p-3.5 space-y-2 transition-all">
-                <div className="flex items-center justify-between border-b border-[#2C1F13] pb-1.5">
-                  <span className="text-[11px] font-mono font-bold text-[#8C7D6A]">NGUYỆT TRỤ (THÁNG)</span>
+              <div className="bg-lacquer-800 border border-gold-800 hover:border-amber-600/60 rounded-sm p-3.5 space-y-2 transition-all">
+                <div className="flex items-center justify-between border-b border-gold-800 pb-1.5">
+                  <span className="text-[11px] font-mono font-bold text-ivory-500">NGUYỆT TRỤ (THÁNG)</span>
                   <span className="text-[10px] text-amber-400/80 font-mono">Tiết {baziInfo.activeSolarTerm.name}</span>
                 </div>
                 <div className="text-center py-1">
-                  <span className="text-lg sm:text-xl font-serif font-black text-[#F5EAD4] block leading-tight">
+                  <span className="text-lg sm:text-xl font-serif font-black text-ivory-100 block leading-tight">
                     {baziInfo.monthPillar.fullName}
                   </span>
                   <span className="text-xs font-serif text-amber-400 font-bold block mt-0.5">
                     {baziInfo.monthPillar.chineseCan} {baziInfo.monthPillar.chineseChi}
                   </span>
                 </div>
-                <div className="bg-[#130E09] p-2 rounded-lg border border-[#302214] text-[11px] space-y-0.5">
+                <div className="bg-lacquer-900 p-2 rounded-sm border border-lacquer-700 text-[11px] space-y-0.5">
                   <div className="flex items-center justify-between font-serif">
-                    <span className="text-[#A89882]">Nạp Âm:</span>
+                    <span className="text-ivory-500">Nạp Âm:</span>
                     <span className="font-bold text-amber-300">{baziInfo.monthPillar.napAm}</span>
                   </div>
-                  <div className="flex items-center justify-between text-[10px] font-mono text-[#8C7D6A]">
+                  <div className="flex items-center justify-between text-[10px] font-mono text-ivory-500">
                     <span>Ngũ Hành:</span>
                     <span className="text-amber-400">Hành {baziInfo.monthPillar.element}</span>
                   </div>
-                  <p className="text-[10px] text-[#8C7D6A] italic pt-1 border-t border-[#24180E] line-clamp-1">
+                  <p className="text-[10px] text-ivory-500 italic pt-1 border-t border-lacquer-700 line-clamp-1">
                     {baziInfo.monthPillar.napAmDesc}
                   </p>
                 </div>
               </div>
 
               {/* Trụ Năm */}
-              <div className="bg-[#1C140D] border border-[#3A2919] hover:border-amber-600/60 rounded-xl p-3.5 space-y-2 transition-all">
-                <div className="flex items-center justify-between border-b border-[#2C1F13] pb-1.5">
-                  <span className="text-[11px] font-mono font-bold text-[#8C7D6A]">NIÊN TRỤ (NĂM)</span>
+              <div className="bg-lacquer-800 border border-gold-800 hover:border-amber-600/60 rounded-sm p-3.5 space-y-2 transition-all">
+                <div className="flex items-center justify-between border-b border-gold-800 pb-1.5">
+                  <span className="text-[11px] font-mono font-bold text-ivory-500">NIÊN TRỤ (NĂM)</span>
                   <span className="text-[10px] text-amber-400/80 font-mono">Năm {selectedYear}</span>
                 </div>
                 <div className="text-center py-1">
-                  <span className="text-lg sm:text-xl font-serif font-black text-[#F5EAD4] block leading-tight">
+                  <span className="text-lg sm:text-xl font-serif font-black text-ivory-100 block leading-tight">
                     {baziInfo.yearPillar.fullName}
                   </span>
                   <span className="text-xs font-serif text-amber-400 font-bold block mt-0.5">
                     {baziInfo.yearPillar.chineseCan} {baziInfo.yearPillar.chineseChi}
                   </span>
                 </div>
-                <div className="bg-[#130E09] p-2 rounded-lg border border-[#302214] text-[11px] space-y-0.5">
+                <div className="bg-lacquer-900 p-2 rounded-sm border border-lacquer-700 text-[11px] space-y-0.5">
                   <div className="flex items-center justify-between font-serif">
-                    <span className="text-[#A89882]">Nạp Âm:</span>
+                    <span className="text-ivory-500">Nạp Âm:</span>
                     <span className="font-bold text-amber-300">{baziInfo.yearPillar.napAm}</span>
                   </div>
-                  <div className="flex items-center justify-between text-[10px] font-mono text-[#8C7D6A]">
+                  <div className="flex items-center justify-between text-[10px] font-mono text-ivory-500">
                     <span>Ngũ Hành:</span>
                     <span className="text-amber-400">Hành {baziInfo.yearPillar.element}</span>
                   </div>
-                  <p className="text-[10px] text-[#8C7D6A] italic pt-1 border-t border-[#24180E] line-clamp-1">
+                  <p className="text-[10px] text-ivory-500 italic pt-1 border-t border-lacquer-700 line-clamp-1">
                     {baziInfo.yearPillar.napAmDesc}
                   </p>
                 </div>
@@ -2203,13 +2201,12 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
           </div>
 
           {/* ----- MỤC 2: NGUYỆT TƯỚNG (THÁI DƯƠNG CUNG VỊ LỤC NHÂM) ----- */}
-          <div className="bg-[#16110C] border border-[#3E2E1D] rounded-2xl p-4 sm:p-5 shadow-2xl relative overflow-hidden">
-            <div className="absolute right-0 top-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="bg-lacquer-900 border border-gold-800 rounded-md p-4 sm:p-5 shadow-2xl relative overflow-hidden">
 
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 relative z-10">
               <div className="flex items-start gap-3.5">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#C9A55A] to-[#7A5A12] p-0.5 shadow-xl flex items-center justify-center shrink-0">
-                  <div className="w-full h-full bg-[#18120C] rounded-[14px] flex flex-col items-center justify-center text-amber-300">
+                <div className="w-14 h-14 rounded-md bg-gradient-to-br from-gold-500 to-gold-700 p-0.5 shadow-xl flex items-center justify-center shrink-0">
+                  <div className="w-full h-full bg-lacquer-900 rounded-[14px] flex flex-col items-center justify-center text-amber-300">
                     <Sun className="w-5 h-5 text-amber-400 animate-spin-slow" />
                     <span className="text-[10px] font-serif font-black">{nguyetTuongInfo.branch}</span>
                   </div>
@@ -2217,10 +2214,10 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
 
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-950 text-amber-300 border border-amber-700/60 uppercase">
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm bg-amber-950 text-amber-300 border border-amber-700/60 uppercase">
                       Thái Dương Cung Vị Lục Nhâm
                     </span>
-                    <h3 className="text-base sm:text-lg font-serif font-bold text-[#F5EAD4]">
+                    <h3 className="text-lg sm:text-xl font-display font-semibold text-ivory-100">
                       NGUYỆT TƯỚNG: <span className="text-amber-300">《{nguyetTuongInfo.name}》</span> ({nguyetTuongInfo.chinese})
                     </h3>
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${nguyetTuongInfo.color}`}>
@@ -2228,11 +2225,11 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                     </span>
                   </div>
 
-                  <p className="text-xs text-[#DDD0BE] font-serif leading-relaxed">
+                  <p className="text-xs text-ivory-300 font-serif leading-relaxed">
                     {nguyetTuongInfo.meaning}
                   </p>
 
-                  <div className="text-[11px] text-[#8C7D6A] font-mono flex items-center gap-3 pt-1 flex-wrap">
+                  <div className="text-[11px] text-ivory-500 font-mono flex items-center gap-3 pt-1 flex-wrap">
                     <span>Quản trị: <strong className="text-amber-300/90">{nguyetTuongInfo.solarTerm}</strong></span>
                     <span>Kinh độ Mặt Trời thực: <strong className="text-amber-400">{nguyetTuongInfo.sunLongitude.toFixed(2)}°</strong></span>
                   </div>
@@ -2240,7 +2237,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
               </div>
 
               {/* Hướng Dẫn Ứng Dụng Trong Bấm Độn */}
-              <div className="bg-[#120E09] border border-[#382617] rounded-xl p-3 text-xs text-[#A89882] max-w-sm shrink-0 space-y-1">
+              <div className="bg-lacquer-900 border border-gold-800 rounded-sm p-3 text-xs text-ivory-500 max-w-sm shrink-0 space-y-1">
                 <span className="text-amber-400 font-serif font-bold block flex items-center gap-1">
                   <Compass className="w-3.5 h-3.5" />
                   <span>Ứng Dụng Đại Lục Nhâm:</span>
@@ -2253,22 +2250,22 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
           </div>
 
           {/* ----- MỤC 3: THỜI GIAN ĐỔI TIẾT KHÍ (3 THÁNG: THÁNG TRƯỚC • THÁNG HIỆN TẠI • THÁNG SAU) ----- */}
-          <div className="bg-[#16110C] border border-[#3E2E1D] rounded-2xl p-4 sm:p-5 shadow-2xl space-y-4">
+          <div className="border border-gold-800 border-t-gold-600 bg-lacquer-900/85 p-4 sm:p-6 space-y-4">
             {/* Header Tiết Khí 3 Tháng */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#2F2215] pb-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gold-800 pb-3">
               <div className="flex items-center gap-2.5">
-                <span className="w-3 h-3 rounded-full bg-gradient-to-r from-emerald-400 to-teal-500 shadow-[0_0_8px_#34D399]" />
+                <span className="w-2 h-2 rotate-45 bg-gold-500" />
                 <div>
-                  <h3 className="text-base sm:text-lg font-serif font-bold text-[#F5EAD4]">
+                  <h3 className="text-lg sm:text-xl font-display font-semibold text-ivory-100">
                     THỜI GIAN CHUYỂN ĐỔI TIẾT KHÍ (3 THÁNG LIÊN TIẾP)
                   </h3>
-                  <p className="text-xs text-[#A89882] mt-0.5">
+                  <p className="text-xs text-ivory-500 mt-0.5">
                     Thời điểm chính xác theo phút (UTC+7) chuyển đổi Chính Tiết (tháng Bát Tự) và Trung Khí (đổi Nguyệt Tướng)
                   </p>
                 </div>
               </div>
 
-              <div className="text-xs text-amber-300/80 font-mono bg-[#251A10] px-3 py-1 rounded-xl border border-[#483523]">
+              <div className="text-xs text-amber-300/80 font-mono bg-lacquer-800 px-3 py-1 rounded-sm border border-gold-800">
                 Tiết Khí hiện tại: <strong>{baziInfo.activeSolarTerm.name}</strong>
               </div>
             </div>
@@ -2276,11 +2273,11 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
             {/* 3 Cột Tiết Khí (Tháng Trước - Tháng Này - Tháng Sau) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
               {/* CỘT 1: THÁNG TRƯỚC */}
-              <div className={`bg-[#18120C] border rounded-xl p-3.5 space-y-3 transition-all ${
-                comparisonTarget === "prev" ? "border-amber-600/80 shadow-md ring-1 ring-amber-500/40" : "border-[#332417]"
+              <div className={`bg-lacquer-900 border rounded-sm p-3.5 space-y-3 transition-all ${
+                comparisonTarget === "prev" ? "border-amber-600/80 shadow-md ring-1 ring-amber-500/40" : "border-lacquer-700"
               }`}>
-                <div className="flex items-center justify-between border-b border-[#2A1D12] pb-2">
-                  <span className="text-xs font-serif font-bold text-[#A89882]">
+                <div className="flex items-center justify-between border-b border-gold-800 pb-2">
+                  <span className="text-xs font-serif font-bold text-ivory-500">
                     THÁNG TRƯỚC: {threeMonthsSolarTerms.prevMonth.month}/{threeMonthsSolarTerms.prevMonth.year}
                   </span>
                   <span className="text-[10px] font-mono text-[#7A6C5B]">Tháng {threeMonthsSolarTerms.prevMonth.month}</span>
@@ -2296,15 +2293,15 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                           setSelectedCustomTerm(t);
                           setComparisonTarget("prev");
                         }}
-                        className={`p-2.5 rounded-lg border space-y-1 cursor-pointer transition-all ${
+                        className={`p-2.5 rounded-sm border space-y-1 cursor-pointer transition-all ${
                           isTargetTerm
-                            ? "bg-[#2A1D12] border-amber-500/90 shadow ring-1 ring-amber-400/50"
-                            : "bg-[#120E09] border-[#2D1F13] hover:border-amber-800/60 hover:bg-[#1A130D]"
+                            ? "bg-lacquer-700 border-amber-500/90 shadow ring-1 ring-amber-400/50"
+                            : "bg-lacquer-900 border-lacquer-700 hover:border-amber-800/60 hover:bg-lacquer-800"
                         }`}
                         title="Nhấn để chọn tiết này làm mốc tính Tuổi Vào Vận"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="font-serif font-bold text-sm text-[#E5D7C3] flex items-center gap-1.5">
+                          <span className="font-serif font-bold text-sm text-ivory-100 flex items-center gap-1.5">
                             <span>{t.record.name} ({t.record.chinese})</span>
                             {isTargetTerm && (
                               <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
@@ -2319,7 +2316,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                         <div className="text-xs font-mono text-amber-400 font-semibold">
                           ⏱ {t.time.timeString} ngày {t.time.day}/{t.time.month}/{t.time.year}
                         </div>
-                        <p className="text-[10px] text-[#8C7D6A] leading-tight">
+                        <p className="text-[10px] text-ivory-500 leading-tight">
                           {t.record.desc}
                         </p>
                       </div>
@@ -2337,10 +2334,10 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                       threeMonthsSolarTerms.prevMonth.terms[0];
                     setSelectedCustomTerm(major);
                   }}
-                  className={`w-full py-2 px-2.5 rounded-xl text-xs font-serif font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer border shadow-sm ${
+                  className={`w-full py-2 px-2.5 rounded-sm text-xs font-serif font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer border shadow-sm ${
                     comparisonTarget === "prev"
-                      ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F09] border-amber-400 shadow-md font-extrabold"
-                      : "bg-[#22170E] hover:bg-[#2F2014] text-amber-300 border-amber-800/60"
+                      ? "bg-gradient-to-r from-gold-500 to-gold-600 text-lacquer-900 border-amber-400 shadow-md font-extrabold"
+                      : "bg-lacquer-800 hover:bg-lacquer-700 text-amber-300 border-amber-800/60"
                   }`}
                 >
                   <Calculator className="w-3.5 h-3.5" />
@@ -2349,15 +2346,15 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
               </div>
 
               {/* CỘT 2: THÁNG HIỆN TẠI (HIGHLIGHT VÀNG HOÀNG KIM) */}
-              <div className="bg-gradient-to-b from-[#261B11] to-[#19120C] border-2 border-amber-500/80 shadow-[0_0_20px_rgba(212,175,55,0.2)] rounded-xl p-3.5 space-y-3 relative">
+              <div className="bg-gradient-to-b from-lacquer-700 to-lacquer-900 border-2 border-amber-500/80 rounded-sm p-3.5 space-y-3 relative">
                 <div className="flex items-center justify-between border-b border-amber-700/50 pb-2">
                   <div className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                    <span className="w-2 h-2 rotate-45 bg-gold-500 animate-pulse" />
                     <span className="text-xs font-serif font-black text-amber-300">
                       THÁNG ĐANG CHỌN: {selectedMonth}/{selectedYear}
                     </span>
                   </div>
-                  <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-500 text-stone-950 shadow">
+                  <span className="text-[9px] font-bold px-2 py-0.5 rounded-sm bg-amber-500 text-stone-950 shadow">
                     Hiện Tại
                   </span>
                 </div>
@@ -2370,17 +2367,17 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                       <div
                         key={t.record.name}
                         onClick={() => setSelectedCustomTerm(t)}
-                        className={`p-2.5 rounded-lg border space-y-1 transition-all cursor-pointer ${
+                        className={`p-2.5 rounded-sm border space-y-1 transition-all cursor-pointer ${
                           isTargetTerm
-                            ? "bg-[#332213] border-amber-400 shadow ring-1 ring-amber-300/60"
+                            ? "bg-lacquer-700 border-amber-400 shadow ring-1 ring-amber-300/60"
                             : isTermPassed
-                            ? "bg-[#2A1E13] border-amber-500/70 shadow-sm hover:border-amber-400"
-                            : "bg-[#140F0A] border-[#382618] hover:border-amber-700/60"
+                            ? "bg-lacquer-700 border-amber-500/70 shadow-sm hover:border-amber-400"
+                            : "bg-lacquer-900 border-gold-800 hover:border-amber-700/60"
                         }`}
                         title="Nhấn để chọn tiết này làm mốc so sánh"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="font-serif font-bold text-sm text-[#FFE494] flex items-center gap-1.5">
+                          <span className="font-serif font-bold text-sm text-gold-300 flex items-center gap-1.5">
                             <span>{t.record.name} ({t.record.chinese})</span>
                             {isTargetTerm && (
                               <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
@@ -2395,7 +2392,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                         <div className="text-xs font-mono text-amber-300 font-bold">
                           ⏱ {t.time.timeString} ngày {t.time.day}/{t.time.month}/{t.time.year}
                         </div>
-                        <p className="text-[10px] text-[#C2B29A] leading-tight">
+                        <p className="text-[10px] text-ivory-300 leading-tight">
                           {t.record.desc}
                         </p>
                       </div>
@@ -2404,17 +2401,17 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                 </div>
 
                 {/* Thông báo phân đoạn ngày đang chọn */}
-                <div className="bg-[#120E09] p-2 rounded-lg border border-amber-800/40 text-[10.5px] text-amber-200/90 font-serif leading-snug">
+                <div className="bg-lacquer-900 p-2 rounded-sm border border-amber-800/40 text-[10.5px] text-amber-200/90 font-serif leading-snug">
                   📌 Ngày <strong>{selectedDay}/{selectedMonth}</strong> đang trực tiếp chịu ảnh hưởng của Tiết <strong>{baziInfo.activeSolarTerm.name}</strong> • Nguyệt Tướng <strong>{nguyetTuongInfo.name} ({nguyetTuongInfo.branch})</strong>.
                 </div>
               </div>
 
               {/* CỘT 3: THÁNG SAU */}
-              <div className={`bg-[#18120C] border rounded-xl p-3.5 space-y-3 transition-all ${
-                comparisonTarget === "next" ? "border-amber-600/80 shadow-md ring-1 ring-amber-500/40" : "border-[#332417]"
+              <div className={`bg-lacquer-900 border rounded-sm p-3.5 space-y-3 transition-all ${
+                comparisonTarget === "next" ? "border-amber-600/80 shadow-md ring-1 ring-amber-500/40" : "border-lacquer-700"
               }`}>
-                <div className="flex items-center justify-between border-b border-[#2A1D12] pb-2">
-                  <span className="text-xs font-serif font-bold text-[#A89882]">
+                <div className="flex items-center justify-between border-b border-gold-800 pb-2">
+                  <span className="text-xs font-serif font-bold text-ivory-500">
                     THÁNG SAU: {threeMonthsSolarTerms.nextMonth.month}/{threeMonthsSolarTerms.nextMonth.year}
                   </span>
                   <span className="text-[10px] font-mono text-[#7A6C5B]">Tháng {threeMonthsSolarTerms.nextMonth.month}</span>
@@ -2430,15 +2427,15 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                           setSelectedCustomTerm(t);
                           setComparisonTarget("next");
                         }}
-                        className={`p-2.5 rounded-lg border space-y-1 cursor-pointer transition-all ${
+                        className={`p-2.5 rounded-sm border space-y-1 cursor-pointer transition-all ${
                           isTargetTerm
-                            ? "bg-[#2A1D12] border-amber-500/90 shadow ring-1 ring-amber-400/50"
-                            : "bg-[#120E09] border-[#2D1F13] hover:border-amber-800/60 hover:bg-[#1A130D]"
+                            ? "bg-lacquer-700 border-amber-500/90 shadow ring-1 ring-amber-400/50"
+                            : "bg-lacquer-900 border-lacquer-700 hover:border-amber-800/60 hover:bg-lacquer-800"
                         }`}
                         title="Nhấn để chọn tiết này làm mốc tính Tuổi Vào Vận"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="font-serif font-bold text-sm text-[#E5D7C3] flex items-center gap-1.5">
+                          <span className="font-serif font-bold text-sm text-ivory-100 flex items-center gap-1.5">
                             <span>{t.record.name} ({t.record.chinese})</span>
                             {isTargetTerm && (
                               <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
@@ -2453,7 +2450,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                         <div className="text-xs font-mono text-amber-400 font-semibold">
                           ⏱ {t.time.timeString} ngày {t.time.day}/{t.time.month}/{t.time.year}
                         </div>
-                        <p className="text-[10px] text-[#8C7D6A] leading-tight">
+                        <p className="text-[10px] text-ivory-500 leading-tight">
                           {t.record.desc}
                         </p>
                       </div>
@@ -2471,10 +2468,10 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                       threeMonthsSolarTerms.nextMonth.terms[0];
                     setSelectedCustomTerm(major);
                   }}
-                  className={`w-full py-2 px-2.5 rounded-xl text-xs font-serif font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer border shadow-sm ${
+                  className={`w-full py-2 px-2.5 rounded-sm text-xs font-serif font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer border shadow-sm ${
                     comparisonTarget === "next"
-                      ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F09] border-amber-400 shadow-md font-extrabold"
-                      : "bg-[#22170E] hover:bg-[#2F2014] text-amber-300 border-amber-800/60"
+                      ? "bg-gradient-to-r from-gold-500 to-gold-600 text-lacquer-900 border-amber-400 shadow-md font-extrabold"
+                      : "bg-lacquer-800 hover:bg-lacquer-700 text-amber-300 border-amber-800/60"
                   }`}
                 >
                   <Calculator className="w-3.5 h-3.5" />
@@ -2484,28 +2481,28 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
             </div>
 
             {/* ================= KHUNG TÍNH TOÁN TUỔI VÀO VẬN (BÙ TRỪ GIỜ PHÚT CHI TIẾT) ================= */}
-            <div className="bg-[#140E09] border-2 border-amber-600/70 rounded-2xl p-4 sm:p-5 shadow-2xl space-y-4">
+            <div className="bg-lacquer-900 border-2 border-amber-600/70 rounded-md p-4 sm:p-5 shadow-2xl space-y-4">
               {/* Header Khung Tính Tuổi Vào Vận */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#352516] pb-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gold-800 pb-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#C9A55A] to-[#8C6B1B] p-0.5 flex items-center justify-center text-stone-950 shadow">
+                  <div className="w-9 h-9 rounded-sm bg-gradient-to-br from-gold-500 to-gold-700 p-0.5 flex items-center justify-center text-stone-950 shadow">
                     <Calculator className="w-5 h-5" />
                   </div>
                   <div>
                     <h4 className="text-base font-serif font-bold text-amber-200 flex items-center gap-2 flex-wrap">
                       <span>TÍNH TUỔI VÀO VẬN (BÙ TRỪ GIỜ PHÚT THIÊN VĂN)</span>
-                      <span className="text-[10px] font-mono px-2 py-0.2 rounded-full bg-[#2A1D11] text-amber-300 border border-amber-700/60 font-normal">
+                      <span className="text-[10px] font-mono px-2 py-0.2 rounded-sm bg-lacquer-700 text-amber-300 border border-amber-700/60 font-normal">
                         Tử Bình Bát Tự
                       </span>
                     </h4>
-                    <p className="text-xs text-[#A89882] mt-0.5">
+                    <p className="text-xs text-ivory-500 mt-0.5">
                       Lấy thời điểm sinh bù trừ giờ phút đối chiếu Tiết Khí trước hoặc sau: <strong>3 ngày = 1 tuổi</strong>, <strong>1 ngày = 4 tháng</strong>, <strong>1 giờ = 5 ngày</strong>, <strong>12 phút = 1 ngày</strong>.
                     </p>
                   </div>
                 </div>
 
                 {/* Chọn Chiều So Sánh */}
-                <div className="flex items-center gap-1.5 bg-[#1F160E] p-1 rounded-xl border border-[#3E2D1B] shrink-0">
+                <div className="flex items-center gap-1.5 bg-lacquer-800 p-1 rounded-sm border border-gold-800 shrink-0">
                   <button
                     type="button"
                     onClick={() => {
@@ -2515,10 +2512,10 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                         threeMonthsSolarTerms.prevMonth.terms[0];
                       setSelectedCustomTerm(major);
                     }}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-serif font-bold cursor-pointer transition-all ${
+                    className={`px-3 py-1.5 rounded-sm text-xs font-serif font-bold cursor-pointer transition-all ${
                       comparisonTarget === "prev"
                         ? "bg-amber-500 text-stone-950 shadow"
-                        : "text-[#A89882] hover:text-amber-200 hover:bg-[#2A1E14]"
+                        : "text-ivory-500 hover:text-amber-200 hover:bg-lacquer-700"
                     }`}
                   >
                     ⏪ Tiết Tháng Trước
@@ -2532,10 +2529,10 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                         threeMonthsSolarTerms.nextMonth.terms[0];
                       setSelectedCustomTerm(major);
                     }}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-serif font-bold cursor-pointer transition-all ${
+                    className={`px-3 py-1.5 rounded-sm text-xs font-serif font-bold cursor-pointer transition-all ${
                       comparisonTarget === "next"
                         ? "bg-amber-500 text-stone-950 shadow"
-                        : "text-[#A89882] hover:text-amber-200 hover:bg-[#2A1E14]"
+                        : "text-ivory-500 hover:text-amber-200 hover:bg-lacquer-700"
                     }`}
                   >
                     ⏩ Tiết Tháng Sau
@@ -2544,11 +2541,11 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
               </div>
 
               {/* Hàng Điều Khiển: Bù trừ giờ, phút và Giới tính */}
-              <div className="bg-[#1C140D] border border-[#382618] rounded-xl p-3.5 grid grid-cols-1 sm:grid-cols-3 gap-3.5 items-center">
+              <div className="bg-lacquer-800 border border-gold-800 rounded-sm p-3.5 grid grid-cols-1 sm:grid-cols-3 gap-3.5 items-center">
                 {/* 1. Bộ bù trừ Giờ */}
                 <div>
                   <div className="flex items-center justify-between text-xs mb-1">
-                    <span className="text-[#A89882] font-mono flex items-center gap-1">
+                    <span className="text-ivory-500 font-mono flex items-center gap-1">
                       <Clock className="w-3.5 h-3.5 text-amber-400" />
                       <span>BÙ TRỪ GIỜ SINH:</span>
                     </span>
@@ -2560,7 +2557,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                     <button
                       type="button"
                       onClick={() => setCustomBirthHour((prev) => (prev > 0 ? prev - 1 : 23))}
-                      className="w-8 h-8 rounded-lg bg-[#281D13] hover:bg-[#382819] text-amber-300 border border-[#4E3925] font-bold text-sm cursor-pointer"
+                      className="w-8 h-8 rounded-sm bg-lacquer-700 hover:bg-gold-800 text-amber-300 border border-gold-800 font-bold text-sm cursor-pointer"
                     >
                       -
                     </button>
@@ -2575,19 +2572,19 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                           setCustomBirthHour(val);
                         }
                       }}
-                      className="w-full text-center bg-[#120E09] border border-[#4E3925] rounded-lg py-1 text-amber-200 font-mono font-bold text-sm focus:outline-none focus:border-amber-400"
+                      className="w-full text-center bg-lacquer-900 border border-gold-800 rounded-sm py-1 text-amber-200 font-mono font-bold text-sm focus:outline-none focus:border-amber-400"
                     />
                     <button
                       type="button"
                       onClick={() => setCustomBirthHour((prev) => (prev < 23 ? prev + 1 : 0))}
-                      className="w-8 h-8 rounded-lg bg-[#281D13] hover:bg-[#382819] text-amber-300 border border-[#4E3925] font-bold text-sm cursor-pointer"
+                      className="w-8 h-8 rounded-sm bg-lacquer-700 hover:bg-gold-800 text-amber-300 border border-gold-800 font-bold text-sm cursor-pointer"
                     >
                       +
                     </button>
                     <button
                       type="button"
                       onClick={() => setCustomBirthHour(12)}
-                      className="px-2 py-1 text-[10px] rounded bg-[#251A10] text-[#B5A593] hover:text-amber-200 border border-[#3E2D1D] shrink-0"
+                      className="px-2 py-1 text-[10px] rounded bg-lacquer-800 text-ivory-500 hover:text-amber-200 border border-gold-800 shrink-0"
                       title="Gán giờ ngọ 12h"
                     >
                       12h
@@ -2598,7 +2595,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                 {/* 2. Bộ bù trừ Phút */}
                 <div>
                   <div className="flex items-center justify-between text-xs mb-1">
-                    <span className="text-[#A89882] font-mono flex items-center gap-1">
+                    <span className="text-ivory-500 font-mono flex items-center gap-1">
                       <Clock className="w-3.5 h-3.5 text-amber-400" />
                       <span>BÙ TRỪ PHÚT SINH:</span>
                     </span>
@@ -2610,7 +2607,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                     <button
                       type="button"
                       onClick={() => setCustomBirthMinute((prev) => (prev >= 5 ? prev - 5 : (prev > 0 ? 0 : 55)))}
-                      className="w-8 h-8 rounded-lg bg-[#281D13] hover:bg-[#382819] text-amber-300 border border-[#4E3925] font-bold text-sm cursor-pointer"
+                      className="w-8 h-8 rounded-sm bg-lacquer-700 hover:bg-gold-800 text-amber-300 border border-gold-800 font-bold text-sm cursor-pointer"
                     >
                       -
                     </button>
@@ -2625,19 +2622,19 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                           setCustomBirthMinute(val);
                         }
                       }}
-                      className="w-full text-center bg-[#120E09] border border-[#4E3925] rounded-lg py-1 text-amber-200 font-mono font-bold text-sm focus:outline-none focus:border-amber-400"
+                      className="w-full text-center bg-lacquer-900 border border-gold-800 rounded-sm py-1 text-amber-200 font-mono font-bold text-sm focus:outline-none focus:border-amber-400"
                     />
                     <button
                       type="button"
                       onClick={() => setCustomBirthMinute((prev) => (prev <= 54 ? prev + 5 : 0))}
-                      className="w-8 h-8 rounded-lg bg-[#281D13] hover:bg-[#382819] text-amber-300 border border-[#4E3925] font-bold text-sm cursor-pointer"
+                      className="w-8 h-8 rounded-sm bg-lacquer-700 hover:bg-gold-800 text-amber-300 border border-gold-800 font-bold text-sm cursor-pointer"
                     >
                       +
                     </button>
                     <button
                       type="button"
                       onClick={() => setCustomBirthMinute(0)}
-                      className="px-2 py-1 text-[10px] rounded bg-[#251A10] text-[#B5A593] hover:text-amber-200 border border-[#3E2D1D] shrink-0"
+                      className="px-2 py-1 text-[10px] rounded bg-lacquer-800 text-ivory-500 hover:text-amber-200 border border-gold-800 shrink-0"
                       title="Gán 00 phút"
                     >
                       :00
@@ -2648,7 +2645,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                 {/* 3. Giới tính & Hướng dẫn chiều khởi vận */}
                 <div>
                   <div className="flex items-center justify-between text-xs mb-1">
-                    <span className="text-[#A89882] font-mono">GIỚI TÍNH KHỞI VẬN:</span>
+                    <span className="text-ivory-500 font-mono">GIỚI TÍNH KHỞI VẬN:</span>
                     <span className="text-[10px] text-amber-400 font-mono">
                       {tuoiVaoVanData.isYearYang ? "Năm Dương" : "Năm Âm"}
                     </span>
@@ -2657,10 +2654,10 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                     <button
                       type="button"
                       onClick={() => setGender("male")}
-                      className={`flex-1 py-1.5 rounded-lg text-xs font-serif font-bold cursor-pointer transition-all border ${
+                      className={`flex-1 py-1.5 rounded-sm text-xs font-serif font-bold cursor-pointer transition-all border ${
                         gender === "male"
                           ? "bg-amber-500 text-stone-950 border-amber-400 shadow font-extrabold"
-                          : "bg-[#18120C] text-[#A89882] border-[#382618] hover:text-white"
+                          : "bg-lacquer-900 text-ivory-500 border-gold-800 hover:text-gold-200"
                       }`}
                     >
                       ♂ Nam ({tuoiVaoVanData.isYearYang ? "Thuận" : "Nghịch"})
@@ -2668,10 +2665,10 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                     <button
                       type="button"
                       onClick={() => setGender("female")}
-                      className={`flex-1 py-1.5 rounded-lg text-xs font-serif font-bold cursor-pointer transition-all border ${
+                      className={`flex-1 py-1.5 rounded-sm text-xs font-serif font-bold cursor-pointer transition-all border ${
                         gender === "female"
                           ? "bg-amber-500 text-stone-950 border-amber-400 shadow font-extrabold"
-                          : "bg-[#18120C] text-[#A89882] border-[#382618] hover:text-white"
+                          : "bg-lacquer-900 text-ivory-500 border-gold-800 hover:text-gold-200"
                       }`}
                     >
                       ♀ Nữ ({tuoiVaoVanData.isYearYang ? "Nghịch" : "Thuận"})
@@ -2683,25 +2680,25 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
               {/* Bảng Chi Tiết Đối Chiếu và Kết Quả Quy Đổi Khởi Vận */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5">
                 {/* Cột Trái (7 phần): Chi tiết 2 mốc thời gian & hiệu số */}
-                <div className="lg:col-span-7 bg-[#17110C] border border-[#382618] rounded-xl p-3.5 space-y-2.5 text-xs">
-                  <div className="flex items-center justify-between border-b border-[#2C1F13] pb-1.5">
+                <div className="lg:col-span-7 bg-lacquer-900 border border-gold-800 rounded-sm p-3.5 space-y-2.5 text-xs">
+                  <div className="flex items-center justify-between border-b border-gold-800 pb-1.5">
                     <span className="text-amber-400 font-mono font-bold">CHI TIẾT PHÉP TRỪ THIÊN VĂN</span>
-                    <span className="text-[10px] text-[#8C7D6A] font-mono">
+                    <span className="text-[10px] text-ivory-500 font-mono">
                       Chiều: {activeComparisonDetail.isForward ? "Thuận hành (Tiết sau - Sinh)" : "Nghịch hành (Sinh - Tiết trước)"}
                     </span>
                   </div>
 
                   {/* 2 Mốc thời gian */}
                   <div className="space-y-1.5 font-mono text-[11px]">
-                    <div className="flex items-center justify-between bg-[#110D08] p-2 rounded-lg border border-[#2B1D12]">
-                      <span className="text-[#A89882]">① Thời điểm sinh / hiện tại:</span>
+                    <div className="flex items-center justify-between bg-lacquer-950 p-2 rounded-sm border border-lacquer-700">
+                      <span className="text-ivory-500">① Thời điểm sinh / hiện tại:</span>
                       <strong className="text-amber-200">
                         {customBirthHour.toString().padStart(2, "0")}:{customBirthMinute.toString().padStart(2, "0")} ngày {selectedDay}/{selectedMonth}/{selectedYear}
                       </strong>
                     </div>
 
-                    <div className="flex items-center justify-between bg-[#110D08] p-2 rounded-lg border border-[#2B1D12]">
-                      <span className="text-[#A89882]">② Tiết Khí đối chiếu ({activeComparisonDetail.term.record.name}):</span>
+                    <div className="flex items-center justify-between bg-lacquer-950 p-2 rounded-sm border border-lacquer-700">
+                      <span className="text-ivory-500">② Tiết Khí đối chiếu ({activeComparisonDetail.term.record.name}):</span>
                       <strong className="text-amber-300">
                         {activeComparisonDetail.term.time.timeString} ngày {activeComparisonDetail.term.time.day}/{activeComparisonDetail.term.time.month}/{activeComparisonDetail.term.time.year}
                       </strong>
@@ -2709,7 +2706,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                   </div>
 
                   {/* Hiệu số chênh lệch */}
-                  <div className="bg-[#24180E] p-2.5 rounded-lg border border-amber-700/60 flex items-center justify-between text-xs">
+                  <div className="bg-lacquer-800 p-2.5 rounded-sm border border-amber-700/60 flex items-center justify-between text-xs">
                     <span className="text-amber-300 font-serif font-bold">
                       Hiệu số chênh lệch (Δ):
                     </span>
@@ -2719,7 +2716,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                   </div>
 
                   {/* Chú thích cách quy đổi */}
-                  <div className="text-[10.5px] text-[#8C7D6A] font-serif leading-relaxed pt-1 border-t border-[#24180E]">
+                  <div className="text-[10.5px] text-ivory-500 font-serif leading-relaxed pt-1 border-t border-lacquer-700">
                     • <strong>{Math.floor(activeComparisonDetail.diffDays / 3) * 3} ngày</strong> quy đổi thành: <strong>{activeComparisonDetail.years} tuổi</strong> (3 ngày = 1 tuổi).<br />
                     • Dư <strong>{activeComparisonDetail.diffDays % 3} ngày</strong> quy đổi thành: <strong>{activeComparisonDetail.months} tháng</strong> (1 ngày = 4 tháng).<br />
                     • Bù trừ <strong>{activeComparisonDetail.diffHours} giờ {activeComparisonDetail.diffMinutes} phút</strong> quy đổi thành: <strong>{activeComparisonDetail.days} ngày</strong> (1 giờ = 5 ngày, 12 phút = 1 ngày).
@@ -2727,10 +2724,10 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                 </div>
 
                 {/* Cột Phải (5 phần): HỘP KẾT QUẢ KHỞI VẬN LỘNG LẪY */}
-                <div className="lg:col-span-5 bg-gradient-to-br from-[#2D1F11] via-[#1F150C] to-[#140E08] border-2 border-[#C9A55A] rounded-xl p-4 flex flex-col justify-between shadow-[0_0_20px_rgba(212,175,55,0.25)] relative overflow-hidden">
+                <div className="lg:col-span-5 bg-gradient-to-br from-lacquer-700 via-lacquer-800 to-lacquer-900 border-2 border-gold-500 rounded-sm p-4 flex flex-col justify-between relative overflow-hidden">
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-400 bg-[#160E08] px-2 py-0.5 rounded border border-amber-800/60">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-400 bg-lacquer-900 px-2 py-0.5 rounded border border-amber-800/60">
                         KẾT QUẢ KHỞI ĐẠI VẬN
                       </span>
                       <span className="text-[10px] font-mono text-amber-300/80">
@@ -2739,8 +2736,8 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                     </div>
 
                     <div className="py-2 text-center">
-                      <span className="text-xs text-[#C2B29A] block font-serif">Tuổi Vào Vận Bát Tự:</span>
-                      <span className="text-xl sm:text-2xl font-serif font-black text-[#FFE494] block mt-1 tracking-wide text-shadow">
+                      <span className="text-xs text-ivory-300 block font-serif">Tuổi Vào Vận Bát Tự:</span>
+                      <span className="text-xl sm:text-2xl font-serif font-black text-gold-300 block mt-1 tracking-wide text-shadow">
                         {activeComparisonDetail.summary}
                       </span>
                     </div>
@@ -2753,7 +2750,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                         Năm {selectedYear + activeComparisonDetail.years}
                       </strong>
                     </div>
-                    <div className="flex items-center justify-between text-[11px] text-[#A89882] font-mono">
+                    <div className="flex items-center justify-between text-[11px] text-ivory-500 font-mono">
                       <span>Dự kiến thời điểm:</span>
                       <span>
                         Tháng {(selectedMonth + activeComparisonDetail.months - 1) % 12 + 1}/{selectedYear + activeComparisonDetail.years + Math.floor((selectedMonth + activeComparisonDetail.months - 1) / 12)}
@@ -2765,7 +2762,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
             </div>
 
             {/* Chú giải quy luật chuyển tiết thiên văn */}
-            <div className="pt-2 border-t border-[#2A1D12] grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10.5px] text-[#8C7D6A] font-serif">
+            <div className="pt-2 border-t border-lacquer-700 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10.5px] text-ivory-500 font-serif">
               <div className="flex items-start gap-1.5">
                 <span className="text-amber-400 font-bold">1. Chính Tiết:</span>
                 <span>Là thời điểm kinh độ mặt trời bội số 15° lẻ (Lập Xuân, Kinh Trập, Thanh Minh...), khởi đầu tháng Can Chi trong Tử Bình Bát Tự.</span>
@@ -2787,21 +2784,21 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-lg bg-[#18120C] border border-[#523F2A] rounded-2xl p-5 shadow-2xl space-y-4 text-[#E6D7C3] relative"
+            className="w-full max-w-lg bg-lacquer-900 border border-gold-800 rounded-md p-5 shadow-2xl space-y-4 text-ivory-100 relative"
           >
             {/* Header Modal */}
-            <div className="flex items-start justify-between border-b border-[#382819] pb-3">
+            <div className="flex items-start justify-between border-b border-gold-800 pb-3">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#C9A55A] to-[#8C6B1B] p-0.5 flex items-center justify-center shadow-lg">
-                  <div className="w-full h-full bg-[#18120C] rounded-[10px] flex items-center justify-center text-amber-300 font-serif font-black text-lg">
+                <div className="w-12 h-12 rounded-sm bg-gradient-to-br from-gold-500 to-gold-700 p-0.5 flex items-center justify-center shadow-lg">
+                  <div className="w-full h-full bg-lacquer-900 rounded-[10px] flex items-center justify-center text-amber-300 font-serif font-black text-lg">
                     {selectedEntryDetail.branch}
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-base sm:text-lg font-serif font-bold text-amber-200">
+                  <h3 className="text-lg sm:text-xl font-display font-semibold text-amber-200">
                     Giờ {selectedEntryDetail.branch} ({selectedEntryDetail.hourCanChi})
                   </h3>
-                  <p className="text-xs text-[#A89882]">
+                  <p className="text-xs text-ivory-500">
                     Khung giờ: {selectedEntryDetail.hourRange} • Trực Nhật Tinh: <strong>{selectedEntryDetail.general.name}</strong>
                     {selectedEntryDetail.general.mappedGeneralName && selectedEntryDetail.general.mappedGeneralName !== selectedEntryDetail.general.name && (
                       <span className="text-amber-300 font-semibold ml-1">
@@ -2815,14 +2812,14 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
               <button
                 type="button"
                 onClick={() => setSelectedEntryDetail(null)}
-                className="p-1 rounded-lg hover:bg-[#281D13] text-[#A89882] hover:text-white cursor-pointer"
+                className="p-1 rounded-sm hover:bg-lacquer-700 text-ivory-500 hover:text-gold-200 cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
             {/* Tên Tâm Ấn Phú */}
-            <div className="bg-[#120E09] border border-amber-600/60 rounded-xl p-3.5 space-y-2">
+            <div className="bg-lacquer-900 border border-amber-600/60 rounded-sm p-3.5 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs text-amber-400 font-mono font-bold">
                   DANH XƯNG TÂM ẤN PHÚ
@@ -2832,27 +2829,27 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                 </span>
               </div>
 
-              <div className="text-xs font-serif italic text-amber-100 bg-[#22180F] p-2 rounded-lg border border-[#3E2D1D]">
+              <div className="text-xs font-serif italic text-amber-100 bg-lacquer-800 p-2 rounded-sm border border-gold-800">
                 📜 {selectedEntryDetail.entry.fullLine}
               </div>
             </div>
 
             {/* Chi Tiết Ý Nghĩa Cốt Lõi */}
             <div className="space-y-1.5">
-              <span className="text-xs text-[#8C7D6A] font-bold font-mono">
+              <span className="text-xs text-ivory-500 font-bold font-mono">
                 DIỄN GIẢI CHUẨN XÁC NGUYÊN VĂN:
               </span>
-              <div className="text-sm font-serif leading-relaxed text-[#F5EAD4] bg-[#201710] p-3 rounded-xl border border-[#3B2A1B]">
+              <div className="text-sm font-serif leading-relaxed text-ivory-100 bg-lacquer-800 p-3 rounded-sm border border-gold-800">
                 {selectedEntryDetail.entry.meaning}
               </div>
             </div>
 
             {/* Khái Lược Bản Chất Thiên Tướng */}
-            <div className="bg-[#140F0A] p-3 rounded-xl border border-[#302214] text-xs space-y-1">
+            <div className="bg-lacquer-900 p-3 rounded-sm border border-lacquer-700 text-xs space-y-1">
               <span className="text-amber-400/90 font-bold block">
                 Bản Chất Thiên Tướng: {selectedEntryDetail.general.mappedGeneralName} (ứng Trực Nhật Tinh {selectedEntryDetail.general.name})
               </span>
-              <p className="text-[#A89882]">{selectedEntryDetail.general.overview}</p>
+              <p className="text-ivory-500">{selectedEntryDetail.general.overview}</p>
               {selectedEntryDetail.general.notes && (
                 <p className="text-amber-300/80 italic mt-1">
                   💡 {selectedEntryDetail.general.notes}
@@ -2865,7 +2862,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
               <button
                 type="button"
                 onClick={() => setSelectedEntryDetail(null)}
-                className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-stone-950 font-bold text-xs cursor-pointer hover:brightness-110 shadow"
+                className="px-5 py-2 rounded-sm bg-gradient-to-r from-gold-500 to-gold-600 text-stone-950 font-bold text-xs cursor-pointer hover:brightness-110 shadow"
               >
                 Đã Hiểu & Đóng
               </button>
