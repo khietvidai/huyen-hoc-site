@@ -597,8 +597,8 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#271E15] border border-[#52412E] text-xs font-semibold text-[#E2B755] mb-2.5">
-                <Compass className="w-3.5 h-3.5 text-[#E2B755]" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#271E15] border border-[#52412E] text-xs font-semibold text-[#D6B97A] mb-2.5">
+                <Compass className="w-3.5 h-3.5 text-[#D6B97A]" />
                 <span>KHO TÀNG DIỄN GIẢI 60 HOA GIÁP</span>
               </div>
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-[#F5EAD4] tracking-wide flex items-center gap-3">
@@ -608,8 +608,8 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                 </span>
               </h1>
               <p className="mt-2 text-sm sm:text-base text-[#B3A28C] max-w-2xl leading-relaxed">
-                Chi tiết toàn diện về <strong className="text-[#E2B755]">60 phối tượng tự nhiên</strong> (自然配象) cùng{" "}
-                <strong className="text-[#E2B755]">triết lý nhân sinh minh triết</strong> (哲理/擬人化), hỗ trợ nạp hình
+                Chi tiết toàn diện về <strong className="text-[#D6B97A]">60 phối tượng tự nhiên</strong> (自然配象) cùng{" "}
+                <strong className="text-[#D6B97A]">triết lý nhân sinh minh triết</strong> (哲理/擬人化), hỗ trợ nạp hình
                 ảnh cá nhân hóa cho từng Hoa Giáp với bộ nhớ lưu trữ bền vững.
               </p>
             </div>
@@ -617,11 +617,11 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
             {/* Quick Stats & Action Buttons */}
             <div className="flex flex-wrap items-center gap-2.5 self-stretch md:self-auto">
               <div className="bg-[#1C1712] border border-[#3D3021] rounded-xl px-3.5 py-2 flex items-center gap-2.5">
-                <ImageIcon className="w-4 h-4 text-[#E2B755]" />
+                <ImageIcon className="w-4 h-4 text-[#D6B97A]" />
                 <div className="text-xs">
                   <div className="text-[#8C7D6B] text-[10px] uppercase font-bold">Hình đã nạp</div>
                   <div className="font-bold text-[#F3E7D0]">
-                    <span className="text-[#E2B755] text-sm">{uploadedCount}</span> / 60
+                    <span className="text-[#D6B97A] text-sm">{uploadedCount}</span> / 60
                   </div>
                 </div>
               </div>
@@ -629,10 +629,10 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
               <button
                 type="button"
                 onClick={() => batchFileInputRef.current?.click()}
-                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-[#261E16] hover:bg-[#34291E] text-[#F3E7D0] border border-[#4D3B28] hover:border-[#D4AF37] rounded-xl transition-all cursor-pointer shadow-sm active:scale-95"
+                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-[#261E16] hover:bg-[#34291E] text-[#F3E7D0] border border-[#4D3B28] hover:border-[#C9A55A] rounded-xl transition-all cursor-pointer shadow-sm active:scale-95"
                 title="Nạp nhiều file ảnh cùng lúc (tự động nhận diện theo tên file)"
               >
-                <Upload className="w-3.5 h-3.5 text-[#E2B755]" />
+                <Upload className="w-3.5 h-3.5 text-[#D6B97A]" />
                 <span>Nạp Ảnh Hàng Loạt</span>
               </button>
 
@@ -644,10 +644,10 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                   setParsedJsonData(null);
                   setIsJsonModalOpen(true);
                 }}
-                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-[#2C2114] hover:bg-[#3D2E1C] text-[#FFE394] border border-[#71542C] hover:border-[#E2B755] rounded-xl transition-all cursor-pointer shadow-sm active:scale-95"
+                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-[#2C2114] hover:bg-[#3D2E1C] text-[#FFE394] border border-[#71542C] hover:border-[#D6B97A] rounded-xl transition-all cursor-pointer shadow-sm active:scale-95"
                 title="Nạp tệp tin JSON hoặc dán trực tiếp JSON dữ liệu/hình ảnh vào Hoa Giáp"
               >
-                <FileCode2 className="w-3.5 h-3.5 text-[#E2B755]" />
+                <FileCode2 className="w-3.5 h-3.5 text-[#D6B97A]" />
                 <span>Nạp Tệp JSON</span>
               </button>
 
@@ -689,9 +689,9 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
 
           {/* Status banner if batch uploading */}
           {batchUploadStatus && (
-            <div className="mt-4 p-3 rounded-xl bg-[#251E14] border border-[#D4AF37] text-xs text-[#F5EAD4] flex items-center justify-between animate-in fade-in">
+            <div className="mt-4 p-3 rounded-xl bg-[#251E14] border border-[#C9A55A] text-xs text-[#F5EAD4] flex items-center justify-between animate-in fade-in">
               <span className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#D4AF37]" />
+                <CheckCircle2 className="w-4 h-4 text-[#C9A55A]" />
                 {batchUploadStatus}
               </span>
               <button
@@ -714,7 +714,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Tìm Can Chi (Giáp Tý...), quẻ Dịch (Càn, Phục, #24...), nạp âm..."
-                className="w-full pl-10 pr-9 py-2 text-xs sm:text-sm bg-[#181410] border border-[#382B1E] focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] rounded-xl text-[#F3E7D0] placeholder-[#766755] outline-none transition-all"
+                className="w-full pl-10 pr-9 py-2 text-xs sm:text-sm bg-[#181410] border border-[#382B1E] focus:border-[#C9A55A] focus:ring-1 focus:ring-[#C9A55A] rounded-xl text-[#F3E7D0] placeholder-[#766755] outline-none transition-all"
               />
               {searchQuery && (
                 <button
@@ -737,10 +737,10 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                   setHexLookupTrigram("all");
                   setIsHexLookupModalOpen(true);
                 }}
-                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-[#221A12] hover:bg-[#2F2418] text-[#E2B755] border border-[#483724] hover:border-[#E2B755] rounded-xl transition-all cursor-pointer shadow-sm active:scale-95"
+                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-[#221A12] hover:bg-[#2F2418] text-[#D6B97A] border border-[#483724] hover:border-[#D6B97A] rounded-xl transition-all cursor-pointer shadow-sm active:scale-95"
                 title="Mở bảng tra cứu nhanh Quẻ Kinh Dịch đối ứng với 60 Hoa Giáp"
               >
-                <Compass className="w-3.5 h-3.5 text-[#E2B755]" />
+                <Compass className="w-3.5 h-3.5 text-[#D6B97A]" />
                 <span>Tìm Quẻ Dịch Liên Kết</span>
               </button>
 
@@ -759,7 +759,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                     }
                   }
                 }}
-                className="px-2.5 py-2 text-xs bg-[#181410] border border-[#382B1E] rounded-xl text-[#DDD0BE] outline-none cursor-pointer hover:border-[#D4AF37] max-w-[190px]"
+                className="px-2.5 py-2 text-xs bg-[#181410] border border-[#382B1E] rounded-xl text-[#DDD0BE] outline-none cursor-pointer hover:border-[#C9A55A] max-w-[190px]"
                 title="Lọc theo Quẻ Kinh Dịch liên kết (60 Quẻ)"
               >
                 <option value="all">Mọi Quẻ Kinh Dịch (60)</option>
@@ -777,7 +777,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
               <select
                 value={selectedCan}
                 onChange={(e) => setSelectedCan(e.target.value)}
-                className="px-2.5 py-2 text-xs bg-[#181410] border border-[#382B1E] rounded-xl text-[#DDD0BE] outline-none cursor-pointer hover:border-[#D4AF37]"
+                className="px-2.5 py-2 text-xs bg-[#181410] border border-[#382B1E] rounded-xl text-[#DDD0BE] outline-none cursor-pointer hover:border-[#C9A55A]"
               >
                 <option value="all">Mọi Thiên Can (10)</option>
                 {JIAZI_CAN_LIST.map((can) => (
@@ -791,7 +791,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
               <select
                 value={imageFilter}
                 onChange={(e) => setImageFilter(e.target.value as any)}
-                className="px-2.5 py-2 text-xs bg-[#181410] border border-[#382B1E] rounded-xl text-[#DDD0BE] outline-none cursor-pointer hover:border-[#D4AF37]"
+                className="px-2.5 py-2 text-xs bg-[#181410] border border-[#382B1E] rounded-xl text-[#DDD0BE] outline-none cursor-pointer hover:border-[#C9A55A]"
               >
                 <option value="all">Tất cả ảnh (60)</option>
                 <option value="has_image">Đã có ảnh ({uploadedCount})</option>
@@ -871,7 +871,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                 onClick={handleToggleImageFitMode}
                 className={`flex items-center gap-1.5 px-3 py-2 text-xs rounded-xl border transition-all cursor-pointer font-medium ${
                   imageFitMode === "contain"
-                    ? "bg-[#251C12] border-[#E2B755] text-[#FFE394] shadow-[0_0_12px_rgba(226,183,85,0.2)]"
+                    ? "bg-[#251C12] border-[#D6B97A] text-[#FFE394] shadow-[0_0_12px_rgba(226,183,85,0.2)]"
                     : "bg-[#181410] border-[#382B1E] text-[#A89882] hover:text-white"
                 }`}
                 title={
@@ -880,10 +880,10 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                     : "Đang lấp đầy khung bài. Nhấp để chuyển về trạng thái FULL nguyên vẹn."
                 }
               >
-                <Maximize2 className="w-3.5 h-3.5 text-[#E2B755]" />
+                <Maximize2 className="w-3.5 h-3.5 text-[#D6B97A]" />
                 <span>
                   Trạng Thái:{" "}
-                  <strong className={imageFitMode === "contain" ? "text-[#E2B755] font-bold" : "text-white"}>
+                  <strong className={imageFitMode === "contain" ? "text-[#D6B97A] font-bold" : "text-white"}>
                     {imageFitMode === "contain" ? "FULL (Toàn Bộ 100%)" : "Lấp Đầy Khung"}
                   </strong>
                 </span>
@@ -898,7 +898,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
               onClick={() => setSelectedBranch("all")}
               className={`px-3 py-1.5 text-xs rounded-lg font-medium whitespace-nowrap transition-all cursor-pointer ${
                 selectedBranch === "all"
-                  ? "bg-[#D4AF37] text-[#12100E] font-bold shadow-md"
+                  ? "bg-[#C9A55A] text-[#12100E] font-bold shadow-md"
                   : "bg-[#181410] text-[#A89882] hover:text-white border border-[#302519]"
               }`}
             >
@@ -916,7 +916,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                   onClick={() => setSelectedBranch(branch)}
                   className={`px-3 py-1.5 text-xs rounded-lg font-medium whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
                     selectedBranch === branch
-                      ? "bg-[#D4AF37] text-[#12100E] font-bold shadow-md"
+                      ? "bg-[#C9A55A] text-[#12100E] font-bold shadow-md"
                       : "bg-[#181410] text-[#A89882] hover:text-white border border-[#302519]"
                   }`}
                 >
@@ -1017,7 +1017,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
             {filteredJiazi.length === 0 ? (
               <div className="text-center py-16 bg-[#16120E] border border-[#2E2419] rounded-2xl p-6">
                 <Search className="w-10 h-10 text-[#6B5C4B] mx-auto mb-3" />
-                <h3 className="text-base font-semibold text-[#D4AF37]">Không tìm thấy Hoa Giáp phù hợp</h3>
+                <h3 className="text-base font-semibold text-[#C9A55A]">Không tìm thấy Hoa Giáp phù hợp</h3>
                 <p className="text-xs text-[#8C7D6B] mt-1">
                   Vui lòng thử điều chỉnh lại bộ lọc hoặc từ khóa tìm kiếm.
                 </p>
@@ -1035,7 +1035,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                       onClick={() => handleSelectEntry(item.id)}
                       className={`group relative bg-[#17130F] border rounded-2xl overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-xl ${
                         isSelected
-                          ? "border-[#D4AF37] ring-2 ring-[#D4AF37]/30 shadow-[0_0_20px_rgba(212,175,55,0.15)]"
+                          ? "border-[#C9A55A] ring-2 ring-[#C9A55A]/30 shadow-[0_0_20px_rgba(212,175,55,0.15)]"
                           : "border-[#302519] hover:border-[#5C4830]"
                       }`}
                     >
@@ -1059,20 +1059,20 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                           </>
                         ) : (
                           <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center bg-gradient-to-br from-[#1C1610] to-[#120E0A]">
-                            <div className="text-3xl font-serif font-bold text-[#E2B755]/30 mb-2">
+                            <div className="text-3xl font-serif font-bold text-[#D6B97A]/30 mb-2">
                               {item.chinese}
                             </div>
                             <div className="text-xs text-[#766552] line-clamp-2 px-2">
                               {item.symbolicCreature}
                             </div>
                             <span className="mt-3 text-[10px] text-[#A89882] px-2 py-0.5 rounded border border-[#3E3021] bg-[#18130E]/70 flex items-center gap-1">
-                              <Upload className="w-2.5 h-2.5 text-[#E2B755]" /> Nạp hình
+                              <Upload className="w-2.5 h-2.5 text-[#D6B97A]" /> Nạp hình
                             </span>
                           </div>
                         )}
 
                         {/* Order Badge */}
-                        <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-[#12100E]/80 backdrop-blur-md border border-[#3E3021] text-[10px] font-mono font-bold text-[#E2B755]">
+                        <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-[#12100E]/80 backdrop-blur-md border border-[#3E3021] text-[10px] font-mono font-bold text-[#D6B97A]">
                           #{item.order.toString().padStart(2, "0")}
                         </div>
 
@@ -1085,7 +1085,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                       {/* Card Info Bottom */}
                       <div className="p-3 bg-[#17130F]">
                         <div className="flex items-center justify-between gap-1">
-                          <h4 className="font-serif font-bold text-sm text-[#F3E7D0] group-hover:text-[#E2B755] transition-colors">
+                          <h4 className="font-serif font-bold text-sm text-[#F3E7D0] group-hover:text-[#D6B97A] transition-colors">
                             {item.name}
                           </h4>
                           <span className="text-xs font-serif text-[#A89882]">{item.chinese}</span>
@@ -1102,7 +1102,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                             className={`p-1 rounded-md transition-colors shrink-0 ml-1 cursor-pointer ${
                               isPlayingThis
                                 ? "bg-rose-500/20 text-rose-400 border border-rose-500/40 animate-pulse"
-                                : "text-[#8C7D6B] hover:text-[#E2B755] hover:bg-[#251E16]"
+                                : "text-[#8C7D6B] hover:text-[#D6B97A] hover:bg-[#251E16]"
                             }`}
                             title={`Nghe tượng âm thanh: ${item.soundSymbolism.soundName}`}
                           >
@@ -1119,7 +1119,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                           className="text-[10px] text-[#8C7D6B] truncate mt-1 flex items-center gap-1"
                           title={item.soundSymbolism.soundName}
                         >
-                          <Waves className="w-2.5 h-2.5 shrink-0 text-[#E2B755]/70" />
+                          <Waves className="w-2.5 h-2.5 shrink-0 text-[#D6B97A]/70" />
                           <span className="truncate">{item.soundSymbolism.soundName}</span>
                         </div>
 
@@ -1128,7 +1128,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                           const hexImg = cardImages?.[item.hexagramLink.hexagramNumber];
                           return (
                             <div
-                              className="text-[10px] text-[#A89882] hover:text-[#E2B755] truncate mt-1 pt-1.5 border-t border-[#261E15] flex items-center justify-between gap-1"
+                              className="text-[10px] text-[#A89882] hover:text-[#D6B97A] truncate mt-1 pt-1.5 border-t border-[#261E15] flex items-center justify-between gap-1"
                               title={`Quẻ Kinh Dịch tương ứng: #${item.hexagramLink.hexagramNumber} ${item.hexagramLink.hexagramName}`}
                             >
                               <span className="truncate flex items-center gap-1.5">
@@ -1139,11 +1139,11 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                                     className="w-3.5 h-5 rounded-[3px] object-cover border border-[#52402B] shrink-0"
                                   />
                                 ) : (
-                                  <Compass className="w-2.5 h-2.5 text-[#E2B755] shrink-0" />
+                                  <Compass className="w-2.5 h-2.5 text-[#D6B97A] shrink-0" />
                                 )}
                                 <span className="truncate">#{item.hexagramLink.hexagramNumber} {item.hexagramLink.hexagramName}</span>
                               </span>
-                              <span className="font-serif text-[#E2B755] font-bold text-xs shrink-0">{item.hexagramLink.symbol}</span>
+                              <span className="font-serif text-[#D6B97A] font-bold text-xs shrink-0">{item.hexagramLink.symbol}</span>
                             </div>
                           );
                         })()}
@@ -1162,13 +1162,13 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
             {/* Top Bar for Full Image Mode */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-[#17130F] border border-[#3E3021] rounded-2xl p-4 shadow-xl">
               <div className="flex items-center gap-3">
-                <span className="px-3 py-1 rounded-xl bg-[#2A2016] border border-[#503E2B] text-sm font-mono font-bold text-[#E2B755]">
+                <span className="px-3 py-1 rounded-xl bg-[#2A2016] border border-[#503E2B] text-sm font-mono font-bold text-[#D6B97A]">
                   #{selectedEntry.order.toString().padStart(2, "0")} / 60
                 </span>
                 <div>
                   <h2 className="text-xl sm:text-2xl font-serif font-bold text-[#F3E7D0] flex items-center gap-2">
                     <span>{selectedEntry.name}</span>
-                    <span className="text-base text-[#E2B755] font-serif font-normal">({selectedEntry.chinese})</span>
+                    <span className="text-base text-[#D6B97A] font-serif font-normal">({selectedEntry.chinese})</span>
                   </h2>
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-[#A89882]">Nạp Âm:</span>
@@ -1177,8 +1177,8 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                       onClick={() => handleTogglePlaySound(selectedEntry.soundSymbolism.soundType)}
                       className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-xs font-bold transition-all cursor-pointer active:scale-95 ${
                         playingSoundType === selectedEntry.soundSymbolism.soundType
-                          ? "bg-[#3B2D1C] border-[#E2B755] text-[#FFE394] ring-2 ring-[#E2B755]/50 shadow-[0_0_12px_rgba(226,183,85,0.4)] animate-pulse"
-                          : "bg-[#2A2016] hover:bg-[#382B1D] border-[#483724] hover:border-[#D4AF37] text-[#E2B755] hover:text-white"
+                          ? "bg-[#3B2D1C] border-[#D6B97A] text-[#FFE394] ring-2 ring-[#D6B97A]/50 shadow-[0_0_12px_rgba(226,183,85,0.4)] animate-pulse"
+                          : "bg-[#2A2016] hover:bg-[#382B1D] border-[#483724] hover:border-[#C9A55A] text-[#D6B97A] hover:text-white"
                       }`}
                       title={
                         playingSoundType === selectedEntry.soundSymbolism.soundType
@@ -1186,7 +1186,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                           : `Bấm để nghe âm tượng Nạp Âm: ${selectedEntry.soundSymbolism.soundName}`
                       }
                     >
-                      <Volume2 className="w-3 h-3 text-[#E2B755]" />
+                      <Volume2 className="w-3 h-3 text-[#D6B97A]" />
                       <span>{selectedEntry.elementNapAm}</span>
                     </button>
                     {selectedEntry.hexagramLink && (
@@ -1199,10 +1199,10 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                             setHexagramModalData(selectedEntry.hexagramLink);
                           }
                         }}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#201811] hover:bg-[#2F2318] border border-[#483724] hover:border-[#E2B755] text-xs font-bold text-[#E2B755] transition-all cursor-pointer shadow-sm"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#201811] hover:bg-[#2F2318] border border-[#483724] hover:border-[#D6B97A] text-xs font-bold text-[#D6B97A] transition-all cursor-pointer shadow-sm"
                         title={`Quẻ Kinh Dịch tương ứng: #${selectedEntry.hexagramLink.hexagramNumber} ${selectedEntry.hexagramLink.hexagramName}. Nhấp để xem luận giải.`}
                       >
-                        <Compass className="w-3 h-3 text-[#E2B755]" />
+                        <Compass className="w-3 h-3 text-[#D6B97A]" />
                         <span>Quẻ #{selectedEntry.hexagramLink.hexagramNumber} {selectedEntry.hexagramLink.hexagramName}</span>
                         <span className="font-serif text-[#FFF8E7]">{selectedEntry.hexagramLink.symbol}</span>
                       </button>
@@ -1221,7 +1221,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                       onClick={() => setFullImageTab("jiazi")}
                       className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                         fullImageTab === "jiazi"
-                          ? "bg-[#D4AF37] text-[#12100E] font-bold shadow"
+                          ? "bg-[#C9A55A] text-[#12100E] font-bold shadow"
                           : "text-[#A89882] hover:text-white"
                       }`}
                     >
@@ -1232,12 +1232,12 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                       onClick={() => setFullImageTab("hexagram")}
                       className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
                         fullImageTab === "hexagram"
-                          ? "bg-[#D4AF37] text-[#12100E] font-bold shadow"
+                          ? "bg-[#C9A55A] text-[#12100E] font-bold shadow"
                           : "text-[#A89882] hover:text-white"
                       }`}
                     >
                       <span>Quẻ #{selectedEntry.hexagramLink.hexagramNumber}</span>
-                      <span className="font-serif font-bold text-[#E2B755]">{selectedEntry.hexagramLink.symbol}</span>
+                      <span className="font-serif font-bold text-[#D6B97A]">{selectedEntry.hexagramLink.symbol}</span>
                       {cardImages?.[selectedEntry.hexagramLink.hexagramNumber] && (
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                       )}
@@ -1251,7 +1251,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                   className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-[#221B13] hover:bg-[#2F251A] text-[#FFE394] border border-[#52412B] rounded-xl transition-all cursor-pointer font-medium shadow"
                   title="Chuyển đổi trạng thái Full (100% không cắt xén) hoặc Lấp đầy"
                 >
-                  <Maximize2 className="w-3.5 h-3.5 text-[#E2B755]" />
+                  <Maximize2 className="w-3.5 h-3.5 text-[#D6B97A]" />
                   <span>Ảnh: <strong>{imageFitMode === "contain" ? "FULL (Toàn Bộ 100%)" : "Lấp Đầy Khung"}</strong></span>
                 </button>
 
@@ -1276,7 +1276,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                 <button
                   type="button"
                   onClick={() => setViewMode("detail")}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold bg-[#D4AF37] hover:bg-[#E2B755] text-[#12100E] rounded-xl transition-all cursor-pointer shadow"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold bg-[#C9A55A] hover:bg-[#D6B97A] text-[#12100E] rounded-xl transition-all cursor-pointer shadow"
                 >
                   <BookOpen className="w-3.5 h-3.5" />
                   <span>Xem Diễn Giải Chi Tiết</span>
@@ -1316,7 +1316,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
 
                           {/* Quick Floating Overlays */}
                           <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
-                            <span className="px-3 py-1 rounded-xl bg-[#120F0C]/85 backdrop-blur-md border border-[#483724] text-xs font-bold text-[#E2B755]">
+                            <span className="px-3 py-1 rounded-xl bg-[#120F0C]/85 backdrop-blur-md border border-[#483724] text-xs font-bold text-[#D6B97A]">
                               Quẻ #{selectedEntry.hexagramLink.hexagramNumber} {selectedEntry.hexagramLink.hexagramName} ({selectedEntry.hexagramLink.symbol})
                             </span>
                             <span className="px-2.5 py-0.5 rounded-lg bg-emerald-950/80 border border-emerald-700/80 text-[11px] text-emerald-300 font-mono">
@@ -1331,7 +1331,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                                 setLightboxZoom(1);
                                 setLightboxImage(hexImg);
                               }}
-                              className="p-2 rounded-xl bg-[#120F0C]/85 hover:bg-[#201A14] backdrop-blur-md text-[#F5EAD4] border border-[#483724] transition-all cursor-pointer shadow hover:text-[#E2B755]"
+                              className="p-2 rounded-xl bg-[#120F0C]/85 hover:bg-[#201A14] backdrop-blur-md text-[#F5EAD4] border border-[#483724] transition-all cursor-pointer shadow hover:text-[#D6B97A]"
                               title="Mở ảnh toàn màn hình"
                             >
                               <Maximize2 className="w-4 h-4" />
@@ -1349,7 +1349,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                             />
                           ) : (
                             <div className="text-center">
-                              <div className="text-7xl font-serif text-[#E2B755] mb-2">{selectedEntry.hexagramLink.symbol}</div>
+                              <div className="text-7xl font-serif text-[#D6B97A] mb-2">{selectedEntry.hexagramLink.symbol}</div>
                               <div className="text-xl font-serif text-[#F5EAD4]">Quẻ {selectedEntry.hexagramLink.hexagramName}</div>
                             </div>
                           )}
@@ -1363,7 +1363,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                       <button
                         type="button"
                         onClick={() => handleSelectEntry(prevEntry.id)}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-2xl bg-[#14100C]/80 hover:bg-[#241C14] text-[#E2B755] hover:text-white border border-[#4D3A27] backdrop-blur-md shadow-2xl transition-all cursor-pointer active:scale-95 group/arrow"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-2xl bg-[#14100C]/80 hover:bg-[#241C14] text-[#D6B97A] hover:text-white border border-[#4D3A27] backdrop-blur-md shadow-2xl transition-all cursor-pointer active:scale-95 group/arrow"
                         title={`Xem #${prevEntry.order} ${prevEntry.name}`}
                       >
                         <ChevronLeft className="w-6 h-6 group-hover/arrow:-translate-x-0.5 transition-transform" />
@@ -1372,7 +1372,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                       <button
                         type="button"
                         onClick={() => handleSelectEntry(nextEntry.id)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-2xl bg-[#14100C]/80 hover:bg-[#241C14] text-[#E2B755] hover:text-white border border-[#4D3A27] backdrop-blur-md shadow-2xl transition-all cursor-pointer active:scale-95 group/arrow"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-2xl bg-[#14100C]/80 hover:bg-[#241C14] text-[#D6B97A] hover:text-white border border-[#4D3A27] backdrop-blur-md shadow-2xl transition-all cursor-pointer active:scale-95 group/arrow"
                         title={`Xem #${nextEntry.order} ${nextEntry.name}`}
                       >
                         <ChevronRight className="w-6 h-6 group-hover/arrow:translate-x-0.5 transition-transform" />
@@ -1399,7 +1399,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
 
                   {/* Quick Floating Overlays */}
                   <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
-                    <span className="px-3 py-1 rounded-xl bg-[#120F0C]/85 backdrop-blur-md border border-[#483724] text-xs font-bold text-[#E2B755]">
+                    <span className="px-3 py-1 rounded-xl bg-[#120F0C]/85 backdrop-blur-md border border-[#483724] text-xs font-bold text-[#D6B97A]">
                       Trạng Thái: FULL (100% Toàn Bộ)
                     </span>
                   </div>
@@ -1416,7 +1416,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                           );
                         }
                       }}
-                      className="p-2 rounded-xl bg-[#120F0C]/85 hover:bg-[#201A14] backdrop-blur-md text-[#F5EAD4] border border-[#483724] transition-all cursor-pointer shadow hover:text-[#E2B755]"
+                      className="p-2 rounded-xl bg-[#120F0C]/85 hover:bg-[#201A14] backdrop-blur-md text-[#F5EAD4] border border-[#483724] transition-all cursor-pointer shadow hover:text-[#D6B97A]"
                       title="Tải ảnh Hoa Giáp này về máy"
                     >
                       <Download className="w-4 h-4" />
@@ -1427,7 +1427,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                         setLightboxZoom(1);
                         setLightboxImage(images[selectedEntry.id]);
                       }}
-                      className="p-2 rounded-xl bg-[#120F0C]/85 hover:bg-[#201A14] backdrop-blur-md text-[#F5EAD4] border border-[#483724] transition-all cursor-pointer shadow hover:text-[#E2B755]"
+                      className="p-2 rounded-xl bg-[#120F0C]/85 hover:bg-[#201A14] backdrop-blur-md text-[#F5EAD4] border border-[#483724] transition-all cursor-pointer shadow hover:text-[#D6B97A]"
                       title="Mở toàn màn hình"
                     >
                       <Maximize2 className="w-4 h-4" />
@@ -1435,7 +1435,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                     <button
                       type="button"
                       onClick={() => singleFileInputRef.current?.click()}
-                      className="p-2 rounded-xl bg-[#120F0C]/85 hover:bg-[#201A14] backdrop-blur-md text-[#E2B755] border border-[#483724] transition-all cursor-pointer shadow"
+                      className="p-2 rounded-xl bg-[#120F0C]/85 hover:bg-[#201A14] backdrop-blur-md text-[#D6B97A] border border-[#483724] transition-all cursor-pointer shadow"
                       title="Đổi ảnh khác"
                     >
                       <Upload className="w-4 h-4" />
@@ -1454,7 +1454,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                   <button
                     type="button"
                     onClick={() => handleSelectEntry(prevEntry.id)}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-2xl bg-[#14100C]/80 hover:bg-[#241C14] text-[#E2B755] hover:text-white border border-[#4D3A27] backdrop-blur-md shadow-2xl transition-all cursor-pointer active:scale-95 group/arrow"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-2xl bg-[#14100C]/80 hover:bg-[#241C14] text-[#D6B97A] hover:text-white border border-[#4D3A27] backdrop-blur-md shadow-2xl transition-all cursor-pointer active:scale-95 group/arrow"
                     title={`Xem #${prevEntry.order} ${prevEntry.name}`}
                   >
                     <ChevronLeft className="w-6 h-6 group-hover/arrow:-translate-x-0.5 transition-transform" />
@@ -1463,7 +1463,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                   <button
                     type="button"
                     onClick={() => handleSelectEntry(nextEntry.id)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-2xl bg-[#14100C]/80 hover:bg-[#241C14] text-[#E2B755] hover:text-white border border-[#4D3A27] backdrop-blur-md shadow-2xl transition-all cursor-pointer active:scale-95 group/arrow"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 rounded-2xl bg-[#14100C]/80 hover:bg-[#241C14] text-[#D6B97A] hover:text-white border border-[#4D3A27] backdrop-blur-md shadow-2xl transition-all cursor-pointer active:scale-95 group/arrow"
                     title={`Xem #${nextEntry.order} ${nextEntry.name}`}
                   >
                     <ChevronRight className="w-6 h-6 group-hover/arrow:translate-x-0.5 transition-transform" />
@@ -1473,14 +1473,14 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                 /* Placeholder if no image */
                 <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center">
                   <div className="w-32 h-32 rounded-full border-2 border-[#4A3926] bg-[#221B13]/70 flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(212,175,55,0.15)]">
-                    <span className="text-5xl font-serif font-bold text-[#E2B755]">
+                    <span className="text-5xl font-serif font-bold text-[#D6B97A]">
                       {selectedEntry.chinese}
                     </span>
                   </div>
                   <h3 className="text-2xl sm:text-3xl font-serif font-bold text-[#F3E7D0]">
                     {selectedEntry.name}
                   </h3>
-                  <p className="text-sm text-[#E2B755] font-medium mt-1">
+                  <p className="text-sm text-[#D6B97A] font-medium mt-1">
                     {selectedEntry.elementNapAm}
                   </p>
                   <p className="text-sm text-[#8C7D6B] mt-3 max-w-md leading-relaxed">
@@ -1491,7 +1491,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                     <button
                       type="button"
                       onClick={() => singleFileInputRef.current?.click()}
-                      className="flex items-center gap-2 px-5 py-2.5 text-xs font-bold bg-[#E2B755] hover:bg-[#F3C966] text-[#12100E] rounded-xl transition-all shadow-md active:scale-95 cursor-pointer"
+                      className="flex items-center gap-2 px-5 py-2.5 text-xs font-bold bg-[#D6B97A] hover:bg-[#F3C966] text-[#12100E] rounded-xl transition-all shadow-md active:scale-95 cursor-pointer"
                     >
                       <Upload className="w-4 h-4" /> Nạp Hình Cho Can Chi Này
                     </button>
@@ -1512,8 +1512,8 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
               {/* Tượng Âm Thanh Card */}
               <div className="bg-[#17130F] border border-[#3A2D1F] rounded-2xl p-4 shadow">
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className="text-xs font-serif font-bold text-[#E2B755] flex items-center gap-1.5">
-                    <Volume2 className="w-3.5 h-3.5 text-[#E2B755]" />
+                  <h4 className="text-xs font-serif font-bold text-[#D6B97A] flex items-center gap-1.5">
+                    <Volume2 className="w-3.5 h-3.5 text-[#D6B97A]" />
                     <span>TƯỢNG ÂM THANH NẠP ÂM</span>
                   </h4>
                   {selectedEntry.soundSymbolism && (
@@ -1533,7 +1533,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                         </>
                       ) : (
                         <>
-                          <Play className="w-3 h-3 text-[#E2B755]" />
+                          <Play className="w-3 h-3 text-[#D6B97A]" />
                           <span>Phát Âm Tượng</span>
                         </>
                       )}
@@ -1550,8 +1550,8 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
 
               {/* Tượng Khí Card */}
               <div className="bg-[#17130F] border border-[#3A2D1F] rounded-2xl p-4 shadow">
-                <h4 className="text-xs font-serif font-bold text-[#E2B755] flex items-center gap-1.5 mb-2">
-                  <Waves className="w-3.5 h-3.5 text-[#E2B755]" />
+                <h4 className="text-xs font-serif font-bold text-[#D6B97A] flex items-center gap-1.5 mb-2">
+                  <Waves className="w-3.5 h-3.5 text-[#D6B97A]" />
                   <span>KHÍ TƯỢNG BẢN MỆNH</span>
                 </h4>
                 <div className="text-sm font-semibold text-[#F5EAD4]">
@@ -1565,8 +1565,8 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
               {/* Biểu Tượng & Luận Đoán Card */}
               <div className="bg-[#17130F] border border-[#3A2D1F] rounded-2xl p-4 shadow flex flex-col justify-between">
                 <div>
-                  <h4 className="text-xs font-serif font-bold text-[#E2B755] flex items-center gap-1.5 mb-2">
-                    <Sparkles className="w-3.5 h-3.5 text-[#E2B755]" />
+                  <h4 className="text-xs font-serif font-bold text-[#D6B97A] flex items-center gap-1.5 mb-2">
+                    <Sparkles className="w-3.5 h-3.5 text-[#D6B97A]" />
                     <span>HÌNH TƯỢNG VĂN HÓA</span>
                   </h4>
                   <p className="text-xs text-[#DDD0BE] line-clamp-2">
@@ -1600,7 +1600,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                 {/* Decorative header */}
                 <div className="flex items-center justify-between mb-3 border-b border-[#2C2217] pb-3">
                   <div className="flex items-center gap-2">
-                    <span className="px-2.5 py-0.5 rounded-lg bg-[#2B2117] border border-[#503E2B] text-xs font-mono font-bold text-[#E2B755]">
+                    <span className="px-2.5 py-0.5 rounded-lg bg-[#2B2117] border border-[#503E2B] text-xs font-mono font-bold text-[#D6B97A]">
                       #{selectedEntry.order.toString().padStart(2, "0")} / 60
                     </span>
                     <span className="text-xs text-[#A89882]">Chi {selectedEntry.branchGroup}</span>
@@ -1611,8 +1611,8 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                       onClick={() => handleTogglePlaySound(selectedEntry.soundSymbolism.soundType)}
                       className={`inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-0.5 rounded-full border transition-all cursor-pointer active:scale-95 ${
                         playingSoundType === selectedEntry.soundSymbolism.soundType
-                          ? "bg-[#3B2D1C] border-[#E2B755] text-[#FFE394] ring-2 ring-[#E2B755]/50 shadow-[0_0_12px_rgba(226,183,85,0.4)] animate-pulse"
-                          : "bg-[#2A2016] hover:bg-[#382B1D] border-[#483724] hover:border-[#D4AF37] text-[#E2B755] hover:text-white"
+                          ? "bg-[#3B2D1C] border-[#D6B97A] text-[#FFE394] ring-2 ring-[#D6B97A]/50 shadow-[0_0_12px_rgba(226,183,85,0.4)] animate-pulse"
+                          : "bg-[#2A2016] hover:bg-[#382B1D] border-[#483724] hover:border-[#C9A55A] text-[#D6B97A] hover:text-white"
                       }`}
                       title={
                         playingSoundType === selectedEntry.soundSymbolism.soundType
@@ -1620,7 +1620,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                           : `Bấm để nghe âm tượng Nạp Âm: ${selectedEntry.soundSymbolism.soundName}`
                       }
                     >
-                      <Volume2 className="w-3 h-3 text-[#E2B755]" />
+                      <Volume2 className="w-3 h-3 text-[#D6B97A]" />
                       <span>{selectedEntry.elementNapAm}</span>
                     </button>
                   </div>
@@ -1638,7 +1638,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                           : "text-[#A89882] hover:text-[#DDD0BE] hover:bg-[#1D1711]"
                       }`}
                     >
-                      <Trees className="w-3.5 h-3.5 text-[#E2B755]" />
+                      <Trees className="w-3.5 h-3.5 text-[#D6B97A]" />
                       <span>Ảnh Hoa Giáp</span>
                       {images[selectedEntry.id] && (
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
@@ -1653,9 +1653,9 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                           : "text-[#A89882] hover:text-[#DDD0BE] hover:bg-[#1D1711]"
                       }`}
                     >
-                      <Compass className="w-3.5 h-3.5 text-[#E2B755]" />
+                      <Compass className="w-3.5 h-3.5 text-[#D6B97A]" />
                       <span>Quẻ #{selectedEntry.hexagramLink.hexagramNumber}</span>
-                      <span className="font-serif font-bold text-[#E2B755] text-xs">
+                      <span className="font-serif font-bold text-[#D6B97A] text-xs">
                         {selectedEntry.hexagramLink.symbol}
                       </span>
                       {cardImages?.[selectedEntry.hexagramLink.hexagramNumber] && (
@@ -1699,15 +1699,15 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                             </div>
                           ) : (
                             <div className="relative z-10 text-center">
-                              <div className="text-6xl font-serif text-[#E2B755] mb-2">{selectedEntry.hexagramLink.symbol}</div>
+                              <div className="text-6xl font-serif text-[#D6B97A] mb-2">{selectedEntry.hexagramLink.symbol}</div>
                               <div className="text-lg font-serif font-bold text-[#F5EAD4]">Quẻ {selectedEntry.hexagramLink.hexagramName}</div>
                             </div>
                           )}
 
                           {/* Top badges for hexagram card */}
                           <div className="absolute top-3 left-3 z-20">
-                            <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-[#14100C]/85 backdrop-blur-md text-[#E2B755] border border-[#483724] shadow flex items-center gap-1">
-                              <Compass className="w-3 h-3 text-[#E2B755]" />
+                            <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-[#14100C]/85 backdrop-blur-md text-[#D6B97A] border border-[#483724] shadow flex items-center gap-1">
+                              <Compass className="w-3 h-3 text-[#D6B97A]" />
                               <span>Quẻ #{selectedEntry.hexagramLink.hexagramNumber} ({selectedEntry.hexagramLink.symbol})</span>
                             </span>
                           </div>
@@ -1720,7 +1720,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                                   setLightboxZoom(1);
                                   setLightboxImage(hexImg);
                                 }}
-                                className="p-1.5 rounded-lg bg-[#14100C]/85 hover:bg-[#201A14] backdrop-blur-md text-[#F5EAD4] border border-[#483724] transition-all cursor-pointer shadow hover:text-[#E2B755]"
+                                className="p-1.5 rounded-lg bg-[#14100C]/85 hover:bg-[#201A14] backdrop-blur-md text-[#F5EAD4] border border-[#483724] transition-all cursor-pointer shadow hover:text-[#D6B97A]"
                                 title="Mở toàn màn hình cực đại"
                               >
                                 <Eye className="w-3.5 h-3.5" />
@@ -1755,14 +1755,14 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                         <button
                           type="button"
                           onClick={handleToggleImageFitMode}
-                          className="px-2 py-1 rounded-lg text-[10px] font-bold bg-[#14100C]/85 hover:bg-[#201A14] backdrop-blur-md text-[#E2B755] border border-[#483724] transition-all cursor-pointer shadow flex items-center gap-1"
+                          className="px-2 py-1 rounded-lg text-[10px] font-bold bg-[#14100C]/85 hover:bg-[#201A14] backdrop-blur-md text-[#D6B97A] border border-[#483724] transition-all cursor-pointer shadow flex items-center gap-1"
                           title={
                             imageFitMode === "contain"
                               ? "Ảnh đang luôn ở trạng thái FULL (Toàn bộ ảnh 100% không cắt xén). Nhấp để đổi sang lấp đầy."
                               : "Đang lấp đầy khung. Nhấp để chuyển về trạng thái FULL nguyên vẹn."
                           }
                         >
-                          <Maximize2 className="w-3 h-3 text-[#E2B755]" />
+                          <Maximize2 className="w-3 h-3 text-[#D6B97A]" />
                           <span>{imageFitMode === "contain" ? "FULL (100%)" : "Lấp đầy"}</span>
                         </button>
 
@@ -1772,7 +1772,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                             setLightboxZoom(1);
                             setLightboxImage(images[selectedEntry.id]);
                           }}
-                          className="p-1.5 rounded-lg bg-[#14100C]/85 hover:bg-[#201A14] backdrop-blur-md text-[#F5EAD4] border border-[#483724] transition-all cursor-pointer shadow hover:text-[#E2B755]"
+                          className="p-1.5 rounded-lg bg-[#14100C]/85 hover:bg-[#201A14] backdrop-blur-md text-[#F5EAD4] border border-[#483724] transition-all cursor-pointer shadow hover:text-[#D6B97A]"
                           title="Mở toàn màn hình cực đại"
                         >
                           <Eye className="w-3.5 h-3.5" />
@@ -1784,14 +1784,14 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                     <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-[#1C1610] via-[#14100C] to-[#0E0B08]">
                       {/* Decorative Hanzi Emblem */}
                       <div className="w-24 h-24 rounded-full border-2 border-[#4A3926] bg-[#221B13]/70 flex items-center justify-center mb-4 shadow-[0_0_30px_rgba(212,175,55,0.1)]">
-                        <span className="text-4xl font-serif font-bold text-[#E2B755]">
+                        <span className="text-4xl font-serif font-bold text-[#D6B97A]">
                           {selectedEntry.chinese}
                         </span>
                       </div>
                       <h3 className="text-xl font-serif font-bold text-[#F3E7D0]">
                         {selectedEntry.name}
                       </h3>
-                      <p className="text-xs text-[#E2B755] font-medium mt-1">
+                      <p className="text-xs text-[#D6B97A] font-medium mt-1">
                         {selectedEntry.elementNapAm}
                       </p>
                       <p className="text-xs text-[#8C7D6B] mt-2 max-w-[240px] leading-relaxed">
@@ -1802,7 +1802,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                         <button
                           type="button"
                           onClick={() => singleFileInputRef.current?.click()}
-                          className="w-full max-w-[200px] flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold bg-[#E2B755] hover:bg-[#F3C966] text-[#12100E] rounded-xl transition-all shadow-md active:scale-95 cursor-pointer"
+                          className="w-full max-w-[200px] flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold bg-[#D6B97A] hover:bg-[#F3C966] text-[#12100E] rounded-xl transition-all shadow-md active:scale-95 cursor-pointer"
                         >
                           <Upload className="w-3.5 h-3.5" /> Nạp Hình Cho Can Chi Này
                         </button>
@@ -1822,16 +1822,16 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                         <button
                           type="button"
                           onClick={() => singleFileInputRef.current?.click()}
-                          className="flex items-center gap-1 hover:text-[#E2B755] cursor-pointer"
+                          className="flex items-center gap-1 hover:text-[#D6B97A] cursor-pointer"
                         >
-                          <Upload className="w-3.5 h-3.5 text-[#E2B755]" />
+                          <Upload className="w-3.5 h-3.5 text-[#D6B97A]" />
                           <span>{images[selectedEntry.id] ? "Đổi ảnh" : "Tải ảnh lên"}</span>
                         </button>
                         <span className="text-[#443525]">•</span>
                         <button
                           type="button"
                           onClick={() => setIsUrlModalOpen(true)}
-                          className="flex items-center gap-1 hover:text-[#E2B755] cursor-pointer"
+                          className="flex items-center gap-1 hover:text-[#D6B97A] cursor-pointer"
                         >
                           <span>Nhập link ảnh</span>
                         </button>
@@ -1848,7 +1848,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                     <button
                       type="button"
                       onClick={handleToggleImageFitMode}
-                      className="flex items-center gap-1 text-[#E2B755] hover:text-[#FFE394] font-medium cursor-pointer"
+                      className="flex items-center gap-1 text-[#D6B97A] hover:text-[#FFE394] font-medium cursor-pointer"
                       title="Bật/tắt trạng thái Full (100% không cắt) hoặc Lấp đầy"
                     >
                       <Maximize2 className="w-3.5 h-3.5" />
@@ -1868,10 +1868,10 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                             }
                             setViewMode("full_image");
                           }}
-                          className="flex items-center gap-1 hover:text-[#E2B755] cursor-pointer"
+                          className="flex items-center gap-1 hover:text-[#D6B97A] cursor-pointer"
                           title="Chuyển sang chế độ xem Ảnh Full & Toàn Cảnh"
                         >
-                          <Sparkles className="w-3.5 h-3.5 text-[#E2B755]" />
+                          <Sparkles className="w-3.5 h-3.5 text-[#D6B97A]" />
                           <span>Toàn Cảnh</span>
                         </button>
                         <span className="text-[#443525]">•</span>
@@ -1911,7 +1911,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                           />
                         ) : (
                           <div className="flex flex-col items-center justify-center text-center p-0.5">
-                            <span className="text-xl font-serif text-[#E2B755] leading-none">
+                            <span className="text-xl font-serif text-[#D6B97A] leading-none">
                               {selectedEntry.hexagramLink.symbol}
                             </span>
                             <span className="text-[8px] font-mono text-[#8C7D6B] mt-0.5">
@@ -1945,7 +1945,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                           className="px-2.5 py-1.5 text-xs font-medium bg-[#221B13] hover:bg-[#2F2419] text-[#FFE394] border border-[#483724] rounded-xl transition-all cursor-pointer shadow-sm flex items-center gap-1"
                           title="Xem ảnh phóng to"
                         >
-                          <Eye className="w-3 h-3 text-[#E2B755]" />
+                          <Eye className="w-3 h-3 text-[#D6B97A]" />
                           <span>Xem Hình</span>
                         </button>
                       )}
@@ -1954,7 +1954,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                         onClick={() => {
                           setDetailImageTab((prev) => (prev === "jiazi" ? "hexagram" : "jiazi"));
                         }}
-                        className="px-2.5 py-1.5 text-xs font-bold bg-[#382A1B] hover:bg-[#4A3723] text-[#E2B755] border border-[#644D31] rounded-xl transition-all cursor-pointer shadow-sm flex items-center gap-1"
+                        className="px-2.5 py-1.5 text-xs font-bold bg-[#382A1B] hover:bg-[#4A3723] text-[#D6B97A] border border-[#644D31] rounded-xl transition-all cursor-pointer shadow-sm flex items-center gap-1"
                         title="Đổi khung ảnh chính sang xem quẻ kinh dịch hoặc hoa giáp"
                       >
                         <RefreshCw className="w-3 h-3" />
@@ -1972,7 +1972,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                   onClick={() => handleSelectEntry(prevEntry.id)}
                   className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-[#DDD0BE] hover:text-white hover:bg-[#251E16] rounded-xl transition-colors cursor-pointer"
                 >
-                  <ChevronLeft className="w-4 h-4 text-[#E2B755]" />
+                  <ChevronLeft className="w-4 h-4 text-[#D6B97A]" />
                   <div className="text-left">
                     <div className="text-[10px] text-[#766552]">Trước</div>
                     <div className="font-bold">{prevEntry.name}</div>
@@ -1980,7 +1980,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                 </button>
 
                 <div className="text-center">
-                  <div className="text-xs font-serif font-bold text-[#E2B755]">
+                  <div className="text-xs font-serif font-bold text-[#D6B97A]">
                     {selectedEntry.name}
                   </div>
                   <div className="text-[10px] text-[#766552]">
@@ -1997,7 +1997,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                     <div className="text-[10px] text-[#766552]">Kế tiếp</div>
                     <div className="font-bold">{nextEntry.name}</div>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-[#E2B755]" />
+                  <ChevronRight className="w-4 h-4 text-[#D6B97A]" />
                 </button>
               </div>
 
@@ -2018,7 +2018,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                         onClick={() => handleSelectEntry(item.id)}
                         className={`p-2 rounded-xl text-center border transition-all cursor-pointer ${
                           isCur
-                            ? "bg-[#2E2317] border-[#D4AF37] text-[#D4AF37] font-bold shadow-sm"
+                            ? "bg-[#2E2317] border-[#C9A55A] text-[#C9A55A] font-bold shadow-sm"
                             : "bg-[#13100D] border-[#2A2016] text-[#A89882] hover:border-[#4E3C27] hover:text-white"
                         }`}
                       >
@@ -2054,8 +2054,8 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                       onClick={() => handleTogglePlaySound(selectedEntry.soundSymbolism.soundType)}
                       className={`group inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-bold transition-all cursor-pointer shadow-sm active:scale-95 ${
                         playingSoundType === selectedEntry.soundSymbolism.soundType
-                          ? "bg-[#3B2D1C] border-[#E2B755] text-[#FFE394] ring-2 ring-[#E2B755]/50 shadow-[0_0_18px_rgba(226,183,85,0.4)] animate-pulse"
-                          : "bg-[#2A2016] hover:bg-[#382B1D] border-[#4E3B27] hover:border-[#D4AF37] text-[#E2B755] hover:text-[#FFF8E7]"
+                          ? "bg-[#3B2D1C] border-[#D6B97A] text-[#FFE394] ring-2 ring-[#D6B97A]/50 shadow-[0_0_18px_rgba(226,183,85,0.4)] animate-pulse"
+                          : "bg-[#2A2016] hover:bg-[#382B1D] border-[#4E3B27] hover:border-[#C9A55A] text-[#D6B97A] hover:text-[#FFF8E7]"
                       }`}
                       title={
                         playingSoundType === selectedEntry.soundSymbolism.soundType
@@ -2066,19 +2066,19 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                       <Volume2
                         className={`w-3.5 h-3.5 transition-transform duration-300 ${
                           playingSoundType === selectedEntry.soundSymbolism.soundType
-                            ? "text-[#E2B755] scale-110"
-                            : "text-[#E2B755]/80 group-hover:text-[#E2B755] group-hover:scale-110"
+                            ? "text-[#D6B97A] scale-110"
+                            : "text-[#D6B97A]/80 group-hover:text-[#D6B97A] group-hover:scale-110"
                         }`}
                       />
                       <span>{selectedEntry.elementNapAm}</span>
                       {playingSoundType === selectedEntry.soundSymbolism.soundType ? (
                         <span className="flex items-center gap-0.5 ml-1">
-                          <span className="w-1 h-2.5 bg-[#E2B755] rounded-full animate-pulse" />
+                          <span className="w-1 h-2.5 bg-[#D6B97A] rounded-full animate-pulse" />
                           <span className="w-1 h-3.5 bg-[#FFE394] rounded-full animate-pulse delay-75" />
-                          <span className="w-1 h-2 bg-[#E2B755] rounded-full animate-pulse delay-150" />
+                          <span className="w-1 h-2 bg-[#D6B97A] rounded-full animate-pulse delay-150" />
                         </span>
                       ) : (
-                        <span className="text-[10px] text-[#A89882] group-hover:text-[#E2B755] ml-0.5 transition-colors">
+                        <span className="text-[10px] text-[#A89882] group-hover:text-[#D6B97A] ml-0.5 transition-colors">
                           (Nghe âm)
                         </span>
                       )}
@@ -2095,10 +2095,10 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                             setHexagramModalData(selectedEntry.hexagramLink);
                           }
                         }}
-                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#201811] hover:bg-[#2F2318] border border-[#483724] hover:border-[#E2B755] text-xs font-bold text-[#E2B755] transition-all cursor-pointer shadow-sm active:scale-95"
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#201811] hover:bg-[#2F2318] border border-[#483724] hover:border-[#D6B97A] text-xs font-bold text-[#D6B97A] transition-all cursor-pointer shadow-sm active:scale-95"
                         title={`Quẻ Kinh Dịch tương ứng: #${selectedEntry.hexagramLink.hexagramNumber} ${selectedEntry.hexagramLink.hexagramName} (${selectedEntry.hexagramLink.hexagramHanzi}). Nhấp để xem luận giải.`}
                       >
-                        <Compass className="w-3.5 h-3.5 text-[#E2B755]" />
+                        <Compass className="w-3.5 h-3.5 text-[#D6B97A]" />
                         <span>Quẻ #{selectedEntry.hexagramLink.hexagramNumber} {selectedEntry.hexagramLink.hexagramName}</span>
                         <span className="font-serif text-[#FFF8E7] text-sm leading-none ml-0.5">{selectedEntry.hexagramLink.symbol}</span>
                       </button>
@@ -2116,8 +2116,8 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                     </span>
                   </h2>
 
-                  <div className="mt-2 text-sm text-[#D4AF37] font-medium flex items-center gap-1.5">
-                    <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+                  <div className="mt-2 text-sm text-[#C9A55A] font-medium flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-[#C9A55A]" />
                     <span>Biểu tượng cốt lõi: {selectedEntry.symbolicCreature}</span>
                   </div>
 
@@ -2143,7 +2143,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                   <div
                     className={`bg-[#181410] border rounded-3xl p-6 sm:p-7 shadow-xl transition-all relative overflow-hidden ${
                       isCurrentPlaying
-                        ? "border-[#D4AF37] ring-2 ring-[#D4AF37]/30 shadow-[0_0_25px_rgba(212,175,55,0.15)]"
+                        ? "border-[#C9A55A] ring-2 ring-[#C9A55A]/30 shadow-[0_0_25px_rgba(212,175,55,0.15)]"
                         : "border-[#3E3022]"
                     }`}
                   >
@@ -2152,8 +2152,8 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                         <div
                           className={`w-10 h-10 rounded-2xl border flex items-center justify-center transition-colors ${
                             isCurrentPlaying
-                              ? "bg-[#D4AF37] text-[#12100E] border-[#F5EAD4] shadow-md animate-pulse"
-                              : "bg-[#2A2016] border-[#4D3A27] text-[#E2B755]"
+                              ? "bg-[#C9A55A] text-[#12100E] border-[#F5EAD4] shadow-md animate-pulse"
+                              : "bg-[#2A2016] border-[#4D3A27] text-[#D6B97A]"
                           }`}
                         >
                           <Volume2 className="w-5 h-5" />
@@ -2182,7 +2182,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                         className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-md active:scale-95 shrink-0 ${
                           isCurrentPlaying
                             ? "bg-rose-600 text-white shadow-[0_0_15px_rgba(225,29,72,0.6)] animate-pulse"
-                            : "bg-[#E2B755] hover:bg-[#F3C966] text-[#12100E]"
+                            : "bg-[#D6B97A] hover:bg-[#F3C966] text-[#12100E]"
                         }`}
                       >
                         {isCurrentPlaying ? (
@@ -2201,16 +2201,16 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
 
                     {/* Playing wave indicator */}
                     {isCurrentPlaying && (
-                      <div className="mb-4 py-2 px-4 rounded-xl bg-[#231A12] border border-[#D4AF37]/50 flex items-center justify-between text-xs text-[#E2B755] animate-in fade-in">
+                      <div className="mb-4 py-2 px-4 rounded-xl bg-[#231A12] border border-[#C9A55A]/50 flex items-center justify-between text-xs text-[#D6B97A] animate-in fade-in">
                         <span className="flex items-center gap-2 font-medium">
                           <Waves className="w-4 h-4 animate-bounce" />
                           <span>Đang mô phỏng cộng hưởng âm tượng: {selectedEntry.soundSymbolism.soundName}</span>
                         </span>
                         <div className="flex items-center gap-1">
-                          <span className="w-1 h-3.5 bg-[#E2B755] rounded-full animate-pulse" />
-                          <span className="w-1 h-5 bg-[#E2B755] rounded-full animate-pulse delay-75" />
-                          <span className="w-1 h-2.5 bg-[#E2B755] rounded-full animate-pulse delay-150" />
-                          <span className="w-1 h-4 bg-[#E2B755] rounded-full animate-pulse delay-200" />
+                          <span className="w-1 h-3.5 bg-[#D6B97A] rounded-full animate-pulse" />
+                          <span className="w-1 h-5 bg-[#D6B97A] rounded-full animate-pulse delay-75" />
+                          <span className="w-1 h-2.5 bg-[#D6B97A] rounded-full animate-pulse delay-150" />
+                          <span className="w-1 h-4 bg-[#D6B97A] rounded-full animate-pulse delay-200" />
                         </div>
                       </div>
                     )}
@@ -2223,7 +2223,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                           <span className="text-[11px] font-bold text-[#A89882] tracking-wider uppercase">
                             Tượng Khí & Trạng Thái
                           </span>
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#221B13] border border-[#3E3020] text-[#D4AF37] font-mono">
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#221B13] border border-[#3E3020] text-[#C9A55A] font-mono">
                             Hành {selectedEntry.soundSymbolism.element}
                           </span>
                         </div>
@@ -2235,8 +2235,8 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                       {/* Block 2: Âm Thanh Tượng Trưng */}
                       <div className="bg-[#1C1610] border border-[#3E3020] rounded-2xl p-4">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-[11px] font-bold text-[#E2B755] tracking-wider uppercase flex items-center gap-1">
-                            <Volume2 className="w-3 h-3 text-[#E2B755]" />
+                          <span className="text-[11px] font-bold text-[#D6B97A] tracking-wider uppercase flex items-center gap-1">
+                            <Volume2 className="w-3 h-3 text-[#D6B97A]" />
                             Âm Thanh Tượng Trưng
                           </span>
                           <span className="text-[10px] text-[#8C7D6B] font-mono">
@@ -2257,7 +2257,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                           <button
                             type="button"
                             onClick={() => handleSelectEntry(companionEntry.id)}
-                            className="text-[#E2B755] hover:underline font-serif font-bold flex items-center gap-1 cursor-pointer bg-[#221B13] px-2 py-0.5 rounded border border-[#3A2D1F]"
+                            className="text-[#D6B97A] hover:underline font-serif font-bold flex items-center gap-1 cursor-pointer bg-[#221B13] px-2 py-0.5 rounded border border-[#3A2D1F]"
                           >
                             <span>#{companionEntry.order} {companionEntry.name} ({companionEntry.chinese})</span>
                           </button>
@@ -2267,7 +2267,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                       <button
                         type="button"
                         onClick={() => setViewMode("sounds")}
-                        className="text-[#A89882] hover:text-[#D4AF37] flex items-center gap-1 cursor-pointer transition-colors"
+                        className="text-[#A89882] hover:text-[#C9A55A] flex items-center gap-1 cursor-pointer transition-colors"
                       >
                         <span>Xem toàn bộ bảng 30 Tượng Âm Thanh</span>
                         <ChevronRight className="w-3.5 h-3.5" />
@@ -2280,14 +2280,14 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
               {/* LIÊN KẾT KINH DỊCH: QUẺ TƯƠNG ỨNG VỚI HOA GIÁP */}
               {selectedEntry.hexagramLink && (
                 <div className="bg-[#181410] border border-[#4D3A27] rounded-3xl p-6 sm:p-7 shadow-xl relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-4 text-8xl font-serif text-[#D4AF37]/10 select-none pointer-events-none">
+                  <div className="absolute top-0 right-0 p-4 text-8xl font-serif text-[#C9A55A]/10 select-none pointer-events-none">
                     {selectedEntry.hexagramLink.symbol}
                   </div>
 
                   <div className="relative z-10">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#2D2318] pb-4 mb-5">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-2xl bg-[#2A2016] border border-[#52402B] flex items-center justify-center text-[#E2B755] shadow-sm text-2xl font-serif">
+                        <div className="w-10 h-10 rounded-2xl bg-[#2A2016] border border-[#52402B] flex items-center justify-center text-[#D6B97A] shadow-sm text-2xl font-serif">
                           {selectedEntry.hexagramLink.symbol}
                         </div>
                         <div>
@@ -2311,7 +2311,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                           <button
                             type="button"
                             onClick={() => onSelectHexagram(selectedEntry.hexagramLink.hexagramNumber)}
-                            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#D4AF37] hover:bg-[#F3C966] text-[#12100E] transition-all cursor-pointer shadow-md active:scale-95 shrink-0"
+                            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#C9A55A] hover:bg-[#F3C966] text-[#12100E] transition-all cursor-pointer shadow-md active:scale-95 shrink-0"
                             title="Mở toàn bộ luận giải chi tiết của quẻ này trong mục Giải Nghĩa Kinh Dịch"
                           >
                             <BookOpen className="w-3.5 h-3.5" />
@@ -2324,7 +2324,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                           className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-medium bg-[#221B13] hover:bg-[#2F2419] text-[#DDD0BE] border border-[#3E3020] transition-colors cursor-pointer shrink-0"
                           title="Mở bảng đối ứng đầy đủ 60 Hoa Giáp và 60 Quẻ Dịch"
                         >
-                          <Compass className="w-3.5 h-3.5 text-[#E2B755]" />
+                          <Compass className="w-3.5 h-3.5 text-[#D6B97A]" />
                           <span>Xem Bảng 60 Quẻ</span>
                         </button>
                       </div>
@@ -2351,7 +2351,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                                   />
                                 </div>
                               ) : (
-                                <div className="w-24 h-32 rounded-xl bg-[#281F15] border border-[#52402B] flex items-center justify-center text-3xl text-[#E2B755] font-serif shadow-inner">
+                                <div className="w-24 h-32 rounded-xl bg-[#281F15] border border-[#52402B] flex items-center justify-center text-3xl text-[#D6B97A] font-serif shadow-inner">
                                   {selectedEntry.hexagramLink.symbol}
                                 </div>
                               )}
@@ -2364,7 +2364,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                                       setLightboxZoom(1);
                                       setLightboxImage(hexImg);
                                     }}
-                                    className="text-[11px] text-[#D4AF37] hover:text-[#FFE394] flex items-center justify-center gap-1 cursor-pointer transition-colors"
+                                    className="text-[11px] text-[#C9A55A] hover:text-[#FFE394] flex items-center justify-center gap-1 cursor-pointer transition-colors"
                                   >
                                     <Eye className="w-3 h-3" />
                                     <span>Phóng to ảnh</span>
@@ -2377,7 +2377,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                             <div className="flex-1 min-w-0 w-full">
                               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                                 <div className="flex items-center gap-2 flex-wrap">
-                                  <span className="text-2xl font-serif text-[#E2B755] font-bold">
+                                  <span className="text-2xl font-serif text-[#D6B97A] font-bold">
                                     {selectedEntry.hexagramLink.symbol}
                                   </span>
                                   <span className="text-lg font-serif font-bold text-[#F5EAD4]">
@@ -2386,14 +2386,14 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                                   <span className="text-xs font-serif text-[#A89882]">
                                     ({selectedEntry.hexagramLink.hexagramHanzi})
                                   </span>
-                                  <span className="px-2 py-0.5 rounded-md bg-[#251D14] border border-[#443321] text-[10px] font-mono font-bold text-[#E2B755]">
+                                  <span className="px-2 py-0.5 rounded-md bg-[#251D14] border border-[#443321] text-[10px] font-mono font-bold text-[#D6B97A]">
                                     Quẻ #{selectedEntry.hexagramLink.hexagramNumber}
                                   </span>
                                 </div>
                                 <div className="text-xs text-[#8C7D6B] flex items-center gap-2">
                                   <span>Thượng: <strong className="text-[#DDD0BE]">{selectedEntry.hexagramLink.upperTrigram}</strong></span>
                                   <span>•</span>
-                                  <span>Hạ: <strong className="text-[#E2B755]">{selectedEntry.hexagramLink.lowerTrigram}</strong></span>
+                                  <span>Hạ: <strong className="text-[#D6B97A]">{selectedEntry.hexagramLink.lowerTrigram}</strong></span>
                                 </div>
                               </div>
 
@@ -2411,17 +2411,17 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                                   }}
                                   className="px-2.5 py-1 text-xs rounded-lg bg-[#2A1F14] hover:bg-[#38291B] text-[#FFE394] border border-[#4D3823] font-medium transition-all cursor-pointer flex items-center gap-1 shadow-sm"
                                 >
-                                  <Maximize2 className="w-3 h-3 text-[#E2B755]" />
+                                  <Maximize2 className="w-3 h-3 text-[#D6B97A]" />
                                   <span>Hiện hình quẻ ở khung chính</span>
                                 </button>
                                 {onSelectHexagram && (
                                   <button
                                     type="button"
                                     onClick={() => onSelectHexagram(selectedEntry.hexagramLink.hexagramNumber)}
-                                    className="px-2.5 py-1 text-xs rounded-lg bg-[#251D14] hover:bg-[#34271A] text-[#FFE394] hover:text-white border border-[#4E3923] hover:border-[#E2B755] font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
+                                    className="px-2.5 py-1 text-xs rounded-lg bg-[#251D14] hover:bg-[#34271A] text-[#FFE394] hover:text-white border border-[#4E3923] hover:border-[#D6B97A] font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
                                     title="Nhấp để nhảy sang phần giải thích trong Sách Thuyết Minh Kinh Dịch"
                                   >
-                                    <BookOpen className="w-3.5 h-3.5 text-[#E2B755]" />
+                                    <BookOpen className="w-3.5 h-3.5 text-[#D6B97A]" />
                                     <span>Xem giải nghĩa quẻ #{selectedEntry.hexagramLink.hexagramNumber}</span>
                                   </button>
                                 )}
@@ -2431,7 +2431,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
 
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs mt-3.5">
                             <div className="bg-[#1A140F] border border-[#332517] rounded-xl p-3">
-                              <div className="text-[11px] font-bold text-[#E2B755] uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                              <div className="text-[11px] font-bold text-[#D6B97A] uppercase tracking-wider mb-1 flex items-center gap-1.5">
                                 <Sparkles className="w-3.5 h-3.5" />
                                 <span>Tượng Quẻ & Khí Vận</span>
                               </div>
@@ -2460,7 +2460,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
               {/* PART 1: CHI TIẾT TƯỢNG HÌNH (Phối tượng tự nhiên - 自然配象) */}
               <div className="bg-[#181410] border border-[#3E3022] rounded-3xl p-6 sm:p-7 shadow-xl">
                 <div className="flex items-center gap-3 border-b border-[#2D2318] pb-4 mb-5">
-                  <div className="w-9 h-9 rounded-xl bg-[#2A2016] border border-[#4D3A27] flex items-center justify-center text-[#E2B755]">
+                  <div className="w-9 h-9 rounded-xl bg-[#2A2016] border border-[#4D3A27] flex items-center justify-center text-[#D6B97A]">
                     <Trees className="w-5 h-5" />
                   </div>
                   <div>
@@ -2481,7 +2481,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                     >
                       <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-1.5">
                         <h4 className="text-sm font-serif font-bold text-[#F5EAD4] flex items-center gap-2">
-                          <span className="w-5 h-5 rounded-full bg-[#2A2016] text-[#E2B755] text-xs flex items-center justify-center font-mono">
+                          <span className="w-5 h-5 rounded-full bg-[#2A2016] text-[#D6B97A] text-xs flex items-center justify-center font-mono">
                             {idx + 1}
                           </span>
                           {item.title}
@@ -2503,7 +2503,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
               {/* PART 2: Ý NGHĨA TRIẾT LÝ & NHÂN SINH (哲理 / 擬人化) */}
               <div className="bg-[#181410] border border-[#3E3022] rounded-3xl p-6 sm:p-7 shadow-xl">
                 <div className="flex items-center gap-3 border-b border-[#2D2318] pb-4 mb-5">
-                  <div className="w-9 h-9 rounded-xl bg-[#2A2016] border border-[#4D3A27] flex items-center justify-center text-[#E2B755]">
+                  <div className="w-9 h-9 rounded-xl bg-[#2A2016] border border-[#4D3A27] flex items-center justify-center text-[#D6B97A]">
                     <Sparkles className="w-5 h-5" />
                   </div>
                   <div>
@@ -2523,7 +2523,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                       className="bg-[#13100D] border border-[#2B2117] hover:border-[#52402B] rounded-2xl p-4 transition-colors"
                     >
                       <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-1.5">
-                        <h4 className="text-sm font-serif font-bold text-[#E2B755] flex items-center gap-2">
+                        <h4 className="text-sm font-serif font-bold text-[#D6B97A] flex items-center gap-2">
                           <span className="w-5 h-5 rounded-full bg-[#34271A] text-[#F3E7D0] text-xs flex items-center justify-center font-mono">
                             {idx + 1}
                           </span>
@@ -2571,8 +2571,8 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                   onClick={() => handleTogglePlaySound(selectedEntry.soundSymbolism.soundType)}
                   className={`inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full border font-medium cursor-pointer transition-all active:scale-95 ${
                     playingSoundType === selectedEntry.soundSymbolism.soundType
-                      ? "bg-[#3B2D1C] border-[#E2B755] text-[#FFE394] ring-2 ring-[#E2B755]/50 shadow-[0_0_12px_rgba(226,183,85,0.4)] animate-pulse"
-                      : "bg-[#2A2016] hover:bg-[#382B1D] border-[#483724] hover:border-[#D4AF37] text-[#E2B755] hover:text-white"
+                      ? "bg-[#3B2D1C] border-[#D6B97A] text-[#FFE394] ring-2 ring-[#D6B97A]/50 shadow-[0_0_12px_rgba(226,183,85,0.4)] animate-pulse"
+                      : "bg-[#2A2016] hover:bg-[#382B1D] border-[#483724] hover:border-[#C9A55A] text-[#D6B97A] hover:text-white"
                   }`}
                   title={
                     playingSoundType === selectedEntry.soundSymbolism.soundType
@@ -2580,7 +2580,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                       : `Bấm để nghe âm tượng Nạp Âm: ${selectedEntry.soundSymbolism.soundName}`
                   }
                 >
-                  <Volume2 className="w-3 h-3 text-[#E2B755]" />
+                  <Volume2 className="w-3 h-3 text-[#D6B97A]" />
                   <span>{selectedEntry.elementNapAm}</span>
                 </button>
                 {selectedEntry.hexagramLink && (
@@ -2594,10 +2594,10 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                         setHexagramModalData(selectedEntry.hexagramLink);
                       }
                     }}
-                    className="inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full bg-[#201811] hover:bg-[#2F2318] border border-[#483724] hover:border-[#E2B755] text-[#E2B755] font-medium cursor-pointer transition-all shadow-sm"
+                    className="inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full bg-[#201811] hover:bg-[#2F2318] border border-[#483724] hover:border-[#D6B97A] text-[#D6B97A] font-medium cursor-pointer transition-all shadow-sm"
                     title={`Quẻ Kinh Dịch tương ứng: #${selectedEntry.hexagramLink.hexagramNumber} ${selectedEntry.hexagramLink.hexagramName}`}
                   >
-                    <Compass className="w-3 h-3 text-[#E2B755]" />
+                    <Compass className="w-3 h-3 text-[#D6B97A]" />
                     <span>Quẻ #{selectedEntry.hexagramLink.hexagramNumber} {selectedEntry.hexagramLink.hexagramName}</span>
                     <span className="font-serif text-[#FFF8E7]">{selectedEntry.hexagramLink.symbol}</span>
                   </button>
@@ -2616,7 +2616,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                 >
                   <ZoomOut className="w-4 h-4" />
                 </button>
-                <span className="text-xs font-mono text-[#D4AF37] min-w-[42px] text-center font-bold">
+                <span className="text-xs font-mono text-[#C9A55A] min-w-[42px] text-center font-bold">
                   {Math.round(lightboxZoom * 100)}%
                 </span>
                 <button
@@ -2645,7 +2645,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                       );
                     }
                   }}
-                  className="p-1.5 rounded-lg bg-[#2A2016] hover:bg-[#3A2D1F] border border-[#4D3A27] text-[#EAD8B1] hover:text-[#E2B755] cursor-pointer"
+                  className="p-1.5 rounded-lg bg-[#2A2016] hover:bg-[#3A2D1F] border border-[#4D3A27] text-[#EAD8B1] hover:text-[#D6B97A] cursor-pointer"
                   title="Tải ảnh Hoa Giáp này về máy"
                 >
                   <Download className="w-4 h-4" />
@@ -2716,7 +2716,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                 value={inputImageUrl}
                 onChange={(e) => setInputImageUrl(e.target.value)}
                 placeholder="https://example.com/hinh-anh.jpg"
-                className="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-[#110E0B] border border-[#382B1E] focus:border-[#D4AF37] rounded-xl text-[#F3E7D0] outline-none"
+                className="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-[#110E0B] border border-[#382B1E] focus:border-[#C9A55A] rounded-xl text-[#F3E7D0] outline-none"
               />
               <div className="flex justify-end gap-2 pt-2">
                 <button
@@ -2730,7 +2730,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                   type="button"
                   onClick={handleSaveByUrl}
                   disabled={!inputImageUrl.trim()}
-                  className="px-4 py-2 text-xs font-bold bg-[#E2B755] hover:bg-[#F3C966] text-[#12100E] rounded-xl disabled:opacity-50 cursor-pointer"
+                  className="px-4 py-2 text-xs font-bold bg-[#D6B97A] hover:bg-[#F3C966] text-[#12100E] rounded-xl disabled:opacity-50 cursor-pointer"
                 >
                   Lưu Ảnh
                 </button>
@@ -2750,14 +2750,14 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
             className="bg-[#1C1712] border-2 border-[#54402A] rounded-3xl p-6 sm:p-7 max-w-lg w-full shadow-2xl relative overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="absolute top-0 right-0 p-6 text-9xl font-serif text-[#D4AF37]/10 select-none pointer-events-none">
+            <div className="absolute top-0 right-0 p-6 text-9xl font-serif text-[#C9A55A]/10 select-none pointer-events-none">
               {hexagramModalData.symbol}
             </div>
 
             <div className="relative z-10">
               <div className="flex items-center justify-between pb-4 border-b border-[#2C2115] mb-4">
                 <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 rounded-lg bg-[#2E2419] border border-[#54402A] text-xs font-mono font-bold text-[#E2B755]">
+                  <span className="px-2.5 py-0.5 rounded-lg bg-[#2E2419] border border-[#54402A] text-xs font-mono font-bold text-[#D6B97A]">
                     Hoa Giáp #{hexagramModalData.order}
                   </span>
                   <span className="font-serif font-bold text-base text-[#F5EAD4]">
@@ -2775,7 +2775,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
 
               {/* Hexagram Hero */}
               <div className="flex items-center gap-4 bg-[#14100D] border border-[#3E3022] p-4 rounded-2xl mb-4">
-                <div className="w-16 h-16 rounded-xl bg-[#281F15] border border-[#52402B] flex items-center justify-center text-4xl text-[#E2B755] shadow-inner font-serif">
+                <div className="w-16 h-16 rounded-xl bg-[#281F15] border border-[#52402B] flex items-center justify-center text-4xl text-[#D6B97A] shadow-inner font-serif">
                   {hexagramModalData.symbol}
                 </div>
                 <div>
@@ -2789,7 +2789,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                     </span>
                   </h3>
                   <div className="text-xs text-[#A89882] mt-1">
-                    Thượng: <strong className="text-[#DDD0BE]">{hexagramModalData.upperTrigram}</strong> • Hạ: <strong className="text-[#E2B755]">{hexagramModalData.lowerTrigram}</strong>
+                    Thượng: <strong className="text-[#DDD0BE]">{hexagramModalData.upperTrigram}</strong> • Hạ: <strong className="text-[#D6B97A]">{hexagramModalData.lowerTrigram}</strong>
                   </div>
                 </div>
               </div>
@@ -2797,7 +2797,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
               {/* Meanings */}
               <div className="space-y-3 text-xs mb-5">
                 <div className="bg-[#17130E] border border-[#332618] p-3.5 rounded-xl">
-                  <div className="font-bold text-[#E2B755] mb-1 flex items-center gap-1.5">
+                  <div className="font-bold text-[#D6B97A] mb-1 flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>TƯỢNG QUẺ & KHÍ VẬN:</span>
                   </div>
@@ -2834,7 +2834,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                       setHexagramModalData(null);
                       onSelectHexagram(num);
                     }}
-                    className="flex-2 flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold bg-[#D4AF37] hover:bg-[#F3C966] text-[#12100E] rounded-xl transition-all cursor-pointer shadow-md active:scale-95"
+                    className="flex-2 flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold bg-[#C9A55A] hover:bg-[#F3C966] text-[#12100E] rounded-xl transition-all cursor-pointer shadow-md active:scale-95"
                   >
                     <BookOpen className="w-3.5 h-3.5" />
                     <span>Xem Giải Thích Thuyết Minh Quẻ #{hexagramModalData.hexagramNumber}</span>
@@ -2859,7 +2859,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
             {/* Modal Header */}
             <div className="px-6 py-4 border-b border-[#2D2216] bg-gradient-to-r from-[#221A12] to-[#181410] flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#2E2215] border border-[#6B512E] flex items-center justify-center text-[#E2B755]">
+                <div className="w-10 h-10 rounded-xl bg-[#2E2215] border border-[#6B512E] flex items-center justify-center text-[#D6B97A]">
                   <FileCode2 className="w-5 h-5" />
                 </div>
                 <div>
@@ -2890,7 +2890,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                 }}
                 className={`flex items-center gap-1.5 px-4 py-2.5 border-b-2 font-medium transition-colors cursor-pointer ${
                   jsonModalTab === "file"
-                    ? "border-[#E2B755] text-[#FFE394] font-bold"
+                    ? "border-[#D6B97A] text-[#FFE394] font-bold"
                     : "border-transparent text-[#8C7D6B] hover:text-[#DDD]"
                 }`}
               >
@@ -2905,7 +2905,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                 }}
                 className={`flex items-center gap-1.5 px-4 py-2.5 border-b-2 font-medium transition-colors cursor-pointer ${
                   jsonModalTab === "paste"
-                    ? "border-[#E2B755] text-[#FFE394] font-bold"
+                    ? "border-[#D6B97A] text-[#FFE394] font-bold"
                     : "border-transparent text-[#8C7D6B] hover:text-[#DDD]"
                 }`}
               >
@@ -2920,7 +2920,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                 }}
                 className={`flex items-center gap-1.5 px-4 py-2.5 border-b-2 font-medium transition-colors cursor-pointer ${
                   jsonModalTab === "template"
-                    ? "border-[#E2B755] text-[#FFE394] font-bold"
+                    ? "border-[#D6B97A] text-[#FFE394] font-bold"
                     : "border-transparent text-[#8C7D6B] hover:text-[#DDD]"
                 }`}
               >
@@ -2968,9 +2968,9 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                         handleJsonFileSelect(fakeEvent);
                       }
                     }}
-                    className="border-2 border-dashed border-[#4D3A26] hover:border-[#E2B755] bg-[#1C1610] hover:bg-[#241C14] rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all group"
+                    className="border-2 border-dashed border-[#4D3A26] hover:border-[#D6B97A] bg-[#1C1610] hover:bg-[#241C14] rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all group"
                   >
-                    <div className="w-12 h-12 rounded-full bg-[#2A2016] group-hover:bg-[#382B1C] border border-[#584126] flex items-center justify-center text-[#E2B755] mb-3 transition-colors">
+                    <div className="w-12 h-12 rounded-full bg-[#2A2016] group-hover:bg-[#382B1C] border border-[#584126] flex items-center justify-center text-[#D6B97A] mb-3 transition-colors">
                       <Upload className="w-6 h-6" />
                     </div>
                     <div className="text-sm font-semibold text-[#F3E7D0]">
@@ -2997,7 +2997,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
   "binh_dan": "https://example.com/images/binh_dan.jpg"
 }`);
                       }}
-                      className="text-[#E2B755] hover:underline"
+                      className="text-[#D6B97A] hover:underline"
                     >
                       Dán mẫu thử
                     </button>
@@ -3007,7 +3007,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                     value={pastedJson}
                     onChange={(e) => setPastedJson(e.target.value)}
                     placeholder={`{\n  "giap_ty": "https://...",\n  "1": "https://...",\n  "Giáp Tý": "https://..."\n}`}
-                    className="w-full p-3 text-xs font-mono bg-[#110E0B] border border-[#3A2C1C] focus:border-[#E2B755] rounded-xl text-[#E8DAC3] outline-none transition-colors"
+                    className="w-full p-3 text-xs font-mono bg-[#110E0B] border border-[#3A2C1C] focus:border-[#D6B97A] rounded-xl text-[#E8DAC3] outline-none transition-colors"
                   />
                   <div className="flex justify-end">
                     <button
@@ -3015,7 +3015,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                       onClick={handleParsePastedJson}
                       className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold bg-[#332617] hover:bg-[#483621] text-[#FFE394] border border-[#6B512E] rounded-xl transition-all cursor-pointer shadow-sm active:scale-95"
                     >
-                      <Sparkles className="w-3.5 h-3.5 text-[#E2B755]" />
+                      <Sparkles className="w-3.5 h-3.5 text-[#D6B97A]" />
                       <span>Phân Tích Cú Pháp JSON</span>
                     </button>
                   </div>
@@ -3026,26 +3026,26 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
               {jsonModalTab === "template" && (
                 <div className="space-y-4 text-xs">
                   <div className="bg-[#1C1610] border border-[#3D2E1B] rounded-2xl p-4 space-y-3">
-                    <div className="font-bold text-[#E2B755] flex items-center gap-1.5 text-sm">
+                    <div className="font-bold text-[#D6B97A] flex items-center gap-1.5 text-sm">
                       <FileCode2 className="w-4 h-4" />
                       <span>4 ĐỊNH DẠNG JSON ĐƯỢC HỖ TRỢ TỰ ĐỘNG:</span>
                     </div>
                     <ul className="space-y-2 text-[#C4B39B] pl-4 list-disc">
                       <li>
                         <strong className="text-[#F3E7D0]">Dạng 1 (Khóa theo ID):</strong>{" "}
-                        <code className="bg-[#120F0C] px-1 py-0.5 rounded text-[#E2B755]">{`{"giap_ty": "url", "at_suu": "url"}`}</code>
+                        <code className="bg-[#120F0C] px-1 py-0.5 rounded text-[#D6B97A]">{`{"giap_ty": "url", "at_suu": "url"}`}</code>
                       </li>
                       <li>
                         <strong className="text-[#F3E7D0]">Dạng 2 (Khóa theo Số thứ tự 1-60):</strong>{" "}
-                        <code className="bg-[#120F0C] px-1 py-0.5 rounded text-[#E2B755]">{`{"1": "url", "2": "url", "60": "url"}`}</code>
+                        <code className="bg-[#120F0C] px-1 py-0.5 rounded text-[#D6B97A]">{`{"1": "url", "2": "url", "60": "url"}`}</code>
                       </li>
                       <li>
                         <strong className="text-[#F3E7D0]">Dạng 3 (Khóa theo Tên Can Chi):</strong>{" "}
-                        <code className="bg-[#120F0C] px-1 py-0.5 rounded text-[#E2B755]">{`{"Giáp Tý": "url", "Ất Sửu": "url"}`}</code>
+                        <code className="bg-[#120F0C] px-1 py-0.5 rounded text-[#D6B97A]">{`{"Giáp Tý": "url", "Ất Sửu": "url"}`}</code>
                       </li>
                       <li>
                         <strong className="text-[#F3E7D0]">Dạng 4 (Mảng đối tượng):</strong>{" "}
-                        <code className="bg-[#120F0C] px-1 py-0.5 rounded text-[#E2B755]">{`[{"id": "giap_ty", "imageUrl": "url"}]`}</code>
+                        <code className="bg-[#120F0C] px-1 py-0.5 rounded text-[#D6B97A]">{`[{"id": "giap_ty", "imageUrl": "url"}]`}</code>
                       </li>
                     </ul>
                   </div>
@@ -3054,9 +3054,9 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                     <button
                       type="button"
                       onClick={handleDownloadTemplate}
-                      className="flex flex-col items-center justify-center p-3.5 bg-[#251D14] hover:bg-[#34281B] border border-[#523E25] hover:border-[#E2B755] rounded-xl text-center transition-all cursor-pointer group"
+                      className="flex flex-col items-center justify-center p-3.5 bg-[#251D14] hover:bg-[#34281B] border border-[#523E25] hover:border-[#D6B97A] rounded-xl text-center transition-all cursor-pointer group"
                     >
-                      <Download className="w-5 h-5 text-[#E2B755] mb-1.5 group-hover:scale-110 transition-transform" />
+                      <Download className="w-5 h-5 text-[#D6B97A] mb-1.5 group-hover:scale-110 transition-transform" />
                       <span className="font-bold text-[#F3E7D0]">Tải Tệp Mẫu JSON</span>
                       <span className="text-[10px] text-[#9E8E7A] mt-0.5">Mẫu 60 Hoa Giáp có sẵn ID & Tên</span>
                     </button>
@@ -3064,12 +3064,12 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                     <button
                       type="button"
                       onClick={handleCopySampleJson}
-                      className="flex flex-col items-center justify-center p-3.5 bg-[#251D14] hover:bg-[#34281B] border border-[#523E25] hover:border-[#E2B755] rounded-xl text-center transition-all cursor-pointer group"
+                      className="flex flex-col items-center justify-center p-3.5 bg-[#251D14] hover:bg-[#34281B] border border-[#523E25] hover:border-[#D6B97A] rounded-xl text-center transition-all cursor-pointer group"
                     >
                       {copiedTemplate ? (
                         <Check className="w-5 h-5 text-[#4CAF50] mb-1.5" />
                       ) : (
-                        <Copy className="w-5 h-5 text-[#E2B755] mb-1.5 group-hover:scale-110 transition-transform" />
+                        <Copy className="w-5 h-5 text-[#D6B97A] mb-1.5 group-hover:scale-110 transition-transform" />
                       )}
                       <span className="font-bold text-[#F3E7D0]">
                         {copiedTemplate ? "Đã Sao Chép!" : "Sao Chép Đoạn Mẫu"}
@@ -3080,9 +3080,9 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                     <button
                       type="button"
                       onClick={handleExportBackup}
-                      className="flex flex-col items-center justify-center p-3.5 bg-[#251D14] hover:bg-[#34281B] border border-[#523E25] hover:border-[#E2B755] rounded-xl text-center transition-all cursor-pointer group"
+                      className="flex flex-col items-center justify-center p-3.5 bg-[#251D14] hover:bg-[#34281B] border border-[#523E25] hover:border-[#D6B97A] rounded-xl text-center transition-all cursor-pointer group"
                     >
-                      <Download className="w-5 h-5 text-[#E2B755] mb-1.5 group-hover:scale-110 transition-transform" />
+                      <Download className="w-5 h-5 text-[#D6B97A] mb-1.5 group-hover:scale-110 transition-transform" />
                       <span className="font-bold text-[#F3E7D0]">Tải Sao Lưu Hiện Tại</span>
                       <span className="text-[10px] text-[#9E8E7A] mt-0.5">Xuất {uploadedCount} ảnh đã lưu</span>
                     </button>
@@ -3094,7 +3094,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
               {parsedJsonData && parsedJsonData.matched.length > 0 && (
                 <div className="mt-4 border-t border-[#312517] pt-4 space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="text-xs font-bold text-[#E2B755] flex items-center gap-1.5">
+                    <div className="text-xs font-bold text-[#D6B97A] flex items-center gap-1.5">
                       <CheckCircle2 className="w-4 h-4 text-[#4CAF50]" />
                       <span>
                         Nhận diện thành công {parsedJsonData.matched.length} / 60 Hoa Giáp
@@ -3142,7 +3142,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                       type="button"
                       disabled={isImportingJson}
                       onClick={handleApplyJsonImport}
-                      className="flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold bg-[#D4AF37] hover:bg-[#F3C966] text-[#12100E] rounded-xl transition-all cursor-pointer shadow-lg active:scale-95 disabled:opacity-50"
+                      className="flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold bg-[#C9A55A] hover:bg-[#F3C966] text-[#12100E] rounded-xl transition-all cursor-pointer shadow-lg active:scale-95 disabled:opacity-50"
                     >
                       {isImportingJson ? (
                         <>
@@ -3188,7 +3188,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
             {/* Modal Header */}
             <div className="px-6 py-4 border-b border-[#2D2216] bg-gradient-to-r from-[#221A12] to-[#181410] flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#2E2215] border border-[#6B512E] flex items-center justify-center text-[#E2B755]">
+                <div className="w-10 h-10 rounded-xl bg-[#2E2215] border border-[#6B512E] flex items-center justify-center text-[#D6B97A]">
                   <Compass className="w-5 h-5" />
                 </div>
                 <div>
@@ -3219,7 +3219,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                   value={hexLookupQuery}
                   onChange={(e) => setHexLookupQuery(e.target.value)}
                   placeholder="Tìm theo tên quẻ (Càn, Phục, Truân...), số quẻ (#1..#64), tên Hoa Giáp, nạp âm..."
-                  className="w-full pl-10 pr-9 py-2.5 text-xs sm:text-sm bg-[#1A1510] border border-[#3E2F1E] focus:border-[#E2B755] focus:ring-1 focus:ring-[#E2B755] rounded-xl text-[#F3E7D0] placeholder-[#7E6E5C] outline-none transition-all"
+                  className="w-full pl-10 pr-9 py-2.5 text-xs sm:text-sm bg-[#1A1510] border border-[#3E2F1E] focus:border-[#D6B97A] focus:ring-1 focus:ring-[#D6B97A] rounded-xl text-[#F3E7D0] placeholder-[#7E6E5C] outline-none transition-all"
                   autoFocus
                 />
                 {hexLookupQuery && (
@@ -3264,13 +3264,13 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
 
               <div className="text-[11px] text-[#8C7D6B] flex items-center justify-between">
                 <span>
-                  Tìm thấy <strong className="text-[#E2B755]">{hexLookupList.length}</strong> quẻ đối ứng
+                  Tìm thấy <strong className="text-[#D6B97A]">{hexLookupList.length}</strong> quẻ đối ứng
                 </span>
                 {selectedHexagram !== "all" && (
                   <button
                     type="button"
                     onClick={() => setSelectedHexagram("all")}
-                    className="text-[#E2B755] hover:underline"
+                    className="text-[#D6B97A] hover:underline"
                   >
                     Xóa bộ lọc quẻ ngoài trang chính
                   </button>
@@ -3292,13 +3292,13 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                     return (
                       <div
                         key={item.id}
-                        className="bg-[#1C1610] hover:bg-[#231C14] border border-[#3E2F1E] hover:border-[#E2B755] rounded-2xl p-3.5 transition-all flex flex-col justify-between group shadow-sm"
+                        className="bg-[#1C1610] hover:bg-[#231C14] border border-[#3E2F1E] hover:border-[#D6B97A] rounded-2xl p-3.5 transition-all flex flex-col justify-between group shadow-sm"
                       >
                         <div>
                           {/* Top row: Hexagram */}
                           <div className="flex items-start justify-between gap-2 pb-2 border-b border-[#2C2115]">
                             <div className="flex items-center gap-2">
-                              <span className="text-2xl text-[#E2B755] font-serif leading-none" title={hex.symbol}>
+                              <span className="text-2xl text-[#D6B97A] font-serif leading-none" title={hex.symbol}>
                                 {hex.symbol}
                               </span>
                               <div>
@@ -3313,7 +3313,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                                 </div>
                               </div>
                             </div>
-                            <span className="text-[10px] px-2 py-0.5 rounded bg-[#2B2115] text-[#D4AF37] font-medium border border-[#483724] shrink-0">
+                            <span className="text-[10px] px-2 py-0.5 rounded bg-[#2B2115] text-[#C9A55A] font-medium border border-[#483724] shrink-0">
                               {hex.upperTrigram} / {hex.lowerTrigram}
                             </span>
                           </div>
@@ -3321,7 +3321,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                           {/* Middle: Linked Hoa Giáp */}
                           <div className="py-2.5 space-y-1">
                             <div className="flex items-center gap-1.5">
-                              <span className="text-[10px] font-bold text-[#E2B755] bg-[#291F13] px-1.5 py-0.5 rounded font-mono">
+                              <span className="text-[10px] font-bold text-[#D6B97A] bg-[#291F13] px-1.5 py-0.5 rounded font-mono">
                                 #{item.order.toString().padStart(2, "0")}
                               </span>
                               <span className="font-bold text-xs text-[#F5EAD4]">
@@ -3333,7 +3333,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                             </div>
 
                             <div className="text-[11px] text-[#A89882] flex items-center gap-2">
-                              <span>Nạp Âm: <strong className="text-[#E2B755]">{item.elementNapAm}</strong></span>
+                              <span>Nạp Âm: <strong className="text-[#D6B97A]">{item.elementNapAm}</strong></span>
                               <span>•</span>
                               <span>{item.symbolicCreature}</span>
                             </div>
@@ -3352,7 +3352,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                               handleSelectEntry(item.id);
                               setIsHexLookupModalOpen(false);
                             }}
-                            className="flex-1 py-1.5 text-center text-[11px] font-bold bg-[#2A2015] hover:bg-[#D4AF37] text-[#E2B755] hover:text-[#12100E] border border-[#523E25] hover:border-[#D4AF37] rounded-lg transition-all cursor-pointer"
+                            className="flex-1 py-1.5 text-center text-[11px] font-bold bg-[#2A2015] hover:bg-[#C9A55A] text-[#D6B97A] hover:text-[#12100E] border border-[#523E25] hover:border-[#C9A55A] rounded-lg transition-all cursor-pointer"
                           >
                             Xem Hoa Giáp
                           </button>
@@ -3366,7 +3366,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                                 setHexagramModalData(hex);
                               }
                             }}
-                            className="px-2.5 py-1.5 text-[11px] text-[#FFE394] hover:text-[#12100E] bg-[#221A12] hover:bg-[#D4AF37] border border-[#483623] hover:border-[#D4AF37] rounded-lg transition-colors cursor-pointer flex items-center gap-1 font-medium shadow-sm active:scale-95"
+                            className="px-2.5 py-1.5 text-[11px] text-[#FFE394] hover:text-[#12100E] bg-[#221A12] hover:bg-[#C9A55A] border border-[#483623] hover:border-[#C9A55A] rounded-lg transition-colors cursor-pointer flex items-center gap-1 font-medium shadow-sm active:scale-95"
                             title="Xem giải thích trong Sách Thuyết Minh Kinh Dịch"
                           >
                             <BookOpen className="w-3.5 h-3.5" />
@@ -3388,7 +3388,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                   setViewMode("hexagrams");
                   setIsHexLookupModalOpen(false);
                 }}
-                className="text-xs text-[#E2B755] hover:underline flex items-center gap-1 cursor-pointer"
+                className="text-xs text-[#D6B97A] hover:underline flex items-center gap-1 cursor-pointer"
               >
                 <span>Mở Toàn Bộ Bảng Đối Ứng 60 Hoa Giáp ↔ Kinh Dịch</span>
                 <ArrowRight className="w-3.5 h-3.5" />

@@ -49,7 +49,7 @@ export const ClassicInterpretationCard: React.FC<ClassicInterpretationCardProps>
         <div>
           {roleTitle && (
             <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-              <span className="text-[11px] font-mono font-bold tracking-wider text-[#D4AF37] uppercase bg-[#282015] px-2.5 py-0.5 rounded border border-[#443522]">
+              <span className="text-[11px] font-mono font-bold tracking-wider text-[#C9A55A] uppercase bg-[#282015] px-2.5 py-0.5 rounded border border-[#443522]">
                 {roleTitle}
               </span>
               {isCardReversed !== undefined && (
@@ -73,7 +73,7 @@ export const ClassicInterpretationCard: React.FC<ClassicInterpretationCardProps>
 
           <div className="flex items-baseline gap-3 flex-wrap">
             <h3 className="font-serif font-bold text-lg sm:text-xl text-[#F7EEDC] flex items-center gap-2">
-              <span className="font-mono text-[#D4AF37] text-base font-bold">
+              <span className="font-mono text-[#C9A55A] text-base font-bold">
                 #{data.number.toString().padStart(2, "0")}
               </span>
               <span>{data.hanziTitle}</span>
@@ -97,7 +97,7 @@ export const ClassicInterpretationCard: React.FC<ClassicInterpretationCardProps>
             </>
           ) : (
             <>
-              <Copy className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <Copy className="w-3.5 h-3.5 text-[#C9A55A]" />
               <span>Chép giải nghĩa</span>
             </>
           )}
@@ -106,7 +106,7 @@ export const ClassicInterpretationCard: React.FC<ClassicInterpretationCardProps>
 
       {/* Couplet (Khẩu quyết Hán Việt) Box */}
       <div className="bg-gradient-to-r from-[#211A12] via-[#261E14] to-[#1E1710] border-l-4 border-[#C89B3C] rounded-r-xl p-4 sm:p-5 mb-5 shadow-inner">
-        <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[#D4AF37] mb-2">
+        <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[#C9A55A] mb-2">
           <Scroll className="w-3.5 h-3.5" />
           <span>Khẩu Quyết Cổ & Diễn Giải Tượng Ý:</span>
         </div>
@@ -127,8 +127,8 @@ export const ClassicInterpretationCard: React.FC<ClassicInterpretationCardProps>
       <div className={`grid gap-3.5 ${compact ? "grid-cols-1" : "grid-cols-1"}`}>
         {/* Đại tượng */}
         <div className="bg-[#14100C] border border-[#2F2417] rounded-xl p-4">
-          <div className="flex items-center gap-2 text-xs font-bold text-[#D4AF37] uppercase tracking-wider mb-1.5">
-            <Compass className="w-4 h-4 text-[#D4AF37]" />
+          <div className="flex items-center gap-2 text-xs font-bold text-[#C9A55A] uppercase tracking-wider mb-1.5">
+            <Compass className="w-4 h-4 text-[#C9A55A]" />
             <span>Đại Tượng:</span>
           </div>
           <p className="text-xs sm:text-sm text-[#DDD1C0] leading-relaxed pl-6">

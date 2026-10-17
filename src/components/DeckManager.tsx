@@ -503,12 +503,12 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
 
       {/* TOP BANNER & INTRODUCTION */}
       <div className="bg-gradient-to-r from-[#1C1813] via-[#262018] to-[#1C1813] border border-[#443828] rounded-2xl p-6 shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#D4AF37]/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#C9A55A]/5 rounded-full blur-3xl pointer-events-none" />
 
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="px-3 py-0.5 rounded-full bg-[#302619] border border-[#52422C] text-[#E5BF62] text-xs font-serif flex items-center gap-1.5 shadow">
+              <span className="px-3 py-0.5 rounded-full bg-[#302619] border border-[#52422C] text-[#D6B97A] text-xs font-serif flex items-center gap-1.5 shadow">
                 <Palette className="w-3.5 h-3.5" /> Quản Lý & Lựa Chọn Bộ Hình
               </span>
               <span className="text-xs text-[#9E907D]">
@@ -538,7 +538,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
               className="flex items-center gap-1.5 px-3.5 py-2 bg-[#221C16] hover:bg-[#30261D] border border-[#443828] text-[#E5D7C0] text-xs font-medium rounded-xl shadow transition-colors cursor-pointer"
               title="Nhập bộ bài từ tệp .json"
             >
-              <FolderUp className="w-4 h-4 text-[#D4AF37]" />
+              <FolderUp className="w-4 h-4 text-[#C9A55A]" />
               Nhập Tệp JSON
             </button>
           </div>
@@ -549,7 +549,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Layers className="w-4 h-4 text-[#D4AF37]" />
+            <Layers className="w-4 h-4 text-[#C9A55A]" />
             <h3 className="text-sm font-serif font-bold text-[#F3E7D0] uppercase tracking-wider">
               Chọn Bộ Hình Đang Dùng & Quản Lý
             </h3>
@@ -571,7 +571,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
                 onClick={() => setSelectedDeckId(deck.id)}
                 className={`relative rounded-2xl p-4 transition-all cursor-pointer flex flex-col justify-between border ${
                   isInspected
-                    ? "bg-[#211B15] border-[#D4AF37] shadow-[0_0_20px_rgba(212,175,55,0.15)] ring-1 ring-[#D4AF37]/50"
+                    ? "bg-[#211B15] border-[#C9A55A] shadow-[0_0_20px_rgba(212,175,55,0.15)] ring-1 ring-[#C9A55A]/50"
                     : "bg-[#181410] border-[#33281C] hover:border-[#54422D] hover:bg-[#1C1712]"
                 }`}
               >
@@ -581,7 +581,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
                     <span
                       className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded-full font-bold ${
                         deck.isPreset
-                          ? "bg-[#292218] text-[#D4AF37] border border-[#483A26]"
+                          ? "bg-[#292218] text-[#C9A55A] border border-[#483A26]"
                           : "bg-[#1A2624] text-emerald-300 border border-[#27443E]"
                       }`}
                     >
@@ -607,7 +607,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
                   <div className="mt-3 pt-3 border-t border-[#292015] space-y-1">
                     <div className="flex items-center justify-between text-[11px]">
                       <span className="text-[#8C7D6A]">Ảnh đã nạp:</span>
-                      <span className="font-mono font-bold text-[#E5BF62]">
+                      <span className="font-mono font-bold text-[#D6B97A]">
                         {deck.cardCount || 0} / 64 lá
                       </span>
                     </div>
@@ -701,7 +701,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
             onClick={() => setIsCreateModalOpen(true)}
             className="rounded-2xl p-5 border-2 border-dashed border-[#3A2D1F] hover:border-[#C89B3C] bg-[#14110E]/60 hover:bg-[#1A1510] transition-all cursor-pointer flex flex-col items-center justify-center text-center gap-2 group min-h-[160px]"
           >
-            <div className="w-10 h-10 rounded-full bg-[#241C15] group-hover:bg-[#C89B3C] text-[#D4AF37] group-hover:text-[#14120F] flex items-center justify-center transition-all">
+            <div className="w-10 h-10 rounded-full bg-[#241C15] group-hover:bg-[#C89B3C] text-[#C9A55A] group-hover:text-[#14120F] flex items-center justify-center transition-all">
               <Plus className="w-5 h-5" />
             </div>
             <span className="text-xs font-serif font-bold text-[#D4C3A3] group-hover:text-[#FFF]">
@@ -721,7 +721,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-4 border-b border-[#261E15]">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-serif text-[#D4AF37] font-bold flex items-center gap-1.5">
+                <span className="text-xs font-serif text-[#C9A55A] font-bold flex items-center gap-1.5">
                   <ImageIcon className="w-4 h-4" /> Đang nạp & quản lý ảnh cho bộ:
                 </span>
                 <span className="text-xs text-[#A89882] bg-[#1F1913] px-2 py-0.5 rounded border border-[#35281A]">
@@ -735,7 +735,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
                   <button
                     type="button"
                     onClick={() => handleSelectActiveDeck(currentDeck.id)}
-                    className="text-[11px] text-[#D4AF37] hover:underline font-bold"
+                    className="text-[11px] text-[#C9A55A] hover:underline font-bold"
                   >
                     Bấm vào đây để chọn dùng bộ này →
                   </button>
@@ -757,7 +757,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
                 disabled={isProcessingBatch}
                 className="flex items-center gap-1.5 px-3.5 py-2 bg-[#2D2317] hover:bg-[#3D3020] border border-[#52412B] text-[#F3E7D0] text-xs font-bold rounded-xl shadow transition-colors cursor-pointer"
               >
-                <FolderUp className="w-4 h-4 text-[#D4AF37]" />
+                <FolderUp className="w-4 h-4 text-[#C9A55A]" />
                 Nạp Hàng Loạt 64 Lá
               </button>
 
@@ -767,7 +767,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
                 className="flex items-center gap-1.5 px-3 py-2 bg-[#1F1A14] hover:bg-[#2A2219] border border-[#3A2D1F] text-[#D4C4AA] text-xs font-medium rounded-xl transition-colors cursor-pointer"
                 title="Đổi mặt sau lá bài cho bộ này"
               >
-                <Layers className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <Layers className="w-3.5 h-3.5 text-[#C9A55A]" />
                 Đổi Mặt Sau
               </button>
 
@@ -787,7 +787,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
                 className="flex items-center gap-1.5 px-3 py-2 bg-[#1F1A14] hover:bg-[#2A2219] border border-[#3A2D1F] text-[#D4C4AA] text-xs font-medium rounded-xl transition-colors cursor-pointer"
                 title="Sao lưu bộ bài này thành tệp JSON"
               >
-                <Download className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <Download className="w-3.5 h-3.5 text-[#C9A55A]" />
                 Xuất JSON
               </button>
 
@@ -809,7 +809,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
           {batchProgress && (
             <div className="bg-[#1C1610] border border-[#C89B3C] text-[#F3E6C8] px-4 py-3 rounded-xl flex items-center justify-between gap-3 text-xs shadow-lg animate-pulse">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+                <Sparkles className="w-4 h-4 text-[#C9A55A]" />
                 <span>{batchProgress}</span>
               </div>
               <button
@@ -895,13 +895,13 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
                   onDrop={(e) => handleDropOnCard(e, hex.number)}
                   className={`group relative rounded-xl border transition-all duration-200 flex flex-col p-2 bg-[#120F0C] ${
                     customUrl
-                      ? "border-[#4A3A25] hover:border-[#D4AF37] hover:bg-[#19140E]"
+                      ? "border-[#4A3A25] hover:border-[#C9A55A] hover:bg-[#19140E]"
                       : "border-[#261E14] hover:border-[#3E3020] hover:bg-[#16120E]"
                   }`}
                 >
                   {/* Card Header Tag */}
                   <div className="flex items-center justify-between gap-1 mb-1.5">
-                    <span className="text-[10px] font-mono font-bold text-[#E5BF62]">
+                    <span className="text-[10px] font-mono font-bold text-[#D6B97A]">
                       #{hex.number < 10 ? `0${hex.number}` : hex.number}
                     </span>
                     <span className="text-[10px] font-serif text-[#C4B49D] font-bold">
@@ -927,7 +927,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
                         className="w-full h-full object-cover group-hover/slot:scale-105 transition-transform duration-300"
                       />
                     ) : (
-                      <div className="flex flex-col items-center justify-center p-2 text-center text-[#6B5E4D] group-hover/slot:text-[#D4AF37] transition-colors">
+                      <div className="flex flex-col items-center justify-center p-2 text-center text-[#6B5E4D] group-hover/slot:text-[#C9A55A] transition-colors">
                         <span className="text-xl font-serif mb-1 opacity-70">☯</span>
                         <span className="text-[10px] font-serif block font-bold text-[#B0A089]">
                           {hex.vietnameseName}
@@ -1021,7 +1021,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
                   setSearchTerm("");
                   setFilterState("all");
                 }}
-                className="text-xs text-[#D4AF37] hover:underline"
+                className="text-xs text-[#C9A55A] hover:underline"
               >
                 Xóa bộ lọc
               </button>
@@ -1036,7 +1036,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
           <div className="bg-[#181410] border border-[#483A26] rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-5 animate-scaleUp">
             <div className="flex items-center justify-between">
               <h3 className="font-serif font-bold text-lg text-[#F5EAD4] flex items-center gap-2">
-                <Plus className="w-5 h-5 text-[#D4AF37]" />
+                <Plus className="w-5 h-5 text-[#C9A55A]" />
                 Tạo Bộ Hình Thẻ Bài Mới
               </h3>
               <button
@@ -1050,7 +1050,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
 
             <form onSubmit={handleCreateDeckSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-[#D4AF37] mb-1.5">
+                <label className="block text-xs font-semibold text-[#C9A55A] mb-1.5">
                   Tên bộ hình thẻ bài: <span className="text-rose-400">*</span>
                 </label>
                 <input
@@ -1064,7 +1064,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#D4AF37] mb-1.5">
+                <label className="block text-xs font-semibold text-[#C9A55A] mb-1.5">
                   Mô tả ngắn:
                 </label>
                 <textarea
@@ -1077,7 +1077,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#D4AF37] mb-1.5">
+                <label className="block text-xs font-semibold text-[#C9A55A] mb-1.5">
                   Mặt sau thẻ bài ban đầu:
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -1093,7 +1093,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
                       onClick={() => setNewDeckTheme(t.id as any)}
                       className={`p-2.5 rounded-xl border text-xs text-left transition-all ${
                         newDeckTheme === t.id
-                          ? "bg-[#2D2317] border-[#D4AF37] text-[#F5EAD4] font-bold"
+                          ? "bg-[#2D2317] border-[#C9A55A] text-[#F5EAD4] font-bold"
                           : "bg-[#120F0C] border-[#2A2015] text-[#9E8F7A] hover:bg-[#1A1510]"
                       }`}
                     >
@@ -1129,7 +1129,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
           <div className="bg-[#181410] border border-[#483A26] rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-5 animate-scaleUp">
             <div className="flex items-center justify-between">
               <h3 className="font-serif font-bold text-lg text-[#F5EAD4] flex items-center gap-2">
-                <Edit3 className="w-5 h-5 text-[#D4AF37]" />
+                <Edit3 className="w-5 h-5 text-[#C9A55A]" />
                 Đổi Tên & Thông Tin Bộ Bài
               </h3>
               <button
@@ -1143,7 +1143,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
 
             <form onSubmit={handleEditDeckSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-[#D4AF37] mb-1.5">
+                <label className="block text-xs font-semibold text-[#C9A55A] mb-1.5">
                   Tên bộ bài:
                 </label>
                 <input
@@ -1156,7 +1156,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#D4AF37] mb-1.5">
+                <label className="block text-xs font-semibold text-[#C9A55A] mb-1.5">
                   Mô tả:
                 </label>
                 <textarea
@@ -1199,7 +1199,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
           >
             <div className="w-full flex items-center justify-between pb-2 border-b border-[#2C2216]">
               <div>
-                <span className="text-[10px] font-mono text-[#D4AF37] block">
+                <span className="text-[10px] font-mono text-[#C9A55A] block">
                   Lá quẻ #{previewCard.hex.number}
                 </span>
                 <h4 className="font-serif font-bold text-base text-[#F5EAD4]">
@@ -1233,7 +1233,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
                   triggerSingleCardUpload(previewCard.hex.number);
                   setPreviewCard(null);
                 }}
-                className="text-xs text-[#D4AF37] hover:underline font-serif flex items-center gap-1"
+                className="text-xs text-[#C9A55A] hover:underline font-serif flex items-center gap-1"
               >
                 <Upload className="w-3.5 h-3.5" /> Đổi ảnh này
               </button>

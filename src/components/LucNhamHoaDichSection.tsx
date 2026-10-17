@@ -118,15 +118,15 @@ export const LucNhamHoaDichSection: React.FC<LucNhamHoaDichSectionProps> = ({
         {/* Header banner */}
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#44301A] pb-3">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#FFE28A] via-[#D4AF37] to-[#8C6218] text-[#120F0B] flex items-center justify-center font-bold text-lg shadow-[0_0_12px_rgba(212,175,55,0.3)] shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#E6D3A3] via-[#C9A55A] to-[#8C6218] text-[#120F0B] flex items-center justify-center font-bold text-lg shadow-[0_0_12px_rgba(212,175,55,0.3)] shrink-0">
               ☯
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <h4 className="font-serif font-bold text-sm sm:text-base text-[#FFE28A] tracking-wide">
+                <h4 className="font-serif font-bold text-sm sm:text-base text-[#E6D3A3] tracking-wide">
                   LỤC NHÂM HÓA DỊCH (六壬化易)
                 </h4>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#2E1F11] text-[#E2B755] border border-[#5E4221] font-semibold">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#2E1F11] text-[#D6B97A] border border-[#5E4221] font-semibold">
                   Quy Nạp 64 Quẻ Chu Dịch
                 </span>
               </div>
@@ -142,10 +142,10 @@ export const LucNhamHoaDichSection: React.FC<LucNhamHoaDichSectionProps> = ({
               type="button"
               onClick={() => handleCaptureCard(false)}
               disabled={isCapturing}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-serif font-bold bg-[#2A1D11] hover:bg-[#3D2918] text-[#FFE28A] border border-[#6B4B27] hover:border-[#D4AF37] rounded-xl transition-all cursor-pointer shadow active:scale-95"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-serif font-bold bg-[#2A1D11] hover:bg-[#3D2918] text-[#E6D3A3] border border-[#6B4B27] hover:border-[#C9A55A] rounded-xl transition-all cursor-pointer shadow active:scale-95"
               title="Chụp ảnh và xem Quẻ Lục Nhâm Hóa Dịch Ban Đầu"
             >
-              {isCapturing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Camera className="w-3.5 h-3.5 text-[#D4AF37]" />}
+              {isCapturing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Camera className="w-3.5 h-3.5 text-[#C9A55A]" />}
               <span>Chụp Quẻ Ban Đầu</span>
             </button>
 
@@ -165,7 +165,7 @@ export const LucNhamHoaDichSection: React.FC<LucNhamHoaDichSectionProps> = ({
               <button
                 type="button"
                 onClick={handleProceed}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#A87B25] hover:brightness-110 active:scale-95 text-[#14100C] text-xs font-serif font-bold shadow-md cursor-pointer transition-all"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#C9A55A] to-[#A87B25] hover:brightness-110 active:scale-95 text-[#14100C] text-xs font-serif font-bold shadow-md cursor-pointer transition-all"
               >
                 <span>Xem Toàn Văn Luận Giải</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -183,7 +183,7 @@ export const LucNhamHoaDichSection: React.FC<LucNhamHoaDichSectionProps> = ({
               <span className="text-[10px] text-amber-400 font-bold">Ngoại Quái (Thượng)</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-base font-serif font-bold text-[#FFE28A]">
+              <span className="text-base font-serif font-bold text-[#E6D3A3]">
                 Chi [{result.soTruyenBranch}]
               </span>
               <span className="text-xs text-[#CDBFA8]">
@@ -199,10 +199,10 @@ export const LucNhamHoaDichSection: React.FC<LucNhamHoaDichSectionProps> = ({
           <div className="bg-[#17100A] border border-[#3E2B18] rounded-xl p-2.5 space-y-1">
             <div className="flex items-center justify-between">
               <span className="text-[10px] text-[#A89882] font-mono font-bold">2. TRUNG TRUYỀN (DI TRUYỀN)</span>
-              <span className="text-[10px] text-[#D4AF37] font-bold">Biến Cố Trung Gian</span>
+              <span className="text-[10px] text-[#C9A55A] font-bold">Biến Cố Trung Gian</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-base font-serif font-bold text-[#FFE28A]">
+              <span className="text-base font-serif font-bold text-[#E6D3A3]">
                 Chi [{result.trungTruyenBranch}]
               </span>
               <span className="text-xs text-[#CDBFA8]">
@@ -221,7 +221,7 @@ export const LucNhamHoaDichSection: React.FC<LucNhamHoaDichSectionProps> = ({
               <span className="text-[10px] text-amber-400 font-bold">Nội Quái (Hạ)</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-base font-serif font-bold text-[#FFE28A]">
+              <span className="text-base font-serif font-bold text-[#E6D3A3]">
                 Chi [{result.matTruyenBranch}]
               </span>
               <span className="text-xs text-[#CDBFA8]">
@@ -239,17 +239,17 @@ export const LucNhamHoaDichSection: React.FC<LucNhamHoaDichSectionProps> = ({
           {/* Quẻ Chủ (Bản Quái) */}
           <div className="bg-[#18110B] border border-[#48331E] rounded-xl p-3.5 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-serif font-bold text-[#FFE28A] flex items-center gap-1.5">
-                <Compass className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span className="text-xs font-serif font-bold text-[#E6D3A3] flex items-center gap-1.5">
+                <Compass className="w-3.5 h-3.5 text-[#C9A55A]" />
                 QUẺ CHỦ (BẢN QUÁI LỤC NHÂM):
               </span>
-              <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[#2A1C0E] text-[#D4AF37] border border-[#50371E]">
+              <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[#2A1C0E] text-[#C9A55A] border border-[#50371E]">
                 Quẻ #{result.primaryHex.number}
               </span>
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="w-13 h-13 rounded-xl bg-[#24170E] border border-[#5A3F24] flex flex-col items-center justify-center font-serif text-lg font-bold text-[#FFE28A] shrink-0">
+              <div className="w-13 h-13 rounded-xl bg-[#24170E] border border-[#5A3F24] flex flex-col items-center justify-center font-serif text-lg font-bold text-[#E6D3A3] shrink-0">
                 {result.primaryHex.hanzi || result.primaryHex.name[0]}
               </div>
               <div className="flex-1 min-w-0">
@@ -270,7 +270,7 @@ export const LucNhamHoaDichSection: React.FC<LucNhamHoaDichSectionProps> = ({
           {/* Quẻ Biến (Biến Quái) */}
           <div className="bg-[#18110B] border border-[#48331E] rounded-xl p-3.5 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-serif font-bold text-[#FFE28A] flex items-center gap-1.5">
+              <span className="text-xs font-serif font-bold text-[#E6D3A3] flex items-center gap-1.5">
                 <Zap className="w-3.5 h-3.5 text-amber-400" />
                 QUẺ BIẾN (TRIỂN VỌNG HẬU VẬN):
               </span>
@@ -280,7 +280,7 @@ export const LucNhamHoaDichSection: React.FC<LucNhamHoaDichSectionProps> = ({
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="w-13 h-13 rounded-xl bg-[#24170E] border border-[#5A3F24] flex flex-col items-center justify-center font-serif text-lg font-bold text-[#FFE28A] shrink-0">
+              <div className="w-13 h-13 rounded-xl bg-[#24170E] border border-[#5A3F24] flex flex-col items-center justify-center font-serif text-lg font-bold text-[#E6D3A3] shrink-0">
                 {result.transformedHex.hanzi || result.transformedHex.name[0]}
               </div>
               <div className="flex-1 min-w-0">
@@ -303,7 +303,7 @@ export const LucNhamHoaDichSection: React.FC<LucNhamHoaDichSectionProps> = ({
         <div className="bg-[#160E08] border border-[#422E1B] rounded-xl p-3 text-xs font-serif text-[#CDBFA8] leading-relaxed flex items-start gap-2.5">
           <span className="text-lg shrink-0">📜</span>
           <div className="flex-1">
-            <strong className="text-[#FFE28A] block mb-0.5">Luận Đoán Lục Nhâm Hóa Dịch:</strong>
+            <strong className="text-[#E6D3A3] block mb-0.5">Luận Đoán Lục Nhâm Hóa Dịch:</strong>
             {result.strategicAdvice}
           </div>
         </div>
@@ -314,7 +314,7 @@ export const LucNhamHoaDichSection: React.FC<LucNhamHoaDichSectionProps> = ({
             <button
               type="button"
               onClick={handleProceed}
-              className="w-full sm:w-auto px-7 py-2.5 rounded-xl bg-gradient-to-r from-[#8C6218] via-[#D4AF37] to-[#8C6218] hover:brightness-110 active:scale-95 text-[#14100C] text-xs font-serif font-bold shadow-lg transition-all cursor-pointer inline-flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-7 py-2.5 rounded-xl bg-gradient-to-r from-[#8C6218] via-[#C9A55A] to-[#8C6218] hover:brightness-110 active:scale-95 text-[#14100C] text-xs font-serif font-bold shadow-lg transition-all cursor-pointer inline-flex items-center justify-center gap-2"
             >
               <span>TIẾP TỤC ĐỌC TOÀN VĂN LUẬN GIẢI QUẺ DỊCH (HÀO TỪ & ĐẠI TƯỢNG) ➔</span>
             </button>

@@ -37,7 +37,7 @@ export const ChapterChangingLinesRules: React.FC<ChapterChangingLinesRulesProps>
             <Compass className="w-5 h-5 text-black" />
           </div>
           <div>
-            <span className="text-[11px] font-mono text-[#D4AF37] uppercase tracking-wider block font-bold">
+            <span className="text-[11px] font-mono text-[#C9A55A] uppercase tracking-wider block font-bold">
               CHU DỊCH BẢN NGHĨA • KHẢO CHỨNG DỊCH HỌC
             </span>
             <h2 className="text-base sm:text-xl font-serif font-black text-[#FFE2A4]">
@@ -57,7 +57,7 @@ export const ChapterChangingLinesRules: React.FC<ChapterChangingLinesRulesProps>
       <div className="bg-[#17110C] border border-[#3E2D1D] rounded-2xl p-4 sm:p-5 space-y-4 shadow-lg">
         <div className="flex items-center justify-between border-b border-[#2C1F14] pb-2.5 flex-wrap gap-2">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+            <Sparkles className="w-4 h-4 text-[#C9A55A]" />
             <h3 className="font-serif font-bold text-xs sm:text-sm text-[#F4ECD8] uppercase tracking-wide">
               Mô Phỏng Trực Quan Từng Trường Hợp (Chọn số hào động):
             </h3>
@@ -96,17 +96,17 @@ export const ChapterChangingLinesRules: React.FC<ChapterChangingLinesRulesProps>
         {/* Selected Case Detail Card */}
         <div className="p-4 rounded-xl bg-gradient-to-br from-[#24170E] to-[#150F0A] border border-[#523A22] space-y-3">
           <div className="flex items-center justify-between border-b border-[#3E2A18] pb-2 flex-wrap gap-2">
-            <h4 className="font-serif font-bold text-sm sm:text-base text-[#FFE8A3] flex items-center gap-2">
+            <h4 className="font-serif font-bold text-sm sm:text-base text-[#E6D3A3] flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
               <span>{selectedRule.name}</span>
             </h4>
-            <span className="px-2 py-0.5 rounded text-[11px] font-mono bg-[#110B07] text-[#D4AF37] border border-[#442E18] font-bold">
+            <span className="px-2 py-0.5 rounded text-[11px] font-mono bg-[#110B07] text-[#C9A55A] border border-[#442E18] font-bold">
               Quy tắc #{selectedRule.count}
             </span>
           </div>
 
           <div className="space-y-1">
-            <span className="text-[11px] font-mono font-bold text-[#D4AF37] uppercase block">
+            <span className="text-[11px] font-mono font-bold text-[#C9A55A] uppercase block">
               • HIỆN TƯỢNG XUẤT HIỆN:
             </span>
             <p className="text-xs sm:text-sm text-[#DDD0BE] leading-relaxed pl-3 border-l-2 border-[#4D351F]">
@@ -170,7 +170,7 @@ export const ChapterChangingLinesRules: React.FC<ChapterChangingLinesRulesProps>
                   >
                     <td className="py-3 px-3 sm:px-4 font-mono font-bold align-top">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[#D4AF37]">{rule.count} hào động</span>
+                        <span className="text-[#C9A55A]">{rule.count} hào động</span>
                       </div>
                     </td>
                     <td className="py-3 px-3 sm:px-4 font-serif leading-relaxed">
@@ -243,7 +243,7 @@ export const ChapterChangingLinesRules: React.FC<ChapterChangingLinesRulesProps>
             >
               <div className="flex items-center justify-between gap-2 border-b border-[#261B0F] pb-1.5 flex-wrap">
                 <h4 className="font-serif font-bold text-xs sm:text-sm text-[#F5ECD8] flex items-center gap-2">
-                  <span className="w-5 h-5 rounded-full bg-[#2A1E14] text-[#D4AF37] border border-[#483321] flex items-center justify-center font-mono text-xs font-bold">
+                  <span className="w-5 h-5 rounded-full bg-[#2A1E14] text-[#C9A55A] border border-[#483321] flex items-center justify-center font-mono text-xs font-bold">
                     {idx + 1}
                   </span>
                   <span>{rule.name}</span>
@@ -251,7 +251,7 @@ export const ChapterChangingLinesRules: React.FC<ChapterChangingLinesRulesProps>
               </div>
 
               <div className="space-y-0.5 text-xs text-[#DDD0BE]">
-                <span className="text-[10px] font-mono uppercase font-bold text-[#D4AF37] block">
+                <span className="text-[10px] font-mono uppercase font-bold text-[#C9A55A] block">
                   • Hiện tượng:
                 </span>
                 <p className="leading-relaxed pl-2.5 border-l-2 border-[#4A321E]">
@@ -324,7 +324,7 @@ export const ChapterChangingLinesRules: React.FC<ChapterChangingLinesRulesProps>
         <button
           type="button"
           onClick={() => onNavigateToSection?.("lookup_matrix")}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2C1F13] hover:bg-[#D4AF37] text-[#FFE8A3] hover:text-black border border-[#523C22] font-bold transition-all cursor-pointer shadow"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2C1F13] hover:bg-[#C9A55A] text-[#E6D3A3] hover:text-black border border-[#523C22] font-bold transition-all cursor-pointer shadow"
         >
           <span>Chương 7: Bảng Tra Ma Trận 64 Quẻ →</span>
         </button>

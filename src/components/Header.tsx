@@ -182,221 +182,178 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="border-b border-[#2C241B] bg-[#12100E]/95 backdrop-blur-md sticky top-0 z-40">
-      <div className="max-w-6xl mx-auto px-4 py-2.5 sm:py-3 flex items-center justify-between gap-3">
-        {/* Brand / Logo */}
-        <div
+    <header className="sticky top-0 z-40 bg-[#0B0A08]/95">
+      <div className="max-w-6xl mx-auto px-4 h-16 sm:h-[72px] flex items-center justify-between gap-3">
+        {/* Brand: ấn triện son + tên hiệu */}
+        <button
+          type="button"
           onClick={() => handleSelectTab("home")}
-          className="flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none group"
+          className="flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none group min-w-0"
           title="Về Trang Chủ Cửu Nhị"
         >
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-[#E2B755] to-[#75511A] flex items-center justify-center text-[#14120F] shadow-[0_0_15px_rgba(226,183,85,0.3)] border border-[#FFE28A] group-hover:scale-105 transition-transform shrink-0">
-            <span className="text-lg sm:text-xl font-serif font-bold">☯</span>
-          </div>
-          <div className="min-w-0">
-            <h1 className="text-base sm:text-lg font-serif font-bold tracking-wide text-[#F3E7D0] flex items-center gap-1.5 sm:gap-2 leading-tight">
-              <span>CỬU NHỊ</span>
-              <span className="text-xs px-1.5 py-0.2 rounded bg-amber-950/80 text-[#FFE28A] border border-amber-600/50 font-serif font-normal">
-                玖貳
-              </span>
-            </h1>
-            <div className="text-[10px] text-[#A89882] font-serif tracking-wider truncate">
-              Phong Thủy Mệnh Lý • Kinh Dịch
-            </div>
-          </div>
-        </div>
+          <span className="royal-seal w-8 h-8 sm:w-10 sm:h-10 text-[12px] sm:text-sm shrink-0 [writing-mode:vertical-rl] tracking-[-0.05em] group-hover:brightness-110 transition">
+            玖貳
+          </span>
+          <span className="min-w-0 text-left">
+            <span className="block font-display text-lg sm:text-2xl font-semibold tracking-[0.12em] sm:tracking-[0.18em] text-ivory-100 leading-none whitespace-nowrap">
+              CỬU NHỊ
+            </span>
+            <span className="hidden sm:block mt-1 text-[10px] font-sans uppercase tracking-[0.32em] text-gold-600 truncate">
+              Phong Thủy · Mệnh Lý · Kinh Dịch
+            </span>
+          </span>
+        </button>
 
-        {/* Right Actions: Member / Login Button & Compact 3-bar Hamburger Menu */}
-        <div className="flex items-center gap-2 justify-end">
-          {/* NÚT QUẢN TRỊ ADMIN (Dành cho tài khoản cuunhi) */}
+        {/* Hành động bên phải */}
+        <div className="flex items-center gap-1.5 sm:gap-3 justify-end">
           {currentUser?.isAdmin && (
             <button
               type="button"
               onClick={() => onOpenAdminModal && onOpenAdminModal()}
-              className="px-2.5 py-1.5 rounded-xl text-xs font-serif font-bold bg-gradient-to-r from-red-950 via-amber-950 to-amber-900 hover:from-red-900 hover:to-amber-800 text-[#FFE58F] border border-amber-500/90 shadow-[0_0_15px_rgba(245,158,11,0.35)] flex items-center gap-1.5 cursor-pointer active:scale-95 transition-all shrink-0"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 text-[11px] font-sans uppercase tracking-[0.14em] text-cinnabar-400 hover:text-[#E7A08F] border border-cinnabar-600/60 hover:border-cinnabar-400 rounded-[2px] transition-colors cursor-pointer"
               title="Mở Bảng Điều Khiển Quản Trị Viên (cuunhi): Quản lý tài khoản & phân quyền hệ thống"
             >
-              <ShieldCheck className="w-3.5 h-3.5 text-amber-300" />
-              <span className="hidden xs:inline">Quản Trị Admin</span>
-              <span className="xs:hidden">Admin</span>
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>Quản trị</span>
             </button>
           )}
 
-          {/* Nút Đăng Ký Thành Viên / Đăng Nhập / Thông Tin Tài Khoản */}
           {currentUser ? (
-            <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-[#24190F] border border-[#5A3F22] text-xs font-serif shadow-xs">
-              <div
-                className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
+            <div className="flex items-center gap-2 pl-1 pr-1.5 py-1 border border-gold-700/50 rounded-[2px]">
+              <span
+                className={`w-7 h-7 flex items-center justify-center text-[11px] font-display font-bold rounded-[2px] ${
                   currentUser.isAdmin
-                    ? "bg-red-700 text-white border border-amber-400"
-                    : "bg-gradient-to-br from-[#E2B755] to-[#75511A] text-[#14120F]"
+                    ? "bg-cinnabar-600 text-[#F6E7D6]"
+                    : "bg-gold-800 text-gold-300 border border-gold-700"
                 }`}
               >
-                {currentUser.isAdmin ? "🛡️" : currentUser.isMember ? "👑" : "👤"}
-              </div>
-              <div className="flex items-center gap-1 text-[11px] leading-tight">
-                <span className="font-bold text-[#FFE28A] max-w-[85px] sm:max-w-[120px] truncate">
+                {currentUser.name?.charAt(0).toUpperCase() || "•"}
+              </span>
+              <span className="hidden xs:flex sm:flex flex-col leading-tight min-w-0">
+                <span className="text-xs font-sans font-medium text-ivory-100 max-w-[90px] sm:max-w-[130px] truncate">
                   {currentUser.name}
                 </span>
                 {currentUser.isAdmin ? (
-                  <span className="text-[9px] px-1 py-0.2 rounded bg-red-900 text-red-200 border border-red-500 font-bold shrink-0">
-                    Admin
-                  </span>
+                  <span className="text-[9px] uppercase tracking-[0.2em] text-cinnabar-400">Quản trị</span>
                 ) : currentUser.isMember ? (
-                  <span className="text-[9px] px-1 py-0.2 rounded bg-amber-950 text-amber-300 border border-amber-600/60 font-semibold shrink-0">
-                    Hội Viên
-                  </span>
+                  <span className="text-[9px] uppercase tracking-[0.2em] text-gold-500">Hội viên</span>
                 ) : (
                   <button
                     type="button"
                     onClick={() => onOpenAuthModal && onOpenAuthModal("upgrade")}
-                    className="text-[9px] px-1.5 py-0.2 rounded bg-[#3A2412] hover:bg-[#4D3118] text-[#FFE28A] border border-[#7D5325] font-semibold cursor-pointer shrink-0"
+                    className="text-left text-[9px] uppercase tracking-[0.2em] text-gold-500 hover:text-gold-300 cursor-pointer"
                     title="Nâng cấp lên Hội Viên Thường Niên để đọc toàn văn thuyết minh và mở rộng tiện ích"
                   >
-                    + VIP
+                    Nâng cấp hội viên
                   </button>
                 )}
-              </div>
+              </span>
               {onLogout && (
                 <button
                   type="button"
                   onClick={onLogout}
-                  className="text-[#8C7A65] hover:text-rose-400 p-0.5 rounded cursor-pointer ml-0.5"
+                  className="text-ivory-500 hover:text-cinnabar-400 p-1 cursor-pointer"
                   title="Đăng xuất tài khoản"
+                  aria-label="Đăng xuất"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                 </button>
               )}
             </div>
           ) : (
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 sm:gap-2">
               <button
                 type="button"
                 onClick={() => onOpenAuthModal && onOpenAuthModal("login")}
-                className="px-2.5 py-1.5 rounded-xl text-xs font-serif font-bold text-[#E2C798] hover:text-[#FFF] bg-[#1E1710] hover:bg-[#2A1E14] border border-[#48331E] transition-all cursor-pointer shadow-xs active:scale-95 flex items-center gap-1"
+                className="px-1.5 sm:px-3 py-2 text-[11px] sm:text-xs font-sans uppercase tracking-[0.08em] sm:tracking-[0.14em] whitespace-nowrap text-ivory-300 hover:text-gold-300 transition-colors cursor-pointer"
                 title="Đăng nhập tài khoản"
+                aria-label="Đăng nhập"
               >
-                <User className="w-3.5 h-3.5 text-amber-400" />
-                <span className="hidden xs:inline sm:inline">Đăng Nhập</span>
+                <User className="w-4 h-4 sm:hidden" />
+                <span className="hidden sm:inline">Đăng nhập</span>
               </button>
-
               <button
                 type="button"
                 onClick={() => onOpenAuthModal && onOpenAuthModal("register")}
-                className="px-2.5 py-1.5 rounded-xl text-xs font-serif font-bold text-[#14100C] bg-gradient-to-r from-[#D4AF37] to-[#B38728] hover:from-[#FFE28A] hover:to-[#D4AF37] transition-all cursor-pointer shadow-md active:scale-95 flex items-center gap-1 border border-[#FFE28A]"
+                className="royal-btn whitespace-nowrap !tracking-[0.08em] sm:!tracking-[0.08em] !px-2.5 sm:!px-4 !py-2 !text-[11px] sm:!text-xs"
                 title="Đăng ký thành viên Cửu Nhị"
               >
-                <Crown className="w-3.5 h-3.5 text-amber-950" />
-                <span>Đăng Ký</span>
+                <Crown className="w-3.5 h-3.5 hidden sm:block" />
+                <span>Đăng ký</span>
               </button>
             </div>
           )}
 
-          {/* ========================================================
-              NÚT 3 GẠCH NGANG (HAMBURGER MENU) GỌN GÀNG CHỨA CÁC TAB & TIỆN ÍCH
-              ======================================================== */}
+          {/* Nút danh mục */}
           <div className="relative" ref={navMenuRef}>
             <button
               type="button"
               onClick={() => setIsNavMenuOpen(!isNavMenuOpen)}
-              className={`flex items-center gap-2 px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-serif font-bold rounded-xl transition-all cursor-pointer shadow-md active:scale-95 border ${
+              className={`flex items-center gap-2 h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-[2px] border transition-colors cursor-pointer ${
                 isNavMenuOpen
-                  ? "bg-gradient-to-r from-[#D4AF37] to-[#B38728] text-[#14100C] border-[#FFE28A] shadow-[0_0_15px_rgba(212,175,55,0.35)]"
-                  : "bg-gradient-to-r from-[#1E1711] to-[#2B1F14] hover:from-[#2B1F14] hover:to-[#382819] text-[#FFE28A] hover:text-white border-[#523E28] hover:border-[#D4AF37]"
+                  ? "border-gold-400 text-gold-200 bg-gold-500/10"
+                  : "border-gold-700/60 text-gold-300 hover:border-gold-500 hover:text-gold-200"
               }`}
-              aria-label="Danh mục 3 gạch ngang"
-              title="Danh mục các phân hệ & tiện ích (3 gạch ngang)"
+              aria-label="Mở danh mục"
+              aria-expanded={isNavMenuOpen}
+              title="Danh mục các phân hệ & tiện ích"
             >
-              {/* 3 gạch ngang / Icon Menu */}
-              {isNavMenuOpen ? (
-                <X className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-current shrink-0" />
-              ) : (
-                <Menu className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-current shrink-0" />
-              )}
-
-              {/* Tên tab hiện tại */}
-              <div className="flex items-center gap-1.5">
-                <span className="hidden xs:inline sm:inline">Danh Mục:</span>
-                <span className="px-1.5 py-0.5 rounded text-[11px] font-sans font-semibold bg-black/40 text-amber-200 border border-amber-700/40 truncate max-w-[105px] sm:max-w-[130px]">
-                  {currentTabObj.label}
-                </span>
-              </div>
-
-              {/* Chỉ báo nhạc thiền đang phát */}
+              {isNavMenuOpen ? <X className="w-4 h-4 shrink-0" /> : <Menu className="w-4 h-4 shrink-0" />}
+              <span className="hidden md:inline text-xs font-sans uppercase tracking-[0.16em] max-w-[140px] truncate">
+                {currentTabObj.label}
+              </span>
               {isAudioPlaying && (
-                <span
-                  className="flex items-center gap-1 text-[10px] text-amber-300 font-sans px-1.5 py-0.5 rounded-full bg-amber-950/90 border border-amber-500/60 animate-pulse shrink-0"
-                  title="Nhạc thiền đang phát"
-                >
-                  <Music className="w-3 h-3 text-amber-400" />
-                  <span className="hidden md:inline">Nhạc Thiền</span>
+                <span title="Nhạc thiền đang phát" className="flex items-center">
+                  <Music className="w-3.5 h-3.5 text-gold-500 animate-pulse" />
                 </span>
               )}
-
-              {/* Mũi tên chỉ thị */}
               <ChevronDown
-                className={`w-3.5 h-3.5 transition-transform duration-200 shrink-0 ${
+                className={`hidden sm:block w-3.5 h-3.5 transition-transform duration-200 shrink-0 ${
                   isNavMenuOpen ? "rotate-180" : ""
                 }`}
               />
             </button>
 
-            {/* Backdrop mờ để đóng khi bấm ra ngoài */}
             {isNavMenuOpen && (
               <div
-                className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs"
+                className="fixed inset-0 z-40 bg-black/70 backdrop-blur-[2px]"
                 onClick={() => setIsNavMenuOpen(false)}
               />
             )}
 
-            {/* Khung danh sách các Tab & 2 Ô Tiện Ích (giữ nguyên DOM để ZenAudioPlayer không bị ngắt nhạc khi đóng mở) */}
+            {/* Bảng danh mục (giữ nguyên DOM để ZenAudioPlayer không bị ngắt nhạc khi đóng mở) */}
             <div
-              className={`absolute right-0 mt-2 w-80 sm:w-92 bg-[#16120E] border border-[#4D3A24] rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.85)] p-2.5 z-50 transition-all duration-200 max-h-[85vh] overflow-y-auto space-y-2.5 ${
+              className={`absolute right-0 mt-3 w-[min(22rem,calc(100vw-2rem))] royal-frame !outline-offset-[3px] shadow-[0_30px_60px_-20px_rgba(0,0,0,0.95)] z-50 transition-all duration-200 max-h-[82vh] overflow-y-auto ${
                 isNavMenuOpen
                   ? "opacity-100 translate-y-0 pointer-events-auto visible"
                   : "opacity-0 -translate-y-2 pointer-events-none invisible"
               }`}
             >
-              {/* Header của Popup Menu */}
-              <div className="px-2.5 py-2 border-b border-[#2C2116] flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-300 border border-amber-600/40 flex items-center justify-center text-xs font-serif font-bold">
-                    ☰
-                  </div>
-                  <div>
-                    <div className="text-xs font-serif font-bold text-[#F5EAD4] flex items-center gap-1.5">
-                      <span>HỆ THỐNG CỬU NHỊ</span>
-                      <span className="text-[10px] text-amber-400 font-serif">玖貳</span>
-                    </div>
-                    <div className="text-[10px] text-[#9E8B76]">
-                      Tiện ích & phân hệ chuyển đổi nhanh
-                    </div>
-                  </div>
+              <div className="px-5 pt-5 pb-4 flex items-start justify-between">
+                <div>
+                  <div className="royal-eyebrow !tracking-[0.3em] before:!hidden">Hệ thống Cửu Nhị</div>
+                  <div className="font-display text-lg text-ivory-100 mt-1">玖貳學術 · Các phân hệ</div>
                 </div>
-
                 <button
                   type="button"
                   onClick={() => setIsNavMenuOpen(false)}
-                  className="text-[#8C7A65] hover:text-[#FFE28A] p-1 rounded-lg hover:bg-[#251D15] transition-colors cursor-pointer"
+                  className="text-ivory-500 hover:text-gold-300 p-1 cursor-pointer"
                   title="Đóng menu"
+                  aria-label="Đóng menu"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              {/* Mục dành riêng cho Admin cuunhi trong menu */}
               {currentUser?.isAdmin && (
-                <div className="bg-gradient-to-r from-red-950 via-[#2E180D] to-amber-950 border border-amber-500/80 rounded-xl p-2.5 space-y-1">
-                  <div className="flex items-center justify-between text-xs font-serif font-bold text-[#FFE28A]">
+                <div className="mx-5 mb-4 p-3 border border-cinnabar-600/50 bg-cinnabar-600/10">
+                  <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.18em] text-cinnabar-400">
                     <span className="flex items-center gap-1.5">
-                      <ShieldCheck className="w-4 h-4 text-amber-300" />
-                      <span>QUẢN TRỊ ADMIN (CUUNHI)</span>
-                    </span>
-                    <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-red-900 text-red-200 border border-red-500 font-bold">
-                      Tối Cao
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      Quản trị (cuunhi)
                     </span>
                   </div>
-                  <p className="text-[10px] text-[#CDBEAA]">
+                  <p className="text-[11px] text-ivory-300 mt-1">
                     Xem danh sách tài khoản, quản lý quyền hội viên VIP, xóa tài khoản.
                   </p>
                   <button
@@ -405,24 +362,69 @@ export const Header: React.FC<HeaderProps> = ({
                       setIsNavMenuOpen(false);
                       if (onOpenAdminModal) onOpenAdminModal();
                     }}
-                    className="w-full py-2 px-3 rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#B38728] hover:from-[#FFE28A] hover:to-[#D4AF37] text-black font-serif font-bold text-xs shadow-md active:scale-95 cursor-pointer mt-1 flex items-center justify-center gap-1.5 transition-all"
+                    className="royal-btn w-full mt-2.5 !py-2 !text-[11px]"
                   >
-                    <span>Mở Bảng Điều Khiển Quản Trị</span>
-                    <span>➔</span>
+                    Mở bảng điều khiển
                   </button>
                 </div>
               )}
 
-              {/* ========================================================
-                  2 Ô TIỆN ÍCH KÉO VÀO Ô 3 GẠCH (QUẺ NGÀY ☀️ & NHẠC THIỀN 🎵)
-                  ======================================================== */}
-              <div className="space-y-2 bg-[#1C1611]/80 border border-[#3E2F1E] rounded-xl p-2">
-                <div className="text-[10px] font-mono text-[#A89882] uppercase tracking-wider px-1 flex items-center justify-between">
-                  <span>Tiện ích mỗi ngày & tĩnh tâm</span>
-                  <span className="text-[9px] text-amber-400 font-serif">2 tiện ích</span>
-                </div>
+              {/* Danh sách phân hệ */}
+              <nav className="px-2 pb-2">
+                {tabs
+                  .filter((tab) => tab.showOnlyIf === undefined || tab.showOnlyIf)
+                  .map((tab) => {
+                    const Icon = tab.icon;
+                    const isActive = currentTab === tab.id;
 
-                {/* Ô 1: Quẻ Ngày Kinh Dịch ☀️ */}
+                    return (
+                      <button
+                        key={tab.id}
+                        type="button"
+                        onClick={() => handleSelectTab(tab.id)}
+                        className={`relative w-full flex items-center gap-3.5 px-3 py-2.5 text-left cursor-pointer group transition-colors ${
+                          isActive ? "bg-gold-500/[0.08]" : "hover:bg-white/[0.03]"
+                        }`}
+                      >
+                        {isActive && <span className="absolute left-0 top-2 bottom-2 w-px bg-gold-400" />}
+                        <Icon
+                          className={`w-4 h-4 shrink-0 ${
+                            isActive ? "text-gold-400" : "text-gold-700 group-hover:text-gold-500"
+                          }`}
+                        />
+                        <span className="min-w-0 flex-1">
+                          <span className="flex items-baseline gap-2">
+                            <span
+                              className={`font-display text-[17px] leading-tight ${
+                                isActive ? "text-gold-200" : "text-ivory-100"
+                              }`}
+                            >
+                              {tab.label}
+                            </span>
+                            <span className="text-[11px] text-ivory-500 font-serif">{tab.chinese}</span>
+                          </span>
+                          <span className="block text-[11px] text-ivory-500 truncate mt-0.5">{tab.desc}</span>
+                        </span>
+                        {tab.id === "detail" && hasActiveReading && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-gold-400 shrink-0" />
+                        )}
+                        {tab.id === "history" && historyCount > 0 && (
+                          <span className="text-[10px] font-sans text-gold-500 tabular-nums shrink-0">
+                            {historyCount}
+                          </span>
+                        )}
+                        {isActive && <Check className="w-3.5 h-3.5 text-gold-400 shrink-0" />}
+                      </button>
+                    );
+                  })}
+              </nav>
+
+              {/* Tiện ích mỗi ngày */}
+              <div className="mx-5 royal-rule text-[8px]">◆</div>
+              <div className="px-5 py-4 space-y-2.5">
+                <div className="text-[10px] font-sans uppercase tracking-[0.28em] text-gold-600">
+                  Tiện ích tĩnh tâm
+                </div>
                 {onOpenDailyHexagram && (
                   <button
                     type="button"
@@ -430,184 +432,74 @@ export const Header: React.FC<HeaderProps> = ({
                       setIsNavMenuOpen(false);
                       onOpenDailyHexagram();
                     }}
-                    className="w-full flex items-center justify-between p-2 rounded-xl bg-gradient-to-r from-[#2A1B0E] via-[#352212] to-[#25170B] hover:from-[#3B2615] hover:to-[#2F1D0F] border border-amber-600/50 hover:border-amber-400 text-[#FFE28A] transition-all shadow-sm group cursor-pointer"
+                    className="w-full flex items-center gap-3 p-2.5 border border-gold-700/40 hover:border-gold-500/70 transition-colors group cursor-pointer text-left"
                     title="Xem Quẻ Ngày Kinh Dịch ngẫu nhiên mỗi ngày theo lịch dương kèm lời bình ngắn gọn"
                   >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center justify-center shrink-0 group-hover:rotate-45 transition-transform">
-                        <Sun className="w-4 h-4 text-amber-400" />
-                      </div>
-                      <div className="text-left min-w-0">
-                        <div className="text-xs sm:text-sm font-serif font-bold text-[#FFE28A] flex items-center gap-1.5 truncate">
-                          <span>Quẻ Ngày Kinh Dịch</span>
-                          <span className="text-[10px] text-amber-300/80 font-normal">今日一卦</span>
-                        </div>
-                        <div className="text-[10px] text-[#C2AA87] truncate">
-                          Bốc quẻ nhật khóa & lời khuyên cát hung
-                        </div>
-                      </div>
-                    </div>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-900/70 text-amber-200 border border-amber-600/50 shrink-0 font-serif font-bold ml-2">
-                      Xem Quẻ ☀️
+                    <Sun className="w-4 h-4 text-gold-500 shrink-0 group-hover:rotate-45 transition-transform" />
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-display text-base text-ivory-100 leading-tight">
+                        Quẻ Ngày Kinh Dịch <span className="text-[11px] text-ivory-500 font-serif">今日一卦</span>
+                      </span>
+                      <span className="block text-[11px] text-ivory-500 truncate">
+                        Bốc quẻ nhật khóa & lời khuyên cát hung
+                      </span>
                     </span>
                   </button>
                 )}
-
-                {/* Ô 2: Zen Audio Music Player (Nhạc Thiền & Cổ Cầm 🎵) */}
                 <ZenAudioPlayer variant="menu-card" />
               </div>
 
-              {/* ========================================================
-                  DANH MỤC CÁC PHÂN HỆ TAB CHÍNH (7 PHÂN HỆ)
-                  ======================================================== */}
-              <div className="space-y-1">
-                <div className="text-[10px] font-mono text-[#D4AF37] uppercase tracking-wider px-1 pt-1 font-bold flex items-center justify-between">
-                  <span>Các phân hệ học thuật Cửu Nhị</span>
-                  <span className="text-[9px] text-[#A89882] font-normal">玖貳學術</span>
-                </div>
-                    {tabs
-                      .filter((tab) => tab.showOnlyIf === undefined || tab.showOnlyIf)
-                      .map((tab) => {
-                        const Icon = tab.icon;
-                        const isActive = currentTab === tab.id;
-
-                        return (
-                          <button
-                            key={tab.id}
-                            type="button"
-                            onClick={() => handleSelectTab(tab.id)}
-                            className={`w-full flex items-center justify-between p-2.5 rounded-xl transition-all text-left cursor-pointer group ${
-                              isActive
-                                ? "bg-gradient-to-r from-[#C89B3C] via-[#D8AC4F] to-[#B2842B] text-[#120F0C] font-bold shadow-md shadow-amber-950/50 scale-[1.01]"
-                                : "text-[#DCD1BF] hover:text-white hover:bg-[#231A12] border border-transparent hover:border-[#3D2C1C]"
-                            }`}
-                          >
-                            <div className="flex items-center gap-3 min-w-0">
-                              <div
-                                className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-transform group-hover:scale-105 ${
-                                  isActive
-                                    ? "bg-[#14100C]/25 text-[#14100C]"
-                                    : "bg-[#1F1710] text-amber-400 border border-[#3E2D1D]"
-                                }`}
-                              >
-                                <Icon className="w-4 h-4" />
-                              </div>
-
-                              <div className="min-w-0">
-                                <div className="text-xs sm:text-sm font-serif font-bold truncate flex items-center gap-1.5">
-                                  <span>{tab.label}</span>
-                                  <span
-                                    className={`text-[10px] font-normal ${
-                                      isActive ? "text-[#120F0C]/80" : "text-[#8C7A65]"
-                                    }`}
-                                  >
-                                    ({tab.chinese})
-                                  </span>
-                                </div>
-                                <div
-                                  className={`text-[10px] truncate ${
-                                    isActive ? "text-[#241A0A]" : "text-[#8C7D6A]"
-                                  }`}
-                                >
-                                  {tab.desc}
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Badges / Trạng thái */}
-                            <div className="flex items-center gap-1.5 shrink-0 ml-2">
-                              {tab.id === "detail" && hasActiveReading && (
-                                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_#34D399]" />
-                              )}
-
-                              {tab.id === "history" && historyCount > 0 && (
-                                <span
-                                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
-                                    isActive
-                                      ? "bg-[#14120F] text-[#D4AF37]"
-                                      : "bg-[#2A1F14] text-[#E0CEB1] border border-[#443120]"
-                                  }`}
-                                >
-                                  {historyCount}
-                                </span>
-                              )}
-
-                              {isActive && (
-                                <Check className="w-4 h-4 text-[#14100C] stroke-[2.5]" />
-                              )}
-                            </div>
-                          </button>
-                        );
-                      })}
-                  </div>
-
-                  {/* Phụ Lục Menu: Zalo, Quẻ Ngày & Google Workspace cho tiện dụng */}
-                  <div className="mt-2 pt-2 border-t border-[#2C2116] space-y-1">
-                    {/* Link Nhóm Zalo Cửu Nhị */}
-                    <a
-                      href="https://zalo.me/g/vwzsqvnh3gdbzst2psyh"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full flex items-center justify-between p-2 rounded-xl text-xs text-[#FFE28A] hover:text-white bg-gradient-to-r from-emerald-950/80 via-[#182C1B] to-emerald-950/80 hover:bg-emerald-900/60 transition-all border border-emerald-600/70 shadow-xs"
-                      title="Tham gia nhóm Zalo Cửu Nhị: Giao lưu kinh nghiệm, giải quẻ & học thuật"
-                    >
-                      <div className="flex items-center gap-2">
-                        <Users className="w-4 h-4 text-emerald-400" />
-                        <div>
-                          <span className="font-bold font-serif text-emerald-300">Nhóm Zalo Cửu Nhị:</span>{" "}
-                          <span className="text-[11px] text-[#CBE2D0]">Giao lưu Dịch Lý</span>
-                        </div>
-                      </div>
-                      <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-800 text-emerald-100 font-serif font-bold">
-                        Tham gia ➔
-                      </span>
-                    </a>
-
-                    {/* Hotline Zalo nhanh */}
-                    <a
-                      href="https://zalo.me/0902853305"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full flex items-center justify-between p-2 rounded-xl text-xs text-emerald-300 hover:text-white hover:bg-emerald-950/60 transition-colors border border-emerald-900/40"
-                    >
-                      <div className="flex items-center gap-2">
-                        <MessageSquare className="w-4 h-4 text-emerald-400" />
-                        <div>
-                          <span className="font-semibold font-serif">Zalo Tư Vấn Dịch Vụ:</span>{" "}
-                          <span className="font-mono font-bold">090 285 3305</span>
-                        </div>
-                      </div>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-900/60 text-emerald-200">
-                        Liên hệ
-                      </span>
-                    </a>
-
-                    {/* Google Workspace shortcut */}
-                    {onOpenWorkspace && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsNavMenuOpen(false);
-                          onOpenWorkspace("docs");
-                        }}
-                        className="w-full flex items-center justify-between p-2 rounded-xl text-xs text-[#DCD1BF] hover:text-white hover:bg-[#241C15] transition-colors border border-[#3A2A1A]"
-                      >
-                        <div className="flex items-center gap-2">
-                          <div className="flex items-center -space-x-1">
-                            <span className="w-2 h-2 rounded-full bg-[#4285F4]"></span>
-                            <span className="w-2 h-2 rounded-full bg-[#34A853]"></span>
-                            <span className="w-2 h-2 rounded-full bg-[#EA4335]"></span>
-                          </div>
-                          <span className="font-serif">Google Workspace (Docs/Sheets)</span>
-                        </div>
-                        <span className="text-[10px] text-[#8C7D6A]">Mở</span>
-                      </button>
-                    )}
-                  </div>
-                </div>
+              {/* Liên hệ & công cụ */}
+              <div className="mx-5 royal-rule text-[8px]">◆</div>
+              <div className="px-5 py-4 space-y-1">
+                <a
+                  href="https://zalo.me/g/vwzsqvnh3gdbzst2psyh"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between py-2 text-xs text-ivory-300 hover:text-gold-300 transition-colors"
+                  title="Tham gia nhóm Zalo Cửu Nhị: Giao lưu kinh nghiệm, giải quẻ & học thuật"
+                >
+                  <span className="flex items-center gap-2.5">
+                    <Users className="w-3.5 h-3.5 text-gold-600" />
+                    Nhóm Zalo Cửu Nhị · Giao lưu Dịch Lý
+                  </span>
+                  <span className="text-gold-600">→</span>
+                </a>
+                <a
+                  href="https://zalo.me/0902853305"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between py-2 text-xs text-ivory-300 hover:text-gold-300 transition-colors"
+                >
+                  <span className="flex items-center gap-2.5">
+                    <MessageSquare className="w-3.5 h-3.5 text-gold-600" />
+                    Zalo tư vấn · <span className="tabular-nums tracking-wide">090 285 3305</span>
+                  </span>
+                  <span className="text-gold-600">→</span>
+                </a>
+                {onOpenWorkspace && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsNavMenuOpen(false);
+                      onOpenWorkspace("docs");
+                    }}
+                    className="w-full flex items-center justify-between py-2 text-xs text-ivory-300 hover:text-gold-300 transition-colors cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <FileText className="w-3.5 h-3.5 text-gold-600" />
+                      Google Workspace (Docs/Sheets)
+                    </span>
+                    <span className="text-gold-600">→</span>
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
+      {/* Đường chỉ vàng dưới header */}
+      <div className="h-px bg-gradient-to-r from-transparent via-gold-600/50 to-transparent" />
     </header>
   );
 };

@@ -522,7 +522,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                   isOpen,
                 })
               }
-              className="flex items-center gap-1 px-2.5 py-1 text-[11px] sm:text-xs font-bold rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#B8860B] hover:from-[#F3CE65] hover:to-[#C69214] text-[#1A1208] shadow-sm shadow-[#D4AF37]/20 transition-all cursor-pointer active:scale-95 whitespace-nowrap"
+              className="flex items-center gap-1 px-2.5 py-1 text-[11px] sm:text-xs font-bold rounded-lg bg-gradient-to-r from-[#C9A55A] to-[#B8860B] hover:from-[#F3CE65] hover:to-[#C69214] text-[#1A1208] shadow-sm shadow-[#C9A55A]/20 transition-all cursor-pointer active:scale-95 whitespace-nowrap"
               title="Lưu thiết lập Kết Cấu Thiên vào lá số Bát Tự"
             >
               <Save className="w-3.5 h-3.5" />
@@ -534,7 +534,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
             <button
               type="button"
               onClick={onCapture}
-              className="no-capture flex items-center gap-1 px-2.5 py-1 text-[11px] sm:text-xs font-semibold rounded-lg bg-[#271E15] hover:bg-[#382B1E] text-amber-200 border border-[#523F27] hover:border-[#D4AF37] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
+              className="no-capture flex items-center gap-1 px-2.5 py-1 text-[11px] sm:text-xs font-semibold rounded-lg bg-[#271E15] hover:bg-[#382B1E] text-amber-200 border border-[#523F27] hover:border-[#C9A55A] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
               title="Chụp ảnh riêng Kết Cấu Thiên"
             >
               <Camera className="w-3.5 h-3.5 text-amber-400" />
@@ -545,7 +545,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center gap-1 px-2 py-1 text-[11px] sm:text-xs font-medium rounded-lg bg-[#271C11] text-[#E2B755] border border-[#4D3620] hover:bg-[#382717] transition-all cursor-pointer whitespace-nowrap"
+            className="flex items-center gap-1 px-2 py-1 text-[11px] sm:text-xs font-medium rounded-lg bg-[#271C11] text-[#D6B97A] border border-[#4D3620] hover:bg-[#382717] transition-all cursor-pointer whitespace-nowrap"
           >
             <span>{isOpen ? "Thu Gọn" : "Mở Rộng"}</span>
             <ChevronDown
@@ -564,7 +564,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
               ================================================================= */}
           <div className="space-y-2.5 p-2.5 sm:p-3 rounded-xl bg-[#171109] border border-[#3A2817]">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pb-2 border-b border-[#2C1D10]">
-              <div className="text-[10.5px] sm:text-[11px] font-bold text-[#E2B755] flex items-center gap-1.5 uppercase tracking-wider">
+              <div className="text-[10.5px] sm:text-[11px] font-bold text-[#D6B97A] flex items-center gap-1.5 uppercase tracking-wider">
                 <span className="w-4 h-4 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center text-[10px] font-mono shrink-0">
                   1
                 </span>
@@ -590,7 +590,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                     key={p.key}
                     className="p-1 sm:p-1.5 rounded-lg bg-gradient-to-b from-[#211810] to-[#17110A] border border-[#44301D] text-center flex flex-col items-center justify-between min-h-[52px] sm:min-h-[58px]"
                   >
-                    <div className="text-[8.5px] sm:text-[9.5px] font-bold text-[#E2B755] truncate w-full pb-0.5 border-b border-[#352516]/70">
+                    <div className="text-[8.5px] sm:text-[9.5px] font-bold text-[#D6B97A] truncate w-full pb-0.5 border-b border-[#352516]/70">
                       {p.label}
                     </div>
                     <div className="flex items-center justify-center gap-0.5 sm:gap-1 my-0.5">
@@ -617,7 +617,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                 onClick={() => setActiveTabB1("nguyen_cuc")}
                 className={`px-2.5 py-1 rounded-md text-[10.5px] sm:text-[11px] font-medium transition-all cursor-pointer whitespace-nowrap ${
                   activeTabB1 === "nguyen_cuc"
-                    ? "bg-[#382614] border border-[#D4AF37] text-[#F5EAD4] font-bold"
+                    ? "bg-[#382614] border border-[#C9A55A] text-[#F5EAD4] font-bold"
                     : "bg-[#1E140C] hover:bg-[#281B10] border border-[#3D2C1A] text-[#8C7D6B]"
                 }`}
               >
@@ -628,7 +628,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                 onClick={() => setActiveTabB1("tam_hop")}
                 className={`px-2.5 py-1 rounded-md text-[10.5px] sm:text-[11px] font-medium transition-all cursor-pointer whitespace-nowrap ${
                   activeTabB1 === "tam_hop"
-                    ? "bg-[#382614] border border-[#D4AF37] text-[#F5EAD4] font-bold"
+                    ? "bg-[#382614] border border-[#C9A55A] text-[#F5EAD4] font-bold"
                     : "bg-[#1E140C] hover:bg-[#281B10] border border-[#3D2C1A] text-[#8C7D6B]"
                 }`}
               >
@@ -639,7 +639,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                 onClick={() => setActiveTabB1("tam_hoi")}
                 className={`px-2.5 py-1 rounded-md text-[10.5px] sm:text-[11px] font-medium transition-all cursor-pointer whitespace-nowrap ${
                   activeTabB1 === "tam_hoi"
-                    ? "bg-[#382614] border border-[#D4AF37] text-[#F5EAD4] font-bold"
+                    ? "bg-[#382614] border border-[#C9A55A] text-[#F5EAD4] font-bold"
                     : "bg-[#1E140C] hover:bg-[#281B10] border border-[#3D2C1A] text-[#8C7D6B]"
                 }`}
               >
@@ -705,12 +705,12 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                         activeInChart
                           ? "bg-gradient-to-r from-emerald-950/80 to-[#22160C] border-emerald-400 text-emerald-200 ring-1 ring-emerald-500/50 shadow-md"
                           : isSelected
-                          ? "bg-[#271C10] border-[#D4AF37] text-[#F5EAD4] ring-1 ring-[#D4AF37]/50"
+                          ? "bg-[#271C10] border-[#C9A55A] text-[#F5EAD4] ring-1 ring-[#C9A55A]/50"
                           : "bg-[#1B140D] hover:bg-[#241A10] border-[#3D2C1A] text-[#A89882]"
                       }`}
                     >
                       <div className="flex items-center justify-between gap-1 w-full">
-                        <span className="font-serif text-[11px] sm:text-xs font-bold text-[#E2B755]">
+                        <span className="font-serif text-[11px] sm:text-xs font-bold text-[#D6B97A]">
                           {rule.branch1} - {rule.branch2} củng {rule.cungChi}
                         </span>
                         <span className={`text-[8px] px-1.5 py-0.5 rounded border font-semibold ${getElementBadgeColor(rule.element)}`}>
@@ -755,12 +755,12 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                           : activeInChart
                           ? "bg-gradient-to-r from-emerald-950/80 to-[#22160C] border-emerald-400 text-emerald-200 ring-1 ring-emerald-500/50 shadow-md"
                           : isSelected
-                          ? "bg-[#271C10] border-[#D4AF37] text-[#F5EAD4] ring-1 ring-[#D4AF37]/50"
+                          ? "bg-[#271C10] border-[#C9A55A] text-[#F5EAD4] ring-1 ring-[#C9A55A]/50"
                           : "bg-[#1B140D] hover:bg-[#241A10] border-[#3D2C1A] text-[#A89882]"
                       }`}
                     >
                       <div className="flex items-center justify-between gap-1 w-full">
-                        <span className={`font-serif text-[11px] sm:text-xs font-bold ${isException ? "text-rose-300" : "text-[#E2B755]"}`}>
+                        <span className={`font-serif text-[11px] sm:text-xs font-bold ${isException ? "text-rose-300" : "text-[#D6B97A]"}`}>
                           {isException ? `${rule.branch1} - ${rule.branch2} (Ngoại lệ)` : `${rule.branch1} - ${rule.branch2} củng ${rule.cungChi}`}
                         </span>
                         <span className={`text-[8px] px-1.5 py-0.5 rounded border font-semibold ${isException ? "bg-rose-950 text-rose-300 border-rose-700/60" : getElementBadgeColor(rule.element)}`}>
@@ -803,7 +803,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
               ================================================================= */}
           <div className="space-y-2.5 p-2.5 sm:p-3 rounded-xl bg-[#171109] border border-[#3A2817]">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-2 border-b border-[#2C1D10]">
-              <div className="text-[10.5px] sm:text-[11px] font-bold text-[#E2B755] flex items-center gap-1.5 uppercase tracking-wider">
+              <div className="text-[10.5px] sm:text-[11px] font-bold text-[#D6B97A] flex items-center gap-1.5 uppercase tracking-wider">
                 <span className="w-4 h-4 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center text-[10px] font-mono shrink-0">
                   2
                 </span>
@@ -857,7 +857,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                       }`}
                     >
                       <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#352516]/70">
-                        <span className={`text-[8.5px] sm:text-[10px] font-bold truncate ${isSelected ? "text-amber-300" : "text-[#E2B755]"}`}>
+                        <span className={`text-[8.5px] sm:text-[10px] font-bold truncate ${isSelected ? "text-amber-300" : "text-[#D6B97A]"}`}>
                           {p.label}
                         </span>
                         {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />}
@@ -907,7 +907,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                       }`}
                     >
                       <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#352516]/70">
-                        <span className={`text-[8.5px] sm:text-[10px] font-bold truncate ${isSelected ? "text-sky-300" : "text-[#E2B755]"}`}>
+                        <span className={`text-[8.5px] sm:text-[10px] font-bold truncate ${isSelected ? "text-sky-300" : "text-[#D6B97A]"}`}>
                           {p.label}
                         </span>
                         {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0" />}
@@ -934,7 +934,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
               ================================================================= */}
           <div className="space-y-2.5 p-2.5 sm:p-3 rounded-xl bg-[#171109] border border-[#3A2817]">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-2 border-b border-[#2C1D10]">
-              <div className="text-[10.5px] sm:text-[11px] font-bold text-[#E2B755] flex items-center gap-1.5 uppercase tracking-wider">
+              <div className="text-[10.5px] sm:text-[11px] font-bold text-[#D6B97A] flex items-center gap-1.5 uppercase tracking-wider">
                 <span className="w-4 h-4 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center text-[10px] font-mono shrink-0">
                   3
                 </span>
@@ -963,7 +963,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                 • <strong className="text-emerald-300">Dụng nguyên cục, giải hình hại phương gọi là Dược.</strong>
               </div>
               <div>
-                • Có thể hợp (<em className="text-[#D4AF37]">Lục Hợp, Tam Hợp, Tam Hội trừ Thìn - Mão và Dậu - Tuất</em>) Địch hoặc Ngã đều là Dược. Sẽ có hơn nhiều loại Dược.
+                • Có thể hợp (<em className="text-[#C9A55A]">Lục Hợp, Tam Hợp, Tam Hội trừ Thìn - Mão và Dậu - Tuất</em>) Địch hoặc Ngã đều là Dược. Sẽ có hơn nhiều loại Dược.
               </div>
               <div className="text-amber-300 font-semibold flex items-center gap-1 mt-0.5">
                 <AlertTriangle className="w-3 h-3 text-amber-400 shrink-0" />
@@ -1004,7 +1004,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                         <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#352516]/70">
                           <span
                             className={`text-[8.5px] sm:text-[10px] font-bold truncate ${
-                              isSelected ? "text-emerald-300" : "text-[#E2B755]"
+                              isSelected ? "text-emerald-300" : "text-[#D6B97A]"
                             }`}
                           >
                             {b.label}
@@ -1069,7 +1069,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                         <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#352516]/70">
                           <span
                             className={`text-[8.5px] sm:text-[10px] font-bold truncate ${
-                              isSelected ? "text-rose-300" : "text-[#E2B755]"
+                              isSelected ? "text-rose-300" : "text-[#D6B97A]"
                             }`}
                           >
                             {b.label}
@@ -1134,7 +1134,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                         <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#352516]/70">
                           <span
                             className={`text-[8.5px] sm:text-[10px] font-bold truncate ${
-                              isSelected ? "text-purple-300" : "text-[#E2B755]"
+                              isSelected ? "text-purple-300" : "text-[#D6B97A]"
                             }`}
                           >
                             {b.label}
@@ -1177,7 +1177,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
           <div className="space-y-3 p-2.5 sm:p-3.5 rounded-xl bg-gradient-to-b from-[#18120B] via-[#140E08] to-[#100A05] border border-[#45311E] shadow-lg">
             {/* Header Bước 4 */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pb-2.5 border-b border-[#2E1E11]">
-              <div className="text-[10.5px] sm:text-[11px] font-bold text-[#E2B755] flex items-center gap-2 uppercase tracking-wider">
+              <div className="text-[10.5px] sm:text-[11px] font-bold text-[#D6B97A] flex items-center gap-2 uppercase tracking-wider">
                 <span className="w-4 h-4 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center text-[10px] font-mono shrink-0">
                   4
                 </span>
@@ -1254,7 +1254,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                     >
                       {/* Huy hiệu khởi điểm */}
                       <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#352516]/60">
-                        <span className={`text-[8.5px] sm:text-[9.5px] font-bold ${isSelected ? "text-amber-300" : "text-[#E2B755]"}`}>
+                        <span className={`text-[8.5px] sm:text-[9.5px] font-bold ${isSelected ? "text-amber-300" : "text-[#D6B97A]"}`}>
                           {isSelected ? "★ Khởi Đầu" : "Lục Thân"}
                         </span>
                         <span className={`w-1.5 h-1.5 rounded-full ${theme.dot}`} />
@@ -1316,7 +1316,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
             {/* TRÌNH DIỄN DÒNG CHẢY NGUYÊN LƯU VỚI CÁC MŨI TÊN >>> */}
             <div className="p-2 sm:p-3 rounded-xl bg-[#120B06] border border-[#3A2817] space-y-2.5">
               <div className="flex items-center justify-between text-[10px]">
-                <div className="font-bold text-[#E2B755] flex items-center gap-1.5">
+                <div className="font-bold text-[#D6B97A] flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                   <span>Dòng Chảy Nguyên Lưu Khởi Phát Từ: <strong className="text-amber-300 font-serif text-xs">{nguyenLuuStart} ({lucThanDataMap[nguyenLuuStart].element})</strong></span>
                 </div>
@@ -1338,7 +1338,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                         className={`relative p-2 rounded-xl border transition-all cursor-pointer flex flex-col justify-between bg-gradient-to-b ${theme.cardBg} ${
                           isFirst
                             ? `${theme.activeRing} shadow-md shadow-amber-500/20`
-                            : `${theme.border} hover:border-[#D4AF37]/70 hover:scale-[1.01]`
+                            : `${theme.border} hover:border-[#C9A55A]/70 hover:scale-[1.01]`
                         }`}
                       >
                         {/* Header của từng bước */}
@@ -1356,7 +1356,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                           <div className={`text-base sm:text-lg font-serif font-black leading-tight ${theme.text}`}>
                             {item.type}
                           </div>
-                          <div className="text-[8.5px] sm:text-[9px] text-[#E2B755] font-serif truncate mt-0.5">
+                          <div className="text-[8.5px] sm:text-[9px] text-[#D6B97A] font-serif truncate mt-0.5">
                             {item.fullName}
                           </div>
                         </div>

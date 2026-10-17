@@ -372,10 +372,10 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
   return (
     <div className="w-full max-w-3xl mx-auto bg-[#16120E] border border-[#483723] rounded-2xl p-4 sm:p-6 shadow-2xl relative">
       {/* Decorative Traditional Border Accent */}
-      <div className="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-[#D4AF37]/60 pointer-events-none" />
-      <div className="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-[#D4AF37]/60 pointer-events-none" />
-      <div className="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-[#D4AF37]/60 pointer-events-none" />
-      <div className="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-[#D4AF37]/60 pointer-events-none" />
+      <div className="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-[#C9A55A]/60 pointer-events-none" />
+      <div className="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-[#C9A55A]/60 pointer-events-none" />
+      <div className="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-[#C9A55A]/60 pointer-events-none" />
+      <div className="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-[#C9A55A]/60 pointer-events-none" />
 
       {/* ========================================================================= */}
       {/* DEDICATED FULL-SCREEN IMMERSION RITUAL OVERLAY MODAL */}
@@ -397,24 +397,24 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
             >
               {/* Sacred Temple Background Glow */}
               <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-20">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[540px] h-[540px] rounded-full border border-[#D4AF37] border-dashed animate-[spin_90s_linear_infinite]" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[540px] h-[540px] rounded-full border border-[#C9A55A] border-dashed animate-[spin_90s_linear_infinite]" />
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] rounded-full border border-[#8C6218]" />
               </div>
 
               {/* Modal Top Control Bar */}
               <div className="flex items-center justify-between border-b border-[#3B2B1B] pb-4 mb-4 relative z-10">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-[#2B1B0E] border border-[#58391C] flex items-center justify-center text-[#D4AF37] shadow">
+                  <div className="w-8 h-8 rounded-lg bg-[#2B1B0E] border border-[#58391C] flex items-center justify-center text-[#C9A55A] shadow">
                     <span className="text-base">🌾</span>
                   </div>
                   <div>
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-[#D4AF37] block">
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-[#C9A55A] block">
                       ĐÀI THAO DỊCH • HOẠT ẢNH RIÊNG
                     </span>
                     <h3 className="font-serif font-bold text-base sm:text-lg text-[#F5EAD4]">
                       Đại Diễn Chi Số (50 Cọng Cỏ Thi • 18 Biến Đổi)
                     </h3>
-                    <p className="text-[11px] text-[#FFE28A] font-serif">
+                    <p className="text-[11px] text-[#E6D3A3] font-serif">
                       ⏱ Thời gian gieo quẻ là trên 15 phút • Cần tâm tập trung tuyệt đối
                     </p>
                   </div>
@@ -439,14 +439,14 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
                 <div className="bg-gradient-to-r from-[#28180B] via-[#331E0D] to-[#201308] border border-[#68411D] rounded-2xl p-4 shadow-xl">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2.5">
                     <div className="flex items-center gap-3">
-                      <span className={`w-3 h-3 rounded-full ${isWorking ? "bg-[#D4AF37] animate-ping" : "bg-emerald-400"}`} />
+                      <span className={`w-3 h-3 rounded-full ${isWorking ? "bg-[#C9A55A] animate-ping" : "bg-emerald-400"}`} />
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="text-sm sm:text-base font-serif font-bold text-[#FFE69A]">
                             {isWorking ? `Giai đoạn: ${currentStage.title}` : (isFinished ? "Đã Hoàn Tất 18 Biến!" : `Sẵn Sàng Phân Cỏ Biến ${currentBianStep}/3 • Hào ${currentLineIndex}`)}
                           </span>
                           {isWorking && (
-                            <span className="text-xs font-mono text-[#D4AF37] bg-[#160E07] px-2 py-0.5 rounded border border-[#4A3116]">
+                            <span className="text-xs font-mono text-[#C9A55A] bg-[#160E07] px-2 py-0.5 rounded border border-[#4A3116]">
                               {currentStage.hanTu}
                             </span>
                           )}
@@ -468,7 +468,7 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
                         <span className="text-[10px] font-mono text-[#A89882] block leading-none">
                           THỜI GIAN
                         </span>
-                        <span className="text-base sm:text-lg font-mono font-bold text-[#FFE28A]">
+                        <span className="text-base sm:text-lg font-mono font-bold text-[#E6D3A3]">
                           {isWorking ? `⏳ ${remainingSeconds}s` : `${totalRitualDuration}s/biến`}
                         </span>
                       </div>
@@ -476,7 +476,7 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
                         <button
                           type="button"
                           onClick={finishRitualImmediately}
-                          className="px-3 py-1.5 rounded-xl bg-[#3A2210] hover:bg-[#523016] text-[#FFE28A] text-xs font-serif border border-[#6D421C] cursor-pointer shadow flex items-center gap-1 active:scale-95"
+                          className="px-3 py-1.5 rounded-xl bg-[#3A2210] hover:bg-[#523016] text-[#E6D3A3] text-xs font-serif border border-[#6D421C] cursor-pointer shadow flex items-center gap-1 active:scale-95"
                           title="Bỏ qua chờ đợi, xem kết quả ngay"
                         >
                           <span>Xem ngay</span>
@@ -489,7 +489,7 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
                   {/* Progress Bar */}
                   <div className="w-full bg-[#110A05] rounded-full h-2.5 border border-[#4A3118] overflow-hidden p-0.5">
                     <motion.div
-                      className="h-full bg-gradient-to-r from-[#8C5D14] via-[#E2B755] to-[#FFF0B8] rounded-full shadow-[0_0_12px_rgba(226,183,85,0.8)]"
+                      className="h-full bg-gradient-to-r from-[#8C5D14] via-[#D6B97A] to-[#FFF0B8] rounded-full shadow-[0_0_12px_rgba(226,183,85,0.8)]"
                       style={{ width: isWorking ? `${progressPercent}%` : "100%" }}
                       transition={{ ease: "linear", duration: 0.05 }}
                     />
@@ -579,9 +579,9 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
                             key={lNum}
                             className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-mono font-bold transition-all ${
                               done
-                                ? "bg-[#382210] text-[#FFE28A] border border-[#6B421E]"
+                                ? "bg-[#382210] text-[#E6D3A3] border border-[#6B421E]"
                                 : isCur
-                                ? "bg-[#D4AF37] text-[#120F0C] animate-pulse"
+                                ? "bg-[#C9A55A] text-[#120F0C] animate-pulse"
                                 : "bg-[#18110A] text-[#554231] border border-[#271A0E]"
                             }`}
                             title={`Hào ${lNum}`}
@@ -593,7 +593,7 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
                     </div>
                   </div>
 
-                  <div className="text-xs font-serif text-[#D4AF37] font-medium">
+                  <div className="text-xs font-serif text-[#C9A55A] font-medium">
                     {history.length === 6
                       ? "Đã nạp đủ 6 hào (18 biến) ➔ Sẵn sàng xem quẻ đã bốc!"
                       : `Hào ${currentLineIndex} • Biến ${currentBianStep}/3`}
@@ -612,10 +612,10 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#2F2215] pb-4 mb-5">
         <div>
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-[#D4AF37] bg-[#261C12] px-2 py-0.5 rounded border border-[#3E2E1D]">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-[#C9A55A] bg-[#261C12] px-2 py-0.5 rounded border border-[#3E2E1D]">
               Chu Dịch Cổ Truyền • Đại Diễn Chi Số
             </span>
-            <span className="text-[10px] font-mono font-bold text-[#FFE28A] bg-[#2B1B0E] border border-[#5A3819] px-2.5 py-0.5 rounded shadow-xs">
+            <span className="text-[10px] font-mono font-bold text-[#E6D3A3] bg-[#2B1B0E] border border-[#5A3819] px-2.5 py-0.5 rounded shadow-xs">
               ⏱ Thời gian gieo quẻ là trên 15 phút • Cần tâm tập trung tuyệt đối
             </span>
             <span className="text-[10px] font-mono text-[#A89882] bg-[#1C1712] px-2 py-0.5 rounded">
@@ -626,7 +626,7 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
             <span>🌾</span> Phép Chiêm Bặc Cỏ Thi (Thao Dịch)
           </h3>
           <p className="text-xs text-[#9E907D] mt-0.5 max-w-xl">
-            Phương pháp bốc quẻ nguyên bản thời Chu Văn Vương và Khổng Tử. Dùng 50 cọng cỏ thi, cất 1 cọng Thái Cực, trải qua 18 lần biến đổi (Tam Biến thành 1 hào, Lục hào thành quẻ). <strong className="text-[#FFE28A]">Thời gian gieo quẻ là trên 15 phút, cần tâm tập trung tuyệt đối</strong>. Hoạt ảnh hành động 60 giây theo từng biến, không rút nhanh.
+            Phương pháp bốc quẻ nguyên bản thời Chu Văn Vương và Khổng Tử. Dùng 50 cọng cỏ thi, cất 1 cọng Thái Cực, trải qua 18 lần biến đổi (Tam Biến thành 1 hào, Lục hào thành quẻ). <strong className="text-[#E6D3A3]">Thời gian gieo quẻ là trên 15 phút, cần tâm tập trung tuyệt đối</strong>. Hoạt ảnh hành động 60 giây theo từng biến, không rút nhanh.
           </p>
         </div>
 
@@ -635,17 +635,17 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
           <button
             type="button"
             onClick={() => setIsDedicatedModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-[#FFE28A] bg-[#2A1B0E] hover:bg-[#3E2715] rounded-lg border border-[#5C3B1E] transition-all cursor-pointer shadow active:scale-95"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-[#E6D3A3] bg-[#2A1B0E] hover:bg-[#3E2715] rounded-lg border border-[#5C3B1E] transition-all cursor-pointer shadow active:scale-95"
             title="Mở hoạt ảnh riêng toàn màn hình với đài chiêm bặc trang nghiêm"
           >
-            <Maximize2 className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <Maximize2 className="w-3.5 h-3.5 text-[#C9A55A]" />
             <span>Mở Hoạt Ảnh Riêng</span>
           </button>
 
           <button
             type="button"
             onClick={() => setShowTheoryModal(!showTheoryModal)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-[#D4AF37] hover:text-[#FFF] bg-[#22170E] hover:bg-[#302114] rounded-lg border border-[#48341F] transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-[#C9A55A] hover:text-[#FFF] bg-[#22170E] hover:bg-[#302114] rounded-lg border border-[#48341F] transition-all cursor-pointer"
             title="Tìm hiểu triết lý Đại Diễn Chi Số"
           >
             <BookOpen className="w-3.5 h-3.5" />
@@ -674,7 +674,7 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
               onClick={() => setRitualSpeed("fast")}
               className={`px-2.5 py-0.5 rounded text-[11px] font-serif font-bold transition-all cursor-pointer ${
                 ritualSpeed === "fast"
-                  ? "bg-[#2E1A0C] text-[#FFE28A] shadow border border-[#52381A]"
+                  ? "bg-[#2E1A0C] text-[#E6D3A3] shadow border border-[#52381A]"
                   : "text-[#756552] hover:text-[#C5B49D]"
               }`}
             >
@@ -685,7 +685,7 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
               onClick={() => setRitualSpeed("full")}
               className={`px-2.5 py-0.5 rounded text-[11px] font-serif font-bold transition-all cursor-pointer ${
                 ritualSpeed === "full"
-                  ? "bg-[#2E1A0C] text-[#FFE28A] shadow border border-[#52381A]"
+                  ? "bg-[#2E1A0C] text-[#E6D3A3] shadow border border-[#52381A]"
                   : "text-[#756552] hover:text-[#C5B49D]"
               }`}
             >
@@ -701,7 +701,7 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
             onClick={toggleAutoOpenModal}
             className={`px-2.5 py-0.5 rounded text-[11px] font-mono font-bold transition-all cursor-pointer border ${
               autoOpenModal
-                ? "bg-[#2E1A0C] text-[#FFE28A] border-[#5A381A]"
+                ? "bg-[#2E1A0C] text-[#E6D3A3] border-[#5A381A]"
                 : "bg-[#1C140E] text-[#6E5A47] border-[#312013]"
             }`}
           >
@@ -720,12 +720,12 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
             className="mb-5 overflow-hidden"
           >
             <div className="bg-[#120E0A] border border-[#3A2A1A] p-4 rounded-xl text-xs font-serif leading-relaxed text-[#D2C3AB] space-y-2.5 shadow-inner">
-              <div className="flex items-center justify-between border-b border-[#2B1E12] pb-1.5 text-[#D4AF37] font-bold">
+              <div className="flex items-center justify-between border-b border-[#2B1E12] pb-1.5 text-[#C9A55A] font-bold">
                 <span>📖 KHỔNG TỬ • HỆ TỪ THƯỢNG (CHƯƠNG 9):</span>
                 <button
                   type="button"
                   onClick={() => setShowTheoryModal(false)}
-                  className="text-[#8C7A65] hover:text-[#D4AF37] cursor-pointer"
+                  className="text-[#8C7A65] hover:text-[#C9A55A] cursor-pointer"
                 >
                   Đóng ✕
                 </button>
@@ -735,26 +735,26 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-[11px] text-[#BFB09A]">
                 <div className="bg-[#19130D] p-2 rounded border border-[#2E2013]">
-                  <strong className="text-[#D4AF37]">1. Số Đại Diễn 50: </strong>
+                  <strong className="text-[#C9A55A]">1. Số Đại Diễn 50: </strong>
                   Bỏ riêng 1 cọng tượng trưng cho <strong>Thái Cực</strong> (gốc cội bất biến của vũ trụ). Còn lại 49 cọng để sử dụng vận hành biến hóa.
                 </div>
                 <div className="bg-[#19130D] p-2 rounded border border-[#2E2013]">
-                  <strong className="text-[#D4AF37]">2. Phân làm Hai: </strong>
+                  <strong className="text-[#C9A55A]">2. Phân làm Hai: </strong>
                   Chia 49 cọng thành bó Trái & Phải tượng trưng cho <strong>Lưỡng Nghi (Trời & Đất)</strong>. Treo 1 cọng tượng cho <strong>Con Người</strong> (Tam Tài: Thiên - Địa - Nhân).
                 </div>
                 <div className="bg-[#19130D] p-2 rounded border border-[#2E2013]">
-                  <strong className="text-[#D4AF37]">3. Đếm từng Bốn: </strong>
+                  <strong className="text-[#C9A55A]">3. Đếm từng Bốn: </strong>
                   Đếm từng 4 cọng tượng cho <strong>Tứ Thời (Bốn Mùa)</strong>. Dồn cọng dư kẹp vào kẽ ngón tay tượng cho tháng Nhuận.
                 </div>
                 <div className="bg-[#19130D] p-2 rounded border border-[#2E2013]">
-                  <strong className="text-[#D4AF37]">4. Tam Biến Định Hào: </strong>
+                  <strong className="text-[#C9A55A]">4. Tam Biến Định Hào: </strong>
                   Sau 3 lần biến đổi, số cọng còn lại chia 4 sẽ ra: <strong>6 (Lão Âm), 7 (Thiếu Dương), 8 (Thiếu Âm), 9 (Lão Dương)</strong>.
                 </div>
               </div>
 
               {/* Trai Giới Mộc Dục Explanation in Yarrow Divination */}
               <div className="border-t border-[#342213] pt-2.5 mt-2.5 space-y-2">
-                <span className="text-[#FFE28A] font-bold block flex items-center gap-1.5 text-[12px]">
+                <span className="text-[#E6D3A3] font-bold block flex items-center gap-1.5 text-[12px]">
                   <span>⛩️</span> PHÁP MÔN TỐI THƯỢNG: TRAI GIỚI MỘC DỤC (齋戒沐浴)
                 </span>
                 <p className="text-[11px] text-[#CBB99E] leading-relaxed">
@@ -762,11 +762,11 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
                   <div className="bg-[#1C140D] p-2.5 rounded-lg border border-[#3E2816]">
-                    <strong className="text-[#FFE28A] block mb-0.5">1. Mộc Dục (沐浴 - Thân Thể Thanh Khiết):</strong>
+                    <strong className="text-[#E6D3A3] block mb-0.5">1. Mộc Dục (沐浴 - Thân Thể Thanh Khiết):</strong>
                     Tắm gội sạch sẽ, rửa sạch đôi bàn tay dưới làn nước mát, súc miệng, mặc y phục tề chỉnh trước khi chạm vào bó cỏ thi. Giữ đôi bàn tay sạch bụi trần để phân chia Thiên - Địa - Nhân.
                   </div>
                   <div className="bg-[#1C140D] p-2.5 rounded-lg border border-[#3E2816]">
-                    <strong className="text-[#FFE28A] block mb-0.5">2. Trai Giới (齋戒 - Tâm Ý Hư Tĩnh):</strong>
+                    <strong className="text-[#E6D3A3] block mb-0.5">2. Trai Giới (齋戒 - Tâm Ý Hư Tĩnh):</strong>
                     Kiêng rượu thịt cay nồng, rũ sạch tạp niệm lo toan hay tham vọng vị kỷ. Giữ tâm tĩnh lặng như gương trong để cảm ứng trọn vẹn sự biến chuyển âm dương ("Tịch nhiên bất động, cảm nhi toại thông").
                   </div>
                 </div>
@@ -785,14 +785,14 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
         <div className="mb-4 bg-gradient-to-r from-[#22180D] via-[#2A1D0E] to-[#1C140B] border border-[#5A4021] rounded-xl p-3.5 shadow-lg animate-energy-ripple">
           <div className="flex items-center justify-between gap-2 mb-2">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#D4AF37] animate-ping" />
-              <span className="text-xs font-serif font-bold text-[#FFE28A]">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#C9A55A] animate-ping" />
+              <span className="text-xs font-serif font-bold text-[#E6D3A3]">
                 {currentStage.title}
               </span>
               <span className="text-[10px] font-mono text-[#C8A252] bg-[#160E07] px-1.5 py-0.2 rounded border border-[#3E2A15]">
                 {currentStage.hanTu}
               </span>
-              <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-serif text-[#FFE28A] bg-[#2A1D0E] border border-[#6D4F28] animate-pulse">
+              <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-serif text-[#E6D3A3] bg-[#2A1D0E] border border-[#6D4F28] animate-pulse">
                 ✨ 50 cọng Đại Diễn cảm ứng
               </span>
             </div>
@@ -804,7 +804,7 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
               <button
                 type="button"
                 onClick={finishRitualImmediately}
-                className="px-2.5 py-1 rounded-lg bg-[#3A2210] hover:bg-[#523016] text-[#FFE28A] text-xs font-serif border border-[#6D421C] cursor-pointer shadow flex items-center gap-1 active:scale-95"
+                className="px-2.5 py-1 rounded-lg bg-[#3A2210] hover:bg-[#523016] text-[#E6D3A3] text-xs font-serif border border-[#6D421C] cursor-pointer shadow flex items-center gap-1 active:scale-95"
                 title="Bỏ qua chờ đợi, xem kết quả ngay"
               >
                 <span>Xem ngay</span>
@@ -820,7 +820,7 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
           {/* Progress Bar */}
           <div className="w-full bg-[#140F0A] rounded-full h-2 border border-[#3E2E1D] overflow-hidden p-0.5">
             <motion.div
-              className="h-full bg-gradient-to-r from-[#8C6218] via-[#D4AF37] to-[#FFF0A8] rounded-full shadow-[0_0_8px_rgba(212,175,55,0.7)]"
+              className="h-full bg-gradient-to-r from-[#8C6218] via-[#C9A55A] to-[#FFF0A8] rounded-full shadow-[0_0_8px_rgba(212,175,55,0.7)]"
               style={{ width: `${progressPercent}%` }}
               transition={{ ease: "linear", duration: 0.05 }}
             />
@@ -836,7 +836,7 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
                   key={stage.id}
                   className={`text-[9px] font-mono truncate transition-colors ${
                     isCurrent
-                      ? "text-[#FFE28A] font-bold"
+                      ? "text-[#E6D3A3] font-bold"
                       : isPast
                       ? "text-[#8C7A65]"
                       : "text-[#4A3D2F]"
@@ -882,7 +882,7 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
         <div className="bg-[#110D09] border border-[#261B0F] rounded-xl p-3">
           <div className="flex items-center justify-between text-xs font-serif mb-2">
             <span className="text-[#A89882]">Tiến trình Tam Biến của Hào {currentLineIndex}:</span>
-            <span className="font-mono text-[#D4AF37] font-bold">
+            <span className="font-mono text-[#C9A55A] font-bold">
               {activeBiansInCurrentLine.length}/3 Biến
             </span>
           </div>
@@ -897,7 +897,7 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
                     b
                       ? "bg-[#20160D] border-[#523A21] text-[#E5C378]"
                       : isCurrent
-                      ? "bg-[#1B130B] border-[#D4AF37] border-dashed text-[#D4AF37] animate-pulse"
+                      ? "bg-[#1B130B] border-[#C9A55A] border-dashed text-[#C9A55A] animate-pulse"
                       : "bg-[#140F0A] border-[#24170D] text-[#6A5A48] opacity-50"
                   }`}
                 >
@@ -923,7 +923,7 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
       <div className="mt-5 bg-[#140F0B] border border-[#332415] rounded-xl p-4">
         <div className="flex items-center justify-between mb-3 text-xs text-[#9E907D]">
           <span className="font-serif">Tiến trình lập quẻ (Xếp từ Sơ Hào lên Thượng Hào):</span>
-          <span className="font-mono text-[#D4AF37] font-bold">{history.length}/6 Hào</span>
+          <span className="font-mono text-[#C9A55A] font-bold">{history.length}/6 Hào</span>
         </div>
 
         <div className="space-y-2">
@@ -938,7 +938,7 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
                   result
                     ? "bg-[#1F1710] border-[#44301D]"
                     : isCurrent
-                    ? "bg-[#1C140D] border-[#D4AF37]/50 border-dashed"
+                    ? "bg-[#1C140D] border-[#C9A55A]/50 border-dashed"
                     : "bg-[#120E0A] border-transparent opacity-40"
                 }`}
               >
@@ -968,7 +968,7 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
                       <div
                         className={`h-3 rounded-xs transition-all ${
                           result.isChanging
-                            ? "bg-gradient-to-r from-[#D4AF37] via-rose-500 to-[#D4AF37] shadow-[0_0_8px_rgba(244,63,94,0.4)]"
+                            ? "bg-gradient-to-r from-[#C9A55A] via-rose-500 to-[#C9A55A] shadow-[0_0_8px_rgba(244,63,94,0.4)]"
                             : "bg-[#C89B3C]"
                         }`}
                       />
@@ -978,14 +978,14 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
                         <div
                           className={`w-[44%] rounded-xs ${
                             result.isChanging
-                              ? "bg-gradient-to-r from-[#D4AF37] to-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.4)]"
+                              ? "bg-gradient-to-r from-[#C9A55A] to-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.4)]"
                               : "bg-[#8C7A63]"
                           }`}
                         />
                         <div
                           className={`w-[44%] rounded-xs ${
                             result.isChanging
-                              ? "bg-gradient-to-r from-rose-500 to-[#D4AF37] shadow-[0_0_8px_rgba(244,63,94,0.4)]"
+                              ? "bg-gradient-to-r from-rose-500 to-[#C9A55A] shadow-[0_0_8px_rgba(244,63,94,0.4)]"
                               : "bg-[#8C7A63]"
                           }`}
                         />
@@ -1009,7 +1009,7 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
                       {result.name}
                     </span>
                   ) : isCurrent ? (
-                    <span className="text-xs text-[#D4AF37] font-serif animate-pulse">
+                    <span className="text-xs text-[#C9A55A] font-serif animate-pulse">
                       {isWorking ? `Đang diễn xướng (${remainingSeconds}s)...` : "Chờ bạn phân cỏ..."}
                     </span>
                   ) : (
@@ -1028,7 +1028,7 @@ export const YarrowDivination: React.FC<YarrowDivinationProps> = ({
           <button
             type="button"
             onClick={finishRitualImmediately}
-            className="px-5 py-2.5 rounded-xl bg-[#2A1B0E] hover:bg-[#3D2615] text-[#FFE28A] text-xs font-serif font-bold border border-[#6B4723] cursor-pointer shadow-lg flex items-center gap-2 active:scale-95"
+            className="px-5 py-2.5 rounded-xl bg-[#2A1B0E] hover:bg-[#3D2615] text-[#E6D3A3] text-xs font-serif font-bold border border-[#6B4723] cursor-pointer shadow-lg flex items-center gap-2 active:scale-95"
           >
             <span>Bỏ qua chờ đợi • Xem kết quả ngay</span>
             <ArrowRight className="w-3.5 h-3.5" />

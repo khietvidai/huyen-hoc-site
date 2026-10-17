@@ -761,7 +761,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
           ========================================================================= */}
       <div className="bg-gradient-to-r from-[#21170F] via-[#2A1D13] to-[#1C130B] border-b border-[#3D2C1C] p-3.5 sm:p-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#8C6218] flex items-center justify-center text-[#120F0B] font-bold shadow-[0_0_12px_rgba(212,175,55,0.3)] shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#C9A55A] to-[#8C6218] flex items-center justify-center text-[#120F0B] font-bold shadow-[0_0_12px_rgba(212,175,55,0.3)] shrink-0">
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
@@ -824,7 +824,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
           <button
             type="button"
             onClick={() => setIsSavedModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#4D3823] hover:border-[#D4AF37] text-xs text-[#E2B755] font-semibold cursor-pointer transition-all shadow-sm active:scale-95"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#4D3823] hover:border-[#C9A55A] text-xs text-[#D6B97A] font-semibold cursor-pointer transition-all shadow-sm active:scale-95"
             title="Xem danh sách các lá số Bát Tự đã lưu"
           >
             <History className="w-3.5 h-3.5 text-amber-400" />
@@ -846,7 +846,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
 
       {/* Thông báo Toast nếu có */}
       {toastMsg && (
-        <div className="bg-amber-950/90 border-b border-amber-600/80 px-4 py-2 text-xs text-[#FFE28A] font-semibold flex items-center gap-2 animate-in fade-in duration-200">
+        <div className="bg-amber-950/90 border-b border-amber-600/80 px-4 py-2 text-xs text-[#E6D3A3] font-semibold flex items-center gap-2 animate-in fade-in duration-200">
           <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
           <span>{toastMsg}</span>
         </div>
@@ -862,7 +862,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
             {/* Nhập ngày tháng năm giờ sinh */}
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-[#8C7D6B] font-semibold flex items-center gap-1">
-                <Calendar className="w-3.5 h-3.5 text-[#D4AF37]" /> Ngày sinh Dương lịch:
+                <Calendar className="w-3.5 h-3.5 text-[#C9A55A]" /> Ngày sinh Dương lịch:
               </span>
               <div className="flex items-center gap-1.5 bg-[#140E09] border border-[#382818] px-2.5 py-1 rounded-lg">
                 <input
@@ -871,7 +871,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                   max={31}
                   value={birthDay}
                   onChange={(e) => setBirthDay(parseInt(e.target.value, 10) || 1)}
-                  className="w-10 bg-transparent text-center text-[#F5EAD4] font-bold outline-none border-b border-[#523A23] focus:border-[#D4AF37]"
+                  className="w-10 bg-transparent text-center text-[#F5EAD4] font-bold outline-none border-b border-[#523A23] focus:border-[#C9A55A]"
                   title="Ngày sinh"
                 />
                 <span>/</span>
@@ -881,7 +881,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                   max={12}
                   value={birthMonth}
                   onChange={(e) => setBirthMonth(parseInt(e.target.value, 10) || 1)}
-                  className="w-10 bg-transparent text-center text-[#F5EAD4] font-bold outline-none border-b border-[#523A23] focus:border-[#D4AF37]"
+                  className="w-10 bg-transparent text-center text-[#F5EAD4] font-bold outline-none border-b border-[#523A23] focus:border-[#C9A55A]"
                   title="Tháng sinh"
                 />
                 <span>/</span>
@@ -891,13 +891,13 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                   max={2050}
                   value={birthYear}
                   onChange={(e) => setBirthYear(parseInt(e.target.value, 10) || 2026)}
-                  className="w-14 bg-transparent text-center text-[#F5EAD4] font-bold outline-none border-b border-[#523A23] focus:border-[#D4AF37]"
+                  className="w-14 bg-transparent text-center text-[#F5EAD4] font-bold outline-none border-b border-[#523A23] focus:border-[#C9A55A]"
                   title="Năm sinh"
                 />
               </div>
 
               <span className="text-[#8C7D6B] font-semibold flex items-center gap-1 ml-1">
-                <Clock className="w-3.5 h-3.5 text-[#D4AF37]" /> Giờ sinh:
+                <Clock className="w-3.5 h-3.5 text-[#C9A55A]" /> Giờ sinh:
               </span>
               <div className="flex items-center gap-1 bg-[#140E09] border border-[#382818] px-2.5 py-1 rounded-lg">
                 <input
@@ -906,7 +906,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                   max={23}
                   value={birthHour}
                   onChange={(e) => setBirthHour(parseInt(e.target.value, 10) || 0)}
-                  className="w-10 bg-transparent text-center text-[#F5EAD4] font-bold outline-none border-b border-[#523A23] focus:border-[#D4AF37]"
+                  className="w-10 bg-transparent text-center text-[#F5EAD4] font-bold outline-none border-b border-[#523A23] focus:border-[#C9A55A]"
                   title="Giờ sinh (0 - 23h)"
                 />
                 <span>h</span>
@@ -915,7 +915,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
               <button
                 type="button"
                 onClick={handleApplyBirthDateTime}
-                className="px-3 py-1 rounded-lg bg-[#2D1F13] hover:bg-[#3D2C1B] text-[#FFE28A] border border-[#52402A] text-xs font-semibold cursor-pointer transition-all active:scale-95 shadow-sm"
+                className="px-3 py-1 rounded-lg bg-[#2D1F13] hover:bg-[#3D2C1B] text-[#E6D3A3] border border-[#52402A] text-xs font-semibold cursor-pointer transition-all active:scale-95 shadow-sm"
               >
                 Quy Đổi Bát Tự
               </button>
@@ -937,7 +937,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                       localStorage.setItem("bazi_start_luck_age", String(val));
                     } catch {}
                   }}
-                  className="w-10 bg-[#140E09] border border-[#382818] rounded px-1.5 py-0.5 text-center text-[#E2B755] font-bold outline-none"
+                  className="w-10 bg-[#140E09] border border-[#382818] rounded px-1.5 py-0.5 text-center text-[#D6B97A] font-bold outline-none"
                   title="Tuổi bắt đầu Đại Vận (1 - 10)"
                 />
                 <span>tuổi</span>
@@ -946,7 +946,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
               <button
                 type="button"
                 onClick={handleSyncToBelow}
-                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#22180F] hover:bg-[#302215] text-[#CDBFA8] hover:text-[#FFE28A] border border-[#3E2D1C] text-xs font-medium cursor-pointer transition-all"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#22180F] hover:bg-[#302215] text-[#CDBFA8] hover:text-[#E6D3A3] border border-[#3E2D1C] text-xs font-medium cursor-pointer transition-all"
                 title="Đồng bộ 4 trụ này sang Bát Tự 8 Ô và Lục Nhâm phía dưới"
               >
                 <ArrowDown className="w-3.5 h-3.5 text-amber-400" />
@@ -956,7 +956,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
               <button
                 type="button"
                 onClick={handleSyncFromBelow}
-                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#22180F] hover:bg-[#302215] text-[#CDBFA8] hover:text-[#FFE28A] border border-[#3E2D1C] text-xs font-medium cursor-pointer transition-all"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#22180F] hover:bg-[#302215] text-[#CDBFA8] hover:text-[#E6D3A3] border border-[#3E2D1C] text-xs font-medium cursor-pointer transition-all"
                 title="Lấy 4 trụ đang chọn từ Bát Tự 8 Ô bên dưới lên đây"
               >
                 <RefreshCw className="w-3 h-3 text-amber-400" />
@@ -1014,7 +1014,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                   key={key}
                   className={`rounded-2xl p-4 border flex flex-col justify-between transition-all ${
                     isDayMaster
-                      ? "bg-gradient-to-b from-[#2E2013] via-[#22180F] to-[#17110B] border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.22)] ring-1 ring-[#E2B755]/50"
+                      ? "bg-gradient-to-b from-[#2E2013] via-[#22180F] to-[#17110B] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.22)] ring-1 ring-[#D6B97A]/50"
                       : "bg-[#1A130C] border-[#3D2C1C]"
                   }`}
                 >
@@ -1117,7 +1117,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                     </div>
                     <div className="flex items-center justify-between text-[#CDBFA8]">
                       <span className="text-[#8C7D6B]">Tràng Sinh:</span>
-                      <span className="text-[#E2B755] font-semibold font-serif">{trangSinh}</span>
+                      <span className="text-[#D6B97A] font-semibold font-serif">{trangSinh}</span>
                     </div>
                     <p className="text-[9px] text-[#736350] line-clamp-1 mt-1 pt-1 border-t border-[#20150B]">
                       {role}
@@ -1136,7 +1136,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                 <h4 className="font-serif font-bold text-sm sm:text-base text-[#F5EAD4] tracking-wide">
                   10 ĐẠI VẬN TỬ BÌNH (Khởi từ Trụ Tháng [{pillars.month.can} {pillars.month.chi}])
                 </h4>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#2C1F13] text-[#FFE28A] border border-[#4D3823] font-medium">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#2C1F13] text-[#E6D3A3] border border-[#4D3823] font-medium">
                   {luckDirection === 1 ? "Thuận Hành (+)" : "Nghịch Hành (-)"} • Khởi vận lúc {startLuckAge} tuổi
                 </span>
               </div>
@@ -1159,7 +1159,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                     onClick={() => setSelectedDaiVanIdx(idx)}
                     className={`shrink-0 w-28 sm:w-32 p-2.5 rounded-xl border text-center transition-all cursor-pointer flex flex-col justify-between ${
                       isSelected
-                        ? "bg-gradient-to-b from-[#2E2012] via-[#22180F] to-[#18110B] border-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.25)] ring-1 ring-[#D4AF37]/50"
+                        ? "bg-gradient-to-b from-[#2E2012] via-[#22180F] to-[#18110B] border-[#C9A55A] shadow-[0_0_12px_rgba(212,175,55,0.25)] ring-1 ring-[#C9A55A]/50"
                         : "bg-[#140E08] border-[#302113] hover:border-[#4B3722] opacity-85 hover:opacity-100"
                     }`}
                   >
@@ -1185,7 +1185,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                       </div>
 
                       {/* Thập Thần */}
-                      <div className="text-[9.5px] font-semibold text-[#E2B755] mt-1">
+                      <div className="text-[9.5px] font-semibold text-[#D6B97A] mt-1">
                         {dv.canTenGod.short} • {dv.chiTenGod.short}
                       </div>
                     </div>
@@ -1216,7 +1216,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                 <select
                   value={selectedLuuNienYear}
                   onChange={(e) => setSelectedLuuNienYear(parseInt(e.target.value, 10))}
-                  className="bg-[#140E09] border border-[#3D2D1B] rounded-lg px-2.5 py-1 text-xs text-[#FFE28A] font-bold outline-none cursor-pointer"
+                  className="bg-[#140E09] border border-[#3D2D1B] rounded-lg px-2.5 py-1 text-xs text-[#E6D3A3] font-bold outline-none cursor-pointer"
                 >
                   {Array.from({ length: 100 }, (_, idx) => 1950 + idx).map((y) => {
                     const cIdx = (((y - 4) % 10) + 10) % 10;
@@ -1244,7 +1244,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                     onClick={() => setSelectedLuuNienYear(ln.yearNum)}
                     className={`p-2 rounded-xl border text-center transition-all cursor-pointer flex flex-col justify-between ${
                       isSelectedYear
-                        ? "bg-[#2A1D11] border-[#D4AF37] ring-1 ring-[#D4AF37]/50 shadow"
+                        ? "bg-[#2A1D11] border-[#C9A55A] ring-1 ring-[#C9A55A]/50 shadow"
                         : isCurrentYear
                         ? "bg-[#20170F] border-amber-600/70"
                         : "bg-[#130E08] border-[#2C1F13] hover:border-[#4B3722]"
@@ -1257,7 +1257,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                       <div className="font-serif font-bold text-xs text-[#F5EAD4] mt-0.5">
                         {ln.can} {ln.chi}
                       </div>
-                      <div className="text-[9px] text-[#E2B755] mt-0.5">
+                      <div className="text-[9px] text-[#D6B97A] mt-0.5">
                         {ln.canTenGod.short}
                       </div>
                     </div>
@@ -1273,7 +1273,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
             <div className="p-3 rounded-xl bg-[#130E08] border border-[#332517] flex flex-wrap items-center justify-between gap-3 text-xs">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-[#8C7D6B] font-semibold">Chi Tiết Năm Lưu Niên {selectedLuuNienAnalysis.year}:</span>
-                <span className="px-2 py-0.5 rounded bg-[#251B10] text-[#FFE28A] border border-[#483724] font-serif font-bold">
+                <span className="px-2 py-0.5 rounded bg-[#251B10] text-[#E6D3A3] border border-[#483724] font-serif font-bold">
                   {selectedLuuNienAnalysis.can} {selectedLuuNienAnalysis.chi}
                 </span>
                 <span className="text-[11px] text-[#CDBFA8]">
@@ -1286,7 +1286,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
               <button
                 type="button"
                 onClick={() => handleCopyChartSummary()}
-                className="flex items-center gap-1 px-3 py-1 rounded-lg bg-[#241B12] hover:bg-[#332517] text-[#E2B755] border border-[#4D3823] text-xs font-semibold cursor-pointer transition-all active:scale-95 ml-auto"
+                className="flex items-center gap-1 px-3 py-1 rounded-lg bg-[#241B12] hover:bg-[#332517] text-[#D6B97A] border border-[#4D3823] text-xs font-semibold cursor-pointer transition-all active:scale-95 ml-auto"
               >
                 <Copy className="w-3.5 h-3.5" />
                 <span>Sao Chép Tóm Tắt Lá Số</span>
@@ -1298,7 +1298,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
         /* Thanh tóm tắt khi thu gọn */
         <div className="px-4 py-3 bg-[#150F0A] flex flex-wrap items-center justify-between gap-2.5 text-xs">
           <div className="flex items-center gap-2.5 flex-wrap">
-            <span className="font-serif font-bold text-[#E2B755]">
+            <span className="font-serif font-bold text-[#D6B97A]">
               {gender === "nam" ? "Nam Mệnh ♂" : "Nữ Mệnh ♀"}
             </span>
             <span className="text-[#5E4833]">•</span>
@@ -1332,7 +1332,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
             <button
               type="button"
               onClick={handleToggleOpen}
-              className="text-xs text-[#D4AF37] hover:underline flex items-center gap-1 cursor-pointer font-semibold"
+              className="text-xs text-[#C9A55A] hover:underline flex items-center gap-1 cursor-pointer font-semibold"
             >
               <span>Mở rộng chi tiết ▼</span>
             </button>
@@ -1347,7 +1347,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="relative w-full max-w-md bg-[#19130D] border border-[#483724] rounded-2xl p-5 shadow-2xl text-[#F5EAD4] space-y-3.5 animate-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between border-b border-[#2C2114] pb-2.5">
-              <h3 className="font-serif font-bold text-base text-[#E2B755] flex items-center gap-2">
+              <h3 className="font-serif font-bold text-base text-[#D6B97A] flex items-center gap-2">
                 <BookmarkCheck className="w-4 h-4" />
                 LƯU LÁ SỐ BÁT TỰ
               </h3>
@@ -1368,7 +1368,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                   value={chartNameInput}
                   onChange={(e) => setChartNameInput(e.target.value)}
                   placeholder={`Ví dụ: Lá số ${gender === "nam" ? "Nam" : "Nữ"} Mệnh (${pillars.year.can} ${pillars.year.chi})...`}
-                  className="w-full bg-[#120D08] border border-[#3E2E1D] focus:border-[#D4AF37] rounded-xl px-3 py-2 text-xs text-[#F5EAD4] outline-none"
+                  className="w-full bg-[#120D08] border border-[#3E2E1D] focus:border-[#C9A55A] rounded-xl px-3 py-2 text-xs text-[#F5EAD4] outline-none"
                 />
               </div>
 
@@ -1379,7 +1379,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                   value={chartNotesInput}
                   onChange={(e) => setChartNotesInput(e.target.value)}
                   placeholder="Ghi chú về sự nghiệp, tài vận, hôn nhân, vận hạn..."
-                  className="w-full bg-[#120D08] border border-[#3E2E1D] focus:border-[#D4AF37] rounded-xl px-3 py-2 text-xs text-[#F5EAD4] outline-none resize-none"
+                  className="w-full bg-[#120D08] border border-[#3E2E1D] focus:border-[#C9A55A] rounded-xl px-3 py-2 text-xs text-[#F5EAD4] outline-none resize-none"
                 />
               </div>
 
@@ -1418,11 +1418,11 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
             {/* Header */}
             <div className="flex items-center justify-between border-b border-[#2C2114] px-5 py-3.5 bg-[#140F0A]">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#D4AF37] to-[#8C6218] flex items-center justify-center text-[#120F0B] font-bold shadow">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#C9A55A] to-[#8C6218] flex items-center justify-center text-[#120F0B] font-bold shadow">
                   <History className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-base sm:text-lg font-serif font-bold text-[#E2B755]">
+                  <h3 className="text-base sm:text-lg font-serif font-bold text-[#D6B97A]">
                     LÁ SỐ BÁT TỰ ĐÃ LƯU
                   </h3>
                   <p className="text-[11px] text-[#8C7D6B]">
@@ -1501,7 +1501,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                     >
                       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#2C2114] pb-2 text-[11px]">
                         <div className="flex items-center gap-2">
-                          <span className="font-serif font-bold text-sm text-[#FFE28A]">
+                          <span className="font-serif font-bold text-sm text-[#E6D3A3]">
                             {c.title}
                           </span>
                           <span className={`px-2 py-0.2 rounded font-semibold text-[10px] ${c.gender === "nam" ? "bg-blue-950 text-blue-300 border border-blue-700/60" : "bg-rose-950 text-rose-300 border border-rose-700/60"}`}>
@@ -1516,7 +1516,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                           <button
                             type="button"
                             onClick={() => handleLoadSavedChart(c)}
-                            className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#2E2013] hover:bg-[#3D2C1B] text-[#FFE28A] border border-[#52402A] text-xs font-semibold cursor-pointer active:scale-95"
+                            className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#2E2013] hover:bg-[#3D2C1B] text-[#E6D3A3] border border-[#52402A] text-xs font-semibold cursor-pointer active:scale-95"
                           >
                             <RotateCcw className="w-3 h-3 text-amber-400" />
                             <span>Nạp lá số</span>
@@ -1524,7 +1524,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                           <button
                             type="button"
                             onClick={() => handleCopyChartSummary(c)}
-                            className="p-1 text-[#CDBFA8] hover:text-[#FFE28A] bg-[#241B12] hover:bg-[#2F2317] rounded-lg border border-[#3E2D1C] cursor-pointer"
+                            className="p-1 text-[#CDBFA8] hover:text-[#E6D3A3] bg-[#241B12] hover:bg-[#2F2317] rounded-lg border border-[#3E2D1C] cursor-pointer"
                             title="Sao chép tóm tắt"
                           >
                             <Copy className="w-3.5 h-3.5" />

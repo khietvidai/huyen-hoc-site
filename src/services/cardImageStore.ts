@@ -52,7 +52,7 @@ export const PRESET_CARD_BACKS: Record<string, string> = {
     </radialGradient>
     <linearGradient id="goldG" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FCE8A6"/>
-      <stop offset="50%" stop-color="#D4AF37"/>
+      <stop offset="50%" stop-color="#C9A55A"/>
       <stop offset="100%" stop-color="#8C6E23"/>
     </linearGradient>
   </defs>

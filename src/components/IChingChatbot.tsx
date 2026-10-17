@@ -285,8 +285,8 @@ Bạn muốn thỉnh giáo sâu hơn về dòng chữ đỏ trên lá bài, tư�
       <div className="bg-gradient-to-r from-[#211B15] via-[#1C1712] to-[#211B15] border-b border-[#35291C] px-4 py-3 sm:px-5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#8C6D23] p-[1.5px] shadow-[0_0_12px_rgba(212,175,55,0.3)]">
-              <div className="w-full h-full rounded-full bg-[#16120E] flex items-center justify-center text-[#D4AF37]">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#C9A55A] to-[#8C6D23] p-[1.5px] shadow-[0_0_12px_rgba(212,175,55,0.3)]">
+              <div className="w-full h-full rounded-full bg-[#16120E] flex items-center justify-center text-[#C9A55A]">
                 <Compass className="w-4 h-4 animate-[spin_24s_linear_infinite]" />
               </div>
             </div>
@@ -298,7 +298,7 @@ Bạn muốn thỉnh giáo sâu hơn về dòng chữ đỏ trên lá bài, tư�
               <h3 className="text-sm font-serif font-bold text-[#F5EAD4] tracking-wide">
                 Dịch Tiên Sinh AI
               </h3>
-              <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-[#2B2115] text-[#D4AF37] border border-[#483721]">
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-[#2B2115] text-[#C9A55A] border border-[#483721]">
                 Gemini 3.8
               </span>
             </div>
@@ -331,7 +331,7 @@ Bạn muốn thỉnh giáo sâu hơn về dòng chữ đỏ trên lá bài, tư�
               className={`flex gap-3 ${isModel ? "justify-start" : "justify-end"}`}
             >
               {isModel && (
-                <div className="w-7 h-7 rounded-full bg-[#241C14] border border-[#4A3822] flex items-center justify-center shrink-0 text-[#D4AF37] mt-1 shadow">
+                <div className="w-7 h-7 rounded-full bg-[#241C14] border border-[#4A3822] flex items-center justify-center shrink-0 text-[#C9A55A] mt-1 shadow">
                   <Bot className="w-3.5 h-3.5" />
                 </div>
               )}
@@ -345,7 +345,7 @@ Bạn muốn thỉnh giáo sâu hơn về dòng chữ đỏ trên lá bài, tư�
               >
                 {isModel ? (
                   <div>
-                    <div className="markdown-body prose prose-invert max-w-none text-[#DDD0BD] leading-relaxed [&>p]:mb-2.5 [&>p:last-child]:mb-0 [&>ul]:list-disc [&>ul]:pl-4 [&>ul]:mb-2.5 [&>ol]:list-decimal [&>ol]:pl-4 [&>ol]:mb-2.5 [&>strong]:text-[#F5EAD4] [&>strong]:font-semibold [&>h3]:text-sm [&>h3]:font-serif [&>h3]:text-[#E6C673] [&>h3]:mt-2 [&>h3]:mb-1.5 [&>blockquote]:border-l-2 [&>blockquote]:border-[#D4AF37] [&>blockquote]:pl-2.5 [&>blockquote]:italic [&>blockquote]:text-[#BCAE99]">
+                    <div className="markdown-body prose prose-invert max-w-none text-[#DDD0BD] leading-relaxed [&>p]:mb-2.5 [&>p:last-child]:mb-0 [&>ul]:list-disc [&>ul]:pl-4 [&>ul]:mb-2.5 [&>ol]:list-decimal [&>ol]:pl-4 [&>ol]:mb-2.5 [&>strong]:text-[#F5EAD4] [&>strong]:font-semibold [&>h3]:text-sm [&>h3]:font-serif [&>h3]:text-[#E6C673] [&>h3]:mt-2 [&>h3]:mb-1.5 [&>blockquote]:border-l-2 [&>blockquote]:border-[#C9A55A] [&>blockquote]:pl-2.5 [&>blockquote]:italic [&>blockquote]:text-[#BCAE99]">
                       <Markdown>{msg.text}</Markdown>
                     </div>
 
@@ -354,7 +354,7 @@ Bạn muốn thỉnh giáo sâu hơn về dòng chữ đỏ trên lá bài, tư�
                       <button
                         type="button"
                         onClick={() => handleCopyMessage(msg.text, msg.id)}
-                        className="flex items-center gap-1 hover:text-[#D4AF37] transition-colors cursor-pointer"
+                        className="flex items-center gap-1 hover:text-[#C9A55A] transition-colors cursor-pointer"
                         title="Sao chép câu trả lời"
                       >
                         {copiedId === msg.id ? (
@@ -388,11 +388,11 @@ Bạn muốn thỉnh giáo sâu hơn về dòng chữ đỏ trên lá bài, tư�
         {/* Thinking / Loading indicator */}
         {isLoading && (
           <div className="flex gap-3 justify-start items-center">
-            <div className="w-7 h-7 rounded-full bg-[#241C14] border border-[#4A3822] flex items-center justify-center shrink-0 text-[#D4AF37] shadow">
+            <div className="w-7 h-7 rounded-full bg-[#241C14] border border-[#4A3822] flex items-center justify-center shrink-0 text-[#C9A55A] shadow">
               <Bot className="w-3.5 h-3.5" />
             </div>
             <div className="bg-[#1C1712] border border-[#3E3120] rounded-2xl rounded-tl-sm px-4 py-3 text-xs text-[#C8B89E] flex items-center gap-2.5 shadow">
-              <Loader2 className="w-3.5 h-3.5 animate-spin text-[#D4AF37]" />
+              <Loader2 className="w-3.5 h-3.5 animate-spin text-[#C9A55A]" />
               <span className="font-serif italic animate-pulse">
                 Dịch Tiên Sinh đang chiêm nghiệm tượng quẻ và hào từ...
               </span>
@@ -422,7 +422,7 @@ Bạn muốn thỉnh giáo sâu hơn về dòng chữ đỏ trên lá bài, tư�
         <div className="px-4 py-2 border-t border-[#261E14] bg-[#120F0C] overflow-x-auto no-scrollbar">
           <div className="flex items-center gap-1.5 flex-nowrap text-[11px]">
             <span className="text-[#8C7B67] shrink-0 font-serif flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+              <Sparkles className="w-3 h-3 text-[#C9A55A]" />
               Gợi ý hỏi:
             </span>
             {suggestions.map((sug, idx) => (
@@ -431,7 +431,7 @@ Bạn muốn thỉnh giáo sâu hơn về dòng chữ đỏ trên lá bài, tư�
                 type="button"
                 disabled={isLoading}
                 onClick={() => handleSendMessage(sug)}
-                className="shrink-0 px-2.5 py-1 rounded-full bg-[#1C1610] hover:bg-[#291F14] border border-[#362A1B] hover:border-[#D4AF37]/50 text-[#C8B89E] hover:text-[#FFF] transition-all cursor-pointer truncate max-w-xs"
+                className="shrink-0 px-2.5 py-1 rounded-full bg-[#1C1610] hover:bg-[#291F14] border border-[#362A1B] hover:border-[#C9A55A]/50 text-[#C8B89E] hover:text-[#FFF] transition-all cursor-pointer truncate max-w-xs"
                 title={sug}
               >
                 {sug}
@@ -459,7 +459,7 @@ Bạn muốn thỉnh giáo sâu hơn về dòng chữ đỏ trên lá bài, tư�
               onKeyDown={handleKeyDown}
               disabled={isLoading}
               placeholder="Thỉnh giáo Dịch Tiên Sinh về từng lá bài, sự nghiệp, tài lộc, thời cơ, cách hóa giải... (Nhấn Enter để gửi)"
-              className="w-full bg-[#110E0B] border border-[#3A2E1E] focus:border-[#D4AF37] rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-[#F0E4D2] placeholder-[#7E6F5C] outline-none resize-none transition-colors"
+              className="w-full bg-[#110E0B] border border-[#3A2E1E] focus:border-[#C9A55A] rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-[#F0E4D2] placeholder-[#7E6F5C] outline-none resize-none transition-colors"
             />
           </div>
 
@@ -469,7 +469,7 @@ Bạn muốn thỉnh giáo sâu hơn về dòng chữ đỏ trên lá bài, tư�
             className={`h-11 px-4 rounded-xl flex items-center justify-center gap-1.5 text-xs font-serif font-bold transition-all shadow-md cursor-pointer ${
               isLoading || !inputText.trim()
                 ? "bg-[#231C14] text-[#6A5A48] border border-[#352A1C] cursor-not-allowed"
-                : "bg-gradient-to-r from-[#D4AF37] to-[#B8902A] text-[#14100C] hover:brightness-110 border border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.25)]"
+                : "bg-gradient-to-r from-[#C9A55A] to-[#B8902A] text-[#14100C] hover:brightness-110 border border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.25)]"
             }`}
           >
             {isLoading ? (

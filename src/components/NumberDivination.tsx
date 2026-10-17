@@ -85,7 +85,7 @@ export const NumberDivination: React.FC<NumberDivinationProps> = ({ onComplete }
     <div className="w-full max-w-2xl mx-auto bg-[#171513] border border-[#3A332A] rounded-2xl p-6 shadow-2xl">
       <div className="border-b border-[#2C261F] pb-4 mb-6">
         <h3 className="text-xl font-serif font-bold text-[#EAD8B1] flex items-center gap-2">
-          <Hash className="w-5 h-5 text-[#D4AF37]" />
+          <Hash className="w-5 h-5 text-[#C9A55A]" />
           Mai Hoa Dịch Số (Khởi Quẻ Theo Số & Thời Khắc)
         </h3>
         <p className="text-xs text-[#9E907D] mt-1">
@@ -98,7 +98,7 @@ export const NumberDivination: React.FC<NumberDivinationProps> = ({ onComplete }
         <div className="flex items-start justify-between">
           <div>
             <h4 className="text-sm font-bold text-[#F0E2C8] flex items-center gap-2">
-              <Clock className="w-4 h-4 text-[#D4AF37]" />
+              <Clock className="w-4 h-4 text-[#C9A55A]" />
               Khởi Quẻ Theo Niên Nguyệt Nhật Thời Hiện Tại
             </h4>
             <p className="text-xs text-[#9C8F7C] mt-1.5 leading-relaxed">

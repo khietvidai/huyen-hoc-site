@@ -1527,7 +1527,7 @@ export const BaziHanhViThien: React.FC<BaziHanhViThienProps> = ({
                   showEmoji: showTableEmoji,
                 })
               }
-              className="flex items-center gap-1 px-2.5 py-1 text-[11px] sm:text-xs font-bold rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#B8860B] hover:from-[#F3CE65] hover:to-[#C69214] text-[#1A1208] shadow-sm shadow-[#D4AF37]/20 transition-all cursor-pointer active:scale-95 whitespace-nowrap"
+              className="flex items-center gap-1 px-2.5 py-1 text-[11px] sm:text-xs font-bold rounded-lg bg-gradient-to-r from-[#C9A55A] to-[#B8860B] hover:from-[#F3CE65] hover:to-[#C69214] text-[#1A1208] shadow-sm shadow-[#C9A55A]/20 transition-all cursor-pointer active:scale-95 whitespace-nowrap"
               title="Lưu thiết lập Hành Vi Thiên vào lá số Bát Tự"
             >
               <Save className="w-3.5 h-3.5" />
@@ -1539,7 +1539,7 @@ export const BaziHanhViThien: React.FC<BaziHanhViThienProps> = ({
             <button
               type="button"
               onClick={onCapture}
-              className="no-capture flex items-center gap-1 px-2.5 py-1 text-[11px] sm:text-xs font-semibold rounded-lg bg-[#271E15] hover:bg-[#382B1E] text-amber-200 border border-[#523F27] hover:border-[#D4AF37] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
+              className="no-capture flex items-center gap-1 px-2.5 py-1 text-[11px] sm:text-xs font-semibold rounded-lg bg-[#271E15] hover:bg-[#382B1E] text-amber-200 border border-[#523F27] hover:border-[#C9A55A] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
               title="Chụp ảnh riêng Hành Vi Thiên"
             >
               <Camera className="w-3.5 h-3.5 text-amber-400" />
@@ -1550,7 +1550,7 @@ export const BaziHanhViThien: React.FC<BaziHanhViThienProps> = ({
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center gap-1 px-2 py-1 text-[11px] sm:text-xs font-medium rounded-lg bg-[#271C11] text-[#E2B755] border border-[#4D3620] hover:bg-[#382717] transition-all cursor-pointer whitespace-nowrap"
+            className="flex items-center gap-1 px-2 py-1 text-[11px] sm:text-xs font-medium rounded-lg bg-[#271C11] text-[#D6B97A] border border-[#4D3620] hover:bg-[#382717] transition-all cursor-pointer whitespace-nowrap"
           >
             <span>{isOpen ? "Thu Gọn" : "Mở Rộng"}</span>
             <ChevronDown
@@ -1569,7 +1569,7 @@ export const BaziHanhViThien: React.FC<BaziHanhViThienProps> = ({
               ================================================================= */}
           <div className="p-2 sm:p-2.5 rounded-xl bg-[#171109] border border-[#3A2817] space-y-1.5">
             <div className="flex items-center justify-between text-[10px] sm:text-[10.5px]">
-              <span className="font-bold text-[#E2B755] flex items-center gap-1.5 uppercase tracking-wide">
+              <span className="font-bold text-[#D6B97A] flex items-center gap-1.5 uppercase tracking-wide">
                 <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                 <span>Chọn Địa Chi khảo sát (Mở đầu là Tý):</span>
               </span>
@@ -1626,7 +1626,7 @@ export const BaziHanhViThien: React.FC<BaziHanhViThienProps> = ({
             {/* MỤC CHỌN CHỮ GỒM: HỶ, TRUNG CÁT, TRUNG, TRUNG KỴ, KỴ */}
             <div className="pt-2.5 border-t border-[#2C1D10] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-center gap-2 text-xs sm:text-sm">
-                <span className="font-bold text-[#E2B755] flex items-center gap-1.5">
+                <span className="font-bold text-[#D6B97A] flex items-center gap-1.5">
                   <span>Mục chọn chữ cho Địa Chi <strong className="text-amber-300 font-serif text-sm sm:text-base">{showTableEmoji && targetChiData?.emoji ? `${targetChiData.emoji} ` : ""}{selectedBranch}</strong>:</span>
                 </span>
                 {branchRatings[selectedBranch] && (
@@ -1708,7 +1708,7 @@ export const BaziHanhViThien: React.FC<BaziHanhViThienProps> = ({
               ================================================================= */}
           <div className="p-2.5 sm:p-3.5 rounded-xl bg-gradient-to-b from-[#181109] via-[#140E07] to-[#100B05] border border-[#3A2817] space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-1.5 border-b border-[#2C1D10] gap-1.5">
-              <span className="font-bold text-[#E2B755] flex items-center gap-1.5 text-[10.5px] sm:text-[11px] uppercase tracking-wider">
+              <span className="font-bold text-[#D6B97A] flex items-center gap-1.5 text-[10.5px] sm:text-[11px] uppercase tracking-wider">
                 <Layers className="w-3.5 h-3.5 text-amber-400" />
                 <span>Bố Cục Hai Tầng: Thượng Tầng (Trên) ⟷ Trục Giữa ⟷ Hạ Tầng (Dưới)</span>
               </span>
@@ -1770,7 +1770,7 @@ export const BaziHanhViThien: React.FC<BaziHanhViThienProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsTwoTierOpen(!isTwoTierOpen)}
-                  className="flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium rounded-lg bg-[#271C11] text-[#E2B755] border border-[#4D3620] hover:bg-[#382717] transition-all cursor-pointer whitespace-nowrap"
+                  className="flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium rounded-lg bg-[#271C11] text-[#D6B97A] border border-[#4D3620] hover:bg-[#382717] transition-all cursor-pointer whitespace-nowrap"
                   title={isTwoTierOpen ? "Thu gọn bố cục 2 tầng" : "Mở rộng bố cục 2 tầng"}
                 >
                   <span>{isTwoTierOpen ? "Thu Gọn" : "Mở Rộng"}</span>
@@ -1876,7 +1876,7 @@ export const BaziHanhViThien: React.FC<BaziHanhViThienProps> = ({
                               const cungTamAn = getTamAnPhuInfoForChi(s.cungChi);
                               return cungTamAn?.tuongName ? (
                                 <span
-                                  className={`font-serif font-bold text-[#FFE28A] bg-[#291A0E]/95 px-1 py-0.2 rounded border border-amber-600/60 truncate max-w-full leading-tight shadow-xs ${sizeCfg.tamAnClasses} select-none my-0.5`}
+                                  className={`font-serif font-bold text-[#E6D3A3] bg-[#291A0E]/95 px-1 py-0.2 rounded border border-amber-600/60 truncate max-w-full leading-tight shadow-xs ${sizeCfg.tamAnClasses} select-none my-0.5`}
                                   title={cungTamAn.fullLine ? `Tâm Ấn Phú: ${cungTamAn.fullLine}` : `Tâm Ấn: 《${cungTamAn.tuongName}》`}
                                 >
                                   《{cungTamAn.tuongName}》
@@ -1895,7 +1895,7 @@ export const BaziHanhViThien: React.FC<BaziHanhViThienProps> = ({
                   {/* CỘT TRÁI: CÁNH TẢ (KẾ BÊN TRÁI CHỮ ĐỐI DIỆN) */}
                   <div className="space-y-1 sm:space-y-1.5">
                     <div className="flex items-center justify-between pb-0.5 border-b border-[#4D3620] text-center">
-                      <span className="text-[8px] sm:text-[9.5px] font-bold text-[#D4AF37] flex items-center gap-0.5 sm:gap-1 truncate">
+                      <span className="text-[8px] sm:text-[9.5px] font-bold text-[#C9A55A] flex items-center gap-0.5 sm:gap-1 truncate">
                         <span>⬅️ Cánh Tả (Trái)</span>
                       </span>
                       <span className="text-[7.5px] sm:text-[8px] text-[#8C7D6B] font-mono shrink-0">{displayedTopLeft.length}</span>
@@ -2002,7 +2002,7 @@ export const BaziHanhViThien: React.FC<BaziHanhViThienProps> = ({
                   {/* CỘT PHẢI: CÁNH HỮU (BÊN PHẢI CHỮ ĐỐI DIỆN) */}
                   <div className="space-y-1 sm:space-y-1.5">
                     <div className="flex items-center justify-between pb-0.5 border-b border-[#4D3620] text-center">
-                      <span className="text-[8px] sm:text-[9.5px] font-bold text-[#D4AF37] flex items-center gap-0.5 sm:gap-1 truncate">
+                      <span className="text-[8px] sm:text-[9.5px] font-bold text-[#C9A55A] flex items-center gap-0.5 sm:gap-1 truncate">
                         <span>➡️ Cánh Hữu (Phải)</span>
                       </span>
                       <span className="text-[7.5px] sm:text-[8px] text-[#8C7D6B] font-mono shrink-0">
@@ -2059,7 +2059,7 @@ export const BaziHanhViThien: React.FC<BaziHanhViThienProps> = ({
                 <div className="p-3 sm:p-4 rounded-2xl bg-gradient-to-b from-[#25180D] via-[#1E1209] to-[#180E07] border-2 border-[#7D5A2F] shadow-xl space-y-3.5">
                   <div className="flex items-center justify-center gap-2">
                     <div className="h-[1.5px] flex-1 bg-gradient-to-r from-transparent via-[#C6923C] to-transparent" />
-                    <span className="text-[10.5px] sm:text-[11px] font-bold text-[#E2B755] uppercase tracking-wider flex items-center gap-1.5">
+                    <span className="text-[10.5px] sm:text-[11px] font-bold text-[#D6B97A] uppercase tracking-wider flex items-center gap-1.5">
                       <ArrowUpDown className="w-4 h-4 text-amber-400" />
                       <span>Trục Phân Tầng: Địa Chi Mới ⟷ Chi Bị Kéo Xuống Ở Trái & Phải</span>
                     </span>
@@ -2225,7 +2225,7 @@ export const BaziHanhViThien: React.FC<BaziHanhViThienProps> = ({
                             <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-1.5 p-1 rounded-xl bg-gradient-to-b from-[#221509] to-[#170E06] border border-[#5A3F22] shadow-inner min-h-[52px]">
                               {/* THẺ ĐỊA CHI MỚI */}
                               <div
-                                className={`shrink-0 bg-gradient-to-b from-[#3E2914] via-[#2A1B0C] to-[#1C1208] border-2 border-[#D4AF37] text-center flex flex-col items-center justify-center shadow-md shadow-amber-600/30 ring-1 ring-amber-400/50 select-none relative ${sizeCfg.cardClasses}`}
+                                className={`shrink-0 bg-gradient-to-b from-[#3E2914] via-[#2A1B0C] to-[#1C1208] border-2 border-[#C9A55A] text-center flex flex-col items-center justify-center shadow-md shadow-amber-600/30 ring-1 ring-amber-400/50 select-none relative ${sizeCfg.cardClasses}`}
                                 title={
                                   branchRatings[selectedBranch]
                                     ? `Địa Chi Mới: ${selectedBranch} (${branchRatings[selectedBranch]})`
@@ -2262,7 +2262,7 @@ export const BaziHanhViThien: React.FC<BaziHanhViThienProps> = ({
                                   const bTamAn = getTamAnPhuInfoForChi(selectedBranch);
                                   return bTamAn?.tuongName ? (
                                     <span
-                                      className={`font-serif font-bold text-[#FFE28A] bg-[#291A0E]/95 px-1 py-0.2 rounded border border-amber-600/60 truncate max-w-full leading-tight shadow-xs ${sizeCfg.tamAnClasses} select-none my-0.5`}
+                                      className={`font-serif font-bold text-[#E6D3A3] bg-[#291A0E]/95 px-1 py-0.2 rounded border border-amber-600/60 truncate max-w-full leading-tight shadow-xs ${sizeCfg.tamAnClasses} select-none my-0.5`}
                                       title={bTamAn.fullLine ? `Tâm Ấn Phú: ${bTamAn.fullLine}` : `Tâm Ấn: 《${bTamAn.tuongName}》`}
                                     >
                                       《{bTamAn.tuongName}》
@@ -2372,7 +2372,7 @@ export const BaziHanhViThien: React.FC<BaziHanhViThienProps> = ({
                                 const cTamAn = getTamAnPhuInfoForChi(cung.cungChi);
                                 return cTamAn?.tuongName ? (
                                   <span
-                                    className={`font-serif font-bold text-[#FFE28A] bg-[#291A0E]/95 px-1 py-0.2 rounded border border-amber-600/60 truncate max-w-full leading-tight shadow-xs ${sizeCfg.tamAnClasses} select-none my-0.5`}
+                                    className={`font-serif font-bold text-[#E6D3A3] bg-[#291A0E]/95 px-1 py-0.2 rounded border border-amber-600/60 truncate max-w-full leading-tight shadow-xs ${sizeCfg.tamAnClasses} select-none my-0.5`}
                                     title={cTamAn.fullLine ? `Tâm Ấn Phú: ${cTamAn.fullLine}` : `Tâm Ấn: 《${cTamAn.tuongName}》`}
                                   >
                                     《{cTamAn.tuongName}》
@@ -2401,7 +2401,7 @@ export const BaziHanhViThien: React.FC<BaziHanhViThienProps> = ({
           {isTwoTierOpen && (
             <div className="p-2.5 sm:p-3.5 rounded-xl bg-[#171109] border border-[#3A2817] space-y-2.5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-1.5 border-b border-[#2C1D10]">
-              <span className="font-bold text-[#E2B755] flex items-center gap-1.5 text-[10.5px] sm:text-[11px] uppercase tracking-wider">
+              <span className="font-bold text-[#D6B97A] flex items-center gap-1.5 text-[10.5px] sm:text-[11px] uppercase tracking-wider">
                 <Zap className="w-3.5 h-3.5 text-amber-400" />
                 <span>Biến Động Củng Khí: Còn Gì ⟷ Mất Gì ⟷ Mới Thêm Gì</span>
               </span>

@@ -627,8 +627,8 @@ export const GoogleWorkspaceModal: React.FC<GoogleWorkspaceModalProps> = ({
         {/* Modal Header */}
         <div className="p-4 sm:p-5 border-b border-[#2B2116] flex items-center justify-between bg-[#1B1611]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#4285F4]/20 via-[#34A853]/20 to-[#EA4335]/20 border border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37] shadow-md">
-              <Sparkles className="w-5 h-5 text-[#D4AF37]" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#4285F4]/20 via-[#34A853]/20 to-[#EA4335]/20 border border-[#C9A55A]/40 flex items-center justify-center text-[#C9A55A] shadow-md">
+              <Sparkles className="w-5 h-5 text-[#C9A55A]" />
             </div>
             <div>
               <h3 className="font-serif font-bold text-base sm:text-lg text-[#F5EAD4] flex items-center gap-2">
@@ -705,11 +705,11 @@ export const GoogleWorkspaceModal: React.FC<GoogleWorkspaceModalProps> = ({
             }}
             className={`flex items-center gap-2 px-3.5 py-2.5 rounded-t-xl text-xs font-semibold transition-all border-b-2 cursor-pointer whitespace-nowrap ${
               activeTab === "picker"
-                ? "bg-[#1F1913] text-[#D4AF37] border-[#D4AF37]"
+                ? "bg-[#1F1913] text-[#C9A55A] border-[#C9A55A]"
                 : "text-[#A89882] hover:text-[#DDD0BE] border-transparent hover:bg-[#1A1510]"
             }`}
           >
-            <HardDrive className="w-4 h-4 text-[#D4AF37]" />
+            <HardDrive className="w-4 h-4 text-[#C9A55A]" />
             <span>Drive & Picker</span>
           </button>
         </div>
@@ -759,10 +759,10 @@ export const GoogleWorkspaceModal: React.FC<GoogleWorkspaceModalProps> = ({
                   <img
                     src={user.photoURL}
                     alt={user.displayName || "Avatar"}
-                    className="w-9 h-9 rounded-full border border-[#D4AF37]/50 object-cover"
+                    className="w-9 h-9 rounded-full border border-[#C9A55A]/50 object-cover"
                   />
                 ) : (
-                  <div className="w-9 h-9 rounded-full bg-[#2C2114] border border-[#443623] flex items-center justify-center text-[#D4AF37] font-bold text-xs">
+                  <div className="w-9 h-9 rounded-full bg-[#2C2114] border border-[#443623] flex items-center justify-center text-[#C9A55A] font-bold text-xs">
                     {(user.displayName || user.email || "G").charAt(0).toUpperCase()}
                   </div>
                 )}
@@ -821,7 +821,7 @@ export const GoogleWorkspaceModal: React.FC<GoogleWorkspaceModalProps> = ({
           {/* Current Reading Context Card */}
           <div className="bg-[#120F0C] border border-[#2F2417] rounded-xl p-3.5 flex items-center justify-between gap-3 text-xs">
             <div className="flex items-center gap-2.5">
-              <BookOpen className="w-4 h-4 text-[#D4AF37]" />
+              <BookOpen className="w-4 h-4 text-[#C9A55A]" />
               <div>
                 <span className="text-[#8C7D6B]">Quẻ hiện thời: </span>
                 {readingData?.primaryHexagram ? (
@@ -1147,13 +1147,13 @@ export const GoogleWorkspaceModal: React.FC<GoogleWorkspaceModalProps> = ({
                 <button
                   type="button"
                   onClick={() => handleOpenPicker("images")}
-                  className="p-3.5 rounded-xl border border-[#3E3122] bg-[#1F1913] hover:bg-[#282119] hover:border-[#D4AF37]/60 text-left transition-all group cursor-pointer flex items-start gap-3 shadow-md"
+                  className="p-3.5 rounded-xl border border-[#3E3122] bg-[#1F1913] hover:bg-[#282119] hover:border-[#C9A55A]/60 text-left transition-all group cursor-pointer flex items-start gap-3 shadow-md"
                 >
-                  <div className="w-9 h-9 rounded-lg bg-[#2E2419] border border-[#4E3924] flex items-center justify-center text-[#D4AF37] group-hover:scale-105 transition-transform shrink-0">
+                  <div className="w-9 h-9 rounded-lg bg-[#2E2419] border border-[#4E3924] flex items-center justify-center text-[#C9A55A] group-hover:scale-105 transition-transform shrink-0">
                     <FileImage className="w-5 h-5" />
                   </div>
                   <div className="space-y-0.5">
-                    <div className="text-xs font-bold text-[#F3EFE6] group-hover:text-[#D4AF37] transition-colors">
+                    <div className="text-xs font-bold text-[#F3EFE6] group-hover:text-[#C9A55A] transition-colors">
                       Chọn Ảnh / Video từ Drive
                     </div>
                     <div className="text-[11px] text-[#A69780] leading-snug">
@@ -1165,7 +1165,7 @@ export const GoogleWorkspaceModal: React.FC<GoogleWorkspaceModalProps> = ({
                 <button
                   type="button"
                   onClick={() => handleOpenPicker("all")}
-                  className="p-3.5 rounded-xl border border-[#3E3122] bg-[#1F1913] hover:bg-[#282119] hover:border-[#D4AF37]/60 text-left transition-all group cursor-pointer flex items-start gap-3 shadow-md"
+                  className="p-3.5 rounded-xl border border-[#3E3122] bg-[#1F1913] hover:bg-[#282119] hover:border-[#C9A55A]/60 text-left transition-all group cursor-pointer flex items-start gap-3 shadow-md"
                 >
                   <div className="w-9 h-9 rounded-lg bg-[#2E2419] border border-[#4E3924] flex items-center justify-center text-[#93C5FD] group-hover:scale-105 transition-transform shrink-0">
                     <HardDrive className="w-5 h-5" />
@@ -1190,7 +1190,7 @@ export const GoogleWorkspaceModal: React.FC<GoogleWorkspaceModalProps> = ({
                         <img
                           src={activeFilePreview.dataUrl}
                           alt={activeFilePreview.file.name}
-                          className="w-14 h-20 object-cover rounded-lg border border-[#D4AF37] shadow"
+                          className="w-14 h-20 object-cover rounded-lg border border-[#C9A55A] shadow"
                         />
                       ) : (
                         <div className="w-12 h-16 rounded-lg bg-[#251D16] border border-[#3E3022] flex items-center justify-center text-[#A69780]">
@@ -1200,7 +1200,7 @@ export const GoogleWorkspaceModal: React.FC<GoogleWorkspaceModalProps> = ({
                       <div className="space-y-1">
                         <div className="text-xs font-bold text-[#F5EAD4] flex items-center gap-1.5 flex-wrap">
                           <span>{activeFilePreview.file.name}</span>
-                          <span className="text-[10px] font-mono bg-[#2C2216] text-[#D4AF37] px-1.5 py-0.2 rounded border border-[#433422]">
+                          <span className="text-[10px] font-mono bg-[#2C2216] text-[#C9A55A] px-1.5 py-0.2 rounded border border-[#433422]">
                             {activeFilePreview.file.mimeType}
                           </span>
                         </div>
@@ -1233,7 +1233,7 @@ export const GoogleWorkspaceModal: React.FC<GoogleWorkspaceModalProps> = ({
                   </div>
 
                   <div className="space-y-3">
-                    <div className="text-xs font-semibold text-[#D4AF37]">
+                    <div className="text-xs font-semibold text-[#C9A55A]">
                       Áp dụng hình ảnh vừa chọn vào bộ bài:
                     </div>
 
@@ -1241,7 +1241,7 @@ export const GoogleWorkspaceModal: React.FC<GoogleWorkspaceModalProps> = ({
                       <label
                         className={`flex items-center gap-2.5 p-2.5 rounded-lg border cursor-pointer transition-colors ${
                           targetApplication === "back"
-                            ? "bg-[#2A2015] border-[#D4AF37] text-[#FFF]"
+                            ? "bg-[#2A2015] border-[#C9A55A] text-[#FFF]"
                             : "bg-[#14110E] border-[#312519] text-[#A69780]"
                         }`}
                       >
@@ -1250,7 +1250,7 @@ export const GoogleWorkspaceModal: React.FC<GoogleWorkspaceModalProps> = ({
                           name="picker_target_hub"
                           checked={targetApplication === "back"}
                           onChange={() => setTargetApplication("back")}
-                          className="accent-[#D4AF37]"
+                          className="accent-[#C9A55A]"
                         />
                         <span className="text-xs font-medium">Làm Mặt Lưng Bài (Card Back)</span>
                       </label>
@@ -1258,7 +1258,7 @@ export const GoogleWorkspaceModal: React.FC<GoogleWorkspaceModalProps> = ({
                       <label
                         className={`flex items-center gap-2.5 p-2.5 rounded-lg border cursor-pointer transition-colors ${
                           targetApplication === "card"
-                            ? "bg-[#2A2015] border-[#D4AF37] text-[#FFF]"
+                            ? "bg-[#2A2015] border-[#C9A55A] text-[#FFF]"
                             : "bg-[#14110E] border-[#312519] text-[#A69780]"
                         }`}
                       >
@@ -1267,7 +1267,7 @@ export const GoogleWorkspaceModal: React.FC<GoogleWorkspaceModalProps> = ({
                           name="picker_target_hub"
                           checked={targetApplication === "card"}
                           onChange={() => setTargetApplication("card")}
-                          className="accent-[#D4AF37]"
+                          className="accent-[#C9A55A]"
                         />
                         <span className="text-xs font-medium">Làm Tranh Quẻ (64 Quẻ)</span>
                       </label>
@@ -1281,7 +1281,7 @@ export const GoogleWorkspaceModal: React.FC<GoogleWorkspaceModalProps> = ({
                         <select
                           value={selectedHexNumber}
                           onChange={(e) => setSelectedHexNumber(Number(e.target.value))}
-                          className="w-full bg-[#120F0C] border border-[#3E3022] text-[#F5EAD4] text-xs rounded-lg px-3 py-2 focus:border-[#D4AF37] outline-none"
+                          className="w-full bg-[#120F0C] border border-[#3E3022] text-[#F5EAD4] text-xs rounded-lg px-3 py-2 focus:border-[#C9A55A] outline-none"
                         >
                           {HEXAGRAMS.map((h) => (
                             <option key={h.number} value={h.number}>
@@ -1296,7 +1296,7 @@ export const GoogleWorkspaceModal: React.FC<GoogleWorkspaceModalProps> = ({
                       type="button"
                       disabled={isLoadingFile}
                       onClick={handleApplyToDeck}
-                      className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-gradient-to-r from-[#D4AF37] to-[#B38728] hover:from-[#E2BE4B] hover:to-[#C29633] text-[#120F0C] font-bold text-xs rounded-xl shadow-lg transition-all disabled:opacity-50 cursor-pointer"
+                      className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-gradient-to-r from-[#C9A55A] to-[#B38728] hover:from-[#E2BE4B] hover:to-[#C29633] text-[#120F0C] font-bold text-xs rounded-xl shadow-lg transition-all disabled:opacity-50 cursor-pointer"
                     >
                       {isLoadingFile ? (
                         <>
@@ -1323,7 +1323,7 @@ export const GoogleWorkspaceModal: React.FC<GoogleWorkspaceModalProps> = ({
                 <div className="bg-[#14110E] border border-[#2F2417] rounded-xl p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div>
                     <div className="text-xs font-bold text-[#EAD8B1] flex items-center gap-1.5">
-                      <Download className="w-4 h-4 text-[#D4AF37]" />
+                      <Download className="w-4 h-4 text-[#C9A55A]" />
                       Lưu Toàn Bộ Lời Thoán & Bình Giải (.md) Lên Drive
                     </div>
                     <p className="text-[11px] text-[#8C7D6B]">
@@ -1334,12 +1334,12 @@ export const GoogleWorkspaceModal: React.FC<GoogleWorkspaceModalProps> = ({
                     type="button"
                     disabled={isSavingToDrive}
                     onClick={handleSaveReadingToDrive}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-[#251D14] hover:bg-[#34271A] border border-[#483622] hover:border-[#D4AF37] text-xs text-[#EAD8B1] font-medium rounded-lg transition-all shrink-0 cursor-pointer disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-[#251D14] hover:bg-[#34271A] border border-[#483622] hover:border-[#C9A55A] text-xs text-[#EAD8B1] font-medium rounded-lg transition-all shrink-0 cursor-pointer disabled:opacity-50"
                   >
                     {isSavingToDrive ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin text-[#D4AF37]" />
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-[#C9A55A]" />
                     ) : (
-                      <Download className="w-3.5 h-3.5 text-[#D4AF37]" />
+                      <Download className="w-3.5 h-3.5 text-[#C9A55A]" />
                     )}
                     <span>Lưu Tệp Lên Drive</span>
                   </button>

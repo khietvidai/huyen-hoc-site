@@ -582,7 +582,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#8C6B1B] p-0.5 shadow-lg flex items-center justify-center shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#C9A55A] to-[#8C6B1B] p-0.5 shadow-lg flex items-center justify-center shrink-0">
               <div className="w-full h-full bg-[#1A140E] rounded-[10px] flex items-center justify-center text-[#E5C158]">
                 <CalendarIcon className="w-6 h-6" />
               </div>
@@ -631,7 +631,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
               type="button"
               disabled={isCapturing}
               onClick={() => handleCaptureBoard(false)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B38728] hover:brightness-110 text-[#120E09] text-xs font-bold cursor-pointer transition-all active:scale-95 shadow shadow-amber-950/40"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#C9A55A] to-[#B38728] hover:brightness-110 text-[#120E09] text-xs font-bold cursor-pointer transition-all active:scale-95 shadow shadow-amber-950/40"
               title="Chụp toàn bộ bảng lịch và 12 giờ Tâm Ấn Phú"
             >
               <Camera className="w-3.5 h-3.5" />
@@ -887,7 +887,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
           {/* Header Tháng */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#2D2115] pb-3 mb-4">
             <div className="flex items-center gap-2.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_#D4AF37]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_#C9A55A]" />
               <h3 className="text-base sm:text-lg font-serif font-bold text-[#F5EAD4]">
                 BẢN ĐỒ LỊCH THÁNG {selectedMonth} NĂM {selectedYear}
               </h3>
@@ -902,7 +902,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                 <span>Ngày chọn</span>
               </span>
               <span className="flex items-center gap-1">
-                <span className="w-2.5 h-2.5 rounded bg-[#D4AF37] inline-block" />
+                <span className="w-2.5 h-2.5 rounded bg-[#C9A55A] inline-block" />
                 <span>Hôm nay</span>
               </span>
             </div>
@@ -952,7 +952,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                   }}
                   className={`min-h-[86px] sm:min-h-[105px] p-1.5 sm:p-2 rounded-xl border flex flex-col justify-between transition-all cursor-pointer relative group ${
                     isSelected
-                      ? "bg-gradient-to-b from-[#352617] to-[#22180F] border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-amber-400/50 scale-[1.01] z-10"
+                      ? "bg-gradient-to-b from-[#352617] to-[#22180F] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-amber-400/50 scale-[1.01] z-10"
                       : isToday
                       ? "bg-[#251B12] border-amber-600/70 hover:border-amber-500 shadow-sm"
                       : "bg-[#18120C] border-[#2C2014] hover:bg-[#201810] hover:border-[#4E3924]"
@@ -963,7 +963,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                     <span
                       className={`font-serif font-black text-sm sm:text-base leading-none ${
                         isSelected
-                          ? "text-[#FFE28A]"
+                          ? "text-[#E6D3A3]"
                           : isToday
                           ? "text-amber-300 font-extrabold"
                           : "text-[#E6D7C3]"
@@ -1033,7 +1033,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3 min-w-0">
               {cardImages[dailyHexData.hexNumber] ? (
-                <div className="w-12 h-16 rounded-lg overflow-hidden border border-[#D4AF37] shadow shrink-0">
+                <div className="w-12 h-16 rounded-lg overflow-hidden border border-[#C9A55A] shadow shrink-0">
                   <img
                     src={cardImages[dailyHexData.hexNumber]}
                     alt={dailyHexData.hexagram.name}
@@ -1041,7 +1041,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                   />
                 </div>
               ) : (
-                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#E2B755] to-[#75511A] flex flex-col items-center justify-center text-[#14120F] shadow-[0_0_12px_rgba(226,183,85,0.3)] border border-[#FFE28A] shrink-0 font-bold">
+                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#D6B97A] to-[#75511A] flex flex-col items-center justify-center text-[#14120F] shadow-[0_0_12px_rgba(226,183,85,0.3)] border border-[#E6D3A3] shrink-0 font-bold">
                   <span className="text-base leading-none">☯</span>
                   <span className="text-[9px] font-mono leading-none mt-0.5">#{dailyHexData.hexNumber}</span>
                 </div>
@@ -1054,7 +1054,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                   <span className="font-serif font-black text-sm sm:text-base text-[#F5EAD4]">
                     Quẻ #{dailyHexData.hexNumber}: {dailyHexData.hexagram.name} ({dailyHexData.hexagram.vietnameseName})
                   </span>
-                  <span className="text-[11px] font-serif font-bold text-[#E2B755] px-2 py-0.2 rounded bg-amber-950/80 border border-amber-500/50">
+                  <span className="text-[11px] font-serif font-bold text-[#D6B97A] px-2 py-0.2 rounded bg-amber-950/80 border border-amber-500/50">
                     {dailyHexData.advice.headline}
                   </span>
                   <span className="text-[10px] px-2 py-0.2 rounded-full bg-purple-950 text-purple-200 border border-purple-600 font-mono">
@@ -1082,7 +1082,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                 <button
                   type="button"
                   onClick={onOpenDailyHexagram}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B38728] hover:brightness-110 text-[#120F0C] text-xs font-serif font-bold shadow cursor-pointer transition-all active:scale-95"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#C9A55A] to-[#B38728] hover:brightness-110 text-[#120F0C] text-xs font-serif font-bold shadow cursor-pointer transition-all active:scale-95"
                   title="Bấm để mở cửa sổ xem toàn văn lời bình Quẻ Ngày & Lịch Dụng Sự"
                 >
                   <span>Mở Cửa Sổ Quẻ Ngày</span>
@@ -1135,7 +1135,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                   <span className="text-[10px] uppercase font-bold text-amber-400 font-mono">
                     📜 Lời Dặn Cốt Lõi:
                   </span>
-                  <p className="text-[#F5EAD4] italic pl-2 border-l-2 border-[#D4AF37]">
+                  <p className="text-[#F5EAD4] italic pl-2 border-l-2 border-[#C9A55A]">
                     "{dailyHexData.advice.motto}"
                   </p>
                 </div>
@@ -1178,7 +1178,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-[#302316] pb-4 mb-4">
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="w-3 h-3 rounded-full bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-400 shadow-[0_0_10px_#D4AF37]" />
+                <span className="w-3 h-3 rounded-full bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-400 shadow-[0_0_10px_#C9A55A]" />
                 <h3 className="text-base sm:text-xl font-serif font-bold text-[#F5EAD4] flex items-center gap-2 flex-wrap">
                   <span>THÔNG THƯ NGÀY {selectedDay}/{selectedMonth}/{selectedYear} • HỶ KỴ DỤNG SỰ</span>
                 </h3>
@@ -1206,7 +1206,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                   }}
                   className={`px-2.5 py-1 text-xs rounded-lg font-serif font-bold cursor-pointer transition-all ${
                     thongThuTab === "all"
-                      ? "bg-gradient-to-r from-[#D4AF37] to-[#B38728] text-[#120F09] shadow"
+                      ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F09] shadow"
                       : "text-amber-200/80 hover:text-amber-100 hover:bg-[#2C2014]"
                   }`}
                 >
@@ -1608,7 +1608,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                             {thongThuData.xuatHanh.hyThan.palace}
                           </span>
                         </div>
-                        <div className="text-base font-serif font-black text-[#FFE28A]">
+                        <div className="text-base font-serif font-black text-[#E6D3A3]">
                           Hướng {thongThuData.xuatHanh.hyThan.direction}
                         </div>
                         <p className="text-[11px] text-[#C2B29A] mt-1 leading-relaxed">
@@ -1629,7 +1629,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                             {thongThuData.xuatHanh.taiThan.palace}
                           </span>
                         </div>
-                        <div className="text-base font-serif font-black text-[#FFE28A]">
+                        <div className="text-base font-serif font-black text-[#E6D3A3]">
                           Hướng {thongThuData.xuatHanh.taiThan.direction}
                         </div>
                         <p className="text-[11px] text-[#C2B29A] mt-1 leading-relaxed">
@@ -1735,7 +1735,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-[#302316] pb-4 mb-4">
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 shadow-[0_0_10px_#D4AF37]" />
+                <span className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 shadow-[0_0_10px_#C9A55A]" />
                 <h3 className="text-base sm:text-xl font-serif font-bold text-[#F5EAD4] flex items-center gap-2 flex-wrap">
                   <span>BẢNG 12 ĐỊA CHI ỨNG 12 GIỜ • TÂM ẤN PHÚ</span>
                 </h3>
@@ -1774,7 +1774,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                         onClick={() => setManualStarName(star.name)}
                         className={`px-2 py-1 text-xs rounded-lg font-serif font-bold cursor-pointer transition-all ${
                           isActive
-                            ? "bg-gradient-to-r from-[#D4AF37] to-[#B38728] text-[#120F09] shadow-md scale-105"
+                            ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F09] shadow-md scale-105"
                             : star.nature === "Hoàng Đạo"
                             ? "text-amber-200/90 hover:text-[#FFF] hover:bg-[#2C2014]"
                             : "text-rose-300/80 hover:text-[#FFF] hover:bg-[#2C1814]"
@@ -1846,7 +1846,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
             <div className="bg-[#130E09] border border-amber-700/50 rounded-2xl p-3.5 sm:p-4 space-y-3.5 shadow-lg">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#8C6B1B] p-0.5 flex items-center justify-center shrink-0 shadow-md">
+                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#C9A55A] to-[#8C6B1B] p-0.5 flex items-center justify-center shrink-0 shadow-md">
                     <div className="w-full h-full bg-[#18120C] rounded-[10px] flex items-center justify-center font-serif font-black text-amber-300 text-base">
                       {selectedHourData.branch}
                     </div>
@@ -1895,7 +1895,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                   <button
                     type="button"
                     onClick={() => setIsHourSectionCollapsed(false)}
-                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B38728] text-[#120F09] font-bold text-xs cursor-pointer shadow hover:brightness-110 active:scale-95"
+                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F09] font-bold text-xs cursor-pointer shadow hover:brightness-110 active:scale-95"
                   >
                     <ChevronDown className="w-3.5 h-3.5" />
                     <span>Mở Rộng 12 Giờ</span>
@@ -1922,7 +1922,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                       }}
                       className={`px-2.5 py-1 text-xs rounded-lg font-serif font-bold transition-all shrink-0 cursor-pointer ${
                         isActive
-                          ? "bg-gradient-to-r from-[#D4AF37] to-[#B38728] text-stone-950 shadow scale-105"
+                          ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-stone-950 shadow scale-105"
                           : "bg-[#1E1711] text-[#B5A593] hover:text-amber-200 hover:bg-[#2C2016] border border-[#3A2A1B]"
                       }`}
                       title={`${h.branch} (${h.hourCanChi} • ${h.hourRange})`}
@@ -1957,7 +1957,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                     }}
                     className={`p-3.5 rounded-xl border transition-all cursor-pointer relative group flex flex-col justify-between ${
                       isSelectedHour
-                        ? "bg-gradient-to-br from-[#2D2014] to-[#1C140D] border-[#D4AF37] shadow-[0_0_18px_rgba(212,175,55,0.2)] ring-1 ring-amber-400/60"
+                        ? "bg-gradient-to-br from-[#2D2014] to-[#1C140D] border-[#C9A55A] shadow-[0_0_18px_rgba(212,175,55,0.2)] ring-1 ring-amber-400/60"
                         : "bg-[#1A130C] border-[#312316] hover:bg-[#221910] hover:border-[#4E3924]"
                     }`}
                   >
@@ -2055,7 +2055,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
           <div className="bg-[#16110C] border border-[#3E2E1D] rounded-2xl p-4 sm:p-5 shadow-2xl space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#2F2215] pb-3">
               <div className="flex items-center gap-2.5">
-                <span className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-400 to-amber-600 shadow-[0_0_8px_#D4AF37]" />
+                <span className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-400 to-amber-600 shadow-[0_0_8px_#C9A55A]" />
                 <div>
                   <h3 className="text-base sm:text-lg font-serif font-bold text-[#F5EAD4] flex items-center gap-2 flex-wrap">
                     <span>BÁT TỰ TỨ TRỤ NGÀY {selectedDay}/{selectedMonth}/{selectedYear}</span>
@@ -2120,7 +2120,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                   <span className="text-[11px] font-mono font-bold text-amber-300">NHẬT TRỤ (NGÀY)</span>
                 </div>
                 <div className="text-center py-1">
-                  <span className="text-lg sm:text-xl font-serif font-black text-[#FFE28A] block leading-tight">
+                  <span className="text-lg sm:text-xl font-serif font-black text-[#E6D3A3] block leading-tight">
                     {baziInfo.dayPillar.fullName}
                   </span>
                   <span className="text-xs font-serif text-amber-300 font-bold block mt-0.5">
@@ -2208,7 +2208,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
 
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 relative z-10">
               <div className="flex items-start gap-3.5">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#D4AF37] to-[#7A5A12] p-0.5 shadow-xl flex items-center justify-center shrink-0">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#C9A55A] to-[#7A5A12] p-0.5 shadow-xl flex items-center justify-center shrink-0">
                   <div className="w-full h-full bg-[#18120C] rounded-[14px] flex flex-col items-center justify-center text-amber-300">
                     <Sun className="w-5 h-5 text-amber-400 animate-spin-slow" />
                     <span className="text-[10px] font-serif font-black">{nguyetTuongInfo.branch}</span>
@@ -2339,7 +2339,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                   }}
                   className={`w-full py-2 px-2.5 rounded-xl text-xs font-serif font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer border shadow-sm ${
                     comparisonTarget === "prev"
-                      ? "bg-gradient-to-r from-[#D4AF37] to-[#B38728] text-[#120F09] border-amber-400 shadow-md font-extrabold"
+                      ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F09] border-amber-400 shadow-md font-extrabold"
                       : "bg-[#22170E] hover:bg-[#2F2014] text-amber-300 border-amber-800/60"
                   }`}
                 >
@@ -2473,7 +2473,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                   }}
                   className={`w-full py-2 px-2.5 rounded-xl text-xs font-serif font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer border shadow-sm ${
                     comparisonTarget === "next"
-                      ? "bg-gradient-to-r from-[#D4AF37] to-[#B38728] text-[#120F09] border-amber-400 shadow-md font-extrabold"
+                      ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F09] border-amber-400 shadow-md font-extrabold"
                       : "bg-[#22170E] hover:bg-[#2F2014] text-amber-300 border-amber-800/60"
                   }`}
                 >
@@ -2488,7 +2488,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
               {/* Header Khung Tính Tuổi Vào Vận */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#352516] pb-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#8C6B1B] p-0.5 flex items-center justify-center text-stone-950 shadow">
+                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#C9A55A] to-[#8C6B1B] p-0.5 flex items-center justify-center text-stone-950 shadow">
                     <Calculator className="w-5 h-5" />
                   </div>
                   <div>
@@ -2727,7 +2727,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
                 </div>
 
                 {/* Cột Phải (5 phần): HỘP KẾT QUẢ KHỞI VẬN LỘNG LẪY */}
-                <div className="lg:col-span-5 bg-gradient-to-br from-[#2D1F11] via-[#1F150C] to-[#140E08] border-2 border-[#D4AF37] rounded-xl p-4 flex flex-col justify-between shadow-[0_0_20px_rgba(212,175,55,0.25)] relative overflow-hidden">
+                <div className="lg:col-span-5 bg-gradient-to-br from-[#2D1F11] via-[#1F150C] to-[#140E08] border-2 border-[#C9A55A] rounded-xl p-4 flex flex-col justify-between shadow-[0_0_20px_rgba(212,175,55,0.25)] relative overflow-hidden">
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-400 bg-[#160E08] px-2 py-0.5 rounded border border-amber-800/60">
@@ -2792,7 +2792,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
             {/* Header Modal */}
             <div className="flex items-start justify-between border-b border-[#382819] pb-3">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#8C6B1B] p-0.5 flex items-center justify-center shadow-lg">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#C9A55A] to-[#8C6B1B] p-0.5 flex items-center justify-center shadow-lg">
                   <div className="w-full h-full bg-[#18120C] rounded-[10px] flex items-center justify-center text-amber-300 font-serif font-black text-lg">
                     {selectedEntryDetail.branch}
                   </div>
@@ -2865,7 +2865,7 @@ export const LichDungSuSection: React.FC<LichDungSuSectionProps> = ({
               <button
                 type="button"
                 onClick={() => setSelectedEntryDetail(null)}
-                className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B38728] text-stone-950 font-bold text-xs cursor-pointer hover:brightness-110 shadow"
+                className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-stone-950 font-bold text-xs cursor-pointer hover:brightness-110 shadow"
               >
                 Đã Hiểu & Đóng
               </button>

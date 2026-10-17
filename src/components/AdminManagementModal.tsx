@@ -130,14 +130,14 @@ export const AdminManagementModal: React.FC<AdminManagementModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-5xl max-h-[92vh] bg-[#140F0A] border-2 border-[#D4AF37] rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.95)] flex flex-col overflow-hidden text-[#EDE0D0] font-serif">
+      <div className="relative w-full max-w-5xl max-h-[92vh] bg-[#140F0A] border-2 border-[#C9A55A] rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.95)] flex flex-col overflow-hidden text-[#EDE0D0] font-serif">
         {/* Glow ambient decoration */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
         {/* Modal Header */}
         <div className="px-5 py-4 sm:px-7 border-b border-[#3E2B18] bg-gradient-to-r from-[#20150D] via-[#170E08] to-[#20150D] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#D4AF37] to-[#8C6218] flex items-center justify-center text-[#120F0B] shadow-md border border-[#FFE28A] shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#C9A55A] to-[#8C6218] flex items-center justify-center text-[#120F0B] shadow-md border border-[#E6D3A3] shrink-0">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
@@ -157,7 +157,7 @@ export const AdminManagementModal: React.FC<AdminManagementModalProps> = ({
             <button
               type="button"
               onClick={loadData}
-              className="p-2 rounded-xl bg-[#22170D] hover:bg-[#342416] text-[#D4AF37] border border-[#4A321D] transition-colors cursor-pointer"
+              className="p-2 rounded-xl bg-[#22170D] hover:bg-[#342416] text-[#C9A55A] border border-[#4A321D] transition-colors cursor-pointer"
               title="Làm mới dữ liệu"
             >
               <RefreshCw className="w-4 h-4" />
@@ -182,7 +182,7 @@ export const AdminManagementModal: React.FC<AdminManagementModalProps> = ({
                 <span>Tổng Tài Khoản:</span>
                 <Users className="w-3.5 h-3.5 text-amber-400" />
               </div>
-              <div className="text-2xl font-mono font-bold text-[#FFE28A]">{totalUsers}</div>
+              <div className="text-2xl font-mono font-bold text-[#E6D3A3]">{totalUsers}</div>
               <div className="text-[10px] text-[#7A6A57]">Đã đăng ký hệ thống</div>
             </div>
 
@@ -224,7 +224,7 @@ export const AdminManagementModal: React.FC<AdminManagementModalProps> = ({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Tìm kiếm theo Tên, Email hoặc Tên đăng nhập..."
-                className="w-full bg-[#110D09] border border-[#3E2D1A] focus:border-[#D4AF37] rounded-xl pl-9 pr-3 py-2 text-xs text-[#F2E5D2] placeholder-[#665442] outline-none font-serif"
+                className="w-full bg-[#110D09] border border-[#3E2D1A] focus:border-[#C9A55A] rounded-xl pl-9 pr-3 py-2 text-xs text-[#F2E5D2] placeholder-[#665442] outline-none font-serif"
               />
               {searchQuery && (
                 <button
@@ -252,7 +252,7 @@ export const AdminManagementModal: React.FC<AdminManagementModalProps> = ({
                   onClick={() => setFilterType(tab.id)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-serif transition-colors whitespace-nowrap cursor-pointer ${
                     filterType === tab.id
-                      ? "bg-[#D4AF37] text-black font-bold shadow"
+                      ? "bg-[#C9A55A] text-black font-bold shadow"
                       : "bg-[#22170E] text-[#998772] hover:text-white border border-[#3D2917]"
                   }`}
                 >
@@ -266,7 +266,7 @@ export const AdminManagementModal: React.FC<AdminManagementModalProps> = ({
               <button
                 type="button"
                 onClick={() => setIsCreatingUser(!isCreatingUser)}
-                className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B38728] hover:from-[#FFE28A] hover:to-[#D4AF37] text-black text-xs font-serif font-bold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 shadow"
+                className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#C9A55A] to-[#B38728] hover:from-[#E6D3A3] hover:to-[#C9A55A] text-black text-xs font-serif font-bold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 shadow"
               >
                 <Plus className="w-4 h-4 text-black" />
                 <span>Tạo Tài Khoản Mới</span>
@@ -277,7 +277,7 @@ export const AdminManagementModal: React.FC<AdminManagementModalProps> = ({
           {/* Form Thêm Tài Khoản Mới */}
           {isCreatingUser && (
             <div className="p-4 rounded-2xl bg-[#1C130B] border border-[#523A20] shadow-xl space-y-3 animate-in fade-in duration-200">
-              <div className="flex items-center justify-between text-xs font-bold text-[#FFE28A]">
+              <div className="flex items-center justify-between text-xs font-bold text-[#E6D3A3]">
                 <span className="flex items-center gap-1.5">
                   <Plus className="w-4 h-4 text-amber-400" />
                   <span>TẠO TÀI KHOẢN MỚI THỦ CÔNG</span>
@@ -351,7 +351,7 @@ export const AdminManagementModal: React.FC<AdminManagementModalProps> = ({
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B38728] text-black font-bold text-xs cursor-pointer shadow"
+                    className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-black font-bold text-xs cursor-pointer shadow"
                   >
                     Tạo Tài Khoản
                   </button>
@@ -362,7 +362,7 @@ export const AdminManagementModal: React.FC<AdminManagementModalProps> = ({
 
           {/* Bảng Danh Sách Tài Khoản */}
           <div className="bg-[#18110B] border border-[#44301B] rounded-2xl overflow-hidden shadow-lg">
-            <div className="p-3.5 border-b border-[#342211] flex items-center justify-between text-xs text-[#FFE28A] font-bold">
+            <div className="p-3.5 border-b border-[#342211] flex items-center justify-between text-xs text-[#E6D3A3] font-bold">
               <span className="flex items-center gap-1.5">
                 <Users className="w-4 h-4 text-amber-400" />
                 <span>DANH SÁCH TÀI KHOẢN ĐĂNG KÝ ({filteredUsers.length})</span>
@@ -499,7 +499,7 @@ export const AdminManagementModal: React.FC<AdminManagementModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B38728] text-black font-bold text-xs cursor-pointer shadow hover:brightness-110 active:scale-95 transition-all"
+            className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-black font-bold text-xs cursor-pointer shadow hover:brightness-110 active:scale-95 transition-all"
           >
             Hoàn Tất & Đóng
           </button>

@@ -381,304 +381,184 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
     handleCopyConsultation();
   };
 
+  const portals: {
+    numeral: string;
+    title: string;
+    chinese: string;
+    desc: string;
+    cta: string;
+    icon: React.ComponentType<{ className?: string }>;
+    onClick: () => void;
+  }[] = [
+    {
+      numeral: "壹",
+      title: "Bốc Bài Kinh Dịch",
+      chinese: "周易占卜",
+      desc: "Nghi thức Trai Giới Mộc Dục, 8 phương thức khởi quẻ (Chu Dịch, Khổng Minh, Cỏ Thi, Mai Hoa, Lục Nhâm...), giải mã Quẻ Chủ, Hào Động, Quẻ Biến & Quẻ Hỗ.",
+      cta: "Bắt đầu bốc quẻ",
+      icon: Layers,
+      onClick: () => onNavigateTab("divination"),
+    },
+    {
+      numeral: "貳",
+      title: "Lịch Dụng Sự & Hiệp Kỷ",
+      chinese: "協紀辨方",
+      desc: "Lịch vạn sự Thông Thư: Can Chi, Trực Nhật Tinh, 12 Giờ Tâm Ấn Phú, Việc Hỷ Nên Làm & Việc Kỵ Cần Tránh, hướng xuất hành Hỷ Thần, Tài Thần.",
+      cta: "Tra cứu Thông Thư",
+      icon: CalendarDays,
+      onClick: () => onNavigateTab("calendar"),
+    },
+    {
+      numeral: "參",
+      title: "Hàn Nhiệt Mệnh & Vận 2027",
+      chinese: "寒熱命理",
+      desc: "Trường phái Tô Dân Phong: Tra cứu Hàn - Nhiệt - Bình Mệnh, Cửu Cung Phi Tinh, Phạm Thái Tuế, Thảm Cửa Vượng Trạch & 12 Con Giáp 2027.",
+      cta: "Khám phá Hàn Nhiệt Mệnh",
+      icon: Flame,
+      onClick: () => onNavigateTab("hannhiet"),
+    },
+    {
+      numeral: "肆",
+      title: "Lục Thập Hoa Giáp",
+      chinese: "六十花甲",
+      desc: "Kho tàng 60 Can Chi Nạp Âm Ngũ Hành, luận giải hình tượng cát hung nhân duyên, bổ trợ Bát Tự & Lục Nhâm và nạp hình ảnh cá nhân.",
+      cta: "Khám phá 60 Hoa Giáp",
+      icon: Compass,
+      onClick: () => onNavigateTab("jiazi"),
+    },
+    {
+      numeral: "伍",
+      title: "Thuyết Minh 64 Quẻ",
+      chinese: "周易闡微",
+      desc: "Toàn thư giải nghĩa 64 quẻ Kinh Dịch: Quái Từ, Thoán Truyện, Đại Tượng Truyện, Hào Từ, giải mã triết lý âm dương và lời bình ứng dụng đời sống.",
+      cta: "Đọc sách Thuyết Minh",
+      icon: BookOpen,
+      onClick: () => onNavigateTab("manual"),
+    },
+    {
+      numeral: "陸",
+      title: "Quẻ Ngày (Lịch Dương)",
+      chinese: "每日一卦",
+      desc: "Nhận một quẻ Kinh Dịch ngẫu nhiên mỗi ngày theo lịch dương kèm lời bình ngắn gọn, đạo xử thế, việc nên làm và việc cần tránh.",
+      cta: "Mở quẻ ngày hôm nay",
+      icon: Sun,
+      onClick: onOpenDailyHexagram,
+    },
+    {
+      numeral: "柒",
+      title: "Sổ Tay Lịch Sử Bói",
+      chinese: "占卜記錄",
+      desc: "Lưu trữ các lần chiêm bốc, câu hỏi tâm niệm, kết quả quẻ, hỗ trợ xuất hình ảnh và đồng bộ Google Workspace (Docs/Sheets).",
+      cta: `Xem lịch sử (${historyCount})`,
+      icon: History,
+      onClick: () => onNavigateTab("history"),
+    },
+  ];
+
   return (
-    <div className="space-y-10 animate-in fade-in duration-300">
-      {/* ================= HERO GREETING BANNER ================= */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#24170D] via-[#1A110A] to-[#120D08] border-2 border-[#8E692B]/70 shadow-2xl p-6 sm:p-10 text-center">
-        {/* Glow / Mystic accents */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-[#D4AF37]/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -left-12 -bottom-12 w-48 h-48 bg-amber-600/10 rounded-full blur-2xl pointer-events-none" />
-        <div className="absolute -right-12 -top-12 w-48 h-48 bg-[#936618]/20 rounded-full blur-2xl pointer-events-none" />
+    <div className="space-y-16 sm:space-y-20 animate-in fade-in duration-300">
+      {/* ================= HERO ================= */}
+      <section className="royal-frame px-6 py-14 sm:px-12 sm:py-20 text-center overflow-hidden">
+        <span className="royal-corner tl" />
+        <span className="royal-corner tr" />
+        <span className="royal-corner bl" />
+        <span className="royal-corner br" />
 
-        <div className="relative z-10 max-w-3xl mx-auto space-y-4">
-          {/* Sacred Seal / Tag */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#2A1E13] border border-[#A67C3A]/70 shadow-inner">
-            <span className="text-base text-amber-300">☯</span>
-            <span className="text-xs font-serif font-bold tracking-widest text-[#FFE28A] uppercase">
-              CỬU NHỊ • 玖貳 PHONG THỦY MỆNH LÝ
-            </span>
-            <span className="text-xs text-amber-400">✦</span>
-          </div>
+        <div className="relative max-w-3xl mx-auto">
+          <div className="royal-eyebrow">Cửu Nhị · Phong Thủy Mệnh Lý</div>
 
-          {/* Core Vietnamese Welcome Greeting */}
-          <h1 className="text-2xl sm:text-4xl md:text-5xl font-serif font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#FFF5DE] via-[#E5BF62] to-[#F2D794] drop-shadow-md leading-tight">
-            Chào mừng đến với trang web phong thủy mệnh lý Cửu Nhị
+          <h1 className="royal-title mt-6 text-4xl sm:text-6xl md:text-[4.25rem]">
+            Tinh hoa huyền học
+            <span className="block italic text-gold-300">phương Đông</span>
           </h1>
 
-          {/* Traditional Chinese Welcome Greeting */}
-          <div className="text-xl sm:text-2xl md:text-3xl font-serif font-semibold text-[#DEC58F] tracking-widest border-y border-[#523A1E]/80 py-2 inline-block">
-            歡迎光臨玖貳命理風水網站
+          <div className="mt-7 flex items-center justify-center gap-4">
+            <span className="h-px w-10 sm:w-16 bg-gold-700" />
+            <span className="font-serif text-lg sm:text-2xl tracking-[0.35em] text-gold-400">
+              玖貳命理風水
+            </span>
+            <span className="h-px w-10 sm:w-16 bg-gold-700" />
           </div>
 
-          {/* Philosophical Subtext */}
-          <p className="text-xs sm:text-sm text-[#C8B69F] font-serif leading-relaxed max-w-2xl mx-auto pt-1">
-            Nơi hội tụ tinh hoa học thuật cổ truyền phương Đông: <strong className="text-[#FFE28A]">Chu Dịch Chiêm Bốc (64 Quẻ)</strong>, <strong className="text-[#FFE28A]">Hiệp Kỷ Biện Phương Thư (Lịch Dụng Sự)</strong>, <strong className="text-[#FFE28A]">Tứ Trụ Bát Tự</strong>, <strong className="text-[#FFE28A]">Phong Thủy Dương Trạch</strong> cùng kho tàng minh triết định hướng nhân sinh, an nhiên thuận theo Thiên Thời - Địa Lợi - Nhân Hòa.
+          <p className="mt-7 text-sm sm:text-[15px] leading-relaxed text-ivory-300 font-serif max-w-2xl mx-auto">
+            Chào mừng quý khách đến với Cửu Nhị — nơi hội tụ Chu Dịch Chiêm Bốc, Hiệp Kỷ Biện Phương Thư,
+            Tứ Trụ Bát Tự và Phong Thủy Dương Trạch. Thuận theo Thiên Thời, Địa Lợi, Nhân Hòa để định
+            hướng nhân sinh an nhiên.
           </p>
 
-          {/* Action CTAs */}
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-3">
-            <button
-              type="button"
-              onClick={() => onNavigateTab("divination")}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E5BF62] to-[#B38728] text-[#120F0C] font-serif font-bold text-sm shadow-lg shadow-amber-950/50 hover:brightness-110 active:scale-95 transition-all cursor-pointer"
-            >
-              <Layers className="w-4 h-4 text-amber-950" />
-              <span>Bốc Quẻ Kinh Dịch</span>
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <button type="button" onClick={() => onNavigateTab("divination")} className="royal-btn w-full sm:w-auto">
+              Bốc quẻ Kinh Dịch
               <ArrowRight className="w-4 h-4" />
             </button>
+            <a href="#dich-vu-tra-phi" className="royal-btn-ghost w-full sm:w-auto">
+              Dịch vụ luận giải
+            </a>
+          </div>
 
-            <button
-              type="button"
-              onClick={onOpenDailyHexagram}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#261A10] hover:bg-[#342416] text-[#FFE28A] border border-[#8C672B] font-serif font-bold text-sm shadow hover:border-[#D4AF37] active:scale-95 transition-all cursor-pointer"
-            >
-              <Sun className="w-4 h-4 text-amber-400" />
-              <span>Xem Quẻ Ngày Hôm Nay</span>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+            <button type="button" onClick={onOpenDailyHexagram} className="royal-link cursor-pointer">
+              <Sun className="w-3.5 h-3.5 text-gold-500" />
+              Quẻ ngày hôm nay
             </button>
-
-            <a
-              href="#cac-phan-he-hoc-thuat"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#2F2113] to-[#201509] hover:from-[#3D2C1A] hover:to-[#2B1D0E] text-[#FFE8A3] border border-[#6B4D25] hover:border-[#D4AF37] font-serif font-bold text-sm shadow active:scale-95 transition-all cursor-pointer"
-            >
-              <Compass className="w-4 h-4 text-amber-400" />
-              <span>Các Phân Hệ Học Thuật</span>
+            <a href="#cac-phan-he-hoc-thuat" className="royal-link">
+              <Compass className="w-3.5 h-3.5 text-gold-500" />
+              Các phân hệ học thuật
             </a>
-
-            <a
-              href="#dich-vu-tra-phi"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#3D2510] to-[#2B180A] hover:from-[#4D3016] hover:to-[#38200E] text-[#FFD875] border border-[#A87930] font-serif font-bold text-sm shadow hover:border-[#E2B755] active:scale-95 transition-all cursor-pointer"
-            >
-              <Sparkles className="w-4 h-4 text-amber-300" />
-              <span>Dịch Vụ Phong Thủy Mệnh Lý</span>
-            </a>
-
-            <a
-              href={ZALO_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-950/70 hover:bg-emerald-900/80 text-emerald-300 border border-emerald-600/60 font-serif font-bold text-sm shadow hover:border-emerald-400 active:scale-95 transition-all cursor-pointer"
-            >
-              <MessageSquare className="w-4 h-4 text-emerald-400" />
-              <span>Zalo Tư Vấn: {ZALO_PHONE}</span>
+            <a href={ZALO_LINK} target="_blank" rel="noopener noreferrer" className="royal-link">
+              <MessageSquare className="w-3.5 h-3.5 text-gold-500" />
+              Zalo tư vấn <span className="tabular-nums">{ZALO_PHONE}</span>
             </a>
           </div>
         </div>
       </section>
 
-      {/* ================= CORE PORTALS / CÁC PHÂN HỆ HỌC THUẬT CỦA CỬU NHỊ ================= */}
-      <section id="cac-phan-he-hoc-thuat" className="space-y-4 pt-2 scroll-mt-20">
-        <div className="text-center space-y-1.5">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#271B10] border border-[#7D5B27] text-xs font-serif font-bold text-[#E5BF62] uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>NỀN TẢNG HỌC THUẬT CHÍNH TỐNG • 玖貳學術分系</span>
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#F5EAD4] tracking-wide">
-            CÁC PHÂN HỆ HỌC THUẬT CỦA CỬU NHỊ
-          </h2>
-          <p className="text-xs sm:text-sm text-[#A89882] font-serif max-w-2xl mx-auto leading-relaxed">
-            Khám phá trọn vẹn tri thức kinh điển, công cụ xem quẻ và dụng sự phong thủy cổ truyền phương Đông
+      {/* ================= CÁC PHÂN HỆ HỌC THUẬT ================= */}
+      <section id="cac-phan-he-hoc-thuat" className="scroll-mt-24">
+        <div className="text-center max-w-2xl mx-auto">
+          <div className="royal-eyebrow">Nền tảng học thuật chính tống</div>
+          <h2 className="royal-title mt-4 text-3xl sm:text-[2.75rem]">Các phân hệ học thuật</h2>
+          <p className="mt-4 text-sm text-ivory-500 font-serif leading-relaxed">
+            Tri thức kinh điển, công cụ xem quẻ và dụng sự phong thủy cổ truyền phương Đông.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {/* Card 1: Bốc Quẻ */}
-          <div
-            onClick={() => onNavigateTab("divination")}
-            className="group relative p-5 rounded-2xl bg-gradient-to-b from-[#1E150D] to-[#140E08] border border-[#4D361F] hover:border-[#D4AF37] transition-all duration-300 hover:-translate-y-1 shadow-lg cursor-pointer flex flex-col justify-between"
-          >
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-600/30 to-amber-900/30 border border-amber-500/40 flex items-center justify-center text-amber-300 group-hover:scale-110 transition-transform">
-                <Layers className="w-6 h-6" />
-              </div>
-              <div className="space-y-1">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-serif font-bold text-base text-[#F5EAD4] group-hover:text-amber-200">
-                    Bốc Bài Kinh Dịch
-                  </h3>
-                  <span className="text-[11px] font-serif text-[#A89882]">周易占卜</span>
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {portals.map((portal, index) => {
+            const Icon = portal.icon;
+            return (
+              <button
+                key={portal.title}
+                type="button"
+                onClick={portal.onClick}
+                className={`royal-card group p-6 sm:p-7 text-left flex flex-col cursor-pointer ${index === 0 ? "sm:col-span-2" : ""}`}
+              >
+                <div className="flex items-start justify-between">
+                  <Icon className="w-5 h-5 text-gold-500" />
+                  <span className="font-serif text-2xl text-gold-700 group-hover:text-gold-500 transition-colors leading-none">
+                    {portal.numeral}
+                  </span>
                 </div>
-                <p className="text-xs text-[#B8A790] font-serif leading-relaxed">
-                  Nghi thức Trai Giới Mộc Dục, 8 phương thức khởi quẻ (Chu Dịch, Khổng Minh, Cỏ Thi, Mai Hoa, Lục Nhâm...), giải mã Quẻ Chủ, Hào Động, Quẻ Biến & Quẻ Hỗ.
-                </p>
-              </div>
-            </div>
-            <div className="pt-4 flex items-center justify-between text-xs font-serif font-bold text-amber-400 group-hover:text-amber-200">
-              <span>Bắt đầu bốc quẻ (8 phương thức)</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Card 2: Lịch Dụng Sự */}
-          <div
-            onClick={() => onNavigateTab("calendar")}
-            className="group relative p-5 rounded-2xl bg-gradient-to-b from-[#1E150D] to-[#140E08] border border-[#4D361F] hover:border-[#D4AF37] transition-all duration-300 hover:-translate-y-1 shadow-lg cursor-pointer flex flex-col justify-between"
-          >
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-600/30 to-amber-900/30 border border-amber-500/40 flex items-center justify-center text-amber-300 group-hover:scale-110 transition-transform">
-                <CalendarDays className="w-6 h-6" />
-              </div>
-              <div className="space-y-1">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-serif font-bold text-base text-[#F5EAD4] group-hover:text-amber-200">
-                    Lịch Dụng Sự & Hiệp Kỷ
-                  </h3>
-                  <span className="text-[11px] font-serif text-[#A89882]">協紀辨方</span>
+                <h3 className="font-display text-2xl text-ivory-100 mt-6 leading-tight">{portal.title}</h3>
+                <div className="text-[11px] font-serif tracking-[0.3em] text-gold-600 mt-1.5">{portal.chinese}</div>
+                <p className="mt-4 text-[13px] text-ivory-500 font-serif leading-relaxed flex-1">{portal.desc}</p>
+                <div className="mt-6 pt-4 border-t border-gold-800 flex items-center justify-between text-[11px] font-sans uppercase tracking-[0.16em] text-gold-500 group-hover:text-gold-300 transition-colors">
+                  <span>{portal.cta}</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                 </div>
-                <p className="text-xs text-[#B8A790] font-serif leading-relaxed">
-                  Lịch vạn sự Thông Thư: Can Chi, Trực Nhật Tinh, 12 Giờ Tâm Ấn Phú, Việc Hỷ Nên Làm & Việc Kỵ Cần Tránh, hướng xuất hành Hỷ Thần, Tài Thần.
-                </p>
-              </div>
-            </div>
-            <div className="pt-4 flex items-center justify-between text-xs font-serif font-bold text-amber-400 group-hover:text-amber-200">
-              <span>Tra cứu dụng sự Thông Thư</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Card: Hàn Nhiệt Mệnh (Tô Dân Phong) */}
-          <div
-            onClick={() => onNavigateTab("hannhiet")}
-            className="group relative p-5 rounded-2xl bg-gradient-to-b from-[#1E150D] to-[#140E08] border border-[#4D361F] hover:border-[#D4AF37] transition-all duration-300 hover:-translate-y-1 shadow-lg cursor-pointer flex flex-col justify-between"
-          >
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-600/30 to-rose-900/30 border border-amber-500/40 flex items-center justify-center text-amber-300 group-hover:scale-110 transition-transform">
-                <Flame className="w-6 h-6 text-amber-400" />
-              </div>
-              <div className="space-y-1">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-serif font-bold text-base text-[#F5EAD4] group-hover:text-amber-200">
-                    Hàn Nhiệt Mệnh & Vận 2027
-                  </h3>
-                  <span className="text-[11px] font-serif text-[#A89882]">寒熱命理</span>
-                </div>
-                <p className="text-xs text-[#B8A790] font-serif leading-relaxed">
-                  Trường phái Tô Dân Phong: Tra cứu Hàn - Nhiệt - Bình Mệnh, Cửu Cung Phi Tinh, Phạm Thái Tuế, Thảm Cửa Vượng Trạch & 12 Con Giáp 2027.
-                </p>
-              </div>
-            </div>
-            <div className="pt-4 flex items-center justify-between text-xs font-serif font-bold text-amber-400 group-hover:text-amber-200">
-              <span>Khám phá Hàn Nhiệt Mệnh</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Card 3: Lục Thập Hoa Giáp */}
-          <div
-            onClick={() => onNavigateTab("jiazi")}
-            className="group relative p-5 rounded-2xl bg-gradient-to-b from-[#1E150D] to-[#140E08] border border-[#4D361F] hover:border-[#D4AF37] transition-all duration-300 hover:-translate-y-1 shadow-lg cursor-pointer flex flex-col justify-between"
-          >
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-600/30 to-amber-900/30 border border-amber-500/40 flex items-center justify-center text-amber-300 group-hover:scale-110 transition-transform">
-                <Compass className="w-6 h-6" />
-              </div>
-              <div className="space-y-1">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-serif font-bold text-base text-[#F5EAD4] group-hover:text-amber-200">
-                    Lục Thập Hoa Giáp
-                  </h3>
-                  <span className="text-[11px] font-serif text-[#A89882]">六十花甲</span>
-                </div>
-                <p className="text-xs text-[#B8A790] font-serif leading-relaxed">
-                  Kho tàng 60 Can Chi Nạp Âm Ngũ Hành, luận giải hình tượng cát hung nhân duyên, bổ trợ Bát Tự & Lục Nhâm và nạp hình ảnh cá nhân.
-                </p>
-              </div>
-            </div>
-            <div className="pt-4 flex items-center justify-between text-xs font-serif font-bold text-amber-400 group-hover:text-amber-200">
-              <span>Khám phá 60 Hoa Giáp</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Card 4: Sách Thuyết Minh 64 Quẻ */}
-          <div
-            onClick={() => onNavigateTab("manual")}
-            className="group relative p-5 rounded-2xl bg-gradient-to-b from-[#1E150D] to-[#140E08] border border-[#4D361F] hover:border-[#D4AF37] transition-all duration-300 hover:-translate-y-1 shadow-lg cursor-pointer flex flex-col justify-between"
-          >
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-600/30 to-amber-900/30 border border-amber-500/40 flex items-center justify-center text-amber-300 group-hover:scale-110 transition-transform">
-                <BookOpen className="w-6 h-6" />
-              </div>
-              <div className="space-y-1">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-serif font-bold text-base text-[#F5EAD4] group-hover:text-amber-200">
-                    Thuyết Minh 64 Quẻ
-                  </h3>
-                  <span className="text-[11px] font-serif text-[#A89882]">周易闡微</span>
-                </div>
-                <p className="text-xs text-[#B8A790] font-serif leading-relaxed">
-                  Toàn thư giải nghĩa 64 quẻ Kinh Dịch: Quái Từ, Thoán Truyện, Đại Tượng Truyện, Hào Từ, giải mã triết lý âm dương và lời bình ứng dụng đời sống.
-                </p>
-              </div>
-            </div>
-            <div className="pt-4 flex items-center justify-between text-xs font-serif font-bold text-amber-400 group-hover:text-amber-200">
-              <span>Đọc sách Thuyết Minh</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Card 5: Quẻ Ngày & Lời Bình */}
-          <div
-            onClick={onOpenDailyHexagram}
-            className="group relative p-5 rounded-2xl bg-gradient-to-b from-[#1E150D] to-[#140E08] border border-[#4D361F] hover:border-[#D4AF37] transition-all duration-300 hover:-translate-y-1 shadow-lg cursor-pointer flex flex-col justify-between"
-          >
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-600/30 to-amber-900/30 border border-amber-500/40 flex items-center justify-center text-amber-300 group-hover:scale-110 transition-transform">
-                <Sun className="w-6 h-6" />
-              </div>
-              <div className="space-y-1">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-serif font-bold text-base text-[#F5EAD4] group-hover:text-amber-200">
-                    Quẻ Ngày (Lịch Dương)
-                  </h3>
-                  <span className="text-[11px] font-serif text-[#A89882]">每日一卦</span>
-                </div>
-                <p className="text-xs text-[#B8A790] font-serif leading-relaxed">
-                  Nhận một quẻ Kinh Dịch ngẫu nhiên mỗi ngày theo lịch dương kèm lời bình ngắn gọn, đạo xử thế, việc nên làm và việc cần tránh.
-                </p>
-              </div>
-            </div>
-            <div className="pt-4 flex items-center justify-between text-xs font-serif font-bold text-amber-400 group-hover:text-amber-200">
-              <span>Mở quẻ ngày hôm nay</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Card 6: Lịch Sử Bói */}
-          <div
-            onClick={() => onNavigateTab("history")}
-            className="group relative p-5 rounded-2xl bg-gradient-to-b from-[#1E150D] to-[#140E08] border border-[#4D361F] hover:border-[#D4AF37] transition-all duration-300 hover:-translate-y-1 shadow-lg cursor-pointer flex flex-col justify-between"
-          >
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-600/30 to-amber-900/30 border border-amber-500/40 flex items-center justify-center text-amber-300 group-hover:scale-110 transition-transform">
-                <History className="w-6 h-6" />
-              </div>
-              <div className="space-y-1">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-serif font-bold text-base text-[#F5EAD4] group-hover:text-amber-200">
-                    Sổ Tay Lịch Sử Bói
-                  </h3>
-                  <span className="text-[11px] font-serif text-[#A89882]">占卜記錄</span>
-                </div>
-                <p className="text-xs text-[#B8A790] font-serif leading-relaxed">
-                  Lưu trữ các lần chiêm bốc, câu hỏi tâm niệm, kết quả quẻ, hỗ trợ xuất hình ảnh và đồng bộ Google Workspace (Docs/Sheets).
-                </p>
-              </div>
-            </div>
-            <div className="pt-4 flex items-center justify-between text-xs font-serif font-bold text-amber-400 group-hover:text-amber-200">
-              <span>Xem lịch sử ({historyCount})</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
+              </button>
+            );
+          })}
         </div>
       </section>
 
       {/* ================= DAILY HEXAGRAM & TODAY ENERGY SUMMARY ================= */}
-      <section className="bg-gradient-to-r from-[#21160C] via-[#1A1108] to-[#21160C] border border-[#523A1E] rounded-2xl p-4 sm:p-6 shadow-xl">
+      <section className="royal-frame p-5 sm:p-8">
         <div className="flex flex-col md:flex-row items-stretch justify-between gap-5">
           {/* Left: Quẻ Ngày preview */}
           <div className="flex-1 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#140E08] text-amber-300 border border-amber-600/60 uppercase tracking-wider flex items-center gap-1.5">
+              <span className="text-[10px] sm:text-[11px] font-sans font-medium uppercase tracking-[0.24em] text-gold-500 flex items-center gap-2">
                 <Sun className="w-3.5 h-3.5 text-amber-400" />
                 <span>QUẺ NGÀY KINH DỊCH • {solarDateFormatted}</span>
               </span>
@@ -693,7 +573,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
 
             <div className="flex items-center gap-4 bg-[#140E08]/80 p-3 rounded-xl border border-[#3E2B17]">
               {cardImage ? (
-                <div className="w-14 h-20 rounded-lg overflow-hidden border border-[#D4AF37] shadow shrink-0">
+                <div className="w-14 h-20 rounded-lg overflow-hidden border border-[#C9A55A] shadow shrink-0">
                   <img
                     src={cardImage}
                     alt={hexagram.name}
@@ -701,7 +581,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
                   />
                 </div>
               ) : (
-                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#E2B755] to-[#75511A] flex flex-col items-center justify-center text-[#14120F] shadow border border-[#FFE28A] shrink-0 font-bold">
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#D6B97A] to-[#75511A] flex flex-col items-center justify-center text-[#14120F] shadow border border-[#E6D3A3] shrink-0 font-bold">
                   <span className="text-xl leading-none">☯</span>
                   <span className="text-[9px] font-mono mt-0.5">#{hexNumber}</span>
                 </div>
@@ -745,7 +625,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
 
               <div className="space-y-0.5">
                 <span className="text-[10px] text-[#8C7D6B] font-mono block">CAN CHI NGÀY</span>
-                <span className="text-[#FFE28A] font-bold">
+                <span className="text-[#E6D3A3] font-bold">
                   {thongThuData.dayCanChi.fullName}
                 </span>
               </div>
@@ -784,51 +664,37 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
       {/* ================= DỊCH VỤ TRẢ PHÍ (CỬU NHỊ MỆNH LÝ PHONG THỦY) ================= */}
       <section id="dich-vu-tra-phi" className="space-y-6 pt-2 scroll-mt-20">
         {/* Header section title */}
-        <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#271B10] border border-[#7D5B27] text-xs font-serif font-bold text-[#E5BF62] uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>DỊCH VỤ TƯ VẤN HỌC THUẬT CHUYÊN SÂU</span>
-            <span className="text-[11px] text-amber-500 font-normal">收費服務價目</span>
-          </div>
+        <div className="text-center space-y-4">
+          <div className="royal-eyebrow">Dịch vụ tư vấn chuyên sâu · 收費服務</div>
 
-          <h2 className="text-2xl sm:text-3xl font-serif font-black text-transparent bg-clip-text bg-gradient-to-r from-[#FFF5DE] via-[#E5BF62] to-[#F0D58C] tracking-wide">
-            Bảng Giá Dịch Vụ Phong Thủy & Mệnh Lý Cửu Nhị
+          <h2 className="royal-title text-3xl sm:text-[2.75rem]">
+            Dịch vụ Phong Thủy &amp; Mệnh Lý
           </h2>
 
-          <p className="text-xs sm:text-sm text-[#C8B89E] font-serif max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm text-ivory-500 font-serif max-w-2xl mx-auto leading-relaxed">
             Dịch vụ tư vấn thực địa và luận đoán chuẩn xác theo nguyên bản cổ thư phương Đông, kết hợp khảo sát trực tiếp, tướng pháp và tam thức bí truyền.
           </p>
 
           {/* Quick Zalo Hotline & Nhóm Zalo Banner */}
-          <div className="flex flex-wrap items-center justify-center gap-2.5">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/70 border border-emerald-600/60 shadow-inner">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-serif text-emerald-300">
-                Hotline / Zalo tư vấn:
-              </span>
-              <a
-                href={ZALO_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-mono font-bold text-xs text-[#FFE8A3] hover:text-white underline cursor-pointer"
-              >
-                {ZALO_PHONE}
-              </a>
-            </div>
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+            <a href={ZALO_LINK} target="_blank" rel="noopener noreferrer" className="royal-link">
+              <MessageSquare className="w-3.5 h-3.5 text-gold-500" />
+              Hotline / Zalo <span className="tabular-nums">{ZALO_PHONE}</span>
+            </a>
 
             <a
               href="https://zalo.me/g/vwzsqvnh3gdbzst2psyh"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-emerald-900/90 to-teal-950 border border-emerald-500/70 text-xs font-serif font-bold text-[#FFE28A] hover:text-white hover:border-emerald-300 transition-all shadow-md active:scale-95 cursor-pointer"
+              className="royal-link"
             >
-              <span>💬 Tham Gia Nhóm Zalo Cửu Nhị</span>
-              <span>➔</span>
+              <span>Tham gia nhóm Zalo Cửu Nhị</span>
+              <span className="text-gold-500">→</span>
             </a>
           </div>
 
           {/* Category Filter Pills */}
-          <div className="flex flex-wrap items-center justify-center gap-2 pt-3">
+          <div className="flex flex-wrap items-center justify-center gap-x-1 gap-y-1 pt-4 border-b border-gold-800/80">
             {[
               { id: "all", label: "Tất Cả Dịch Vụ (7)" },
               { id: "fengshui", label: "Phong Thủy Dương Trạch" },
@@ -841,10 +707,10 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveCategory(tab.id)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-serif font-semibold transition-all cursor-pointer ${
+                className={`-mb-px px-3 sm:px-4 py-2.5 text-[11px] sm:text-xs font-sans uppercase tracking-[0.12em] border-b transition-colors cursor-pointer ${
                   activeCategory === tab.id
-                    ? "bg-[#D4AF37] text-[#120F0C] font-bold shadow-md shadow-amber-950/60"
-                    : "bg-[#1C140C] text-[#A89882] hover:text-[#FFF] border border-[#3E2B17] hover:border-[#735123]"
+                    ? "border-gold-400 text-gold-300"
+                    : "border-transparent text-ivory-500 hover:text-ivory-100"
                 }`}
               >
                 {tab.label}
@@ -855,13 +721,13 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
 
         {/* Banner thông báo trạng thái Hội Viên & Ưu Đãi */}
         {isMember ? (
-          <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-950/80 via-[#23170D] to-amber-950/80 border-2 border-[#D4AF37]/70 shadow-lg shadow-amber-950/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-serif">
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-950/80 via-[#23170D] to-amber-950/80 border-2 border-[#C9A55A]/70 shadow-lg shadow-amber-950/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-serif">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-400/50 flex items-center justify-center shrink-0">
                 <Crown className="w-5 h-5 text-amber-300 animate-pulse" />
               </div>
               <div>
-                <span className="text-sm font-bold text-[#FFE8A3] flex items-center gap-2">
+                <span className="text-sm font-bold text-[#E6D3A3] flex items-center gap-2">
                   <span>ĐẶC QUYỀN HỘI VIÊN ĐANG KÍCH HOẠT</span>
                   <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-900/80 text-amber-200 border border-amber-600/60 font-mono">
                     Hội Viên Cửu Nhị
@@ -886,7 +752,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
                 <Sparkles className="w-5 h-5 text-amber-400" />
               </div>
               <div>
-                <span className="text-sm font-bold text-[#FFE8A3] block">
+                <span className="text-sm font-bold text-[#E6D3A3] block">
                   CHÍNH SÁCH ƯU ĐÃI DÀNH RIÊNG CHO HỘI VIÊN
                 </span>
                 <span className="text-[#C8B89E] leading-relaxed block mt-0.5">
@@ -904,7 +770,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
                     if (el) el.scrollIntoView({ behavior: "smooth" });
                   }
                 }}
-                className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B38728] hover:brightness-110 active:scale-95 text-[#120F0C] font-bold text-xs shadow-md flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#C9A55A] to-[#B38728] hover:brightness-110 active:scale-95 text-[#120F0C] font-bold text-xs shadow-md flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
               >
                 <Crown className="w-4 h-4 text-[#120F0C]" />
                 <span>Đăng Ký Hội Viên Ngay</span>
@@ -921,21 +787,19 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
             return (
               <div
                 key={service.id}
-                className={`relative rounded-2xl bg-gradient-to-b from-[#1E150D] via-[#171009] to-[#120D08] border transition-all duration-300 flex flex-col justify-between overflow-hidden shadow-xl hover:-translate-y-1 ${
-                  service.id === "duong-trach"
-                    ? "border-[#D4AF37]/70 ring-1 ring-[#D4AF37]/30"
-                    : "border-[#4D361F] hover:border-[#B38728]"
+                className={`royal-card flex flex-col justify-between overflow-hidden ${
+                  service.id === "duong-trach" ? "!border-gold-500/70" : ""
                 }`}
               >
                 {/* Card Header Top */}
                 <div className="p-5 sm:p-6 space-y-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#9E782F] to-[#594014] text-[#FFE8A3] flex items-center justify-center font-serif font-bold text-sm shadow">
+                      <div className="w-8 h-8 border border-gold-700 text-gold-400 flex items-center justify-center font-display text-base shrink-0">
                         {service.number}
                       </div>
                       <div>
-                        <h3 className="font-serif font-bold text-lg text-[#F5EAD4] leading-tight">
+                        <h3 className="font-display text-[22px] text-ivory-100 leading-tight">
                           {service.title}
                         </h3>
                         <span className="text-[11px] font-serif text-[#A89882] tracking-wider block">
@@ -952,7 +816,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
                   </div>
 
                   {/* Price Display */}
-                  <div className="p-3 rounded-xl bg-[#140E08] border border-[#3A2916] space-y-2">
+                  <div className="py-3 border-y border-gold-800 space-y-2">
                     {(priceInfo.originalPrice || priceInfo.promoBadge) && (
                       <div className="flex items-center gap-2 flex-wrap text-xs font-serif">
                         {priceInfo.originalPrice && (
@@ -971,7 +835,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
                       </div>
                     )}
                     <div className="flex items-baseline gap-2 flex-wrap">
-                      <span className="text-xl sm:text-2xl font-serif font-black text-transparent bg-clip-text bg-gradient-to-r from-[#FFE8A3] via-[#E5BF62] to-[#F2D794]">
+                      <span className="font-display text-2xl sm:text-[28px] font-semibold text-gold-300">
                         {priceInfo.priceText}
                       </span>
                     </div>
@@ -1003,7 +867,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
                               if (el) el.scrollIntoView({ behavior: "smooth" });
                             }
                           }}
-                          className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#B38728] hover:brightness-110 active:scale-95 text-[#120F0C] text-[10px] font-serif font-bold shrink-0 cursor-pointer shadow-xs whitespace-nowrap"
+                          className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-[#C9A55A] to-[#B38728] hover:brightness-110 active:scale-95 text-[#120F0C] text-[10px] font-serif font-bold shrink-0 cursor-pointer shadow-xs whitespace-nowrap"
                         >
                           Đăng ký
                         </button>
@@ -1024,7 +888,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
                 {/* Specific Schools (for Bát Tự) */}
                 {service.schools && service.schools.length > 0 && (
                   <div className="space-y-2.5 pt-2 border-t border-[#352514]">
-                    <div className="text-[11px] font-serif font-bold text-[#FFE28A] flex items-center gap-1.5">
+                    <div className="text-[11px] font-serif font-bold text-[#E6D3A3] flex items-center gap-1.5">
                       <Compass className="w-3.5 h-3.5 text-amber-400" />
                       <span>Các hệ phái nghiên cứu & ứng dụng:</span>
                     </div>
@@ -1060,7 +924,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
                 {/* Detailed bullet points */}
                 {service.details && !service.schools && (
                   <div className="space-y-1.5 pt-2 border-t border-[#352514]">
-                    <span className="text-[11px] font-serif font-bold text-[#FFE28A] block">
+                    <span className="text-[11px] font-serif font-bold text-[#E6D3A3] block">
                       Chi tiết nội dung & phạm vi:
                     </span>
                     <ul className="space-y-1 text-xs text-[#B8A790] font-serif">
@@ -1076,17 +940,17 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
               </div>
 
               {/* Card Footer Action */}
-              <div className="p-4 bg-[#140E08] border-t border-[#332516]">
+              <div className="p-5 pt-0">
                 <a
                   href={ZALO_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => handleRegisterZalo(service)}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E5BF62] to-[#B38728] hover:brightness-110 active:scale-95 text-[#120F0C] font-serif font-bold text-xs shadow-md transition-all cursor-pointer text-center"
+                  className="royal-btn-ghost w-full !py-2.5 !text-[11px] text-center"
                   title={`Nhấn để tự động copy thông tin dịch vụ và nhảy qua Zalo số ${ZALO_PHONE}`}
                 >
                   <MessageSquare className="w-3.5 h-3.5 shrink-0" />
-                  <span>Đăng Ký Tư Vấn Zalo ({ZALO_PHONE})</span>
+                  <span>Đăng ký tư vấn qua Zalo</span>
                 </a>
               </div>
             </div>
@@ -1101,7 +965,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
               <Shield className="w-5 h-5" />
             </div>
             <div>
-              <strong className="text-[#FFE28A] block text-sm">
+              <strong className="text-[#E6D3A3] block text-sm">
                 Cam Kết Học Thuật & Bảo Mật Tuyệt Đối Cửu Nhị
               </strong>
               <span>
@@ -1115,7 +979,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
               href={ZALO_LINK}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B38728] hover:brightness-110 text-[#120F0C] font-serif font-bold text-xs shadow-md transition-all cursor-pointer whitespace-nowrap flex items-center gap-2"
+              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#C9A55A] to-[#B38728] hover:brightness-110 text-[#120F0C] font-serif font-bold text-xs shadow-md transition-all cursor-pointer whitespace-nowrap flex items-center gap-2"
             >
               <MessageSquare className="w-4 h-4 text-[#120F0C]" />
               <span>Nhảy Qua Zalo: {ZALO_PHONE}</span>
@@ -1124,24 +988,22 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
         </div>
 
         {/* ================= GÓI ĐĂNG KÝ THÀNH VIÊN VIP (MEMBERSHIP 1 NĂM) - ĐẶC QUYỀN HỘI VIÊN THƯỜNG NIÊN ================= */}
-        <div id="membership-vip-section" className="relative rounded-3xl bg-gradient-to-br from-[#26190D] via-[#1B1108] to-[#140C06] border-2 border-[#D4AF37] p-6 sm:p-8 shadow-[0_0_35px_rgba(212,175,55,0.18)] overflow-hidden">
-          {/* Decorative Corner Seals */}
-          <div className="absolute top-0 right-0 w-36 h-36 bg-gradient-to-bl from-[#D4AF37]/20 to-transparent rounded-bl-full pointer-events-none" />
-          <div className="absolute -bottom-10 -right-10 w-44 h-44 rounded-full bg-amber-500/10 blur-2xl pointer-events-none" />
+        <div id="membership-vip-section" className="royal-frame mt-6 p-6 sm:p-10">
+          <span className="royal-corner tl" />
+          <span className="royal-corner tr" />
+          <span className="royal-corner bl" />
+          <span className="royal-corner br" />
 
           <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8">
             {/* Left Content */}
             <div className="flex-1 space-y-4 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500/20 to-amber-900/40 border border-[#FFE28A]/50 text-xs font-serif font-bold text-[#FFE8A3] shadow-inner">
-                <Crown className="w-4 h-4 text-amber-300 animate-bounce" />
-                <span>ĐẶC QUYỀN HỘI VIÊN THƯỜNG NIÊN</span>
-                <span className="text-[10px] text-amber-300 font-mono">
-                  {isMember ? "ĐANG KÍCH HOẠT • 玖貳貴賓會員" : "玖貳貴賓會員"}
-                </span>
+              <div className="royal-eyebrow before:!hidden lg:after:!block">
+                <Crown className="w-3.5 h-3.5" />
+                <span>{isMember ? "Hội viên đang kích hoạt · 貴賓會員" : "Đặc quyền hội viên · 貴賓會員"}</span>
               </div>
 
               <div>
-                <h3 className="text-2xl sm:text-3xl font-serif font-black text-transparent bg-clip-text bg-gradient-to-r from-[#FFF5DC] via-[#FFE28A] to-[#D4AF37] tracking-wide">
+                <h3 className="royal-title text-3xl sm:text-4xl">
                   {isMember ? "Thẻ Hội Viên Cửu Nhị (Đang Kích Hoạt)" : "Đăng Ký Thành Viên Cửu Nhị (1 Năm)"}
                 </h3>
                 <p className="text-xs sm:text-sm text-[#D8C7B0] font-serif mt-1.5 leading-relaxed max-w-2xl">
@@ -1158,7 +1020,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
                     <Gift className="w-5 h-5 text-amber-300" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-sm font-serif font-bold text-[#FFE8A3] flex items-center gap-1.5">
+                    <div className="text-sm font-serif font-bold text-[#E6D3A3] flex items-center gap-1.5">
                       <span>Tặng 6 Lần Bốc Quẻ Hỏi Sự</span>
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-700/60 font-mono font-normal">Trị giá 3.000.000 VNĐ</span>
                     </div>
@@ -1173,7 +1035,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
                     <Percent className="w-5 h-5 text-rose-300" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-sm font-serif font-bold text-[#FFE8A3] flex items-center gap-1.5">
+                    <div className="text-sm font-serif font-bold text-[#E6D3A3] flex items-center gap-1.5">
                       <span>Giảm Giá 20% Tất Cả Dịch Vụ Khác</span>
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-700/60 font-mono font-normal">Tiết kiệm lớn</span>
                     </div>
@@ -1191,7 +1053,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
                 <span className="text-[11px] font-serif uppercase tracking-wider text-[#A89882] block">
                   {isMember ? "Trạng Thái Tài Khoản" : "Phí Hội Viên Thường Niên"}
                 </span>
-                <div className="text-3xl sm:text-4xl font-serif font-black text-transparent bg-clip-text bg-gradient-to-r from-[#FFF0C8] via-[#FFE28A] to-[#D4AF37] mt-1">
+                <div className="font-display text-4xl sm:text-5xl font-semibold text-gold-300 mt-1">
                   {isMember ? "ĐÃ KÍCH HOẠT" : "1.000.000 VNĐ"}
                 </div>
                 <div className="text-xs font-serif font-bold text-amber-300/90 mt-0.5">
@@ -1221,7 +1083,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
                     onClick={() => {
                       if (onOpenAuthModal) onOpenAuthModal("register");
                     }}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#F2D075] to-[#B38728] hover:brightness-110 active:scale-95 text-[#120F0C] font-serif font-bold text-xs shadow-lg shadow-amber-950/70 transition-all cursor-pointer text-center"
+                    className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#C9A55A] via-[#F2D075] to-[#B38728] hover:brightness-110 active:scale-95 text-[#120F0C] font-serif font-bold text-xs shadow-lg shadow-amber-950/70 transition-all cursor-pointer text-center"
                   >
                     <Crown className="w-4 h-4 shrink-0 text-[#120F0C]" />
                     <span>Đăng Ký Hội Viên Trên Web</span>
@@ -1235,8 +1097,8 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
                   onClick={handleRegisterMembership}
                   className={`w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-serif font-bold text-xs shadow-md transition-all cursor-pointer text-center ${
                     isMember
-                      ? "bg-gradient-to-r from-[#D4AF37] to-[#B38728] text-[#120F0C] hover:brightness-110"
-                      : "bg-[#251A10] hover:bg-[#342417] text-[#FFE8A3] border border-[#5C4124]"
+                      ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F0C] hover:brightness-110"
+                      : "bg-[#251A10] hover:bg-[#342417] text-[#E6D3A3] border border-[#5C4124]"
                   }`}
                   title={`Nhấn để tự động copy thông tin đăng ký thành viên 1.000.000 VNĐ/năm và nhảy qua Zalo số ${ZALO_PHONE}`}
                 >
@@ -1254,14 +1116,13 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
       </section>
 
       {/* ================= CỬU NHỊ PHILOSOPHY FOOTER BANNER ================= */}
-      <section className="p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-[#171008] via-[#20150B] to-[#171008] border border-[#442F18] text-center space-y-3">
-        <div className="text-amber-400 text-xs font-serif tracking-widest uppercase">
-          ✦ Ý NGHĨA DANH XƯNG CỬU NHỊ (玖貳) ✦
-        </div>
-        <div className="text-base sm:text-lg font-serif font-bold text-[#F5EAD4] italic max-w-2xl mx-auto">
+      <section className="py-10 sm:py-14 text-center space-y-5 border-t border-gold-800/80">
+        <div className="royal-eyebrow">Ý nghĩa danh xưng · 玖貳</div>
+        <span className="royal-seal !flex w-12 h-12 text-base [writing-mode:vertical-rl] mx-auto">玖貳</span>
+        <div className="font-display italic text-2xl sm:text-[2rem] leading-snug text-ivory-100 max-w-2xl mx-auto">
           "Cửu Nhị: Hiện long tại điền, lợi kiến đại nhân."
         </div>
-        <div className="text-xs text-[#B8A790] font-serif max-w-2xl mx-auto leading-relaxed">
+        <div className="text-sm text-ivory-500 font-serif max-w-xl mx-auto leading-relaxed">
           Trong Kinh Dịch, hào Cửu Nhị của quẻ Càn là rồng đã hiện ra trên đồng ruộng, đức trạch bao la, người quân tử giữ lòng chân chính để phụng sự đạo lý, hướng tới sự hanh thông và trí tuệ sáng suốt.
         </div>
       </section>
@@ -1336,7 +1197,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
                               if (el) el.scrollIntoView({ behavior: "smooth" });
                             }
                           }}
-                          className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#B38728] text-[#120F0C] text-[10px] font-serif font-bold shrink-0 cursor-pointer shadow-xs whitespace-nowrap"
+                          className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F0C] text-[10px] font-serif font-bold shrink-0 cursor-pointer shadow-xs whitespace-nowrap"
                         >
                           Đăng ký Hội Viên
                         </button>
@@ -1363,7 +1224,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
                   placeholder="Ví dụ: Nguyễn Văn An"
-                  className="w-full px-3.5 py-2 rounded-xl bg-[#140E08] border border-[#48331A] text-sm text-[#F5EAD4] placeholder-[#705C48] focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full px-3.5 py-2 rounded-xl bg-[#140E08] border border-[#48331A] text-sm text-[#F5EAD4] placeholder-[#705C48] focus:outline-none focus:border-[#C9A55A]"
                 />
               </div>
 
@@ -1376,7 +1237,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
                   value={customerContact}
                   onChange={(e) => setCustomerContact(e.target.value)}
                   placeholder="Ví dụ: 0912 345 678"
-                  className="w-full px-3.5 py-2 rounded-xl bg-[#140E08] border border-[#48331A] text-sm text-[#F5EAD4] placeholder-[#705C48] focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full px-3.5 py-2 rounded-xl bg-[#140E08] border border-[#48331A] text-sm text-[#F5EAD4] placeholder-[#705C48] focus:outline-none focus:border-[#C9A55A]"
                 />
               </div>
 
@@ -1389,7 +1250,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
                   value={customerNote}
                   onChange={(e) => setCustomerNote(e.target.value)}
                   placeholder="Quý khách vui lòng ghi tóm tắt yêu cầu (năm sinh âm/dương lịch, địa chỉ khảo sát, số lượng câu hỏi, v.v.)..."
-                  className="w-full px-3.5 py-2 rounded-xl bg-[#140E08] border border-[#48331A] text-sm text-[#F5EAD4] placeholder-[#705C48] focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full px-3.5 py-2 rounded-xl bg-[#140E08] border border-[#48331A] text-sm text-[#F5EAD4] placeholder-[#705C48] focus:outline-none focus:border-[#C9A55A]"
                 />
               </div>
             </div>
@@ -1401,7 +1262,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={handleDirectZaloFromModal}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E5BF62] to-[#B38728] text-[#120F0C] font-serif font-bold text-sm shadow-lg shadow-amber-950/60 hover:brightness-110 active:scale-95 transition-all cursor-pointer text-center"
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-[#C9A55A] via-[#D6B97A] to-[#B38728] text-[#120F0C] font-serif font-bold text-sm shadow-lg shadow-amber-950/60 hover:brightness-110 active:scale-95 transition-all cursor-pointer text-center"
               >
                 <MessageSquare className="w-4 h-4 shrink-0" />
                 <span>Nhảy Qua Zalo ({ZALO_PHONE}) & Gửi Yêu Cầu</span>
@@ -1411,7 +1272,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
                 <button
                   type="button"
                   onClick={handleCopyConsultation}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-[#20160E] hover:bg-[#2C1E14] text-[#FFE28A] border border-[#523A1F] font-serif font-semibold text-xs transition-all cursor-pointer"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-[#20160E] hover:bg-[#2C1E14] text-[#E6D3A3] border border-[#523A1F] font-serif font-semibold text-xs transition-all cursor-pointer"
                 >
                   {copiedInfo ? (
                     <>
@@ -1436,7 +1297,7 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
               </div>
 
               <p className="text-[11px] text-[#A89882] font-serif text-center pt-1">
-                Khi nhấn <strong className="text-[#FFE28A]">"Nhảy Qua Zalo"</strong>, hệ thống tự động sao chép thông tin vào bộ nhớ tạm và mở ngay Zalo tới số <strong className="text-emerald-400">{ZALO_PHONE}</strong>. Quý khách chỉ cần chọn Dán (Paste) để gửi.
+                Khi nhấn <strong className="text-[#E6D3A3]">"Nhảy Qua Zalo"</strong>, hệ thống tự động sao chép thông tin vào bộ nhớ tạm và mở ngay Zalo tới số <strong className="text-emerald-400">{ZALO_PHONE}</strong>. Quý khách chỉ cần chọn Dán (Paste) để gửi.
               </p>
             </div>
           </div>

@@ -215,7 +215,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
       {/* History List Content */}
       {filteredRecords.length === 0 ? (
         <div className="bg-[#171512] border border-[#3A3225] rounded-2xl p-12 text-center text-[#8C7D6A]">
-          <div className="w-14 h-14 mx-auto rounded-full bg-[#201B15] border border-[#382E22] flex items-center justify-center text-[#D4AF37] mb-3">
+          <div className="w-14 h-14 mx-auto rounded-full bg-[#201B15] border border-[#382E22] flex items-center justify-center text-[#C9A55A] mb-3">
             <BookmarkCheck className="w-6 h-6" />
           </div>
           <h4 className="font-serif text-[#EDE0C9] text-base font-bold mb-1">
@@ -246,7 +246,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
                   <div>
                     <div className="flex items-center gap-2 text-[11px] text-[#8C7F6E] mb-1">
                       <span className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3 text-[#D4AF37]" />
+                        <Calendar className="w-3 h-3 text-[#C9A55A]" />
                         {formattedDate}
                       </span>
                       <span>•</span>
@@ -256,42 +256,42 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
                       {record.drawnCards && (record.spreadType === "custom" || record.customPositions || (record.drawnCards.length !== 1 && record.drawnCards.length !== 2 && record.drawnCards.length !== 3 && record.drawnCards.length !== 7 && record.drawnCards.length !== 10)) ? (
                         <>
                           <span>•</span>
-                          <span className="text-[10px] text-[#D4AF37] font-semibold bg-[#261E14] px-1.5 py-0.5 rounded border border-[#443522]">
+                          <span className="text-[10px] text-[#C9A55A] font-semibold bg-[#261E14] px-1.5 py-0.5 rounded border border-[#443522]">
                             Trận Tùy Chỉnh ({record.drawnCards.length} Lá)
                           </span>
                         </>
                       ) : record.drawnCards && (record.spreadType === "seven_stars" || record.drawnCards.length === 7) ? (
                         <>
                           <span>•</span>
-                          <span className="text-[10px] text-[#D4AF37] font-semibold bg-[#261E14] px-1.5 py-0.5 rounded border border-[#443522]">
+                          <span className="text-[10px] text-[#C9A55A] font-semibold bg-[#261E14] px-1.5 py-0.5 rounded border border-[#443522]">
                             Thất Tinh Trận (7 Lá)
                           </span>
                         </>
                       ) : record.drawnCards && (record.spreadType === "nine_palaces" || record.drawnCards.length === 9) ? (
                         <>
                           <span>•</span>
-                          <span className="text-[10px] text-[#D4AF37] font-semibold bg-[#261E14] px-1.5 py-0.5 rounded border border-[#443522]">
+                          <span className="text-[10px] text-[#C9A55A] font-semibold bg-[#261E14] px-1.5 py-0.5 rounded border border-[#443522]">
                             Cửu Cung Phong Thủy (9 Lá)
                           </span>
                         </>
                       ) : record.drawnCards && (record.spreadType === "ten_stars_expanded" || record.drawnCards.length === 11) ? (
                         <>
                           <span>•</span>
-                          <span className="text-[10px] text-[#D4AF37] font-semibold bg-[#261E14] px-1.5 py-0.5 rounded border border-[#443522]">
+                          <span className="text-[10px] text-[#C9A55A] font-semibold bg-[#261E14] px-1.5 py-0.5 rounded border border-[#443522]">
                             Thập Tinh Mở Rộng (11 Lá: 2A & 2B)
                           </span>
                         </>
                       ) : record.drawnCards && (record.spreadType === "ten_stars" || record.drawnCards.length === 10) ? (
                         <>
                           <span>•</span>
-                          <span className="text-[10px] text-[#D4AF37] font-semibold bg-[#261E14] px-1.5 py-0.5 rounded border border-[#443522]">
+                          <span className="text-[10px] text-[#C9A55A] font-semibold bg-[#261E14] px-1.5 py-0.5 rounded border border-[#443522]">
                             Thập Tinh Trận (10 Lá)
                           </span>
                         </>
                       ) : record.drawnCards && record.drawnCards.length === 3 ? (
                         <>
                           <span>•</span>
-                          <span className="text-[10px] text-[#D4AF37] font-semibold bg-[#261E14] px-1.5 py-0.5 rounded border border-[#443522]">
+                          <span className="text-[10px] text-[#C9A55A] font-semibold bg-[#261E14] px-1.5 py-0.5 rounded border border-[#443522]">
                             {record.threeMode === "choice_abc"
                               ? `3 Lựa chọn: ${record.choiceALabel || "A"} • ${record.choiceBLabel || "B"} • ${record.choiceCLabel || "C"}`
                               : record.threeMode === "tam_tai"
@@ -302,14 +302,14 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
                       ) : record.doubleMode === "choice_ab" ? (
                         <>
                           <span>•</span>
-                          <span className="text-[10px] text-[#D4AF37] font-semibold bg-[#261E14] px-1.5 py-0.5 rounded border border-[#443522]">
+                          <span className="text-[10px] text-[#C9A55A] font-semibold bg-[#261E14] px-1.5 py-0.5 rounded border border-[#443522]">
                             So sánh: {record.choiceALabel || "A"} vs {record.choiceBLabel || "B"}
                           </span>
                         </>
                       ) : record.doubleMode === "present_future" ? (
                         <>
                           <span>•</span>
-                          <span className="text-[10px] text-[#D4AF37] font-semibold bg-[#261E14] px-1.5 py-0.5 rounded border border-[#443522]">
+                          <span className="text-[10px] text-[#C9A55A] font-semibold bg-[#261E14] px-1.5 py-0.5 rounded border border-[#443522]">
                             Hiện tại & Tương lai
                           </span>
                         </>
@@ -353,7 +353,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
                       className={`p-2 rounded-lg border transition-colors cursor-pointer ${
                         record.isFavorite
                           ? "bg-amber-950/80 text-amber-300 border-amber-800"
-                          : "bg-[#201B15] text-[#7A6E5E] hover:text-[#D4AF37] border-[#382E22]"
+                          : "bg-[#201B15] text-[#7A6E5E] hover:text-[#C9A55A] border-[#382E22]"
                       }`}
                     >
                       <Star className={`w-4 h-4 ${record.isFavorite ? "fill-amber-400" : ""}`} />
@@ -396,7 +396,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
                             />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <div className="text-[9px] font-mono font-bold text-[#D4AF37] truncate" title={posLabel}>
+                            <div className="text-[9px] font-mono font-bold text-[#C9A55A] truncate" title={posLabel}>
                               {posLabel}
                             </div>
                             <h5 className="font-serif font-bold text-[#EFE2CC] text-xs truncate">
@@ -463,7 +463,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
                             />
                           </div>
                           <div className="min-w-0">
-                            <div className="text-[9px] uppercase font-mono font-bold text-[#D4AF37] truncate">
+                            <div className="text-[9px] uppercase font-mono font-bold text-[#C9A55A] truncate">
                               {posName}
                             </div>
                             <h5 className="font-serif font-bold text-[#EFE2CC] text-xs truncate">
@@ -490,7 +490,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
                           />
                         </div>
                         <div className="min-w-0">
-                          <div className="text-[10px] uppercase font-mono font-bold text-[#D4AF37] truncate">
+                          <div className="text-[10px] uppercase font-mono font-bold text-[#C9A55A] truncate">
                             {record.threeMode === "choice_abc"
                               ? idx === 0
                                 ? `Lá 1: [A] ${record.choiceALabel || "Lựa chọn A"}`
@@ -528,7 +528,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
                         />
                       </div>
                       <div>
-                        <div className="text-[10px] uppercase font-mono text-[#D4AF37] truncate max-w-[200px]">
+                        <div className="text-[10px] uppercase font-mono text-[#C9A55A] truncate max-w-[200px]">
                           {record.doubleMode === "choice_ab"
                             ? `Lựa chọn A: ${record.choiceALabel || "Phương án A"}`
                             : record.doubleMode === "present_future"
@@ -604,14 +604,14 @@ export const HistoryView: React.FC<HistoryViewProps> = ({
                   ) : (
                     <div className="flex items-center justify-between text-xs text-[#A89A84]">
                       <div className="flex items-center gap-1.5 italic truncate max-w-lg">
-                        <Edit3 className="w-3.5 h-3.5 text-[#D4AF37] flex-shrink-0" />
+                        <Edit3 className="w-3.5 h-3.5 text-[#C9A55A] flex-shrink-0" />
                         <span className="truncate">
                           {record.notes ? `"${record.notes}"` : "Chưa có ghi chú nghiệm quẻ."}
                         </span>
                       </div>
                       <button
                         onClick={() => handleStartEditNote(record)}
-                        className="text-[11px] text-[#D4AF37] hover:underline flex-shrink-0 cursor-pointer"
+                        className="text-[11px] text-[#C9A55A] hover:underline flex-shrink-0 cursor-pointer"
                       >
                         {record.notes ? "Sửa ghi chú" : "+ Viết nghiệm quẻ"}
                       </button>

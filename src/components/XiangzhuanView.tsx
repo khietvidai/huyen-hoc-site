@@ -56,12 +56,12 @@ export const XiangzhuanView: React.FC<XiangzhuanViewProps> = ({
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-[#332617] pb-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-[#261C12] border border-[#523E28] flex items-center justify-center text-[#D4AF37] shrink-0">
+          <div className="w-8 h-8 rounded-xl bg-[#261C12] border border-[#523E28] flex items-center justify-center text-[#C9A55A] shrink-0">
             <Scroll className="w-4 h-4" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-mono font-bold text-[#D4AF37] uppercase tracking-wider bg-[#261C12] px-2 py-0.5 rounded border border-[#3E2E1D]">
+              <span className="text-[10px] font-mono font-bold text-[#C9A55A] uppercase tracking-wider bg-[#261C12] px-2 py-0.5 rounded border border-[#3E2E1D]">
                 Thập Dực • Khổng Tử
               </span>
               <span className="text-[10px] font-mono text-[#A89882]">Quẻ #{data.number}</span>
@@ -80,8 +80,8 @@ export const XiangzhuanView: React.FC<XiangzhuanViewProps> = ({
               onClick={() => setActiveTab("all")}
               className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
                 activeTab === "all"
-                  ? "bg-[#D4AF37] text-[#14100C] font-bold shadow"
-                  : "text-[#8C7A65] hover:text-[#D4AF37]"
+                  ? "bg-[#C9A55A] text-[#14100C] font-bold shadow"
+                  : "text-[#8C7A65] hover:text-[#C9A55A]"
               }`}
             >
               Tất Cả
@@ -91,8 +91,8 @@ export const XiangzhuanView: React.FC<XiangzhuanViewProps> = ({
               onClick={() => setActiveTab("daxiang")}
               className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
                 activeTab === "daxiang"
-                  ? "bg-[#D4AF37] text-[#14100C] font-bold shadow"
-                  : "text-[#8C7A65] hover:text-[#D4AF37]"
+                  ? "bg-[#C9A55A] text-[#14100C] font-bold shadow"
+                  : "text-[#8C7A65] hover:text-[#C9A55A]"
               }`}
             >
               Đại Tượng
@@ -102,8 +102,8 @@ export const XiangzhuanView: React.FC<XiangzhuanViewProps> = ({
               onClick={() => setActiveTab("xiaoxiang")}
               className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
                 activeTab === "xiaoxiang"
-                  ? "bg-[#D4AF37] text-[#14100C] font-bold shadow"
-                  : "text-[#8C7A65] hover:text-[#D4AF37]"
+                  ? "bg-[#C9A55A] text-[#14100C] font-bold shadow"
+                  : "text-[#8C7A65] hover:text-[#C9A55A]"
               }`}
             >
               Tiểu Tượng (6 Hào)
@@ -126,14 +126,14 @@ export const XiangzhuanView: React.FC<XiangzhuanViewProps> = ({
         <div className="bg-[#15110D] border border-[#3A2C1B] rounded-xl p-4 space-y-3">
           <div className="flex items-center justify-between border-b border-[#281D13] pb-2">
             <span className="text-xs font-serif font-bold text-[#E5C378] flex items-center gap-1.5 uppercase tracking-wide">
-              <Layers className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <Layers className="w-3.5 h-3.5 text-[#C9A55A]" />
               🏛️ Đại Tượng Truyện (大象傳 - Toàn Quẻ)
             </span>
             <span className="text-[10px] font-mono text-[#8C7A65]">Đạo Quân Tử & Quản Trị</span>
           </div>
 
           {/* Nguyên văn chữ Hán Việt */}
-          <div className="bg-[#1D1610] p-3 rounded-lg border-l-3 border-[#D4AF37] border-y border-r border-[#362719]">
+          <div className="bg-[#1D1610] p-3 rounded-lg border-l-3 border-[#C9A55A] border-y border-r border-[#362719]">
             <span className="text-[10px] font-mono text-[#A89882] block mb-0.5 uppercase tracking-wider">
               Nguyên Văn Tượng Viết (Hán Việt):
             </span>
@@ -144,7 +144,7 @@ export const XiangzhuanView: React.FC<XiangzhuanViewProps> = ({
 
           {/* Dịch nghĩa */}
           <div className="text-xs font-serif text-[#DCD1BC] pl-2 border-l border-[#3D2E1E]">
-            <strong className="text-[#D4AF37]">Dịch nghĩa: </strong>
+            <strong className="text-[#C9A55A]">Dịch nghĩa: </strong>
             <span>{data.daxiang.meaning}</span>
           </div>
 
@@ -163,7 +163,7 @@ export const XiangzhuanView: React.FC<XiangzhuanViewProps> = ({
         <div className="bg-[#15110D] border border-[#3A2C1B] rounded-xl p-4 space-y-3.5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#281D13] pb-2">
             <span className="text-xs font-serif font-bold text-[#E5C378] flex items-center gap-1.5 uppercase tracking-wide">
-              <Scroll className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <Scroll className="w-3.5 h-3.5 text-[#C9A55A]" />
               📜 Tiểu Tượng Truyện (小象傳 - Giải Thích Từng Hào)
             </span>
 
@@ -175,7 +175,7 @@ export const XiangzhuanView: React.FC<XiangzhuanViewProps> = ({
                 onClick={() => setSelectedLine("all")}
                 className={`px-2 py-0.5 rounded transition-all cursor-pointer ${
                   selectedLine === "all"
-                    ? "bg-[#D4AF37] text-[#14100C] font-bold"
+                    ? "bg-[#C9A55A] text-[#14100C] font-bold"
                     : "bg-[#201811] text-[#A89882] hover:text-[#FFF]"
                 }`}
               >
@@ -193,9 +193,9 @@ export const XiangzhuanView: React.FC<XiangzhuanViewProps> = ({
                       selectedLine === l
                         ? isSpecial
                           ? "bg-gradient-to-r from-amber-400 to-yellow-300 text-black font-black"
-                          : "bg-[#D4AF37] text-[#14100C] font-bold"
+                          : "bg-[#C9A55A] text-[#14100C] font-bold"
                         : isSpecial
-                        ? "bg-[#2F1F0E] text-[#FFD770] border border-[#D4AF37]/60"
+                        ? "bg-[#2F1F0E] text-[#FFD770] border border-[#C9A55A]/60"
                         : "bg-[#201811] text-[#A89882] hover:text-[#FFF]"
                     }`}
                     title={isSpecial ? lx.lineName : `Hào ${l}`}
@@ -236,7 +236,7 @@ export const XiangzhuanView: React.FC<XiangzhuanViewProps> = ({
                           ({isYang ? "Hào Dương —" : "Hào Âm - -"})
                         </span>
                       </div>
-                      <span className="text-[10px] font-mono text-[#D4AF37] bg-[#22180F] px-2 py-0.5 rounded border border-[#3D2C1A]">
+                      <span className="text-[10px] font-mono text-[#C9A55A] bg-[#22180F] px-2 py-0.5 rounded border border-[#3D2C1A]">
                         Tiểu Tượng Hào {line.line}
                       </span>
                     </div>
@@ -248,7 +248,7 @@ export const XiangzhuanView: React.FC<XiangzhuanViewProps> = ({
                       if (!yaoHanzi) return null;
                       return (
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="bg-[#2B1B0E] text-[#FDE59C] border border-[#D4AF37] px-2.5 py-0.5 rounded font-serif font-bold text-xs tracking-wider shadow-sm">
+                          <span className="bg-[#2B1B0E] text-[#FDE59C] border border-[#C9A55A] px-2.5 py-0.5 rounded font-serif font-bold text-xs tracking-wider shadow-sm">
                             【 {yaoHanzi} 】
                           </span>
                           <span className="text-[10px] font-mono text-[#A89882]">Hán tự Lời Hào</span>
@@ -257,7 +257,7 @@ export const XiangzhuanView: React.FC<XiangzhuanViewProps> = ({
                     })()}
 
                     {/* Lời Tượng */}
-                    <div className="text-xs font-serif text-[#F0E4CE] italic pl-2.5 border-l-2 border-[#D4AF37]">
+                    <div className="text-xs font-serif text-[#F0E4CE] italic pl-2.5 border-l-2 border-[#C9A55A]">
                       {line.xiangOriginal}
                     </div>
 

@@ -230,13 +230,13 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
       {/* 1. TOP ALTAR: THÁI CỰ ĐỆ NHẤT CỌNG (CẤT RIÊNG 1 CỌNG BẤT BIẾN) */}
       <div className="mb-4 bg-[#1E160F] border border-[#523A20] rounded-xl p-2.5 sm:p-3 flex items-center justify-between gap-3 shadow-md">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-[#2C1F13] border border-[#D4AF37] flex items-center justify-center text-sm shadow">
+          <div className="w-8 h-8 rounded-full bg-[#2C1F13] border border-[#C9A55A] flex items-center justify-center text-sm shadow">
             ☯
           </div>
           <div>
             <div className="text-xs sm:text-sm font-serif font-bold text-[#F3E5CD] flex items-center gap-1.5">
               <span>Thái Cực Bất Biến</span>
-              <span className="text-[10px] font-mono text-[#D4AF37] bg-[#291A0E] px-1.5 py-0.2 rounded border border-[#583719]">
+              <span className="text-[10px] font-mono text-[#C9A55A] bg-[#291A0E] px-1.5 py-0.2 rounded border border-[#583719]">
                 Cất riêng 1 cọng
               </span>
             </div>
@@ -249,36 +249,36 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
         <div className="shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#271C11] border border-[#6B4B27]">
           {/* Miniature horizontal Taiji Stalk */}
           <div className="w-12 sm:w-16 h-2 bg-gradient-to-r from-[#946F28] via-[#FFE69A] to-[#946F28] rounded-full shadow-[0_0_8px_rgba(212,175,55,0.6)]" />
-          <span className="text-[10px] font-mono font-bold text-[#FFE28A]">1 Cọng</span>
+          <span className="text-[10px] font-mono font-bold text-[#E6D3A3]">1 Cọng</span>
         </div>
       </div>
 
       {/* 2. RITUAL STATUS BREADCRUMB */}
       <div className="mb-3 flex items-center justify-between gap-2 flex-wrap border-b border-[#302214] pb-2">
         <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#D4AF37] shadow-[0_0_8px_#D4AF37]" />
+          <span className="w-2.5 h-2.5 rounded-full bg-[#C9A55A] shadow-[0_0_8px_#C9A55A]" />
           <h4 className="text-xs sm:text-sm font-serif font-bold text-[#F4E8D3]">
             BÓ CỎ THI TRONG TAY ({stalksCount} CỌNG) • HÀO {currentLineIndex} • BIẾN {currentBianStep}/3
           </h4>
         </div>
-        <div className="flex items-center gap-1.5 text-[11px] font-mono text-[#D4AF37]">
-          <span className={ritualPhase === "split" ? "font-bold text-[#FFE28A]" : "text-[#7D6B57]"}>
+        <div className="flex items-center gap-1.5 text-[11px] font-mono text-[#C9A55A]">
+          <span className={ritualPhase === "split" ? "font-bold text-[#E6D3A3]" : "text-[#7D6B57]"}>
             1. Phân Lưỡng Nghi
           </span>
           <span>➔</span>
-          <span className={ritualPhase === "quai_nhat" ? "font-bold text-[#FFE28A]" : "text-[#7D6B57]"}>
+          <span className={ritualPhase === "quai_nhat" ? "font-bold text-[#E6D3A3]" : "text-[#7D6B57]"}>
             2. Quải Nhất
           </span>
           <span>➔</span>
-          <span className={ritualPhase === "count_left" ? "font-bold text-[#FFE28A]" : "text-[#7D6B57]"}>
+          <span className={ritualPhase === "count_left" ? "font-bold text-[#E6D3A3]" : "text-[#7D6B57]"}>
             3. Rút Bó Trái
           </span>
           <span>➔</span>
-          <span className={ritualPhase === "count_right" ? "font-bold text-[#FFE28A]" : "text-[#7D6B57]"}>
+          <span className={ritualPhase === "count_right" ? "font-bold text-[#E6D3A3]" : "text-[#7D6B57]"}>
             4. Rút Bó Phải
           </span>
           <span>➔</span>
-          <span className={ritualPhase === "summary" ? "font-bold text-[#FFE28A]" : "text-[#7D6B57]"}>
+          <span className={ritualPhase === "summary" ? "font-bold text-[#E6D3A3]" : "text-[#7D6B57]"}>
             5. Gom Nhuận
           </span>
         </div>
@@ -299,7 +299,7 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
                 }}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-serif font-bold transition-all cursor-pointer ${
                   splitMode === "random"
-                    ? "bg-gradient-to-r from-[#9C7026] to-[#C99833] text-[#14100C] shadow-md border border-[#FFE28A]"
+                    ? "bg-gradient-to-r from-[#9C7026] to-[#C99833] text-[#14100C] shadow-md border border-[#E6D3A3]"
                     : "text-[#A89882] hover:text-[#FFF]"
                 }`}
                 title="Bó Trái & Phải tự động chạy số ngẫu nhiên liên tục, người chiêm chạm để dừng bắt điểm phân"
@@ -319,7 +319,7 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
                 }}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-serif font-bold transition-all cursor-pointer ${
                   splitMode === "manual"
-                    ? "bg-gradient-to-r from-[#9C7026] to-[#C99833] text-[#14100C] shadow-md border border-[#FFE28A]"
+                    ? "bg-gradient-to-r from-[#9C7026] to-[#C99833] text-[#14100C] shadow-md border border-[#E6D3A3]"
                     : "text-[#A89882] hover:text-[#FFF]"
                 }`}
                 title="Tự tay vuốt hoặc chạm trực tiếp vào cọng cỏ trên đài để chọn chính xác điểm phân"
@@ -332,8 +332,8 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
             <div className="text-[11px] font-serif text-[#CBB99E] italic">
               {splitMode === "random" ? (
                 isRandomRunning ? (
-                  <span className="text-[#FFE28A] flex items-center gap-1.5 animate-pulse">
-                    <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+                  <span className="text-[#E6D3A3] flex items-center gap-1.5 animate-pulse">
+                    <Sparkles className="w-3 h-3 text-[#C9A55A]" />
                     Vận khí đang chạy ngẫu nhiên... Chạm vào đài để dừng!
                   </span>
                 ) : (
@@ -364,7 +364,7 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
                   <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-ping" />
                 )}
               </div>
-              <span className="text-base sm:text-xl font-mono font-bold text-[#FFE28A] transition-all">
+              <span className="text-base sm:text-xl font-mono font-bold text-[#E6D3A3] transition-all">
                 {leftInitial} cọng
               </span>
             </div>
@@ -382,7 +382,7 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
                 )}
               </div>
-              <span className="text-base sm:text-xl font-mono font-bold text-[#FFE28A] transition-all">
+              <span className="text-base sm:text-xl font-mono font-bold text-[#E6D3A3] transition-all">
                 {rightInitial} cọng
               </span>
             </div>
@@ -396,8 +396,8 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
             onClick={handleBoardClick}
             className={`relative w-full h-36 sm:h-44 bg-gradient-to-b from-[#1E1710] to-[#120D08] border-2 rounded-2xl p-2 sm:p-4 select-none cursor-pointer transition-all overflow-hidden flex items-end justify-center shadow-xl ${
               splitMode === "random" && isRandomRunning
-                ? "border-[#D4AF37] shadow-[0_0_25px_rgba(212,175,55,0.4)] animate-pulse"
-                : "border-[#5A4126] hover:border-[#D4AF37]"
+                ? "border-[#C9A55A] shadow-[0_0_25px_rgba(212,175,55,0.4)] animate-pulse"
+                : "border-[#5A4126] hover:border-[#C9A55A]"
             }`}
             title={
               splitMode === "random"
@@ -421,8 +421,8 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
                         : isHovering
                         ? "bg-gradient-to-t from-[#6E4E20] via-amber-300 to-[#FFF0B0] -translate-y-1 shadow-[0_0_6px_rgba(245,158,11,0.5)]"
                         : isLeftGroup
-                        ? "bg-gradient-to-t from-[#523814] via-[#D4AF37] to-[#FFF0B0]"
-                        : "bg-gradient-to-t from-[#422D12] via-[#C59B35] to-[#FFE8A3]"
+                        ? "bg-gradient-to-t from-[#523814] via-[#C9A55A] to-[#FFF0B0]"
+                        : "bg-gradient-to-t from-[#422D12] via-[#C59B35] to-[#E6D3A3]"
                     }`}
                     style={{
                       height: `${75 + Math.sin((idx / stalksCount) * Math.PI) * 25}%`,
@@ -431,7 +431,7 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
                     <div className="absolute top-1/4 left-0 right-0 h-0.5 bg-[#422B10]" />
                     <div className="absolute top-2/3 left-0 right-0 h-0.5 bg-[#422B10]" />
                     {isSplitPoint && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#FFE28A] shadow-[0_0_10px_#FFE28A] animate-ping" />
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[#E6D3A3] shadow-[0_0_10px_#E6D3A3] animate-ping" />
                     )}
                   </div>
                 );
@@ -446,10 +446,10 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
                 transform: "translateX(-50%)",
               }}
             >
-              <div className="px-2 py-0.5 rounded-full bg-[#2A1D0E] border border-[#FFE28A] text-[#FFE28A] font-mono text-[9px] font-bold shadow-lg whitespace-nowrap -mt-1">
+              <div className="px-2 py-0.5 rounded-full bg-[#2A1D0E] border border-[#E6D3A3] text-[#E6D3A3] font-mono text-[9px] font-bold shadow-lg whitespace-nowrap -mt-1">
                 {splitMode === "random" && isRandomRunning ? "⚡ Luân Chuyển..." : "Điểm Phân ➔"}
               </div>
-              <div className="w-0.5 h-full bg-gradient-to-b from-[#FFE28A] via-[#D4AF37] to-transparent shadow-[0_0_12px_#FFE28A]" />
+              <div className="w-0.5 h-full bg-gradient-to-b from-[#E6D3A3] via-[#C9A55A] to-transparent shadow-[0_0_12px_#E6D3A3]" />
             </div>
           </div>
 
@@ -463,7 +463,7 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
                     setIsRandomRunning(false);
                     zenAudio.playCardDrawSound();
                   }}
-                  className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#9C7026] via-[#E2B755] to-[#9C7026] hover:brightness-115 active:scale-95 text-[#14100C] font-bold font-serif text-sm sm:text-base rounded-2xl shadow-[0_0_30px_rgba(212,175,55,0.6)] transition-all flex items-center justify-center gap-2.5 cursor-pointer animate-pulse"
+                  className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#9C7026] via-[#D6B97A] to-[#9C7026] hover:brightness-115 active:scale-95 text-[#14100C] font-bold font-serif text-sm sm:text-base rounded-2xl shadow-[0_0_30px_rgba(212,175,55,0.6)] transition-all flex items-center justify-center gap-2.5 cursor-pointer animate-pulse"
                 >
                   <Sparkles className="w-5 h-5 text-[#14100C] animate-spin" />
                   <span>
@@ -489,10 +489,10 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
                       setIsRandomRunning(true);
                       zenAudio.playYarrowStalkRustle();
                     }}
-                    className="flex items-center gap-1.5 px-4 py-3 rounded-xl text-xs font-serif bg-[#241A12] hover:bg-[#342417] text-[#FFE28A] border border-[#523A21] cursor-pointer shadow active:scale-95"
+                    className="flex items-center gap-1.5 px-4 py-3 rounded-xl text-xs font-serif bg-[#241A12] hover:bg-[#342417] text-[#E6D3A3] border border-[#523A21] cursor-pointer shadow active:scale-95"
                     title="Tiếp tục để số cọng chạy ngẫu nhiên"
                   >
-                    <RefreshCw className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    <RefreshCw className="w-3.5 h-3.5 text-[#C9A55A]" />
                     <span>Chạy tiếp ngẫu nhiên</span>
                   </button>
                 </div>
@@ -501,7 +501,7 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
               <button
                 type="button"
                 onClick={handleConfirmSplit}
-                className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#9C7026] via-[#E2B755] to-[#9C7026] hover:brightness-115 active:scale-95 text-[#14100C] font-bold font-serif text-sm sm:text-base rounded-2xl shadow-[0_0_25px_rgba(212,175,55,0.45)] transition-all flex items-center justify-center gap-2.5 cursor-pointer"
+                className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#9C7026] via-[#D6B97A] to-[#9C7026] hover:brightness-115 active:scale-95 text-[#14100C] font-bold font-serif text-sm sm:text-base rounded-2xl shadow-[0_0_25px_rgba(212,175,55,0.45)] transition-all flex items-center justify-center gap-2.5 cursor-pointer"
               >
                 <Sparkles className="w-4 h-4 text-[#14100C]" />
                 <span>
@@ -518,7 +518,7 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
       {ritualPhase === "quai_nhat" && (
         <div className="space-y-4 animate-in fade-in duration-300">
           <div className="p-3.5 bg-[#1C150E] border border-[#523A20] rounded-xl text-xs sm:text-sm font-serif text-[#DECAB0] space-y-2">
-            <div className="flex items-center gap-2 text-[#FFE28A] font-bold">
+            <div className="flex items-center gap-2 text-[#E6D3A3] font-bold">
               <span className="text-base">🌾</span>
               <span>Bước 2: Quải Nhất Dĩ Tượng Tam Tài (掛一象三)</span>
             </div>
@@ -530,15 +530,15 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
             <div className="bg-[#15100B] border border-sky-800/40 p-3 rounded-xl">
               <span className="text-[10px] text-sky-400 block font-mono">BÓ TRÁI (THIÊN)</span>
-              <span className="text-lg font-mono font-bold text-[#FFE28A]">{leftInitial} cọng</span>
+              <span className="text-lg font-mono font-bold text-[#E6D3A3]">{leftInitial} cọng</span>
             </div>
-            <div className="bg-[#24170E] border border-[#D4AF37] p-3 rounded-xl shadow-lg ring-1 ring-[#D4AF37]/40">
-              <span className="text-[10px] text-[#FFE28A] block font-mono">KHAY NHÂN (TAM TÀI)</span>
+            <div className="bg-[#24170E] border border-[#C9A55A] p-3 rounded-xl shadow-lg ring-1 ring-[#C9A55A]/40">
+              <span className="text-[10px] text-[#E6D3A3] block font-mono">KHAY NHÂN (TAM TÀI)</span>
               <span className="text-lg font-mono font-bold text-emerald-400 animate-pulse">1 cọng</span>
             </div>
             <div className="bg-[#15100B] border border-amber-800/40 p-3 rounded-xl">
               <span className="text-[10px] text-amber-400 block font-mono">BÓ PHẢI (ĐỊA - SAU KHI BỚT 1)</span>
-              <span className="text-lg font-mono font-bold text-[#FFE28A]">{rightInitial - 1} cọng</span>
+              <span className="text-lg font-mono font-bold text-[#E6D3A3]">{rightInitial - 1} cọng</span>
             </div>
           </div>
 
@@ -546,7 +546,7 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
             <button
               type="button"
               onClick={handleQuaiNhat}
-              className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#9C7026] via-[#E2B755] to-[#9C7026] hover:brightness-115 active:scale-95 text-[#14100C] font-bold font-serif text-sm sm:text-base rounded-2xl shadow-[0_0_25px_rgba(212,175,55,0.45)] transition-all flex items-center justify-center gap-2.5 cursor-pointer"
+              className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#9C7026] via-[#D6B97A] to-[#9C7026] hover:brightness-115 active:scale-95 text-[#14100C] font-bold font-serif text-sm sm:text-base rounded-2xl shadow-[0_0_25px_rgba(212,175,55,0.45)] transition-all flex items-center justify-center gap-2.5 cursor-pointer"
             >
               <Sparkles className="w-4 h-4 text-[#14100C]" />
               <span>✦ Bước 2: Tự Tay Rút 1 Cọng Tượng Nhân (Tam Tài)</span>
@@ -577,7 +577,7 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
             </div>
             <div className="shrink-0 text-right font-mono">
               <span className="text-[10px] text-sky-400 block">BÓ TRÁI CÒN</span>
-              <span className="text-xl font-bold text-[#FFE28A]">{leftRemaining} cọng</span>
+              <span className="text-xl font-bold text-[#E6D3A3]">{leftRemaining} cọng</span>
             </div>
           </div>
 
@@ -585,7 +585,7 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
           <div className="bg-[#120D08] border border-[#3E2C1A] rounded-xl p-3 min-h-[100px]">
             <div className="flex items-center justify-between text-xs font-serif text-[#A89882] mb-2">
               <span>Khay Tứ Thời (Các nhóm 4 cọng Bó Trái đã rút):</span>
-              <span className="font-mono text-[#D4AF37] font-bold">
+              <span className="font-mono text-[#C9A55A] font-bold">
                 Đã rút {leftGroupsPulled} nhóm ({leftGroupsPulled * 4} cọng)
               </span>
             </div>
@@ -609,7 +609,7 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
                         {[0, 1, 2, 3].map((s) => (
                           <div
                             key={s}
-                            className="w-1 h-5 bg-gradient-to-t from-[#7A501C] via-[#E2B755] to-[#FFF0B8] rounded-full"
+                            className="w-1 h-5 bg-gradient-to-t from-[#7A501C] via-[#D6B97A] to-[#FFF0B8] rounded-full"
                           />
                         ))}
                       </div>
@@ -631,7 +631,7 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
                 <button
                   type="button"
                   onClick={handlePullFourLeft}
-                  className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#9C7026] via-[#E2B755] to-[#9C7026] hover:brightness-115 active:scale-95 text-[#14100C] font-bold font-serif text-sm sm:text-base rounded-2xl shadow-[0_0_25px_rgba(212,175,55,0.45)] transition-all flex items-center justify-center gap-2.5 cursor-pointer"
+                  className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#9C7026] via-[#D6B97A] to-[#9C7026] hover:brightness-115 active:scale-95 text-[#14100C] font-bold font-serif text-sm sm:text-base rounded-2xl shadow-[0_0_25px_rgba(212,175,55,0.45)] transition-all flex items-center justify-center gap-2.5 cursor-pointer"
                 >
                   <Layers className="w-4 h-4 text-[#14100C]" />
                   <span>
@@ -641,10 +641,10 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
                 <button
                   type="button"
                   onClick={handleFastForwardLeft}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-serif bg-[#241A12] hover:bg-[#342417] text-[#FFE28A] border border-[#523A21] cursor-pointer shadow active:scale-95"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-serif bg-[#241A12] hover:bg-[#342417] text-[#E6D3A3] border border-[#523A21] cursor-pointer shadow active:scale-95"
                   title="Rút nhanh toàn bộ các nhóm 4 cọng của Bó Trái"
                 >
-                  <Zap className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <Zap className="w-3.5 h-3.5 text-[#C9A55A]" />
                   <span>Rút nhanh Bó Trái</span>
                 </button>
               </>
@@ -680,7 +680,7 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
             </div>
             <div className="shrink-0 text-right font-mono">
               <span className="text-[10px] text-amber-400 block">BÓ PHẢI CÒN</span>
-              <span className="text-xl font-bold text-[#FFE28A]">{rightRemaining} cọng</span>
+              <span className="text-xl font-bold text-[#E6D3A3]">{rightRemaining} cọng</span>
             </div>
           </div>
 
@@ -688,7 +688,7 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
           <div className="bg-[#120D08] border border-[#3E2C1A] rounded-xl p-3 min-h-[100px]">
             <div className="flex items-center justify-between text-xs font-serif text-[#A89882] mb-2">
               <span>Khay Tứ Thời (Các nhóm 4 cọng Bó Phải đã rút):</span>
-              <span className="font-mono text-[#D4AF37] font-bold">
+              <span className="font-mono text-[#C9A55A] font-bold">
                 Đã rút {rightGroupsPulled} nhóm ({rightGroupsPulled * 4} cọng)
               </span>
             </div>
@@ -712,7 +712,7 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
                         {[0, 1, 2, 3].map((s) => (
                           <div
                             key={s}
-                            className="w-1 h-5 bg-gradient-to-t from-[#7A501C] via-[#E2B755] to-[#FFF0B8] rounded-full"
+                            className="w-1 h-5 bg-gradient-to-t from-[#7A501C] via-[#D6B97A] to-[#FFF0B8] rounded-full"
                           />
                         ))}
                       </div>
@@ -734,7 +734,7 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
                 <button
                   type="button"
                   onClick={handlePullFourRight}
-                  className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#9C7026] via-[#E2B755] to-[#9C7026] hover:brightness-115 active:scale-95 text-[#14100C] font-bold font-serif text-sm sm:text-base rounded-2xl shadow-[0_0_25px_rgba(212,175,55,0.45)] transition-all flex items-center justify-center gap-2.5 cursor-pointer"
+                  className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#9C7026] via-[#D6B97A] to-[#9C7026] hover:brightness-115 active:scale-95 text-[#14100C] font-bold font-serif text-sm sm:text-base rounded-2xl shadow-[0_0_25px_rgba(212,175,55,0.45)] transition-all flex items-center justify-center gap-2.5 cursor-pointer"
                 >
                   <Layers className="w-4 h-4 text-[#14100C]" />
                   <span>
@@ -744,10 +744,10 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
                 <button
                   type="button"
                   onClick={handleFastForwardRight}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-serif bg-[#241A12] hover:bg-[#342417] text-[#FFE28A] border border-[#523A21] cursor-pointer shadow active:scale-95"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-serif bg-[#241A12] hover:bg-[#342417] text-[#E6D3A3] border border-[#523A21] cursor-pointer shadow active:scale-95"
                   title="Rút nhanh toàn bộ các nhóm 4 cọng của Bó Phải"
                 >
-                  <Zap className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <Zap className="w-3.5 h-3.5 text-[#C9A55A]" />
                   <span>Rút nhanh Bó Phải</span>
                 </button>
               </>
@@ -772,12 +772,12 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
       {ritualPhase === "summary" && (
         <div className="space-y-4 animate-in fade-in duration-300">
           <div className="p-3.5 bg-[#1B140D] border border-[#6A4621] rounded-xl text-xs sm:text-sm font-serif text-[#DECAB0] space-y-2">
-            <div className="flex items-center justify-between text-[#FFE28A] font-bold border-b border-[#3D2916] pb-1.5">
+            <div className="flex items-center justify-between text-[#E6D3A3] font-bold border-b border-[#3D2916] pb-1.5">
               <span className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                 Kết Quả Tự Tay Rút Biến {currentBianStep}/3 • Hào {currentLineIndex}
               </span>
-              <span className="font-mono text-[#D4AF37]">
+              <span className="font-mono text-[#C9A55A]">
                 Gom {totalRemoved} cọng • Còn {remainingAfterBian} cọng
               </span>
             </div>
@@ -787,7 +787,7 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
                 <span className="text-[10px] text-sky-400 block font-mono">BÓ TRÁI (THIÊN)</span>
                 <p className="text-sky-200 mt-0.5">
                   Khởi đầu {leftInitial} cọng ➔ rút {leftGroupsPulled} nhóm 4, dư{" "}
-                  <strong className="text-[#FFE28A]">{expectedLeftRemainder} cọng</strong>
+                  <strong className="text-[#E6D3A3]">{expectedLeftRemainder} cọng</strong>
                 </p>
               </div>
 
@@ -795,7 +795,7 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
                 <span className="text-[10px] text-amber-400 block font-mono">BÓ PHẢI (ĐỊA)</span>
                 <p className="text-amber-200 mt-0.5">
                   Bớt 1 Nhân, còn {rightInitial - 1} ➔ rút {rightGroupsPulled} nhóm 4, dư{" "}
-                  <strong className="text-[#FFE28A]">{expectedRightRemainder} cọng</strong>
+                  <strong className="text-[#E6D3A3]">{expectedRightRemainder} cọng</strong>
                 </p>
               </div>
 
@@ -841,21 +841,21 @@ export const InteractiveYarrowBoard: React.FC<InteractiveYarrowBoardProps> = ({
       {/* 8. RESULT OF LATEST MANUAL DRAW COMPLETED PREVIOUSLY (IF NOT DRAWING CURRENT) */}
       {latestBian && ritualPhase === "split" && (
         <div className="mt-3 p-3 bg-[#1C140D] border border-[#583E22] rounded-xl text-xs font-serif text-[#DECAB0] space-y-1 animate-in fade-in duration-300 shadow-lg">
-          <div className="flex items-center justify-between text-[#FFE28A] font-bold border-b border-[#3D2916] pb-1">
+          <div className="flex items-center justify-between text-[#E6D3A3] font-bold border-b border-[#3D2916] pb-1">
             <span className="flex items-center gap-1.5">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
               Kết Quả Biến {latestBian.bianIndex}/3 Vừa Hoàn Tất:
             </span>
-            <span className="font-mono text-[#D4AF37]">
+            <span className="font-mono text-[#C9A55A]">
               Gom {latestBian.totalRemoved} cọng • Còn {latestBian.remainingStalks} cọng
             </span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-[11px] text-[#BAA993]">
             <div className="bg-[#140D07] p-2 rounded border border-[#2D1F13]">
-              • <strong className="text-sky-300">Bó Trái (Thiên):</strong> {latestBian.leftStalks} cọng ➔ đếm 4 dư <strong className="text-[#FFE28A]">{latestBian.leftRemainder}</strong>
+              • <strong className="text-sky-300">Bó Trái (Thiên):</strong> {latestBian.leftStalks} cọng ➔ đếm 4 dư <strong className="text-[#E6D3A3]">{latestBian.leftRemainder}</strong>
             </div>
             <div className="bg-[#140D07] p-2 rounded border border-[#2D1F13]">
-              • <strong className="text-amber-300">Bó Phải (Địa):</strong> {latestBian.rightStalks} cọng ➔ bớt 1 Nhân, đếm 4 dư <strong className="text-[#FFE28A]">{latestBian.rightRemainder}</strong>
+              • <strong className="text-amber-300">Bó Phải (Địa):</strong> {latestBian.rightStalks} cọng ➔ bớt 1 Nhân, đếm 4 dư <strong className="text-[#E6D3A3]">{latestBian.rightRemainder}</strong>
             </div>
             <div className="bg-[#140D07] p-2 rounded border border-[#2D1F13]">
               • <strong className="text-emerald-300">Khay Nhuận:</strong> 1 (Nhân) + {latestBian.leftRemainder} + {latestBian.rightRemainder} = <strong className="text-emerald-300">{latestBian.totalRemoved} cọng</strong>

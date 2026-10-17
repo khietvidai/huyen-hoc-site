@@ -91,7 +91,7 @@ export const HexagramVisual: React.FC<HexagramVisualProps> = ({
             <span className="text-[#8C8273]">Thượng:</span>
             <span className="font-semibold text-[#E6DCBF]">{hexagram.upperTrigram}</span>
           </div>
-          <div className="text-sm font-serif font-bold text-[#D4AF37]">{hexagram.symbol}</div>
+          <div className="text-sm font-serif font-bold text-[#C9A55A]">{hexagram.symbol}</div>
           <div className="flex items-center gap-1">
             <span className="text-[#8C8273]">Hạ:</span>
             <span className="font-semibold text-[#E6DCBF]">{hexagram.lowerTrigram}</span>

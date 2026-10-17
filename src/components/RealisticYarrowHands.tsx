@@ -214,7 +214,7 @@ export const RealisticLeftHandSvg: React.FC<RealisticLeftHandProps> = ({
         <linearGradient id="gold_thread_lh" x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%" stopColor="#F6E27A" />
           <stop offset="25%" stopColor="#FFF5B8" />
-          <stop offset="50%" stopColor="#D4AF37" />
+          <stop offset="50%" stopColor="#C9A55A" />
           <stop offset="80%" stopColor="#AA821C" />
           <stop offset="100%" stopColor="#634B0B" />
         </linearGradient>
@@ -302,7 +302,7 @@ export const RealisticLeftHandSvg: React.FC<RealisticLeftHandProps> = ({
         <path
           d="M 104,233 C 108,237 114,238 118,235"
           fill="none"
-          stroke="#D4AF37"
+          stroke="#C9A55A"
           strokeWidth="1"
           strokeLinecap="round"
         />
@@ -1008,7 +1008,7 @@ export const RealisticRightHandSvg: React.FC<RealisticRightHandProps> = ({
         <linearGradient id="gold_thread_rh" x1="100%" y1="0%" x2="0%" y2="0%">
           <stop offset="0%" stopColor="#F6E27A" />
           <stop offset="25%" stopColor="#FFF5B8" />
-          <stop offset="50%" stopColor="#D4AF37" />
+          <stop offset="50%" stopColor="#C9A55A" />
           <stop offset="80%" stopColor="#AA821C" />
           <stop offset="100%" stopColor="#634B0B" />
         </linearGradient>
@@ -1542,9 +1542,9 @@ export const RealisticAltarMat: React.FC<AltarMatProps> = ({
       </div>
 
       {/* Center Bagua Yin-Yang Watermark */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full border border-[#D4AF37]/20 flex items-center justify-center pointer-events-none opacity-25">
-        <div className="w-32 h-32 rounded-full border border-dashed border-[#D4AF37]/40 animate-[spin_90s_linear_infinite]" />
-        <div className="absolute text-3xl font-serif text-[#D4AF37]/40 select-none">☯</div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full border border-[#C9A55A]/20 flex items-center justify-center pointer-events-none opacity-25">
+        <div className="w-32 h-32 rounded-full border border-dashed border-[#C9A55A]/40 animate-[spin_90s_linear_infinite]" />
+        <div className="absolute text-3xl font-serif text-[#C9A55A]/40 select-none">☯</div>
       </div>
 
       {/* ================= LEFT TRAY MAT: HEAVEN (ĐỆM THIÊN / BÓ TRÁI) ================= */}
@@ -1552,7 +1552,7 @@ export const RealisticAltarMat: React.FC<AltarMatProps> = ({
         {/* Silk Cushion Base */}
         <div className="relative w-48 sm:w-60 h-16 sm:h-20 rounded-[28px] bg-gradient-to-r from-[#29170C] via-[#3D2513] to-[#29170C] border-2 border-[#8C6218]/60 shadow-[0_8px_20px_rgba(0,0,0,0.8)] flex items-center justify-center overflow-visible">
           {/* Silk Embroidery border */}
-          <div className="absolute inset-1 rounded-[24px] border border-[#D4AF37]/30 border-dashed pointer-events-none" />
+          <div className="absolute inset-1 rounded-[24px] border border-[#C9A55A]/30 border-dashed pointer-events-none" />
 
           {/* Stalks Bundle Fan-out (Thiên - 3D Realistic Rods) */}
           <div className="absolute bottom-4 flex items-center -space-x-2">
@@ -1590,7 +1590,7 @@ export const RealisticAltarMat: React.FC<AltarMatProps> = ({
         <span className="text-[10px] font-mono uppercase tracking-widest text-[#8C7A65]">
           Tam Tài Định Vị
         </span>
-        <span className="text-xs font-serif font-bold text-[#D4AF37]">
+        <span className="text-xs font-serif font-bold text-[#C9A55A]">
           Thiên • Địa • Nhân
         </span>
       </div>
@@ -1600,7 +1600,7 @@ export const RealisticAltarMat: React.FC<AltarMatProps> = ({
         {/* Silk Cushion Base */}
         <div className="relative w-48 sm:w-60 h-16 sm:h-20 rounded-[28px] bg-gradient-to-r from-[#29170C] via-[#3D2513] to-[#29170C] border-2 border-[#8C6218]/60 shadow-[0_8px_20px_rgba(0,0,0,0.8)] flex items-center justify-center overflow-visible">
           {/* Silk Embroidery border */}
-          <div className="absolute inset-1 rounded-[24px] border border-[#D4AF37]/30 border-dashed pointer-events-none" />
+          <div className="absolute inset-1 rounded-[24px] border border-[#C9A55A]/30 border-dashed pointer-events-none" />
 
           {/* Stalks Bundle Fan-out (Địa - 3D Realistic Rods) */}
           <div className="absolute bottom-4 flex items-center -space-x-2">

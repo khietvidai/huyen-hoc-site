@@ -225,7 +225,7 @@ export const ExportImageModal: React.FC<ExportImageModalProps> = ({
         {/* Top Header & Controls */}
         <div className="flex items-center justify-between px-3 sm:px-5 py-2.5 bg-[#1B1612] border-b border-[#30251A] gap-2 flex-wrap z-20">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="w-2 h-2 rounded-full bg-[#D4AF37] shadow-[0_0_6px_#D4AF37]" />
+            <span className="w-2 h-2 rounded-full bg-[#C9A55A] shadow-[0_0_6px_#C9A55A]" />
             <h3 className="font-serif font-bold text-sm sm:text-base text-[#F5EBD6] truncate">
               {title}
             </h3>
@@ -250,7 +250,7 @@ export const ExportImageModal: React.FC<ExportImageModalProps> = ({
             {/* Current Scale Display & Quick Reset */}
             <button
               onClick={handleReset}
-              className="px-2.5 py-1.5 rounded-lg bg-[#2B2219] hover:bg-[#392D20] text-[#D4AF37] border border-[#4E3D28] text-xs font-mono font-bold cursor-pointer transition-colors min-w-[55px] text-center"
+              className="px-2.5 py-1.5 rounded-lg bg-[#2B2219] hover:bg-[#392D20] text-[#C9A55A] border border-[#4E3D28] text-xs font-mono font-bold cursor-pointer transition-colors min-w-[55px] text-center"
               title="Nhấp để đặt lại tỷ lệ 100%"
             >
               {Math.round(scale * 100)}%
@@ -379,7 +379,7 @@ export const ExportImageModal: React.FC<ExportImageModalProps> = ({
                   <button
                     type="button"
                     onClick={handleDownload}
-                    className="px-4 py-2 rounded-lg bg-[#D4AF37] hover:bg-amber-300 text-black font-bold text-xs cursor-pointer transition-all flex items-center gap-1.5 shadow"
+                    className="px-4 py-2 rounded-lg bg-[#C9A55A] hover:bg-amber-300 text-black font-bold text-xs cursor-pointer transition-all flex items-center gap-1.5 shadow"
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>Tải Về Máy</span>

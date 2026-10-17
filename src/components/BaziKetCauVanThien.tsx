@@ -665,7 +665,7 @@ export const BaziKetCauVanThien: React.FC<BaziKetCauVanThienProps> = ({
                       className={`text-[8px] sm:text-[9.5px] font-bold truncate w-full pb-0.5 border-b ${
                         p.isDaiVan
                           ? "text-purple-200 border-purple-500/50"
-                          : "text-[#E2B755] border-[#352516]/70"
+                          : "text-[#D6B97A] border-[#352516]/70"
                       }`}
                     >
                       {p.label}
@@ -807,7 +807,7 @@ export const BaziKetCauVanThien: React.FC<BaziKetCauVanThienProps> = ({
                       }`}
                     >
                       <div className="flex items-center justify-between gap-1 w-full">
-                        <span className="font-serif text-[11px] sm:text-xs font-bold text-[#E2B755]">
+                        <span className="font-serif text-[11px] sm:text-xs font-bold text-[#D6B97A]">
                           {rule.branch1} - {rule.branch2} củng {rule.cungChi}
                         </span>
                         <span className={`text-[8px] px-1.5 py-0.5 rounded border font-semibold ${getElementBadgeColor(rule.element)}`}>
@@ -852,7 +852,7 @@ export const BaziKetCauVanThien: React.FC<BaziKetCauVanThienProps> = ({
                       }`}
                     >
                       <div className="flex items-center justify-between gap-1 w-full">
-                        <span className={`font-serif text-[11px] sm:text-xs font-bold ${isException ? "text-rose-300" : "text-[#E2B755]"}`}>
+                        <span className={`font-serif text-[11px] sm:text-xs font-bold ${isException ? "text-rose-300" : "text-[#D6B97A]"}`}>
                           {isException ? `${rule.branch1} - ${rule.branch2} (Ngoại lệ)` : `${rule.branch1} - ${rule.branch2} củng ${rule.cungChi}`}
                         </span>
                         <span className={`text-[8px] px-1.5 py-0.5 rounded border font-semibold ${isException ? "bg-rose-950 text-rose-300 border-rose-700/60" : getElementBadgeColor(rule.element)}`}>
@@ -945,7 +945,7 @@ export const BaziKetCauVanThien: React.FC<BaziKetCauVanThienProps> = ({
                       }`}
                     >
                       <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#352516]/70">
-                        <span className={`text-[8px] sm:text-[9.5px] font-bold truncate ${isSelected ? "text-amber-300" : p.isDaiVan ? "text-purple-300" : "text-[#E2B755]"}`}>
+                        <span className={`text-[8px] sm:text-[9.5px] font-bold truncate ${isSelected ? "text-amber-300" : p.isDaiVan ? "text-purple-300" : "text-[#D6B97A]"}`}>
                           {p.label}
                         </span>
                         {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />}
@@ -997,7 +997,7 @@ export const BaziKetCauVanThien: React.FC<BaziKetCauVanThienProps> = ({
                       }`}
                     >
                       <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#352516]/70">
-                        <span className={`text-[8px] sm:text-[9.5px] font-bold truncate ${isSelected ? "text-sky-300" : p.isDaiVan ? "text-purple-300" : "text-[#E2B755]"}`}>
+                        <span className={`text-[8px] sm:text-[9.5px] font-bold truncate ${isSelected ? "text-sky-300" : p.isDaiVan ? "text-purple-300" : "text-[#D6B97A]"}`}>
                           {p.label}
                         </span>
                         {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0" />}
@@ -1096,7 +1096,7 @@ export const BaziKetCauVanThien: React.FC<BaziKetCauVanThienProps> = ({
                         <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#352516]/70">
                           <span
                             className={`text-[8px] sm:text-[9.5px] font-bold truncate ${
-                              isSelected ? "text-emerald-300" : b.isDaiVan ? "text-purple-300" : "text-[#E2B755]"
+                              isSelected ? "text-emerald-300" : b.isDaiVan ? "text-purple-300" : "text-[#D6B97A]"
                             }`}
                           >
                             {b.label}
@@ -1163,7 +1163,7 @@ export const BaziKetCauVanThien: React.FC<BaziKetCauVanThienProps> = ({
                         <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#352516]/70">
                           <span
                             className={`text-[8px] sm:text-[9.5px] font-bold truncate ${
-                              isSelected ? "text-rose-300" : b.isDaiVan ? "text-purple-300" : "text-[#E2B755]"
+                              isSelected ? "text-rose-300" : b.isDaiVan ? "text-purple-300" : "text-[#D6B97A]"
                             }`}
                           >
                             {b.label}
@@ -1230,7 +1230,7 @@ export const BaziKetCauVanThien: React.FC<BaziKetCauVanThienProps> = ({
                         <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#352516]/70">
                           <span
                             className={`text-[8px] sm:text-[9.5px] font-bold truncate ${
-                              isSelected ? "text-purple-300" : b.isDaiVan ? "text-purple-300" : "text-[#E2B755]"
+                              isSelected ? "text-purple-300" : b.isDaiVan ? "text-purple-300" : "text-[#D6B97A]"
                             }`}
                           >
                             {b.label}
@@ -1350,7 +1350,7 @@ export const BaziKetCauVanThien: React.FC<BaziKetCauVanThienProps> = ({
                     >
                       {/* Huy hiệu khởi điểm */}
                       <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#352516]/60">
-                        <span className={`text-[8.5px] sm:text-[9.5px] font-bold ${isSelected ? "text-amber-300" : "text-[#E2B755]"}`}>
+                        <span className={`text-[8.5px] sm:text-[9.5px] font-bold ${isSelected ? "text-amber-300" : "text-[#D6B97A]"}`}>
                           {isSelected ? "★ Khởi Đầu" : "Lục Thân"}
                         </span>
                         <span className={`w-1.5 h-1.5 rounded-full ${theme.dot}`} />
@@ -1452,7 +1452,7 @@ export const BaziKetCauVanThien: React.FC<BaziKetCauVanThienProps> = ({
                           <div className={`text-base sm:text-lg font-serif font-black leading-tight ${theme.text}`}>
                             {item.type}
                           </div>
-                          <div className="text-[8.5px] sm:text-[9px] text-[#E2B755] font-serif truncate mt-0.5">
+                          <div className="text-[8.5px] sm:text-[9px] text-[#D6B97A] font-serif truncate mt-0.5">
                             {item.fullName}
                           </div>
                         </div>

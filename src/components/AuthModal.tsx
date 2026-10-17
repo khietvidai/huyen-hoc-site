@@ -137,14 +137,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 text-[#8A7966] hover:text-[#FFE28A] p-1.5 rounded-xl hover:bg-[#2A1F14] transition-colors cursor-pointer"
+          className="absolute top-4 right-4 text-[#8A7966] hover:text-[#E6D3A3] p-1.5 rounded-xl hover:bg-[#2A1F14] transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Header Title */}
         <div className="text-center space-y-1 mb-5">
-          <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-br from-[#E2B755] to-[#75511A] flex items-center justify-center text-[#14120F] shadow-lg border border-[#FFE28A] mb-2 font-serif font-bold text-xl">
+          <div className="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-br from-[#D6B97A] to-[#75511A] flex items-center justify-center text-[#14120F] shadow-lg border border-[#E6D3A3] mb-2 font-serif font-bold text-xl">
             {mode === "upgrade" ? <Crown className="w-6 h-6 text-amber-950" /> : regStep === "otp" && mode === "register" ? <KeyRound className="w-6 h-6 text-amber-950" /> : "☯"}
           </div>
 
@@ -177,7 +177,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               onClick={() => handleModeChange("login")}
               className={`py-2 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer ${
                 mode === "login"
-                  ? "bg-gradient-to-r from-[#D4AF37] to-[#B38728] text-[#120F0C] shadow"
+                  ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F0C] shadow"
                   : "text-[#A89882] hover:text-white"
               }`}
             >
@@ -188,7 +188,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               onClick={() => handleModeChange("register")}
               className={`py-2 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer ${
                 mode === "register"
-                  ? "bg-gradient-to-r from-[#D4AF37] to-[#B38728] text-[#120F0C] shadow"
+                  ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F0C] shadow"
                   : "text-[#A89882] hover:text-white"
               }`}
             >
@@ -200,7 +200,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         {/* Benefits Box for Members */}
         {regStep !== "otp" && (
           <div className="bg-[#1C140D] border border-[#442F1B] rounded-2xl p-3.5 mb-4 text-xs font-serif space-y-2">
-            <div className="text-[11px] font-bold text-[#FFE28A] uppercase tracking-wider flex items-center gap-1.5">
+            <div className="text-[11px] font-bold text-[#E6D3A3] uppercase tracking-wider flex items-center gap-1.5">
               <Crown className="w-3.5 h-3.5 text-amber-400" />
               <span>ĐẶC QUYỀN THÀNH VIÊN CỬU NHỊ:</span>
             </div>
@@ -243,7 +243,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             <button
               type="button"
               onClick={handleSubmit}
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B38728] text-[#120F0C] font-serif font-bold text-sm shadow-lg active:scale-95 cursor-pointer transition-all border border-[#FFE28A]"
+              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F0C] font-serif font-bold text-sm shadow-lg active:scale-95 cursor-pointer transition-all border border-[#E6D3A3]"
             >
               Xác Nhận Kích Hoạt Hội Viên VIP ➔
             </button>
@@ -253,7 +253,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="p-3.5 rounded-2xl bg-amber-950/40 border border-amber-600/50 text-xs font-serif space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-[#FFE28A] font-bold flex items-center gap-1.5">
+                <span className="text-[#E6D3A3] font-bold flex items-center gap-1.5">
                   <Mail className="w-3.5 h-3.5 text-amber-400" />
                   Mã xác thực 6 số gửi đến:
                 </span>
@@ -265,7 +265,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               {lastGeneratedOtp && (
                 <div className="p-2 rounded-xl bg-[#140E08] border border-amber-500/40 text-center space-y-1">
                   <span className="text-[10px] text-[#A89882] block">Mã gửi về email của bạn là:</span>
-                  <div className="font-mono font-black text-xl tracking-[0.3em] text-[#FFE58F]">
+                  <div className="font-mono font-black text-xl tracking-[0.3em] text-[#E6D3A3]">
                     {lastGeneratedOtp}
                   </div>
                   <button
@@ -291,7 +291,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 value={otpCode}
                 onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
                 placeholder="• • • • • •"
-                className="w-full bg-[#110D09] border-2 border-amber-500/80 focus:border-[#FFE28A] focus:shadow-[0_0_15px_rgba(255,226,138,0.3)] rounded-2xl py-3 text-center text-2xl font-mono font-bold tracking-[0.4em] text-[#FFE8A3] placeholder-[#59442C] outline-none"
+                className="w-full bg-[#110D09] border-2 border-amber-500/80 focus:border-[#E6D3A3] focus:shadow-[0_0_15px_rgba(255,226,138,0.3)] rounded-2xl py-3 text-center text-2xl font-mono font-bold tracking-[0.4em] text-[#E6D3A3] placeholder-[#59442C] outline-none"
               />
             </div>
 
@@ -317,9 +317,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             <button
               type="submit"
               disabled={otpCode.length !== 6}
-              className={`w-full py-3 px-4 rounded-xl font-serif font-bold text-xs sm:text-sm shadow-md active:scale-95 cursor-pointer transition-all border border-[#FFE28A] flex items-center justify-center gap-2 ${
+              className={`w-full py-3 px-4 rounded-xl font-serif font-bold text-xs sm:text-sm shadow-md active:scale-95 cursor-pointer transition-all border border-[#E6D3A3] flex items-center justify-center gap-2 ${
                 otpCode.length === 6
-                  ? "bg-gradient-to-r from-[#D4AF37] to-[#B38728] hover:from-[#E6C265] text-[#120F0C]"
+                  ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] hover:from-[#E6C265] text-[#120F0C]"
                   : "bg-[#2A1F14] text-[#8A7966] border-[#443120] cursor-not-allowed"
               }`}
             >
@@ -343,7 +343,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="VD: Nguyễn Văn An"
-                    className="w-full bg-[#110D09] border border-[#3E2D1A] focus:border-[#D4AF37] rounded-xl pl-9 pr-3 py-2 text-xs text-[#F2E5D2] placeholder-[#665442] outline-none font-serif"
+                    className="w-full bg-[#110D09] border border-[#3E2D1A] focus:border-[#C9A55A] rounded-xl pl-9 pr-3 py-2 text-xs text-[#F2E5D2] placeholder-[#665442] outline-none font-serif"
                   />
                 </div>
               </div>
@@ -363,7 +363,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={mode === "login" ? "name@example.com hoặc cuunhi" : "name@example.com"}
-                  className="w-full bg-[#110D09] border border-[#3E2D1A] focus:border-[#D4AF37] rounded-xl pl-9 pr-3 py-2 text-xs text-[#F2E5D2] placeholder-[#665442] outline-none font-serif"
+                  className="w-full bg-[#110D09] border border-[#3E2D1A] focus:border-[#C9A55A] rounded-xl pl-9 pr-3 py-2 text-xs text-[#F2E5D2] placeholder-[#665442] outline-none font-serif"
                 />
               </div>
             </div>
@@ -380,14 +380,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Mật khẩu của bạn (tối thiểu 6 ký tự)"
-                  className="w-full bg-[#110D09] border border-[#3E2D1A] focus:border-[#D4AF37] rounded-xl pl-9 pr-3 py-2 text-xs text-[#F2E5D2] placeholder-[#665442] outline-none font-serif"
+                  className="w-full bg-[#110D09] border border-[#3E2D1A] focus:border-[#C9A55A] rounded-xl pl-9 pr-3 py-2 text-xs text-[#F2E5D2] placeholder-[#665442] outline-none font-serif"
                 />
               </div>
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B38728] hover:from-[#E6C265] hover:to-[#D4AF37] text-[#120F0C] font-serif font-bold text-xs sm:text-sm shadow-md active:scale-95 cursor-pointer transition-all border border-[#FFE28A] mt-2 flex items-center justify-center gap-2"
+              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#C9A55A] to-[#B38728] hover:from-[#E6C265] hover:to-[#C9A55A] text-[#120F0C] font-serif font-bold text-xs sm:text-sm shadow-md active:scale-95 cursor-pointer transition-all border border-[#E6D3A3] mt-2 flex items-center justify-center gap-2"
             >
               <span>{mode === "login" ? "ĐĂNG NHẬP NGAY" : "TIẾP TỤC ➔ NHẬN MÃ 6 SỐ QUA EMAIL"}</span>
               <ArrowRight className="w-4 h-4" />

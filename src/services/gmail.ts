@@ -101,12 +101,12 @@ function buildDivinationEmailBodies(params: EmailParams): { plainText: string; h
   <meta charset="utf-8">
   <style>
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f7f4ed; margin: 0; padding: 20px; color: #2c251e; }
-    .card { background: #ffffff; border: 1px solid #d4af37; border-radius: 12px; max-width: 600px; margin: 0 auto; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
-    .header { background: #1b1612; color: #f5ead4; padding: 24px; text-align: center; border-bottom: 2px solid #d4af37; }
+    .card { background: #ffffff; border: 1px solid #C9A55A; border-radius: 12px; max-width: 600px; margin: 0 auto; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
+    .header { background: #1b1612; color: #f5ead4; padding: 24px; text-align: center; border-bottom: 2px solid #C9A55A; }
     .header h1 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 1px; }
     .content { padding: 24px; line-height: 1.6; }
     .box { background: #faf6ee; border: 1px solid #e2d4be; border-radius: 8px; padding: 16px; margin-bottom: 18px; }
-    .badge { display: inline-block; background: #d4af37; color: #1b1612; padding: 3px 10px; border-radius: 12px; font-weight: bold; font-size: 12px; margin-bottom: 8px; }
+    .badge { display: inline-block; background: #C9A55A; color: #1b1612; padding: 3px 10px; border-radius: 12px; font-weight: bold; font-size: 12px; margin-bottom: 8px; }
     .footer { background: #faf6ee; padding: 16px; text-align: center; font-size: 12px; color: #887a6c; border-top: 1px solid #e8decb; }
   </style>
 </head>
@@ -122,7 +122,7 @@ function buildDivinationEmailBodies(params: EmailParams): { plainText: string; h
         <p style="margin: 6px 0 0 0; font-size: 15px; font-weight: 600;">${params.question || "Chiêm nghiệm tổng quát"}</p>
       </div>
 
-      <div class="box" style="border-left: 4px solid #d4af37;">
+      <div class="box" style="border-left: 4px solid #C9A55A;">
         <span class="badge">QUẺ CHỦ</span>
         <h2 style="margin: 0 0 6px 0; color: #1b1612; font-size: 18px;">Quẻ ${params.primaryHexagramNumber}: ${params.primaryHexagramName} (${params.primaryVietnameseName})</h2>
         ${params.judgment ? `<p style="margin: 6px 0 0 0; font-size: 14px; color: #4a3e31;"><strong>Lời Thoán:</strong> ${params.judgment}</p>` : ""}

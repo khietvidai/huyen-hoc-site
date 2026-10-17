@@ -447,14 +447,14 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
           ======================================================== */}
       <div className="px-4 py-3.5 sm:px-6 sm:py-4 border-b border-[#2E2419] flex flex-wrap items-center justify-between gap-3 bg-[#1F1912]/80 backdrop-blur-sm">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-[#2A1E14] border border-[#52412E] text-[#E2B755] shadow-inner">
+          <div className="p-2 rounded-xl bg-[#2A1E14] border border-[#52412E] text-[#D6B97A] shadow-inner">
             <Sparkles className="w-5 h-5 text-amber-400" />
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <h2 className="text-sm sm:text-base font-bold text-[#F5EAD4] font-serif tracking-wide flex items-center gap-2 flex-wrap">
                 LỤC NHÂM ĐẠI ĐỘN
-                <span className="text-[11px] font-normal px-2 py-0.5 rounded-full bg-[#2E2215] text-[#D4AF37] border border-[#533F27]">
+                <span className="text-[11px] font-normal px-2 py-0.5 rounded-full bg-[#2E2215] text-[#C9A55A] border border-[#533F27]">
                   {effectiveScope === "bocque" ? "Bảng Bốc Quẻ (Độc Lập)" : "Bảng Tab Hoa Giáp (Độc Lập)"}
                 </span>
                 <span className="text-[10px] text-[#A89882] font-normal hidden sm:inline">
@@ -477,7 +477,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
             type="button"
             onClick={() => handleCaptureLucNham("tong")}
             disabled={isCapturing !== null}
-            className="no-capture flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gradient-to-r from-[#2F2113] to-[#3D2B19] hover:from-[#3D2C1B] hover:to-[#4D3823] text-amber-200 border border-[#5E4327] hover:border-[#D4AF37] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
+            className="no-capture flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gradient-to-r from-[#2F2113] to-[#3D2B19] hover:from-[#3D2C1B] hover:to-[#4D3823] text-amber-200 border border-[#5E4327] hover:border-[#C9A55A] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
             title="Chụp ảnh toàn bộ bảng Lục Nhâm Đại Độn (Bát Tự, Thiên Địa Bàn, Tứ Khóa, Tam Truyền)"
           >
             {isCapturing === "tong" ? (
@@ -504,7 +504,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#261E16] text-[#D4AF37] border border-[#483724] hover:bg-[#34281D] hover:border-[#D4AF37] transition-all cursor-pointer shadow-sm active:scale-95"
+            className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#261E16] text-[#C9A55A] border border-[#483724] hover:bg-[#34281D] hover:border-[#C9A55A] transition-all cursor-pointer shadow-sm active:scale-95"
           >
             <span>{isOpen ? "Thu Gọn" : "Mở Bàn Lục Nhâm"}</span>
             <ChevronDown
@@ -520,7 +520,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
       {!isOpen && (
         <div className="px-4 py-3 sm:px-6 flex flex-wrap items-center justify-between gap-3 text-xs bg-[#17120C]">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="px-2 py-0.5 rounded bg-[#2E1E12] text-[#E2B755] font-semibold border border-[#44301D] flex items-center gap-1">
+            <span className="px-2 py-0.5 rounded bg-[#2E1E12] text-[#D6B97A] font-semibold border border-[#44301D] flex items-center gap-1">
               <Compass className="w-3.5 h-3.5 text-amber-400" />
               <span>Trạng thái: Thu gọn</span>
             </span>
@@ -548,7 +548,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
           <button
             type="button"
             onClick={() => setIsOpen(true)}
-            className="text-[#D4AF37] hover:underline flex items-center gap-1 cursor-pointer font-medium ml-auto"
+            className="text-[#C9A55A] hover:underline flex items-center gap-1 cursor-pointer font-medium ml-auto"
           >
             <span>Mở Bàn Lục Nhâm</span>
             <ChevronRight className="w-3.5 h-3.5" />
@@ -603,7 +603,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                   type="button"
                   onClick={() => handleCaptureLucNham("bazi")}
                   disabled={isCapturing !== null}
-                  className="no-capture flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#271E15] hover:bg-[#382B1E] text-amber-200 border border-[#523F27] hover:border-[#D4AF37] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
+                  className="no-capture flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#271E15] hover:bg-[#382B1E] text-amber-200 border border-[#523F27] hover:border-[#C9A55A] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
                   title="Chụp ảnh riêng 4 Trụ Bát Tự Lục Nhâm (Giờ • Ngày • Tháng • Năm)"
                 >
                   {isCapturing === "bazi" ? (
@@ -619,7 +619,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                   type="button"
                   onClick={() => handleCaptureLucNham("bazi", true)}
                   disabled={isCapturing !== null}
-                  className="no-capture flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#3A2A1A] hover:bg-[#4C3622] text-[#F3D58C] border border-[#6B4F2D] hover:border-[#D4AF37] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
+                  className="no-capture flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#3A2A1A] hover:bg-[#4C3622] text-[#F3D58C] border border-[#6B4F2D] hover:border-[#C9A55A] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
                   title="Chụp và tải trực tiếp ảnh 4 Trụ Bát Tự Lục Nhâm về máy"
                 >
                   <Download className="w-3.5 h-3.5 text-amber-300" />
@@ -629,7 +629,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                 <button
                   type="button"
                   onClick={handleSetCurrentDateTime}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#2D1F13] hover:bg-[#3D2C1B] text-[#E2B755] border border-[#52402A] hover:border-[#D4AF37] transition-all cursor-pointer shadow-sm active:scale-95"
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#2D1F13] hover:bg-[#3D2C1B] text-[#D6B97A] border border-[#52402A] hover:border-[#C9A55A] transition-all cursor-pointer shadow-sm active:scale-95"
                   title="Nạp ngày giờ thực tế hiện tại cho riêng Bát Tự Lục Nhâm"
                 >
                   <Clock className="w-3.5 h-3.5 text-amber-400" />
@@ -638,7 +638,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                 <button
                   type="button"
                   onClick={handleResetDefault}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-[#20160E] hover:bg-[#2F1F13] text-[#A89882] hover:text-[#E2B755] border border-[#44301D] transition-all cursor-pointer active:scale-95"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-[#20160E] hover:bg-[#2F1F13] text-[#A89882] hover:text-[#D6B97A] border border-[#44301D] transition-all cursor-pointer active:scale-95"
                   title="Đặt lại Bát Tự Lục Nhâm mẫu chuẩn"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -661,14 +661,14 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                     key={col.key}
                     className={`flex flex-col border rounded-xl sm:rounded-2xl p-2 sm:p-3 shadow-md transition-colors relative ${
                       col.idx === 1
-                        ? "bg-[#1B140D] border-[#553E26] hover:border-[#D4AF37]"
+                        ? "bg-[#1B140D] border-[#553E26] hover:border-[#C9A55A]"
                         : "bg-[#18130E] border-[#332619] hover:border-[#4D3A26]"
                     }`}
                   >
                     {/* Header Cột: Tên Trụ & Chữ Hán Subtitle */}
                     <div className="text-center pb-1.5 mb-1.5 sm:pb-2 sm:mb-2 border-b border-[#281E14]">
                       <div className="flex items-center justify-center gap-1">
-                        <span className="text-xs sm:text-sm font-bold text-[#E2B755] font-serif whitespace-nowrap">
+                        <span className="text-xs sm:text-sm font-bold text-[#D6B97A] font-serif whitespace-nowrap">
                           {col.title}
                         </span>
                       </div>
@@ -683,8 +683,8 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                         onClick={() => setActiveSlot({ colIndex: col.idx, type: "can" })}
                         className={`relative min-h-[46px] sm:min-h-[64px] rounded-xl border flex flex-col items-center justify-center p-1 sm:p-2 text-center cursor-pointer transition-all duration-200 select-none group ${
                           canData
-                            ? "bg-gradient-to-b from-[#251D14] to-[#1C160F] border-[#5A4328] hover:border-[#E2B755] shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:scale-[1.02]"
-                            : "bg-[#14100C]/70 border-dashed border-[#3D3021] hover:border-[#D4AF37] hover:bg-[#1A140F]"
+                            ? "bg-gradient-to-b from-[#251D14] to-[#1C160F] border-[#5A4328] hover:border-[#D6B97A] shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:scale-[1.02]"
+                            : "bg-[#14100C]/70 border-dashed border-[#3D3021] hover:border-[#C9A55A] hover:bg-[#1A140F]"
                         }`}
                         title={`Nhấp để chọn Thiên Can cho ${col.title}`}
                       >
@@ -704,7 +704,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                           </div>
                         ) : (
                           <div className="text-center">
-                            <span className="text-[9px] sm:text-xs text-[#A89882] group-hover:text-[#E2B755] font-medium">
+                            <span className="text-[9px] sm:text-xs text-[#A89882] group-hover:text-[#D6B97A] font-medium">
                               + Chọn Can
                             </span>
                           </div>
@@ -723,8 +723,8 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                         onClick={() => setActiveSlot({ colIndex: col.idx, type: "chi" })}
                         className={`relative min-h-[46px] sm:min-h-[64px] rounded-xl border flex flex-col items-center justify-center p-1 sm:p-2 text-center cursor-pointer transition-all duration-200 select-none group ${
                           chiData
-                            ? "bg-gradient-to-b from-[#231A12] to-[#1A140E] border-[#5A4328] hover:border-[#E2B755] shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:scale-[1.02]"
-                            : "bg-[#14100C]/70 border-dashed border-[#3D3021] hover:border-[#D4AF37] hover:bg-[#1A140F]"
+                            ? "bg-gradient-to-b from-[#231A12] to-[#1A140E] border-[#5A4328] hover:border-[#D6B97A] shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:scale-[1.02]"
+                            : "bg-[#14100C]/70 border-dashed border-[#3D3021] hover:border-[#C9A55A] hover:bg-[#1A140F]"
                         }`}
                         title={`Nhấp để chọn Địa Chi cho ${col.title}`}
                       >
@@ -742,7 +742,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                           </div>
                         ) : (
                           <div className="text-center">
-                            <span className="text-[9px] sm:text-xs text-[#A89882] group-hover:text-[#E2B755] font-medium">
+                            <span className="text-[9px] sm:text-xs text-[#A89882] group-hover:text-[#D6B97A] font-medium">
                               + Chọn Chi
                             </span>
                           </div>
@@ -755,7 +755,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                       {matchedJiazi ? (
                         <div className="bg-[#201810] border border-[#483724] rounded-lg sm:rounded-xl p-1.5 sm:p-2 flex flex-col gap-0.5 sm:gap-1">
                           <div className="flex items-center justify-between">
-                            <span className="text-[9px] sm:text-[10px] text-[#D4AF37] font-bold truncate">
+                            <span className="text-[9px] sm:text-[10px] text-[#C9A55A] font-bold truncate">
                               #{matchedJiazi.order} {matchedJiazi.name}
                             </span>
                             <span className="hidden sm:inline text-[8.5px] px-1 py-0.2 rounded bg-[#15110C] text-[#A89882] whitespace-nowrap">
@@ -765,7 +765,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                           <div className="text-[8.5px] sm:text-[9.5px] text-[#C4B49F] truncate">
                             {matchedJiazi.elementNapAm}
                           </div>
-                          <div className="text-[8px] sm:text-[8.5px] text-[#E2B755] font-semibold italic truncate">
+                          <div className="text-[8px] sm:text-[8.5px] text-[#D6B97A] font-semibold italic truncate">
                             {col.role}
                           </div>
                         </div>
@@ -788,7 +788,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
               ================================================================= */}
           {activeSlot && (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-              <div className="w-full max-w-xl rounded-2xl bg-[#1A120A] border-2 border-[#D4AF37] p-5 sm:p-6 shadow-2xl space-y-4">
+              <div className="w-full max-w-xl rounded-2xl bg-[#1A120A] border-2 border-[#C9A55A] p-5 sm:p-6 shadow-2xl space-y-4">
                 <div className="flex items-center justify-between pb-3 border-b border-[#3B2917]">
                   <div>
                     <h4 className="text-sm sm:text-base font-bold text-[#F5EAD4] font-serif">
@@ -833,7 +833,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                               onClick={() => handleSelectCan(activeSlot.colIndex, item.name)}
                               className={`p-2 sm:p-2.5 rounded-xl border flex flex-col items-center justify-center transition-all cursor-pointer ${
                                 isSelected
-                                  ? "bg-[#D4AF37] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105"
+                                  ? "bg-[#C9A55A] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105"
                                   : "bg-[#221A12] hover:bg-[#2F2418] text-[#F3E7D0] border-[#3E2E1C] hover:border-yellow-500/60"
                               }`}
                             >
@@ -868,7 +868,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                               onClick={() => handleSelectCan(activeSlot.colIndex, item.name)}
                               className={`p-2 sm:p-2.5 rounded-xl border flex flex-col items-center justify-center transition-all cursor-pointer ${
                                 isSelected
-                                  ? "bg-[#D4AF37] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105"
+                                  ? "bg-[#C9A55A] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105"
                                   : "bg-[#221A12] hover:bg-[#2F2418] text-[#F3E7D0] border-[#3E2E1C] hover:border-amber-500/60"
                               }`}
                             >
@@ -896,7 +896,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                     <div className="space-y-4">
                       <div className="text-xs bg-[#24190E] p-2.5 rounded-xl border border-[#48331E] flex items-center justify-between">
                         <span>
-                          Thiên Can hiện tại: <strong className="text-[#E2B755]">{currentCan || "(Chưa chọn)"}</strong>
+                          Thiên Can hiện tại: <strong className="text-[#D6B97A]">{currentCan || "(Chưa chọn)"}</strong>
                         </span>
                         {allowedPolarity && (
                           <span className="text-[11px] font-bold text-amber-300">
@@ -926,7 +926,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                                 onClick={() => handleSelectChi(activeSlot.colIndex, item.name)}
                                 className={`p-2 sm:p-2.5 rounded-xl border flex flex-col items-center justify-center transition-all cursor-pointer ${
                                   isSelected
-                                    ? "bg-[#D4AF37] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105"
+                                    ? "bg-[#C9A55A] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105"
                                     : "bg-[#221A12] hover:bg-[#2F2418] text-[#F3E7D0] border-[#3E2E1C] hover:border-yellow-500/60"
                                 }`}
                               >
@@ -963,7 +963,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                                 onClick={() => handleSelectChi(activeSlot.colIndex, item.name)}
                                 className={`p-2 sm:p-2.5 rounded-xl border flex flex-col items-center justify-center transition-all cursor-pointer ${
                                   isSelected
-                                    ? "bg-[#D4AF37] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105"
+                                    ? "bg-[#C9A55A] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105"
                                     : "bg-[#221A12] hover:bg-[#2F2418] text-[#F3E7D0] border-[#3E2E1C] hover:border-amber-500/60"
                                 }`}
                               >
@@ -1036,8 +1036,8 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
             >
               <div className="flex flex-wrap items-center justify-between gap-2 px-1">
                 <div className="flex items-center gap-2">
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#E2B755] shadow-[0_0_8px_#E2B755]" />
-                  <span className="text-xs font-serif font-bold text-[#E2B755] uppercase tracking-wider">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#D6B97A] shadow-[0_0_8px_#D6B97A]" />
+                  <span className="text-xs font-serif font-bold text-[#D6B97A] uppercase tracking-wider">
                     LƯU NIÊN THIÊN • QUẺ LỤC NHÂM ({effectiveScope === "bocque" ? "CHỖ BỐC QUẺ" : "TAB HOA GIÁP"})
                   </span>
                 </div>

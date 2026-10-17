@@ -201,8 +201,8 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
           radius: 192,
           cardWidth: 40,
           cardHeight: 62,
-          color: "#D4AF37",
-          bgBadge: "bg-[#2A2012] text-[#D4AF37] border-[#534024]",
+          color: "#C9A55A",
+          bgBadge: "bg-[#2A2012] text-[#C9A55A] border-[#534024]",
         },
         {
           id: "tier_am",
@@ -243,8 +243,8 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
           radius: 156,
           cardWidth: 37,
           cardHeight: 56,
-          color: "#D4AF37",
-          bgBadge: "bg-[#261E11] text-[#D4AF37] border-[#4D3A1E]",
+          color: "#C9A55A",
+          bgBadge: "bg-[#261E11] text-[#C9A55A] border-[#4D3A1E]",
         },
         {
           id: "tier_thieu_am",
@@ -285,8 +285,8 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
           radius: 184,
           cardWidth: 38,
           cardHeight: 62,
-          color: "#D4AF37",
-          bgBadge: "bg-[#261E11] text-[#D4AF37] border-[#4D3A1E]",
+          color: "#C9A55A",
+          bgBadge: "bg-[#261E11] text-[#C9A55A] border-[#4D3A1E]",
         },
       ];
     }
@@ -315,8 +315,8 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
         radius: 136,
         cardWidth: 38,
         cardHeight: 58,
-        color: "#D4AF37",
-        bgBadge: "bg-[#241C11] text-[#D4AF37] border-[#4A371F]",
+        color: "#C9A55A",
+        bgBadge: "bg-[#241C11] text-[#C9A55A] border-[#4A371F]",
       },
       {
         id: "tier_dia",
@@ -409,7 +409,7 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
         {/* Tier Layout Presets */}
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="text-[11px] font-serif font-bold text-[#EAD8B1] flex items-center gap-1">
-            <Layers className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <Layers className="w-3.5 h-3.5 text-[#C9A55A]" />
             Cấu Trúc Tầng:
           </span>
           <div className="inline-flex p-0.5 bg-[#120F0C] border border-[#34271A] rounded-lg">
@@ -484,7 +484,7 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
             onClick={() => setActiveFilter("all")}
             className={`px-2 py-0.5 rounded text-[11px] font-medium border transition-colors cursor-pointer ${
               activeFilter === "all"
-                ? "bg-[#2F2417] text-[#F3E7CF] border-[#D4AF37]"
+                ? "bg-[#2F2417] text-[#F3E7CF] border-[#C9A55A]"
                 : "bg-[#14110E] text-[#8C7B65] border-[#292015] hover:text-[#C5B49D]"
             }`}
           >
@@ -497,7 +497,7 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
               onClick={() => setActiveFilter(tier.id)}
               className={`px-2 py-0.5 rounded text-[11px] font-medium border transition-colors cursor-pointer ${
                 activeFilter === tier.id
-                  ? "bg-[#2F2417] text-[#F3E7CF] border-[#D4AF37]"
+                  ? "bg-[#2F2417] text-[#F3E7CF] border-[#C9A55A]"
                   : "bg-[#14110E] text-[#8C7B65] border-[#292015] hover:text-[#C5B49D]"
               }`}
             >
@@ -513,10 +513,10 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
           type="button"
           onClick={onShuffle}
           disabled={isShuffling}
-          className="flex items-center gap-2 px-4 py-2 text-xs font-serif font-bold text-[#EAD8B1] hover:text-[#FFF] bg-[#221B14] hover:bg-[#2F241A] border border-[#53412B] hover:border-[#D4AF37] rounded-xl shadow-lg transition-all cursor-pointer disabled:opacity-50 active:scale-95 group"
+          className="flex items-center gap-2 px-4 py-2 text-xs font-serif font-bold text-[#EAD8B1] hover:text-[#FFF] bg-[#221B14] hover:bg-[#2F241A] border border-[#53412B] hover:border-[#C9A55A] rounded-xl shadow-lg transition-all cursor-pointer disabled:opacity-50 active:scale-95 group"
           title="Xáo lại 64 lá bài theo nghi thức cổ truyền (5.5 giây)"
         >
-          <Shuffle className={`w-3.5 h-3.5 text-[#D4AF37] ${isShuffling ? "animate-spin" : "group-hover:rotate-180 transition-transform duration-500"}`} />
+          <Shuffle className={`w-3.5 h-3.5 text-[#C9A55A] ${isShuffling ? "animate-spin" : "group-hover:rotate-180 transition-transform duration-500"}`} />
           <span>Xáo Lại 64 Lá</span>
         </button>
 
@@ -526,10 +526,10 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
           disabled={isShuffling}
           className={`flex items-center gap-2 px-5 py-2 text-xs font-serif font-bold rounded-xl transition-all cursor-pointer disabled:opacity-50 active:scale-95 group ${
             quickDrawStep === 1
-              ? "text-[#14100B] bg-gradient-to-r from-[#E5A93C] via-[#FCEECB] to-[#C88A2B] ring-2 ring-[#FFE294] shadow-[0_0_22px_rgba(229,169,60,0.5)] animate-pulse"
+              ? "text-[#14100B] bg-gradient-to-r from-[#E5A93C] via-[#FCEECB] to-[#C88A2B] ring-2 ring-[#E6D3A3] shadow-[0_0_22px_rgba(229,169,60,0.5)] animate-pulse"
               : quickDrawStep === 2
               ? "text-[#14100B] bg-gradient-to-r from-[#FFD700] via-[#FFF8E7] to-[#F0B823] ring-2 ring-[#FFD700] shadow-[0_0_25px_rgba(255,215,0,0.6)] animate-pulse"
-              : "text-[#14100B] bg-gradient-to-r from-[#D4AF37] via-[#F3E7CF] to-[#C89B3C] hover:brightness-110 shadow-[0_0_20px_rgba(212,175,55,0.4)]"
+              : "text-[#14100B] bg-gradient-to-r from-[#C9A55A] via-[#F3E7CF] to-[#C89B3C] hover:brightness-110 shadow-[0_0_20px_rgba(212,175,55,0.4)]"
           }`}
           title={
             quickDrawStep === 0
@@ -576,12 +576,12 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
 
         {/* Mystical Background Astrolabe / Bagua Ring Graphics */}
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-30">
-          <div className="w-[88%] h-[88%] rounded-full border border-[#D4AF37]/30 border-dashed animate-[spin_180s_linear_infinite]" />
-          <div className="absolute w-[68%] h-[68%] rounded-full border border-[#D4AF37]/20 animate-[spin_120s_linear_infinite_reverse]" />
-          <div className="absolute w-[44%] h-[44%] rounded-full border border-[#D4AF37]/30 border-dotted animate-[spin_80s_linear_infinite]" />
+          <div className="w-[88%] h-[88%] rounded-full border border-[#C9A55A]/30 border-dashed animate-[spin_180s_linear_infinite]" />
+          <div className="absolute w-[68%] h-[68%] rounded-full border border-[#C9A55A]/20 animate-[spin_120s_linear_infinite_reverse]" />
+          <div className="absolute w-[44%] h-[44%] rounded-full border border-[#C9A55A]/30 border-dotted animate-[spin_80s_linear_infinite]" />
           {/* Radial Axis Rays */}
-          <div className="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/25 to-transparent" />
-          <div className="absolute h-full w-[1px] bg-gradient-to-b from-transparent via-[#D4AF37]/25 to-transparent" />
+          <div className="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-[#C9A55A]/25 to-transparent" />
+          <div className="absolute h-full w-[1px] bg-gradient-to-b from-transparent via-[#C9A55A]/25 to-transparent" />
         </div>
 
         {/* Scaled Rotating Wheel Area */}
@@ -745,12 +745,12 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
                         }}
                           className={`relative w-full h-full rounded-md sm:rounded-lg overflow-hidden border transition-colors duration-200 shadow-md ${shakeClass} ${
                           isHolding
-                            ? "border-[#FFE599] ring-2 ring-[#D4AF37]"
+                            ? "border-[#FFE599] ring-2 ring-[#C9A55A]"
                             : isSelected
-                            ? "border-[#D4AF37] ring-2 ring-[#D4AF37] shadow-[0_0_25px_rgba(212,175,55,0.95)] animate-card-draw-float"
+                            ? "border-[#C9A55A] ring-2 ring-[#C9A55A] shadow-[0_0_25px_rgba(212,175,55,0.95)] animate-card-draw-float"
                             : isHovered
-                            ? "border-[#F5EAD4] ring-1 ring-[#D4AF37]"
-                            : "border-[#453624] hover:border-[#D4AF37]/80 bg-[#17130F]"
+                            ? "border-[#F5EAD4] ring-1 ring-[#C9A55A]"
+                            : "border-[#453624] hover:border-[#C9A55A]/80 bg-[#17130F]"
                         }`}
                       >
                         {/* 3D Dynamic Parallax Glare Sheen */}
@@ -778,8 +778,8 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
                               <span>☯</span>
                               <span>#{cardIdx + 1}</span>
                             </div>
-                            <div className="w-4 h-4 rounded-full border border-[#D4AF37]/50 flex items-center justify-center bg-[#1B1611] shadow-inner">
-                              <span className="text-[8px] text-[#D4AF37]">☯</span>
+                            <div className="w-4 h-4 rounded-full border border-[#C9A55A]/50 flex items-center justify-center bg-[#1B1611] shadow-inner">
+                              <span className="text-[8px] text-[#C9A55A]">☯</span>
                             </div>
                             <div className="w-full text-center text-[6px] text-[#8C7B65] font-mono tracking-tighter truncate">
                               DỊCH
@@ -790,9 +790,9 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
                         {/* Selected Order Badge & Spiritual Burst Aura */}
                         {isSelected && (
                           <>
-                            <div className="absolute -inset-2 rounded-lg border border-[#D4AF37]/80 animate-burst-aura pointer-events-none" />
-                            <div className="absolute inset-0 bg-[#D4AF37]/30 backdrop-blur-[0.5px] flex items-center justify-center">
-                              <span className="w-5 h-5 rounded-full bg-[#120F0C] border border-[#D4AF37] text-[#D4AF37] text-[10px] font-mono font-bold flex items-center justify-center shadow-lg animate-pulse">
+                            <div className="absolute -inset-2 rounded-lg border border-[#C9A55A]/80 animate-burst-aura pointer-events-none" />
+                            <div className="absolute inset-0 bg-[#C9A55A]/30 backdrop-blur-[0.5px] flex items-center justify-center">
+                              <span className="w-5 h-5 rounded-full bg-[#120F0C] border border-[#C9A55A] text-[#C9A55A] text-[10px] font-mono font-bold flex items-center justify-center shadow-lg animate-pulse">
                                 {selectionOrder}
                               </span>
                             </div>
@@ -811,7 +811,7 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
                           style={{
                             transform: `rotate(-${cardRotateDeg}deg)`,
                           }}
-                          className="absolute -top-9 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[#16110B] border border-[#D4AF37] text-[#EAD8B1] text-[9px] font-serif font-bold whitespace-nowrap shadow-[0_0_12px_rgba(212,175,55,0.7)] z-50 pointer-events-none flex items-center gap-1.5"
+                          className="absolute -top-9 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[#16110B] border border-[#C9A55A] text-[#EAD8B1] text-[9px] font-serif font-bold whitespace-nowrap shadow-[0_0_12px_rgba(212,175,55,0.7)] z-50 pointer-events-none flex items-center gap-1.5"
                         >
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                           <span>Linh cảm... {Math.round(holdProgress)}%</span>
@@ -824,7 +824,7 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
                           style={{
                             transform: `rotate(-${cardRotateDeg}deg)`,
                           }}
-                          className="absolute -top-7 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[#120F0C] border border-[#D4AF37] text-[#D4AF37] text-[10px] font-mono font-bold whitespace-nowrap shadow-xl z-50 pointer-events-none"
+                          className="absolute -top-7 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[#120F0C] border border-[#C9A55A] text-[#C9A55A] text-[10px] font-mono font-bold whitespace-nowrap shadow-xl z-50 pointer-events-none"
                         >
                           Lá #{cardIdx + 1}
                         </div>
@@ -844,10 +844,10 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
             }}
             className={`relative z-50 w-20 h-20 sm:w-22 sm:h-22 rounded-full bg-gradient-to-b from-[#251E16] via-[#17130F] to-[#0D0B08] border-2 transition-all cursor-pointer hover:scale-105 group flex flex-col items-center justify-center text-center p-1 ${
               quickDrawStep === 1
-                ? "border-[#FFE294] shadow-[0_0_35px_rgba(255,226,148,0.5)] ring-2 ring-[#FFE294]/50"
+                ? "border-[#E6D3A3] shadow-[0_0_35px_rgba(255,226,148,0.5)] ring-2 ring-[#E6D3A3]/50"
                 : quickDrawStep === 2
                 ? "border-[#FFD700] shadow-[0_0_40px_rgba(255,215,0,0.7)] ring-2 ring-[#FFD700] animate-pulse"
-                : "border-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.4)]"
+                : "border-[#C9A55A] shadow-[0_0_30px_rgba(212,175,55,0.4)]"
             }`}
             title={
               quickDrawStep === 0
@@ -858,23 +858,23 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
             }
           >
             {/* Spinning Outer Ring */}
-            <div className="absolute -inset-1 rounded-full border border-[#D4AF37]/40 border-dashed animate-[spin_40s_linear_infinite] pointer-events-none" />
+            <div className="absolute -inset-1 rounded-full border border-[#C9A55A]/40 border-dashed animate-[spin_40s_linear_infinite] pointer-events-none" />
 
             {/* Taiji Symbol */}
-            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#120F0C] border border-[#D4AF37] flex items-center justify-center shadow mb-0.5 group-hover:rotate-180 transition-transform duration-700">
-              <span className="text-xs sm:text-sm text-[#D4AF37]">☯</span>
+            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#120F0C] border border-[#C9A55A] flex items-center justify-center shadow mb-0.5 group-hover:rotate-180 transition-transform duration-700">
+              <span className="text-xs sm:text-sm text-[#C9A55A]">☯</span>
             </div>
 
             <div className="text-[9px] font-serif font-bold text-[#F3E7CF] leading-tight">
               {quickDrawStep === 1 ? (
-                <span className="text-[#FFE294]">KÍNH ĐỊA</span>
+                <span className="text-[#E6D3A3]">KÍNH ĐỊA</span>
               ) : quickDrawStep === 2 ? (
                 <span className="text-[#FFD700] animate-pulse">KÍNH NHÂN</span>
               ) : (
                 "ĐÃ CHỌN"
               )}
             </div>
-            <div className="text-[11px] font-mono font-bold text-[#D4AF37] leading-none my-0.5">
+            <div className="text-[11px] font-mono font-bold text-[#C9A55A] leading-none my-0.5">
               {quickDrawStep === 1 ? (
                 "2 / 3"
               ) : quickDrawStep === 2 ? (
@@ -884,7 +884,7 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
               )}
             </div>
             <div className="text-[7.5px] text-[#A69782] font-serif flex items-center gap-0.5 group-hover:text-[#FFF] transition-colors">
-              <Sparkles className="w-2 h-2 text-[#D4AF37]" />
+              <Sparkles className="w-2 h-2 text-[#C9A55A]" />
               {quickDrawStep === 1
                 ? "Bấm lần 2"
                 : quickDrawStep === 2
@@ -903,14 +903,14 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
               className="p-1 hover:text-[#FFF] hover:bg-[#251D14] rounded cursor-pointer"
               title="Xoay trái 45°"
             >
-              <RotateCcw className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <RotateCcw className="w-3.5 h-3.5 text-[#C9A55A]" />
             </button>
             <button
               type="button"
               onClick={() => setIsAutoSpinning((prev) => !prev)}
               className={`flex items-center gap-1 px-1.5 py-0.5 rounded cursor-pointer transition-colors ${
                 isAutoSpinning
-                  ? "bg-[#D4AF37] text-[#120F0C] font-bold"
+                  ? "bg-[#C9A55A] text-[#120F0C] font-bold"
                   : "hover:text-[#FFF] hover:bg-[#251D14]"
               }`}
               title="Tự động xoay vòng 360° chậm"
@@ -926,7 +926,7 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
               className="p-1 hover:text-[#FFF] hover:bg-[#251D14] rounded cursor-pointer"
               title="Xoay phải 45°"
             >
-              <RotateCw className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <RotateCw className="w-3.5 h-3.5 text-[#C9A55A]" />
             </button>
             <span className="text-[#413222] font-mono">|</span>
             <button
@@ -949,7 +949,7 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
             >
               <ZoomOut className="w-3 h-3" />
             </button>
-            <span className="text-[10px] font-mono px-1 text-[#D4AF37]">
+            <span className="text-[10px] font-mono px-1 text-[#C9A55A]">
               {Math.round(zoomScale * 100)}%
             </span>
             <button
@@ -974,12 +974,12 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
         {/* Hover / Selected Info Strip at Top Center */}
         <div className="absolute top-3 inset-x-4 flex justify-center pointer-events-none">
           <div className="bg-[#14100D]/90 backdrop-blur-xs border border-[#3D3020] rounded-full px-3 py-1 flex items-center gap-2 text-xs shadow-lg">
-            <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-[#C9A55A] animate-pulse" />
             <span className="text-[#C4B49C] text-[11px] font-serif">
               {hoveredIndex !== null ? (
                 <>
                   Đang rà chuột:{" "}
-                  <strong className="text-[#D4AF37] font-mono">
+                  <strong className="text-[#C9A55A] font-mono">
                     Lá #{hoveredIndex + 1}
                   </strong>{" "}
                   • Nhấp để chọn thỉnh

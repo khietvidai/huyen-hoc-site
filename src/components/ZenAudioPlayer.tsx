@@ -329,7 +329,7 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
     >
       {variant === "menu-card" ? (
         /* Full-width Menu Card Layout */
-        <div className="w-full bg-gradient-to-r from-[#201811] via-[#2A1E14] to-[#1E1610] border border-[#523E28] hover:border-[#D4AF37]/70 rounded-xl p-2.5 shadow-md transition-all">
+        <div className="w-full bg-gradient-to-r from-[#201811] via-[#2A1E14] to-[#1E1610] border border-[#523E28] hover:border-[#C9A55A]/70 rounded-xl p-2.5 shadow-md transition-all">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2.5 min-w-0">
               <button
@@ -337,8 +337,8 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
                 onClick={togglePlay}
                 className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 cursor-pointer transition-all ${
                   isPlaying
-                    ? "bg-gradient-to-br from-[#E2B755] to-[#B38728] text-[#14110C] shadow-[0_0_12px_rgba(226,183,85,0.4)]"
-                    : "bg-[#18130E] text-[#D4AF37] hover:bg-[#261E16] border border-[#483724]"
+                    ? "bg-gradient-to-br from-[#D6B97A] to-[#B38728] text-[#14110C] shadow-[0_0_12px_rgba(226,183,85,0.4)]"
+                    : "bg-[#18130E] text-[#C9A55A] hover:bg-[#261E16] border border-[#483724]"
                 }`}
                 title={isPlaying ? "Tạm dừng phát nhạc thiền" : "Bật nhạc thiền tĩnh tâm"}
               >
@@ -356,9 +356,9 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
                   </span>
                   {isPlaying && (
                     <div className="flex items-end gap-[1.5px] h-3 w-3 shrink-0">
-                      <span className="w-[2px] bg-[#D4AF37] rounded-full animate-[pulse_0.8s_ease-in-out_infinite] h-full" />
-                      <span className="w-[2px] bg-[#D4AF37] rounded-full animate-[pulse_1.2s_ease-in-out_infinite] h-2/3" />
-                      <span className="w-[2px] bg-[#D4AF37] rounded-full animate-[pulse_0.9s_ease-in-out_infinite] h-4/5" />
+                      <span className="w-[2px] bg-[#C9A55A] rounded-full animate-[pulse_0.8s_ease-in-out_infinite] h-full" />
+                      <span className="w-[2px] bg-[#C9A55A] rounded-full animate-[pulse_1.2s_ease-in-out_infinite] h-2/3" />
+                      <span className="w-[2px] bg-[#C9A55A] rounded-full animate-[pulse_0.9s_ease-in-out_infinite] h-4/5" />
                     </div>
                   )}
                 </div>
@@ -373,8 +373,8 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
               <button
                 type="button"
                 onClick={handleStrikeBell}
-                className={`p-1.5 rounded-lg text-[#C4AF92] hover:text-[#D4AF37] hover:bg-[#2A2117] transition-all cursor-pointer border border-[#3E2F1E] ${
-                  justChimed ? "text-[#D4AF37] scale-110 shadow-[0_0_8px_#D4AF37]" : ""
+                className={`p-1.5 rounded-lg text-[#C4AF92] hover:text-[#C9A55A] hover:bg-[#2A2117] transition-all cursor-pointer border border-[#3E2F1E] ${
+                  justChimed ? "text-[#C9A55A] scale-110 shadow-[0_0_8px_#C9A55A]" : ""
                 }`}
                 title="Thỉnh chuông bát tĩnh tâm 🔔"
               >
@@ -387,7 +387,7 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
                 onClick={() => setIsOpen(!isOpen)}
                 className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-mono transition-colors cursor-pointer border ${
                   isOpen
-                    ? "bg-[#332517] text-[#FFE28A] border-amber-600/60"
+                    ? "bg-[#332517] text-[#E6D3A3] border-amber-600/60"
                     : "bg-[#18130E] text-[#9E8B76] hover:text-white border-[#382B1B]"
                 }`}
                 title="Tùy chỉnh bài hát, âm lượng & YouTube"
@@ -403,7 +403,7 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
             <button
               type="button"
               onClick={() => setVolume(volume === 0 ? 0.5 : 0)}
-              className="text-[#D4AF37] hover:brightness-125 transition-colors cursor-pointer shrink-0"
+              className="text-[#C9A55A] hover:brightness-125 transition-colors cursor-pointer shrink-0"
               title={volume === 0 ? "Bật tiếng" : "Tắt tiếng"}
             >
               {volume === 0 ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
@@ -415,7 +415,7 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
               step="0.02"
               value={volume}
               onChange={(e) => setVolume(parseFloat(e.target.value))}
-              className="flex-1 accent-[#D4AF37] h-1.5 bg-[#14100C] rounded-lg cursor-pointer"
+              className="flex-1 accent-[#C9A55A] h-1.5 bg-[#14100C] rounded-lg cursor-pointer"
             />
             <span className="font-mono text-[10px] text-[#A69780] w-7 text-right">
               {Math.round(volume * 100)}%
@@ -439,7 +439,7 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
                       onClick={() => handleSelectSoundscape(item.id)}
                       className={`w-full text-left p-2 rounded-lg border transition-all flex items-center justify-between gap-2 cursor-pointer ${
                         isSelected
-                          ? "bg-[#2A2016] border-[#D4AF37] text-white"
+                          ? "bg-[#2A2016] border-[#C9A55A] text-white"
                           : "bg-[#14100C] border-[#2A2116] text-[#A69780] hover:border-[#423422] hover:text-[#DDD]"
                       }`}
                     >
@@ -452,7 +452,7 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
                         </div>
                       </div>
                       {isSelected && isPlaying && (
-                        <span className="w-2 h-2 rounded-full bg-[#D4AF37] shadow-[0_0_6px_#D4AF37] shrink-0" />
+                        <span className="w-2 h-2 rounded-full bg-[#C9A55A] shadow-[0_0_6px_#C9A55A] shrink-0" />
                       )}
                     </button>
                   );
@@ -464,7 +464,7 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowLiveVideo(!showLiveVideo)}
-                  className="text-[#D4AF37] hover:underline flex items-center gap-1 cursor-pointer"
+                  className="text-[#C9A55A] hover:underline flex items-center gap-1 cursor-pointer"
                 >
                   <Tv className="w-3 h-3" />
                   <span>{showLiveVideo ? "Ẩn khung video" : "Xem video YouTube"}</span>
@@ -484,7 +484,7 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
         </div>
       ) : (
         /* Compact Header Pill Button */
-        <div className="flex items-center gap-1 bg-[#1A1612]/90 hover:bg-[#221C16] border border-[#3E3222] hover:border-[#D4AF37]/60 rounded-full px-2.5 py-1 shadow-lg backdrop-blur-md transition-all">
+        <div className="flex items-center gap-1 bg-[#1A1612]/90 hover:bg-[#221C16] border border-[#3E3222] hover:border-[#C9A55A]/60 rounded-full px-2.5 py-1 shadow-lg backdrop-blur-md transition-all">
           {/* Play/Pause Main Button */}
           <button
             type="button"
@@ -502,9 +502,9 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
               <div className="flex items-center gap-1.5">
                 {/* Animated sound wave bars */}
                 <div className="flex items-end gap-[2px] h-3 w-3.5">
-                  <span className="w-[2.5px] bg-[#D4AF37] rounded-full animate-[pulse_0.8s_ease-in-out_infinite] h-full" />
-                  <span className="w-[2.5px] bg-[#D4AF37] rounded-full animate-[pulse_1.2s_ease-in-out_infinite] h-2/3" />
-                  <span className="w-[2.5px] bg-[#D4AF37] rounded-full animate-[pulse_0.9s_ease-in-out_infinite] h-4/5" />
+                  <span className="w-[2.5px] bg-[#C9A55A] rounded-full animate-[pulse_0.8s_ease-in-out_infinite] h-full" />
+                  <span className="w-[2.5px] bg-[#C9A55A] rounded-full animate-[pulse_1.2s_ease-in-out_infinite] h-2/3" />
+                  <span className="w-[2.5px] bg-[#C9A55A] rounded-full animate-[pulse_0.9s_ease-in-out_infinite] h-4/5" />
                 </div>
                 <span className="hidden sm:inline font-serif font-semibold text-[11px] tracking-wide text-[#F3E3BC]">
                   {currentOption.shortName}
@@ -512,7 +512,7 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
               </div>
             ) : (
               <div className="flex items-center gap-1.5">
-                <Play className="w-3 h-3 fill-current text-[#D4AF37]" />
+                <Play className="w-3 h-3 fill-current text-[#C9A55A]" />
                 <span className="hidden sm:inline font-serif text-[11px] text-[#B8A790]">
                   {currentOption.shortName || "Nhạc Thiền"}
                 </span>
@@ -524,8 +524,8 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
           <button
             type="button"
             onClick={handleStrikeBell}
-            className={`p-1 rounded-full text-[#BBA588] hover:text-[#D4AF37] hover:bg-[#2A2218] transition-all cursor-pointer ${
-              justChimed ? "text-[#D4AF37] scale-110 shadow-[0_0_8px_#D4AF37]" : ""
+            className={`p-1 rounded-full text-[#BBA588] hover:text-[#C9A55A] hover:bg-[#2A2218] transition-all cursor-pointer ${
+              justChimed ? "text-[#C9A55A] scale-110 shadow-[0_0_8px_#C9A55A]" : ""
             }`}
             title="Thỉnh chuông bát tĩnh tâm (Gõ chuông thiền ngay tức thì)"
           >
@@ -550,7 +550,7 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
           {/* Header */}
           <div className="flex items-center justify-between border-b border-[#2C2317] pb-3 mb-3">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-[#271E14] border border-[#4A3922] flex items-center justify-center text-[#D4AF37]">
+              <div className="w-7 h-7 rounded-lg bg-[#271E14] border border-[#4A3922] flex items-center justify-center text-[#C9A55A]">
                 <Music className="w-3.5 h-3.5" />
               </div>
               <div>
@@ -569,7 +569,7 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
               onClick={togglePlay}
               className={`px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer border ${
                 isPlaying
-                  ? "bg-[#D4AF37] text-[#14110C] border-[#D4AF37] shadow-[0_0_10px_rgba(212,175,55,0.4)]"
+                  ? "bg-[#C9A55A] text-[#14110C] border-[#C9A55A] shadow-[0_0_10px_rgba(212,175,55,0.4)]"
                   : "bg-[#251E16] text-[#A69780] border-[#3E3222] hover:text-[#FFF]"
               }`}
             >
@@ -612,9 +612,9 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
                   title={isPlaying && isCurrentYouTube ? "Tạm dừng" : "Phát Vũ Lâm Linh"}
                 >
                   {isPlaying && isCurrentYouTube ? (
-                    <Pause className="w-6 h-6 text-[#D4AF37] fill-current" />
+                    <Pause className="w-6 h-6 text-[#C9A55A] fill-current" />
                   ) : (
-                    <Play className="w-6 h-6 text-[#D4AF37] fill-current" />
+                    <Play className="w-6 h-6 text-[#C9A55A] fill-current" />
                   )}
                 </button>
               </div>
@@ -622,7 +622,7 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
               {/* Track Metadata */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5 flex-wrap mb-1">
-                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#D4AF37]/20 text-[#E5C778] border border-[#D4AF37]/40">
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#C9A55A]/20 text-[#E5C778] border border-[#C9A55A]/40">
                     Khuyên Dùng
                   </span>
                   <span className="text-[9px] text-[#A69780] font-mono">YouTube Audio</span>
@@ -647,7 +647,7 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
                   onClick={() => setShowLiveVideo(!showLiveVideo)}
                   className={`flex items-center gap-1 px-2 py-0.5 rounded border transition-colors cursor-pointer ${
                     showLiveVideo
-                      ? "bg-[#D4AF37] text-black border-[#D4AF37] font-bold"
+                      ? "bg-[#C9A55A] text-black border-[#C9A55A] font-bold"
                       : "bg-[#1E1710] text-[#BCAEA0] border-[#423220] hover:text-white"
                   }`}
                   title="Hiện hoặc ẩn màn hình video trực tiếp"
@@ -671,7 +671,7 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
               <button
                 type="button"
                 onClick={() => setIsCustomUrlOpen(!isCustomUrlOpen)}
-                className="text-[10px] text-[#A6957E] hover:text-[#D4AF37] transition-colors underline cursor-pointer"
+                className="text-[10px] text-[#A6957E] hover:text-[#C9A55A] transition-colors underline cursor-pointer"
               >
                 {isCustomUrlOpen ? "Đóng đổi link" : "Đổi link YouTube"}
               </button>
@@ -689,12 +689,12 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
                     value={customUrlInput}
                     onChange={(e) => setCustomUrlInput(e.target.value)}
                     placeholder="https://www.youtube.com/watch?v=..."
-                    className="flex-1 bg-[#130F0B] border border-[#443322] rounded-lg px-2 py-1 text-xs text-[#EAE0D0] focus:outline-none focus:border-[#D4AF37]"
+                    className="flex-1 bg-[#130F0B] border border-[#443322] rounded-lg px-2 py-1 text-xs text-[#EAE0D0] focus:outline-none focus:border-[#C9A55A]"
                   />
                   <button
                     type="button"
                     onClick={handleApplyCustomUrl}
-                    className="px-2.5 py-1 bg-[#D4AF37] hover:bg-[#E5BF47] text-black font-bold text-xs rounded-lg cursor-pointer transition-colors"
+                    className="px-2.5 py-1 bg-[#C9A55A] hover:bg-[#E5BF47] text-black font-bold text-xs rounded-lg cursor-pointer transition-colors"
                   >
                     Áp dụng
                   </button>
@@ -703,7 +703,7 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
                   <button
                     type="button"
                     onClick={handleResetToDefaultYt}
-                    className="mt-1.5 flex items-center gap-1 text-[10px] text-[#D4AF37] hover:underline cursor-pointer"
+                    className="mt-1.5 flex items-center gap-1 text-[10px] text-[#C9A55A] hover:underline cursor-pointer"
                   >
                     <RotateCcw className="w-2.5 h-2.5" />
                     <span>Khôi phục Vũ Lâm Linh (mặc định)</span>
@@ -720,7 +720,7 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
                 <button
                   type="button"
                   onClick={() => setVolume(volume === 0 ? 0.5 : 0)}
-                  className="text-[#D4AF37] hover:brightness-125 transition-colors cursor-pointer"
+                  className="text-[#C9A55A] hover:brightness-125 transition-colors cursor-pointer"
                   title={volume === 0 ? "Bật tiếng" : "Tắt tiếng"}
                 >
                   {volume === 0 ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
@@ -736,7 +736,7 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
               step="0.02"
               value={volume}
               onChange={(e) => setVolume(parseFloat(e.target.value))}
-              className="w-full accent-[#D4AF37] h-1.5 bg-[#2B2217] rounded-lg cursor-pointer"
+              className="w-full accent-[#C9A55A] h-1.5 bg-[#2B2217] rounded-lg cursor-pointer"
             />
           </div>
 
@@ -754,7 +754,7 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
                   onClick={() => handleSelectSoundscape(item.id)}
                   className={`w-full text-left p-2 rounded-xl border transition-all flex items-start gap-2.5 cursor-pointer ${
                     isSelected
-                      ? "bg-[#251D14] border-[#D4AF37] text-[#FFF] shadow-[0_0_12px_rgba(212,175,55,0.15)]"
+                      ? "bg-[#251D14] border-[#C9A55A] text-[#FFF] shadow-[0_0_12px_rgba(212,175,55,0.15)]"
                       : "bg-[#14100C] border-[#2A2116] text-[#A69780] hover:border-[#423422] hover:text-[#DDD]"
                   }`}
                 >
@@ -769,7 +769,7 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
                         {item.name}
                       </span>
                       {isSelected && isPlaying && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] shadow-[0_0_6px_#D4AF37]" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#C9A55A] shadow-[0_0_6px_#C9A55A]" />
                       )}
                     </div>
                     <p className="text-[10px] text-[#8C7B67] leading-relaxed mt-0.5 line-clamp-2">
@@ -787,7 +787,7 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
             onClick={handleStrikeBell}
             className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-[#2A2015] to-[#22190F] hover:from-[#35281B] hover:to-[#2B2014] border border-[#4D3A24] text-[#EAD8B1] hover:text-[#FFF] text-xs font-medium flex items-center justify-center gap-2 shadow transition-all cursor-pointer"
           >
-            <Bell className={`w-3.5 h-3.5 text-[#D4AF37] ${justChimed ? "animate-bounce" : ""}`} />
+            <Bell className={`w-3.5 h-3.5 text-[#C9A55A] ${justChimed ? "animate-bounce" : ""}`} />
             <span>Thỉnh Tiếng Chuông Bát Tĩnh Tâm</span>
           </button>
         </div>
@@ -797,7 +797,7 @@ export const ZenAudioPlayer: React.FC<ZenAudioPlayerProps> = ({
       <div
         className={
           showLiveVideo && isOpen && isCurrentYouTube
-            ? "fixed sm:absolute right-4 sm:right-0 top-16 sm:top-14 z-50 w-72 sm:w-80 h-44 rounded-xl overflow-hidden shadow-2xl border-2 border-[#D4AF37] bg-black"
+            ? "fixed sm:absolute right-4 sm:right-0 top-16 sm:top-14 z-50 w-72 sm:w-80 h-44 rounded-xl overflow-hidden shadow-2xl border-2 border-[#C9A55A] bg-black"
             : "fixed -left-[9999px] -top-[9999px] w-[200px] h-[150px] pointer-events-none opacity-0"
         }
       >

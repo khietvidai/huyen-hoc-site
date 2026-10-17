@@ -257,7 +257,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
       <div className="bg-gradient-to-r from-[#24170F] via-[#1B110B] to-[#24170F] border border-[#5A3F24] rounded-2xl p-4 sm:p-5 shadow-xl">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#FFE28A] via-[#D4AF37] to-[#8C6218] flex items-center justify-center text-[#120F0B] shadow-[0_0_15px_rgba(212,175,55,0.4)]">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#E6D3A3] via-[#C9A55A] to-[#8C6218] flex items-center justify-center text-[#120F0B] shadow-[0_0_15px_rgba(212,175,55,0.4)]">
               <Crown className="w-6 h-6" />
             </div>
             <div>
@@ -279,9 +279,9 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
             <button
               type="button"
               onClick={() => setShowTheoryModal(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#2A1C10] hover:bg-[#3B2818] border border-[#5C4023] text-xs font-serif text-[#FFE28A] transition-all cursor-pointer shadow active:scale-95"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#2A1C10] hover:bg-[#3B2818] border border-[#5C4023] text-xs font-serif text-[#E6D3A3] transition-all cursor-pointer shadow active:scale-95"
             >
-              <BookOpen className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <BookOpen className="w-3.5 h-3.5 text-[#C9A55A]" />
               <span>Điển Tích Thái Ất</span>
             </button>
 
@@ -289,7 +289,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
               <button
                 type="button"
                 onClick={handleReset}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#22170E] hover:bg-[#302115] border border-[#48331E] text-xs font-serif text-[#CDBFA8] hover:text-[#FFE28A] transition-all cursor-pointer shadow active:scale-95"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#22170E] hover:bg-[#302115] border border-[#48331E] text-xs font-serif text-[#CDBFA8] hover:text-[#E6D3A3] transition-all cursor-pointer shadow active:scale-95"
               >
                 <RotateCw className="w-3.5 h-3.5" />
                 <span>Khởi Lại</span>
@@ -308,11 +308,11 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
               onClick={() => setActiveTab("realtime")}
               className={`p-3 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1 ${
                 activeTab === "realtime"
-                  ? "bg-gradient-to-b from-[#2E1E12] to-[#1C120A] border-[#D4AF37] text-[#FFE28A] shadow-[0_0_12px_rgba(212,175,55,0.3)] ring-1 ring-[#D4AF37]/50 font-bold"
+                  ? "bg-gradient-to-b from-[#2E1E12] to-[#1C120A] border-[#C9A55A] text-[#E6D3A3] shadow-[0_0_12px_rgba(212,175,55,0.3)] ring-1 ring-[#C9A55A]/50 font-bold"
                   : "bg-[#160E08] border-[#382414] text-[#A89882] hover:bg-[#20150D]"
               }`}
             >
-              <Clock className="w-4 h-4 text-[#D4AF37]" />
+              <Clock className="w-4 h-4 text-[#C9A55A]" />
               <span className="text-xs font-serif">Thời Khắc Hiện Tại</span>
               <span className="text-[9.5px] font-normal text-[#8A7966]">Đồng bộ 4 Trụ</span>
             </button>
@@ -322,11 +322,11 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
               onClick={() => setActiveTab("custom")}
               className={`p-3 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1 ${
                 activeTab === "custom"
-                  ? "bg-gradient-to-b from-[#2E1E12] to-[#1C120A] border-[#D4AF37] text-[#FFE28A] shadow-[0_0_12px_rgba(212,175,55,0.3)] ring-1 ring-[#D4AF37]/50 font-bold"
+                  ? "bg-gradient-to-b from-[#2E1E12] to-[#1C120A] border-[#C9A55A] text-[#E6D3A3] shadow-[0_0_12px_rgba(212,175,55,0.3)] ring-1 ring-[#C9A55A]/50 font-bold"
                   : "bg-[#160E08] border-[#382414] text-[#A89882] hover:bg-[#20150D]"
               }`}
             >
-              <Calendar className="w-4 h-4 text-[#D4AF37]" />
+              <Calendar className="w-4 h-4 text-[#C9A55A]" />
               <span className="text-xs font-serif">Tùy Chọn 4 Trụ</span>
               <span className="text-[9.5px] font-normal text-[#8A7966]">Tự chọn Can Chi & Cục</span>
             </button>
@@ -336,11 +336,11 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
               onClick={() => setActiveTab("mind")}
               className={`p-3 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1 ${
                 activeTab === "mind"
-                  ? "bg-gradient-to-b from-[#2E1E12] to-[#1C120A] border-[#D4AF37] text-[#FFE28A] shadow-[0_0_12px_rgba(212,175,55,0.3)] ring-1 ring-[#D4AF37]/50 font-bold"
+                  ? "bg-gradient-to-b from-[#2E1E12] to-[#1C120A] border-[#C9A55A] text-[#E6D3A3] shadow-[0_0_12px_rgba(212,175,55,0.3)] ring-1 ring-[#C9A55A]/50 font-bold"
                   : "bg-[#160E08] border-[#382414] text-[#A89882] hover:bg-[#20150D]"
               }`}
             >
-              <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+              <Sparkles className="w-4 h-4 text-[#C9A55A]" />
               <span className="text-xs font-serif">Động Tâm Chiêm</span>
               <span className="text-[9.5px] font-normal text-[#8A7966]">Ý niệm khởi quẻ</span>
             </button>
@@ -350,11 +350,11 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
               onClick={() => setActiveTab("number")}
               className={`p-3 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1 ${
                 activeTab === "number"
-                  ? "bg-gradient-to-b from-[#2E1E12] to-[#1C120A] border-[#D4AF37] text-[#FFE28A] shadow-[0_0_12px_rgba(212,175,55,0.3)] ring-1 ring-[#D4AF37]/50 font-bold"
+                  ? "bg-gradient-to-b from-[#2E1E12] to-[#1C120A] border-[#C9A55A] text-[#E6D3A3] shadow-[0_0_12px_rgba(212,175,55,0.3)] ring-1 ring-[#C9A55A]/50 font-bold"
                   : "bg-[#160E08] border-[#382414] text-[#A89882] hover:bg-[#20150D]"
               }`}
             >
-              <Compass className="w-4 h-4 text-[#D4AF37]" />
+              <Compass className="w-4 h-4 text-[#C9A55A]" />
               <span className="text-xs font-serif">Bấm Số Thiên Cơ</span>
               <span className="text-[9.5px] font-normal text-[#8A7966]">Trắc số định cục</span>
             </button>
@@ -363,11 +363,11 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
           {/* TAB 1: THỜI KHẮC HIỆN TẠI */}
           {activeTab === "realtime" && (
             <div className="bg-[#1C140D] border border-[#4E351D] rounded-2xl p-6 text-center space-y-4 max-w-xl mx-auto shadow-inner">
-              <div className="w-16 h-16 mx-auto rounded-full bg-[#2A1C10] border border-[#D4AF37]/50 flex items-center justify-center text-3xl shadow-lg">
+              <div className="w-16 h-16 mx-auto rounded-full bg-[#2A1C10] border border-[#C9A55A]/50 flex items-center justify-center text-3xl shadow-lg">
                 👑
               </div>
               <div className="space-y-1">
-                <h4 className="text-base font-serif font-bold text-[#FFE28A]">
+                <h4 className="text-base font-serif font-bold text-[#E6D3A3]">
                   LẬP BÀN THÁI ẤT THEO THỜI KHẮC HIỆN TẠI
                 </h4>
                 <p className="text-xs text-[#A89882] font-serif leading-relaxed px-4">
@@ -380,7 +380,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
                   type="button"
                   onClick={executeRealtimeCast}
                   disabled={isCasting}
-                  className="px-8 py-3 bg-gradient-to-r from-[#8C6218] via-[#D4AF37] to-[#8C6218] hover:brightness-110 active:scale-95 text-[#14100C] font-serif font-bold text-sm rounded-2xl shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-all cursor-pointer flex items-center justify-center gap-2 mx-auto"
+                  className="px-8 py-3 bg-gradient-to-r from-[#8C6218] via-[#C9A55A] to-[#8C6218] hover:brightness-110 active:scale-95 text-[#14100C] font-serif font-bold text-sm rounded-2xl shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-all cursor-pointer flex items-center justify-center gap-2 mx-auto"
                 >
                   {isCasting ? <Loader2 className="w-4 h-4 animate-spin text-[#14100C]" /> : <Crown className="w-4 h-4 text-[#14100C]" />}
                   <span>Khởi Trận Thái Ất Thần Số</span>
@@ -393,7 +393,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
           {activeTab === "custom" && (
             <form onSubmit={executeCustomCast} className="bg-[#1C140D] border border-[#4E351D] rounded-2xl p-5 space-y-4 max-w-2xl mx-auto">
               <div className="text-center space-y-1 border-b border-[#342213] pb-3">
-                <h4 className="text-sm font-serif font-bold text-[#FFE28A]">
+                <h4 className="text-sm font-serif font-bold text-[#E6D3A3]">
                   TÙY BIẾN 4 TRỤ CAN CHI & CỤC SỐ THÁI ẤT
                 </h4>
                 <p className="text-[11px] text-[#A89882] font-serif">
@@ -410,7 +410,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
                   <select
                     value={customDun}
                     onChange={(e) => setCustomDun(e.target.value as any)}
-                    className="w-full bg-[#20160E] border border-[#523A21] rounded-lg px-2.5 py-1.5 text-xs text-[#FFE28A] font-serif focus:border-[#D4AF37] outline-hidden"
+                    className="w-full bg-[#20160E] border border-[#523A21] rounded-lg px-2.5 py-1.5 text-xs text-[#E6D3A3] font-serif focus:border-[#C9A55A] outline-hidden"
                   >
                     <option value="Dương Độn">Dương Độn (Đông Chí ➔ Hạ Chí)</option>
                     <option value="Âm Độn">Âm Độn (Hạ Chí ➔ Đông Chí)</option>
@@ -423,7 +423,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
                   <select
                     value={customCuc}
                     onChange={(e) => setCustomCuc(parseInt(e.target.value, 10))}
-                    className="w-full bg-[#20160E] border border-[#523A21] rounded-lg px-2.5 py-1.5 text-xs text-[#FFE28A] font-serif focus:border-[#D4AF37] outline-hidden"
+                    className="w-full bg-[#20160E] border border-[#523A21] rounded-lg px-2.5 py-1.5 text-xs text-[#E6D3A3] font-serif focus:border-[#C9A55A] outline-hidden"
                   >
                     {Array.from({ length: 36 }, (_, i) => i + 1).map((n) => (
                       <option key={n} value={n}>
@@ -438,7 +438,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 {/* Trụ Giờ */}
                 <div className="bg-[#140E08] p-2.5 rounded-xl border border-[#3A2615] space-y-1">
-                  <span className="text-[10px] font-mono text-[#D4AF37] font-bold block">1. TRỤ GIỜ</span>
+                  <span className="text-[10px] font-mono text-[#C9A55A] font-bold block">1. TRỤ GIỜ</span>
                   <div className="flex gap-1">
                     <select
                       value={hourCan}
@@ -524,7 +524,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
               <button
                 type="submit"
                 disabled={isCasting}
-                className="w-full py-2.5 bg-gradient-to-r from-[#8C6218] via-[#D4AF37] to-[#8C6218] hover:brightness-110 active:scale-95 text-[#14100C] font-serif font-bold text-xs rounded-xl shadow transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="w-full py-2.5 bg-gradient-to-r from-[#8C6218] via-[#C9A55A] to-[#8C6218] hover:brightness-110 active:scale-95 text-[#14100C] font-serif font-bold text-xs rounded-xl shadow transition-all cursor-pointer flex items-center justify-center gap-2"
               >
                 {isCasting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Crown className="w-3.5 h-3.5" />}
                 <span>Lập Bàn Thái Ất Tùy Chỉnh</span>
@@ -537,13 +537,13 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
             <div className="bg-[#1C140D] border border-[#4E351D] rounded-2xl p-6 text-center space-y-4 max-w-xl mx-auto shadow-inner">
               <div
                 onClick={executeMindCast}
-                className="w-24 h-24 mx-auto rounded-full bg-gradient-to-b from-[#2E1E12] to-[#140D07] border-2 border-[#D4AF37] flex flex-col items-center justify-center cursor-pointer hover:scale-105 active:scale-95 shadow-[0_0_25px_rgba(212,175,55,0.3)] transition-all select-none group"
+                className="w-24 h-24 mx-auto rounded-full bg-gradient-to-b from-[#2E1E12] to-[#140D07] border-2 border-[#C9A55A] flex flex-col items-center justify-center cursor-pointer hover:scale-105 active:scale-95 shadow-[0_0_25px_rgba(212,175,55,0.3)] transition-all select-none group"
               >
-                <Crown className="w-10 h-10 text-[#FFE28A] group-hover:rotate-12 transition-transform duration-500" />
-                <span className="text-[10px] font-serif text-[#FFE28A] font-bold mt-1">Động Ý</span>
+                <Crown className="w-10 h-10 text-[#E6D3A3] group-hover:rotate-12 transition-transform duration-500" />
+                <span className="text-[10px] font-serif text-[#E6D3A3] font-bold mt-1">Động Ý</span>
               </div>
               <div className="space-y-1">
-                <h4 className="text-base font-serif font-bold text-[#FFE28A]">
+                <h4 className="text-base font-serif font-bold text-[#E6D3A3]">
                   ĐỘNG TÂM KHỞI QUẺ THÁI ẤT
                 </h4>
                 <p className="text-xs text-[#A89882] font-serif leading-relaxed px-4">
@@ -555,9 +555,9 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
                 type="button"
                 onClick={executeMindCast}
                 disabled={isCasting}
-                className="px-7 py-2.5 bg-[#2E1E12] hover:bg-[#3D2918] text-[#FFE28A] border border-[#D4AF37]/70 font-serif font-bold text-xs rounded-xl transition-all cursor-pointer shadow active:scale-95 inline-flex items-center gap-2"
+                className="px-7 py-2.5 bg-[#2E1E12] hover:bg-[#3D2918] text-[#E6D3A3] border border-[#C9A55A]/70 font-serif font-bold text-xs rounded-xl transition-all cursor-pointer shadow active:scale-95 inline-flex items-center gap-2"
               >
-                {isCasting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />}
+                {isCasting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-[#C9A55A]" />}
                 <span>Khởi Bàn Thái Ất Động Tâm</span>
               </button>
             </div>
@@ -567,7 +567,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
           {activeTab === "number" && (
             <form onSubmit={executeNumberCast} className="bg-[#1C140D] border border-[#4E351D] rounded-2xl p-6 text-center space-y-4 max-w-md mx-auto shadow-inner">
               <div className="space-y-1">
-                <h4 className="text-base font-serif font-bold text-[#FFE28A]">
+                <h4 className="text-base font-serif font-bold text-[#E6D3A3]">
                   BẤM SỐ ĐỊNH CỤC THÁI ẤT
                 </h4>
                 <p className="text-xs text-[#A89882] font-serif">
@@ -581,14 +581,14 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
                   value={mindNumber}
                   onChange={(e) => setMindNumber(e.target.value)}
                   placeholder="Ví dụ: 7, 36, 108, 999..."
-                  className="w-full bg-[#120B06] border border-[#5A3F23] rounded-xl px-4 py-2.5 text-center text-lg font-mono font-bold text-[#FFE28A] placeholder-[#6E5943] focus:border-[#D4AF37] outline-hidden"
+                  className="w-full bg-[#120B06] border border-[#5A3F23] rounded-xl px-4 py-2.5 text-center text-lg font-mono font-bold text-[#E6D3A3] placeholder-[#6E5943] focus:border-[#C9A55A] outline-hidden"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={isCasting}
-                className="px-7 py-2.5 bg-gradient-to-r from-[#8C6218] via-[#D4AF37] to-[#8C6218] hover:brightness-110 active:scale-95 text-[#14100C] font-serif font-bold text-xs rounded-xl shadow transition-all cursor-pointer inline-flex items-center gap-2"
+                className="px-7 py-2.5 bg-gradient-to-r from-[#8C6218] via-[#C9A55A] to-[#8C6218] hover:brightness-110 active:scale-95 text-[#14100C] font-serif font-bold text-xs rounded-xl shadow transition-all cursor-pointer inline-flex items-center gap-2"
               >
                 {isCasting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Compass className="w-3.5 h-3.5" />}
                 <span>An Bàn Thái Ất Theo Số</span>
@@ -606,7 +606,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xl">👑</span>
               <div>
-                <span className="font-bold text-[#FFE28A] text-sm block">
+                <span className="font-bold text-[#E6D3A3] text-sm block">
                   {result.epochName.toUpperCase()}
                 </span>
                 <span className="text-[11px] font-mono text-[#A89882]">
@@ -620,10 +620,10 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
                 type="button"
                 onClick={() => handleCapture("chart")}
                 disabled={isCapturing}
-                className="flex items-center gap-1 px-3 py-1.5 text-xs font-serif font-bold bg-[#2A1D11] hover:bg-[#3E2918] text-[#FFE28A] border border-[#6B4B27] hover:border-[#D4AF37] rounded-xl transition-all cursor-pointer shadow active:scale-95"
+                className="flex items-center gap-1 px-3 py-1.5 text-xs font-serif font-bold bg-[#2A1D11] hover:bg-[#3E2918] text-[#E6D3A3] border border-[#6B4B27] hover:border-[#C9A55A] rounded-xl transition-all cursor-pointer shadow active:scale-95"
                 title="Chụp ảnh toàn bộ Bàn Thái Ất Thần Số Cửu Cung"
               >
-                {isCapturing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Camera className="w-3.5 h-3.5 text-[#D4AF37]" />}
+                {isCapturing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Camera className="w-3.5 h-3.5 text-[#C9A55A]" />}
                 <span>Chụp Bàn Thái Ất</span>
               </button>
 
@@ -631,10 +631,10 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
                 type="button"
                 onClick={() => handleCapture("primary")}
                 disabled={isCapturing}
-                className="flex items-center gap-1 px-3 py-1.5 text-xs font-serif font-bold bg-gradient-to-r from-amber-500/20 via-amber-400/30 to-amber-500/20 hover:from-amber-500/30 text-[#FFE28A] border border-[#8C6218] hover:border-[#D4AF37] rounded-xl transition-all cursor-pointer shadow active:scale-95"
+                className="flex items-center gap-1 px-3 py-1.5 text-xs font-serif font-bold bg-gradient-to-r from-amber-500/20 via-amber-400/30 to-amber-500/20 hover:from-amber-500/30 text-[#E6D3A3] border border-[#8C6218] hover:border-[#C9A55A] rounded-xl transition-all cursor-pointer shadow active:scale-95"
                 title="Chụp ảnh riêng Quẻ Thái Ất Ban Đầu (Quẻ Chủ)"
               >
-                {isCapturing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Camera className="w-3.5 h-3.5 text-[#FFE28A]" />}
+                {isCapturing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Camera className="w-3.5 h-3.5 text-[#E6D3A3]" />}
                 <span>Chụp Quẻ Ban Đầu</span>
               </button>
             </div>
@@ -645,11 +645,11 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
             {/* Thẻ Chủ Toán */}
             <div className="bg-[#1A120B] border border-[#4A331B] rounded-xl p-3.5 space-y-1.5">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-serif font-bold text-[#E2B755] flex items-center gap-1.5">
+                <span className="text-xs font-serif font-bold text-[#D6B97A] flex items-center gap-1.5">
                   <Shield className="w-4 h-4 text-amber-400" />
                   CHỦ TOÁN (VĂN XƯƠNG):
                 </span>
-                <span className="text-xs font-mono font-bold text-[#FFE28A] bg-[#2E1E10] px-2 py-0.5 rounded border border-[#5E3E1E]">
+                <span className="text-xs font-mono font-bold text-[#E6D3A3] bg-[#2E1E10] px-2 py-0.5 rounded border border-[#5E3E1E]">
                   Số {result.chuToan.number}
                 </span>
               </div>
@@ -667,13 +667,13 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
             </div>
 
             {/* Thẻ Cục Diện Chiến Lược Chủ - Khách */}
-            <div className="bg-gradient-to-br from-[#26170C] via-[#1B1108] to-[#26170C] border-2 border-[#D4AF37] rounded-xl p-3.5 flex flex-col justify-between space-y-2 shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+            <div className="bg-gradient-to-br from-[#26170C] via-[#1B1108] to-[#26170C] border-2 border-[#C9A55A] rounded-xl p-3.5 flex flex-col justify-between space-y-2 shadow-[0_0_15px_rgba(212,175,55,0.2)]">
               <div>
                 <span className="text-[10px] font-mono uppercase text-[#A89882] tracking-wider block">
                   CỤC DIỆN THỜI THẾ THÁI ẤT
                 </span>
-                <h4 className="text-base font-serif font-bold text-[#FFE28A] flex items-center gap-1.5 mt-0.5">
-                  <Swords className="w-4 h-4 text-[#D4AF37]" />
+                <h4 className="text-base font-serif font-bold text-[#E6D3A3] flex items-center gap-1.5 mt-0.5">
+                  <Swords className="w-4 h-4 text-[#C9A55A]" />
                   <span>{result.chuKhachBattle.winner}</span>
                 </h4>
               </div>
@@ -688,11 +688,11 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
             {/* Thẻ Khách Toán */}
             <div className="bg-[#1A120B] border border-[#4A331B] rounded-xl p-3.5 space-y-1.5">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-serif font-bold text-[#E2B755] flex items-center gap-1.5">
+                <span className="text-xs font-serif font-bold text-[#D6B97A] flex items-center gap-1.5">
                   <Flame className="w-4 h-4 text-orange-400" />
                   KHÁCH TOÁN (THỦY KÍCH):
                 </span>
-                <span className="text-xs font-mono font-bold text-[#FFE28A] bg-[#2E1E10] px-2 py-0.5 rounded border border-[#5E3E1E]">
+                <span className="text-xs font-mono font-bold text-[#E6D3A3] bg-[#2E1E10] px-2 py-0.5 rounded border border-[#5E3E1E]">
                   Số {result.khachToan.number}
                 </span>
               </div>
@@ -714,7 +714,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
           <div className="bg-[#140D07] border border-[#422C16] rounded-2xl p-3 sm:p-4 shadow-xl">
             <div className="flex items-center justify-between pb-3 border-b border-[#302010] mb-3">
               <div className="flex items-center gap-2">
-                <Crown className="w-4 h-4 text-[#D4AF37]" />
+                <Crown className="w-4 h-4 text-[#C9A55A]" />
                 <h4 className="font-serif font-bold text-sm text-[#F5EAD4]">
                   BÀN THÁI ẤT CỬU CUNG • THẬP LỤC THẦN AN VỊ
                 </h4>
@@ -743,9 +743,9 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
                         onClick={() => setSelectedCellNum(isSelected ? null : num)}
                         className={`p-2.5 sm:p-3 rounded-xl border transition-all cursor-pointer relative flex flex-col justify-between min-h-[110px] sm:min-h-[130px] ${
                           isSelected
-                            ? "bg-[#2E1E12] border-[#FFE28A] ring-2 ring-[#D4AF37]/80 shadow-[0_0_15px_rgba(212,175,55,0.4)] scale-[1.02] z-10"
+                            ? "bg-[#2E1E12] border-[#E6D3A3] ring-2 ring-[#C9A55A]/80 shadow-[0_0_15px_rgba(212,175,55,0.4)] scale-[1.02] z-10"
                             : cell.isTaiYi
-                            ? "bg-gradient-to-br from-[#2E1E10] to-[#1E130A] border-[#D4AF37] shadow-[0_0_10px_rgba(212,175,55,0.25)]"
+                            ? "bg-gradient-to-br from-[#2E1E10] to-[#1E130A] border-[#C9A55A] shadow-[0_0_10px_rgba(212,175,55,0.25)]"
                             : cell.isNguPhuc
                             ? "bg-gradient-to-br from-[#1C261A] to-[#111A10] border-[#4E8C44] shadow-[0_0_10px_rgba(78,140,68,0.25)]"
                             : "bg-[#18100A] border-[#362414] hover:border-[#6B4B27] hover:bg-[#20150D]"
@@ -754,7 +754,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
                         {/* Header ô: Cung số + Tên Bát Quái + Ký hiệu */}
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-1.5">
-                            <span className="text-xs font-mono font-bold text-[#D4AF37]">
+                            <span className="text-xs font-mono font-bold text-[#C9A55A]">
                               {palace.num}
                             </span>
                             <span className="text-xs font-serif font-bold text-[#F5EAD4]">
@@ -779,7 +779,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
                                     key={sp}
                                     className={`text-[9.5px] sm:text-[10.5px] px-1.5 py-0.5 rounded font-serif font-bold flex items-center gap-0.5 ${
                                       isChief
-                                        ? "bg-gradient-to-r from-[#D4AF37] to-[#A87B25] text-[#120F0B] shadow"
+                                        ? "bg-gradient-to-r from-[#C9A55A] to-[#A87B25] text-[#120F0B] shadow"
                                         : isGood
                                         ? "bg-emerald-950 text-emerald-300 border border-emerald-600/50"
                                         : isBad
@@ -805,7 +805,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
                         {/* Footer ô: Phương vị & Ngũ hành */}
                         <div className="flex items-center justify-between text-[10px] text-[#A89882] border-t border-[#2D1B0E] pt-1">
                           <span>{palace.direction}</span>
-                          <span className="font-mono text-[#D4AF37]">Hành {palace.element}</span>
+                          <span className="font-mono text-[#C9A55A]">Hành {palace.element}</span>
                         </div>
                       </div>
                     );
@@ -824,18 +824,18 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
                     <div>
                       <div className="flex items-center justify-between border-b border-[#3E2916] pb-2">
                         <div className="flex items-center gap-2">
-                          <span className="text-base text-[#FFE28A]">{selPalace.symbol}</span>
-                          <h5 className="font-serif font-bold text-sm text-[#FFE28A]">
+                          <span className="text-base text-[#E6D3A3]">{selPalace.symbol}</span>
+                          <h5 className="font-serif font-bold text-sm text-[#E6D3A3]">
                             CUNG {selPalace.num}: {selPalace.name} ({selPalace.chinese}) • PHƯƠNG {selPalace.direction.toUpperCase()}
                           </h5>
-                          <span className="text-[11px] px-2 py-0.5 rounded bg-[#2D1D10] text-[#D4AF37] border border-[#523A21]">
+                          <span className="text-[11px] px-2 py-0.5 rounded bg-[#2D1D10] text-[#C9A55A] border border-[#523A21]">
                             Hành {selPalace.element} • Tứ Môn: {selPalace.fourGates}
                           </span>
                         </div>
                         <button
                           type="button"
                           onClick={() => setSelectedCellNum(null)}
-                          className="text-xs text-[#A89882] hover:text-[#FFE28A] cursor-pointer"
+                          className="text-xs text-[#A89882] hover:text-[#E6D3A3] cursor-pointer"
                         >
                           ✕ Đóng
                         </button>
@@ -843,18 +843,18 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2 text-xs text-[#CDBFA8] font-serif">
                         <div>
-                          <span className="text-[#E2B755] font-bold block mb-1">Tính Chất Cung Vị:</span>
+                          <span className="text-[#D6B97A] font-bold block mb-1">Tính Chất Cung Vị:</span>
                           <p>{selPalace.nature}</p>
                         </div>
                         <div>
-                          <span className="text-[#E2B755] font-bold block mb-1">Thần Tinh Quy Tụ:</span>
+                          <span className="text-[#D6B97A] font-bold block mb-1">Thần Tinh Quy Tụ:</span>
                           {selCell.spirits.length > 0 ? (
                             <ul className="space-y-1">
                               {selCell.spirits.map((sp) => {
                                 const spObj = THAI_AT_SPIRITS[sp];
                                 return (
                                   <li key={sp} className="flex items-start gap-1.5">
-                                    <span className="text-[#D4AF37] font-bold">• {sp}:</span>
+                                    <span className="text-[#C9A55A] font-bold">• {sp}:</span>
                                     <span>{spObj?.description || "Thần tinh Thái Ất"}</span>
                                   </li>
                                 );
@@ -876,11 +876,11 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
           <div ref={primaryHexCaptureRef} className="bg-gradient-to-r from-[#22170D] via-[#1A1108] to-[#22170D] border-2 border-[#8C6218] rounded-2xl p-4 sm:p-5 shadow-xl space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#442E18] pb-3">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-[#D4AF37] text-[#120F0B] flex items-center justify-center font-bold text-base shadow">
+                <div className="w-8 h-8 rounded-xl bg-[#C9A55A] text-[#120F0B] flex items-center justify-center font-bold text-base shadow">
                   ☯
                 </div>
                 <div>
-                  <h4 className="font-serif font-bold text-sm sm:text-base text-[#FFE28A]">
+                  <h4 className="font-serif font-bold text-sm sm:text-base text-[#E6D3A3]">
                     THÁI ẤT HÓA DỊCH • LIÊN KẾT 64 QUẺ KINH DỊCH
                   </h4>
                   <p className="text-[11px] text-[#A89882] font-serif">
@@ -892,7 +892,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
               <button
                 type="button"
                 onClick={handleProceedToDetails}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#A87B25] hover:brightness-110 active:scale-95 text-[#14100C] text-xs font-serif font-bold shadow-md cursor-pointer transition-all ml-auto"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-[#C9A55A] to-[#A87B25] hover:brightness-110 active:scale-95 text-[#14100C] text-xs font-serif font-bold shadow-md cursor-pointer transition-all ml-auto"
               >
                 <span>Xem Toàn Văn Luận Đoán 64 Quẻ</span>
                 <ArrowRight className="w-4 h-4" />
@@ -904,16 +904,16 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
               {/* Quẻ Ban Đầu */}
               <div className="bg-[#18100A] border border-[#48331E] rounded-xl p-3.5 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-serif font-bold text-[#FFE28A]">
+                  <span className="text-xs font-serif font-bold text-[#E6D3A3]">
                     QUẺ CHỦ (BẢN QUÁI):
                   </span>
-                  <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[#2A1C0E] text-[#D4AF37] border border-[#50371E]">
+                  <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[#2A1C0E] text-[#C9A55A] border border-[#50371E]">
                     Quẻ #{result.primaryHex.number}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="w-14 h-14 rounded-xl bg-[#24170E] border border-[#5A3F24] flex flex-col items-center justify-center font-serif text-lg font-bold text-[#FFE28A] shrink-0">
+                  <div className="w-14 h-14 rounded-xl bg-[#24170E] border border-[#5A3F24] flex flex-col items-center justify-center font-serif text-lg font-bold text-[#E6D3A3] shrink-0">
                     {result.primaryHex.hanzi || result.primaryHex.name[0]}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -934,7 +934,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
               {/* Quẻ Biến */}
               <div className="bg-[#18100A] border border-[#48331E] rounded-xl p-3.5 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-serif font-bold text-[#FFE28A]">
+                  <span className="text-xs font-serif font-bold text-[#E6D3A3]">
                     QUẺ BIẾN (TRIỂN VỌNG HẬU VẬN):
                   </span>
                   <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[#2A1C0E] text-amber-300 border border-[#50371E]">
@@ -943,7 +943,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="w-14 h-14 rounded-xl bg-[#24170E] border border-[#5A3F24] flex flex-col items-center justify-center font-serif text-lg font-bold text-[#FFE28A] shrink-0">
+                  <div className="w-14 h-14 rounded-xl bg-[#24170E] border border-[#5A3F24] flex flex-col items-center justify-center font-serif text-lg font-bold text-[#E6D3A3] shrink-0">
                     {result.transformedHex.hanzi || result.transformedHex.name[0]}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -966,8 +966,8 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
           {/* LUẬN GIẢI TỨ ĐẠI LĨNH VỰC THÁI ẤT */}
           <div className="bg-[#1A120B] border border-[#46301A] rounded-2xl p-4 sm:p-5 space-y-4">
             <div className="flex items-center gap-2 border-b border-[#362413] pb-2.5">
-              <Sun className="w-4 h-4 text-[#D4AF37]" />
-              <h4 className="font-serif font-bold text-sm text-[#FFE28A]">
+              <Sun className="w-4 h-4 text-[#C9A55A]" />
+              <h4 className="font-serif font-bold text-sm text-[#E6D3A3]">
                 LUẬN GIẢI TỨ TRỤ CỘT THỜI THẾ THEO THÁI ẤT
               </h4>
             </div>
@@ -975,7 +975,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs font-serif leading-relaxed">
               {/* 1. Thiên Thời & Vận Thế */}
               <div className="bg-[#140D07] p-3 rounded-xl border border-[#3A2613] space-y-1">
-                <span className="text-[#D4AF37] font-bold flex items-center gap-1.5">
+                <span className="text-[#C9A55A] font-bold flex items-center gap-1.5">
                   <Crown className="w-3.5 h-3.5" />
                   1. THIÊN THỜI & VẬN THẾ:
                 </span>
@@ -984,7 +984,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
 
               {/* 2. Sự Nghiệp & Chiến Lược */}
               <div className="bg-[#140D07] p-3 rounded-xl border border-[#3A2613] space-y-1">
-                <span className="text-[#D4AF37] font-bold flex items-center gap-1.5">
+                <span className="text-[#C9A55A] font-bold flex items-center gap-1.5">
                   <Shield className="w-3.5 h-3.5" />
                   2. SỰ NGHIỆP & CHIẾN LƯỢC:
                 </span>
@@ -993,7 +993,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
 
               {/* 3. Tài Lộc & Đầu Tư */}
               <div className="bg-[#140D07] p-3 rounded-xl border border-[#3A2613] space-y-1">
-                <span className="text-[#D4AF37] font-bold flex items-center gap-1.5">
+                <span className="text-[#C9A55A] font-bold flex items-center gap-1.5">
                   <Award className="w-3.5 h-3.5" />
                   3. TÀI LỘC & ĐẦU TƯ:
                 </span>
@@ -1002,7 +1002,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
 
               {/* 4. Gia Đạo & Nhân Duyên */}
               <div className="bg-[#140D07] p-3 rounded-xl border border-[#3A2613] space-y-1">
-                <span className="text-[#D4AF37] font-bold flex items-center gap-1.5">
+                <span className="text-[#C9A55A] font-bold flex items-center gap-1.5">
                   <Star className="w-3.5 h-3.5" />
                   4. GIA ĐẠO & NHÂN DUYÊN:
                 </span>
@@ -1013,7 +1013,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
             {/* Lời Khuyên Hành Động */}
             <div className="bg-gradient-to-r from-[#2B1B0E] to-[#1C1209] p-3.5 rounded-xl border border-[#6B4B27] flex items-start gap-3">
               <span className="text-xl">📜</span>
-              <div className="text-xs font-serif text-[#FFE28A] leading-relaxed">
+              <div className="text-xs font-serif text-[#E6D3A3] leading-relaxed">
                 <strong className="block text-sm text-[#F5EAD4] mb-0.5">Lời Khuyên Thái Ất:</strong>
                 {result.loiKhuyenTongQuat}
               </div>
@@ -1024,7 +1024,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
               <button
                 type="button"
                 onClick={handleProceedToDetails}
-                className="w-full sm:w-auto px-8 py-3 rounded-xl bg-gradient-to-r from-[#8C6218] via-[#D4AF37] to-[#8C6218] hover:brightness-110 active:scale-95 text-[#14100C] text-xs sm:text-sm font-serif font-bold shadow-lg transition-all cursor-pointer inline-flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-8 py-3 rounded-xl bg-gradient-to-r from-[#8C6218] via-[#C9A55A] to-[#8C6218] hover:brightness-110 active:scale-95 text-[#14100C] text-xs sm:text-sm font-serif font-bold shadow-lg transition-all cursor-pointer inline-flex items-center justify-center gap-2"
               >
                 <span>TIẾP TỤC ĐỌC TOÀN VĂN LUẬN GIẢI QUẺ DỊCH ➔</span>
               </button>
@@ -1050,15 +1050,15 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
             >
               <div className="flex items-center justify-between border-b border-[#3D2916] pb-3">
                 <div className="flex items-center gap-2">
-                  <Crown className="w-5 h-5 text-[#D4AF37]" />
-                  <h3 className="font-serif font-bold text-base text-[#FFE28A]">
+                  <Crown className="w-5 h-5 text-[#C9A55A]" />
+                  <h3 className="font-serif font-bold text-base text-[#E6D3A3]">
                     TỔNG LUẬN THÁI ẤT THẦN SỐ (太乙神數)
                   </h3>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowTheoryModal(false)}
-                  className="text-[#A89882] hover:text-[#FFE28A] text-lg font-mono cursor-pointer"
+                  className="text-[#A89882] hover:text-[#E6D3A3] text-lg font-mono cursor-pointer"
                 >
                   ✕
                 </button>
@@ -1070,28 +1070,28 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
                 </p>
 
                 <div className="bg-[#140D07] p-3 rounded-xl border border-[#3A2613] space-y-2">
-                  <h4 className="text-[#FFE28A] font-bold">1. Thái Ất Cửu Cung</h4>
+                  <h4 className="text-[#E6D3A3] font-bold">1. Thái Ất Cửu Cung</h4>
                   <p>
                     Thái Ất phân bố theo 9 Cung (1 Càn, 2 Ly, 3 Cấn, 4 Chấn, 5 Trung Cung, 6 Đoài, 7 Khôn, 8 Khảm, 9 Tốn). Thần Thái Ất (Thiên Hoàng tinh) chu lưu qua các cung theo chu kỳ âm dương độn.
                   </p>
                 </div>
 
                 <div className="bg-[#140D07] p-3 rounded-xl border border-[#3A2613] space-y-2">
-                  <h4 className="text-[#FFE28A] font-bold">2. Chủ Đại Tướng & Khách Đại Tướng</h4>
+                  <h4 className="text-[#E6D3A3] font-bold">2. Chủ Đại Tướng & Khách Đại Tướng</h4>
                   <p>
                     <strong>Văn Xương</strong> đại diện cho Chủ Đại Tướng (bên ta, nội bộ, quân vương). <strong>Thủy Kích</strong> đại diện cho Khách Đại Tướng (ngoại bang, đối thủ, biến cố bên ngoài).
                   </p>
                 </div>
 
                 <div className="bg-[#140D07] p-3 rounded-xl border border-[#3A2613] space-y-2">
-                  <h4 className="text-[#FFE28A] font-bold">3. Chủ Toán - Khách Toán</h4>
+                  <h4 className="text-[#E6D3A3] font-bold">3. Chủ Toán - Khách Toán</h4>
                   <p>
                     Toán số đo lường thế lực của hai bên. Có các loại: <strong>Toán Thuần</strong> (đại cát quang minh), <strong>Toán Hòa</strong> (hòa hợp liên minh), <strong>Toán Đơn</strong> (độc lực tự cường), <strong>Toán Trùng</strong> (ngưng trệ bất an), <strong>Toán Tạp</strong> (đa sự cần minh bạch).
                   </p>
                 </div>
 
                 <div className="bg-[#140D07] p-3 rounded-xl border border-[#3A2613] space-y-2">
-                  <h4 className="text-[#FFE28A] font-bold">4. Ngũ Phúc & Cát Thần</h4>
+                  <h4 className="text-[#E6D3A3] font-bold">4. Ngũ Phúc & Cát Thần</h4>
                   <p>
                     <strong>Ngũ Phúc</strong> là đệ nhất cát thần trong Thái Ất, ngự cung nào thì mang lại vượng khí, hóa hung thành cát, vạn sự hanh thông.
                   </p>
@@ -1102,7 +1102,7 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowTheoryModal(false)}
-                  className="px-5 py-2 bg-[#2E1E12] hover:bg-[#3D2918] text-[#FFE28A] border border-[#5A3F24] rounded-xl font-bold transition-all cursor-pointer"
+                  className="px-5 py-2 bg-[#2E1E12] hover:bg-[#3D2918] text-[#E6D3A3] border border-[#5A3F24] rounded-xl font-bold transition-all cursor-pointer"
                 >
                   Đã Hiểu
                 </button>

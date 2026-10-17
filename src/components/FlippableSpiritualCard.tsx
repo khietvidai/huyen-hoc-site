@@ -239,7 +239,7 @@ export const FlippableSpiritualCard: React.FC<FlippableSpiritualCardProps> = ({
               e.stopPropagation();
               onRotate();
             }}
-            className="no-capture absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full bg-[#18120C]/95 hover:bg-[#2B2014] border border-[#53402A] hover:border-[#D4AF37] text-[#D4AF37] hover:text-[#FFF] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-md z-30 cursor-pointer active:scale-90"
+            className="no-capture absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full bg-[#18120C]/95 hover:bg-[#2B2014] border border-[#53402A] hover:border-[#C9A55A] text-[#C9A55A] hover:text-[#FFF] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-md z-30 cursor-pointer active:scale-90"
             title="Bấm để xoay chiều lá bài 180° (Thuận / Ngược)"
           >
             <RotateCw className="w-3 h-3 transition-transform duration-300 hover:rotate-180" />
@@ -248,7 +248,7 @@ export const FlippableSpiritualCard: React.FC<FlippableSpiritualCardProps> = ({
 
         {/* Deck badge if multi-deck */}
         {deckNumber && deckNumber > 0 && (
-          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[#16120D] border border-[#D4AF37]/60 text-[9.5px] font-mono font-bold text-[#D4AF37] shadow-lg z-20 pointer-events-none">
+          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[#16120D] border border-[#C9A55A]/60 text-[9.5px] font-mono font-bold text-[#C9A55A] shadow-lg z-20 pointer-events-none">
             Bộ #{deckNumber}
           </div>
         )}

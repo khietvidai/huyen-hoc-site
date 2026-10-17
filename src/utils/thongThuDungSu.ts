@@ -788,7 +788,7 @@ export function getThongThuDayDetails(year: number, month: number, day: number):
     if (["Thanh Long", "Minh Đường", "Kim Quỹ", "Ngọc Đường"].includes(trucNhatTinhData.name) && ["Thành", "Khai", "Mãn"].includes(truc.name)) {
       overallTitle = `ĐẠI CÁT HOÀNG ĐẠO • ${trucNhatTinhData.name.toUpperCase()}`;
       overallGrade = "Đại Cát";
-      overallBadgeClass = "bg-amber-950 text-[#FFE58F] border-amber-500 shadow-[0_0_15px_rgba(212,175,55,0.4)]";
+      overallBadgeClass = "bg-amber-950 text-[#E6D3A3] border-amber-500 shadow-[0_0_15px_rgba(212,175,55,0.4)]";
       overallVerdict = `Đắc Trực Nhật Tinh ${trucNhatTinhData.name} và Trực ${truc.name}, trăm sự đều thành tựu rực rỡ!`;
       poemOrQuote = "Thanh Long giáng thế rạng hào quang / Mở lối tài nguyên khắp bốn phương / Cưới gả khai trương đều đắc lợi / Gia môn hưng vượng phúc miên trường.";
     } else {

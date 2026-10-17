@@ -1204,13 +1204,13 @@ export const CardDraw: React.FC<CardDrawProps> = ({
       <div className="bg-[#171512] border border-[#3A3225] rounded-2xl p-5 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full bg-[#272017] border border-[#443725] text-xs font-serif text-[#D4AF37] flex items-center gap-1.5">
+            <span className="px-2.5 py-0.5 rounded-full bg-[#272017] border border-[#443725] text-xs font-serif text-[#C9A55A] flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" /> Bốc Thẻ Bài Thần Dịch
             </span>
             <span className="text-xs text-[#8E806E]">
               Bộ bài: <strong className="text-[#EAD8B1] font-mono">{deckCount} bộ ({deckCount * 64} lá)</strong>
               {deckCount >= 2 && (
-                <span className="ml-1.5 text-[#D4AF37] font-serif font-semibold">
+                <span className="ml-1.5 text-[#C9A55A] font-serif font-semibold">
                   • {multiDeckMode === "separate" ? "Từng Bộ Riêng Lẻ" : "Trộn Chung Tất Cả"}
                 </span>
               )}
@@ -1231,7 +1231,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
             <button
               type="button"
               onClick={() => setShowCardDrawPurification(!showCardDrawPurification)}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-serif text-[#E0C070] bg-[#1E1711] hover:bg-[#2A1F16] border border-[#48331E] hover:border-[#D4AF37] transition-all cursor-pointer shadow-xs active:scale-95"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-serif text-[#E0C070] bg-[#1E1711] hover:bg-[#2A1F16] border border-[#48331E] hover:border-[#C9A55A] transition-all cursor-pointer shadow-xs active:scale-95"
             >
               <span>⛩️</span>
               <span className="font-semibold underline decoration-dotted">
@@ -1245,14 +1245,14 @@ export const CardDraw: React.FC<CardDrawProps> = ({
 
           {showCardDrawPurification && (
             <div className="mt-2.5 text-left bg-[#140F0B] border border-[#4D351E] rounded-xl p-3.5 sm:p-4 shadow-xl text-xs font-serif text-[#DECAB2] space-y-2.5 animate-in fade-in duration-200">
-              <div className="flex items-center justify-between border-b border-[#302113] pb-1.5 text-[#FFE28A] font-bold text-xs">
+              <div className="flex items-center justify-between border-b border-[#302113] pb-1.5 text-[#E6D3A3] font-bold text-xs">
                 <span className="flex items-center gap-1.5">
                   <span>📜</span> THỦ TỤC TRAI GIỚI MỘC DỤC (齋戒沐浴) TRƯỚC KHI CHẠM THẺ BÀI
                 </span>
                 <button
                   type="button"
                   onClick={() => setShowCardDrawPurification(false)}
-                  className="text-[#8C7A65] hover:text-[#FFE28A] text-[11px] font-sans px-1.5 py-0.5 rounded cursor-pointer"
+                  className="text-[#8C7A65] hover:text-[#E6D3A3] text-[11px] font-sans px-1.5 py-0.5 rounded cursor-pointer"
                 >
                   Đóng ✕
                 </button>
@@ -1260,7 +1260,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-[11px]">
                 <div className="bg-[#1C140D] p-2.5 rounded-lg border border-[#3E2917] space-y-1">
-                  <strong className="text-[#D4AF37] font-bold block text-xs">
+                  <strong className="text-[#C9A55A] font-bold block text-xs">
                     1. Mộc Dục (沐浴 - Rửa Sạch Đôi Bàn Tay):
                   </strong>
                   <p className="leading-relaxed text-[#BFB09A]">
@@ -1270,7 +1270,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 </div>
 
                 <div className="bg-[#1C140D] p-2.5 rounded-lg border border-[#3E2917] space-y-1">
-                  <strong className="text-[#D4AF37] font-bold block text-xs">
+                  <strong className="text-[#C9A55A] font-bold block text-xs">
                     2. Trai Giới (齋戒 - Tịnh Hóa Tâm Thức):
                   </strong>
                   <p className="leading-relaxed text-[#BFB09A]">
@@ -1298,7 +1298,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#241C15] hover:bg-[#34271C] border border-[#483724] text-[#F3E7D0] text-xs font-serif font-bold transition-all shadow-sm cursor-pointer"
             title="Đổi bộ hình hoặc nạp ảnh cho 64 quẻ"
           >
-            <Palette className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <Palette className="w-3.5 h-3.5 text-[#C9A55A]" />
             <span>Đổi Bộ Hình / Nạp 64 Quẻ</span>
             <span className="text-[10px] text-[#A89882] font-mono font-normal">
               ({uploadedCount}/64 ảnh)
@@ -1313,21 +1313,21 @@ export const CardDraw: React.FC<CardDrawProps> = ({
             }}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-serif font-bold transition-all shadow-sm cursor-pointer ${
               isZenAudioPlaying
-                ? "bg-[#2D2113] border-[#D4AF37] text-[#F5EAD4] shadow-[0_0_12px_rgba(212,175,55,0.25)]"
+                ? "bg-[#2D2113] border-[#C9A55A] text-[#F5EAD4] shadow-[0_0_12px_rgba(212,175,55,0.25)]"
                 : "bg-[#241C15] hover:bg-[#34271C] border-[#483724] text-[#D8C7B0] hover:text-[#FFF]"
             }`}
             title="Bật/Tắt nhạc thiền cổ phong Vũ Lâm Linh (雨霖铃 - Nghiêu Thập Tam) khi bốc bài"
           >
-            <Music className={`w-3.5 h-3.5 text-[#D4AF37] ${isZenAudioPlaying ? "animate-bounce" : ""}`} />
+            <Music className={`w-3.5 h-3.5 text-[#C9A55A] ${isZenAudioPlaying ? "animate-bounce" : ""}`} />
             <span>{isZenAudioPlaying ? "Đang Phát Vũ Lâm Linh" : "Bật Nhạc Vũ Lâm Linh"}</span>
           </button>
 
           {/* Draw Mode Selectors or Khong Minh Method Banner */}
           {isKhongMinhMethod ? (
             <div className="flex items-center gap-2.5 bg-gradient-to-r from-[#2A1D11] via-[#1D140C] to-[#120D08] border border-[#5A3F20] px-3.5 py-1.5 rounded-xl shadow-md">
-              <Scroll className="w-4 h-4 text-[#D4AF37] shrink-0" />
+              <Scroll className="w-4 h-4 text-[#C9A55A] shrink-0" />
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs font-serif font-black text-[#FFE294] tracking-wide">
+                <span className="text-xs font-serif font-black text-[#E6D3A3] tracking-wide">
                   XĂM KHỔNG MINH
                 </span>
                 <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/80 px-2 py-0.2 rounded border border-emerald-500/40">
@@ -1491,7 +1491,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
       <div className="bg-[#181410] border border-[#3E3224] rounded-2xl p-4 sm:p-5 shadow-xl space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#2C2317] pb-3">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-[#2A2016] border border-[#52412B] flex items-center justify-center text-[#D4AF37] shadow-inner shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-[#2A2016] border border-[#52412B] flex items-center justify-center text-[#C9A55A] shadow-inner shrink-0">
               <Layers className="w-4 h-4" />
             </div>
             <div>
@@ -1534,7 +1534,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   onClick={() => updateDeckCount(n)}
                   className={`py-2 px-1 text-center rounded-xl border text-xs font-serif font-bold transition-all cursor-pointer ${
                     isSelected
-                      ? "bg-gradient-to-b from-[#D4AF37] to-[#AA8222] text-[#14120F] border-[#E8C55A] shadow-[0_0_12px_rgba(212,175,55,0.35)] scale-105 z-10"
+                      ? "bg-gradient-to-b from-[#C9A55A] to-[#AA8222] text-[#14120F] border-[#E8C55A] shadow-[0_0_12px_rgba(212,175,55,0.35)] scale-105 z-10"
                       : "bg-[#14100D] hover:bg-[#221A13] text-[#A89882] hover:text-[#F3E7CF] border-[#2C2116] hover:border-[#4B3724]"
                   }`}
                   title={`${n} bộ bài Kinh Dịch (Tổng cộng ${n * 64} lá)`}
@@ -1556,7 +1556,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
           >
             <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-[#C8B89E] gap-1">
               <span className="font-serif font-bold text-[#E5D2B3] flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <Sparkles className="w-3.5 h-3.5 text-[#C9A55A]" />
                 LỰA CHỌN CÁCH THỨC BỐC {deckCount} BỘ BÀI:
               </span>
               <span className="text-[11px] text-[#A69580]">
@@ -1571,17 +1571,17 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 onClick={() => updateMultiDeckMode("separate")}
                 className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
                   multiDeckMode === "separate"
-                    ? "bg-gradient-to-r from-[#2B2014] to-[#201810] border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.22)]"
+                    ? "bg-gradient-to-r from-[#2B2014] to-[#201810] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.22)]"
                     : "bg-[#130F0C] border-[#291F14] hover:border-[#4A3724] opacity-75 hover:opacity-100"
                 }`}
               >
                 <div className="flex items-center justify-between mb-1.5">
                   <span className="text-xs sm:text-sm font-serif font-bold text-[#F3E7CF] flex items-center gap-1.5">
-                    <Layers className="w-4 h-4 text-[#D4AF37]" />
+                    <Layers className="w-4 h-4 text-[#C9A55A]" />
                     1. Bốc Từng Bộ Bài Riêng Lẻ
                   </span>
                   {multiDeckMode === "separate" ? (
-                    <span className="w-5 h-5 rounded-full bg-[#D4AF37] text-[#120F0C] text-xs font-bold flex items-center justify-center shadow">
+                    <span className="w-5 h-5 rounded-full bg-[#C9A55A] text-[#120F0C] text-xs font-bold flex items-center justify-center shadow">
                       ✓
                     </span>
                   ) : (
@@ -1599,17 +1599,17 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 onClick={() => updateMultiDeckMode("combined")}
                 className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
                   multiDeckMode === "combined"
-                    ? "bg-gradient-to-r from-[#2B2014] to-[#201810] border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.22)]"
+                    ? "bg-gradient-to-r from-[#2B2014] to-[#201810] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.22)]"
                     : "bg-[#130F0C] border-[#291F14] hover:border-[#4A3724] opacity-75 hover:opacity-100"
                 }`}
               >
                 <div className="flex items-center justify-between mb-1.5">
                   <span className="text-xs sm:text-sm font-serif font-bold text-[#F3E7CF] flex items-center gap-1.5">
-                    <Shuffle className="w-4 h-4 text-[#D4AF37]" />
+                    <Shuffle className="w-4 h-4 text-[#C9A55A]" />
                     2. Trộn Chung Nhiều Bộ Vào Nhau ({deckCount * 64} Lá)
                   </span>
                   {multiDeckMode === "combined" ? (
-                    <span className="w-5 h-5 rounded-full bg-[#D4AF37] text-[#120F0C] text-xs font-bold flex items-center justify-center shadow">
+                    <span className="w-5 h-5 rounded-full bg-[#C9A55A] text-[#120F0C] text-xs font-bold flex items-center justify-center shadow">
                       ✓
                     </span>
                   ) : (
@@ -1638,7 +1638,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                           onClick={() => setActiveDeckIndex(d)}
                           className={`px-3 py-1.5 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                             isCurrentDeck
-                              ? "bg-[#D4AF37] text-[#120F0C] shadow-md"
+                              ? "bg-[#C9A55A] text-[#120F0C] shadow-md"
                               : "bg-[#14100D] hover:bg-[#251D14] text-[#A89882] border border-[#382B1D]"
                           }`}
                         >
@@ -1646,7 +1646,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                           {pickedCount > 0 && (
                             <span
                               className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-normal ${
-                                isCurrentDeck ? "bg-[#120F0C] text-[#D4AF37]" : "bg-[#2E2215] text-[#E0C895]"
+                                isCurrentDeck ? "bg-[#120F0C] text-[#C9A55A]" : "bg-[#2E2215] text-[#E0C895]"
                               }`}
                             >
                               {pickedCount} lá
@@ -1663,7 +1663,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                     type="checkbox"
                     checked={autoSwitchDeck}
                     onChange={(e) => setAutoSwitchDeck(e.target.checked)}
-                    className="accent-[#D4AF37] w-3.5 h-3.5 rounded"
+                    className="accent-[#C9A55A] w-3.5 h-3.5 rounded"
                   />
                   <span>Tự động chuyển bộ sau mỗi lá bốc</span>
                 </label>
@@ -1682,7 +1682,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
         >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 border-b border-[#2C2216] pb-2.5">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-[#C9A55A] animate-pulse" />
               <h4 className="text-xs sm:text-sm font-serif font-bold text-[#F3E7CF] flex items-center gap-1.5">
                 CHỌN MỤC ĐÍCH BỐC 2 LÁ BÀI
               </h4>
@@ -1703,17 +1703,17 @@ export const CardDraw: React.FC<CardDrawProps> = ({
               }}
               className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
                 doubleSpreadMode === "present_future"
-                  ? "bg-gradient-to-r from-[#292015] to-[#1E1711] border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.2)]"
+                  ? "bg-gradient-to-r from-[#292015] to-[#1E1711] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.2)]"
                   : "bg-[#14110E] border-[#2C2216] hover:border-[#4B3926] opacity-75 hover:opacity-100"
               }`}
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs sm:text-sm font-serif font-bold text-[#F3E7CF] flex items-center gap-1.5">
-                  <Clock className="w-4 h-4 text-[#D4AF37]" />
+                  <Clock className="w-4 h-4 text-[#C9A55A]" />
                   a. Hiện Tại & Tương Lai
                 </span>
                 {doubleSpreadMode === "present_future" ? (
-                  <span className="w-5 h-5 rounded-full bg-[#D4AF37] text-[#120F0C] text-xs font-bold flex items-center justify-center shadow">
+                  <span className="w-5 h-5 rounded-full bg-[#C9A55A] text-[#120F0C] text-xs font-bold flex items-center justify-center shadow">
                     ✓
                   </span>
                 ) : (
@@ -1736,17 +1736,17 @@ export const CardDraw: React.FC<CardDrawProps> = ({
               }}
               className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
                 doubleSpreadMode === "choice_ab"
-                  ? "bg-gradient-to-r from-[#292015] to-[#1E1711] border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.2)]"
+                  ? "bg-gradient-to-r from-[#292015] to-[#1E1711] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.2)]"
                   : "bg-[#14110E] border-[#2C2216] hover:border-[#4B3926] opacity-75 hover:opacity-100"
               }`}
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs sm:text-sm font-serif font-bold text-[#F3E7CF] flex items-center gap-1.5">
-                  <Scale className="w-4 h-4 text-[#D4AF37]" />
+                  <Scale className="w-4 h-4 text-[#C9A55A]" />
                   b. Lựa Chọn A & Lựa Chọn B
                 </span>
                 {doubleSpreadMode === "choice_ab" ? (
-                  <span className="w-5 h-5 rounded-full bg-[#D4AF37] text-[#120F0C] text-xs font-bold flex items-center justify-center shadow">
+                  <span className="w-5 h-5 rounded-full bg-[#C9A55A] text-[#120F0C] text-xs font-bold flex items-center justify-center shadow">
                     ✓
                   </span>
                 ) : (
@@ -1765,7 +1765,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
             <div className="pt-2.5 border-t border-[#2A2016] grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="text-[11px] text-[#C4B49B] font-medium block mb-1 flex items-center gap-1.5">
-                  <span className="w-4 h-4 rounded bg-[#2D2115] text-[#D4AF37] font-bold text-[10px] flex items-center justify-center">A</span>
+                  <span className="w-4 h-4 rounded bg-[#2D2115] text-[#C9A55A] font-bold text-[10px] flex items-center justify-center">A</span>
                   Tên Lựa chọn A (Ứng với Lá 1):
                 </label>
                 <input
@@ -1773,7 +1773,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   value={choiceALabel}
                   onChange={(e) => setChoiceALabel(e.target.value)}
                   placeholder="VD: Chuyển sang công ty mới, Mua nhà..."
-                  className="w-full bg-[#120F0C] border border-[#3E3122] focus:border-[#D4AF37] rounded-xl px-3 py-1.5 text-xs text-[#EFE5D3] placeholder-[#6C5E4E] outline-none"
+                  className="w-full bg-[#120F0C] border border-[#3E3122] focus:border-[#C9A55A] rounded-xl px-3 py-1.5 text-xs text-[#EFE5D3] placeholder-[#6C5E4E] outline-none"
                 />
               </div>
               <div>
@@ -1786,7 +1786,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   value={choiceBLabel}
                   onChange={(e) => setChoiceBLabel(e.target.value)}
                   placeholder="VD: Ở lại công ty cũ, Giữ nguyên kế hoạch..."
-                  className="w-full bg-[#120F0C] border border-[#3E3122] focus:border-[#D4AF37] rounded-xl px-3 py-1.5 text-xs text-[#EFE5D3] placeholder-[#6C5E4E] outline-none"
+                  className="w-full bg-[#120F0C] border border-[#3E3122] focus:border-[#C9A55A] rounded-xl px-3 py-1.5 text-xs text-[#EFE5D3] placeholder-[#6C5E4E] outline-none"
                 />
               </div>
             </div>
@@ -1802,7 +1802,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
           className="bg-[#191510] border border-[#523A20] rounded-2xl p-4 shadow-xl space-y-3"
         >
           <div className="flex items-center gap-2 border-b border-[#2C2216] pb-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#D4AF37] shadow-[0_0_8px_#D4AF37]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#C9A55A] shadow-[0_0_8px_#C9A55A]" />
             <h4 className="text-xs sm:text-sm font-serif font-bold text-[#F3E7CF] flex items-center gap-2">
               <span>TRẬN PHÁP XĂM KHỔNG MINH (TAM TÀI: THIÊN — ĐỊA — NHÂN)</span>
               <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/70 px-2 py-0.5 rounded border border-emerald-500/40">
@@ -1813,12 +1813,12 @@ export const CardDraw: React.FC<CardDrawProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
             <div className="bg-[#14110E] p-3 rounded-xl border border-[#2D2216]">
-              <span className="text-[#D4AF37] font-serif font-bold flex items-center gap-1.5 mb-1 text-xs">
-                <span className="w-4 h-4 rounded bg-[#2D2114] text-[#D4AF37] text-[10px] flex items-center justify-center font-bold">天</span>
+              <span className="text-[#C9A55A] font-serif font-bold flex items-center gap-1.5 mb-1 text-xs">
+                <span className="w-4 h-4 rounded bg-[#2D2114] text-[#C9A55A] text-[10px] flex items-center justify-center font-bold">天</span>
                 Thiên Đạo (Thiên Thời)
               </span>
               <p className="text-[11px] text-[#9E8E79] leading-relaxed">
-                Hoàn cảnh khách quan, thời cơ vũ trụ, vận hội thời cuộc và các biến số bên ngoài chi phối. Tra cứu theo <strong className="text-[#D4AF37]">Vận Thế & Đại Tượng</strong> trong Thuyết Minh.
+                Hoàn cảnh khách quan, thời cơ vũ trụ, vận hội thời cuộc và các biến số bên ngoài chi phối. Tra cứu theo <strong className="text-[#C9A55A]">Vận Thế & Đại Tượng</strong> trong Thuyết Minh.
               </p>
             </div>
 
@@ -1853,9 +1853,9 @@ export const CardDraw: React.FC<CardDrawProps> = ({
         >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 border-b border-[#2C2216] pb-2">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#D4AF37] animate-pulse" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#C9A55A] animate-pulse" />
               <h4 className="text-xs sm:text-sm font-serif font-bold text-[#F3E7CF] flex items-center gap-1.5">
-                <Hourglass className="w-4 h-4 text-[#D4AF37]" />
+                <Hourglass className="w-4 h-4 text-[#C9A55A]" />
                 TRẬN PHÁP 3 LÁ: CHỌN MÔ HÌNH QUẺ DỊCH
               </h4>
             </div>
@@ -1876,17 +1876,17 @@ export const CardDraw: React.FC<CardDrawProps> = ({
               }}
               className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
                 threeSpreadMode === "past_present_future"
-                  ? "bg-gradient-to-r from-[#292015] to-[#1E1711] border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.2)]"
+                  ? "bg-gradient-to-r from-[#292015] to-[#1E1711] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.2)]"
                   : "bg-[#14110E] border-[#2C2216] hover:border-[#4B3926] opacity-75 hover:opacity-100"
               }`}
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs sm:text-sm font-serif font-bold text-[#F3E7CF] flex items-center gap-1.5">
-                  <Clock className="w-4 h-4 text-[#D4AF37]" />
+                  <Clock className="w-4 h-4 text-[#C9A55A]" />
                   a. Tiến Trình Thời Gian
                 </span>
                 {threeSpreadMode === "past_present_future" ? (
-                  <span className="w-5 h-5 rounded-full bg-[#D4AF37] text-[#120F0C] text-xs font-bold flex items-center justify-center shadow">
+                  <span className="w-5 h-5 rounded-full bg-[#C9A55A] text-[#120F0C] text-xs font-bold flex items-center justify-center shadow">
                     ✓
                   </span>
                 ) : (
@@ -1908,17 +1908,17 @@ export const CardDraw: React.FC<CardDrawProps> = ({
               }}
               className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
                 threeSpreadMode === "choice_abc"
-                  ? "bg-gradient-to-r from-[#292015] to-[#1E1711] border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.2)]"
+                  ? "bg-gradient-to-r from-[#292015] to-[#1E1711] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.2)]"
                   : "bg-[#14110E] border-[#2C2216] hover:border-[#4B3926] opacity-75 hover:opacity-100"
               }`}
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs sm:text-sm font-serif font-bold text-[#F3E7CF] flex items-center gap-1.5">
-                  <Scale className="w-4 h-4 text-[#D4AF37]" />
+                  <Scale className="w-4 h-4 text-[#C9A55A]" />
                   b. So Sánh 3 Lựa Chọn (A — B — C)
                 </span>
                 {threeSpreadMode === "choice_abc" ? (
-                  <span className="w-5 h-5 rounded-full bg-[#D4AF37] text-[#120F0C] text-xs font-bold flex items-center justify-center shadow">
+                  <span className="w-5 h-5 rounded-full bg-[#C9A55A] text-[#120F0C] text-xs font-bold flex items-center justify-center shadow">
                     ✓
                   </span>
                 ) : (
@@ -1936,7 +1936,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
             <div className="pt-2.5 border-t border-[#2A2016] grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
                 <label className="text-[11px] text-[#C4B49B] font-medium block mb-1 flex items-center gap-1.5">
-                  <span className="w-4 h-4 rounded bg-[#2D2115] text-[#D4AF37] font-bold text-[10px] flex items-center justify-center">A</span>
+                  <span className="w-4 h-4 rounded bg-[#2D2115] text-[#C9A55A] font-bold text-[10px] flex items-center justify-center">A</span>
                   Tên Lựa chọn A (Ứng với Lá 1):
                 </label>
                 <input
@@ -1944,7 +1944,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   value={choiceALabel}
                   onChange={(e) => setChoiceALabel(e.target.value)}
                   placeholder="VD: Nhận việc cty A..."
-                  className="w-full bg-[#120F0C] border border-[#3E3122] focus:border-[#D4AF37] rounded-xl px-3 py-1.5 text-xs text-[#EFE5D3] placeholder-[#6C5E4E] outline-none"
+                  className="w-full bg-[#120F0C] border border-[#3E3122] focus:border-[#C9A55A] rounded-xl px-3 py-1.5 text-xs text-[#EFE5D3] placeholder-[#6C5E4E] outline-none"
                 />
               </div>
               <div>
@@ -1957,7 +1957,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   value={choiceBLabel}
                   onChange={(e) => setChoiceBLabel(e.target.value)}
                   placeholder="VD: Nhận việc cty B..."
-                  className="w-full bg-[#120F0C] border border-[#3E3122] focus:border-[#D4AF37] rounded-xl px-3 py-1.5 text-xs text-[#EFE5D3] placeholder-[#6C5E4E] outline-none"
+                  className="w-full bg-[#120F0C] border border-[#3E3122] focus:border-[#C9A55A] rounded-xl px-3 py-1.5 text-xs text-[#EFE5D3] placeholder-[#6C5E4E] outline-none"
                 />
               </div>
               <div>
@@ -1970,7 +1970,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   value={choiceCLabel}
                   onChange={(e) => setChoiceCLabel(e.target.value)}
                   placeholder="VD: Tự khởi nghiệp / ở lại cũ..."
-                  className="w-full bg-[#120F0C] border border-[#3E3122] focus:border-[#D4AF37] rounded-xl px-3 py-1.5 text-xs text-[#EFE5D3] placeholder-[#6C5E4E] outline-none"
+                  className="w-full bg-[#120F0C] border border-[#3E3122] focus:border-[#C9A55A] rounded-xl px-3 py-1.5 text-xs text-[#EFE5D3] placeholder-[#6C5E4E] outline-none"
                 />
               </div>
             </div>
@@ -1980,8 +1980,8 @@ export const CardDraw: React.FC<CardDrawProps> = ({
           {threeSpreadMode === "past_present_future" && (
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs pt-1">
               <div className="bg-[#14110E] p-3 rounded-xl border border-[#2D2216]">
-                <span className="text-[#D4AF37] font-serif font-bold flex items-center gap-1.5 mb-1 text-xs">
-                  <span className="w-4 h-4 rounded bg-[#2D2114] text-[#D4AF37] text-[10px] flex items-center justify-center font-mono">1</span>
+                <span className="text-[#C9A55A] font-serif font-bold flex items-center gap-1.5 mb-1 text-xs">
+                  <span className="w-4 h-4 rounded bg-[#2D2114] text-[#C9A55A] text-[10px] flex items-center justify-center font-mono">1</span>
                   Lá 1: Quá Khứ
                 </span>
                 <p className="text-[11px] text-[#9E8E79] leading-relaxed">
@@ -2020,7 +2020,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 onClick={() => {
                   window.dispatchEvent(new CustomEvent("switch-divination-method", { detail: "khongminh" }));
                 }}
-                className="px-3 py-1 rounded-lg bg-[#2E2013] hover:bg-[#3D2B1A] border border-[#D4AF37]/60 text-[#FFE28A] text-xs font-semibold cursor-pointer transition-all active:scale-95 shadow-xs flex items-center gap-1.5"
+                className="px-3 py-1 rounded-lg bg-[#2E2013] hover:bg-[#3D2B1A] border border-[#C9A55A]/60 text-[#E6D3A3] text-xs font-semibold cursor-pointer transition-all active:scale-95 shadow-xs flex items-center gap-1.5"
               >
                 <span>📜</span>
                 <span>Chuyển Sang Xăm Khổng Minh</span>
@@ -2039,9 +2039,9 @@ export const CardDraw: React.FC<CardDrawProps> = ({
         >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 border-b border-[#2C2216] pb-2">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-[#C9A55A] animate-pulse" />
               <h4 className="text-xs sm:text-sm font-serif font-bold text-[#F3E7CF] flex items-center gap-1.5">
-                <Compass className="w-4 h-4 text-[#D4AF37]" />
+                <Compass className="w-4 h-4 text-[#C9A55A]" />
                 TRẬN PHÁP THẤT TINH (7 LÁ BÀI DỊCH HỌC)
               </h4>
             </div>
@@ -2053,8 +2053,8 @@ export const CardDraw: React.FC<CardDrawProps> = ({
           <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 text-xs">
             {SEVEN_STARS_POSITIONS.map((pos) => (
               <div key={pos.id} className="bg-[#14110E] p-2.5 rounded-xl border border-[#2D2216] flex flex-col justify-between">
-                <span className="text-[#D4AF37] font-serif font-bold flex items-center gap-1 mb-1 text-[11px]">
-                  <span className="w-4 h-4 rounded bg-[#2D2114] text-[#D4AF37] text-[10px] flex items-center justify-center font-mono shrink-0">
+                <span className="text-[#C9A55A] font-serif font-bold flex items-center gap-1 mb-1 text-[11px]">
+                  <span className="w-4 h-4 rounded bg-[#2D2114] text-[#C9A55A] text-[10px] flex items-center justify-center font-mono shrink-0">
                     {pos.id}
                   </span>
                   <span className="truncate">{pos.name}</span>
@@ -2077,9 +2077,9 @@ export const CardDraw: React.FC<CardDrawProps> = ({
         >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 border-b border-[#2C2216] pb-2">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#D4AF37] animate-pulse" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#C9A55A] animate-pulse" />
               <h4 className="text-xs sm:text-sm font-serif font-bold text-[#F3E7CF] flex items-center gap-1.5">
-                <Compass className="w-4 h-4 text-[#D4AF37]" />
+                <Compass className="w-4 h-4 text-[#C9A55A]" />
                 TRẬN PHÁP CỬU CUNG PHONG THỦY (9 LÁ BÀI - PHI TINH LẠC THƯ)
               </h4>
             </div>
@@ -2090,7 +2090,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
             <div className="bg-[#14110E] p-2.5 rounded-xl border border-[#2D2216]">
-              <span className="text-[#D4AF37] font-serif font-bold text-[11px] block mb-1">
+              <span className="text-[#C9A55A] font-serif font-bold text-[11px] block mb-1">
                 ▲ Dòng 1 (Phía Nam):
               </span>
               <p className="text-[11px] text-[#A89882] leading-relaxed">
@@ -2098,15 +2098,15 @@ export const CardDraw: React.FC<CardDrawProps> = ({
               </p>
             </div>
             <div className="bg-[#17130F] p-2.5 rounded-xl border border-[#483724] shadow-inner">
-              <span className="text-[#FFE28A] font-serif font-bold text-[11px] block mb-1">
+              <span className="text-[#E6D3A3] font-serif font-bold text-[11px] block mb-1">
                 ✦ Dòng 2 (Hàng Giữa):
               </span>
               <p className="text-[11px] text-[#C4B49D] leading-relaxed">
-                Chính Đông (Chấn • Lá 8) • <strong className="text-[#FFE28A]">Trung Cung (Ở giữa • Lá 1)</strong> • Chính Tây (Đoài • Lá 3)
+                Chính Đông (Chấn • Lá 8) • <strong className="text-[#E6D3A3]">Trung Cung (Ở giữa • Lá 1)</strong> • Chính Tây (Đoài • Lá 3)
               </p>
             </div>
             <div className="bg-[#14110E] p-2.5 rounded-xl border border-[#2D2216]">
-              <span className="text-[#D4AF37] font-serif font-bold text-[11px] block mb-1">
+              <span className="text-[#C9A55A] font-serif font-bold text-[11px] block mb-1">
                 ▼ Dòng 3 (Phía Bắc):
               </span>
               <p className="text-[11px] text-[#A89882] leading-relaxed">
@@ -2126,9 +2126,9 @@ export const CardDraw: React.FC<CardDrawProps> = ({
         >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#2C2216] pb-2.5">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#D4AF37] animate-pulse" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#C9A55A] animate-pulse" />
               <h4 className="text-xs sm:text-sm font-serif font-bold text-[#F3E7CF] flex items-center gap-1.5">
-                <Compass className="w-4 h-4 text-[#D4AF37]" />
+                <Compass className="w-4 h-4 text-[#C9A55A]" />
                 {drawMode === "ten_expanded"
                   ? "TRẬN PHÁP THẬP TINH MỞ RỘNG (11 LÁ • QUẺ THỨ 2 BỐC 2 LÁ 2A & 2B)"
                   : "TRẬN PHÁP THẬP TINH CHUẨN (10 LÁ BÀI TOÀN DIỆN)"}
@@ -2188,7 +2188,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsCard2Reversed((prev) => !prev)}
-                  className="text-[11px] text-[#D4AF37] hover:underline cursor-pointer font-medium"
+                  className="text-[11px] text-[#C9A55A] hover:underline cursor-pointer font-medium"
                 >
                   [Đổi thế bài]
                 </button>
@@ -2321,8 +2321,8 @@ export const CardDraw: React.FC<CardDrawProps> = ({
           <div className="grid grid-cols-2 sm:grid-cols-5 md:grid-cols-6 gap-2 text-xs">
             {(drawMode === "ten_expanded" ? TEN_STARS_EXPANDED_POSITIONS : TEN_STARS_POSITIONS).map((pos) => (
               <div key={pos.id} className="bg-[#14110E] p-2.5 rounded-xl border border-[#2D2216] flex flex-col justify-between">
-                <span className="text-[#D4AF37] font-serif font-bold flex items-center gap-1 mb-1 text-[11px]">
-                  <span className="w-4 h-4 rounded bg-[#2D2114] text-[#D4AF37] text-[10px] flex items-center justify-center font-mono shrink-0">
+                <span className="text-[#C9A55A] font-serif font-bold flex items-center gap-1 mb-1 text-[11px]">
+                  <span className="w-4 h-4 rounded bg-[#2D2114] text-[#C9A55A] text-[10px] flex items-center justify-center font-mono shrink-0">
                     {pos.id}
                   </span>
                   <span className="truncate">{pos.name}</span>
@@ -2345,9 +2345,9 @@ export const CardDraw: React.FC<CardDrawProps> = ({
         >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#2C2216] pb-2.5">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#D4AF37] animate-pulse shadow-[0_0_8px_#D4AF37]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#C9A55A] animate-pulse shadow-[0_0_8px_#C9A55A]" />
               <h4 className="text-xs sm:text-sm font-serif font-bold text-[#F3E7CF] flex items-center gap-1.5">
-                <Dices className="w-4 h-4 text-[#D4AF37]" />
+                <Dices className="w-4 h-4 text-[#C9A55A]" />
                 TRẬN PHÁP 12 ĐỊA CHI & 12 CUNG TỬ VI (12 LÁ BÀI DỊCH HỌC)
               </h4>
             </div>
@@ -2357,10 +2357,10 @@ export const CardDraw: React.FC<CardDrawProps> = ({
               <button
                 type="button"
                 onClick={() => setIsReverseHouses(!isReverseHouses)}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#271E15] hover:bg-[#34271A] text-[#FFE28A] border border-[#483724] transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#271E15] hover:bg-[#34271A] text-[#E6D3A3] border border-[#483724] transition-colors cursor-pointer"
                 title="Bấm để đảo chiều xoay 12 Cung Tử Vi"
               >
-                <RotateCw className={`w-3 h-3 transition-transform duration-300 ${isReverseHouses ? "rotate-180 text-[#FFA07A]" : "text-[#D4AF37]"}`} />
+                <RotateCw className={`w-3 h-3 transition-transform duration-300 ${isReverseHouses ? "rotate-180 text-[#FFA07A]" : "text-[#C9A55A]"}`} />
                 <span>Chiều xoay: <strong>{isReverseHouses ? "Xoay Nghịch (Dần ➔ Sửu)" : "Xoay Thuận (Dần ➔ Mão)"}</strong> (Đảo)</span>
               </button>
             </div>
@@ -2369,11 +2369,11 @@ export const CardDraw: React.FC<CardDrawProps> = ({
           {/* KHU VỰC GIEO XÚC XẮC 12 MẶT NGAY TẠI CHỖ BỐC BÀI */}
           <div className="bg-[#130F0C] p-3 sm:p-4 rounded-xl border border-[#3E2E1D]">
             <div className="flex items-center justify-between gap-2 mb-2 pb-1.5 border-b border-[#2A1F14]">
-              <span className="text-xs font-serif font-bold text-[#FFE28A] flex items-center gap-1.5">
-                <Dices className="w-4 h-4 text-[#D4AF37]" />
+              <span className="text-xs font-serif font-bold text-[#E6D3A3] flex items-center gap-1.5">
+                <Dices className="w-4 h-4 text-[#C9A55A]" />
                 GIEO XÚC XẮC 12 MẶT ĐỊNH MỆNH CUNG (TRỰC TIẾP TẠI BÀN BỐC BÀI)
               </span>
-              <span className="text-[11px] font-mono text-[#D4AF37] bg-[#241B12] px-2 py-0.5 rounded border border-[#473420]">
+              <span className="text-[11px] font-mono text-[#C9A55A] bg-[#241B12] px-2 py-0.5 rounded border border-[#473420]">
                 Mệnh Cung hiện tại: Chi {TWELVE_BRANCHES_DATA.find((b) => b.number === menhBranchNumber)?.name} (Số {menhBranchNumber})
               </span>
             </div>
@@ -2385,23 +2385,23 @@ export const CardDraw: React.FC<CardDrawProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
             <div className="bg-[#14110E] p-2.5 rounded-xl border border-[#2D2216]">
-              <span className="text-[#D4AF37] font-serif font-bold text-[11px] block mb-1">
+              <span className="text-[#C9A55A] font-serif font-bold text-[11px] block mb-1">
                 ✦ 12 Vị Trí Địa Chi & 12 Tháng:
               </span>
               <p className="text-[11px] text-[#A89882] leading-relaxed">
-                Tý (Tháng 11), Sửu (Tháng Chạp), <strong className="text-[#FFE28A]">Dần (Tháng Giêng)</strong>, Mão (Tháng 2), Thìn (Tháng 3)... Hợi (Tháng 10).
+                Tý (Tháng 11), Sửu (Tháng Chạp), <strong className="text-[#E6D3A3]">Dần (Tháng Giêng)</strong>, Mão (Tháng 2), Thìn (Tháng 3)... Hợi (Tháng 10).
               </p>
             </div>
             <div className="bg-[#17130F] p-2.5 rounded-xl border border-[#483724] shadow-inner">
-              <span className="text-[#FFE28A] font-serif font-bold text-[11px] block mb-1">
+              <span className="text-[#E6D3A3] font-serif font-bold text-[11px] block mb-1">
                 🎲 Quy Luật Gieo Xúc Xắc:
               </span>
               <p className="text-[11px] text-[#C4B49D] leading-relaxed">
-                Gieo được số nào thì <strong className="text-[#FFE28A]">Cung Mệnh</strong> an tại Chi đó. 11 Cung an luân chuyển <strong>{isReverseHouses ? "nghịch chiều (Dần ➔ Sửu ➔ Tý...)" : "thuận chiều (Dần ➔ Mão ➔ Thìn...)"}</strong>.
+                Gieo được số nào thì <strong className="text-[#E6D3A3]">Cung Mệnh</strong> an tại Chi đó. 11 Cung an luân chuyển <strong>{isReverseHouses ? "nghịch chiều (Dần ➔ Sửu ➔ Tý...)" : "thuận chiều (Dần ➔ Mão ➔ Thìn...)"}</strong>.
               </p>
             </div>
             <div className="bg-[#14110E] p-2.5 rounded-xl border border-[#2D2216]">
-              <span className="text-[#D4AF37] font-serif font-bold text-[11px] block mb-1">
+              <span className="text-[#C9A55A] font-serif font-bold text-[11px] block mb-1">
                 ★ Thứ Tự Chuẩn 12 Cung Tử Vi:
               </span>
               <p className="text-[11px] text-[#A89882] leading-relaxed">
@@ -2423,9 +2423,9 @@ export const CardDraw: React.FC<CardDrawProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#2C2216] pb-3">
             <div>
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#D4AF37] shadow-[0_0_8px_#D4AF37]" />
+                <span className="w-2.5 h-2.5 rounded-full bg-[#C9A55A] shadow-[0_0_8px_#C9A55A]" />
                 <h4 className="text-xs sm:text-sm font-serif font-bold text-[#F3E7CF] flex items-center gap-1.5">
-                  <Sliders className="w-4 h-4 text-[#D4AF37]" />
+                  <Sliders className="w-4 h-4 text-[#C9A55A]" />
                   TRẬN PHÁP TỰ DO: TÙY Ý NHẬP SỐ LÁ & MỤC ĐÍCH XEM
                 </h4>
               </div>
@@ -2443,7 +2443,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 max={deckCount * 64}
                 value={customCountInput}
                 onChange={(e) => handleCustomCountChange(e.target.value)}
-                className="w-14 bg-[#1A140F] border border-[#4B3B28] rounded text-center text-sm font-mono font-bold text-[#D4AF37] outline-none focus:border-[#D4AF37] py-0.5"
+                className="w-14 bg-[#1A140F] border border-[#4B3B28] rounded text-center text-sm font-mono font-bold text-[#C9A55A] outline-none focus:border-[#C9A55A] py-0.5"
                 title={`Nhập số lá bài từ 1 đến ${deckCount * 64} lá`}
               />
               <span className="text-xs text-[#8E806E]">lá (1-{deckCount * 64})</span>
@@ -2460,7 +2460,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 onClick={() => applyCustomCount(num)}
                 className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-all cursor-pointer border ${
                   customCount === num
-                    ? "bg-[#D4AF37] text-[#120F0C] font-bold border-[#D4AF37] shadow"
+                    ? "bg-[#C9A55A] text-[#120F0C] font-bold border-[#C9A55A] shadow"
                     : "bg-[#14110E] text-[#A89882] border-[#312519] hover:text-[#FFF] hover:border-[#4B3926]"
                 }`}
               >
@@ -2473,14 +2473,14 @@ export const CardDraw: React.FC<CardDrawProps> = ({
           <div className="bg-[#14100D] border border-[#2F2417] rounded-xl p-3 space-y-2">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
               <span className="text-xs font-serif font-bold text-[#EAD8B1] flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <Sparkles className="w-3.5 h-3.5 text-[#C9A55A]" />
                 Mẫu trận pháp chuyên sâu có sẵn:
               </span>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={handleAutoSuggestAll}
-                  className="text-[11px] font-medium text-[#D4AF37] hover:underline cursor-pointer flex items-center gap-1 font-serif"
+                  className="text-[11px] font-medium text-[#C9A55A] hover:underline cursor-pointer flex items-center gap-1 font-serif"
                 >
                   ⚡ Gợi ý tự động cho {customCount} lá
                 </button>
@@ -2504,7 +2504,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   onClick={() => applyTemplate(tpl)}
                   className={`text-[11px] px-2.5 py-1 rounded-lg border transition-all cursor-pointer ${
                     customCount === tpl.count
-                      ? "bg-[#271E14] text-[#F3E7CF] border-[#5E482F] hover:border-[#D4AF37] font-semibold"
+                      ? "bg-[#271E14] text-[#F3E7CF] border-[#5E482F] hover:border-[#C9A55A] font-semibold"
                       : "bg-[#100D0A] text-[#887A68] border-[#221A11] hover:text-[#C8B89E]"
                   }`}
                   title={`${tpl.description} (Bấm để áp dụng)`}
@@ -2533,7 +2533,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   className="bg-[#14100D] border border-[#2D2216] rounded-xl p-2.5 space-y-1.5 hover:border-[#4B3A26] transition-colors"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[10px] font-mono font-bold text-[#D4AF37] bg-[#221910] px-2 py-1 rounded border border-[#3E2E1D] shrink-0">
+                    <span className="text-[10px] font-mono font-bold text-[#C9A55A] bg-[#221910] px-2 py-1 rounded border border-[#3E2E1D] shrink-0">
                       Lá #{idx + 1}
                     </span>
                     <input
@@ -2541,7 +2541,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                       value={customPurposes[idx] || ""}
                       onChange={(e) => handlePurposeChange(idx, e.target.value)}
                       placeholder={`Mục đích xem lá ${idx + 1} (Ví dụ: Căn nguyên, Quý nhân, Trở ngại...)`}
-                      className="w-full bg-[#0D0B08] border border-[#34271A] focus:border-[#D4AF37] rounded-lg px-2.5 py-1 text-xs text-[#EAE2D2] outline-none transition-colors"
+                      className="w-full bg-[#0D0B08] border border-[#34271A] focus:border-[#C9A55A] rounded-lg px-2.5 py-1 text-xs text-[#EAE2D2] outline-none transition-colors"
                     />
                   </div>
 
@@ -2553,7 +2553,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                         key={sug}
                         type="button"
                         onClick={() => handlePurposeChange(idx, `Lá ${idx + 1}: ${sug}`)}
-                        className="shrink-0 px-1.5 py-0.5 rounded bg-[#1C1610] hover:bg-[#2B2117] text-[#A69780] hover:text-[#D4AF37] border border-[#2B2116] hover:border-[#3F3120] transition-colors cursor-pointer"
+                        className="shrink-0 px-1.5 py-0.5 rounded bg-[#1C1610] hover:bg-[#2B2117] text-[#A69780] hover:text-[#C9A55A] border border-[#2B2116] hover:border-[#3F3120] transition-colors cursor-pointer"
                       >
                         {sug}
                       </button>
@@ -2584,7 +2584,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
           <div className="flex items-center gap-3 flex-wrap text-xs text-[#B8AA94]">
             <div>
               Đã chọn:{" "}
-              <span className="font-bold text-[#D4AF37] font-mono text-sm">
+              <span className="font-bold text-[#C9A55A] font-mono text-sm">
                 {selectedDeckIndices.length} / {targetCount} lá
               </span>
               {drawMode === "single" && (
@@ -2601,7 +2601,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 </span>
               )}
               {drawMode === "three" && threeSpreadMode === "choice_abc" && (
-                <span className="text-[#D4AF37] font-medium ml-2">
+                <span className="text-[#C9A55A] font-medium ml-2">
                   ({selectedDeckIndices.length === 0
                     ? `Lượt 1: Thỉnh lá [${choiceALabel.trim() || "Lựa chọn A"}]`
                     : selectedDeckIndices.length === 1
@@ -2610,7 +2610,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 </span>
               )}
               {drawMode === "three" && threeSpreadMode === "tam_tai" && (
-                <span className="text-[#D4AF37] font-medium ml-2">
+                <span className="text-[#C9A55A] font-medium ml-2">
                   ({selectedDeckIndices.length === 0
                     ? "Lượt 1: Thỉnh lá THIÊN (Thiên Thời / Hoàn Cảnh Khách Quan)"
                     : selectedDeckIndices.length === 1
@@ -2619,7 +2619,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 </span>
               )}
               {drawMode === "three" && threeSpreadMode === "past_present_future" && (
-                <span className="text-[#D4AF37] font-medium ml-2">
+                <span className="text-[#C9A55A] font-medium ml-2">
                   ({selectedDeckIndices.length === 0
                     ? "Lượt 1: Thỉnh lá Quá Khứ"
                     : selectedDeckIndices.length === 1
@@ -2628,42 +2628,42 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 </span>
               )}
               {drawMode === "seven" && (
-                <span className="text-[#D4AF37] font-medium ml-2">
+                <span className="text-[#C9A55A] font-medium ml-2">
                   ({selectedDeckIndices.length < 7
                     ? `Lượt ${selectedDeckIndices.length + 1}: Thỉnh ${SEVEN_STARS_POSITIONS[selectedDeckIndices.length]?.name}`
                     : "Đã đủ 7 lá Thất Tinh"})
                 </span>
               )}
               {drawMode === "nine" && (
-                <span className="text-[#D4AF37] font-medium ml-2">
+                <span className="text-[#C9A55A] font-medium ml-2">
                   ({selectedDeckIndices.length < 9
                     ? `Lượt ${selectedDeckIndices.length + 1}: Thỉnh ${NINE_PALACES_POSITIONS[selectedDeckIndices.length]?.name}`
                     : "Đã đủ 9 lá Cửu Cung Phong Thủy"})
                 </span>
               )}
               {drawMode === "ten" && (
-                <span className="text-[#D4AF37] font-medium ml-2">
+                <span className="text-[#C9A55A] font-medium ml-2">
                   ({selectedDeckIndices.length < 10
                     ? `Lượt ${selectedDeckIndices.length + 1}: Thỉnh ${TEN_STARS_POSITIONS[selectedDeckIndices.length]?.name}`
                     : "Đã đủ 10 lá Thập Tinh"})
                 </span>
               )}
               {drawMode === "ten_expanded" && (
-                <span className="text-[#D4AF37] font-medium ml-2">
+                <span className="text-[#C9A55A] font-medium ml-2">
                   ({selectedDeckIndices.length < 11
                     ? `Lượt ${selectedDeckIndices.length + 1}: Thỉnh ${TEN_STARS_EXPANDED_POSITIONS[selectedDeckIndices.length]?.name}`
                     : "Đã đủ 11 lá Thập Tinh Mở Rộng"})
                 </span>
               )}
               {drawMode === "twelve" && (
-                <span className="text-[#D4AF37] font-medium ml-2">
+                <span className="text-[#C9A55A] font-medium ml-2">
                   ({selectedDeckIndices.length < 12
                     ? `Lượt ${selectedDeckIndices.length + 1}: Thỉnh lá Chi ${TWELVE_BRANCHES_DATA[selectedDeckIndices.length]?.name} (${TWELVE_BRANCHES_DATA[selectedDeckIndices.length]?.lunarMonth}) • ${getHouseForBranch(TWELVE_BRANCHES_DATA[selectedDeckIndices.length]?.number, menhBranchNumber, isReverseHouses).name}`
                     : "Đã đủ 12 lá Tử Vi"})
                 </span>
               )}
               {drawMode === "custom" && (
-                <span className="text-[#D4AF37] font-medium ml-2">
+                <span className="text-[#C9A55A] font-medium ml-2">
                   ({selectedDeckIndices.length < customCount
                     ? `Lượt ${selectedDeckIndices.length + 1}: Thỉnh lá #${selectedDeckIndices.length + 1} (${customPurposes[selectedDeckIndices.length] || "Mục đích xem"})`
                     : `Đã đủ ${customCount} lá bài tự chọn`})
@@ -2715,10 +2715,10 @@ export const CardDraw: React.FC<CardDrawProps> = ({
 
             {/* 3D Parallax Indicator */}
             <span
-              className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#19140F] text-[11px] font-mono text-[#D4AF37] border border-[#3C2F21] shadow-xs select-none"
+              className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#19140F] text-[11px] font-mono text-[#C9A55A] border border-[#3C2F21] shadow-xs select-none"
               title="Hiệu ứng 3D Parallax: Lá bài nghiêng đa chiều, đổ bóng nổi bề mặt và phản chiếu ánh sáng khi di chuột"
             >
-              <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+              <Sparkles className="w-3 h-3 text-[#C9A55A]" />
               3D Parallax
             </span>
           </div>
@@ -2736,12 +2736,12 @@ export const CardDraw: React.FC<CardDrawProps> = ({
 
         {/* Nghi thức Tam Tài khi bốc ngẫu nhiên (Lần 1: Kính Thiên, Lần 2: Kính Địa, Lần 3: Kính Nhân) */}
         {quickDrawRitualMsg && (
-          <div className="mx-auto max-w-2xl my-2 px-4 py-3 rounded-2xl bg-gradient-to-r from-[#241B12] via-[#2F2115] to-[#1C140D] border-2 border-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.35)] flex items-center justify-between gap-3 transition-all animate-in fade-in zoom-in-95 duration-300">
+          <div className="mx-auto max-w-2xl my-2 px-4 py-3 rounded-2xl bg-gradient-to-r from-[#241B12] via-[#2F2115] to-[#1C140D] border-2 border-[#C9A55A] shadow-[0_0_30px_rgba(212,175,55,0.35)] flex items-center justify-between gap-3 transition-all animate-in fade-in zoom-in-95 duration-300">
             <div className="flex items-center gap-3">
               <div
                 className={`w-11 h-11 rounded-full border-2 flex items-center justify-center text-sm font-serif font-bold shadow-md shrink-0 ${
                   quickDrawRitualMsg.step === 1
-                    ? "bg-[#251A10] border-[#D4AF37] text-[#FFE294]"
+                    ? "bg-[#251A10] border-[#C9A55A] text-[#E6D3A3]"
                     : quickDrawRitualMsg.step === 2
                     ? "bg-[#2B1B10] border-[#E5A93C] text-[#FFD700]"
                     : "bg-[#331C0E] border-[#FFD700] text-[#FFF] animate-pulse"
@@ -2750,9 +2750,9 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 {quickDrawRitualMsg.step}/3
               </div>
               <div>
-                <div className="text-xs sm:text-sm font-serif font-bold text-[#FFE294] flex items-center gap-2">
+                <div className="text-xs sm:text-sm font-serif font-bold text-[#E6D3A3] flex items-center gap-2">
                   <span>{quickDrawRitualMsg.title}</span>
-                  <span className="text-[#D4AF37] font-serif bg-[#14100B] px-2 py-0.5 rounded border border-[#53412B] text-xs">
+                  <span className="text-[#C9A55A] font-serif bg-[#14100B] px-2 py-0.5 rounded border border-[#53412B] text-xs">
                     {quickDrawRitualMsg.hanzi}
                   </span>
                 </div>
@@ -2761,7 +2761,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 </div>
               </div>
             </div>
-            <div className="text-[11px] font-serif font-bold text-[#D4AF37] bg-[#14100C] border border-[#53412B] px-3 py-1.5 rounded-xl shrink-0 hidden sm:block text-right shadow-inner">
+            <div className="text-[11px] font-serif font-bold text-[#C9A55A] bg-[#14100C] border border-[#53412B] px-3 py-1.5 rounded-xl shrink-0 hidden sm:block text-right shadow-inner">
               {quickDrawRitualMsg.instruction}
             </div>
           </div>
@@ -2774,7 +2774,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
             {multiDeckMode === "separate" && deckCount >= 2 && (
               <div className="bg-[#18140F] border border-[#3C2E1E] rounded-xl p-2.5 flex items-center justify-between gap-2 flex-wrap">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-[#D4AF37] font-serif font-bold flex items-center gap-1.5">
+                  <span className="text-xs text-[#C9A55A] font-serif font-bold flex items-center gap-1.5">
                     <Layers className="w-3.5 h-3.5" />
                     Vòng Quạt 360° Đang Mở:
                   </span>
@@ -2791,7 +2791,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                       onClick={() => setActiveDeckIndex(d)}
                       className={`px-2.5 py-1 text-xs font-serif rounded-lg border transition-all cursor-pointer ${
                         activeDeckIndex === d
-                          ? "bg-[#D4AF37] text-[#120F0C] font-bold border-[#D4AF37]"
+                          ? "bg-[#C9A55A] text-[#120F0C] font-bold border-[#C9A55A]"
                           : "bg-[#14100D] text-[#A89882] border-[#342718] hover:text-[#FFF]"
                       }`}
                     >
@@ -2806,7 +2806,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
             {multiDeckMode === "combined" && deckCount >= 2 && (
               <div className="bg-[#18140F] border border-[#3C2E1E] rounded-xl p-2.5 flex items-center justify-between gap-2 flex-wrap">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-[#D4AF37] font-serif font-bold flex items-center gap-1.5">
+                  <span className="text-xs text-[#C9A55A] font-serif font-bold flex items-center gap-1.5">
                     <Layers className="w-3.5 h-3.5" />
                     Tầng Quạt 360° (64 lá/tầng):
                   </span>
@@ -2822,7 +2822,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                       onClick={() => setActiveSubDeckSlice(s)}
                       className={`px-2.5 py-1 text-xs font-serif rounded-lg border transition-all cursor-pointer ${
                         activeSubDeckSlice === s
-                          ? "bg-[#D4AF37] text-[#120F0C] font-bold border-[#D4AF37]"
+                          ? "bg-[#C9A55A] text-[#120F0C] font-bold border-[#C9A55A]"
                           : "bg-[#14100D] text-[#A89882] border-[#342718] hover:text-[#FFF]"
                       }`}
                     >
@@ -2882,7 +2882,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   ? `Bàn trải Bộ Bài #${activeDeckIndex} (64 lá úp sẵn) • Nhấp vào lá bài bạn cảm ứng để thỉnh:`
                   : `Bàn trải ${deckCount * 64} lá bài úp sẵn • Nhấp vào lá bài bạn cảm ứng để thỉnh:`}
               </span>
-              <span className="font-mono text-[#D4AF37]">
+              <span className="font-mono text-[#C9A55A]">
                 {multiDeckMode === "separate" && deckCount >= 2
                   ? `Bộ #${activeDeckIndex} • 64 lá`
                   : `Tổng cộng ${deckCount * 64} lá`}
@@ -2893,7 +2893,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
             {multiDeckMode === "separate" && deckCount >= 2 && (
               <div className="bg-[#18140F] border border-[#3C2E1E] rounded-xl p-2.5 flex items-center justify-between gap-2 flex-wrap">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-[#D4AF37] font-serif font-bold">Chọn bộ bài hiển thị trên chiếu:</span>
+                  <span className="text-xs text-[#C9A55A] font-serif font-bold">Chọn bộ bài hiển thị trên chiếu:</span>
                 </div>
                 <div className="flex items-center gap-1 flex-wrap">
                   {Array.from({ length: deckCount }, (_, i) => i + 1).map((d) => {
@@ -2906,7 +2906,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                         onClick={() => setActiveDeckIndex(d)}
                         className={`px-3 py-1 text-xs font-serif rounded-lg border transition-all cursor-pointer flex items-center gap-1 ${
                           isCur
-                            ? "bg-[#D4AF37] text-[#120F0C] font-bold border-[#D4AF37] shadow"
+                            ? "bg-[#C9A55A] text-[#120F0C] font-bold border-[#C9A55A] shadow"
                             : "bg-[#14100D] text-[#A89882] border-[#342718] hover:text-[#FFF]"
                         }`}
                       >
@@ -2923,7 +2923,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
             {multiDeckMode === "combined" && deckCount >= 2 && (
               <div className="bg-[#18140F] border border-[#3C2E1E] rounded-xl p-2.5 flex items-center justify-between gap-2 flex-wrap">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-[#D4AF37] font-serif font-bold">Lọc hiển thị ({deckCount * 64} lá trộn chung):</span>
+                  <span className="text-xs text-[#C9A55A] font-serif font-bold">Lọc hiển thị ({deckCount * 64} lá trộn chung):</span>
                 </div>
                 <div className="flex items-center gap-1 flex-wrap">
                   <button
@@ -2931,7 +2931,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                     onClick={() => setGridSubDeckFilter("all")}
                     className={`px-3 py-1 text-xs font-serif rounded-lg border transition-all cursor-pointer ${
                       gridSubDeckFilter === "all"
-                        ? "bg-[#D4AF37] text-[#120F0C] font-bold border-[#D4AF37] shadow"
+                        ? "bg-[#C9A55A] text-[#120F0C] font-bold border-[#C9A55A] shadow"
                         : "bg-[#14100D] text-[#A89882] border-[#342718] hover:text-[#FFF]"
                     }`}
                   >
@@ -2944,7 +2944,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                       onClick={() => setGridSubDeckFilter(d)}
                       className={`px-2.5 py-1 text-xs font-serif rounded-lg border transition-all cursor-pointer ${
                         gridSubDeckFilter === d
-                          ? "bg-[#D4AF37] text-[#120F0C] font-bold border-[#D4AF37] shadow"
+                          ? "bg-[#C9A55A] text-[#120F0C] font-bold border-[#C9A55A] shadow"
                           : "bg-[#14100D] text-[#A89882] border-[#342718] hover:text-[#FFF]"
                       }`}
                     >
@@ -2968,10 +2968,10 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 type="button"
                 onClick={handleShuffle}
                 disabled={isShuffling}
-                className="flex items-center gap-2 px-4 py-2 text-xs font-serif font-bold text-[#EAD8B1] hover:text-[#FFF] bg-[#221B14] hover:bg-[#2F241A] border border-[#53412B] hover:border-[#D4AF37] rounded-xl shadow-lg transition-all cursor-pointer disabled:opacity-50 active:scale-95 group"
+                className="flex items-center gap-2 px-4 py-2 text-xs font-serif font-bold text-[#EAD8B1] hover:text-[#FFF] bg-[#221B14] hover:bg-[#2F241A] border border-[#53412B] hover:border-[#C9A55A] rounded-xl shadow-lg transition-all cursor-pointer disabled:opacity-50 active:scale-95 group"
                 title={`Xáo lại ${deckCount * 64} lá bài theo nghi thức cổ truyền (5.5 giây)`}
               >
-                <Shuffle className={`w-3.5 h-3.5 text-[#D4AF37] ${isShuffling ? "animate-spin" : "group-hover:rotate-180 transition-transform duration-500"}`} />
+                <Shuffle className={`w-3.5 h-3.5 text-[#C9A55A] ${isShuffling ? "animate-spin" : "group-hover:rotate-180 transition-transform duration-500"}`} />
                 <span>Xáo Lại {deckCount > 1 ? `${deckCount} Bộ (${deckCount * 64} Lá)` : "64 Lá"}</span>
               </button>
 
@@ -2984,8 +2984,8 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 }}
                 className={`flex items-center gap-1.5 px-3 py-2 text-xs font-serif font-bold rounded-xl border transition-all cursor-pointer active:scale-95 group ${
                   gridCardsFlippedFront
-                    ? "bg-[#2A1F13] text-[#FFE28A] border-[#D4AF37] ring-1 ring-[#D4AF37]/50"
-                    : "bg-[#221B14] text-[#EAD8B1] hover:text-[#FFF] border-[#53412B] hover:border-[#D4AF37]"
+                    ? "bg-[#2A1F13] text-[#E6D3A3] border-[#C9A55A] ring-1 ring-[#C9A55A]/50"
+                    : "bg-[#221B14] text-[#EAD8B1] hover:text-[#FFF] border-[#53412B] hover:border-[#C9A55A]"
                 }`}
                 title="Bật/Tắt lật úp toàn bộ lá bài trong bàn trải (Mặc định úp bài ☯)"
               >
@@ -3002,12 +3002,12 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 }}
                 className={`flex items-center gap-1.5 px-3 py-2 text-xs font-serif font-bold rounded-xl border transition-all cursor-pointer active:scale-95 group ${
                   gridCardsRotated
-                    ? "bg-[#2A1F13] text-[#FFE28A] border-[#D4AF37] ring-1 ring-[#D4AF37]/50"
-                    : "bg-[#221B14] text-[#EAD8B1] hover:text-[#FFF] border-[#53412B] hover:border-[#D4AF37]"
+                    ? "bg-[#2A1F13] text-[#E6D3A3] border-[#C9A55A] ring-1 ring-[#C9A55A]/50"
+                    : "bg-[#221B14] text-[#EAD8B1] hover:text-[#FFF] border-[#53412B] hover:border-[#C9A55A]"
                 }`}
                 title="Bật/Tắt xoay bài: Xoay 180° chiều lá bài trong bàn trải"
               >
-                <RotateCw className={`w-3.5 h-3.5 text-[#D4AF37] transition-transform duration-500 ${gridCardsRotated ? "rotate-180 text-[#FFE28A]" : "group-hover:rotate-180"}`} />
+                <RotateCw className={`w-3.5 h-3.5 text-[#C9A55A] transition-transform duration-500 ${gridCardsRotated ? "rotate-180 text-[#E6D3A3]" : "group-hover:rotate-180"}`} />
                 <span>{gridCardsRotated ? "Xoay Bài: 180°" : "Xoay Bài: 0°"}</span>
               </button>
 
@@ -3017,10 +3017,10 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 disabled={isShuffling}
                 className={`flex items-center gap-2 px-5 py-2 text-xs font-serif font-bold rounded-xl transition-all cursor-pointer disabled:opacity-50 active:scale-95 group ${
                   quickDrawStep === 1
-                    ? "text-[#14100B] bg-gradient-to-r from-[#E5A93C] via-[#FCEECB] to-[#C88A2B] ring-2 ring-[#FFE294] shadow-[0_0_22px_rgba(229,169,60,0.5)] animate-pulse"
+                    ? "text-[#14100B] bg-gradient-to-r from-[#E5A93C] via-[#FCEECB] to-[#C88A2B] ring-2 ring-[#E6D3A3] shadow-[0_0_22px_rgba(229,169,60,0.5)] animate-pulse"
                     : quickDrawStep === 2
                     ? "text-[#14100B] bg-gradient-to-r from-[#FFD700] via-[#FFF8E7] to-[#F0B823] ring-2 ring-[#FFD700] shadow-[0_0_25px_rgba(255,215,0,0.6)] animate-pulse"
-                    : "text-[#14100B] bg-gradient-to-r from-[#D4AF37] via-[#F3E7CF] to-[#C89B3C] hover:brightness-110 shadow-[0_0_20px_rgba(212,175,55,0.4)]"
+                    : "text-[#14100B] bg-gradient-to-r from-[#C9A55A] via-[#F3E7CF] to-[#C89B3C] hover:brightness-110 shadow-[0_0_20px_rgba(212,175,55,0.4)]"
                 }`}
                 title={
                   quickDrawStep === 0
@@ -3117,29 +3117,29 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                             isReversed={gridCardsRotated}
                             className={
                               isSelected
-                                ? "ring-4 ring-[#D4AF37] shadow-[0_0_25px_rgba(212,175,55,0.95)] animate-card-draw-float"
+                                ? "ring-4 ring-[#C9A55A] shadow-[0_0_25px_rgba(212,175,55,0.95)] animate-card-draw-float"
                                 : isHolding
-                                ? "ring-2 ring-[#D4AF37] shadow-[0_0_20px_rgba(212,175,55,0.9)]"
-                                : "hover:ring-2 hover:ring-[#D4AF37]/80 shadow-md"
+                                ? "ring-2 ring-[#C9A55A] shadow-[0_0_20px_rgba(212,175,55,0.9)]"
+                                : "hover:ring-2 hover:ring-[#C9A55A]/80 shadow-md"
                             }
                           />
                           {isSelected && (
                             <>
-                              <div className="absolute -inset-2 rounded-2xl border border-[#D4AF37]/80 animate-burst-aura pointer-events-none" />
-                              <div className="absolute inset-0 bg-[#D4AF37]/25 rounded-xl flex items-center justify-center pointer-events-none">
-                                <span className="w-6 h-6 rounded-full bg-[#14110D] border border-[#D4AF37] text-[#D4AF37] text-xs font-bold font-mono flex items-center justify-center shadow-lg">
+                              <div className="absolute -inset-2 rounded-2xl border border-[#C9A55A]/80 animate-burst-aura pointer-events-none" />
+                              <div className="absolute inset-0 bg-[#C9A55A]/25 rounded-xl flex items-center justify-center pointer-events-none">
+                                <span className="w-6 h-6 rounded-full bg-[#14110D] border border-[#C9A55A] text-[#C9A55A] text-xs font-bold font-mono flex items-center justify-center shadow-lg">
                                   {selectionOrder}
                                 </span>
                               </div>
                             </>
                           )}
                           {deckCount >= 2 && (
-                            <div className="absolute top-1 left-1 px-1.5 py-0.2 rounded bg-[#100D0A]/90 border border-[#483925] text-[9px] font-mono text-[#D4AF37] shadow pointer-events-none">
+                            <div className="absolute top-1 left-1 px-1.5 py-0.2 rounded bg-[#100D0A]/90 border border-[#483925] text-[9px] font-mono text-[#C9A55A] shadow pointer-events-none">
                               B#{card.deckNumber || 1}
                             </div>
                           )}
                           {isHolding && (
-                            <div className="absolute -top-6 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded-full bg-[#140F0A] border border-[#D4AF37] text-[#D4AF37] text-[8.5px] font-mono font-bold whitespace-nowrap shadow-lg z-40 flex items-center gap-1 animate-pulse pointer-events-none">
+                            <div className="absolute -top-6 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded-full bg-[#140F0A] border border-[#C9A55A] text-[#C9A55A] text-[8.5px] font-mono font-bold whitespace-nowrap shadow-lg z-40 flex items-center gap-1 animate-pulse pointer-events-none">
                               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                               <span>{Math.round(holdProgress)}%</span>
                             </div>
@@ -3148,8 +3148,8 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                         <span
                           className={`mt-1 text-[10px] font-mono transition-colors ${
                             isSelected || isHolding
-                              ? "text-[#D4AF37] font-bold"
-                              : "text-[#80705B] group-hover:text-[#D4AF37]"
+                              ? "text-[#C9A55A] font-bold"
+                              : "text-[#80705B] group-hover:text-[#C9A55A]"
                           }`}
                         >
                           Lá #{actualIndex + 1}{deckCount >= 2 ? ` (B#${card.deckNumber || 1})` : ""}
@@ -3172,7 +3172,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   ? `Dải bài xòe Bộ #${activeDeckIndex} (64 lá) • Cuộn ngang hoặc nhấn các nút để chọn:`
                   : `Dải bài xòe toàn bộ ${deckCount * 64} lá • Cuộn ngang hoặc nhấn các nút để chọn:`}
               </span>
-              <span className="font-mono text-[#D4AF37]">
+              <span className="font-mono text-[#C9A55A]">
                 {multiDeckMode === "separate" && deckCount >= 2
                   ? `Bộ #${activeDeckIndex} • 64 lá`
                   : `${deckCount * 64} lá bài`}
@@ -3183,7 +3183,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
             {multiDeckMode === "separate" && deckCount >= 2 && (
               <div className="bg-[#18140F] border border-[#3C2E1E] rounded-xl p-2.5 flex items-center justify-between gap-2 flex-wrap">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-[#D4AF37] font-serif font-bold">Xem dải bài bộ:</span>
+                  <span className="text-xs text-[#C9A55A] font-serif font-bold">Xem dải bài bộ:</span>
                 </div>
                 <div className="flex items-center gap-1 flex-wrap">
                   {Array.from({ length: deckCount }, (_, i) => i + 1).map((d) => (
@@ -3193,7 +3193,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                       onClick={() => setActiveDeckIndex(d)}
                       className={`px-3 py-1 text-xs font-serif rounded-lg border transition-all cursor-pointer ${
                         activeDeckIndex === d
-                          ? "bg-[#D4AF37] text-[#120F0C] font-bold border-[#D4AF37]"
+                          ? "bg-[#C9A55A] text-[#120F0C] font-bold border-[#C9A55A]"
                           : "bg-[#14100D] text-[#A89882] border-[#342718] hover:text-[#FFF]"
                       }`}
                     >
@@ -3217,10 +3217,10 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 type="button"
                 onClick={handleShuffle}
                 disabled={isShuffling}
-                className="flex items-center gap-2 px-4 py-2 text-xs font-serif font-bold text-[#EAD8B1] hover:text-[#FFF] bg-[#221B14] hover:bg-[#2F241A] border border-[#53412B] hover:border-[#D4AF37] rounded-xl shadow-lg transition-all cursor-pointer disabled:opacity-50 active:scale-95 group"
+                className="flex items-center gap-2 px-4 py-2 text-xs font-serif font-bold text-[#EAD8B1] hover:text-[#FFF] bg-[#221B14] hover:bg-[#2F241A] border border-[#53412B] hover:border-[#C9A55A] rounded-xl shadow-lg transition-all cursor-pointer disabled:opacity-50 active:scale-95 group"
                 title={`Xáo lại ${deckCount * 64} lá bài theo nghi thức cổ truyền (5.5 giây)`}
               >
-                <Shuffle className={`w-3.5 h-3.5 text-[#D4AF37] ${isShuffling ? "animate-spin" : "group-hover:rotate-180 transition-transform duration-500"}`} />
+                <Shuffle className={`w-3.5 h-3.5 text-[#C9A55A] ${isShuffling ? "animate-spin" : "group-hover:rotate-180 transition-transform duration-500"}`} />
                 <span>Xáo Lại {deckCount > 1 ? `${deckCount} Bộ (${deckCount * 64} Lá)` : "64 Lá"}</span>
               </button>
 
@@ -3233,8 +3233,8 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 }}
                 className={`flex items-center gap-1.5 px-3 py-2 text-xs font-serif font-bold rounded-xl border transition-all cursor-pointer active:scale-95 group ${
                   gridCardsFlippedFront
-                    ? "bg-[#2A1F13] text-[#FFE28A] border-[#D4AF37] ring-1 ring-[#D4AF37]/50"
-                    : "bg-[#221B14] text-[#EAD8B1] hover:text-[#FFF] border-[#53412B] hover:border-[#D4AF37]"
+                    ? "bg-[#2A1F13] text-[#E6D3A3] border-[#C9A55A] ring-1 ring-[#C9A55A]/50"
+                    : "bg-[#221B14] text-[#EAD8B1] hover:text-[#FFF] border-[#53412B] hover:border-[#C9A55A]"
                 }`}
                 title="Bật/Tắt lật úp toàn bộ lá bài trong dải xòe (Mặc định úp bài ☯)"
               >
@@ -3251,12 +3251,12 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 }}
                 className={`flex items-center gap-1.5 px-3 py-2 text-xs font-serif font-bold rounded-xl border transition-all cursor-pointer active:scale-95 group ${
                   gridCardsRotated
-                    ? "bg-[#2A1F13] text-[#FFE28A] border-[#D4AF37] ring-1 ring-[#D4AF37]/50"
-                    : "bg-[#221B14] text-[#EAD8B1] hover:text-[#FFF] border-[#53412B] hover:border-[#D4AF37]"
+                    ? "bg-[#2A1F13] text-[#E6D3A3] border-[#C9A55A] ring-1 ring-[#C9A55A]/50"
+                    : "bg-[#221B14] text-[#EAD8B1] hover:text-[#FFF] border-[#53412B] hover:border-[#C9A55A]"
                 }`}
                 title="Bật/Tắt xoay bài: Xoay 180° chiều lá bài trong dải xòe"
               >
-                <RotateCw className={`w-3.5 h-3.5 text-[#D4AF37] transition-transform duration-500 ${gridCardsRotated ? "rotate-180 text-[#FFE28A]" : "group-hover:rotate-180"}`} />
+                <RotateCw className={`w-3.5 h-3.5 text-[#C9A55A] transition-transform duration-500 ${gridCardsRotated ? "rotate-180 text-[#E6D3A3]" : "group-hover:rotate-180"}`} />
                 <span>{gridCardsRotated ? "Xoay Bài: 180°" : "Xoay Bài: 0°"}</span>
               </button>
 
@@ -3266,10 +3266,10 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 disabled={isShuffling}
                 className={`flex items-center gap-2 px-5 py-2 text-xs font-serif font-bold rounded-xl transition-all cursor-pointer disabled:opacity-50 active:scale-95 group ${
                   quickDrawStep === 1
-                    ? "text-[#14100B] bg-gradient-to-r from-[#E5A93C] via-[#FCEECB] to-[#C88A2B] ring-2 ring-[#FFE294] shadow-[0_0_22px_rgba(229,169,60,0.5)] animate-pulse"
+                    ? "text-[#14100B] bg-gradient-to-r from-[#E5A93C] via-[#FCEECB] to-[#C88A2B] ring-2 ring-[#E6D3A3] shadow-[0_0_22px_rgba(229,169,60,0.5)] animate-pulse"
                     : quickDrawStep === 2
                     ? "text-[#14100B] bg-gradient-to-r from-[#FFD700] via-[#FFF8E7] to-[#F0B823] ring-2 ring-[#FFD700] shadow-[0_0_25px_rgba(255,215,0,0.6)] animate-pulse"
-                    : "text-[#14100B] bg-gradient-to-r from-[#D4AF37] via-[#F3E7CF] to-[#C89B3C] hover:brightness-110 shadow-[0_0_20px_rgba(212,175,55,0.4)]"
+                    : "text-[#14100B] bg-gradient-to-r from-[#C9A55A] via-[#F3E7CF] to-[#C89B3C] hover:brightness-110 shadow-[0_0_20px_rgba(212,175,55,0.4)]"
                 }`}
                 title={
                   quickDrawStep === 0
@@ -3359,27 +3359,27 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                             isReversed={gridCardsRotated}
                             className={
                               isSelected
-                                ? "ring-4 ring-[#D4AF37] shadow-[0_0_25px_rgba(212,175,55,0.95)] animate-card-draw-float"
+                                ? "ring-4 ring-[#C9A55A] shadow-[0_0_25px_rgba(212,175,55,0.95)] animate-card-draw-float"
                                 : isHolding
-                                ? "ring-2 ring-[#D4AF37] shadow-[0_0_25px_rgba(212,175,55,0.9)]"
-                                : "hover:ring-2 hover:ring-[#D4AF37]"
+                                ? "ring-2 ring-[#C9A55A] shadow-[0_0_25px_rgba(212,175,55,0.9)]"
+                                : "hover:ring-2 hover:ring-[#C9A55A]"
                             }
                           />
                           {isSelected && (
                             <>
-                              <div className="absolute -inset-2 rounded-2xl border border-[#D4AF37]/80 animate-burst-aura pointer-events-none" />
-                              <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-[#14110D] border border-[#D4AF37] text-[#D4AF37] text-xs font-bold font-mono flex items-center justify-center shadow-lg z-20">
+                              <div className="absolute -inset-2 rounded-2xl border border-[#C9A55A]/80 animate-burst-aura pointer-events-none" />
+                              <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-[#14110D] border border-[#C9A55A] text-[#C9A55A] text-xs font-bold font-mono flex items-center justify-center shadow-lg z-20">
                                 {selectionOrder}
                               </div>
                             </>
                           )}
                           {deckCount >= 2 && (
-                            <div className="absolute top-1 left-1 px-1.5 py-0.2 rounded bg-[#100D0A]/90 border border-[#483925] text-[9px] font-mono text-[#D4AF37] shadow pointer-events-none">
+                            <div className="absolute top-1 left-1 px-1.5 py-0.2 rounded bg-[#100D0A]/90 border border-[#483925] text-[9px] font-mono text-[#C9A55A] shadow pointer-events-none">
                               B#{card.deckNumber || 1}
                             </div>
                           )}
                           {isHolding && (
-                            <div className="absolute -top-7 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[#140F0A] border border-[#D4AF37] text-[#D4AF37] text-[9px] font-mono font-bold whitespace-nowrap shadow-lg z-40 flex items-center gap-1 animate-pulse pointer-events-none">
+                            <div className="absolute -top-7 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[#140F0A] border border-[#C9A55A] text-[#C9A55A] text-[9px] font-mono font-bold whitespace-nowrap shadow-lg z-40 flex items-center gap-1 animate-pulse pointer-events-none">
                               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                               <span>{Math.round(holdProgress)}%</span>
                             </div>
@@ -3413,19 +3413,19 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 <span>Chuyển nhanh:</span>
                 <button
                   onClick={() => scrollToRatio(0)}
-                  className="px-2 py-0.5 rounded bg-[#201A13] hover:text-[#D4AF37] border border-[#3A2E20] cursor-pointer"
+                  className="px-2 py-0.5 rounded bg-[#201A13] hover:text-[#C9A55A] border border-[#3A2E20] cursor-pointer"
                 >
                   Đầu
                 </button>
                 <button
                   onClick={() => scrollToRatio(0.5)}
-                  className="px-2 py-0.5 rounded bg-[#201A13] hover:text-[#D4AF37] border border-[#3A2E20] cursor-pointer"
+                  className="px-2 py-0.5 rounded bg-[#201A13] hover:text-[#C9A55A] border border-[#3A2E20] cursor-pointer"
                 >
                   Giữa
                 </button>
                 <button
                   onClick={() => scrollToRatio(1)}
-                  className="px-2 py-0.5 rounded bg-[#201A13] hover:text-[#D4AF37] border border-[#3A2E20] cursor-pointer"
+                  className="px-2 py-0.5 rounded bg-[#201A13] hover:text-[#C9A55A] border border-[#3A2E20] cursor-pointer"
                 >
                   Cuối
                 </button>
@@ -3436,7 +3436,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                       <button
                         key={d}
                         onClick={() => scrollToRatio((d - 1) / deckCount)}
-                        className="px-1.5 py-0.5 rounded bg-[#241C15] hover:text-[#D4AF37] border border-[#3B2D1E] cursor-pointer font-mono"
+                        className="px-1.5 py-0.5 rounded bg-[#241C15] hover:text-[#C9A55A] border border-[#3B2D1E] cursor-pointer font-mono"
                       >
                         B#{d}
                       </button>
@@ -3470,7 +3470,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-5 border-b border-[#2C2317] pb-4">
                   <div className="text-center sm:text-left">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-xs uppercase font-serif font-bold text-[#D4AF37] tracking-widest px-3 py-1 rounded-full bg-[#241C14] border border-[#3E2F20]">
+                      <span className="text-xs uppercase font-serif font-bold text-[#C9A55A] tracking-widest px-3 py-1 rounded-full bg-[#241C14] border border-[#3E2F20]">
                         {allFlippedFront
                           ? "CÁC LÁ BÀI BẠN ĐÃ BỐC (MẶT NGỬA QUẺ DỊCH 卦)"
                           : "CÁC LÁ BÀI BẠN ĐÃ BỐC (MẶT SẤP BÁT QUÁI ☯)"}
@@ -3496,7 +3496,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   >
                     {isCapturing ? (
                       <>
-                        <Loader2 className="w-3.5 h-3.5 animate-spin text-[#D4AF37]" />
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-[#C9A55A]" />
                         <span>Đang chụp...</span>
                       </>
                     ) : capturedSuccess ? (
@@ -3506,7 +3506,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                       </>
                     ) : (
                       <>
-                        <Camera className="w-3.5 h-3.5 text-[#D4AF37]" />
+                        <Camera className="w-3.5 h-3.5 text-[#C9A55A]" />
                         <span>Chụp Toàn Bộ Lá Bài</span>
                       </>
                     )}
@@ -3516,7 +3516,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                     <button
                       type="button"
                       onClick={() => setShowExportModal(true)}
-                      className="no-capture flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-serif text-[#D4AF37] bg-[#221A12] hover:bg-[#302418] border border-[#443522] transition-colors cursor-pointer"
+                      className="no-capture flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-serif text-[#C9A55A] bg-[#221A12] hover:bg-[#302418] border border-[#443522] transition-colors cursor-pointer"
                       title="Mở lại ảnh đã xuất để phóng to/thu nhỏ lá bài"
                     >
                       <ZoomIn className="w-3.5 h-3.5" />
@@ -3530,12 +3530,12 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                     onClick={handleToggleRotateCards}
                     className={`no-capture flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer shadow active:scale-95 group border ${
                       isAllCardsRotated
-                        ? "bg-[#281E13] text-[#FFE28A] border-[#D4AF37] ring-1 ring-[#D4AF37]/50"
-                        : "bg-[#221A12] text-[#EAD8B1] hover:text-[#FFF] border-[#52412B] hover:border-[#D4AF37]"
+                        ? "bg-[#281E13] text-[#E6D3A3] border-[#C9A55A] ring-1 ring-[#C9A55A]/50"
+                        : "bg-[#221A12] text-[#EAD8B1] hover:text-[#FFF] border-[#52412B] hover:border-[#C9A55A]"
                     }`}
                     title="Bật/Tắt xoay bài: Xoay đảo chiều 180° (Ngược / Xuôi) cho toàn bộ các lá bài đã bốc"
                   >
-                    <RotateCw className={`w-3.5 h-3.5 text-[#D4AF37] transition-transform duration-500 ${isAllCardsRotated ? "rotate-180 text-[#FFE28A]" : "group-hover:rotate-180"}`} />
+                    <RotateCw className={`w-3.5 h-3.5 text-[#C9A55A] transition-transform duration-500 ${isAllCardsRotated ? "rotate-180 text-[#E6D3A3]" : "group-hover:rotate-180"}`} />
                     <span>{isAllCardsRotated ? "Xoay Bài: 180° (Ngược)" : "Xoay Bài: 0° (Thuận)"}</span>
                   </button>
 
@@ -3545,8 +3545,8 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                     onClick={handleToggleFlipCards}
                     className={`no-capture flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer shadow active:scale-95 group border ${
                       allFlippedFront
-                        ? "bg-[#281E13] text-[#FFE28A] border-[#D4AF37] ring-1 ring-[#D4AF37]/50"
-                        : "bg-[#221A12] text-[#EAD8B1] hover:text-[#FFF] border-[#52412B] hover:border-[#D4AF37]"
+                        ? "bg-[#281E13] text-[#E6D3A3] border-[#C9A55A] ring-1 ring-[#C9A55A]/50"
+                        : "bg-[#221A12] text-[#EAD8B1] hover:text-[#FFF] border-[#52412B] hover:border-[#C9A55A]"
                     }`}
                     title="Bật/Tắt trạng thái khi hiện quẻ: Mở Luôn (Mặt quẻ 卦) hoặc Úp Bài (Mặt Bát Quái ☯)"
                   >
@@ -3560,12 +3560,12 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                     onClick={handleToggleAllowFlipOnClick}
                     className={`no-capture flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer shadow active:scale-95 group border ${
                       allowFlipOnClick
-                        ? "bg-[#281E13] text-[#FFE28A] border-[#D4AF37] ring-1 ring-[#D4AF37]/50"
-                        : "bg-[#221A12] text-[#A89882] hover:text-[#FFF] border-[#52412B] hover:border-[#D4AF37]"
+                        ? "bg-[#281E13] text-[#E6D3A3] border-[#C9A55A] ring-1 ring-[#C9A55A]/50"
+                        : "bg-[#221A12] text-[#A89882] hover:text-[#FFF] border-[#52412B] hover:border-[#C9A55A]"
                     }`}
                     title="Bật/Tắt xoay bài qua mặt sau: Khi TẮT, nhấn vào lá bài sẽ không xoay lật mặt trước hay mặt sau nữa"
                   >
-                    <FlipHorizontal className={`w-3.5 h-3.5 ${allowFlipOnClick ? "text-[#D4AF37]" : "text-[#8C7D6A]"}`} />
+                    <FlipHorizontal className={`w-3.5 h-3.5 ${allowFlipOnClick ? "text-[#C9A55A]" : "text-[#8C7D6A]"}`} />
                     <span>{allowFlipOnClick ? "Xoay Mặt Sau: BẬT" : "Xoay Mặt Sau: TẮT (Khóa)"}</span>
                   </button>
 
@@ -3575,8 +3575,8 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                     onClick={handleToggleAllowReversedCards}
                     className={`no-capture flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer shadow active:scale-95 group border ${
                       effectiveAllowReversedCards
-                        ? "bg-[#281E13] text-[#FFE28A] border-[#D4AF37] ring-1 ring-[#D4AF37]/50"
-                        : "bg-[#221A12] text-[#A89882] hover:text-[#FFF] border-[#52412B] hover:border-[#D4AF37]"
+                        ? "bg-[#281E13] text-[#E6D3A3] border-[#C9A55A] ring-1 ring-[#C9A55A]/50"
+                        : "bg-[#221A12] text-[#A89882] hover:text-[#FFF] border-[#52412B] hover:border-[#C9A55A]"
                     }`}
                     title={
                       effectiveAllowReversedCards
@@ -3584,7 +3584,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                         : "Chế độ: Chỉ Xem Thuận (toàn bộ lá bài ra chiều thuận). Bấm để chuyển sang Xem Thuận Nghịch."
                     }
                   >
-                    <RotateCw className={`w-3.5 h-3.5 transition-transform duration-300 ${effectiveAllowReversedCards ? "text-[#D4AF37] rotate-180" : "text-[#8C7D6A]"}`} />
+                    <RotateCw className={`w-3.5 h-3.5 transition-transform duration-300 ${effectiveAllowReversedCards ? "text-[#C9A55A] rotate-180" : "text-[#8C7D6A]"}`} />
                     <span><strong>{effectiveAllowReversedCards ? "Xem Thuận Nghịch" : "Chỉ Xem Thuận"}</strong></span>
                   </button>
                 </div>
@@ -3598,9 +3598,9 @@ export const CardDraw: React.FC<CardDrawProps> = ({
               if (duplicateCards.length === 0) return null;
               const uniqueDupeNums = Array.from(new Set(duplicateCards.map((c) => c.number)));
               return (
-                <div className="mb-5 p-3.5 rounded-xl bg-gradient-to-r from-[#2B1D0E] via-[#352513] to-[#2B1D0E] border border-[#D4AF37]/60 shadow-lg text-xs space-y-1">
-                  <div className="flex items-center gap-2 text-[#D4AF37] font-serif font-bold">
-                    <Sparkles className="w-4 h-4 text-[#D4AF37] animate-pulse" />
+                <div className="mb-5 p-3.5 rounded-xl bg-gradient-to-r from-[#2B1D0E] via-[#352513] to-[#2B1D0E] border border-[#C9A55A]/60 shadow-lg text-xs space-y-1">
+                  <div className="flex items-center gap-2 text-[#C9A55A] font-serif font-bold">
+                    <Sparkles className="w-4 h-4 text-[#C9A55A] animate-pulse" />
                     <span>ĐIỀM LÀNH TRÙNG QUẺ ĐỒNG VỌNG ({deckCount} BỘ BÀI)</span>
                   </div>
                   <p className="text-[#EAD8B1] leading-relaxed">
@@ -3611,7 +3611,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                         .filter((c) => c.number === num)
                         .map((c) => `Bộ #${c.deckNumber || 1}`);
                       return (
-                        <span key={num} className="font-bold text-[#D4AF37]">
+                        <span key={num} className="font-bold text-[#C9A55A]">
                           [Quẻ #{num} {sample?.name} ({matchingDecks.join(" & ")})]
                         </span>
                       );
@@ -3691,14 +3691,14 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                     >
                       {/* Deck Badge if multi-deck */}
                       {deckCount >= 2 && (
-                        <div className="absolute top-1.5 sm:top-3 left-1.5 sm:left-3 px-1.5 sm:px-2 py-0.5 rounded-full bg-[#18120C] border border-[#D4AF37]/60 text-[8px] sm:text-[10px] font-serif font-bold text-[#D4AF37] shadow z-20 pointer-events-none">
+                        <div className="absolute top-1.5 sm:top-3 left-1.5 sm:left-3 px-1.5 sm:px-2 py-0.5 rounded-full bg-[#18120C] border border-[#C9A55A]/60 text-[8px] sm:text-[10px] font-serif font-bold text-[#C9A55A] shadow z-20 pointer-events-none">
                           Bộ #{card.deckNumber || 1}
                         </div>
                       )}
 
                       {/* Role Title */}
                       <div
-                        className={`font-mono font-bold text-[#D4AF37] uppercase leading-tight pointer-events-none ${
+                        className={`font-mono font-bold text-[#C9A55A] uppercase leading-tight pointer-events-none ${
                           revealedCards.length >= 3
                             ? "text-[8px] sm:text-[10px] md:text-[11px] mb-1 mt-0.5 line-clamp-2 min-h-[2.2em] flex items-center justify-center"
                             : revealedCards.length === 2

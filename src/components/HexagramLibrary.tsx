@@ -95,7 +95,7 @@ export const HexagramLibrary: React.FC<HexagramLibraryProps> = ({
         <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#292219]">
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="text-xs text-[#8C7D69] flex items-center gap-1 mr-1">
-              <Filter className="w-3.5 h-3.5 text-[#D4AF37]" /> Cung / Bát quái:
+              <Filter className="w-3.5 h-3.5 text-[#C9A55A]" /> Cung / Bát quái:
             </span>
             {trigramsList.map((tri) => (
               <button
@@ -150,12 +150,12 @@ export const HexagramLibrary: React.FC<HexagramLibraryProps> = ({
             <div
               key={hex.number}
               onClick={() => onSelectHexagram(hex)}
-              className="group bg-[#171512] border border-[#332A1F] hover:border-[#D4AF37] rounded-xl p-4 shadow-lg hover:shadow-2xl transition-all cursor-pointer flex flex-col justify-between"
+              className="group bg-[#171512] border border-[#332A1F] hover:border-[#C9A55A] rounded-xl p-4 shadow-lg hover:shadow-2xl transition-all cursor-pointer flex flex-col justify-between"
             >
               <div>
                 {/* Header */}
                 <div className="flex items-center justify-between text-xs mb-3">
-                  <span className="font-mono text-[#D4AF37] font-bold">
+                  <span className="font-mono text-[#C9A55A] font-bold">
                     #{hex.number.toString().padStart(2, "0")}
                   </span>
                   <span className="text-[11px] text-[#A89882] font-serif">
@@ -175,7 +175,7 @@ export const HexagramLibrary: React.FC<HexagramLibraryProps> = ({
                     />
                   </div>
                   <div className="min-w-0">
-                    <h4 className="font-serif font-bold text-base text-[#F5EAD4] group-hover:text-[#D4AF37] transition-colors truncate">
+                    <h4 className="font-serif font-bold text-base text-[#F5EAD4] group-hover:text-[#C9A55A] transition-colors truncate">
                       {hex.name}
                     </h4>
                     <p className="text-xs text-[#A89882] font-serif truncate">
@@ -198,7 +198,7 @@ export const HexagramLibrary: React.FC<HexagramLibraryProps> = ({
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-[#241D16] flex items-center justify-between text-[11px] text-[#D4AF37] font-medium group-hover:translate-x-0.5 transition-transform">
+              <div className="pt-2 border-t border-[#241D16] flex items-center justify-between text-[11px] text-[#C9A55A] font-medium group-hover:translate-x-0.5 transition-transform">
                 <span>Xem chi tiết quẻ</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>

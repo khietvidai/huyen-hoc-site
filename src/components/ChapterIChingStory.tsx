@@ -56,14 +56,14 @@ export const ChapterIChingStory: React.FC<ChapterIChingStoryProps> = ({
     <div className="space-y-6">
       {/* Sách Bìa & Dẫn Nhập Chương Câu Chuyện Kinh Dịch */}
       <div className="bg-gradient-to-br from-[#201811] via-[#17120D] to-[#0E0B08] border border-[#483723] rounded-2xl p-5 sm:p-7 shadow-xl relative overflow-hidden">
-        <div className="absolute -top-12 -right-12 w-48 h-48 bg-[#D4AF37]/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-12 -right-12 w-48 h-48 bg-[#C9A55A]/15 rounded-full blur-3xl pointer-events-none" />
 
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#332616] pb-3 mb-4">
-          <div className="flex items-center gap-2 text-xs font-serif font-bold text-[#D4AF37] uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-xs font-serif font-bold text-[#C9A55A] uppercase tracking-wider">
             <BookOpen className="w-4 h-4" />
             <span>Kinh Điển Dịch Học • Tự Quái Truyện (序卦傳)</span>
           </div>
-          <span className="text-[11px] font-mono text-[#D4AF37] px-2.5 py-0.5 rounded-full bg-[#241A12] border border-[#4E3924]">
+          <span className="text-[11px] font-mono text-[#C9A55A] px-2.5 py-0.5 rounded-full bg-[#241A12] border border-[#4E3924]">
             Trọn Bộ 64 Quẻ Nhân Sinh
           </span>
         </div>
@@ -71,7 +71,7 @@ export const ChapterIChingStory: React.FC<ChapterIChingStoryProps> = ({
         <h2 className="text-xl sm:text-2xl lg:text-3xl font-serif font-bold text-[#F5EBD7] leading-snug">
           Câu Chuyện Kinh Dịch
         </h2>
-        <p className="text-xs sm:text-sm text-[#D4AF37] font-serif font-semibold mt-1">
+        <p className="text-xs sm:text-sm text-[#C9A55A] font-serif font-semibold mt-1">
           Tiến Trình 64 Quẻ: Dòng Chảy Vũ Trụ, Xã Hội & Đời Người Vô Tận
         </p>
 
@@ -90,7 +90,7 @@ export const ChapterIChingStory: React.FC<ChapterIChingStoryProps> = ({
               onClick={() => setFilterPart("all")}
               className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer font-bold ${
                 filterPart === "all"
-                  ? "bg-[#D4AF37] text-[#14100C] shadow"
+                  ? "bg-[#C9A55A] text-[#14100C] shadow"
                   : "text-[#BBA891] hover:text-[#FFF] hover:bg-[#251B12]"
               }`}
             >
@@ -101,7 +101,7 @@ export const ChapterIChingStory: React.FC<ChapterIChingStoryProps> = ({
               onClick={() => setFilterPart("upper")}
               className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer font-bold ${
                 filterPart === "upper"
-                  ? "bg-[#D4AF37] text-[#14100C] shadow"
+                  ? "bg-[#C9A55A] text-[#14100C] shadow"
                   : "text-[#BBA891] hover:text-[#FFF] hover:bg-[#251B12]"
               }`}
             >
@@ -112,7 +112,7 @@ export const ChapterIChingStory: React.FC<ChapterIChingStoryProps> = ({
               onClick={() => setFilterPart("lower")}
               className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer font-bold ${
                 filterPart === "lower"
-                  ? "bg-[#D4AF37] text-[#14100C] shadow"
+                  ? "bg-[#C9A55A] text-[#14100C] shadow"
                   : "text-[#BBA891] hover:text-[#FFF] hover:bg-[#251B12]"
               }`}
             >
@@ -158,13 +158,13 @@ export const ChapterIChingStory: React.FC<ChapterIChingStoryProps> = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Tìm theo số quẻ (1-64), tên quẻ (Càn, Khôn, Truân...), chủ đề câu chuyện..."
-            className="w-full bg-[#100C09] border border-[#3A2B1D] focus:border-[#D4AF37] rounded-xl pl-9 pr-4 py-2.5 text-xs sm:text-sm text-[#F5EBD7] placeholder-[#6E5F4E] outline-none font-serif transition-colors"
+            className="w-full bg-[#100C09] border border-[#3A2B1D] focus:border-[#C9A55A] rounded-xl pl-9 pr-4 py-2.5 text-xs sm:text-sm text-[#F5EBD7] placeholder-[#6E5F4E] outline-none font-serif transition-colors"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#8C7A65] hover:text-[#D4AF37] cursor-pointer"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#8C7A65] hover:text-[#C9A55A] cursor-pointer"
             >
               Xóa
             </button>
@@ -178,7 +178,7 @@ export const ChapterIChingStory: React.FC<ChapterIChingStoryProps> = ({
           Đang hiển thị <strong>{filteredStories.length}</strong> / 64 câu chuyện quẻ Dịch
         </span>
         {searchQuery && (
-          <span className="text-[#D4AF37]">
+          <span className="text-[#C9A55A]">
             Kết quả lọc theo từ khóa: “{searchQuery}”
           </span>
         )}
@@ -202,7 +202,7 @@ export const ChapterIChingStory: React.FC<ChapterIChingStoryProps> = ({
                 {/* Header thẻ câu chuyện */}
                 <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[#2C1F14] pb-3.5 mb-3">
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#201811] border border-[#483723] flex items-center justify-center font-mono font-bold text-sm text-[#D4AF37] shrink-0 shadow-inner">
+                    <div className="w-10 h-10 rounded-xl bg-[#201811] border border-[#483723] flex items-center justify-center font-mono font-bold text-sm text-[#C9A55A] shrink-0 shadow-inner">
                       #{item.number}
                     </div>
                     <div>
@@ -211,7 +211,7 @@ export const ChapterIChingStory: React.FC<ChapterIChingStoryProps> = ({
                           {item.part === "upper" ? "Thượng Kinh (Đạo Trời Đất)" : "Hạ Kinh (Đạo Nhân Sinh)"}
                         </span>
                         {hexInfo?.symbol && (
-                          <span className="font-mono text-base text-[#D4AF37] font-bold">
+                          <span className="font-mono text-base text-[#C9A55A] font-bold">
                             {hexInfo.symbol}
                           </span>
                         )}
@@ -230,7 +230,7 @@ export const ChapterIChingStory: React.FC<ChapterIChingStoryProps> = ({
                     <button
                       type="button"
                       onClick={() => onNavigateToHex?.(item.number)}
-                      className="px-3 py-1.5 rounded-lg bg-[#241A12] hover:bg-[#D4AF37] text-[#D4AF37] hover:text-[#14100C] border border-[#453320] hover:border-[#D4AF37] text-xs font-serif font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
+                      className="px-3 py-1.5 rounded-lg bg-[#241A12] hover:bg-[#C9A55A] text-[#C9A55A] hover:text-[#14100C] border border-[#453320] hover:border-[#C9A55A] text-xs font-serif font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
                       title="Mở toàn bộ trang Thuyết Minh của quẻ này"
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
@@ -241,13 +241,13 @@ export const ChapterIChingStory: React.FC<ChapterIChingStoryProps> = ({
 
                 {/* Vị trí Tự Quái Truyện */}
                 <div className="text-xs font-serif text-[#A6957E] italic mb-3 flex items-center gap-1.5">
-                  <Compass className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
+                  <Compass className="w-3.5 h-3.5 text-[#C9A55A] shrink-0" />
                   <span>{item.context}</span>
                 </div>
 
                 {/* Nội Dung Câu Chuyện */}
                 <div className="bg-[#18120D] border border-[#2E2114] p-4 rounded-xl text-xs sm:text-sm font-serif leading-relaxed text-[#DCD1BC] relative">
-                  <p className="first-letter:text-2xl first-letter:font-bold first-letter:text-[#D4AF37] first-letter:mr-1">
+                  <p className="first-letter:text-2xl first-letter:font-bold first-letter:text-[#C9A55A] first-letter:mr-1">
                     {item.story}
                   </p>
                 </div>
@@ -263,8 +263,8 @@ export const ChapterIChingStory: React.FC<ChapterIChingStoryProps> = ({
                     const el = document.getElementById(`story-card-${targetNum}`);
                     if (el) {
                       el.scrollIntoView({ behavior: "smooth", block: "start" });
-                      el.classList.add("ring-2", "ring-[#D4AF37]");
-                      setTimeout(() => el.classList.remove("ring-2", "ring-[#D4AF37]"), 2000);
+                      el.classList.add("ring-2", "ring-[#C9A55A]");
+                      setTimeout(() => el.classList.remove("ring-2", "ring-[#C9A55A]"), 2000);
                     } else if (onNavigateToHex) {
                       onNavigateToHex(targetNum);
                     }
@@ -275,16 +275,16 @@ export const ChapterIChingStory: React.FC<ChapterIChingStoryProps> = ({
                       <button
                         type="button"
                         onClick={() => handleJump(prevNum)}
-                        className="bg-[#120E0A] hover:bg-[#1E1710] p-3 rounded-xl border border-[#2A1E13] hover:border-[#D4AF37] text-left transition-all cursor-pointer group/prev flex flex-col justify-between"
+                        className="bg-[#120E0A] hover:bg-[#1E1710] p-3 rounded-xl border border-[#2A1E13] hover:border-[#C9A55A] text-left transition-all cursor-pointer group/prev flex flex-col justify-between"
                         title={`Nhấn để chuyển đến Câu chuyện Quẻ trước #${prevNum}`}
                       >
                         <div>
                           <div className="text-[10px] font-mono uppercase tracking-wider text-[#C89B3C] group-hover/prev:text-[#F3E5C8] mb-1.5 pb-1 border-b border-[#22160C] flex items-center justify-between font-bold">
                             <span className="flex items-center gap-1">
-                              <ArrowLeft className="w-3 h-3 text-[#D4AF37] group-hover/prev:-translate-x-1 transition-transform" />
+                              <ArrowLeft className="w-3 h-3 text-[#C9A55A] group-hover/prev:-translate-x-1 transition-transform" />
                               Nguồn Gốc Nối Tiếp Quẻ Trước
                             </span>
-                            <span className="text-[10px] font-mono text-[#D4AF37] bg-[#201811] px-2 py-0.5 rounded border border-[#3E2B18] group-hover/prev:bg-[#D4AF37] group-hover/prev:text-[#100D09] transition-all">
+                            <span className="text-[10px] font-mono text-[#C9A55A] bg-[#201811] px-2 py-0.5 rounded border border-[#3E2B18] group-hover/prev:bg-[#C9A55A] group-hover/prev:text-[#100D09] transition-all">
                               Quẻ #{prevNum}
                             </span>
                           </div>
@@ -292,7 +292,7 @@ export const ChapterIChingStory: React.FC<ChapterIChingStoryProps> = ({
                             {item.connectionPrev}
                           </p>
                         </div>
-                        <div className="mt-2 pt-1 border-t border-[#1F150C] flex items-center gap-1 text-[10px] text-[#8C7A65] group-hover/prev:text-[#D4AF37] font-sans">
+                        <div className="mt-2 pt-1 border-t border-[#1F150C] flex items-center gap-1 text-[10px] text-[#8C7A65] group-hover/prev:text-[#C9A55A] font-sans">
                           <span>👈 Nhấn để chuyển đến Quẻ #{prevNum} ({prevStoryObj?.name})</span>
                         </div>
                       </button>
@@ -300,16 +300,16 @@ export const ChapterIChingStory: React.FC<ChapterIChingStoryProps> = ({
                       <button
                         type="button"
                         onClick={() => handleJump(nextNum)}
-                        className="bg-[#120E0A] hover:bg-[#1E1710] p-3 rounded-xl border border-[#2A1E13] hover:border-[#D4AF37] text-left transition-all cursor-pointer group/next flex flex-col justify-between"
+                        className="bg-[#120E0A] hover:bg-[#1E1710] p-3 rounded-xl border border-[#2A1E13] hover:border-[#C9A55A] text-left transition-all cursor-pointer group/next flex flex-col justify-between"
                         title={`Nhấn để chuyển sang Câu chuyện Quẻ tiếp theo #${nextNum}`}
                       >
                         <div>
                           <div className="text-[10px] font-mono uppercase tracking-wider text-[#C89B3C] group-hover/next:text-[#F3E5C8] mb-1.5 pb-1 border-b border-[#22160C] flex items-center justify-between font-bold">
                             <span className="flex items-center gap-1">
-                              <ArrowRight className="w-3 h-3 text-[#D4AF37] group-hover/next:translate-x-1 transition-transform order-last sm:order-first" />
+                              <ArrowRight className="w-3 h-3 text-[#C9A55A] group-hover/next:translate-x-1 transition-transform order-last sm:order-first" />
                               Cầu Nối Dẫn Sang Quẻ Sau
                             </span>
-                            <span className="text-[10px] font-mono text-[#D4AF37] bg-[#201811] px-2 py-0.5 rounded border border-[#3E2B18] group-hover/next:bg-[#D4AF37] group-hover/next:text-[#100D09] transition-all">
+                            <span className="text-[10px] font-mono text-[#C9A55A] bg-[#201811] px-2 py-0.5 rounded border border-[#3E2B18] group-hover/next:bg-[#C9A55A] group-hover/next:text-[#100D09] transition-all">
                               Quẻ #{nextNum}
                             </span>
                           </div>
@@ -317,7 +317,7 @@ export const ChapterIChingStory: React.FC<ChapterIChingStoryProps> = ({
                             {item.connectionNext}
                           </p>
                         </div>
-                        <div className="mt-2 pt-1 border-t border-[#1F150C] flex items-center justify-end gap-1 text-[10px] text-[#8C7A65] group-hover/next:text-[#D4AF37] font-sans">
+                        <div className="mt-2 pt-1 border-t border-[#1F150C] flex items-center justify-end gap-1 text-[10px] text-[#8C7A65] group-hover/next:text-[#C9A55A] font-sans">
                           <span>Nhấn để qua Quẻ #{nextNum} ({nextStoryObj?.name}) 👉</span>
                         </div>
                       </button>
@@ -327,9 +327,9 @@ export const ChapterIChingStory: React.FC<ChapterIChingStoryProps> = ({
 
                 {/* Đạo Lý Nhân Sinh & Lời Khuyên Ứng Dụng */}
                 <div className="mt-3 bg-gradient-to-r from-[#24170E] to-[#1A120B] p-3 rounded-xl border border-[#48341F] flex items-start gap-2.5">
-                  <Sparkles className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" />
+                  <Sparkles className="w-4 h-4 text-[#C9A55A] shrink-0 mt-0.5" />
                   <div className="text-xs sm:text-sm font-serif text-[#F0DFBF]">
-                    <strong className="text-[#D4AF37]">Bài học nhân sinh: </strong>
+                    <strong className="text-[#C9A55A]">Bài học nhân sinh: </strong>
                     {item.moral}
                   </div>
                 </div>
@@ -358,7 +358,7 @@ export const ChapterIChingStory: React.FC<ChapterIChingStoryProps> = ({
               <div key={item.number} className="pt-6 first:pt-0 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-[#D4AF37] px-2 py-0.5 rounded bg-[#22180F] border border-[#422F1D]">
+                    <span className="font-mono text-xs font-bold text-[#C9A55A] px-2 py-0.5 rounded bg-[#22180F] border border-[#422F1D]">
                       #{item.number}
                     </span>
                     <h4 className="text-base sm:text-lg font-serif font-bold text-[#F5EAD4]">
@@ -368,19 +368,19 @@ export const ChapterIChingStory: React.FC<ChapterIChingStoryProps> = ({
                   <button
                     type="button"
                     onClick={() => onNavigateToHex?.(item.number)}
-                    className="text-xs font-serif text-[#D4AF37] hover:underline cursor-pointer flex items-center gap-1"
+                    className="text-xs font-serif text-[#C9A55A] hover:underline cursor-pointer flex items-center gap-1"
                   >
                     <span>Xem thuyết minh quẻ</span>
                     <ArrowRight className="w-3 h-3" />
                   </button>
                 </div>
 
-                <p className="text-xs sm:text-sm font-serif leading-relaxed text-[#DCD1BC] pl-3 border-l-2 border-[#D4AF37]/60">
+                <p className="text-xs sm:text-sm font-serif leading-relaxed text-[#DCD1BC] pl-3 border-l-2 border-[#C9A55A]/60">
                   {item.story}
                 </p>
 
                 <div className="bg-[#19130D] p-2.5 rounded-lg border border-[#2D2014] text-xs font-serif text-[#C4B49E]">
-                  <strong className="text-[#D4AF37]">Tiến trình: </strong>
+                  <strong className="text-[#C9A55A]">Tiến trình: </strong>
                   {item.connectionPrev} → {item.connectionNext}
                 </div>
               </div>
@@ -394,12 +394,12 @@ export const ChapterIChingStory: React.FC<ChapterIChingStoryProps> = ({
         <button
           type="button"
           onClick={() => onNavigateToSection?.("spread_methods")}
-          className="px-4 py-2.5 rounded-xl bg-[#18130E] hover:bg-[#251C13] border border-[#352718] hover:border-[#D4AF37] text-[#E5D7BF] hover:text-[#FFF] flex items-center gap-2 cursor-pointer transition-all shadow"
+          className="px-4 py-2.5 rounded-xl bg-[#18130E] hover:bg-[#251C13] border border-[#352718] hover:border-[#C9A55A] text-[#E5D7BF] hover:text-[#FFF] flex items-center gap-2 cursor-pointer transition-all shadow"
           title="Nhấn vào đây để trở về phần trước"
         >
-          <ArrowLeft className="w-4 h-4 text-[#D4AF37]" />
+          <ArrowLeft className="w-4 h-4 text-[#C9A55A]" />
           <div>
-            <span className="text-[10px] text-[#D4AF37] block font-mono font-bold">👈 NHẤN VÀO ĐÂY ĐỂ TRỞ VỀ PHẦN TRƯỚC</span>
+            <span className="text-[10px] text-[#C9A55A] block font-mono font-bold">👈 NHẤN VÀO ĐÂY ĐỂ TRỞ VỀ PHẦN TRƯỚC</span>
             <span className="font-bold text-xs">Phương Pháp Trải Bài</span>
           </div>
         </button>
@@ -407,14 +407,14 @@ export const ChapterIChingStory: React.FC<ChapterIChingStoryProps> = ({
         <button
           type="button"
           onClick={() => onNavigateToSection?.("hexagram_interpretations")}
-          className="px-4 py-2.5 rounded-xl bg-[#22180F] hover:bg-[#342417] border border-[#4E3924] hover:border-[#D4AF37] text-[#E5D7BF] hover:text-[#FFF] font-bold flex items-center gap-2 cursor-pointer transition-all shadow ml-auto text-right"
+          className="px-4 py-2.5 rounded-xl bg-[#22180F] hover:bg-[#342417] border border-[#4E3924] hover:border-[#C9A55A] text-[#E5D7BF] hover:text-[#FFF] font-bold flex items-center gap-2 cursor-pointer transition-all shadow ml-auto text-right"
           title="Nhấn vào đây để qua phần tiếp theo"
         >
           <div>
-            <span className="text-[10px] text-[#D4AF37] block font-mono font-bold">NHẤN VÀO ĐÂY ĐỂ QUA PHẦN TIẾP THEO 👉</span>
+            <span className="text-[10px] text-[#C9A55A] block font-mono font-bold">NHẤN VÀO ĐÂY ĐỂ QUA PHẦN TIẾP THEO 👉</span>
             <span className="font-bold text-xs">Cẩm Nang 64 Quẻ Thuyết Minh</span>
           </div>
-          <ArrowRight className="w-4 h-4 text-[#D4AF37]" />
+          <ArrowRight className="w-4 h-4 text-[#C9A55A]" />
         </button>
       </div>
     </div>

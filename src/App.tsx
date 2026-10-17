@@ -854,10 +854,10 @@ export default function App() {
 
           {/* Mindful / Traditional Ritual Preparation */}
             <div className="bg-gradient-to-r from-[#1C1813] via-[#241E17] to-[#1C1813] border border-[#3E3426] rounded-2xl p-6 shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-[#D4AF37]/5 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute top-0 right-0 w-48 h-48 bg-[#C9A55A]/5 rounded-full blur-3xl pointer-events-none" />
 
               <div className="max-w-2xl mx-auto text-center space-y-3">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-serif text-[#D4AF37] bg-[#292217] border border-[#483A26]">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-serif text-[#C9A55A] bg-[#292217] border border-[#483A26]">
                   <Sparkles className="w-3.5 h-3.5" /> Thành Tâm Tất Ứng • Tâm Động Quẻ Sinh
                 </span>
 
@@ -866,7 +866,7 @@ export default function App() {
                 </h2>
 
                 <p className="text-xs sm:text-sm text-[#A89A84] leading-relaxed">
-                  Trước khi thỉnh quẻ, cổ nhân luôn nghiêm cẩn thực hành <strong className="text-[#FFE28A]">Trai Giới Mộc Dục (齋戒沐浴)</strong>: Tắm gội rửa sạch đôi bàn tay (Mộc Dục) và thanh tịnh tâm thức, loại bỏ mọi tạp niệm lo toan (Trai Giới). Thân tâm trong sạch thì quẻ gieo mới linh ứng giao hòa cùng Thiên Địa.
+                  Trước khi thỉnh quẻ, cổ nhân luôn nghiêm cẩn thực hành <strong className="text-[#E6D3A3]">Trai Giới Mộc Dục (齋戒沐浴)</strong>: Tắm gội rửa sạch đôi bàn tay (Mộc Dục) và thanh tịnh tâm thức, loại bỏ mọi tạp niệm lo toan (Trai Giới). Thân tâm trong sạch thì quẻ gieo mới linh ứng giao hòa cùng Thiên Địa.
                 </p>
 
                 {/* Trai Giới Mộc Dục Explanatory Accordion Button */}
@@ -874,7 +874,7 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => setShowPurificationGuide(!showPurificationGuide)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-serif text-[#E0C070] bg-[#1E1711] hover:bg-[#2A1F16] border border-[#48331E] hover:border-[#D4AF37] transition-all cursor-pointer shadow-sm active:scale-95"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-serif text-[#E0C070] bg-[#1E1711] hover:bg-[#2A1F16] border border-[#48331E] hover:border-[#C9A55A] transition-all cursor-pointer shadow-sm active:scale-95"
                   >
                     <span>📜</span>
                     <span className="font-semibold underline decoration-dotted">Tìm hiểu: Vì sao cần Trai Giới Mộc Dục trước khi gieo quẻ?</span>
@@ -884,14 +884,14 @@ export default function App() {
 
                 {showPurificationGuide && (
                   <div className="mt-3 text-left bg-[#140F0B] border border-[#4D351E] rounded-xl p-4 sm:p-5 shadow-2xl text-xs font-serif text-[#DECAB2] space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
-                    <div className="flex items-center justify-between border-b border-[#302113] pb-2 text-[#FFE28A] font-bold text-sm">
+                    <div className="flex items-center justify-between border-b border-[#302113] pb-2 text-[#E6D3A3] font-bold text-sm">
                       <span className="flex items-center gap-2">
                         <span>⛩️</span> CẨM NANG NGHI LỄ: TRAI GIỚI MỘC DỤC (齋戒沐浴)
                       </span>
                       <button
                         type="button"
                         onClick={() => setShowPurificationGuide(false)}
-                        className="text-[#8C7A65] hover:text-[#FFE28A] text-xs font-sans px-2 py-0.5 rounded cursor-pointer"
+                        className="text-[#8C7A65] hover:text-[#E6D3A3] text-xs font-sans px-2 py-0.5 rounded cursor-pointer"
                       >
                         Đóng ✕
                       </button>
@@ -903,18 +903,18 @@ export default function App() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                       <div className="bg-[#1C140D] p-3 rounded-lg border border-[#3E2917] space-y-1">
-                        <strong className="text-[#D4AF37] font-bold block text-[13px]">
+                        <strong className="text-[#C9A55A] font-bold block text-[13px]">
                           1. Mộc Dục (沐浴 - Tẩy Rửa Thân Thể Thanh Khiết):
                         </strong>
                         <p className="text-[11px] leading-relaxed text-[#BFB09A]">
                           • <strong>Mộc (沐):</strong> Gội đầu, rửa mặt, súc miệng thanh tịnh, giữ hơi thở thơm sạch.<br/>
-                          • <strong>Dục (浴):</strong> Tắm gội toàn thân, đặc biệt là <strong className="text-[#FFE28A]">rửa sạch đôi bàn tay dưới dòng nước mát</strong> trước khi chạm vào cỏ thi, đồng tiền cổ hay thẻ bài Kinh Dịch. Bàn tay là kênh phát xuất trường điện từ sinh học, tay sạch thì trường năng lượng mới tinh khiết không bị tạp nhiễm.<br/>
+                          • <strong>Dục (浴):</strong> Tắm gội toàn thân, đặc biệt là <strong className="text-[#E6D3A3]">rửa sạch đôi bàn tay dưới dòng nước mát</strong> trước khi chạm vào cỏ thi, đồng tiền cổ hay thẻ bài Kinh Dịch. Bàn tay là kênh phát xuất trường điện từ sinh học, tay sạch thì trường năng lượng mới tinh khiết không bị tạp nhiễm.<br/>
                           • <strong>Y phục:</strong> Ăn mặc ngay ngắn, tề chỉnh, đầu tóc gọn gàng để tỏ lòng tôn kính với Đạo Trời Đất.
                         </p>
                       </div>
 
                       <div className="bg-[#1C140D] p-3 rounded-lg border border-[#3E2917] space-y-1">
-                        <strong className="text-[#D4AF37] font-bold block text-[13px]">
+                        <strong className="text-[#C9A55A] font-bold block text-[13px]">
                           2. Trai Giới (齋戒 - Tịnh Hóa Tâm Ý Hư Tĩnh):
                         </strong>
                         <p className="text-[11px] leading-relaxed text-[#BFB09A]">
@@ -927,24 +927,24 @@ export default function App() {
 
                     {/* Tứ Bất Bốc */}
                     <div className="p-3 rounded-lg bg-[#20140A] border border-[#482F18] space-y-1.5 text-[11px]">
-                      <span className="text-xs font-serif font-bold text-[#FFE28A] flex items-center gap-1.5">
+                      <span className="text-xs font-serif font-bold text-[#E6D3A3] flex items-center gap-1.5">
                         <span>📜</span> KHẨU QUYẾT CỔ NHÂN: "TỨ BẤT BỐC" (4 ĐIỀU TUYỆT ĐỐI KHÔNG BỐC QUẺ)
                       </span>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-[#D2C3AB] pt-1">
                         <div className="bg-[#140D07] p-2 rounded border border-[#382312]">
-                          <strong className="text-[#D4AF37] block mb-0.5">1. Bất thành bất bốc:</strong>
+                          <strong className="text-[#C9A55A] block mb-0.5">1. Bất thành bất bốc:</strong>
                           Lòng không chí thành, bói chơi đùa thì không ứng.
                         </div>
                         <div className="bg-[#140D07] p-2 rounded border border-[#382312]">
-                          <strong className="text-[#D4AF37] block mb-0.5">2. Bất nghi bất bốc:</strong>
+                          <strong className="text-[#C9A55A] block mb-0.5">2. Bất nghi bất bốc:</strong>
                           Lòng không có điều thực sự băn khoăn thì không bốc.
                         </div>
                         <div className="bg-[#140D07] p-2 rounded border border-[#382312]">
-                          <strong className="text-[#D4AF37] block mb-0.5">3. Phi nghĩa bất bốc:</strong>
+                          <strong className="text-[#C9A55A] block mb-0.5">3. Phi nghĩa bất bốc:</strong>
                           Hỏi việc thất đức, hại người, phi pháp thì không bốc.
                         </div>
                         <div className="bg-[#140D07] p-2 rounded border border-[#382312]">
-                          <strong className="text-[#D4AF37] block mb-0.5">4. Độc tắc bất cáo:</strong>
+                          <strong className="text-[#C9A55A] block mb-0.5">4. Độc tắc bất cáo:</strong>
                           Cùng một việc bốc đi bốc lại ép quẻ tốt thì quẻ sẽ loạn.
                         </div>
                       </div>
@@ -961,7 +961,7 @@ export default function App() {
               <div className="max-w-2xl mx-auto mt-6 space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div className="sm:col-span-2">
-                    <label className="block text-xs font-semibold text-[#D4AF37] mb-1.5">
+                    <label className="block text-xs font-semibold text-[#C9A55A] mb-1.5">
                       Nội dung tâm niệm / Câu hỏi:
                     </label>
                     <input
@@ -974,7 +974,7 @@ export default function App() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-[#D4AF37] mb-1.5">
+                    <label className="block text-xs font-semibold text-[#C9A55A] mb-1.5">
                       Lĩnh vực thỉnh vấn:
                     </label>
                     <select
@@ -1014,7 +1014,7 @@ export default function App() {
               <div className="bg-[#191511] border border-[#3D3121] rounded-2xl p-2.5 sm:p-3 shadow-xl">
                 <div className="text-[11px] font-mono text-[#A89882] uppercase tracking-wider px-2 pt-1 pb-2.5 flex flex-wrap items-center justify-between gap-2 border-b border-[#2C2116] mb-2.5">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="flex items-center gap-1.5 text-[#D4AF37] font-bold text-xs">
+                    <span className="flex items-center gap-1.5 text-[#C9A55A] font-bold text-xs">
                       <Sparkles className="w-3.5 h-3.5" /> Phương Thức Thỉnh Quẻ:
                     </span>
                     <span className="text-[10px] font-serif px-2 py-0.5 rounded-full bg-amber-950/80 text-amber-300 border border-amber-600/50">
@@ -1030,7 +1030,7 @@ export default function App() {
                       onClick={handleToggleDefaultCardFaceOpen}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer shadow active:scale-95 border ${
                         defaultCardFaceOpen
-                          ? "bg-[#2A1E12] text-[#FFE28A] border-[#D4AF37] ring-1 ring-[#D4AF37]/50"
+                          ? "bg-[#2A1E12] text-[#E6D3A3] border-[#C9A55A] ring-1 ring-[#C9A55A]/50"
                           : "bg-[#16120E] text-[#8C7D6A] border-[#382C1E] hover:text-[#C5B49D]"
                       }`}
                       title={
@@ -1049,12 +1049,12 @@ export default function App() {
                       onClick={handleToggleAllowReversedCards}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer shadow active:scale-95 border ${
                         allowReversedCards
-                          ? "bg-[#2A1E12] text-[#FFE28A] border-[#D4AF37] ring-1 ring-[#D4AF37]/50"
+                          ? "bg-[#2A1E12] text-[#E6D3A3] border-[#C9A55A] ring-1 ring-[#C9A55A]/50"
                           : "bg-[#16120E] text-[#8C7D6A] border-[#382C1E] hover:text-[#C5B49D]"
                       }`}
                       title={allowReversedCards ? "Xem Thuận Nghịch" : "Chỉ Xem Thuận"}
                     >
-                      <RotateCw className={`w-3.5 h-3.5 transition-transform duration-300 ${allowReversedCards ? "text-[#D4AF37] rotate-180" : "text-[#756552]"}`} />
+                      <RotateCw className={`w-3.5 h-3.5 transition-transform duration-300 ${allowReversedCards ? "text-[#C9A55A] rotate-180" : "text-[#756552]"}`} />
                       <span><strong>{allowReversedCards ? "Xem Thuận Nghịch" : "Chỉ Xem Thuận"}</strong></span>
                     </button>
                   </div>
@@ -1073,7 +1073,7 @@ export default function App() {
                     }}
                     className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
                       divinationMethod === "cards"
-                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#D4AF37]/50"
+                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#C9A55A]/50"
                         : "bg-[#14100C] border-[#2C2014] hover:border-[#4B3722] opacity-80 hover:opacity-100"
                     }`}
                   >
@@ -1084,7 +1084,7 @@ export default function App() {
                           Bốc Bài Kinh Dịch
                         </span>
                         {divinationMethod === "cards" && (
-                          <span className="w-2 h-2 rounded-full bg-[#D4AF37] shadow-[0_0_6px_#D4AF37]" />
+                          <span className="w-2 h-2 rounded-full bg-[#C9A55A] shadow-[0_0_6px_#C9A55A]" />
                         )}
                       </div>
                       <p className="text-[11px] text-[#A89882] font-serif leading-tight mt-1">
@@ -1103,7 +1103,7 @@ export default function App() {
                     }}
                     className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
                       divinationMethod === "khongminh"
-                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#D4AF37]/50"
+                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#C9A55A]/50"
                         : "bg-[#14100C] border-[#2C2014] hover:border-[#4B3722] opacity-80 hover:opacity-100"
                     }`}
                   >
@@ -1114,7 +1114,7 @@ export default function App() {
                           Xăm Khổng Minh
                         </span>
                         {divinationMethod === "khongminh" && (
-                          <span className="w-2 h-2 rounded-full bg-[#D4AF37] shadow-[0_0_6px_#D4AF37]" />
+                          <span className="w-2 h-2 rounded-full bg-[#C9A55A] shadow-[0_0_6px_#C9A55A]" />
                         )}
                       </div>
                       <p className="text-[11px] text-[#A89882] font-serif leading-tight mt-1">
@@ -1133,7 +1133,7 @@ export default function App() {
                     }}
                     className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
                       divinationMethod === "yarrow"
-                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#D4AF37]/50"
+                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#C9A55A]/50"
                         : "bg-[#14100C] border-[#2C2014] hover:border-[#4B3722] opacity-80 hover:opacity-100"
                     }`}
                   >
@@ -1144,7 +1144,7 @@ export default function App() {
                           Rút Cỏ Thi
                         </span>
                         {divinationMethod === "yarrow" && (
-                          <span className="w-2 h-2 rounded-full bg-[#D4AF37] shadow-[0_0_6px_#D4AF37]" />
+                          <span className="w-2 h-2 rounded-full bg-[#C9A55A] shadow-[0_0_6px_#C9A55A]" />
                         )}
                       </div>
                       <p className="text-[11px] text-[#A89882] font-serif leading-tight mt-1">
@@ -1163,7 +1163,7 @@ export default function App() {
                     }}
                     className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
                       divinationMethod === "coins"
-                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#D4AF37]/50"
+                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#C9A55A]/50"
                         : "bg-[#14100C] border-[#2C2014] hover:border-[#4B3722] opacity-80 hover:opacity-100"
                     }`}
                   >
@@ -1174,7 +1174,7 @@ export default function App() {
                           Gieo 3 Đồng Xu
                         </span>
                         {divinationMethod === "coins" && (
-                          <span className="w-2 h-2 rounded-full bg-[#D4AF37] shadow-[0_0_6px_#D4AF37]" />
+                          <span className="w-2 h-2 rounded-full bg-[#C9A55A] shadow-[0_0_6px_#C9A55A]" />
                         )}
                       </div>
                       <p className="text-[11px] text-[#A89882] font-serif leading-tight mt-1">
@@ -1193,7 +1193,7 @@ export default function App() {
                     }}
                     className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
                       divinationMethod === "maihoa"
-                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#D4AF37]/50"
+                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#C9A55A]/50"
                         : "bg-[#14100C] border-[#2C2014] hover:border-[#4B3722] opacity-80 hover:opacity-100"
                     }`}
                   >
@@ -1204,7 +1204,7 @@ export default function App() {
                           Mai Hoa Dịch Số
                         </span>
                         {divinationMethod === "maihoa" && (
-                          <span className="w-2 h-2 rounded-full bg-[#D4AF37] shadow-[0_0_6px_#D4AF37]" />
+                          <span className="w-2 h-2 rounded-full bg-[#C9A55A] shadow-[0_0_6px_#C9A55A]" />
                         )}
                       </div>
                       <p className="text-[11px] text-[#A89882] font-serif leading-tight mt-1">
@@ -1223,8 +1223,8 @@ export default function App() {
                     }}
                     className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
                       divinationMethod === "lucnham"
-                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#D4AF37]/50"
-                        : "bg-[#14100C] border-[#2C2014] hover:border-[#D4AF37] hover:bg-[#1E160F] opacity-90 hover:opacity-100"
+                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#C9A55A]/50"
+                        : "bg-[#14100C] border-[#2C2014] hover:border-[#C9A55A] hover:bg-[#1E160F] opacity-90 hover:opacity-100"
                     }`}
                   >
                     <span className="text-2xl mt-0.5">🧭</span>
@@ -1234,7 +1234,7 @@ export default function App() {
                           Lục Nhâm Đại Độn
                         </span>
                         {divinationMethod === "lucnham" ? (
-                          <span className="w-2 h-2 rounded-full bg-[#D4AF37] shadow-[0_0_6px_#D4AF37]" />
+                          <span className="w-2 h-2 rounded-full bg-[#C9A55A] shadow-[0_0_6px_#C9A55A]" />
                         ) : (
                           <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-950/80 text-amber-200 border border-amber-600/70 font-medium">
                             Tam Thức
@@ -1257,8 +1257,8 @@ export default function App() {
                     }}
                     className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
                       divinationMethod === "kymon"
-                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#D4AF37]/50"
-                        : "bg-[#14100C] border-[#2C2014] hover:border-[#D4AF37] hover:bg-[#1E160F] opacity-90 hover:opacity-100"
+                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#C9A55A]/50"
+                        : "bg-[#14100C] border-[#2C2014] hover:border-[#C9A55A] hover:bg-[#1E160F] opacity-90 hover:opacity-100"
                     }`}
                   >
                     <span className="text-2xl mt-0.5">⛩️</span>
@@ -1268,7 +1268,7 @@ export default function App() {
                           Kỳ Môn Độn Giáp
                         </span>
                         {divinationMethod === "kymon" ? (
-                          <span className="w-2 h-2 rounded-full bg-[#D4AF37] shadow-[0_0_6px_#D4AF37]" />
+                          <span className="w-2 h-2 rounded-full bg-[#C9A55A] shadow-[0_0_6px_#C9A55A]" />
                         ) : (
                           <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-950/80 text-amber-200 border border-amber-600/70 font-medium">
                             Tam Thức
@@ -1291,8 +1291,8 @@ export default function App() {
                     }}
                     className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
                       divinationMethod === "thaiat"
-                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#D4AF37]/50"
-                        : "bg-[#14100C] border-[#2C2014] hover:border-[#D4AF37] hover:bg-[#1E160F] opacity-90 hover:opacity-100"
+                        ? "bg-gradient-to-br from-[#2E2013] to-[#1C140C] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#C9A55A]/50"
+                        : "bg-[#14100C] border-[#2C2014] hover:border-[#C9A55A] hover:bg-[#1E160F] opacity-90 hover:opacity-100"
                     }`}
                   >
                     <span className="text-2xl mt-0.5">👑</span>
@@ -1302,7 +1302,7 @@ export default function App() {
                           Thái Ất Thần Số
                         </span>
                         {divinationMethod === "thaiat" ? (
-                          <span className="w-2 h-2 rounded-full bg-[#D4AF37] shadow-[0_0_6px_#D4AF37]" />
+                          <span className="w-2 h-2 rounded-full bg-[#C9A55A] shadow-[0_0_6px_#C9A55A]" />
                         ) : (
                           <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-950/80 text-amber-200 border border-amber-600/70 font-medium">
                             Tam Thức
@@ -1320,7 +1320,7 @@ export default function App() {
             {/* Divination Component Rendering */}
             <div
               id="divination-card-draw-area"
-              className="relative rounded-3xl bg-[#140F0A]/50 backdrop-blur-md border border-[#D4AF37]/35 p-2.5 sm:p-5 shadow-2xl transition-all duration-700 animate-divination-breath"
+              className="relative rounded-3xl bg-[#140F0A]/50 backdrop-blur-md border border-[#C9A55A]/35 p-2.5 sm:p-5 shadow-2xl transition-all duration-700 animate-divination-breath"
             >
               {divinationMethod === null && (
                 <div className="py-12 sm:py-16 text-center space-y-4 max-w-xl mx-auto">
@@ -1339,56 +1339,56 @@ export default function App() {
                     <button
                       type="button"
                       onClick={() => setDivinationMethod("cards")}
-                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#FFE28A] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
+                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#E6D3A3] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
                     >
                       <span>🎴</span> Bốc Bài Kinh Dịch (Đủ 12 Trận)
                     </button>
                     <button
                       type="button"
                       onClick={() => setDivinationMethod("khongminh")}
-                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#FFE28A] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
+                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#E6D3A3] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
                     >
                       <span>📜</span> Xăm Khổng Minh
                     </button>
                     <button
                       type="button"
                       onClick={() => setDivinationMethod("yarrow")}
-                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#FFE28A] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
+                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#E6D3A3] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
                     >
                       <span>🌾</span> Rút Cỏ Thi
                     </button>
                     <button
                       type="button"
                       onClick={() => setDivinationMethod("coins")}
-                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#FFE28A] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
+                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#E6D3A3] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
                     >
                       <span>🪙</span> Gieo Đồng Xu
                     </button>
                     <button
                       type="button"
                       onClick={() => setDivinationMethod("maihoa")}
-                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#FFE28A] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
+                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#E6D3A3] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
                     >
                       <span>🌸</span> Mai Hoa Dịch Số
                     </button>
                     <button
                       type="button"
                       onClick={() => setDivinationMethod("lucnham")}
-                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#FFE28A] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
+                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#E6D3A3] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
                     >
                       <span>🧭</span> Lục Nhâm Đại Độn
                     </button>
                     <button
                       type="button"
                       onClick={() => setDivinationMethod("kymon")}
-                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#FFE28A] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
+                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#E6D3A3] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
                     >
                       <span>⛩️</span> Kỳ Môn Độn Giáp
                     </button>
                     <button
                       type="button"
                       onClick={() => setDivinationMethod("thaiat")}
-                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#FFE28A] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
+                      className="px-3.5 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#543D22] text-[#E6D3A3] font-serif font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
                     >
                       <span>👑</span> Thái Ất Thần Số
                     </button>
@@ -1563,7 +1563,7 @@ export default function App() {
                   <div className="bg-gradient-to-r from-[#22180F] via-[#1B140D] to-[#22180F] border border-[#5A4126] rounded-2xl p-4 sm:p-5 shadow-xl space-y-4">
                     <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#3E2D1A] pb-3">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#8C6218] flex items-center justify-center text-[#120F0B] font-bold shadow text-lg">
+                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#C9A55A] to-[#8C6218] flex items-center justify-center text-[#120F0B] font-bold shadow text-lg">
                           🧭
                         </div>
                         <div>
@@ -1571,7 +1571,7 @@ export default function App() {
                             <h3 className="font-serif font-bold text-sm sm:text-base text-[#F5EAD4]">
                               LẬP QUẺ LỤC NHÂM ĐẠI ĐỘN
                             </h3>
-                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#2C1F12] text-[#E2B755] border border-[#523E26]">
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#2C1F12] text-[#D6B97A] border border-[#523E26]">
                               Tam Thức Chi Thủ
                             </span>
                           </div>
@@ -1599,7 +1599,7 @@ export default function App() {
                           "{question || "Chiêm đoán thời vận, công việc, tài lộc và sự vụ..."}"
                         </span>
                       </div>
-                      <span className="text-[11px] text-[#D4AF37] bg-[#241A10] px-2 py-0.5 rounded border border-[#48341E] whitespace-nowrap shrink-0">
+                      <span className="text-[11px] text-[#C9A55A] bg-[#241A10] px-2 py-0.5 rounded border border-[#48341E] whitespace-nowrap shrink-0">
                         {category}
                       </span>
                     </div>
@@ -1608,7 +1608,7 @@ export default function App() {
                     <div className="bg-[#18120B] border border-[#42311E] rounded-xl p-3.5 space-y-3">
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <div>
-                          <span className="text-xs font-serif font-bold text-[#E2B755] flex items-center gap-1.5">
+                          <span className="text-xs font-serif font-bold text-[#D6B97A] flex items-center gap-1.5">
                             <Clock className="w-3.5 h-3.5 text-amber-400" />
                             HOẠT THỜI (THỜI THẦN CHIÊM ĐOÁN):
                           </span>
@@ -1622,7 +1622,7 @@ export default function App() {
                           type="button"
                           disabled={isLucNhamRolling}
                           onClick={handleRollLucNhamHoatThoi}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#C59B27] hover:from-[#E5C158] hover:to-[#D4AF37] text-[#120F0B] font-bold text-xs shadow-md active:scale-95 cursor-pointer transition-all disabled:opacity-50"
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#C9A55A] to-[#C59B27] hover:from-[#E5C158] hover:to-[#C9A55A] text-[#120F0B] font-bold text-xs shadow-md active:scale-95 cursor-pointer transition-all disabled:opacity-50"
                           title="Lắc xí ngầu 12 mặt để lấy ngẫu nhiên 1 trong 12 Địa Chi"
                         >
                           <Dices className={`w-3.5 h-3.5 ${isLucNhamRolling ? "animate-spin" : ""}`} />
@@ -1635,8 +1635,8 @@ export default function App() {
                         const curChiObj = CHI_LIST.find((c) => c.name === lucNhamHourChi);
                         return (
                           <div className="bg-[#21170E] border border-[#523B22] rounded-xl p-2.5 flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#3D2C1B] to-[#1A120B] border border-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.25)] flex flex-col items-center justify-center shrink-0">
-                              <span className="text-lg leading-none font-serif font-bold text-[#FFE28A]">
+                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#3D2C1B] to-[#1A120B] border border-[#C9A55A] shadow-[0_0_12px_rgba(212,175,55,0.25)] flex flex-col items-center justify-center shrink-0">
+                              <span className="text-lg leading-none font-serif font-bold text-[#E6D3A3]">
                                 {curChiObj?.chinese || "午"}
                               </span>
                               <span className="text-[10px] text-[#A89882]">{lucNhamHourChi}</span>
@@ -1674,7 +1674,7 @@ export default function App() {
                                 onClick={() => handleSelectLucNhamHoatThoi(item.name)}
                                 className={`p-1.5 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center ${
                                   isSelected
-                                    ? "bg-[#D4AF37] text-[#120F0B] font-bold border-[#F5EAD4] shadow-md scale-105 ring-1 ring-[#F5EAD4]"
+                                    ? "bg-[#C9A55A] text-[#120F0B] font-bold border-[#F5EAD4] shadow-md scale-105 ring-1 ring-[#F5EAD4]"
                                     : "bg-[#22180F] hover:bg-[#302115] text-[#DDD0BE] border-[#3E2D1C] hover:border-amber-500/50"
                                 }`}
                                 title={`Lựa chọn Hoạt Thời: Giờ ${item.name} (${item.chinese} - ${item.zodiac})`}
@@ -1725,9 +1725,9 @@ export default function App() {
                       <button
                         type="button"
                         onClick={handleScrollToLucNhamChart}
-                        className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#2A1D11] via-[#3D2916] to-[#2A1D11] hover:from-[#352516] hover:to-[#352516] border border-[#6B4B27] hover:border-[#D4AF37] text-[#FFE28A] text-xs font-serif font-bold transition-all cursor-pointer shadow flex items-center justify-center gap-2 group"
+                        className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#2A1D11] via-[#3D2916] to-[#2A1D11] hover:from-[#352516] hover:to-[#352516] border border-[#6B4B27] hover:border-[#C9A55A] text-[#E6D3A3] text-xs font-serif font-bold transition-all cursor-pointer shadow flex items-center justify-center gap-2 group"
                       >
-                        <Compass className="w-4 h-4 text-[#D4AF37] group-hover:rotate-45 transition-transform" />
+                        <Compass className="w-4 h-4 text-[#C9A55A] group-hover:rotate-45 transition-transform" />
                         <span>BẢNG LỤC NHÂM ĐÃ KÉO RA NGOÀI BÊN DƯỚI • BẤM ĐỂ XEM CHI TIẾT ⬇️</span>
                       </button>
                     </div>
@@ -1744,13 +1744,13 @@ export default function App() {
               <div id="lucnham-chart-area-bocque" className="w-full mt-6 space-y-4 scroll-mt-20 animate-in fade-in duration-500">
                 <div className="bg-[#1C160F] border border-[#523E26] rounded-2xl p-3.5 sm:p-4 shadow-xl flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-[#241A10] via-[#1B140D] to-[#241A10]">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#8C6218] flex items-center justify-center text-[#120F0B] font-bold shadow shrink-0 text-lg">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#C9A55A] to-[#8C6218] flex items-center justify-center text-[#120F0B] font-bold shadow shrink-0 text-lg">
                       🧭
                     </div>
                     <div>
                       <h3 className="font-serif font-bold text-sm sm:text-base text-[#F5EAD4] flex items-center gap-2 flex-wrap">
                         <span>BẢNG LỤC NHÂM ĐẠI ĐỘN (CHỖ BỐC QUẺ)</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#2C1F12] text-[#E2B755] border border-[#523E26] font-normal">
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#2C1F12] text-[#D6B97A] border border-[#523E26] font-normal">
                           Bảng Bốc Quẻ Độc Lập
                         </span>
                       </h3>
@@ -1765,7 +1765,7 @@ export default function App() {
                       const el = document.getElementById("divination-card-draw-area");
                       if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
                     }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-xl bg-[#291E13] hover:bg-[#382819] text-[#E2B755] border border-[#543D24] cursor-pointer transition-all ml-auto font-medium"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-xl bg-[#291E13] hover:bg-[#382819] text-[#D6B97A] border border-[#543D24] cursor-pointer transition-all ml-auto font-medium"
                     title="Cuộn lên lại chỗ bốc quẻ để đổi Hoạt Thời hoặc lắc xí ngầu"
                   >
                     <span>⬆️ Lên Chỗ Bốc Quẻ</span>
@@ -1830,7 +1830,7 @@ export default function App() {
                   }}
                   className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-serif font-bold transition-all cursor-pointer ${
                     (manualSubTab === "book" && currentTab !== "decks")
-                      ? "bg-gradient-to-r from-[#D4AF37] to-[#B38728] text-[#120F0C] shadow-md scale-[1.01]"
+                      ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F0C] shadow-md scale-[1.01]"
                       : "text-[#A89882] hover:text-[#FFF] hover:bg-[#241C15]"
                   }`}
                 >
@@ -1843,7 +1843,7 @@ export default function App() {
                   onClick={() => setManualSubTab("decks")}
                   className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-serif font-bold transition-all cursor-pointer ${
                     (manualSubTab === "decks" || currentTab === "decks")
-                      ? "bg-gradient-to-r from-[#D4AF37] to-[#B38728] text-[#120F0C] shadow-md scale-[1.01]"
+                      ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F0C] shadow-md scale-[1.01]"
                       : "text-[#A89882] hover:text-[#FFF] hover:bg-[#241C15]"
                   }`}
                 >
@@ -2009,7 +2009,7 @@ export default function App() {
               />
             ) : (
               <div className="bg-[#171512] border border-[#3A3225] rounded-2xl p-12 text-center text-[#8C7D6A] max-w-lg mx-auto">
-                <div className="w-14 h-14 mx-auto rounded-full bg-[#201B15] border border-[#382E22] flex items-center justify-center text-[#D4AF37] mb-3">
+                <div className="w-14 h-14 mx-auto rounded-full bg-[#201B15] border border-[#382E22] flex items-center justify-center text-[#C9A55A] mb-3">
                   <Compass className="w-6 h-6" />
                 </div>
                 <h4 className="font-serif text-[#EDE0C9] text-base font-bold mb-1">
@@ -2055,31 +2055,28 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-[#261E16] bg-[#100E0C]/90 py-8 text-center text-xs text-[#7A6D5A]">
-        <div className="max-w-4xl mx-auto px-4 space-y-3.5">
-          <p className="font-serif italic text-[#A6977F]">
+      <footer className="relative z-10 mt-12 bg-[#0B0A08]/90">
+        <div className="h-px bg-gradient-to-r from-transparent via-gold-600/50 to-transparent" />
+        <div className="max-w-4xl mx-auto px-4 py-12 text-center space-y-6">
+          <div className="flex items-center justify-center gap-3">
+            <span className="royal-seal w-8 h-8 text-[11px] [writing-mode:vertical-rl]">玖貳</span>
+            <span className="font-display text-xl tracking-[0.2em] text-ivory-100">CỬU NHỊ</span>
+          </div>
+          <p className="font-display italic text-lg text-ivory-300 max-w-xl mx-auto leading-relaxed">
             "Thiên hành kiện, quân tử dĩ tự cường bất tức. Địa thế khôn, quân tử dĩ hậu đức tải vật."
           </p>
-
-          {/* Link nhóm Zalo Cửu Nhị */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gradient-to-r from-emerald-950/70 via-[#182C1B] to-emerald-950/70 border border-emerald-600/50 shadow-inner">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs font-serif text-emerald-300 font-semibold">
-              Nhóm Zalo Cửu Nhị Giao Lưu Dịch Lý:
-            </span>
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
             <a
               href="https://zalo.me/g/vwzsqvnh3gdbzst2psyh"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-serif font-bold text-xs text-[#FFE8A3] hover:text-white underline cursor-pointer inline-flex items-center gap-1"
+              className="royal-link"
             >
-              <span>Tham gia nhóm Zalo ngay</span>
-              <span>➔</span>
+              Nhóm Zalo Cửu Nhị · Giao lưu Dịch Lý <span className="text-gold-500">→</span>
             </a>
           </div>
-
-          <p className="text-[11px] text-[#5E5343]">
-            Ứng dụng Bốc Bài Kinh Dịch & Lục Hào Thần Dịch • Kết hợp trí tuệ cổ nhân và AI thế hệ mới
+          <p className="text-[10px] uppercase tracking-[0.28em] text-ivory-500/70">
+            Bốc Bài Kinh Dịch &amp; Lục Hào Thần Dịch · Trí tuệ cổ nhân
           </p>
         </div>
       </footer>

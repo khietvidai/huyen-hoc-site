@@ -224,15 +224,15 @@ export const HanNhietMenhSection: React.FC = () => {
         <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-amber-500/10 via-rose-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-serif text-[#FFE28A] bg-[#2C2318] border border-amber-600/40">
-              <Compass className="w-3.5 h-3.5 text-[#E2B755]" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-serif text-[#E6D3A3] bg-[#2C2318] border border-amber-600/40">
+              <Compass className="w-3.5 h-3.5 text-[#D6B97A]" />
               <span>Hệ Thống Mệnh Lý Bát Tự Độc Môn Hồng Kông</span>
               <span className="text-amber-400 font-bold">•</span>
               <span>Tô Dân Phong (Peter So Man-Fong)</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#F5EDE0] tracking-wide flex items-center gap-2.5">
               <span>HÀN NHIỆT MỆNH TOÀN DIỆN</span>
-              <span className="text-base sm:text-lg font-serif px-2.5 py-0.5 rounded bg-amber-950/80 text-[#FFE28A] border border-amber-500/40 font-normal">
+              <span className="text-base sm:text-lg font-serif px-2.5 py-0.5 rounded bg-amber-950/80 text-[#E6D3A3] border border-amber-500/40 font-normal">
                 寒熱命理
               </span>
             </h2>
@@ -244,7 +244,7 @@ export const HanNhietMenhSection: React.FC = () => {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 w-full md:w-auto shrink-0 text-center">
             <div className="bg-[#15120E]/80 border border-[#3E3426] p-3 rounded-xl">
               <div className="text-xs text-[#A89882]">Lưu Niên Hiện Tại</div>
-              <div className="text-sm font-bold text-[#FFE28A]">2027 Đinh Mùi</div>
+              <div className="text-sm font-bold text-[#E6D3A3]">2027 Đinh Mùi</div>
             </div>
             <div className="bg-[#15120E]/80 border border-[#3E3426] p-3 rounded-xl">
               <div className="text-xs text-[#A89882]">Khí Hậu Thời Điểm</div>
@@ -275,13 +275,13 @@ export const HanNhietMenhSection: React.FC = () => {
                 onClick={() => setActiveSubTab(tab.id as any)}
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-serif transition-all shrink-0 cursor-pointer ${
                   isActive
-                    ? "bg-[#D4AF37] text-[#12100E] font-bold shadow-lg shadow-[#D4AF37]/20 border border-[#FFE28A]"
+                    ? "bg-[#C9A55A] text-[#12100E] font-bold shadow-lg shadow-[#C9A55A]/20 border border-[#E6D3A3]"
                     : "bg-[#161310] text-[#C8B89E] hover:text-[#F5EDE0] hover:bg-[#251E17] border border-[#352B20]"
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? "text-[#12100E]" : "text-[#D4AF37]"}`} />
+                <Icon className={`w-4 h-4 ${isActive ? "text-[#12100E]" : "text-[#C9A55A]"}`} />
                 <span>{tab.label}</span>
-                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isActive ? "bg-[#12100E]/20 text-[#12100E]" : "bg-[#251E17] text-[#D4AF37]"}`}>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isActive ? "bg-[#12100E]/20 text-[#12100E]" : "bg-[#251E17] text-[#C9A55A]"}`}>
                   {tab.badge}
                 </span>
               </button>
@@ -386,7 +386,7 @@ export const HanNhietMenhSection: React.FC = () => {
                     onClick={() => setGender("Nam")}
                     className={`py-2 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer ${
                       gender === "Nam"
-                        ? "bg-amber-500/20 text-[#FFE28A] border border-amber-500/60 shadow"
+                        ? "bg-amber-500/20 text-[#E6D3A3] border border-amber-500/60 shadow"
                         : "bg-[#241D17] text-[#A89882] border border-[#3E3426] hover:text-[#F5EDE0]"
                     }`}
                   >
@@ -463,7 +463,7 @@ export const HanNhietMenhSection: React.FC = () => {
                       {fullReading.mingProfile.type}
                     </h4>
 
-                    <div className="text-xs sm:text-sm text-[#FFE28A] font-serif font-semibold">
+                    <div className="text-xs sm:text-sm text-[#E6D3A3] font-serif font-semibold">
                       {fullReading.mingProfile.tagline}
                     </div>
 
@@ -473,7 +473,7 @@ export const HanNhietMenhSection: React.FC = () => {
                   </div>
 
                   <div className="bg-[#12100E]/80 border border-amber-600/30 p-4 rounded-xl max-w-md shrink-0 space-y-2">
-                    <div className="flex items-center gap-2 text-xs font-serif font-bold text-[#FFE28A]">
+                    <div className="flex items-center gap-2 text-xs font-serif font-bold text-[#E6D3A3]">
                       <Award className="w-4 h-4 text-amber-400" />
                       <span>Khẩu Quyết Chân Truyền Tô Dân Phong:</span>
                     </div>
@@ -512,7 +512,7 @@ export const HanNhietMenhSection: React.FC = () => {
                 <div className="bg-[#120F0C]/90 border border-amber-500/40 p-4 sm:p-5 rounded-xl mt-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-lg shadow-black/40">
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500/20 via-amber-600/30 to-amber-900/40 border border-amber-400/60 flex flex-col items-center justify-center shrink-0 shadow-md shadow-amber-950/40">
-                      <span className="text-xl font-serif font-black text-[#FFE28A]">{fullReading.nobleScore.totalScore}</span>
+                      <span className="text-xl font-serif font-black text-[#E6D3A3]">{fullReading.nobleScore.totalScore}</span>
                       <span className="text-[9px] font-bold text-amber-200/80 -mt-0.5">/ 7.0+đ</span>
                     </div>
                     <div>
@@ -536,7 +536,7 @@ export const HanNhietMenhSection: React.FC = () => {
                   </div>
                   <button
                     onClick={() => setActiveMingInnerTab("noble_score")}
-                    className="px-4 py-2 rounded-xl text-xs font-serif font-bold bg-amber-500/20 hover:bg-amber-500/30 text-[#FFE28A] border border-amber-500/50 transition-all flex items-center justify-center gap-1.5 shrink-0 cursor-pointer shadow-sm"
+                    className="px-4 py-2 rounded-xl text-xs font-serif font-bold bg-amber-500/20 hover:bg-amber-500/30 text-[#E6D3A3] border border-amber-500/50 transition-all flex items-center justify-center gap-1.5 shrink-0 cursor-pointer shadow-sm"
                   >
                     <Award className="w-3.5 h-3.5 text-amber-400" />
                     <span>Xem Bảng Điểm 7 Tiêu Chí</span>
@@ -566,11 +566,11 @@ export const HanNhietMenhSection: React.FC = () => {
                         onClick={() => setActiveMingInnerTab(item.id as any)}
                         className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-serif transition-all shrink-0 cursor-pointer ${
                           isActive
-                            ? "bg-amber-500/25 text-[#FFE28A] border border-amber-500/70 font-bold shadow-md shadow-amber-950/40"
+                            ? "bg-amber-500/25 text-[#E6D3A3] border border-amber-500/70 font-bold shadow-md shadow-amber-950/40"
                             : "bg-[#18130F] text-[#A89882] hover:text-[#F5EDE0] border border-[#352B20]"
                         }`}
                       >
-                        <Icon className={`w-4 h-4 ${isActive ? "text-[#FFE28A]" : "text-amber-500/70"}`} />
+                        <Icon className={`w-4 h-4 ${isActive ? "text-[#E6D3A3]" : "text-amber-500/70"}`} />
                         <span>{item.label}</span>
                       </button>
                     );
@@ -651,7 +651,7 @@ export const HanNhietMenhSection: React.FC = () => {
                         >
                           <div>
                             <div className="flex items-center justify-between text-xs">
-                              <span className="font-serif font-bold text-[#FFE28A]">{p.title}</span>
+                              <span className="font-serif font-bold text-[#E6D3A3]">{p.title}</span>
                               <span className="text-[10px] text-[#A89882]">{p.lifeStage.split(" ")[1]}</span>
                             </div>
                             <div className="text-[10px] text-[#C8B89E] mt-0.5">{p.palaceMeaning.split("•")[0]}</div>
@@ -665,7 +665,7 @@ export const HanNhietMenhSection: React.FC = () => {
                             <div className="text-2xl sm:text-3xl font-extrabold text-[#F5EDE0] tracking-wider">
                               {p.chineseCan}
                             </div>
-                            <div className="text-xs font-bold text-[#FFE28A]">{p.can}</div>
+                            <div className="text-xs font-bold text-[#E6D3A3]">{p.can}</div>
                             <span className={`text-[10px] px-1.5 py-0.2 rounded border font-semibold inline-block mt-0.5 ${getElementColorClass(p.elementCan)}`}>
                               Hành {p.elementCan}
                             </span>
@@ -676,7 +676,7 @@ export const HanNhietMenhSection: React.FC = () => {
                             <div className="text-2xl sm:text-3xl font-extrabold text-[#F5EDE0] tracking-wider">
                               {p.chineseChi}
                             </div>
-                            <div className="text-xs font-bold text-[#FFE28A]">{p.chi}</div>
+                            <div className="text-xs font-bold text-[#E6D3A3]">{p.chi}</div>
                             <span className={`text-[10px] px-1.5 py-0.2 rounded border font-semibold inline-block mt-0.5 ${getElementColorClass(p.elementChi)}`}>
                               Hành {p.elementChi}
                             </span>
@@ -721,7 +721,7 @@ export const HanNhietMenhSection: React.FC = () => {
 
                       <div className="flex items-center gap-2 shrink-0">
                         <span className="text-xs text-[#A89882]">Bản Thể Nhật Can:</span>
-                        <span className="text-xs px-3 py-1 rounded-full font-bold bg-amber-500/20 text-[#FFE28A] border border-amber-500/40">
+                        <span className="text-xs px-3 py-1 rounded-full font-bold bg-amber-500/20 text-[#E6D3A3] border border-amber-500/40">
                           Can {fullReading.dayMaster.name} ({fullReading.dayMaster.yinYang} {fullReading.dayMaster.element})
                         </span>
                       </div>
@@ -729,7 +729,7 @@ export const HanNhietMenhSection: React.FC = () => {
 
                     {/* Lời Giảng Đột Phá Chân Truyền Tô Dân Phong */}
                     <div className="bg-amber-950/20 border-l-4 border-amber-500 p-4 rounded-r-xl space-y-1">
-                      <div className="text-xs font-serif font-bold text-[#FFE28A] flex items-center gap-2">
+                      <div className="text-xs font-serif font-bold text-[#E6D3A3] flex items-center gap-2">
                         <Zap className="w-4 h-4 text-amber-400" />
                         <span>Lời Giảng Chân Truyền Tô Dân Phong Về "Thân Vượng / Thân Nhược":</span>
                       </div>
@@ -743,7 +743,7 @@ export const HanNhietMenhSection: React.FC = () => {
                       {/* Cột 1: Tượng Trưng & Tâm Tính Thiên Phú Can Ngày */}
                       <div className="p-4 rounded-xl bg-[#1B1612] border border-[#382E22] space-y-2">
                         <div className="flex items-center justify-between border-b border-white/5 pb-2">
-                          <span className="text-xs font-serif font-bold text-[#FFE28A] flex items-center gap-1.5">
+                          <span className="text-xs font-serif font-bold text-[#E6D3A3] flex items-center gap-1.5">
                             <User className="w-3.5 h-3.5 text-amber-400" />
                             1. Khí Tượng Nhật Can
                           </span>
@@ -759,7 +759,7 @@ export const HanNhietMenhSection: React.FC = () => {
                       {/* Cột 2: Hướng Đi Sự Nghiệp Theo Thập Thần */}
                       <div className="p-4 rounded-xl bg-[#1B1612] border border-[#382E22] space-y-2">
                         <div className="flex items-center justify-between border-b border-white/5 pb-2">
-                          <span className="text-xs font-serif font-bold text-[#FFE28A] flex items-center gap-1.5">
+                          <span className="text-xs font-serif font-bold text-[#E6D3A3] flex items-center gap-1.5">
                             <Briefcase className="w-3.5 h-3.5 text-emerald-400" />
                             2. Định Hướng Thập Thần
                           </span>
@@ -775,7 +775,7 @@ export const HanNhietMenhSection: React.FC = () => {
                       {/* Cột 3: Kim Chỉ Nam Hành Động Theo Vòng Vận */}
                       <div className="p-4 rounded-xl bg-[#1B1612] border border-[#382E22] space-y-2">
                         <div className="flex items-center justify-between border-b border-white/5 pb-2">
-                          <span className="text-xs font-serif font-bold text-[#FFE28A] flex items-center gap-1.5">
+                          <span className="text-xs font-serif font-bold text-[#E6D3A3] flex items-center gap-1.5">
                             <TrendingUp className="w-3.5 h-3.5 text-blue-400" />
                             3. Kim Chỉ Nam Đại Vận
                           </span>
@@ -830,7 +830,7 @@ export const HanNhietMenhSection: React.FC = () => {
 
                       <div className="flex items-center gap-2 shrink-0">
                         <span className="text-xs text-[#A89882]">Tổng điểm 4 trụ:</span>
-                        <span className="text-xs px-3 py-1 rounded-full font-bold bg-amber-500/20 text-[#FFE28A] border border-amber-500/40">
+                        <span className="text-xs px-3 py-1 rounded-full font-bold bg-amber-500/20 text-[#E6D3A3] border border-amber-500/40">
                           {fullReading.fiveElementsDetail.totalScore.toFixed(1)} Điểm
                         </span>
                       </div>
@@ -910,7 +910,7 @@ export const HanNhietMenhSection: React.FC = () => {
                     <div className="bg-[#1C1712] border border-[#3A2E20] rounded-xl p-5 space-y-4">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/5 pb-3">
                         <div className="space-y-0.5">
-                          <span className="text-xs font-serif font-bold text-[#FFE28A] flex items-center gap-1.5">
+                          <span className="text-xs font-serif font-bold text-[#E6D3A3] flex items-center gap-1.5">
                             <Scale className="w-4 h-4 text-amber-400" />
                             Đối Trọng Cân Bằng: Đồng Đảng vs Dị Đảng (Địch)
                           </span>
@@ -973,7 +973,7 @@ export const HanNhietMenhSection: React.FC = () => {
                     <div className="space-y-3">
                       <div className="flex items-center gap-2">
                         <Sparkles className="w-4 h-4 text-amber-400" />
-                        <span className="text-xs font-serif font-bold text-[#FFE28A] uppercase tracking-wider">
+                        <span className="text-xs font-serif font-bold text-[#E6D3A3] uppercase tracking-wider">
                           Phân Tích Chi Tiết 5 Ngũ Hành Theo Thập Thần & Hỷ Kỵ Tô Dân Phong
                         </span>
                       </div>
@@ -1011,7 +1011,7 @@ export const HanNhietMenhSection: React.FC = () => {
                                   </span>
                                 </div>
 
-                                <div className="text-[11px] font-bold text-[#FFE28A]">
+                                <div className="text-[11px] font-bold text-[#E6D3A3]">
                                   {item.tenGodCategory}
                                 </div>
 
@@ -1055,7 +1055,7 @@ export const HanNhietMenhSection: React.FC = () => {
                                     {o.status}
                                   </span>
                                 </div>
-                                <div className="text-[11px] text-[#FFE28A]">
+                                <div className="text-[11px] text-[#E6D3A3]">
                                   <b>Tạng phủ / Cơ quan chịu ảnh hưởng:</b> {o.affectedOrgans}
                                 </div>
                                 <div className="text-[11px] text-[#C8B89E] italic">
@@ -1084,7 +1084,7 @@ export const HanNhietMenhSection: React.FC = () => {
                     <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 border-b border-[#2D241A] pb-6">
                       <div className="flex items-center gap-5">
                         <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-500/20 via-amber-600/30 to-amber-900/40 border-2 border-amber-400 flex flex-col items-center justify-center shrink-0 shadow-lg shadow-amber-900/30">
-                          <span className="text-3xl font-serif font-black text-[#FFE28A] tracking-tight">{fullReading.nobleScore.totalScore}</span>
+                          <span className="text-3xl font-serif font-black text-[#E6D3A3] tracking-tight">{fullReading.nobleScore.totalScore}</span>
                           <span className="text-[11px] font-bold text-amber-200/80 -mt-1">/ 7.0+ Điểm</span>
                         </div>
                         <div className="space-y-1">
@@ -1123,7 +1123,7 @@ export const HanNhietMenhSection: React.FC = () => {
 
                     {/* Trích dẫn nguyên văn Tô Dân Phong */}
                     <div className="bg-amber-950/20 border-l-4 border-amber-400 p-4 rounded-r-xl space-y-1">
-                      <div className="text-xs font-serif font-bold text-[#FFE28A] flex items-center gap-1.5">
+                      <div className="text-xs font-serif font-bold text-[#E6D3A3] flex items-center gap-1.5">
                         <Award className="w-4 h-4 text-amber-400" />
                         <span>Lời Giảng Độc Môn Của Đại Sư Tô Dân Phong (2011 Lesson 28 & 30):</span>
                       </div>
@@ -1135,7 +1135,7 @@ export const HanNhietMenhSection: React.FC = () => {
                     {/* Danh Sách 7 Tiêu Chí Chấm Điểm Chi Tiết */}
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-serif font-bold text-[#FFE28A] uppercase tracking-wider flex items-center gap-2">
+                        <h4 className="text-sm font-serif font-bold text-[#E6D3A3] uppercase tracking-wider flex items-center gap-2">
                           <Layers className="w-4 h-4 text-amber-500" />
                           <span>Bảng Điểm Chi Tiết 7 Tiêu Chí Quý Cách (八字格局計分法)</span>
                         </h4>
@@ -1200,7 +1200,7 @@ export const HanNhietMenhSection: React.FC = () => {
                     <div className="bg-[#14100C] border border-[#3E3426] rounded-xl p-4 sm:p-5 space-y-4">
                       <div className="flex items-center justify-between border-b border-[#2D241A] pb-3">
                         <div className="space-y-0.5">
-                          <h5 className="text-xs sm:text-sm font-serif font-bold text-[#FFE28A] flex items-center gap-2">
+                          <h5 className="text-xs sm:text-sm font-serif font-bold text-[#E6D3A3] flex items-center gap-2">
                             <BookOpen className="w-4 h-4 text-amber-400" />
                             <span>Bảng Quy Chiếu 6 Bậc Phú Quý (Khẩu Quyết Độc Môn Sư Phụ Tô Dân Phong)</span>
                           </h5>
@@ -1262,7 +1262,7 @@ export const HanNhietMenhSection: React.FC = () => {
                               <td className="py-2.5 px-3 font-medium text-rose-300">Quốc Gia Quý Cách / Tài Phiệt</td>
                               <td className="py-2.5 px-3 font-bold text-amber-400">500M – Hàng Tỷ HKD</td>
                               <td className="py-2.5 px-3 font-bold text-emerald-400">1.500 – Vạn Tỷ VND</td>
-                              <td className="py-2.5 px-3 text-[#FFE28A]">Nhân vật tầm cỡ quốc gia, cự phú tài phiệt thiên hạ, danh tiếng chấn động giang sơn. (Tô Dân Phong: "Ta có gần 7 điểm!").</td>
+                              <td className="py-2.5 px-3 text-[#E6D3A3]">Nhân vật tầm cỡ quốc gia, cự phú tài phiệt thiên hạ, danh tiếng chấn động giang sơn. (Tô Dân Phong: "Ta có gần 7 điểm!").</td>
                             </tr>
                           </tbody>
                         </table>
@@ -1366,7 +1366,7 @@ export const HanNhietMenhSection: React.FC = () => {
                         >
                           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                             <div className="flex items-center gap-3">
-                              <span className="w-7 h-7 rounded-full bg-[#120F0C] text-[#FFE28A] border border-amber-600/40 flex items-center justify-center text-xs font-bold font-serif shrink-0">
+                              <span className="w-7 h-7 rounded-full bg-[#120F0C] text-[#E6D3A3] border border-amber-600/40 flex items-center justify-center text-xs font-bold font-serif shrink-0">
                                 {dv.step}
                               </span>
 
@@ -1628,7 +1628,7 @@ export const HanNhietMenhSection: React.FC = () => {
                           }}
                           className={`p-3 rounded-xl border text-center font-serif text-xs transition-all cursor-pointer flex flex-col items-center gap-1.5 ${
                             isSel && activeMingInnerTab !== "all"
-                              ? "bg-amber-500/20 text-[#FFE28A] border-amber-500/70 shadow-md font-bold"
+                              ? "bg-amber-500/20 text-[#E6D3A3] border-amber-500/70 shadow-md font-bold"
                               : "bg-[#18130F] text-[#A89882] hover:text-[#F5EDE0] border-[#382E22]"
                           }`}
                         >
@@ -1657,7 +1657,7 @@ export const HanNhietMenhSection: React.FC = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="bg-[#1D1712] border border-[#3A2E21] p-4 rounded-xl space-y-2">
                             <span className="text-xs text-[#A89882] font-serif uppercase tracking-wider">Cấu Trúc Tài Khố</span>
-                            <div className="text-sm font-bold text-[#FFE28A]">
+                            <div className="text-sm font-bold text-[#E6D3A3]">
                               {fullReading.sixPillarsAnalysis.careerAndWealth.wealthPattern}
                             </div>
                             <p className="text-xs text-[#C8B89E] leading-relaxed">
@@ -1677,7 +1677,7 @@ export const HanNhietMenhSection: React.FC = () => {
                         </div>
 
                         <div className="space-y-2 pt-2">
-                          <div className="text-xs font-serif font-bold text-[#FFE28A]">Các Ngành Nghề Hợp Ngũ Hành Hỷ Dụng:</div>
+                          <div className="text-xs font-serif font-bold text-[#E6D3A3]">Các Ngành Nghề Hợp Ngũ Hành Hỷ Dụng:</div>
                           <div className="flex flex-wrap gap-2">
                             {fullReading.sixPillarsAnalysis.careerAndWealth.favorableIndustries.map((ind, i) => (
                               <span key={i} className="text-xs px-3 py-1 rounded-lg bg-[#251D14] text-[#E5D7C2] border border-amber-600/30">
@@ -1688,7 +1688,7 @@ export const HanNhietMenhSection: React.FC = () => {
                         </div>
 
                         <div className="bg-[#14100C] p-4 rounded-xl border border-white/5 space-y-2">
-                          <div className="text-xs font-serif font-bold text-[#FFE28A]">Lời Khuyên Thực Chiến Từ 80 Bài Giảng:</div>
+                          <div className="text-xs font-serif font-bold text-[#E6D3A3]">Lời Khuyên Thực Chiến Từ 80 Bài Giảng:</div>
                           <ul className="space-y-1.5 text-xs text-[#C8B89E] leading-relaxed">
                             {fullReading.sixPillarsAnalysis.careerAndWealth.details.map((d, i) => (
                               <li key={i} className="flex items-start gap-2">
@@ -1701,7 +1701,7 @@ export const HanNhietMenhSection: React.FC = () => {
 
                         {fullReading.sixPillarsAnalysis.careerAndWealth.peterSoPhilosophy && (
                           <div className="bg-[#14100C] p-4 rounded-xl border border-amber-600/30 space-y-2">
-                            <div className="text-xs font-serif font-bold text-[#FFE28A] flex items-center gap-2">
+                            <div className="text-xs font-serif font-bold text-[#E6D3A3] flex items-center gap-2">
                               <Sparkles className="w-4 h-4 text-amber-400" />
                               <span>Bản Chất "Sinh Ý Mệnh" vs "Đả Công Mệnh" (Tô Dân Phong 2009 - Bài 01):</span>
                             </div>
@@ -1735,7 +1735,7 @@ export const HanNhietMenhSection: React.FC = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="bg-[#1D1712] border border-[#3A2E21] p-4 rounded-xl space-y-1.5">
                             <span className="text-xs text-[#A89882] font-serif uppercase tracking-wider">Trạng Thái Cung Phu Thê (Nhật Chi)</span>
-                            <div className="text-sm font-bold text-[#FFE28A]">
+                            <div className="text-sm font-bold text-[#E6D3A3]">
                               {fullReading.sixPillarsAnalysis.marriageAndLove.palaceStatus}
                             </div>
                             {fullReading.sixPillarsAnalysis.marriageAndLove.clashDetails && (
@@ -1771,14 +1771,14 @@ export const HanNhietMenhSection: React.FC = () => {
                         {fullReading.sixPillarsAnalysis.marriageAndLove.spouseTenGodAnalysis && (
                           <div className="bg-[#1D1712] border border-[#3A2E21] p-4 rounded-xl space-y-1">
                             <span className="text-xs text-[#A89882] font-serif uppercase tracking-wider">Thập Thần Tọa Phu Thê Cung</span>
-                            <p className="text-xs sm:text-sm text-[#FFE28A] leading-relaxed">
+                            <p className="text-xs sm:text-sm text-[#E6D3A3] leading-relaxed">
                               {fullReading.sixPillarsAnalysis.marriageAndLove.spouseTenGodAnalysis}
                             </p>
                           </div>
                         )}
 
                         <div className="bg-[#14100C] p-4 rounded-xl border border-amber-600/30 space-y-2">
-                          <div className="text-xs font-serif font-bold text-[#FFE28A] flex items-center gap-2">
+                          <div className="text-xs font-serif font-bold text-[#E6D3A3] flex items-center gap-2">
                             <Sparkles className="w-4 h-4 text-amber-400" />
                             <span>Quy Luật Đại Vận Xung Phu Thê (Tô Dân Phong 2009 Bài 01 & 2010 Bài 26):</span>
                           </div>
@@ -1836,7 +1836,7 @@ export const HanNhietMenhSection: React.FC = () => {
                           {/* Tim mạch huyết áp */}
                           <div className="bg-[#1D1712] border border-[#3A2E21] p-4 rounded-xl space-y-1.5">
                             <span className="text-xs text-[#A89882] font-serif uppercase tracking-wider">Hệ Tim Mạch & Huyết Áp</span>
-                            <div className="text-sm font-bold text-[#FFE28A]">
+                            <div className="text-sm font-bold text-[#E6D3A3]">
                               {fullReading.sixPillarsAnalysis.healthAndOrgans.cardioVascularRisk}
                             </div>
                           </div>
@@ -1896,28 +1896,28 @@ export const HanNhietMenhSection: React.FC = () => {
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                           <div className="bg-[#1D1712] border border-[#3A2E21] p-4 rounded-xl space-y-1">
-                            <span className="text-xs font-serif font-bold text-[#FFE28A]">Ông Bà & Tổ Tiên (Trụ Năm)</span>
+                            <span className="text-xs font-serif font-bold text-[#E6D3A3]">Ông Bà & Tổ Tiên (Trụ Năm)</span>
                             <p className="text-xs text-[#C8B89E] leading-relaxed">
                               {fullReading.sixPillarsAnalysis.familySixRelatives.ancestorConnection}
                             </p>
                           </div>
 
                           <div className="bg-[#1D1712] border border-[#3A2E21] p-4 rounded-xl space-y-1">
-                            <span className="text-xs font-serif font-bold text-[#FFE28A]">Phụ Mẫu & Huynh Đệ (Trụ Tháng)</span>
+                            <span className="text-xs font-serif font-bold text-[#E6D3A3]">Phụ Mẫu & Huynh Đệ (Trụ Tháng)</span>
                             <p className="text-xs text-[#C8B89E] leading-relaxed">
                               {fullReading.sixPillarsAnalysis.familySixRelatives.parentsSiblingsConnection}
                             </p>
                           </div>
 
                           <div className="bg-[#1D1712] border border-[#3A2E21] p-4 rounded-xl space-y-1">
-                            <span className="text-xs font-serif font-bold text-[#FFE28A]">Bản Thân & Vợ Chồng (Trụ Ngày)</span>
+                            <span className="text-xs font-serif font-bold text-[#E6D3A3]">Bản Thân & Vợ Chồng (Trụ Ngày)</span>
                             <p className="text-xs text-[#C8B89E] leading-relaxed">
                               {fullReading.sixPillarsAnalysis.familySixRelatives.selfAndSpouseConnection}
                             </p>
                           </div>
 
                           <div className="bg-[#1D1712] border border-[#3A2E21] p-4 rounded-xl space-y-1">
-                            <span className="text-xs font-serif font-bold text-[#FFE28A]">Con Cái & Hậu Vận (Trụ Giờ)</span>
+                            <span className="text-xs font-serif font-bold text-[#E6D3A3]">Con Cái & Hậu Vận (Trụ Giờ)</span>
                             <p className="text-xs text-[#C8B89E] leading-relaxed">
                               {fullReading.sixPillarsAnalysis.familySixRelatives.childrenPosterityConnection}
                             </p>
@@ -1925,7 +1925,7 @@ export const HanNhietMenhSection: React.FC = () => {
                         </div>
 
                         <div className="bg-[#14100C] p-4 rounded-xl border border-amber-600/30 space-y-2">
-                          <div className="text-xs font-serif font-bold text-[#FFE28A]">Ma Trận Tương Xung 4 Trụ (Mật Mã Da Vinci):</div>
+                          <div className="text-xs font-serif font-bold text-[#E6D3A3]">Ma Trận Tương Xung 4 Trụ (Mật Mã Da Vinci):</div>
                           <ul className="space-y-1.5 text-xs text-[#C8B89E] leading-relaxed">
                             {fullReading.sixPillarsAnalysis.familySixRelatives.fourPillarsInteractions.map((inter, i) => (
                               <li key={i} className="flex items-start gap-2">
@@ -1969,7 +1969,7 @@ export const HanNhietMenhSection: React.FC = () => {
 
                         {/* Bí quyết Nhất Hỷ Chắn Tam Tai */}
                         <div className="bg-gradient-to-r from-amber-950/40 to-[#1A140E] border border-amber-500/50 p-4 rounded-xl space-y-2">
-                          <div className="text-xs font-serif font-bold text-[#FFE28A] flex items-center gap-2">
+                          <div className="text-xs font-serif font-bold text-[#E6D3A3] flex items-center gap-2">
                             <Sparkles className="w-4 h-4 text-amber-400" />
                             <span>Bí Quyết Hóa Giải Độc Môn Tô Dân Phong:</span>
                           </div>
@@ -2021,7 +2021,7 @@ export const HanNhietMenhSection: React.FC = () => {
                         </div>
 
                         <div className="bg-[#14100C] p-4 rounded-xl border border-amber-600/30 space-y-2">
-                          <div className="text-xs font-serif font-bold text-[#FFE28A]">Ngũ Hành Hóa Động Thổ Cục:</div>
+                          <div className="text-xs font-serif font-bold text-[#E6D3A3]">Ngũ Hành Hóa Động Thổ Cục:</div>
                           <p className="text-xs text-[#C8B89E] leading-relaxed">
                             {fullReading.sixPillarsAnalysis.fengshuiRemedy.dongThoRemedy}
                           </p>
@@ -2049,21 +2049,21 @@ export const HanNhietMenhSection: React.FC = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="bg-[#1B1612] border border-[#3A2E21] p-4 rounded-xl space-y-2">
-                        <span className="text-xs font-serif font-bold text-[#FFE28A]">1. Đổi Vận Bằng Màu Sắc</span>
+                        <span className="text-xs font-serif font-bold text-[#E6D3A3]">1. Đổi Vận Bằng Màu Sắc</span>
                         <p className="text-xs text-[#C8B89E] leading-relaxed">
                           Y phục là lớp khí trường tiếp xúc trực tiếp nhất với cơ thể 24/24. Người Hàn Mệnh mặc màu nóng ấm; người Nhiệt Mệnh mặc màu mát lạnh.
                         </p>
                       </div>
 
                       <div className="bg-[#1B1612] border border-[#3A2E21] p-4 rounded-xl space-y-2">
-                        <span className="text-xs font-serif font-bold text-[#FFE28A]">2. Giường Ngủ Nạp Khí</span>
+                        <span className="text-xs font-serif font-bold text-[#E6D3A3]">2. Giường Ngủ Nạp Khí</span>
                         <p className="text-xs text-[#C8B89E] leading-relaxed">
                           1/3 thời gian cuộc đời nằm trên giường ngủ. Hướng đầu giường đúng phương vị hỷ dụng giúp phục hồi chân khí và kích hoạt vận may bền vững.
                         </p>
                       </div>
 
                       <div className="bg-[#1B1612] border border-[#3A2E21] p-4 rounded-xl space-y-2">
-                        <span className="text-xs font-serif font-bold text-[#FFE28A]">3. Trực Xung Thái Tuế Tác Động</span>
+                        <span className="text-xs font-serif font-bold text-[#E6D3A3]">3. Trực Xung Thái Tuế Tác Động</span>
                         <p className="text-xs text-[#C8B89E] leading-relaxed">
                           Chủ động biến đổi (chuyển nhà, đổi việc, du lịch, sinh con) để hóa giải trạng thái xung khắc của Thái Tuế.
                         </p>
@@ -2119,7 +2119,7 @@ export const HanNhietMenhSection: React.FC = () => {
                     box-shadow: none !important;
                   }
                   #complete-bazi-report .text-\\[\\#F5EDE0\\],
-                  #complete-bazi-report .text-\\[\\#FFE28A\\],
+                  #complete-bazi-report .text-\\[\\#E6D3A3\\],
                   #complete-bazi-report .text-\\[\\#E5D7C2\\] {
                     color: #111111 !important;
                   }
@@ -2266,7 +2266,7 @@ export const HanNhietMenhSection: React.FC = () => {
                       </div>
 
                       <div className="text-xs sm:text-sm text-[#C8B89E] leading-relaxed">
-                        <b className="text-[#FFE28A]">Vận Khí Phương Vị:</b> {star.fortune}
+                        <b className="text-[#E6D3A3]">Vận Khí Phương Vị:</b> {star.fortune}
                       </div>
 
                       <div className="bg-[#12100E] border border-amber-600/30 p-3 rounded-xl text-xs sm:text-sm text-emerald-300">
@@ -2360,7 +2360,7 @@ export const HanNhietMenhSection: React.FC = () => {
 
               {/* Hướng Dẫn Đeo Trang Sức Hóa Giải Độc Môn */}
               <div className="bg-[#12100E] border border-amber-600/40 rounded-xl p-4 space-y-2">
-                <div className="text-xs font-serif font-bold text-[#FFE28A] flex items-center gap-2">
+                <div className="text-xs font-serif font-bold text-[#E6D3A3] flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-amber-400" />
                   <span>Trang Sức Hóa Giải Thái Tuế Chuẩn Tô Dân Phong:</span>
                 </div>
@@ -2449,7 +2449,7 @@ export const HanNhietMenhSection: React.FC = () => {
               </div>
 
               <div className="text-xs sm:text-sm text-[#C8B89E] leading-relaxed">
-                <b className="text-[#FFE28A]">Đặc Tính Sao Bay Tới Cửa:</b> {doorStarResult.starInfo.fortune}
+                <b className="text-[#E6D3A3]">Đặc Tính Sao Bay Tới Cửa:</b> {doorStarResult.starInfo.fortune}
               </div>
 
               <div className="bg-[#12100E] border border-amber-500/40 p-4 rounded-xl text-xs sm:text-sm text-amber-300 space-y-1">
@@ -2502,7 +2502,7 @@ export const HanNhietMenhSection: React.FC = () => {
               return (
                 <div className="bg-[#1F1914] border border-amber-600/40 rounded-2xl p-6 space-y-4">
                   <div className="flex items-center justify-between border-b border-[#3E3426] pb-3">
-                    <span className="text-sm font-serif font-bold text-[#FFE28A]">
+                    <span className="text-sm font-serif font-bold text-[#E6D3A3]">
                       Vật Phẩm Khởi Đầu Khắc Sát: <b className="text-rose-400">{dt.starter}</b>
                     </span>
                   </div>
@@ -2524,7 +2524,7 @@ export const HanNhietMenhSection: React.FC = () => {
                   </div>
 
                   <div className="bg-[#14110E] p-3 rounded-xl border border-white/5 text-xs text-[#C8B89E] leading-relaxed">
-                    <b className="text-[#FFE28A]">Nguyên Lý Học Thuật:</b> {dt.explanation}
+                    <b className="text-[#E6D3A3]">Nguyên Lý Học Thuật:</b> {dt.explanation}
                   </div>
                 </div>
               );
@@ -2570,7 +2570,7 @@ export const HanNhietMenhSection: React.FC = () => {
             <div className="bg-[#1F1914] border border-amber-600/30 rounded-2xl p-6 space-y-5">
               <div className="flex items-center justify-between border-b border-[#3E3426] pb-3">
                 <div>
-                  <h4 className="text-xl font-serif font-bold text-[#FFE28A]">
+                  <h4 className="text-xl font-serif font-bold text-[#E6D3A3]">
                     Tuổi {selectedZodiacName} — Vận Trình Năm Đinh Mùi 2027
                   </h4>
                   <div className="text-xs text-[#A89882] mt-1">{selectedZodiacData.yearSummary}</div>
@@ -2596,7 +2596,7 @@ export const HanNhietMenhSection: React.FC = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3 mt-3 border-t border-white/5 text-xs text-[#C8B89E] leading-relaxed">
                       <div>
-                        <b className="text-[#FFE28A]">Tài Chính:</b> {m.finance}
+                        <b className="text-[#E6D3A3]">Tài Chính:</b> {m.finance}
                       </div>
                       <div>
                         <b className="text-emerald-300">Sự Nghiệp:</b> {m.career}

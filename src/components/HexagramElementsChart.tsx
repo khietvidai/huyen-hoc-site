@@ -329,14 +329,14 @@ export const HexagramElementsChart: React.FC<HexagramElementsChartProps> = ({
   return (
     <div className="bg-gradient-to-br from-[#1C1610] via-[#16120E] to-[#0E0B08] border-2 border-[#523E26] rounded-2xl p-4 sm:p-6 shadow-2xl space-y-6 text-left relative overflow-hidden">
       {/* Decorative top pattern */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#D4AF37] via-[#FFF0B8] to-[#997A24]" />
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#C9A55A] via-[#FFF0B8] to-[#997A24]" />
 
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#382A1B] pb-4">
         <div>
           <div className="flex items-center gap-2 mb-1 flex-wrap">
             <span className="px-2.5 py-0.5 rounded-full bg-[#2B1D12] text-[#E5C378] font-mono text-xs font-bold border border-[#4E3722] flex items-center gap-1.5">
-              <Compass className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <Compass className="w-3.5 h-3.5 text-[#C9A55A]" />
               KHO TÀNG DỊCH HỌC • NẠP GIÁP LỤC HÀO NGŨ HÀNH
             </span>
             <span className="text-[11px] font-mono text-[#A89882]">
@@ -346,7 +346,7 @@ export const HexagramElementsChart: React.FC<HexagramElementsChartProps> = ({
 
           <h3 className="text-lg sm:text-2xl font-serif font-black text-[#F8EED9] tracking-wide flex items-center gap-2">
             <span>ĐỒ THỊ PHÂN BỐ NGŨ HÀNH & QUAN SÁT VƯỢNG SUY</span>
-            <Sparkles className="w-5 h-5 text-[#D4AF37] animate-pulse" />
+            <Sparkles className="w-5 h-5 text-[#C9A55A] animate-pulse" />
           </h3>
           <p className="text-xs text-[#B5A591] font-serif mt-1">
             Ứng dụng thuật Nạp Giáp Lục Hào (Kinh Phòng) phân định khí tiết Kim - Mộc - Thủy - Hỏa - Thổ của 6 hào và sự chuyển hóa khi có hào động.
@@ -360,7 +360,7 @@ export const HexagramElementsChart: React.FC<HexagramElementsChartProps> = ({
             onClick={() => setChartType("bar")}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
               chartType === "bar"
-                ? "bg-[#D4AF37] text-[#120F0C] font-bold shadow-md"
+                ? "bg-[#C9A55A] text-[#120F0C] font-bold shadow-md"
                 : "text-[#A89882] hover:text-[#FFF]"
             }`}
           >
@@ -372,7 +372,7 @@ export const HexagramElementsChart: React.FC<HexagramElementsChartProps> = ({
             onClick={() => setChartType("radar")}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
               chartType === "radar"
-                ? "bg-[#D4AF37] text-[#120F0C] font-bold shadow-md"
+                ? "bg-[#C9A55A] text-[#120F0C] font-bold shadow-md"
                 : "text-[#A89882] hover:text-[#FFF]"
             }`}
           >
@@ -384,7 +384,7 @@ export const HexagramElementsChart: React.FC<HexagramElementsChartProps> = ({
             onClick={() => setChartType("pie")}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
               chartType === "pie"
-                ? "bg-[#D4AF37] text-[#120F0C] font-bold shadow-md"
+                ? "bg-[#C9A55A] text-[#120F0C] font-bold shadow-md"
                 : "text-[#A89882] hover:text-[#FFF]"
             }`}
           >
@@ -400,7 +400,7 @@ export const HexagramElementsChart: React.FC<HexagramElementsChartProps> = ({
         <div className="lg:col-span-7 bg-[#14100C] border border-[#3E2E1D] rounded-xl p-4 sm:p-5 flex flex-col justify-between shadow-inner">
           <div className="flex items-center justify-between border-b border-[#2B1F14] pb-2 mb-3">
             <span className="text-xs font-serif font-bold text-[#E5C378] uppercase tracking-wider flex items-center gap-1.5">
-              <TrendingUp className="w-4 h-4 text-[#D4AF37]" />
+              <TrendingUp className="w-4 h-4 text-[#C9A55A]" />
               {chartType === "bar" && "Cán Cân Ngũ Hành: Quẻ Chủ" + (transformedHexagram ? " & Quẻ Biến" : "")}
               {chartType === "radar" && "Mạng Nhện Năng Lượng Ngũ Hành (Radar 5 Cực)"}
               {chartType === "pie" && "Cơ Cấu Tỉ Lệ % Ngũ Hành 6 Hào Quẻ Chủ"}
@@ -463,7 +463,7 @@ export const HexagramElementsChart: React.FC<HexagramElementsChartProps> = ({
               <ResponsiveContainer width="100%" height="100%">
                 <RadarChart data={elementsData} outerRadius="75%">
                   <PolarGrid stroke="#3A2A1A" />
-                  <PolarAngleAxis dataKey="element" stroke="#C5B39B" tick={{ fontSize: 12, fill: "#FFE8A3", fontWeight: 700 }} />
+                  <PolarAngleAxis dataKey="element" stroke="#C5B39B" tick={{ fontSize: 12, fill: "#E6D3A3", fontWeight: 700 }} />
                   <PolarRadiusAxis domain={[0, 6]} stroke="#4A3520" tick={{ fill: "#8C7A65", fontSize: 10 }} />
                   <Tooltip
                     contentStyle={{
@@ -477,8 +477,8 @@ export const HexagramElementsChart: React.FC<HexagramElementsChartProps> = ({
                   <Radar
                     name={`Quẻ Chủ (${primaryHexagram.name})`}
                     dataKey="countPrimary"
-                    stroke="#D4AF37"
-                    fill="#D4AF37"
+                    stroke="#C9A55A"
+                    fill="#C9A55A"
                     fillOpacity={0.45}
                   />
                   {transformedHexagram && (
@@ -532,7 +532,7 @@ export const HexagramElementsChart: React.FC<HexagramElementsChartProps> = ({
             <span>
               💡 <em>Kim sinh Thủy ➔ Thủy sinh Mộc ➔ Mộc sinh Hỏa ➔ Hỏa sinh Thổ ➔ Thổ sinh Kim</em>
             </span>
-            <span className="font-mono text-[#D4AF37] font-bold">
+            <span className="font-mono text-[#C9A55A] font-bold">
               Tổng số hào: 6 hào
             </span>
           </div>
@@ -544,7 +544,7 @@ export const HexagramElementsChart: React.FC<HexagramElementsChartProps> = ({
           <div className="bg-[#16120E] border border-[#3E2E1D] rounded-xl p-4 space-y-3 shadow-md">
             <div className="flex items-center justify-between border-b border-[#2C2014] pb-2">
               <span className="text-xs font-serif font-bold text-[#E5C378] uppercase tracking-wide flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+                <Sparkles className="w-4 h-4 text-[#C9A55A]" />
                 Đánh Giá Vượng — Suy — Khuyết
               </span>
               <span className="text-[10px] font-mono text-[#9E8B75]">Phong Thủy Học</span>
@@ -553,10 +553,10 @@ export const HexagramElementsChart: React.FC<HexagramElementsChartProps> = ({
             {/* Hành Vượng Nhất */}
             <div className="p-3 rounded-lg bg-[#22180F] border border-[#4D361F] flex items-center justify-between gap-2">
               <div className="space-y-0.5">
-                <span className="text-[10px] font-mono text-[#D4AF37] uppercase font-bold tracking-wider block">
+                <span className="text-[10px] font-mono text-[#C9A55A] uppercase font-bold tracking-wider block">
                   👑 HÀNH VƯỢNG NHẤT (CHỦ VƯỢNG):
                 </span>
-                <div className="text-sm font-serif font-black text-[#FFE8A3] flex items-center gap-1.5">
+                <div className="text-sm font-serif font-black text-[#E6D3A3] flex items-center gap-1.5">
                   {ELEMENT_ICONS[dominantElement]}
                   <span>Hành {dominantElement}</span>
                   <span className="text-xs font-mono font-normal text-[#C5B39B]">
@@ -564,7 +564,7 @@ export const HexagramElementsChart: React.FC<HexagramElementsChartProps> = ({
                   </span>
                 </div>
               </div>
-              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#140F0A] text-[#FFE8A3] border border-[#583E20]">
+              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#140F0A] text-[#E6D3A3] border border-[#583E20]">
                 Thế Khí Thịnh
               </span>
             </div>
@@ -596,8 +596,8 @@ export const HexagramElementsChart: React.FC<HexagramElementsChartProps> = ({
             {/* Ngũ Hành Bản Mệnh Toàn Quẻ */}
             <div className="p-2.5 rounded-lg bg-[#140F0A] border border-[#2B1F14] text-xs font-serif text-[#CBB99E] space-y-1">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono text-[#D4AF37] uppercase">Ngũ hành Quẻ Chủ:</span>
-                <strong className="text-[#FFE294]">{primaryHexagram.element}</strong>
+                <span className="text-[10px] font-mono text-[#C9A55A] uppercase">Ngũ hành Quẻ Chủ:</span>
+                <strong className="text-[#E6D3A3]">{primaryHexagram.element}</strong>
               </div>
               <div className="flex items-center justify-between text-[11px]">
                 <span className="text-[#8C7A65]">Thượng Quái ({primaryHexagram.upperTrigram}):</span>
@@ -613,7 +613,7 @@ export const HexagramElementsChart: React.FC<HexagramElementsChartProps> = ({
           {/* Box 2: Lời khuyên điều hòa Ngũ Hành */}
           <div className="bg-[#16120E] border border-[#3E2E1D] rounded-xl p-4 space-y-2 shadow-md">
             <div className="text-xs font-serif font-bold text-[#E5C378] flex items-center gap-1.5">
-              <Info className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <Info className="w-3.5 h-3.5 text-[#C9A55A]" />
               <span>Ý Nghĩa Điều Hòa Vận Khí</span>
             </div>
             <p className="text-xs font-serif text-[#EDE0CC] leading-relaxed">
@@ -629,7 +629,7 @@ export const HexagramElementsChart: React.FC<HexagramElementsChartProps> = ({
       <div className="bg-[#14100C] border border-[#3E2E1D] rounded-xl p-4 sm:p-5 space-y-3.5 shadow-inner">
         <div className="flex items-center justify-between border-b border-[#2C2014] pb-2 flex-wrap gap-2">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#D4AF37]" />
+            <span className="w-2 h-2 rounded-full bg-[#C9A55A]" />
             <h4 className="text-xs sm:text-sm font-serif font-bold text-[#F8EED9] uppercase tracking-wide">
               Bảng Phân Tích Lục Hào Nạp Giáp (Từ Sơ Hào Lên Thượng Hào)
             </h4>
@@ -647,7 +647,7 @@ export const HexagramElementsChart: React.FC<HexagramElementsChartProps> = ({
                 key={y.line}
                 className={`p-3 rounded-xl border transition-all text-xs font-serif space-y-2 relative overflow-hidden ${
                   y.isChanging
-                    ? "bg-gradient-to-br from-[#26170E] to-[#18110A] border-[#D4AF37] ring-1 ring-[#D4AF37]/50 shadow-md"
+                    ? "bg-gradient-to-br from-[#26170E] to-[#18110A] border-[#C9A55A] ring-1 ring-[#C9A55A]/50 shadow-md"
                     : "bg-[#18130E] border-[#342617] hover:border-[#4E3923]"
                 }`}
               >
@@ -664,7 +664,7 @@ export const HexagramElementsChart: React.FC<HexagramElementsChartProps> = ({
                     <span className="font-bold text-[#F3E5AB]">{y.name}</span>
                   </div>
                   {y.isChanging && (
-                    <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-black uppercase bg-[#D4AF37] text-black">
+                    <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-black uppercase bg-[#C9A55A] text-black">
                       Động Biến
                     </span>
                   )}
@@ -693,8 +693,8 @@ export const HexagramElementsChart: React.FC<HexagramElementsChartProps> = ({
                 {y.isChanging && y.transformedElement && y.transformedBranch && (
                   <div className="mt-2 pt-1.5 border-t border-[#3E2A18] text-[11px] space-y-1">
                     <div className="flex items-center justify-between">
-                      <span className="text-[#D4AF37] flex items-center gap-1">
-                        <ArrowRight className="w-3 h-3 text-[#D4AF37]" />
+                      <span className="text-[#C9A55A] flex items-center gap-1">
+                        <ArrowRight className="w-3 h-3 text-[#C9A55A]" />
                         <span>Biến thành:</span>
                       </span>
                       <div className="flex items-center gap-1 font-bold">
@@ -714,7 +714,7 @@ export const HexagramElementsChart: React.FC<HexagramElementsChartProps> = ({
                     </div>
                     {y.transformationRelation && (
                       <div className="text-[10px] text-[#EAD8B1] bg-[#120E0A] p-1.5 rounded border border-[#3E2E1D] leading-tight">
-                        <strong className="text-[#D4AF37]">{y.transformationRelation}:</strong> {y.transformationNote}
+                        <strong className="text-[#C9A55A]">{y.transformationRelation}:</strong> {y.transformationNote}
                       </div>
                     )}
                   </div>

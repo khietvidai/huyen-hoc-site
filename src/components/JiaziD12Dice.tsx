@@ -2082,18 +2082,18 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
       {/* Header Panel */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#2C2114] pb-3">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-[#281D13] border border-[#52402A] text-[#E2B755] shadow-inner">
+          <div className="p-2 rounded-xl bg-[#281D13] border border-[#52402A] text-[#D6B97A] shadow-inner">
             <Sparkles className="w-5 h-5 text-amber-400" />
           </div>
           <div>
             <h3 className="text-sm sm:text-base font-serif font-bold text-[#F5EAD4] flex items-center gap-2 flex-wrap">
               <span>TRỰC NHẬT TINH (LỤC NHÂM ĐẠI ĐỘN) • NGUYỆT TƯỚNG • HOẠT THỜI</span>
               {boardContextLabel && (
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#352514] text-[#FFE28A] border border-amber-600/70">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#352514] text-[#E6D3A3] border border-amber-600/70">
                   {boardContextLabel}
                 </span>
               )}
-              <span className="text-[10px] font-normal px-2 py-0.5 rounded-full bg-[#2A1E14] text-[#E2B755] border border-[#4E3924]">
+              <span className="text-[10px] font-normal px-2 py-0.5 rounded-full bg-[#2A1E14] text-[#D6B97A] border border-[#4E3924]">
                 Tam Thức Chi Thủ
               </span>
             </h3>
@@ -2110,8 +2110,8 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
           onClick={handleRollDice}
           className={`flex items-center gap-2 px-3 py-1.5 rounded-xl font-medium text-xs border transition-all cursor-pointer shadow-md active:scale-95 ${
             isRolling
-              ? "bg-[#3D2C1B] text-[#D4AF37] border-[#E2B755] animate-pulse"
-              : "bg-gradient-to-r from-[#D4AF37] to-[#C59B27] hover:from-[#E5C158] hover:to-[#D4AF37] text-[#120F0B] font-bold border-[#F5EAD4]/30 shadow-[0_0_12px_rgba(212,175,55,0.25)]"
+              ? "bg-[#3D2C1B] text-[#C9A55A] border-[#D6B97A] animate-pulse"
+              : "bg-gradient-to-r from-[#C9A55A] to-[#C59B27] hover:from-[#E5C158] hover:to-[#C9A55A] text-[#120F0B] font-bold border-[#F5EAD4]/30 shadow-[0_0_12px_rgba(212,175,55,0.25)]"
           }`}
           title="Lắc xí ngầu 12 mặt để lấy Hoạt Thời ngẫu nhiên"
         >
@@ -2137,7 +2137,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                   onClick={() => setStarViewMode("tuong12")}
                   className={`px-1.5 py-0.5 text-[10px] rounded cursor-pointer transition-all ${
                     starViewMode === "tuong12"
-                      ? "bg-[#D4AF37] text-[#120F0B] font-bold shadow"
+                      ? "bg-[#C9A55A] text-[#120F0B] font-bold shadow"
                       : "text-[#A89882] hover:text-[#F5EAD4]"
                   }`}
                   title="Thập Nhị Thiên Tướng (12 Quý Thần Lục Nhâm Đại Độn)"
@@ -2149,7 +2149,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                   onClick={() => setStarViewMode("lucdieu")}
                   className={`px-1.5 py-0.5 text-[10px] rounded cursor-pointer transition-all ${
                     starViewMode === "lucdieu"
-                      ? "bg-[#D4AF37] text-[#120F0B] font-bold shadow"
+                      ? "bg-[#C9A55A] text-[#120F0B] font-bold shadow"
                       : "text-[#A89882] hover:text-[#F5EAD4]"
                   }`}
                   title="Lục Diệu Trực Tinh Khổng Minh Lục Nhâm Đại Độn"
@@ -2162,15 +2162,15 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
             {/* Thông tin Can Ngày & Quý Nhân theo Trụ Giờ */}
             <div className="flex items-center justify-between bg-[#231A12] border border-[#3D2E1B] rounded-lg px-2.5 py-1.5 mb-2.5 text-[11px] gap-1 flex-wrap">
               <div className="text-[#DDD0BE]">
-                Nhật Can <strong className="text-[#E2B755] font-serif">{dayCan}</strong> (Chi{" "}
-                <strong className="text-[#E2B755] font-serif">{dayChi}</strong>)
+                Nhật Can <strong className="text-[#D6B97A] font-serif">{dayCan}</strong> (Chi{" "}
+                <strong className="text-[#D6B97A] font-serif">{dayChi}</strong>)
               </div>
               <div className="flex items-center gap-1.5">
                 {/* 3 Lựa Chọn Khởi Quý Selector nhanh */}
                 <button
                   type="button"
                   onClick={() => setIsNobleRuleModalOpen(true)}
-                  className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] border border-[#543F2A] bg-[#1E1710] hover:bg-[#2A1F15] text-[#E2B755] cursor-pointer transition-all"
+                  className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] border border-[#543F2A] bg-[#1E1710] hover:bg-[#2A1F15] text-[#D6B97A] cursor-pointer transition-all"
                   title="3 Lựa Chọn Khởi Quý Nhân (bấm để xem & đổi quy tắc)"
                 >
                   <Crown className="w-2.5 h-2.5 text-amber-400" />
@@ -2245,7 +2245,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
 
                       {/* Ý nghĩa thực tế cốt lõi */}
                       {selectedTuongThan.overview && (
-                        <div className="text-[11px] text-[#FFE28A] font-serif font-medium leading-relaxed bg-[#19120B] p-1.5 rounded-lg border border-[#3A2A1A]">
+                        <div className="text-[11px] text-[#E6D3A3] font-serif font-medium leading-relaxed bg-[#19120B] p-1.5 rounded-lg border border-[#3A2A1A]">
                           "{selectedTuongThan.overview}"
                         </div>
                       )}
@@ -2254,7 +2254,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                       {currentPalaceForGeneral && currentPalaceForGeneral.tuongCungVi && (
                         <div className="text-[10.5px] bg-[#271B10] border border-amber-600/70 p-2 rounded-lg text-amber-200 space-y-1">
                           <div className="flex items-center justify-between gap-1 flex-wrap">
-                            <span className="font-bold text-[#FFE28A]">
+                            <span className="font-bold text-[#E6D3A3]">
                               ⚡ Hiện Cư Thiên Bàn [{currentPalaceForGeneral.skyName}] (lâm Địa {currentPalaceForGeneral.groundName}):
                             </span>
                             <span className="font-serif font-bold text-amber-300">
@@ -2287,7 +2287,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                         if (tuongDetail) setGeneralModalActiveId(tuongDetail.id);
                         setIs12GeneralModalOpen(true);
                       }}
-                      className="text-[11px] text-[#FFE28A] hover:text-white flex items-center gap-1.5 cursor-pointer bg-gradient-to-r from-[#2F2113] to-[#24190F] hover:from-[#3D2C1A] hover:to-[#2F2114] px-2.5 py-1 rounded-lg border border-[#5A4026] shadow-sm transition-all"
+                      className="text-[11px] text-[#E6D3A3] hover:text-white flex items-center gap-1.5 cursor-pointer bg-gradient-to-r from-[#2F2113] to-[#24190F] hover:from-[#3D2C1A] hover:to-[#2F2114] px-2.5 py-1 rounded-lg border border-[#5A4026] shadow-sm transition-all"
                     >
                       <BookOpen className="w-3.5 h-3.5 text-amber-400" />
                       <span>Xem 12 Cung Thần Lâm (Cư Tý → Cư Hợi)</span>
@@ -2296,7 +2296,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                     <button
                       type="button"
                       onClick={() => setIsTuongThanSelectOpen(!isTuongThanSelectOpen)}
-                      className="text-[11px] text-[#E2B755] hover:underline flex items-center gap-1 cursor-pointer bg-[#241B12] px-2 py-0.5 rounded border border-[#3E2D1C]"
+                      className="text-[11px] text-[#D6B97A] hover:underline flex items-center gap-1 cursor-pointer bg-[#241B12] px-2 py-0.5 rounded border border-[#3E2D1C]"
                     >
                       <span>Chọn trong 12 Thiên Tướng</span>
                       <ChevronDown className={`w-3 h-3 transition-transform ${isTuongThanSelectOpen ? "rotate-180" : ""}`} />
@@ -2315,7 +2315,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                           }}
                           className={`p-1.5 rounded-lg border text-left transition-all cursor-pointer ${
                             selectedTuongThan.index === item.index
-                              ? "bg-[#D4AF37] text-[#120F0B] font-bold border-[#F5EAD4] shadow-md"
+                              ? "bg-[#C9A55A] text-[#120F0B] font-bold border-[#F5EAD4] shadow-md"
                               : "bg-[#231A12] hover:bg-[#302419] text-[#DDD0BE] border-[#3D2E1C]"
                           }`}
                         >
@@ -2351,7 +2351,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                         {lucDieuData.info.nature}
                       </span>
                     </div>
-                    <div className="text-[11px] text-[#E2B755] mt-0.5">
+                    <div className="text-[11px] text-[#D6B97A] mt-0.5">
                       Âm lịch: Tháng {lucDieuData.lunarMonth} • Ngày {lucDieuData.lunarDay}
                     </div>
                     <p className="text-[10px] text-[#CDBFA8] mt-0.5 italic line-clamp-1">
@@ -2398,15 +2398,15 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                         badgeText: "Can Thượng Tâm Ấn",
                       });
                     }}
-                    className="p-2 rounded-lg bg-[#22170D] hover:bg-[#2C1D10] border border-[#4E361F] hover:border-[#D4AF37] transition-all cursor-pointer space-y-1 group"
+                    className="p-2 rounded-lg bg-[#22170D] hover:bg-[#2C1D10] border border-[#4E361F] hover:border-[#C9A55A] transition-all cursor-pointer space-y-1 group"
                     title="Bấm xem chi tiết Tâm Ấn Phú Can Thượng"
                   >
                     <div className="flex items-center justify-between text-[10px]">
-                      <span className="text-[#E2B755] font-semibold flex items-center gap-1">
+                      <span className="text-[#D6B97A] font-semibold flex items-center gap-1">
                         <span>Can Thượng:</span>
                         <strong className="text-white font-serif">{lucNhamData.tuKhoa[0].thuongChi}</strong>
                       </span>
-                      <span className="font-serif font-black text-[#FFE28A] group-hover:text-amber-200 truncate">
+                      <span className="font-serif font-black text-[#E6D3A3] group-hover:text-amber-200 truncate">
                         《{lucNhamData.tuKhoa[0].tamAnPhu.tuongName}》
                         {lucNhamData.tuKhoa[0].tamAnPhu.tuongChinese ? ` (${lucNhamData.tuKhoa[0].tamAnPhu.tuongChinese})` : ""}
                       </span>
@@ -2447,15 +2447,15 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                         badgeText: "Chi Thượng Tâm Ấn",
                       });
                     }}
-                    className="p-2 rounded-lg bg-[#22170D] hover:bg-[#2C1D10] border border-[#4E361F] hover:border-[#D4AF37] transition-all cursor-pointer space-y-1 group"
+                    className="p-2 rounded-lg bg-[#22170D] hover:bg-[#2C1D10] border border-[#4E361F] hover:border-[#C9A55A] transition-all cursor-pointer space-y-1 group"
                     title="Bấm xem chi tiết Tâm Ấn Phú Chi Thượng"
                   >
                     <div className="flex items-center justify-between text-[10px]">
-                      <span className="text-[#E2B755] font-semibold flex items-center gap-1">
+                      <span className="text-[#D6B97A] font-semibold flex items-center gap-1">
                         <span>Chi Thượng:</span>
                         <strong className="text-white font-serif">{lucNhamData.tuKhoa[2].thuongChi}</strong>
                       </span>
-                      <span className="font-serif font-black text-[#FFE28A] group-hover:text-amber-200 truncate">
+                      <span className="font-serif font-black text-[#E6D3A3] group-hover:text-amber-200 truncate">
                         《{lucNhamData.tuKhoa[2].tamAnPhu.tuongName}》
                         {lucNhamData.tuKhoa[2].tamAnPhu.tuongChinese ? ` (${lucNhamData.tuKhoa[2].tamAnPhu.tuongChinese})` : ""}
                       </span>
@@ -2497,12 +2497,12 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                       badgeText: "Trực Nhật Tâm Ấn",
                     });
                   }}
-                  className="p-1.5 rounded-lg bg-[#1B1108] hover:bg-[#25170B] border border-[#3E2B18] hover:border-[#D4AF37] transition-all cursor-pointer flex items-center justify-between text-[10px] group"
+                  className="p-1.5 rounded-lg bg-[#1B1108] hover:bg-[#25170B] border border-[#3E2B18] hover:border-[#C9A55A] transition-all cursor-pointer flex items-center justify-between text-[10px] group"
                 >
                   <span className="text-[#C4B49F] flex items-center gap-1">
                     <span>Trực Ngày <strong className={selectedTuongThan.color}>{selectedTuongThan.name}</strong> cư <strong>{dayChi}</strong>:</span>
                   </span>
-                  <span className="font-serif font-black text-[#FFE28A] group-hover:text-amber-200 flex items-center gap-1">
+                  <span className="font-serif font-black text-[#E6D3A3] group-hover:text-amber-200 flex items-center gap-1">
                     《{lucNhamData.nhatTrucTamAn.trucNhatTamAn.tuongName}》
                     <Eye className="w-2.5 h-2.5 text-amber-400" />
                   </span>
@@ -2513,12 +2513,12 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
 
           <div className="mt-2.5 pt-2 border-t border-[#261C11] text-[10px] text-[#8C7D6B] flex items-center justify-between gap-1 flex-wrap">
             <span className="truncate max-w-[240px] sm:max-w-none">
-              Khẩu quyết ({selectedNobleRule === "jia_yang_wu_geng_niu" ? "LC 1" : selectedNobleRule === "jia_wu_geng_niu_yang_tu_she" ? "LC 2" : "LC 3"}): <strong className="text-[#E2B755]">{nobleInfo.poem}</strong>
+              Khẩu quyết ({selectedNobleRule === "jia_yang_wu_geng_niu" ? "LC 1" : selectedNobleRule === "jia_wu_geng_niu_yang_tu_she" ? "LC 2" : "LC 3"}): <strong className="text-[#D6B97A]">{nobleInfo.poem}</strong>
             </span>
             <button
               type="button"
               onClick={() => setIsNobleRuleModalOpen(true)}
-              className="text-[#E2B755] hover:underline cursor-pointer font-medium shrink-0 flex items-center gap-0.5"
+              className="text-[#D6B97A] hover:underline cursor-pointer font-medium shrink-0 flex items-center gap-0.5"
             >
               <span>3 Lựa Chọn Khởi Quý</span>
               <ChevronDown className="w-3 h-3 opacity-80" />
@@ -2537,7 +2537,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
               <button
                 type="button"
                 onClick={() => setIsTuongSelectOpen(!isTuongSelectOpen)}
-                className="text-[11px] text-[#E2B755] hover:underline flex items-center gap-0.5 cursor-pointer"
+                className="text-[11px] text-[#D6B97A] hover:underline flex items-center gap-0.5 cursor-pointer"
               >
                 <span>Đổi Tướng</span>
                 <ChevronDown className="w-3 h-3" />
@@ -2578,7 +2578,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                     }}
                     className={`p-1.5 rounded-lg border text-center transition-all cursor-pointer ${
                       selectedTuong.branch === item.branch
-                        ? "bg-[#D4AF37] text-[#120F0B] font-bold border-[#F5EAD4]"
+                        ? "bg-[#C9A55A] text-[#120F0B] font-bold border-[#F5EAD4]"
                         : "bg-[#231A12] hover:bg-[#302419] text-[#DDD0BE] border-[#3D2E1C]"
                     }`}
                   >
@@ -2611,7 +2611,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                     badgeText: "Nguyệt Tướng Tâm Ấn",
                   });
                 }}
-                className="mt-2.5 p-2.5 rounded-xl bg-gradient-to-b from-[#1F150B] to-[#140C06] border border-[#5A4026] hover:border-[#D4AF37] transition-all cursor-pointer space-y-1.5 shadow-sm group"
+                className="mt-2.5 p-2.5 rounded-xl bg-gradient-to-b from-[#1F150B] to-[#140C06] border border-[#5A4026] hover:border-[#C9A55A] transition-all cursor-pointer space-y-1.5 shadow-sm group"
                 title="Bấm xem toàn văn khẩu quyết Tâm Ấn Phú Nguyệt Tướng"
               >
                 <div className="flex items-center justify-between gap-1 text-[10.5px]">
@@ -2619,7 +2619,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                     <BookOpen className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                     <span>TÂM ẤN NGUYỆT TƯỚNG:</span>
                   </span>
-                  <span className="font-serif font-black text-[#FFE28A] group-hover:text-amber-200">
+                  <span className="font-serif font-black text-[#E6D3A3] group-hover:text-amber-200">
                     《{lucNhamData.nguyetTuongTamAn.tamAnPhu.tuongName}》
                     {lucNhamData.nguyetTuongTamAn.tamAnPhu.tuongChinese ? ` (${lucNhamData.nguyetTuongTamAn.tamAnPhu.tuongChinese})` : ""}
                   </span>
@@ -2668,7 +2668,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsHoatThoiSelectOpen(!isHoatThoiSelectOpen)}
-                  className="px-2 py-0.5 rounded text-[10px] border border-[#523F27] bg-[#22180F] hover:bg-[#322315] text-[#E2B755] cursor-pointer transition-all flex items-center gap-1 font-medium shadow-xs"
+                  className="px-2 py-0.5 rounded text-[10px] border border-[#523F27] bg-[#22180F] hover:bg-[#322315] text-[#D6B97A] cursor-pointer transition-all flex items-center gap-1 font-medium shadow-xs"
                   title="Bấm để lựa chọn 1 trong 12 Địa Chi làm Hoạt Thời"
                 >
                   <Clock className="w-2.5 h-2.5 text-amber-400" />
@@ -2685,16 +2685,16 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                 disabled={isRolling}
                 className={`w-12 h-12 rounded-xl border flex flex-col items-center justify-center shrink-0 cursor-pointer transition-all shadow-inner group relative ${
                   isRolling
-                    ? "bg-[#352516] border-[#D4AF37] rotate-12 scale-105"
+                    ? "bg-[#352516] border-[#C9A55A] rotate-12 scale-105"
                     : isHoatThoiSelectOpen
-                    ? "bg-gradient-to-br from-[#3D2C1B] to-[#20160D] border-[#D4AF37] ring-1 ring-[#D4AF37]"
-                    : "bg-gradient-to-br from-[#2D2115] to-[#18110B] border-[#5A4329] hover:border-[#D4AF37]"
+                    ? "bg-gradient-to-br from-[#3D2C1B] to-[#20160D] border-[#C9A55A] ring-1 ring-[#C9A55A]"
+                    : "bg-gradient-to-br from-[#2D2115] to-[#18110B] border-[#5A4329] hover:border-[#C9A55A]"
                 }`}
                 title="Bấm vào để chọn Hoạt Thời trong 12 Địa Chi hoặc mở danh sách chọn"
               >
                 <span
                   className={`text-lg font-serif font-bold transition-transform ${
-                    isRolling ? "animate-spin text-[#E2B755]" : "text-[#F5EAD4] group-hover:scale-110"
+                    isRolling ? "animate-spin text-[#D6B97A]" : "text-[#F5EAD4] group-hover:scale-110"
                   }`}
                 >
                   {currentHoatThoi.chinese}
@@ -2707,7 +2707,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                   <h4 className="text-base font-bold text-[#F5EAD4]">
                     Giờ {currentHoatThoi.name}
                   </h4>
-                  <span className="text-xs font-serif font-bold text-[#E2B755] bg-[#2C1F13] px-2 py-0.5 rounded border border-[#483522]">
+                  <span className="text-xs font-serif font-bold text-[#D6B97A] bg-[#2C1F13] px-2 py-0.5 rounded border border-[#483522]">
                     {hoatThoiCanName} {currentHoatThoi.name}
                   </span>
                 </div>
@@ -2723,7 +2723,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
             {/* BẢNG LỰA CHỌN 12 ĐỊA CHI HOẠT THỜI */}
             {isHoatThoiSelectOpen && (
               <div className="mt-2.5 p-2 bg-[#1C160F] border border-[#483724] rounded-xl animate-in fade-in">
-                <div className="text-[10.5px] font-serif font-bold text-[#D4AF37] mb-1.5 flex items-center justify-between">
+                <div className="text-[10.5px] font-serif font-bold text-[#C9A55A] mb-1.5 flex items-center justify-between">
                   <span>CHỌN 1 TRONG 12 ĐỊA CHI LÀM HOẠT THỜI:</span>
                   <span className="text-[9.5px] text-[#A89882] font-sans font-normal">Bấm để áp dụng ngay</span>
                 </div>
@@ -2738,7 +2738,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                         onClick={() => handleSelectHoatThoi(idx)}
                         className={`p-1.5 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center ${
                           isSelected
-                            ? "bg-[#D4AF37] text-[#120F0B] font-bold border-[#F5EAD4] shadow-md scale-105"
+                            ? "bg-[#C9A55A] text-[#120F0B] font-bold border-[#F5EAD4] shadow-md scale-105"
                             : "bg-[#231A12] hover:bg-[#302419] text-[#DDD0BE] border-[#3D2E1C] hover:border-amber-500/50"
                         }`}
                         title={`Chọn Hoạt Thời: Giờ ${item.name} (${calculatedCan} ${item.name})`}
@@ -2748,7 +2748,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                           {item.name}
                         </span>
                         <span className="text-[9px] opacity-75">{item.chinese}</span>
-                        <span className={`text-[8.5px] font-mono mt-0.5 ${isSelected ? "text-[#120F0B] font-bold" : "text-[#E2B755]"}`}>
+                        <span className={`text-[8.5px] font-mono mt-0.5 ${isSelected ? "text-[#120F0B] font-bold" : "text-[#D6B97A]"}`}>
                           {calculatedCan}
                         </span>
                       </button>
@@ -2774,8 +2774,8 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                 onClick={() => setIsHoatThoiSelectOpen(!isHoatThoiSelectOpen)}
                 className={`py-1.5 px-2.5 rounded-lg text-xs font-semibold border transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap ${
                   isHoatThoiSelectOpen
-                    ? "bg-[#D4AF37] text-[#120F0B] border-[#F5EAD4]"
-                    : "bg-[#221910] hover:bg-[#322316] text-[#E2B755] border-[#4E3924]"
+                    ? "bg-[#C9A55A] text-[#120F0B] border-[#F5EAD4]"
+                    : "bg-[#221910] hover:bg-[#322316] text-[#D6B97A] border-[#4E3924]"
                 }`}
                 title="Bấm để mở danh sách 12 Địa Chi lựa chọn Hoạt Thời"
               >
@@ -2790,7 +2790,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                   className={`py-1.5 px-2.5 rounded-lg text-xs font-semibold border transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap ${
                     justApplied
                       ? "bg-emerald-900/80 text-emerald-200 border-emerald-600"
-                      : "bg-[#332517] hover:bg-[#43311E] text-[#E2B755] border-[#5E4427]"
+                      : "bg-[#332517] hover:bg-[#43311E] text-[#D6B97A] border-[#5E4427]"
                   }`}
                   title="Áp dụng chi này vào Trụ Giờ của bảng 8 ô Bát Tự"
                 >
@@ -2829,7 +2829,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                     badgeText: "Hoạt Thời Tâm Ấn",
                   });
                 }}
-                className="mt-2.5 p-2.5 rounded-xl bg-gradient-to-b from-[#1F150B] to-[#140C06] border border-[#5A4026] hover:border-[#D4AF37] transition-all cursor-pointer space-y-1.5 shadow-sm group"
+                className="mt-2.5 p-2.5 rounded-xl bg-gradient-to-b from-[#1F150B] to-[#140C06] border border-[#5A4026] hover:border-[#C9A55A] transition-all cursor-pointer space-y-1.5 shadow-sm group"
                 title="Bấm xem toàn văn khẩu quyết Tâm Ấn Phú Hoạt Thời"
               >
                 <div className="flex items-center justify-between gap-1 text-[10.5px]">
@@ -2837,7 +2837,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                     <BookOpen className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                     <span>TÂM ẤN HOẠT THỜI:</span>
                   </span>
-                  <span className="font-serif font-black text-[#FFE28A] group-hover:text-amber-200">
+                  <span className="font-serif font-black text-[#E6D3A3] group-hover:text-amber-200">
                     《{lucNhamData.hoatThoiTamAn.tamAnPhu.tuongName}》
                     {lucNhamData.hoatThoiTamAn.tamAnPhu.tuongChinese ? ` (${lucNhamData.hoatThoiTamAn.tamAnPhu.tuongChinese})` : ""}
                   </span>
@@ -2879,7 +2879,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
       <div className="p-3 sm:p-3.5 rounded-xl bg-[#19130D] border border-[#3A2B1A] flex flex-col space-y-2.5 text-xs">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 flex-wrap">
-            <Sparkles className="w-4 h-4 text-[#E2B755] shrink-0" />
+            <Sparkles className="w-4 h-4 text-[#D6B97A] shrink-0" />
             <span className="text-[#8C7D6B] font-semibold">LỤC NHÂM ĐẠI ĐỘN PHỐI KHÍ:</span>
             <span className="font-serif text-[#F5EAD4] font-bold">
               Trực Nhật [
@@ -2888,11 +2888,11 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                 : `${lucDieuData.info.name} • ${lucDieuData.info.star}`}
               ]
             </span>
-            <span className="text-[#E2B755] font-bold">➔</span>
+            <span className="text-[#D6B97A] font-bold">➔</span>
             <span className="font-serif text-[#F5EAD4] font-bold">
               Nguyệt Tướng [{selectedTuong.branch} • {selectedTuong.name}]
             </span>
-            <span className="text-[#E2B755] font-bold">加</span>
+            <span className="text-[#D6B97A] font-bold">加</span>
             <span className="font-serif text-[#F5EAD4] font-bold">
               {timePlateSource === "hoatthoi"
                 ? `Hoạt Thời [${currentHoatThoi.name} - ${hoatThoiCanName} ${currentHoatThoi.name}] • Chiêm Thời: ${hourChi} (Cố định)`
@@ -2910,10 +2910,10 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
             <button
               type="button"
               onClick={handleSelectCurrentDateTime}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#271E14] hover:bg-[#3D2C1B] text-[#E2B755] hover:text-[#FFE28A] border border-[#523F27] hover:border-[#D4AF37] text-xs font-semibold cursor-pointer transition-all shadow active:scale-95"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#271E14] hover:bg-[#3D2C1B] text-[#D6B97A] hover:text-[#E6D3A3] border border-[#523F27] hover:border-[#C9A55A] text-xs font-semibold cursor-pointer transition-all shadow active:scale-95"
               title="Tự động nạp Bát Tự Ngày Giờ và Nguyệt Tướng theo thời gian thực tế hiện tại"
             >
-              <Clock className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <Clock className="w-3.5 h-3.5 text-[#C9A55A]" />
               <span>Ngày Giờ Hiện Tại</span>
             </button>
 
@@ -2931,7 +2931,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
             <button
               type="button"
               onClick={() => setIsHistoryModalOpen(true)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#241B12] hover:bg-[#342618] text-[#E2B755] border border-[#4D3823] text-xs font-semibold cursor-pointer transition-all shadow"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#241B12] hover:bg-[#342618] text-[#D6B97A] border border-[#4D3823] text-xs font-semibold cursor-pointer transition-all shadow"
               title="Xem danh sách các quẻ Lục Nhâm đã lưu"
             >
               <History className="w-3.5 h-3.5 text-amber-400" />
@@ -2941,7 +2941,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
             <button
               type="button"
               onClick={() => setIsLucNhamChartOpen(!isLucNhamChartOpen)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2D1F13] hover:bg-[#3D2C1B] text-[#E2B755] border border-[#52402A] text-xs font-semibold cursor-pointer transition-all shadow"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2D1F13] hover:bg-[#3D2C1B] text-[#D6B97A] border border-[#52402A] text-xs font-semibold cursor-pointer transition-all shadow"
             >
               <Compass className="w-3.5 h-3.5 text-amber-400" />
               <span>{isLucNhamChartOpen ? "Thu gọn Bàn Lục Nhâm" : "Mở Bàn Lục Nhâm • Tứ Khóa • Tam Truyền"}</span>
@@ -2978,7 +2978,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                   badgeText: "Nguyệt Tướng Tâm Ấn",
                 });
               }}
-              className="px-2 py-0.5 rounded-lg bg-[#251A10] hover:bg-[#352516] border border-[#523C23] hover:border-amber-400 text-[#E2B755] hover:text-white transition-all cursor-pointer flex items-center gap-1 shadow-xs"
+              className="px-2 py-0.5 rounded-lg bg-[#251A10] hover:bg-[#352516] border border-[#523C23] hover:border-amber-400 text-[#D6B97A] hover:text-white transition-all cursor-pointer flex items-center gap-1 shadow-xs"
               title="Bấm xem chi tiết Tâm Ấn Phú Nguyệt Tướng"
             >
               <Sun className="w-3 h-3 text-sky-400" />
@@ -3010,7 +3010,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                   badgeText: "Nhật Chiêm Can Thượng",
                 });
               }}
-              className="px-2 py-0.5 rounded-lg bg-[#251A10] hover:bg-[#352516] border border-[#523C23] hover:border-amber-400 text-[#E2B755] hover:text-white transition-all cursor-pointer flex items-center gap-1 shadow-xs"
+              className="px-2 py-0.5 rounded-lg bg-[#251A10] hover:bg-[#352516] border border-[#523C23] hover:border-amber-400 text-[#D6B97A] hover:text-white transition-all cursor-pointer flex items-center gap-1 shadow-xs"
               title="Bấm xem chi tiết Tâm Ấn Phú Nhật Chiêm (Can Thượng & Chi Thượng)"
             >
               <Crown className="w-3 h-3 text-amber-400" />
@@ -3047,7 +3047,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                   badgeText: "Hoạt Thời Tâm Ấn",
                 });
               }}
-              className="px-2 py-0.5 rounded-lg bg-[#251A10] hover:bg-[#352516] border border-[#523C23] hover:border-amber-400 text-[#E2B755] hover:text-white transition-all cursor-pointer flex items-center gap-1 shadow-xs"
+              className="px-2 py-0.5 rounded-lg bg-[#251A10] hover:bg-[#352516] border border-[#523C23] hover:border-amber-400 text-[#D6B97A] hover:text-white transition-all cursor-pointer flex items-center gap-1 shadow-xs"
               title="Bấm xem chi tiết Tâm Ấn Phú Hoạt Thời"
             >
               <Dices className="w-3 h-3 text-yellow-400" />
@@ -3068,11 +3068,11 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
           {/* ================= KHU VỰC CÂU HỎI CHIÊM ĐOÁN & LƯU QUẺ LỤC NHÂM ================= */}
           <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#1C150E] via-[#22180F] to-[#18110B] border border-[#523E26] shadow-2xl space-y-3 relative overflow-hidden">
             {/* Background ambient glow */}
-            <div className="absolute top-0 right-0 w-64 h-32 bg-[#D4AF37]/5 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute top-0 right-0 w-64 h-32 bg-[#C9A55A]/5 rounded-full blur-2xl pointer-events-none" />
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-[#332517] pb-3">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#D4AF37] to-[#8C6218] flex items-center justify-center text-[#120F0B] font-bold shadow shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#C9A55A] to-[#8C6218] flex items-center justify-center text-[#120F0B] font-bold shadow shrink-0">
                   <Compass className="w-4 h-4" />
                 </div>
                 <div>
@@ -3093,7 +3093,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsHistoryModalOpen(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#261C12] hover:bg-[#342618] border border-[#4D3823] hover:border-[#D4AF37] text-xs text-[#E2B755] font-semibold cursor-pointer transition-all shadow-sm active:scale-95"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#261C12] hover:bg-[#342618] border border-[#4D3823] hover:border-[#C9A55A] text-xs text-[#D6B97A] font-semibold cursor-pointer transition-all shadow-sm active:scale-95"
                   title="Xem danh sách các quẻ Lục Nhâm đã lưu"
                 >
                   <History className="w-3.5 h-3.5 text-amber-400" />
@@ -3110,7 +3110,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                   value={question}
                   onChange={(e) => handleQuestionChange(e.target.value)}
                   placeholder="Nhập nội dung sự việc cần chiêm đoán (ví dụ: Công việc thăng tiến, Xuất hành bình an, Hợp tác làm ăn, Tài lộc tháng này...)..."
-                  className="w-full bg-[#120D08] border border-[#3E2E1D] focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]/50 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-[#F5EAD4] placeholder-[#736350] transition-colors outline-none pr-10"
+                  className="w-full bg-[#120D08] border border-[#3E2E1D] focus:border-[#C9A55A] focus:ring-1 focus:ring-[#C9A55A]/50 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-[#F5EAD4] placeholder-[#736350] transition-colors outline-none pr-10"
                 />
                 {question && (
                   <button
@@ -3127,14 +3127,14 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
               {/* Quick Topic Chips */}
               <div className="flex items-center gap-1.5 flex-wrap text-[11px]">
                 <span className="text-[#8C7D6B] text-[10.5px] flex items-center gap-1 shrink-0">
-                  <Sparkles className="w-3 h-3 text-[#D4AF37]" /> Gợi ý sự vụ:
+                  <Sparkles className="w-3 h-3 text-[#C9A55A]" /> Gợi ý sự vụ:
                 </span>
                 {QUICK_QUESTION_TOPICS.map((topic) => (
                   <button
                     key={topic}
                     type="button"
                     onClick={() => handleQuestionChange(question ? `${question} • ${topic}` : `Chiêm việc ${topic}`)}
-                    className="px-2.5 py-1 rounded-lg bg-[#20170F] hover:bg-[#2F2115] border border-[#3A2C1C] hover:border-[#D4AF37] text-[#CDBFA8] hover:text-[#FFE28A] text-[10.5px] transition-colors cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg bg-[#20170F] hover:bg-[#2F2115] border border-[#3A2C1C] hover:border-[#C9A55A] text-[#CDBFA8] hover:text-[#E6D3A3] text-[10.5px] transition-colors cursor-pointer"
                   >
                     {topic}
                   </button>
@@ -3157,7 +3157,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                 <button
                   type="button"
                   onClick={handleCopyCurrentSummary}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#20170F] hover:bg-[#2C2014] border border-[#3D2D1B] hover:border-[#D4AF37] text-xs text-[#DDD0BE] hover:text-[#FFE28A] font-semibold cursor-pointer transition-all active:scale-95"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#20170F] hover:bg-[#2C2014] border border-[#3D2D1B] hover:border-[#C9A55A] text-xs text-[#DDD0BE] hover:text-[#E6D3A3] font-semibold cursor-pointer transition-all active:scale-95"
                   title="Sao chép tóm tắt quẻ chiêm đoán hiện tại"
                 >
                   <Copy className="w-3.5 h-3.5 text-amber-400" />
@@ -3167,17 +3167,17 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                 <button
                   type="button"
                   onClick={handleSelectCurrentDateTime}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#241A10] hover:bg-[#332415] border border-[#4D3720] hover:border-[#D4AF37] text-xs text-[#E2B755] hover:text-[#FFE28A] font-semibold cursor-pointer transition-all active:scale-95"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#241A10] hover:bg-[#332415] border border-[#4D3720] hover:border-[#C9A55A] text-xs text-[#D6B97A] hover:text-[#E6D3A3] font-semibold cursor-pointer transition-all active:scale-95"
                   title="Lấy chính xác Bát Tự Ngày Giờ và Nguyệt Tướng theo thời gian thực"
                 >
-                  <Clock className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <Clock className="w-3.5 h-3.5 text-[#C9A55A]" />
                   <span>Lấy Giờ Hiện Tại</span>
                 </button>
               </div>
 
               {/* Toast Feedback Message */}
               {saveToastMsg && (
-                <div className="flex items-center gap-1.5 text-xs text-[#FFE28A] bg-amber-950/80 border border-amber-600/80 px-3 py-1.5 rounded-xl shadow-lg animate-in fade-in slide-in-from-right duration-200">
+                <div className="flex items-center gap-1.5 text-xs text-[#E6D3A3] bg-amber-950/80 border border-amber-600/80 px-3 py-1.5 rounded-xl shadow-lg animate-in fade-in slide-in-from-right duration-200">
                   <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
                   <span className="font-semibold">{saveToastMsg}</span>
                 </div>
@@ -3196,7 +3196,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                   onClick={() => setTimePlateSource("hoatthoi")}
                   className={`px-2.5 py-1 rounded text-xs font-medium cursor-pointer transition-all flex items-center gap-1.5 ${
                     timePlateSource === "hoatthoi"
-                      ? "bg-[#D4AF37] text-[#120F0B] font-bold shadow"
+                      ? "bg-[#C9A55A] text-[#120F0B] font-bold shadow"
                       : "text-[#CDBFA8] hover:text-[#F5EAD4]"
                   }`}
                 >
@@ -3208,7 +3208,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                   onClick={() => setTimePlateSource("trugio")}
                   className={`px-2.5 py-1 rounded text-xs font-medium cursor-pointer transition-all flex items-center gap-1.5 ${
                     timePlateSource === "trugio"
-                      ? "bg-[#D4AF37] text-[#120F0B] font-bold shadow"
+                      ? "bg-[#C9A55A] text-[#120F0B] font-bold shadow"
                       : "text-[#CDBFA8] hover:text-[#F5EAD4]"
                   }`}
                 >
@@ -3221,10 +3221,10 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
               <button
                 type="button"
                 onClick={handleSelectCurrentDateTime}
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#281D12] hover:bg-[#382818] text-[#E2B755] hover:text-[#FFE28A] border border-[#523A21] hover:border-[#D4AF37] text-xs font-semibold cursor-pointer transition-all shadow-sm active:scale-95"
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#281D12] hover:bg-[#382818] text-[#D6B97A] hover:text-[#E6D3A3] border border-[#523A21] hover:border-[#C9A55A] text-xs font-semibold cursor-pointer transition-all shadow-sm active:scale-95"
                 title="Lấy Ngày Giờ Bát Tự và Tiết Khí Nguyệt Tướng theo thời gian thực tế"
               >
-                <Clock className="w-3 h-3 text-[#D4AF37]" />
+                <Clock className="w-3 h-3 text-[#C9A55A]" />
                 <span>Chọn Ngày Giờ Hiện Tại</span>
               </button>
             </div>
@@ -3234,7 +3234,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
               <span className="text-[#8C7D6B] font-semibold">Nhật Dạ Quý Nhân:</span>
               <div className="flex items-center gap-1.5 bg-[#22180F] border border-[#3E2D1C] px-2.5 py-1 rounded-lg">
                 <span className="text-[#A89882]">Trụ Giờ <strong>{hourChi}</strong>:</span>
-                <span className="text-[#E2B755] font-semibold">
+                <span className="text-[#D6B97A] font-semibold">
                   {isHourDaytime ? "Ban Ngày (Trú)" : "Ban Đêm (Dạ)"}
                 </span>
                 <span className="text-[#5E4833]">•</span>
@@ -3263,7 +3263,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
               </div>
 
               {/* Huy hiệu chiều an Quý Nhân */}
-              <span className="px-2 py-0.5 rounded bg-[#2A1D13] border border-[#4E3924] text-[11px] text-[#E2B755]">
+              <span className="px-2 py-0.5 rounded bg-[#2A1D13] border border-[#4E3924] text-[11px] text-[#D6B97A]">
                 {lucNhamData.isShunXing ? "Quý Nhân Thuận Hành (↻)" : "Quý Nhân Nghịch Hành (↺)"}
               </span>
             </div>
@@ -3289,7 +3289,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                         onClick={() => handleSelectNobleRule(opt.id)}
                         className={`px-2.5 py-1 rounded text-xs cursor-pointer transition-all flex items-center gap-1.5 ${
                           isSelected
-                            ? "bg-[#D4AF37] text-[#120F0B] font-bold shadow-md"
+                            ? "bg-[#C9A55A] text-[#120F0B] font-bold shadow-md"
                             : "text-[#CDBFA8] hover:text-[#F5EAD4] hover:bg-[#2A1E13]"
                         }`}
                         title={`${opt.label} • ${opt.desc}`}
@@ -3321,7 +3321,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                     setGeneralModalTab("cungvi");
                     setIs12GeneralModalOpen(true);
                   }}
-                  className="text-xs text-[#FFE28A] hover:text-white flex items-center gap-1.5 cursor-pointer bg-[#241B12] hover:bg-[#342417] px-2.5 py-1 rounded-lg border border-[#523C24] hover:border-amber-500/80 transition-all shadow-sm"
+                  className="text-xs text-[#E6D3A3] hover:text-white flex items-center gap-1.5 cursor-pointer bg-[#241B12] hover:bg-[#342417] px-2.5 py-1 rounded-lg border border-[#523C24] hover:border-amber-500/80 transition-all shadow-sm"
                   title="Cẩm nang Thập Nhị Thiên Tướng lâm 12 Cung Thiên Bàn (144 Tượng Thần Bí Quyết)"
                 >
                   <Sparkles className="w-3 h-3 text-amber-400" />
@@ -3335,7 +3335,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                     setGeneralModalTab("tamanphu");
                     setIs12GeneralModalOpen(true);
                   }}
-                  className="text-xs text-[#E2B755] hover:text-[#FFE28A] flex items-center gap-1.5 cursor-pointer bg-gradient-to-r from-[#2A1E11] to-[#1E150C] hover:from-[#382817] hover:to-[#2B1D10] px-2.5 py-1 rounded-lg border border-amber-600/70 hover:border-amber-400 transition-all shadow-sm"
+                  className="text-xs text-[#D6B97A] hover:text-[#E6D3A3] flex items-center gap-1.5 cursor-pointer bg-gradient-to-r from-[#2A1E11] to-[#1E150C] hover:from-[#382817] hover:to-[#2B1D10] px-2.5 py-1 rounded-lg border border-amber-600/70 hover:border-amber-400 transition-all shadow-sm"
                   title="Toàn văn thiên cổ 《Lục Nhâm Thần Khóa • Tâm Ấn Phú》 (心印賦) - 12 Thần lâm 12 Cung Thiên Bàn"
                 >
                   <BookOpen className="w-3 h-3 text-amber-400" />
@@ -3429,7 +3429,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                         <div className="my-2 p-2 rounded-lg bg-[#140E08] border border-[#352516] text-[11px] space-y-1">
                           <div className="text-[#CDBFA8] flex items-center justify-between">
                             <span>Can Ngày:</span>
-                            <strong className="text-[#E2B755] font-serif">{dayCan} ({dayChi})</strong>
+                            <strong className="text-[#D6B97A] font-serif">{dayCan} ({dayChi})</strong>
                           </div>
                           <div className="flex items-center justify-between">
                             <span className="text-amber-200/90 flex items-center gap-1">
@@ -3484,7 +3484,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                 <h4 className="text-sm font-serif font-bold text-[#F5EAD4] tracking-wide">
                   TAM TRUYỀN (三傳)
                 </h4>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#2F2114] text-[#E2B755] border border-[#523A23] font-serif font-bold">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#2F2114] text-[#D6B97A] border border-[#523A23] font-serif font-bold">
                   {lucNhamData.cucName}
                 </span>
 
@@ -3511,7 +3511,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                     item.isKhongVong
                       ? "bg-gradient-to-br from-[#291733] via-[#1B1122] to-[#120B16] border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.25)] ring-1 ring-purple-500/40"
                       : idx === 0
-                      ? "bg-gradient-to-br from-[#2D2012] to-[#1B140B] border-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.18)]"
+                      ? "bg-gradient-to-br from-[#2D2012] to-[#1B140B] border-[#C9A55A] shadow-[0_0_12px_rgba(212,175,55,0.18)]"
                       : "bg-[#1F1710] border-[#3E2E1D]"
                   }`}
                 >
@@ -3520,7 +3520,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                     <div className="flex items-center justify-between gap-1.5 mb-2.5 flex-wrap">
                       <div className="flex items-center gap-1.5">
                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
-                          idx === 0 ? "bg-[#D4AF37] text-[#120F0B]" : "bg-[#332517] text-[#CDBFA8]"
+                          idx === 0 ? "bg-[#C9A55A] text-[#120F0B]" : "bg-[#332517] text-[#CDBFA8]"
                         }`}>
                           {item.stage}
                         </span>
@@ -3634,7 +3634,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                     {/* Tượng Thiên Tướng Lâm Cung (Tính Thiên Bàn) */}
                     {item.tuongCungVi && (
                       <div className="p-1.5 px-2 rounded-lg bg-[#20160D] border border-amber-600/60 text-[9.5px] my-1 text-amber-200 space-y-0.5">
-                        <div className="font-bold text-[#FFE28A] flex items-center justify-between gap-1">
+                        <div className="font-bold text-[#E6D3A3] flex items-center justify-between gap-1">
                           <span>⚡ Cư {item.branch} (Thiên Bàn): {item.tuongCungVi.tuongName} ({item.tuongCungVi.tuongChinese})</span>
                           {item.tuongCungVi.nature && (
                             <span className="text-[8px] px-1 rounded font-normal bg-amber-950 text-amber-300 border border-amber-700/60">
@@ -3655,7 +3655,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
 
                     {/* Hàng 4: Phân tích Lục Thân & Sinh Khắc */}
                     <div className="text-[9.5px] text-[#DDD0BE] bg-[#16100B] p-2 rounded-lg border border-[#2F2113] space-y-0.5 mt-1.5">
-                      <div className="text-[9.5px] text-[#E2B755] font-semibold">
+                      <div className="text-[9.5px] text-[#D6B97A] font-semibold">
                         {item.relationSummary}
                       </div>
                       <div className="text-[9px] text-[#A89882] leading-snug">
@@ -3695,7 +3695,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                 <h4 className="text-sm font-serif font-bold text-[#F5EAD4] tracking-wide">
                   TỨ KHÓA (四課)
                 </h4>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#2F2114] text-[#E2B755] border border-[#523A23]">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#2F2114] text-[#D6B97A] border border-[#523A23]">
                   Hạ Thần ➔ Thượng Thần ➔ Thiên Tướng
                 </span>
               </div>
@@ -3713,7 +3713,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                     key={khoa.id}
                     className={`rounded-xl p-3 border flex flex-col justify-between transition-all ${
                       isPhatDoan
-                        ? "bg-gradient-to-b from-[#2E2012] via-[#22180F] to-[#18110B] border-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.22)] ring-1 ring-[#E2B755]/50"
+                        ? "bg-gradient-to-b from-[#2E2012] via-[#22180F] to-[#18110B] border-[#C9A55A] shadow-[0_0_12px_rgba(212,175,55,0.22)] ring-1 ring-[#D6B97A]/50"
                         : "bg-[#1E160F] border-[#3A2B1A]"
                     }`}
                   >
@@ -3727,7 +3727,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                           <div className="text-[9px] text-[#8C7D6B]">{khoa.sub}</div>
                         </div>
                         {isPhatDoan && (
-                          <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#D4AF37] text-[#120F0B] font-bold flex items-center gap-0.5 animate-pulse">
+                          <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#C9A55A] text-[#120F0B] font-bold flex items-center gap-0.5 animate-pulse">
                             <Zap className="w-2.5 h-2.5" />
                             Phát Đoan
                           </span>
@@ -3749,7 +3749,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                           khoa.isThuongKhongVong ? "bg-purple-950/50 border-purple-600/80 shadow-[0_0_8px_rgba(168,85,247,0.2)]" : "bg-[#2E2215] border-[#4E3924]"
                         }`}>
                           <div className="flex items-center gap-1">
-                            <span className="text-[10px] text-[#E2B755] font-semibold">Thượng:</span>
+                            <span className="text-[10px] text-[#D6B97A] font-semibold">Thượng:</span>
                             {khoa.isThuongKhongVong && (
                               <span className="text-[8px] px-1.5 py-0.2 rounded bg-purple-900/90 text-purple-200 border border-purple-500 font-bold animate-pulse flex items-center gap-0.5">
                                 ⭕ Không Vong
@@ -3793,15 +3793,15 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                         {khoa.tamAnPhu && khoa.tamAnPhu.tuongName && (
                           <div
                             onClick={() => setSelectedTamAnPhuKhoa(khoa)}
-                            className="p-2 rounded-lg bg-gradient-to-b from-[#1C1208] via-[#160E06] to-[#100904] border border-[#5A4026] hover:border-[#D4AF37] transition-all cursor-pointer shadow-sm space-y-1 group"
+                            className="p-2 rounded-lg bg-gradient-to-b from-[#1C1208] via-[#160E06] to-[#100904] border border-[#5A4026] hover:border-[#C9A55A] transition-all cursor-pointer shadow-sm space-y-1 group"
                             title={`Bấm xem chi tiết khẩu quyết Tâm Ấn Phú: 《${khoa.tamAnPhu.tuongName}》`}
                           >
                             <div className="flex items-center justify-between gap-1 text-[10px]">
                               <span className="font-semibold text-amber-400 flex items-center gap-1 font-serif">
-                                <BookOpen className="w-3 h-3 text-[#D4AF37] shrink-0" />
+                                <BookOpen className="w-3 h-3 text-[#C9A55A] shrink-0" />
                                 <span>Tâm Ấn:</span>
                               </span>
-                              <span className="font-serif font-black text-[#FFE28A] group-hover:text-amber-200 truncate">
+                              <span className="font-serif font-black text-[#E6D3A3] group-hover:text-amber-200 truncate">
                                 《{khoa.tamAnPhu.tuongName}》
                                 {khoa.tamAnPhu.tuongChinese ? ` (${khoa.tamAnPhu.tuongChinese})` : ""}
                               </span>
@@ -3863,7 +3863,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                 <h4 className="text-base sm:text-lg font-serif font-bold text-[#F5EAD4] tracking-wide">
                   BÀN LỤC NHÂM (六壬盤)
                 </h4>
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#2F2114] text-[#E2B755] border border-[#523A23] font-medium">
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#2F2114] text-[#D6B97A] border border-[#523A23] font-medium">
                   12 Cung Bát Quái Phương Vị
                 </span>
               </div>
@@ -3895,14 +3895,14 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                         >
                           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.08)_0%,transparent_70%)] pointer-events-none" />
 
-                          <div className="w-11 h-11 rounded-full bg-[#312214] border border-[#6B4E2E] flex items-center justify-center text-[#E2B755] mb-2 shadow-md">
+                          <div className="w-11 h-11 rounded-full bg-[#312214] border border-[#6B4E2E] flex items-center justify-center text-[#D6B97A] mb-2 shadow-md">
                             <Compass className="w-6 h-6 text-amber-400" />
                           </div>
 
                           <div className="text-sm sm:text-base font-serif font-extrabold text-[#F5EAD4] tracking-wider">
                             LỤC NHÂM ĐẠI ĐỘN
                           </div>
-                          <div className="text-xs sm:text-sm text-[#E2B755] font-serif font-bold mt-0.5">
+                          <div className="text-xs sm:text-sm text-[#D6B97A] font-serif font-bold mt-0.5">
                             {lucNhamData.cucName}
                           </div>
 
@@ -3941,7 +3941,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                         palace.isGroundKhongVong
                           ? "bg-gradient-to-b from-[#24132B] to-[#170E1C] border-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.22)] ring-1 ring-purple-500/50"
                           : palace.isNoble
-                          ? "bg-[#2A1D11] border-[#E2B755] shadow-[0_0_8px_rgba(212,175,55,0.18)]"
+                          ? "bg-[#2A1D11] border-[#D6B97A] shadow-[0_0_8px_rgba(212,175,55,0.18)]"
                           : palace.isThoiThan
                           ? "bg-[#251A10] border-amber-600/70"
                           : palace.isNguyetTuong
@@ -4052,7 +4052,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                   <Dices className="w-3.5 h-3.5 text-amber-400" /> Thời Thần (Hoạt Thời)
                 </span>
               </div>
-              <span className="text-[#E2B755] font-serif font-semibold">
+              <span className="text-[#D6B97A] font-serif font-semibold">
                 Đại Lục Nhâm Thần Khóa
               </span>
             </div>
@@ -4073,7 +4073,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsHistoryModalOpen(true)}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#4D3823] hover:border-[#D4AF37] text-xs text-[#E2B755] font-semibold cursor-pointer transition-all shadow-sm active:scale-95"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#241B12] hover:bg-[#342618] border border-[#4D3823] hover:border-[#C9A55A] text-xs text-[#D6B97A] font-semibold cursor-pointer transition-all shadow-sm active:scale-95"
                 >
                   <History className="w-3.5 h-3.5 text-amber-400" />
                   <span>Quẻ Đã Lưu ({savedRecords.length})</span>
@@ -4082,7 +4082,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                 <button
                   type="button"
                   onClick={handleCopyCurrentSummary}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#20170F] hover:bg-[#2C2014] border border-[#3D2D1B] hover:border-[#D4AF37] text-xs text-[#DDD0BE] hover:text-[#FFE28A] font-semibold cursor-pointer transition-all active:scale-95"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#20170F] hover:bg-[#2C2014] border border-[#3D2D1B] hover:border-[#C9A55A] text-xs text-[#DDD0BE] hover:text-[#E6D3A3] font-semibold cursor-pointer transition-all active:scale-95"
                   title="Sao chép toàn bộ tóm tắt quẻ chiêm đoán"
                 >
                   <Copy className="w-3.5 h-3.5 text-amber-400" />
@@ -4091,7 +4091,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
               </div>
 
               {saveToastMsg && (
-                <div className="flex items-center gap-1.5 text-xs text-[#FFE28A] bg-amber-950/80 border border-amber-600/80 px-3 py-1.5 rounded-xl shadow-lg animate-in fade-in duration-200">
+                <div className="flex items-center gap-1.5 text-xs text-[#E6D3A3] bg-amber-950/80 border border-amber-600/80 px-3 py-1.5 rounded-xl shadow-lg animate-in fade-in duration-200">
                   <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
                   <span className="font-semibold">{saveToastMsg}</span>
                 </div>
@@ -4110,11 +4110,11 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-[#2C2114] px-5 py-3.5 bg-[#140F0A]">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#D4AF37] to-[#8C6218] flex items-center justify-center text-[#120F0B] font-bold shadow">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#C9A55A] to-[#8C6218] flex items-center justify-center text-[#120F0B] font-bold shadow">
                   <History className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-base sm:text-lg font-serif font-bold text-[#E2B755]">
+                  <h3 className="text-base sm:text-lg font-serif font-bold text-[#D6B97A]">
                     LỊCH SỬ QUẺ LỤC NHÂM ĐÃ LƯU
                   </h3>
                   <p className="text-[11px] text-[#8C7D6B]">
@@ -4228,7 +4228,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                           <button
                             type="button"
                             onClick={() => handleLoadRecord(rec)}
-                            className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#2E2013] hover:bg-[#3D2C1B] text-[#FFE28A] border border-[#52402A] text-xs font-semibold cursor-pointer transition-all active:scale-95"
+                            className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#2E2013] hover:bg-[#3D2C1B] text-[#E6D3A3] border border-[#52402A] text-xs font-semibold cursor-pointer transition-all active:scale-95"
                             title="Tải lại toàn bộ thông số quẻ này vào bàn Lục Nhâm"
                           >
                             <RotateCcw className="w-3 h-3 text-amber-400" />
@@ -4237,7 +4237,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                           <button
                             type="button"
                             onClick={() => handleCopyRecordSummary(rec)}
-                            className="p-1 text-[#CDBFA8] hover:text-[#FFE28A] bg-[#241B12] hover:bg-[#2F2317] rounded-lg border border-[#3E2D1C] cursor-pointer transition-all"
+                            className="p-1 text-[#CDBFA8] hover:text-[#E6D3A3] bg-[#241B12] hover:bg-[#2F2317] rounded-lg border border-[#3E2D1C] cursor-pointer transition-all"
                             title="Sao chép tóm tắt quẻ"
                           >
                             {copiedRecordId === rec.id ? (
@@ -4279,7 +4279,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
 
                       {/* Question Content */}
                       <div className="text-xs sm:text-sm font-serif font-bold text-[#F5EAD4] flex items-start gap-2">
-                        <span className="text-[#D4AF37] text-base leading-none">❓</span>
+                        <span className="text-[#C9A55A] text-base leading-none">❓</span>
                         <span className="leading-snug">{rec.question}</span>
                       </div>
 
@@ -4290,7 +4290,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                           <div className="text-[10px] text-[#8C7D6B] font-semibold mb-1 flex items-center justify-between">
                             <span>TAM TRUYỀN ({rec.tamTruyen.patternName}):</span>
                           </div>
-                          <div className="flex items-center gap-1.5 text-xs font-serif font-bold text-[#FFE28A] flex-wrap">
+                          <div className="flex items-center gap-1.5 text-xs font-serif font-bold text-[#E6D3A3] flex-wrap">
                             <span className="px-1.5 py-0.5 rounded bg-[#231A11] border border-[#483724]">
                               Sơ: {rec.tamTruyen.soTruyen.branch} ({rec.tamTruyen.soTruyen.general})
                             </span>
@@ -4430,7 +4430,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                   onClick={() => setGeneralModalTab("cungvi")}
                   className={`px-3.5 py-1.5 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer flex items-center gap-2 border ${
                     generalModalTab === "cungvi"
-                      ? "bg-gradient-to-r from-[#D4AF37] to-[#B8861B] text-[#120F0B] border-[#F5EAD4] shadow-md"
+                      ? "bg-gradient-to-r from-[#C9A55A] to-[#B8861B] text-[#120F0B] border-[#F5EAD4] shadow-md"
                       : "bg-[#22180F] hover:bg-[#2E2014] text-[#DDD0BE] border-[#3E2D1C]"
                   }`}
                 >
@@ -4443,7 +4443,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                   onClick={() => setGeneralModalTab("tamanphu")}
                   className={`px-3.5 py-1.5 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer flex items-center gap-2 border ${
                     generalModalTab === "tamanphu"
-                      ? "bg-gradient-to-r from-[#D4AF37] to-[#B8861B] text-[#120F0B] border-[#F5EAD4] shadow-md"
+                      ? "bg-gradient-to-r from-[#C9A55A] to-[#B8861B] text-[#120F0B] border-[#F5EAD4] shadow-md"
                       : "bg-[#22180F] hover:bg-[#2E2014] text-[#DDD0BE] border-[#3E2D1C]"
                   }`}
                 >
@@ -4471,7 +4471,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                         onClick={() => setGeneralModalActiveId(gen.id)}
                         className={`px-2.5 py-1.5 rounded-xl text-xs font-serif transition-all cursor-pointer flex items-center gap-1.5 border ${
                           isSelected
-                            ? "bg-gradient-to-r from-[#D4AF37] to-[#C29729] text-[#120F0B] font-bold border-[#F5EAD4] shadow-md scale-105"
+                            ? "bg-gradient-to-r from-[#C9A55A] to-[#C29729] text-[#120F0B] font-bold border-[#F5EAD4] shadow-md scale-105"
                             : "bg-[#22180F] hover:bg-[#2D2014] text-[#DDD0BE] border-[#402F1E]"
                         }`}
                       >
@@ -4548,7 +4548,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
 
                       {/* Tổng quan ý nghĩa cốt lõi */}
                       <div className="p-2.5 rounded-lg bg-[#140E08] border border-[#3A2917] space-y-1">
-                        <div className="text-xs sm:text-[13px] font-serif text-[#FFE28A] font-semibold leading-relaxed">
+                        <div className="text-xs sm:text-[13px] font-serif text-[#E6D3A3] font-semibold leading-relaxed">
                           "{activeGeneral.overview}"
                         </div>
                         {activeGeneral.specialNotes && (
@@ -4677,7 +4677,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                     <div className="p-4 rounded-2xl bg-gradient-to-r from-[#2B1C10] via-[#21160C] to-[#171008] border border-amber-500/60 shadow-lg space-y-2">
                       <div className="flex items-center gap-2">
                         <BookOpen className="w-5 h-5 text-amber-400" />
-                        <h4 className="text-base sm:text-lg font-serif font-bold text-[#FFE28A]">
+                        <h4 className="text-base sm:text-lg font-serif font-bold text-[#E6D3A3]">
                           {TAM_AN_PHU_CHAPTER_DATA.chineseTitle} ({TAM_AN_PHU_CHAPTER_DATA.title})
                         </h4>
                       </div>
@@ -4880,7 +4880,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                 {palace.tuongCungVi ? (
                   <div className="p-3.5 rounded-xl bg-gradient-to-br from-[#261A10] to-[#1C130B] border border-amber-500/80 shadow-md space-y-2">
                     <div className="flex items-center justify-between gap-1 flex-wrap">
-                      <div className="flex items-center gap-1.5 text-xs font-serif font-bold text-[#FFE28A]">
+                      <div className="flex items-center gap-1.5 text-xs font-serif font-bold text-[#E6D3A3]">
                         <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                         <span>TƯỢNG {palace.general.name.toUpperCase()} CƯ {palace.skyName.toUpperCase()} (THIÊN BÀN):</span>
                         <span className="text-amber-300 underline underline-offset-2">
@@ -4940,7 +4940,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                         <Dices className="w-3.5 h-3.5 text-amber-400" />
                         <span>TÂM ẤN PHÚ HOẠT THỜI (THỜI THẦN):</span>
                       </span>
-                      <span className="text-[#FFE28A]">
+                      <span className="text-[#E6D3A3]">
                         《{lucNhamData.hoatThoiTamAn.tamAnPhu.tuongName}》
                         {lucNhamData.hoatThoiTamAn.tamAnPhu.tuongChinese ? ` (${lucNhamData.hoatThoiTamAn.tamAnPhu.tuongChinese})` : ""}
                       </span>
@@ -4964,7 +4964,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                         <Crown className="w-3.5 h-3.5 text-amber-400" />
                         <span>TÂM ẤN PHÚ NHẬT CHIÊM ({palace.isDayChi ? "CHI NGÀY" : "CAN KÝ"}):</span>
                       </span>
-                      <span className="text-[#FFE28A]">
+                      <span className="text-[#E6D3A3]">
                         {palace.isDayChi
                           ? `《${lucNhamData.tuKhoa[2]?.tamAnPhu?.tuongName || ""}》`
                           : `《${lucNhamData.tuKhoa[0]?.tamAnPhu?.tuongName || ""}》`}
@@ -5042,7 +5042,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
           onClick={() => setSelectedTamAnPhuKhoa(null)}
         >
           <div
-            className="relative w-full max-w-lg bg-gradient-to-b from-[#22160C] via-[#1A1109] to-[#120B06] border-2 border-[#D4AF37] rounded-2xl shadow-[0_0_35px_rgba(212,175,55,0.3)] p-4 sm:p-6 text-[#F5EAD4] space-y-4 max-h-[92vh] overflow-y-auto scrollbar-thin"
+            className="relative w-full max-w-lg bg-gradient-to-b from-[#22160C] via-[#1A1109] to-[#120B06] border-2 border-[#C9A55A] rounded-2xl shadow-[0_0_35px_rgba(212,175,55,0.3)] p-4 sm:p-6 text-[#F5EAD4] space-y-4 max-h-[92vh] overflow-y-auto scrollbar-thin"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Nút đóng */}
@@ -5071,7 +5071,7 @@ export const JiaziD12Dice: React.FC<JiaziD12DiceProps> = ({
                   ({selectedTamAnPhuKhoa.general.chinese})
                 </span>
               </h3>
-              <p className="text-xs text-[#D4AF37] font-semibold mt-1">
+              <p className="text-xs text-[#C9A55A] font-semibold mt-1">
                 Tượng Thần Tâm Ấn Phú: 《{selectedTamAnPhuKhoa.tamAnPhu.tuongName}》
                 {selectedTamAnPhuKhoa.tamAnPhu.tuongChinese ? ` (${selectedTamAnPhuKhoa.tamAnPhu.tuongChinese})` : ""}
               </p>

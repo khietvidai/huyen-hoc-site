@@ -14,7 +14,7 @@ export const SEVEN_STARS_POSITIONS: SpreadPositionInfo[] = [
     name: "1. Quá Khứ",
     subtitle: "Căn nguyên & Nền tảng",
     description: "Cội nguồn phát sinh vấn đề, nhân duyên khởi đầu và bài học kinh nghiệm tiền đề.",
-    tagColor: "#D4AF37",
+    tagColor: "#C9A55A",
   },
   {
     index: 1,
@@ -73,7 +73,7 @@ export const NINE_PALACES_POSITIONS: SpreadPositionInfo[] = [
     name: "Lá 1: Cung 5 • Trung Cung",
     subtitle: "Ngũ Hoàng Thổ • Bản Thể & Trọng Tâm",
     description: "Khí tụ Trung Cung (ở giữa), đại diện cho bản thể, trung tâm tình thế, năng lượng cốt lõi và khởi điểm vận hành.",
-    tagColor: "#D4AF37",
+    tagColor: "#C9A55A",
   },
   {
     index: 1,
@@ -311,7 +311,7 @@ export const TWELVE_HOUSES_INFO = [
     name: "Cung Mệnh",
     alias: "Bản Mệnh",
     description: "Điểm khởi đầu, thể hiện bản ngã, tính cách, ngoại hình và vận mệnh tổng quan.",
-    tagColor: "#D4AF37",
+    tagColor: "#C9A55A",
   },
   {
     houseIndex: 1,
@@ -429,7 +429,7 @@ export const TEN_STARS_POSITIONS: SpreadPositionInfo[] = [
     name: "1. Tình Huống Hiện Tại",
     subtitle: "Tâm điểm vấn đề",
     description: "Thực trạng cốt lõi đang diễn ra, bản chất năng lượng của sự việc tại thời điểm này.",
-    tagColor: "#D4AF37",
+    tagColor: "#C9A55A",
   },
   {
     index: 1,
@@ -512,7 +512,7 @@ export const TEN_STARS_EXPANDED_POSITIONS: SpreadPositionInfo[] = [
     name: "1. Tình Huống Hiện Tại",
     subtitle: "Tâm điểm vấn đề",
     description: "Thực trạng cốt lõi đang diễn ra, bản chất năng lượng của sự việc tại thời điểm này.",
-    tagColor: "#D4AF37",
+    tagColor: "#C9A55A",
   },
   {
     index: 1,

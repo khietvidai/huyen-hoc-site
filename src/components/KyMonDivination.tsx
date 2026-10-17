@@ -267,19 +267,19 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
   return (
     <div className="w-full max-w-5xl mx-auto bg-[#16120E] border border-[#483723] rounded-2xl p-4 sm:p-6 shadow-2xl relative">
       {/* Decorative Border Accent */}
-      <div className="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-[#D4AF37]/60 pointer-events-none" />
-      <div className="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-[#D4AF37]/60 pointer-events-none" />
-      <div className="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-[#D4AF37]/60 pointer-events-none" />
-      <div className="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-[#D4AF37]/60 pointer-events-none" />
+      <div className="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-[#C9A55A]/60 pointer-events-none" />
+      <div className="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-[#C9A55A]/60 pointer-events-none" />
+      <div className="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-[#C9A55A]/60 pointer-events-none" />
+      <div className="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-[#C9A55A]/60 pointer-events-none" />
 
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#2F2215] pb-4 mb-5">
         <div>
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-[#D4AF37] bg-[#261C12] px-2 py-0.5 rounded border border-[#3E2E1D]">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-[#C9A55A] bg-[#261C12] px-2 py-0.5 rounded border border-[#3E2E1D]">
               Tam Thức Chi Đạo • Đệ Nhất Binh Thư
             </span>
-            <span className="text-[10px] font-mono font-bold text-amber-300 bg-[#2B1B0E] border border-[#D4AF37]/60 px-2.5 py-0.5 rounded shadow-xs flex items-center gap-1">
+            <span className="text-[10px] font-mono font-bold text-amber-300 bg-[#2B1B0E] border border-[#C9A55A]/60 px-2.5 py-0.5 rounded shadow-xs flex items-center gap-1">
               <span>⛩️</span> Kỳ Môn Độn Giáp (奇門遁甲)
             </span>
             <span className="text-[10px] font-mono text-[#A89882] bg-[#1C1712] px-2 py-0.5 rounded">
@@ -298,10 +298,10 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
           <button
             type="button"
             onClick={() => setShowTheoryModal(true)}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-serif bg-[#241A12] hover:bg-[#342417] text-[#FFE28A] border border-[#523A21] cursor-pointer shadow active:scale-95 transition-all"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-serif bg-[#241A12] hover:bg-[#342417] text-[#E6D3A3] border border-[#523A21] cursor-pointer shadow active:scale-95 transition-all"
             title="Xem Thuyết Minh Bát Trận Đồ & Nguyên Lý Kỳ Môn"
           >
-            <BookOpen className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <BookOpen className="w-3.5 h-3.5 text-[#C9A55A]" />
             <span>Thuyết Minh Kỳ Môn</span>
           </button>
           {result && (
@@ -329,11 +329,11 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
               onClick={() => setActiveTab("realtime")}
               className={`p-2.5 rounded-xl text-xs font-serif font-bold transition-all flex flex-col items-center justify-center gap-1 cursor-pointer ${
                 activeTab === "realtime"
-                  ? "bg-[#2E1F12] text-[#FFE28A] border border-[#D4AF37] shadow-md"
+                  ? "bg-[#2E1F12] text-[#E6D3A3] border border-[#C9A55A] shadow-md"
                   : "text-[#A89882] hover:text-[#DECAB0] hover:bg-[#1E150D]"
               }`}
             >
-              <Clock className="w-4 h-4 text-[#D4AF37]" />
+              <Clock className="w-4 h-4 text-[#C9A55A]" />
               <span>1. Thời Khắc Hiện Tại</span>
               <span className="text-[9.5px] font-normal text-[#8A7966]">Thời Gia Kỳ Môn</span>
             </button>
@@ -343,11 +343,11 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
               onClick={() => setActiveTab("custom")}
               className={`p-2.5 rounded-xl text-xs font-serif font-bold transition-all flex flex-col items-center justify-center gap-1 cursor-pointer ${
                 activeTab === "custom"
-                  ? "bg-[#2E1F12] text-[#FFE28A] border border-[#D4AF37] shadow-md"
+                  ? "bg-[#2E1F12] text-[#E6D3A3] border border-[#C9A55A] shadow-md"
                   : "text-[#A89882] hover:text-[#DECAB0] hover:bg-[#1E150D]"
               }`}
             >
-              <Calendar className="w-4 h-4 text-[#D4AF37]" />
+              <Calendar className="w-4 h-4 text-[#C9A55A]" />
               <span>2. Tùy Chọn 4 Trụ</span>
               <span className="text-[9.5px] font-normal text-[#8A7966]">Chọn Can Chi & Cục</span>
             </button>
@@ -357,11 +357,11 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
               onClick={() => setActiveTab("mind")}
               className={`p-2.5 rounded-xl text-xs font-serif font-bold transition-all flex flex-col items-center justify-center gap-1 cursor-pointer ${
                 activeTab === "mind"
-                  ? "bg-[#2E1F12] text-[#FFE28A] border border-[#D4AF37] shadow-md"
+                  ? "bg-[#2E1F12] text-[#E6D3A3] border border-[#C9A55A] shadow-md"
                   : "text-[#A89882] hover:text-[#DECAB0] hover:bg-[#1E150D]"
               }`}
             >
-              <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+              <Sparkles className="w-4 h-4 text-[#C9A55A]" />
               <span>3. Động Tâm Chiêm</span>
               <span className="text-[9.5px] font-normal text-[#8A7966]">Bát Trận Động Ý</span>
             </button>
@@ -371,11 +371,11 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
               onClick={() => setActiveTab("number")}
               className={`p-2.5 rounded-xl text-xs font-serif font-bold transition-all flex flex-col items-center justify-center gap-1 cursor-pointer ${
                 activeTab === "number"
-                  ? "bg-[#2E1F12] text-[#FFE28A] border border-[#D4AF37] shadow-md"
+                  ? "bg-[#2E1F12] text-[#E6D3A3] border border-[#C9A55A] shadow-md"
                   : "text-[#A89882] hover:text-[#DECAB0] hover:bg-[#1E150D]"
               }`}
             >
-              <Compass className="w-4 h-4 text-[#D4AF37]" />
+              <Compass className="w-4 h-4 text-[#C9A55A]" />
               <span>4. Bấm Số Cửu Cung</span>
               <span className="text-[9.5px] font-normal text-[#8A7966]">Trắc Số Định Cục</span>
             </button>
@@ -384,11 +384,11 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
           {/* TAB 1: THỜI KHẮC HIỆN TẠI */}
           {activeTab === "realtime" && (
             <div className="bg-[#1C140D] border border-[#4E351D] rounded-2xl p-6 text-center space-y-4 max-w-xl mx-auto shadow-inner">
-              <div className="w-16 h-16 mx-auto rounded-full bg-[#2A1C10] border border-[#D4AF37]/50 flex items-center justify-center text-3xl shadow-lg">
+              <div className="w-16 h-16 mx-auto rounded-full bg-[#2A1C10] border border-[#C9A55A]/50 flex items-center justify-center text-3xl shadow-lg">
                 ⏳
               </div>
               <div className="space-y-1">
-                <h4 className="text-base font-serif font-bold text-[#FFE28A]">
+                <h4 className="text-base font-serif font-bold text-[#E6D3A3]">
                   LẬP BÀN THEO THỜI KHẮC HIỆN TẠI (THỜI GIA KỲ MÔN)
                 </h4>
                 <p className="text-xs text-[#A89882] font-serif leading-relaxed px-4">
@@ -401,7 +401,7 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
                   type="button"
                   onClick={executeRealtimeCast}
                   disabled={isCasting}
-                  className="px-8 py-3 bg-gradient-to-r from-[#8C6218] via-[#D4AF37] to-[#8C6218] hover:brightness-110 active:scale-95 text-[#14100C] font-serif font-bold text-sm rounded-2xl shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-all cursor-pointer flex items-center justify-center gap-2 mx-auto"
+                  className="px-8 py-3 bg-gradient-to-r from-[#8C6218] via-[#C9A55A] to-[#8C6218] hover:brightness-110 active:scale-95 text-[#14100C] font-serif font-bold text-sm rounded-2xl shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-all cursor-pointer flex items-center justify-center gap-2 mx-auto"
                 >
                   {isCasting ? <Loader2 className="w-4 h-4 animate-spin text-[#14100C]" /> : <Zap className="w-4 h-4 text-[#14100C]" />}
                   <span>Khởi Trận Kỳ Môn Hiện Tại</span>
@@ -414,7 +414,7 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
           {activeTab === "custom" && (
             <form onSubmit={executeCustomCast} className="bg-[#1C140D] border border-[#4E351D] rounded-2xl p-5 space-y-4 max-w-2xl mx-auto">
               <div className="text-center space-y-1 border-b border-[#342213] pb-3">
-                <h4 className="text-sm font-serif font-bold text-[#FFE28A]">
+                <h4 className="text-sm font-serif font-bold text-[#E6D3A3]">
                   TÙY BIẾN 4 TRỤ CAN CHI & CỤC SỐ
                 </h4>
                 <p className="text-[11px] text-[#A89882] font-serif">
@@ -431,7 +431,7 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
                   <select
                     value={customDun}
                     onChange={(e) => setCustomDun(e.target.value as any)}
-                    className="w-full bg-[#20160E] border border-[#523A21] rounded-lg px-2.5 py-1.5 text-xs text-[#FFE28A] font-serif focus:border-[#D4AF37] outline-hidden"
+                    className="w-full bg-[#20160E] border border-[#523A21] rounded-lg px-2.5 py-1.5 text-xs text-[#E6D3A3] font-serif focus:border-[#C9A55A] outline-hidden"
                   >
                     <option value="Dương Độn">Dương Độn (Đông Chí ➔ Hạ Chí)</option>
                     <option value="Âm Độn">Âm Độn (Hạ Chí ➔ Đông Chí)</option>
@@ -444,7 +444,7 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
                   <select
                     value={customCuc}
                     onChange={(e) => setCustomCuc(parseInt(e.target.value, 10))}
-                    className="w-full bg-[#20160E] border border-[#523A21] rounded-lg px-2.5 py-1.5 text-xs text-[#FFE28A] font-serif focus:border-[#D4AF37] outline-hidden"
+                    className="w-full bg-[#20160E] border border-[#523A21] rounded-lg px-2.5 py-1.5 text-xs text-[#E6D3A3] font-serif focus:border-[#C9A55A] outline-hidden"
                   >
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
                       <option key={n} value={n}>
@@ -459,7 +459,7 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 {/* Trụ Giờ */}
                 <div className="bg-[#140E08] p-2.5 rounded-xl border border-[#3A2615] space-y-1">
-                  <span className="text-[10px] font-mono text-[#D4AF37] font-bold block">1. TRỤ GIỜ</span>
+                  <span className="text-[10px] font-mono text-[#C9A55A] font-bold block">1. TRỤ GIỜ</span>
                   <div className="flex gap-1">
                     <select
                       value={hourCan}
@@ -545,7 +545,7 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
               <button
                 type="submit"
                 disabled={isCasting}
-                className="w-full py-2.5 bg-gradient-to-r from-[#8C6218] via-[#D4AF37] to-[#8C6218] hover:brightness-110 active:scale-95 text-[#14100C] font-serif font-bold text-xs rounded-xl shadow transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                className="w-full py-2.5 bg-gradient-to-r from-[#8C6218] via-[#C9A55A] to-[#8C6218] hover:brightness-110 active:scale-95 text-[#14100C] font-serif font-bold text-xs rounded-xl shadow transition-all cursor-pointer flex items-center justify-center gap-1.5"
               >
                 {isCasting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Compass className="w-3.5 h-3.5" />}
                 <span>Lập Bàn Kỳ Môn Tùy Chỉnh</span>
@@ -558,13 +558,13 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
             <div className="bg-[#1C140D] border border-[#4E351D] rounded-2xl p-6 text-center space-y-4 max-w-xl mx-auto shadow-inner">
               <div
                 onClick={executeMindCast}
-                className="w-24 h-24 mx-auto rounded-full bg-gradient-to-b from-[#2E1E12] to-[#140D07] border-2 border-[#D4AF37] flex flex-col items-center justify-center cursor-pointer hover:scale-105 active:scale-95 shadow-[0_0_25px_rgba(212,175,55,0.3)] transition-all select-none group"
+                className="w-24 h-24 mx-auto rounded-full bg-gradient-to-b from-[#2E1E12] to-[#140D07] border-2 border-[#C9A55A] flex flex-col items-center justify-center cursor-pointer hover:scale-105 active:scale-95 shadow-[0_0_25px_rgba(212,175,55,0.3)] transition-all select-none group"
               >
                 <span className="text-3xl group-hover:rotate-180 transition-transform duration-700">☯️</span>
-                <span className="text-[10px] font-serif text-[#FFE28A] font-bold mt-1">Động Ý</span>
+                <span className="text-[10px] font-serif text-[#E6D3A3] font-bold mt-1">Động Ý</span>
               </div>
               <div className="space-y-1">
-                <h4 className="text-base font-serif font-bold text-[#FFE28A]">
+                <h4 className="text-base font-serif font-bold text-[#E6D3A3]">
                   ĐỘNG TÂM KHỞI TRẬN (BÁT TRẬN ĐỒ)
                 </h4>
                 <p className="text-xs text-[#A89882] font-serif leading-relaxed px-4">
@@ -576,9 +576,9 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
                 type="button"
                 onClick={executeMindCast}
                 disabled={isCasting}
-                className="px-7 py-2.5 bg-[#2E1E12] hover:bg-[#3D2918] text-[#FFE28A] border border-[#D4AF37]/70 font-serif font-bold text-xs rounded-xl transition-all cursor-pointer shadow active:scale-95 inline-flex items-center gap-2"
+                className="px-7 py-2.5 bg-[#2E1E12] hover:bg-[#3D2918] text-[#E6D3A3] border border-[#C9A55A]/70 font-serif font-bold text-xs rounded-xl transition-all cursor-pointer shadow active:scale-95 inline-flex items-center gap-2"
               >
-                {isCasting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />}
+                {isCasting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-[#C9A55A]" />}
                 <span>Khởi Bàn Kỳ Môn Động Tâm</span>
               </button>
             </div>
@@ -588,7 +588,7 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
           {activeTab === "number" && (
             <form onSubmit={executeNumberCast} className="bg-[#1C140D] border border-[#4E351D] rounded-2xl p-6 text-center space-y-4 max-w-md mx-auto shadow-inner">
               <div className="space-y-1">
-                <h4 className="text-base font-serif font-bold text-[#FFE28A]">
+                <h4 className="text-base font-serif font-bold text-[#E6D3A3]">
                   BẤM SỐ ĐỊNH CỤC KỲ MÔN
                 </h4>
                 <p className="text-xs text-[#A89882] font-serif">
@@ -602,14 +602,14 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
                   value={mindNumber}
                   onChange={(e) => setMindNumber(e.target.value)}
                   placeholder="Ví dụ: 9, 36, 168, 888..."
-                  className="w-full bg-[#120B06] border border-[#5A3F23] rounded-xl px-4 py-2.5 text-center text-lg font-mono font-bold text-[#FFE28A] placeholder-[#6E5943] focus:border-[#D4AF37] outline-hidden"
+                  className="w-full bg-[#120B06] border border-[#5A3F23] rounded-xl px-4 py-2.5 text-center text-lg font-mono font-bold text-[#E6D3A3] placeholder-[#6E5943] focus:border-[#C9A55A] outline-hidden"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={isCasting}
-                className="px-7 py-2.5 bg-gradient-to-r from-[#8C6218] via-[#D4AF37] to-[#8C6218] hover:brightness-110 active:scale-95 text-[#14100C] font-serif font-bold text-xs rounded-xl shadow transition-all cursor-pointer inline-flex items-center gap-2"
+                className="px-7 py-2.5 bg-gradient-to-r from-[#8C6218] via-[#C9A55A] to-[#8C6218] hover:brightness-110 active:scale-95 text-[#14100C] font-serif font-bold text-xs rounded-xl shadow transition-all cursor-pointer inline-flex items-center gap-2"
               >
                 {isCasting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Compass className="w-3.5 h-3.5" />}
                 <span>An Bàn Kỳ Môn Theo Số</span>
@@ -627,7 +627,7 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xl">⛩️</span>
               <div>
-                <span className="font-bold text-[#FFE28A] text-sm block">
+                <span className="font-bold text-[#E6D3A3] text-sm block">
                   {result.dunType.toUpperCase()} {result.cucNum} CỤC
                 </span>
                 <span className="text-[11px] font-mono text-[#A89882]">
@@ -642,10 +642,10 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
                 type="button"
                 onClick={() => handleCapture("chart")}
                 disabled={isCapturing}
-                className="flex items-center gap-1 px-3 py-1.5 text-xs font-serif font-bold bg-[#2A1D11] hover:bg-[#3E2918] text-[#FFE28A] border border-[#6B4B27] hover:border-[#D4AF37] rounded-xl transition-all cursor-pointer shadow active:scale-95"
+                className="flex items-center gap-1 px-3 py-1.5 text-xs font-serif font-bold bg-[#2A1D11] hover:bg-[#3E2918] text-[#E6D3A3] border border-[#6B4B27] hover:border-[#C9A55A] rounded-xl transition-all cursor-pointer shadow active:scale-95"
                 title="Chụp ảnh toàn bộ Bàn Kỳ Môn Độn Giáp 9 Cung"
               >
-                {isCapturing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Camera className="w-3.5 h-3.5 text-[#D4AF37]" />}
+                {isCapturing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Camera className="w-3.5 h-3.5 text-[#C9A55A]" />}
                 <span>Chụp Bàn Kỳ Môn</span>
               </button>
 
@@ -654,10 +654,10 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
                 type="button"
                 onClick={() => handleCapture("primary")}
                 disabled={isCapturing}
-                className="flex items-center gap-1 px-3 py-1.5 text-xs font-serif font-bold bg-gradient-to-r from-amber-500/20 via-amber-400/30 to-amber-500/20 hover:from-amber-500/30 text-[#FFE28A] border border-[#8C6218] hover:border-[#D4AF37] rounded-xl transition-all cursor-pointer shadow active:scale-95"
+                className="flex items-center gap-1 px-3 py-1.5 text-xs font-serif font-bold bg-gradient-to-r from-amber-500/20 via-amber-400/30 to-amber-500/20 hover:from-amber-500/30 text-[#E6D3A3] border border-[#8C6218] hover:border-[#C9A55A] rounded-xl transition-all cursor-pointer shadow active:scale-95"
                 title="Chụp ảnh riêng Quẻ Kỳ Môn Ban Đầu (Quẻ Chủ / Bản Quái)"
               >
-                {isCapturing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Camera className="w-3.5 h-3.5 text-[#FFE28A]" />}
+                {isCapturing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Camera className="w-3.5 h-3.5 text-[#E6D3A3]" />}
                 <span>Chụp Quẻ Ban Đầu</span>
               </button>
 
@@ -696,12 +696,12 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
           {/* ========================================================================= */}
           /* BÁT TRẬN ĐỒ: MA TRẬN 3x3 CỬU CUNG LẠC THƯ */
           /* ========================================================================= */
-          <div className="bg-[#120D08] border-2 border-[#D4AF37]/50 rounded-2xl p-2 sm:p-4 shadow-2xl">
+          <div className="bg-[#120D08] border-2 border-[#C9A55A]/50 rounded-2xl p-2 sm:p-4 shadow-2xl">
             <div className="text-center pb-2.5 mb-2.5 border-b border-[#2C1C0F] flex items-center justify-between px-2">
               <span className="text-[10px] font-mono text-[#A89882] uppercase">
                 ✦ BÁT TRẬN ĐỒ KỲ MÔN • CỬU CUNG LẠC THƯ ✦
               </span>
-              <span className="text-[10px] font-mono text-[#D4AF37]">
+              <span className="text-[10px] font-mono text-[#C9A55A]">
                 Nhấp vào từng Cung để xem bình giải chi tiết
               </span>
             </div>
@@ -718,9 +718,9 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
                       onClick={() => setSelectedCellNum(isSelected ? null : palaceNum)}
                       className={`relative rounded-xl p-2 sm:p-3 border transition-all cursor-pointer flex flex-col justify-between min-h-[140px] sm:min-h-[160px] select-none ${
                         isSelected
-                          ? "bg-[#2A1C10] border-[#D4AF37] ring-2 ring-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.3)] scale-[1.01]"
+                          ? "bg-[#2A1C10] border-[#C9A55A] ring-2 ring-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.3)] scale-[1.01]"
                           : cell.isZhifuStar
-                          ? "bg-gradient-to-b from-[#24170E] to-[#160E08] border-[#D4AF37]/80 hover:border-[#D4AF37]"
+                          ? "bg-gradient-to-b from-[#24170E] to-[#160E08] border-[#C9A55A]/80 hover:border-[#C9A55A]"
                           : "bg-[#18110B] border-[#382616] hover:border-[#5C3E22]"
                       }`}
                     >
@@ -763,12 +763,12 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
                         <div className="inline-flex items-center justify-center gap-2 bg-[#120B06] px-2.5 py-1 rounded-lg border border-[#322011]">
                           <div className="text-center">
                             <span className="text-[9px] text-[#A89882] block leading-none font-mono">Thiên</span>
-                            <span className="text-xs sm:text-sm font-bold font-mono text-[#FFE28A]">{cell.thienCan}</span>
+                            <span className="text-xs sm:text-sm font-bold font-mono text-[#E6D3A3]">{cell.thienCan}</span>
                           </div>
                           <span className="text-xs text-[#5E4832]">/</span>
                           <div className="text-center">
                             <span className="text-[9px] text-[#A89882] block leading-none font-mono">Địa</span>
-                            <span className="text-xs sm:text-sm font-bold font-mono text-[#D4AF37]">{cell.diaCan}</span>
+                            <span className="text-xs sm:text-sm font-bold font-mono text-[#C9A55A]">{cell.diaCan}</span>
                           </div>
                         </div>
                       </div>
@@ -796,10 +796,10 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
 
           {/* Chi tiết Ô Cung được chọn (khi người dùng click vào cung) */}
           {selectedCellNum && (
-            <div className="bg-[#1C140D] border border-[#D4AF37]/60 rounded-xl p-4 animate-in fade-in space-y-2">
+            <div className="bg-[#1C140D] border border-[#C9A55A]/60 rounded-xl p-4 animate-in fade-in space-y-2">
               <div className="flex items-center justify-between border-b border-[#3E2917] pb-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-base font-serif font-bold text-[#FFE28A]">
+                  <span className="text-base font-serif font-bold text-[#E6D3A3]">
                     CHI TIẾT CUNG {selectedCellNum}: {result.cells[selectedCellNum].palace.baguaName} ({result.cells[selectedCellNum].palace.direction}) • Ngũ Hành {result.cells[selectedCellNum].palace.element}
                   </span>
                   <span className="text-xs font-mono text-[#A89882]">
@@ -817,8 +817,8 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-serif pt-1">
                 <div className="bg-[#140D07] p-2.5 rounded-lg border border-[#3A2414]">
-                  <span className="text-[10px] font-mono text-[#D4AF37] block font-bold">1. THIÊN BÀN & CỬU TINH</span>
-                  <span className="text-sm font-bold text-[#FFE28A]">{result.cells[selectedCellNum].star}</span>
+                  <span className="text-[10px] font-mono text-[#C9A55A] block font-bold">1. THIÊN BÀN & CỬU TINH</span>
+                  <span className="text-sm font-bold text-[#E6D3A3]">{result.cells[selectedCellNum].star}</span>
                   <p className="text-[11px] text-[#C8B89E] mt-1">{result.cells[selectedCellNum].starInfo.desc}</p>
                 </div>
 
@@ -839,7 +839,7 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
                 <div className="bg-[#24170E] p-2.5 rounded-lg border border-[#5A381A] flex items-center gap-2 text-xs font-serif">
                   <span className="text-base">✨</span>
                   <div>
-                    <span className="font-bold text-[#FFE28A]">{result.cells[selectedCellNum].formationName}</span>
+                    <span className="font-bold text-[#E6D3A3]">{result.cells[selectedCellNum].formationName}</span>
                     <p className="text-[11px] text-[#DECAB0]">{result.cells[selectedCellNum].formationDesc}</p>
                   </div>
                 </div>
@@ -854,20 +854,20 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
             {/* THẺ 1: QUẺ KỲ MÔN BAN ĐẦU (BẢN QUÁI) */}
             <div
               ref={primaryHexCaptureRef}
-              className="bg-gradient-to-b from-[#1C140D] to-[#120D08] border-2 border-[#D4AF37] rounded-2xl p-4 shadow-xl flex flex-col justify-between space-y-3 relative overflow-hidden"
+              className="bg-gradient-to-b from-[#1C140D] to-[#120D08] border-2 border-[#C9A55A] rounded-2xl p-4 shadow-xl flex flex-col justify-between space-y-3 relative overflow-hidden"
             >
               <div className="flex items-center justify-between pb-1 border-b border-[#342213] no-capture">
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#2D1B0E] border border-[#D4AF37] text-[#FFE28A] font-bold">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#2D1B0E] border border-[#C9A55A] text-[#E6D3A3] font-bold">
                   QUẺ KỲ MÔN BAN ĐẦU (BẢN QUÁI)
                 </span>
                 <button
                   type="button"
                   onClick={() => handleCapture("primary")}
                   disabled={isCapturing}
-                  className="flex items-center gap-1 px-2.5 py-1 text-[10.5px] font-serif font-bold rounded-lg bg-gradient-to-r from-amber-500/20 via-amber-400/30 to-amber-500/20 text-[#FFE28A] border border-[#8C6218] hover:border-[#D4AF37] transition-all cursor-pointer shadow-xs active:scale-95"
+                  className="flex items-center gap-1 px-2.5 py-1 text-[10.5px] font-serif font-bold rounded-lg bg-gradient-to-r from-amber-500/20 via-amber-400/30 to-amber-500/20 text-[#E6D3A3] border border-[#8C6218] hover:border-[#C9A55A] transition-all cursor-pointer shadow-xs active:scale-95"
                   title="Chụp hình Quẻ Kỳ Môn Ban Đầu"
                 >
-                  {isCapturing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Camera className="w-3 h-3 text-[#FFE28A]" />}
+                  {isCapturing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Camera className="w-3 h-3 text-[#E6D3A3]" />}
                   <span>Chụp Quẻ</span>
                 </button>
               </div>
@@ -876,7 +876,7 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
                 <span className="text-[10px] font-mono uppercase text-[#A89882] block">
                   Cơ Duyên Thời Khắc • Gốc Rễ Hiện Tại
                 </span>
-                <h4 className="text-base font-serif font-bold text-[#FFE28A] mt-0.5">
+                <h4 className="text-base font-serif font-bold text-[#E6D3A3] mt-0.5">
                   Quẻ #{result.primaryHex.number}: {result.primaryHex.name}
                 </h4>
                 <span className="text-xs text-[#DECAB0] font-serif block">
@@ -902,7 +902,7 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
                           <div
                             className={`h-2.5 rounded-xs transition-all ${
                               isChanging
-                                ? "bg-gradient-to-r from-[#D4AF37] via-rose-500 to-[#D4AF37] shadow-[0_0_8px_rgba(244,63,94,0.6)] animate-pulse"
+                                ? "bg-gradient-to-r from-[#C9A55A] via-rose-500 to-[#C9A55A] shadow-[0_0_8px_rgba(244,63,94,0.6)] animate-pulse"
                                 : "bg-[#C89B3C]"
                             }`}
                           />
@@ -911,14 +911,14 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
                             <div
                               className={`w-[45%] rounded-xs ${
                                 isChanging
-                                  ? "bg-gradient-to-r from-[#D4AF37] to-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)] animate-pulse"
+                                  ? "bg-gradient-to-r from-[#C9A55A] to-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)] animate-pulse"
                                   : "bg-[#7A6A55]"
                               }`}
                             />
                             <div
                               className={`w-[45%] rounded-xs ${
                                 isChanging
-                                  ? "bg-gradient-to-r from-rose-500 to-[#D4AF37] shadow-[0_0_8px_rgba(244,63,94,0.6)] animate-pulse"
+                                  ? "bg-gradient-to-r from-rose-500 to-[#C9A55A] shadow-[0_0_8px_rgba(244,63,94,0.6)] animate-pulse"
                                   : "bg-[#7A6A55]"
                               }`}
                             />
@@ -940,7 +940,7 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
                   <span className="text-[10px] text-amber-300 block font-mono">
                     THƯỢNG QUÁI (TRỰC PHÙ)
                   </span>
-                  <span className="font-bold text-[#FFE28A]">{result.upperTrigram.name} ({result.upperTrigram.nature})</span>
+                  <span className="font-bold text-[#E6D3A3]">{result.upperTrigram.name} ({result.upperTrigram.nature})</span>
                 </div>
                 <div className="bg-[#140D07] p-2 rounded-lg border border-[#3E2816]">
                   <span className="text-[10px] text-yellow-300 block font-mono">
@@ -951,7 +951,7 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
               </div>
 
               <div className="p-2 rounded-xl bg-[#140C07] border border-[#3E2816] text-center space-y-0.5">
-                <span className="text-[11px] font-serif font-bold text-[#FFE28A] block">
+                <span className="text-[11px] font-serif font-bold text-[#E6D3A3] block">
                   Hào {result.changingLine} Động Biến Dẫn Tới Quẻ Biến
                 </span>
                 <span className="text-[10px] text-[#A89882] font-serif block">
@@ -976,8 +976,8 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
 
               {/* Lời khuyên chiến lược & Phương vị cát tường */}
               <div className="space-y-2 bg-[#140D07] p-3 rounded-xl border border-[#3E2918] text-xs font-serif">
-                <span className="text-[11px] font-bold text-[#FFE28A] block flex items-center gap-1.5">
-                  <Compass className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span className="text-[11px] font-bold text-[#E6D3A3] block flex items-center gap-1.5">
+                  <Compass className="w-3.5 h-3.5 text-[#C9A55A]" />
                   <span>PHƯƠNG VỊ CÁT TƯỜNG (TAM CÁT MÔN):</span>
                 </span>
                 <div className="grid grid-cols-3 gap-1.5 text-center text-[10.5px]">
@@ -1002,7 +1002,7 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
               {/* Cách cục đặc thù */}
               {result.mainFormations.length > 0 && (
                 <div className="space-y-1 bg-[#140E08] p-2.5 rounded-xl border border-[#3E2816] text-xs font-serif">
-                  <span className="text-[10.5px] font-bold text-[#FFE28A] block">
+                  <span className="text-[10.5px] font-bold text-[#E6D3A3] block">
                     CÁCH CỤC THIÊN ĐỊA CAN:
                   </span>
                   {result.mainFormations.map((f, idx) => (
@@ -1036,7 +1036,7 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
       {/* Modal Thuyết Minh Kỳ Môn Độn Giáp */}
       {showTheoryModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4 animate-in fade-in">
-          <div className="bg-[#16120E] border-2 border-[#D4AF37] rounded-2xl max-w-2xl w-full p-5 sm:p-6 space-y-4 max-h-[85vh] overflow-y-auto shadow-2xl relative">
+          <div className="bg-[#16120E] border-2 border-[#C9A55A] rounded-2xl max-w-2xl w-full p-5 sm:p-6 space-y-4 max-h-[85vh] overflow-y-auto shadow-2xl relative">
             <button
               type="button"
               onClick={() => setShowTheoryModal(false)}
@@ -1045,17 +1045,17 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
               ✕
             </button>
             <div className="border-b border-[#3E2B19] pb-3">
-              <span className="text-[10px] font-mono text-[#D4AF37] uppercase">Kỳ Môn Cổ Thư</span>
-              <h3 className="text-base sm:text-lg font-serif font-bold text-[#FFE28A] mt-0.5">
+              <span className="text-[10px] font-mono text-[#C9A55A] uppercase">Kỳ Môn Cổ Thư</span>
+              <h3 className="text-base sm:text-lg font-serif font-bold text-[#E6D3A3] mt-0.5">
                 NGUYÊN LÝ & BỐ TRẬN KỲ MÔN ĐỘN GIÁP
               </h3>
             </div>
             <div className="space-y-3 text-xs sm:text-sm font-serif text-[#DECAB0] leading-relaxed">
               <p>
-                <strong className="text-[#FFE28A]">Kỳ Môn Độn Giáp (奇門遁甲)</strong> cùng với <strong className="text-[#FFE28A]">Thái Ất Thần Số</strong> và <strong className="text-[#FFE28A]">Lục Nhâm Đại Độn</strong> hợp thành Tam Thức trứ danh của cổ nhân: <em>"Thái Ất tri thiên thời, Kỳ Môn tri địa lợi, Lục Nhâm tri nhân sự"</em>.
+                <strong className="text-[#E6D3A3]">Kỳ Môn Độn Giáp (奇門遁甲)</strong> cùng với <strong className="text-[#E6D3A3]">Thái Ất Thần Số</strong> và <strong className="text-[#E6D3A3]">Lục Nhâm Đại Độn</strong> hợp thành Tam Thức trứ danh của cổ nhân: <em>"Thái Ất tri thiên thời, Kỳ Môn tri địa lợi, Lục Nhâm tri nhân sự"</em>.
               </p>
               <div className="space-y-1.5 bg-[#1C140D] p-3 rounded-xl border border-[#442F1C]">
-                <h5 className="font-bold text-[#FFE28A]">Cấu Trúc Tứ Bàn Kỳ Môn:</h5>
+                <h5 className="font-bold text-[#E6D3A3]">Cấu Trúc Tứ Bàn Kỳ Môn:</h5>
                 <ul className="list-disc list-inside space-y-1 text-xs text-[#C8B89E]">
                   <li><strong className="text-amber-300">Địa Bàn:</strong> Lục Nghi (Mậu, Kỷ, Canh, Tân, Nhâm, Quý) & Tam Kỳ (Ất, Bính, Đinh). Giáp là chủ soái nên ẩn ("độn") dưới Lục Nghi.</li>
                   <li><strong className="text-amber-300">Thiên Bàn (Cửu Tinh):</strong> Thiên Bồng, Thiên Nhuế, Thiên Xung, Thiên Phụ, Thiên Cầm, Thiên Tâm, Thiên Trụ, Thiên Nhậm, Thiên Anh.</li>
@@ -1071,7 +1071,7 @@ export const KyMonDivination: React.FC<KyMonDivinationProps> = ({
               <button
                 type="button"
                 onClick={() => setShowTheoryModal(false)}
-                className="px-5 py-2 bg-[#2E1E12] hover:bg-[#3E2918] text-[#FFE28A] border border-[#5A3F23] rounded-xl text-xs font-serif font-bold cursor-pointer"
+                className="px-5 py-2 bg-[#2E1E12] hover:bg-[#3E2918] text-[#E6D3A3] border border-[#5A3F23] rounded-xl text-xs font-serif font-bold cursor-pointer"
               >
                 Đã hiểu
               </button>

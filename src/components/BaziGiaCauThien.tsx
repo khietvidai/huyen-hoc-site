@@ -145,7 +145,7 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
                   isOpen,
                 })
               }
-              className="flex items-center gap-1 px-2.5 py-1 text-[11px] sm:text-xs font-bold rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#B8860B] hover:from-[#F3CE65] hover:to-[#C69214] text-[#1A1208] shadow-sm shadow-[#D4AF37]/20 transition-all cursor-pointer active:scale-95 whitespace-nowrap"
+              className="flex items-center gap-1 px-2.5 py-1 text-[11px] sm:text-xs font-bold rounded-lg bg-gradient-to-r from-[#C9A55A] to-[#B8860B] hover:from-[#F3CE65] hover:to-[#C69214] text-[#1A1208] shadow-sm shadow-[#C9A55A]/20 transition-all cursor-pointer active:scale-95 whitespace-nowrap"
               title="Lưu thiết lập Gia Cấu Thiên vào lá số Bát Tự"
             >
               <Save className="w-3.5 h-3.5" />
@@ -157,7 +157,7 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
             <button
               type="button"
               onClick={onCapture}
-              className="no-capture flex items-center gap-1 px-2.5 py-1 text-[11px] sm:text-xs font-semibold rounded-lg bg-[#271E15] hover:bg-[#382B1E] text-amber-200 border border-[#523F27] hover:border-[#D4AF37] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
+              className="no-capture flex items-center gap-1 px-2.5 py-1 text-[11px] sm:text-xs font-semibold rounded-lg bg-[#271E15] hover:bg-[#382B1E] text-amber-200 border border-[#523F27] hover:border-[#C9A55A] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
               title="Chụp ảnh riêng Gia Cấu Thiên"
             >
               <Camera className="w-3.5 h-3.5 text-amber-400" />
@@ -168,7 +168,7 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center gap-1 px-2 py-1 text-[11px] sm:text-xs font-medium rounded-lg bg-[#271C11] text-[#E2B755] border border-[#4D3620] hover:bg-[#382717] transition-all cursor-pointer whitespace-nowrap"
+            className="flex items-center gap-1 px-2 py-1 text-[11px] sm:text-xs font-medium rounded-lg bg-[#271C11] text-[#D6B97A] border border-[#4D3620] hover:bg-[#382717] transition-all cursor-pointer whitespace-nowrap"
           >
             <span>{isOpen ? "Thu Gọn" : "Mở Rộng"}</span>
             <ChevronDown
@@ -187,7 +187,7 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3">
               {/* BƯỚC 1: LỰA CHỌN TỔ HỢP ĐỊA CHI */}
               <div className="space-y-1.5">
-                <div className="text-[10.5px] sm:text-[11px] font-bold text-[#E2B755] flex items-center gap-1.5 uppercase tracking-wider">
+                <div className="text-[10.5px] sm:text-[11px] font-bold text-[#D6B97A] flex items-center gap-1.5 uppercase tracking-wider">
                   <span className="w-4 h-4 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center text-[10px] font-mono shrink-0">
                     1
                   </span>
@@ -202,14 +202,14 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
                     onClick={() => setGiaCauToHop(prev => prev === "nien_nguyet_nhat_thoi" ? null : "nien_nguyet_nhat_thoi")}
                     className={`p-2 sm:p-2.5 rounded-lg border text-left transition-all cursor-pointer flex flex-col justify-between ${
                       giaCauToHop === "nien_nguyet_nhat_thoi"
-                        ? "bg-gradient-to-r from-[#382614] to-[#2B1C0E] border-[#D4AF37] text-[#F5EAD4] font-bold shadow-md shadow-[#D4AF37]/15 ring-1 ring-[#D4AF37]/50"
+                        ? "bg-gradient-to-r from-[#382614] to-[#2B1C0E] border-[#C9A55A] text-[#F5EAD4] font-bold shadow-md shadow-[#C9A55A]/15 ring-1 ring-[#C9A55A]/50"
                         : "bg-[#1F160E] hover:bg-[#2A1D12] border-[#44301D] text-[#A89882]"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-1">
-                      <span className="font-serif text-[11px] sm:text-xs text-[#E2B755] leading-tight font-bold">Niên Nguyệt - Nhật Thời</span>
+                      <span className="font-serif text-[11px] sm:text-xs text-[#D6B97A] leading-tight font-bold">Niên Nguyệt - Nhật Thời</span>
                       {giaCauToHop === "nien_nguyet_nhat_thoi" && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] shrink-0" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#C9A55A] shrink-0" />
                       )}
                     </div>
                     <div className="text-[9px] sm:text-[10px] text-[#8C7D6B] mt-0.5 leading-tight">Khách (Ngoại) ⟷ Chủ (Nội)</div>
@@ -220,14 +220,14 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
                     onClick={() => setGiaCauToHop(prev => prev === "nien_thoi_nguyet_nhat" ? null : "nien_thoi_nguyet_nhat")}
                     className={`p-2 sm:p-2.5 rounded-lg border text-left transition-all cursor-pointer flex flex-col justify-between ${
                       giaCauToHop === "nien_thoi_nguyet_nhat"
-                        ? "bg-gradient-to-r from-[#382614] to-[#2B1C0E] border-[#D4AF37] text-[#F5EAD4] font-bold shadow-md shadow-[#D4AF37]/15 ring-1 ring-[#D4AF37]/50"
+                        ? "bg-gradient-to-r from-[#382614] to-[#2B1C0E] border-[#C9A55A] text-[#F5EAD4] font-bold shadow-md shadow-[#C9A55A]/15 ring-1 ring-[#C9A55A]/50"
                         : "bg-[#1F160E] hover:bg-[#2A1D12] border-[#44301D] text-[#A89882]"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-1">
-                      <span className="font-serif text-[11px] sm:text-xs text-[#E2B755] leading-tight font-bold">Niên Thời - Nguyệt Nhật</span>
+                      <span className="font-serif text-[11px] sm:text-xs text-[#D6B97A] leading-tight font-bold">Niên Thời - Nguyệt Nhật</span>
                       {giaCauToHop === "nien_thoi_nguyet_nhat" && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] shrink-0" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#C9A55A] shrink-0" />
                       )}
                     </div>
                     <div className="text-[9px] sm:text-[10px] text-[#8C7D6B] mt-0.5 leading-tight">Khung Viền ⟷ Cốt Lõi</div>
@@ -237,7 +237,7 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
 
               {/* BƯỚC 2: TRỤC LUẬN GIẢI: CHẤN ĐOÀI vs KHẢM LY */}
               <div className="space-y-1.5">
-                <div className="text-[10.5px] sm:text-[11px] font-bold text-[#E2B755] flex items-center gap-1.5 uppercase tracking-wider">
+                <div className="text-[10.5px] sm:text-[11px] font-bold text-[#D6B97A] flex items-center gap-1.5 uppercase tracking-wider">
                   <Scale className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                   <span>Bước 2: Trục luận giải:</span>
                 </div>
@@ -409,7 +409,7 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
             {/* BƯỚC 3: CƠ CHẾ PHÒNG VỆ (CHỌN ĐƯỢC NHIỀU HƠN 1, 4 CHI THẲNG HÀNG GỌN GÀNG NHƯ Ô ĐỊA CHI BÁT TỰ) */}
             <div className="pt-2 sm:pt-2.5 border-t border-[#3A2817] space-y-1.5">
               <div className="flex items-center justify-between">
-                <div className="text-[10.5px] sm:text-[11px] font-bold text-[#E2B755] flex items-center gap-1.5 uppercase tracking-wider">
+                <div className="text-[10.5px] sm:text-[11px] font-bold text-[#D6B97A] flex items-center gap-1.5 uppercase tracking-wider">
                   <Shield className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                   <span>Bước 3: Cơ chế phòng vệ</span>
                 </div>
@@ -438,17 +438,17 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
                       onClick={() => togglePhongVe(b.key)}
                       className={`relative p-1 sm:p-2 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-between min-h-[56px] sm:min-h-[64px] ${
                         isSelected
-                          ? "bg-gradient-to-b from-[#3A2714] to-[#25180D] border-[#D4AF37] text-[#F5EAD4] font-bold shadow-md shadow-[#D4AF37]/20 ring-1 ring-[#D4AF37]/60"
+                          ? "bg-gradient-to-b from-[#3A2714] to-[#25180D] border-[#C9A55A] text-[#F5EAD4] font-bold shadow-md shadow-[#C9A55A]/20 ring-1 ring-[#C9A55A]/60"
                           : "bg-gradient-to-b from-[#211810] to-[#17110A] hover:bg-[#281D13] border-[#44301D] text-[#A89882]"
                       }`}
                     >
                       {/* Tên Trụ trên cùng */}
                       <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#352516]/70">
-                        <span className="text-[8.5px] sm:text-[10px] font-bold text-[#E2B755] truncate">
+                        <span className="text-[8.5px] sm:text-[10px] font-bold text-[#D6B97A] truncate">
                           {b.label}
                         </span>
                         {isSelected && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] shrink-0" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#C9A55A] shrink-0" />
                         )}
                       </div>
 
@@ -478,7 +478,7 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
             {/* BƯỚC 4: BẢN CHẤT (THÁI DỊCH, THÁI SƠ, THÁI THỦY, THÁI TỐ) */}
             <div className="pt-2 sm:pt-2.5 border-t border-[#3A2817] space-y-2">
               <div className="flex items-center justify-between">
-                <div className="text-[10.5px] sm:text-[11px] font-bold text-[#E2B755] flex items-center gap-1.5 uppercase tracking-wider">
+                <div className="text-[10.5px] sm:text-[11px] font-bold text-[#D6B97A] flex items-center gap-1.5 uppercase tracking-wider">
                   <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                   <span>Bước 4: Bản chất</span>
                 </div>

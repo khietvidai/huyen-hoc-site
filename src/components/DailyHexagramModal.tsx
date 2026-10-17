@@ -218,13 +218,13 @@ ${thongThuData.gioHoangDao.filter((g) => g.isHoangDao).map((g) => `• Giờ ${g
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-4xl my-auto bg-gradient-to-b from-[#1F1710] via-[#16110B] to-[#100C08] border-2 border-[#D4AF37] rounded-2xl shadow-[0_0_50px_rgba(212,175,55,0.35)] text-[#EAE0D0] overflow-hidden"
+        className="relative w-full max-w-4xl my-auto bg-gradient-to-b from-[#1F1710] via-[#16110B] to-[#100C08] border-2 border-[#C9A55A] rounded-2xl shadow-[0_0_50px_rgba(212,175,55,0.35)] text-[#EAE0D0] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* HEADER MODAL */}
         <div className="px-4 py-3.5 sm:px-6 sm:py-4 bg-gradient-to-r from-[#2C1E10] via-[#382613] to-[#24170B] border-b border-[#5C3F1E] flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 sm:gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#E2B755] to-[#75511A] flex items-center justify-center text-[#14120F] shadow-[0_0_15px_rgba(226,183,85,0.4)] border border-[#FFE28A] shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#D6B97A] to-[#75511A] flex items-center justify-center text-[#14120F] shadow-[0_0_15px_rgba(226,183,85,0.4)] border border-[#E6D3A3] shrink-0">
               <Sun className="w-5 h-5 text-[#14120F]" />
             </div>
             <div>
@@ -232,7 +232,7 @@ ${thongThuData.gioHoangDao.filter((g) => g.isHoangDao).map((g) => `• Giờ ${g
                 <h2 className="font-serif font-black text-base sm:text-lg text-[#F5EAD4] tracking-wide flex items-center gap-2">
                   <span>QUẺ NGÀY KINH DỊCH & LỊCH DỤNG SỰ</span>
                 </h2>
-                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#120F0C] text-[#E2B755] border border-[#6E4F23]">
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#120F0C] text-[#D6B97A] border border-[#6E4F23]">
                   {isCustomRandom ? "🎲 Quẻ Rút Cá Nhân" : "☀️ Tương Hợp Lịch Dương"}
                 </span>
               </div>
@@ -306,7 +306,7 @@ ${thongThuData.gioHoangDao.filter((g) => g.isHoangDao).map((g) => `• Giờ ${g
               onClick={() => setActiveTab("all")}
               className={`px-2.5 py-1 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer ${
                 activeTab === "all"
-                  ? "bg-gradient-to-r from-[#D4AF37] to-[#B38728] text-[#120F0C] shadow-sm"
+                  ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F0C] shadow-sm"
                   : "text-[#C2B29B] hover:text-white"
               }`}
             >
@@ -317,7 +317,7 @@ ${thongThuData.gioHoangDao.filter((g) => g.isHoangDao).map((g) => `• Giờ ${g
               onClick={() => setActiveTab("hexagram")}
               className={`px-2.5 py-1 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer ${
                 activeTab === "hexagram"
-                  ? "bg-gradient-to-r from-[#D4AF37] to-[#B38728] text-[#120F0C] shadow-sm"
+                  ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F0C] shadow-sm"
                   : "text-[#C2B29B] hover:text-white"
               }`}
             >
@@ -328,7 +328,7 @@ ${thongThuData.gioHoangDao.filter((g) => g.isHoangDao).map((g) => `• Giờ ${g
               onClick={() => setActiveTab("calendar")}
               className={`px-2.5 py-1 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer ${
                 activeTab === "calendar"
-                  ? "bg-gradient-to-r from-[#D4AF37] to-[#B38728] text-[#120F0C] shadow-sm"
+                  ? "bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F0C] shadow-sm"
                   : "text-[#C2B29B] hover:text-white"
               }`}
             >
@@ -351,7 +351,7 @@ ${thongThuData.gioHoangDao.filter((g) => g.isHoangDao).map((g) => `• Giờ ${g
               type="button"
               onClick={handleRollPersonalRandom}
               disabled={isRolling}
-              className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-gradient-to-r from-[#4A3219] to-[#61421E] hover:from-[#5C3F1E] hover:to-[#785226] text-[#FFE28A] border border-[#9A7036] shadow text-xs font-semibold cursor-pointer active:scale-95 transition-all disabled:opacity-50"
+              className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-gradient-to-r from-[#4A3219] to-[#61421E] hover:from-[#5C3F1E] hover:to-[#785226] text-[#E6D3A3] border border-[#9A7036] shadow text-xs font-semibold cursor-pointer active:scale-95 transition-all disabled:opacity-50"
               title="Bốc ngẫu nhiên một quẻ Kinh Dịch cho riêng bạn trong ngày hôm nay"
             >
               <Dices className={`w-3.5 h-3.5 text-amber-300 ${isRolling ? "animate-spin" : ""}`} />
@@ -378,7 +378,7 @@ ${thongThuData.gioHoangDao.filter((g) => g.isHoangDao).map((g) => `• Giờ ${g
                   🌙 <strong>Âm Lịch:</strong> Ngày {thongThuData.lunarDate.day}/{thongThuData.lunarDate.month} ({thongThuData.lunarDate.monthFullName}) - Năm {thongThuData.lunarDate.yearFullName}
                 </span>
                 <span className="text-[#8C7D6B] hidden sm:inline">•</span>
-                <span className="text-[#FFE28A] font-bold">
+                <span className="text-[#E6D3A3] font-bold">
                   Ngày {thongThuData.dayCanChi.fullName}
                 </span>
                 <span className="text-[#8C7D6B] hidden sm:inline">•</span>
@@ -422,7 +422,7 @@ ${thongThuData.gioHoangDao.filter((g) => g.isHoangDao).map((g) => `• Giờ ${g
           {(activeTab === "all" || activeTab === "hexagram") && (
             <div className="space-y-3 pt-1">
               <div className="flex items-center justify-between pb-1 border-b border-[#3E2D1B]">
-                <span className="font-serif font-black text-sm sm:text-base text-[#FFE28A] flex items-center gap-1.5 uppercase tracking-wide">
+                <span className="font-serif font-black text-sm sm:text-base text-[#E6D3A3] flex items-center gap-1.5 uppercase tracking-wide">
                   <span>☯️ MINH TRIẾT CHU DỊCH: QUẺ #{hexNumber} {hexagram.name}</span>
                 </span>
                 <span className="text-xs text-[#A89882] font-serif italic">
@@ -434,13 +434,13 @@ ${thongThuData.gioHoangDao.filter((g) => g.isHoangDao).map((g) => `• Giờ ${g
                 {/* CỘT TRÁI: HÌNH ẢNH / TƯỢNG HÀO (4 CỘT) */}
                 <div className="md:col-span-4 flex flex-col items-center justify-center p-3.5 rounded-xl bg-[#18120B] border border-[#3E2D1A] space-y-3">
                   {cardImage ? (
-                    <div className="relative group w-36 sm:w-44 aspect-[2/3] rounded-xl overflow-hidden border-2 border-[#D4AF37] shadow-xl">
+                    <div className="relative group w-36 sm:w-44 aspect-[2/3] rounded-xl overflow-hidden border-2 border-[#C9A55A] shadow-xl">
                       <img
                         src={cardImage}
                         alt={hexagram.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
-                      <div className="absolute top-1.5 left-1.5 px-2 py-0.5 rounded bg-black/80 backdrop-blur-xs text-[#FFE28A] font-mono font-bold text-xs border border-amber-600/70">
+                      <div className="absolute top-1.5 left-1.5 px-2 py-0.5 rounded bg-black/80 backdrop-blur-xs text-[#E6D3A3] font-mono font-bold text-xs border border-amber-600/70">
                         #{hexNumber}
                       </div>
                       <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black via-black/80 to-transparent p-2 text-center">
@@ -451,8 +451,8 @@ ${thongThuData.gioHoangDao.filter((g) => g.isHoangDao).map((g) => `• Giờ ${g
                       </div>
                     </div>
                   ) : (
-                    <div className="w-36 sm:w-44 aspect-[2/3] rounded-xl bg-gradient-to-b from-[#2E2012] via-[#20150B] to-[#140E06] border-2 border-[#D4AF37] p-3 flex flex-col items-center justify-between shadow-xl">
-                      <div className="w-full flex items-center justify-between text-[11px] font-mono text-[#D4AF37]">
+                    <div className="w-36 sm:w-44 aspect-[2/3] rounded-xl bg-gradient-to-b from-[#2E2012] via-[#20150B] to-[#140E06] border-2 border-[#C9A55A] p-3 flex flex-col items-center justify-between shadow-xl">
+                      <div className="w-full flex items-center justify-between text-[11px] font-mono text-[#C9A55A]">
                         <span>#{hexNumber}</span>
                         <span>{hexagram.element}</span>
                       </div>
@@ -481,7 +481,7 @@ ${thongThuData.gioHoangDao.filter((g) => g.isHoangDao).map((g) => `• Giờ ${g
                                   className={`h-2.5 w-full rounded-sm ${
                                     isChanging
                                       ? "bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]"
-                                      : "bg-[#D4AF37]"
+                                      : "bg-[#C9A55A]"
                                   }`}
                                 />
                               ) : (
@@ -490,14 +490,14 @@ ${thongThuData.gioHoangDao.filter((g) => g.isHoangDao).map((g) => `• Giờ ${g
                                     className={`h-2.5 w-1/2 rounded-sm ${
                                       isChanging
                                         ? "bg-gradient-to-r from-amber-400 to-yellow-300 shadow-[0_0_8px_rgba(251,191,36,0.8)]"
-                                        : "bg-[#D4AF37]"
+                                        : "bg-[#C9A55A]"
                                     }`}
                                   />
                                   <div
                                     className={`h-2.5 w-1/2 rounded-sm ${
                                       isChanging
                                         ? "bg-gradient-to-r from-yellow-300 to-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]"
-                                        : "bg-[#D4AF37]"
+                                        : "bg-[#C9A55A]"
                                     }`}
                                   />
                                 </div>
@@ -508,7 +508,7 @@ ${thongThuData.gioHoangDao.filter((g) => g.isHoangDao).map((g) => `• Giờ ${g
                       </div>
 
                       <div className="text-center w-full">
-                        <div className="font-serif font-bold text-xs text-[#FFE28A] truncate">
+                        <div className="font-serif font-bold text-xs text-[#E6D3A3] truncate">
                           {hexagram.name}
                         </div>
                         <div className="text-[10px] text-[#A89882] font-serif">{hexagram.vietnameseName}</div>
@@ -518,7 +518,7 @@ ${thongThuData.gioHoangDao.filter((g) => g.isHoangDao).map((g) => `• Giờ ${g
 
                   {/* Tên Quẻ & Quái Tượng */}
                   <div className="text-center space-y-1 w-full">
-                    <div className="font-serif font-black text-base text-[#FFE28A] leading-tight">
+                    <div className="font-serif font-black text-base text-[#E6D3A3] leading-tight">
                       #{hexNumber}: {hexagram.name}
                     </div>
                     <div className="flex items-center justify-center gap-1.5 text-[10px] text-[#A89882] flex-wrap pt-0.5">
@@ -551,7 +551,7 @@ ${thongThuData.gioHoangDao.filter((g) => g.isHoangDao).map((g) => `• Giờ ${g
 
                   {/* LỜI BÌNH TỔNG THỂ CỦA NGÀY */}
                   <div className="p-3.5 rounded-xl bg-[#1C140C] border border-[#432F1A] space-y-1">
-                    <div className="text-[11px] font-serif font-bold text-[#E2B755] flex items-center gap-1.5">
+                    <div className="text-[11px] font-serif font-bold text-[#D6B97A] flex items-center gap-1.5">
                       <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                       <span>Lời Bình Dẫn Đường Hôm Nay:</span>
                     </div>
@@ -599,7 +599,7 @@ ${thongThuData.gioHoangDao.filter((g) => g.isHoangDao).map((g) => `• Giờ ${g
                       <span className="text-[10px] uppercase tracking-wider text-amber-400/90 font-bold block mb-0.5">
                         📜 Lời Dặn Cốt Lõi:
                       </span>
-                      <p className="text-xs text-[#F5EAD4] font-serif italic border-l-2 border-[#D4AF37] pl-2.5 py-0.5">
+                      <p className="text-xs text-[#F5EAD4] font-serif italic border-l-2 border-[#C9A55A] pl-2.5 py-0.5">
                         "{advice.motto}"
                       </p>
                     </div>
@@ -642,7 +642,7 @@ ${thongThuData.gioHoangDao.filter((g) => g.isHoangDao).map((g) => `• Giờ ${g
           {(activeTab === "all" || activeTab === "calendar") && (
             <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between pb-1 border-b border-[#3E2D1B]">
-                <span className="font-serif font-black text-sm sm:text-base text-[#E2B755] flex items-center gap-1.5 uppercase tracking-wide">
+                <span className="font-serif font-black text-sm sm:text-base text-[#D6B97A] flex items-center gap-1.5 uppercase tracking-wide">
                   <Calendar className="w-4 h-4 text-amber-400" />
                   <span>🏛️ THÔNG THƯ HIỆP KỶ DỤNG SỰ NGÀY {selectedDate.getDate()}/{selectedDate.getMonth() + 1}/{selectedDate.getFullYear()}</span>
                 </span>
@@ -663,7 +663,7 @@ ${thongThuData.gioHoangDao.filter((g) => g.isHoangDao).map((g) => `• Giờ ${g
                   </div>
                   <div className="text-[10.5px] text-[#D4C3AC] flex items-center justify-between">
                     <span>{thongThuData.trucNhatTinh.nature}</span>
-                    <span className="text-[#FFE28A] font-serif font-bold">
+                    <span className="text-[#E6D3A3] font-serif font-bold">
                       Ứng {thongThuData.trucNhatTinh.mappedGeneral}
                     </span>
                   </div>
@@ -714,7 +714,7 @@ ${thongThuData.gioHoangDao.filter((g) => g.isHoangDao).map((g) => `• Giờ ${g
               {/* LỜI BÌNH TỔNG QUAN DỤNG SỰ */}
               <div className="p-3 rounded-xl bg-[#1A130B] border border-[#4D361F] space-y-1">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-serif font-bold text-[#E2B755] flex items-center gap-1.5">
+                  <span className="font-serif font-bold text-[#D6B97A] flex items-center gap-1.5">
                     <span>📜 Luận Giải Dụng Sự Cổ Truyền:</span>
                   </span>
                   <span className="text-[11px] text-[#C2B19A] italic">
@@ -856,7 +856,7 @@ ${thongThuData.gioHoangDao.filter((g) => g.isHoangDao).map((g) => `• Giờ ${g
                   onNavigateToCalendar(selectedDate);
                   onClose();
                 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#2E2012] hover:bg-[#3D2B18] text-[#E2B755] hover:text-white border border-[#6B4D26] text-xs font-serif font-bold cursor-pointer transition-all"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#2E2012] hover:bg-[#3D2B18] text-[#D6B97A] hover:text-white border border-[#6B4D26] text-xs font-serif font-bold cursor-pointer transition-all"
                 title="Mở toàn bộ Bảng Lịch Dụng Sự và 12 Giờ Tâm Ấn Phú"
               >
                 <Calendar className="w-3.5 h-3.5 text-amber-400" />
@@ -872,7 +872,7 @@ ${thongThuData.gioHoangDao.filter((g) => g.isHoangDao).map((g) => `• Giờ ${g
                   onNavigateToManual(hexNumber);
                   onClose();
                 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#2E2012] hover:bg-[#3D2B18] text-[#E2B755] hover:text-white border border-[#6B4D26] text-xs font-serif font-bold cursor-pointer transition-all"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#2E2012] hover:bg-[#3D2B18] text-[#D6B97A] hover:text-white border border-[#6B4D26] text-xs font-serif font-bold cursor-pointer transition-all"
                 title="Mở Thuyết Minh 64 Quẻ để đọc sâu toàn văn"
               >
                 <BookOpen className="w-3.5 h-3.5 text-amber-400" />
@@ -888,7 +888,7 @@ ${thongThuData.gioHoangDao.filter((g) => g.isHoangDao).map((g) => `• Giờ ${g
                   onNavigateToDetail(hexNumber);
                   onClose();
                 }}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B38728] hover:brightness-110 text-[#120F0C] text-xs font-serif font-bold shadow-md cursor-pointer transition-all"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#C9A55A] to-[#B38728] hover:brightness-110 text-[#120F0C] text-xs font-serif font-bold shadow-md cursor-pointer transition-all"
                 title="Mở sang trang Giải Nghĩa Quẻ đầy đủ"
               >
                 <span>Xem Giải Nghĩa</span>

@@ -106,8 +106,8 @@ export function getTenGod(targetCan: string, dayCan: string): TenGodInfo {
       name: "Nhật Chủ",
       chinese: "日主",
       code: "NC",
-      color: "text-[#D4AF37]",
-      badgeBg: "bg-[#332211] text-[#E2B755] border-[#5E4327]",
+      color: "text-[#C9A55A]",
+      badgeBg: "bg-[#332211] text-[#D6B97A] border-[#5E4327]",
       desc: "Bản thân, bản mệnh trung tâm của toàn bộ lá số",
       aspect: "Bản Mệnh",
     };
@@ -1298,17 +1298,17 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
           ======================================================== */}
       <div className="px-4 py-3.5 sm:px-6 sm:py-4 border-b border-[#2E2419] flex flex-wrap items-center justify-between gap-3 bg-[#1F1912]/80 backdrop-blur-sm">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-[#2A1E14] border border-[#52412E] text-[#E2B755] shadow-inner">
+          <div className="p-2 rounded-xl bg-[#2A1E14] border border-[#52412E] text-[#D6B97A] shadow-inner">
             <Compass className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <h2 className="text-sm sm:text-base font-bold text-[#F5EAD4] font-serif tracking-wide flex items-center gap-2">
                 BẢNG 8 Ô BÁT TỰ CAN CHI
-                <span className="text-[11px] font-normal px-2 py-0.5 rounded-full bg-[#2E2215] text-[#D4AF37] border border-[#533F27]">
+                <span className="text-[11px] font-normal px-2 py-0.5 rounded-full bg-[#2E2215] text-[#C9A55A] border border-[#533F27]">
                   Giờ • Ngày • Tháng • Năm
                 </span>
-                <span className="text-[11px] font-normal px-2 py-0.5 rounded-full bg-[#382614] text-[#E2B755] border border-[#6B4E2B]">
+                <span className="text-[11px] font-normal px-2 py-0.5 rounded-full bg-[#382614] text-[#D6B97A] border border-[#6B4E2B]">
                   Đại Vận • Lưu Niên
                 </span>
               </h2>
@@ -1318,7 +1318,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                 Nhật Chủ: <strong className="text-[#F5EAD4] font-serif font-bold">{dayCan}</strong>
               </span>
               <span>•</span>
-              <span className="text-[#D4AF37]">{daiVanDirectionText}</span>
+              <span className="text-[#C9A55A]">{daiVanDirectionText}</span>
               <span>•</span>
               <span className="text-[#9E8E7A]">
                 Can Âm (<span className="text-amber-300 font-semibold">Ất, Đinh, Kỷ, Tân, Quý</span>) chọn Chi Âm; Can Dương (<span className="text-yellow-400 font-semibold">Giáp, Bính, Mậu, Canh, Nhâm</span>) chọn Chi Dương.
@@ -1369,7 +1369,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
           <button
             type="button"
             onClick={handleCurrentDateTime}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-[#271E15] hover:bg-[#382B1E] text-[#E2B755] border border-[#4F3B28] hover:border-[#D4AF37] transition-all cursor-pointer shadow-sm active:scale-95"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-[#271E15] hover:bg-[#382B1E] text-[#D6B97A] border border-[#4F3B28] hover:border-[#C9A55A] transition-all cursor-pointer shadow-sm active:scale-95"
             title="Tự động lấy ngày giờ hiện tại để điền 4 Trụ Bát Tự theo thời gian thực tế"
           >
             <Clock className="w-3.5 h-3.5" />
@@ -1380,7 +1380,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
           <button
             type="button"
             onClick={() => handleOpenSaveModal("create_new")}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#B8860B] hover:from-[#F3CE65] hover:to-[#C69214] text-[#1A1208] font-bold text-xs shadow-md shadow-[#D4AF37]/20 transition-all cursor-pointer active:scale-95"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-[#C9A55A] to-[#B8860B] hover:from-[#F3CE65] hover:to-[#C69214] text-[#1A1208] font-bold text-xs shadow-md shadow-[#C9A55A]/20 transition-all cursor-pointer active:scale-95"
             title="Lưu lại toàn bộ lá số Bát Tự này thành hồ sơ mới"
           >
             <Save className="w-3.5 h-3.5" />
@@ -1404,13 +1404,13 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
           <button
             type="button"
             onClick={() => setIsHistoryModalOpen(true)}
-            className="relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#261B10] hover:bg-[#382717] text-[#E2B755] border border-[#523A22] transition-all cursor-pointer active:scale-95 text-xs font-medium"
+            className="relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#261B10] hover:bg-[#382717] text-[#D6B97A] border border-[#523A22] transition-all cursor-pointer active:scale-95 text-xs font-medium"
             title="Xem danh sách các lá số Bát Tự đã lưu"
           >
             <Bookmark className="w-3.5 h-3.5" />
             <span>Đã Lưu</span>
             {savedProfiles.length > 0 && (
-              <span className="ml-0.5 px-1.5 py-0.2 rounded-full bg-[#D4AF37] text-[#1A1208] text-[10px] font-bold">
+              <span className="ml-0.5 px-1.5 py-0.2 rounded-full bg-[#C9A55A] text-[#1A1208] text-[10px] font-bold">
                 {savedProfiles.length}
               </span>
             )}
@@ -1439,7 +1439,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
               )
             }
             disabled={isCapturingTarget !== null}
-            className="no-capture flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-[#2F2113] to-[#3D2B19] hover:from-[#3D2C1B] hover:to-[#4D3823] text-amber-200 border border-[#5E4327] hover:border-[#D4AF37] font-semibold text-xs shadow-md transition-all cursor-pointer active:scale-95 whitespace-nowrap"
+            className="no-capture flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-[#2F2113] to-[#3D2B19] hover:from-[#3D2C1B] hover:to-[#4D3823] text-amber-200 border border-[#5E4327] hover:border-[#C9A55A] font-semibold text-xs shadow-md transition-all cursor-pointer active:scale-95 whitespace-nowrap"
             title="Chụp ảnh toàn bộ lá số Bát Tự (Bốn Trụ, Vận Trình và các Thiên đang mở)"
           >
             {isCapturingTarget === "full" ? (
@@ -1482,13 +1482,13 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
               )
             }
             disabled={isCapturingTarget !== null}
-            className="no-capture flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#241A10] hover:bg-[#332517] text-[#E2B755] border border-[#4F3924] hover:border-[#D4AF37] text-xs font-medium transition-all cursor-pointer active:scale-95 whitespace-nowrap"
+            className="no-capture flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#241A10] hover:bg-[#332517] text-[#D6B97A] border border-[#4F3924] hover:border-[#C9A55A] text-xs font-medium transition-all cursor-pointer active:scale-95 whitespace-nowrap"
             title="Chụp ảnh riêng khối Bát Tự 8 ô, Đại Vận và Lưu Niên (không bao gồm các Thiên)"
           >
             {isCapturingTarget === "only" ? (
               <Loader2 className="w-3.5 h-3.5 text-amber-400 animate-spin" />
             ) : (
-              <Camera className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <Camera className="w-3.5 h-3.5 text-[#C9A55A]" />
             )}
             <span>Chụp Bát Tự Riêng</span>
           </button>
@@ -1506,7 +1506,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
               )
             }
             disabled={isCapturingTarget !== null}
-            className="no-capture flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#382819] hover:bg-[#4A3521] text-[#F3D58C] border border-[#6B4F2D] hover:border-[#D4AF37] text-xs font-semibold transition-all cursor-pointer active:scale-95 whitespace-nowrap"
+            className="no-capture flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#382819] hover:bg-[#4A3521] text-[#F3D58C] border border-[#6B4F2D] hover:border-[#C9A55A] text-xs font-semibold transition-all cursor-pointer active:scale-95 whitespace-nowrap"
             title="Chụp và tải trực tiếp tệp ảnh PNG khối Bát Tự 8 ô về máy"
           >
             <Download className="w-3.5 h-3.5 text-amber-300" />
@@ -1518,7 +1518,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
             <button
               type="button"
               onClick={() => setCaptureDropdownOpen((o) => !o)}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#22170E] hover:bg-[#322316] text-amber-200 border border-[#4C3622] hover:border-[#D4AF37] text-xs font-medium transition-all cursor-pointer active:scale-95 whitespace-nowrap"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#22170E] hover:bg-[#322316] text-amber-200 border border-[#4C3622] hover:border-[#C9A55A] text-xs font-medium transition-all cursor-pointer active:scale-95 whitespace-nowrap"
               title="Chụp ảnh riêng từng Thiên (Gia Cấu, Kết Cấu, Hành Vi, Thực Thi)"
             >
               <Camera className="w-3.5 h-3.5 text-amber-400" />
@@ -1761,7 +1761,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-[#261E16] text-[#D4AF37] border border-[#483724] hover:bg-[#34281D] transition-all cursor-pointer ml-1"
+            className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-[#261E16] text-[#C9A55A] border border-[#483724] hover:bg-[#34281D] transition-all cursor-pointer ml-1"
           >
             <span>{isOpen ? "Thu Gọn" : "Mở Rộng"}</span>
             <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
@@ -1773,7 +1773,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
       {noticeMessage && (
         <div className="px-4 py-2 sm:px-6 bg-[#261A10] border-b border-[#4A321E] text-xs text-[#FFE082] flex items-center justify-between gap-2 animate-in fade-in slide-in-from-top-1">
           <div className="flex items-center gap-2">
-            <Info className="w-4 h-4 text-[#E2B755] shrink-0" />
+            <Info className="w-4 h-4 text-[#D6B97A] shrink-0" />
             <span>{noticeMessage}</span>
           </div>
           <button
@@ -1790,7 +1790,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
       {!isOpen && (
         <div className="px-4 py-3 sm:px-6 flex flex-wrap items-center justify-between gap-3 text-xs bg-[#17120C]">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="px-2 py-0.5 rounded bg-[#332212] text-[#D4AF37] font-semibold">
+            <span className="px-2 py-0.5 rounded bg-[#332212] text-[#C9A55A] font-semibold">
               {gender === "nam" ? "Nam mệnh (Càn tạo)" : "Nữ mệnh (Khôn tạo)"}
             </span>
             {pillars.some((p) => Boolean(p.can || p.chi)) ? (
@@ -1803,7 +1803,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                   <>
                     <span className="text-[#A89882]">|</span>
                     <span className="text-[#A89882]">
-                      Đại vận: <strong className="text-[#E2B755] font-serif">{activeDaiVan.fullName}</strong> ({activeDaiVan.ageStart}-{activeDaiVan.ageEnd}t)
+                      Đại vận: <strong className="text-[#D6B97A] font-serif">{activeDaiVan.fullName}</strong> ({activeDaiVan.ageStart}-{activeDaiVan.ageEnd}t)
                     </span>
                   </>
                 )}
@@ -1826,7 +1826,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
           <button
             type="button"
             onClick={() => setIsOpen(true)}
-            className="text-[#D4AF37] hover:underline flex items-center gap-1 cursor-pointer font-medium ml-auto"
+            className="text-[#C9A55A] hover:underline flex items-center gap-1 cursor-pointer font-medium ml-auto"
           >
             <span>{pillars.some((p) => Boolean(p.can || p.chi)) ? "Mở rộng xem 8 ô, Đại Vận & Lưu Niên" : "Mở Rộng để điền Bát Tự"}</span>
             <ChevronRight className="w-3.5 h-3.5" />
@@ -1869,7 +1869,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
           {/* Thiết lập Vận Trình: Năm muốn xem & Tuổi khởi vận cho Đại Vận */}
           <div className="p-3 rounded-xl bg-[#18120B] border border-[#3D2C1C] flex flex-wrap items-center justify-between gap-3 text-xs">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-[#E2B755] font-bold flex items-center gap-1">
+              <span className="text-[#D6B97A] font-bold flex items-center gap-1">
                 <Flame className="w-3.5 h-3.5" />
                 <span>Thiết lập Vận Trình:</span>
               </span>
@@ -1893,7 +1893,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                       }
                     }
                   }}
-                  className="w-20 px-2 py-1 rounded bg-[#24190F] border border-[#4A3521] text-[#F5EAD4] font-bold text-center focus:outline-none focus:border-[#D4AF37]"
+                  className="w-20 px-2 py-1 rounded bg-[#24190F] border border-[#4A3521] text-[#F5EAD4] font-bold text-center focus:outline-none focus:border-[#C9A55A]"
                 />
               </div>
 
@@ -1906,7 +1906,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                 const ageInViewYear = viewYear - birthYear + 1;
                 return (
                   <span className="text-[#A89882] text-[11px] flex items-center gap-1">
-                    <strong className="text-[#E2B755] font-serif font-bold">({cCan} {cChi})</strong>
+                    <strong className="text-[#D6B97A] font-serif font-bold">({cCan} {cChi})</strong>
                     {ageInViewYear > 0 && <span>• {ageInViewYear} tuổi</span>}
                   </span>
                 );
@@ -1917,7 +1917,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                 <select
                   value={startAge}
                   onChange={(e) => setStartAge(parseInt(e.target.value, 10))}
-                  className="px-2 py-1 rounded bg-[#24190F] border border-[#4A3521] text-[#E2B755] font-bold focus:outline-none focus:border-[#D4AF37] cursor-pointer"
+                  className="px-2 py-1 rounded bg-[#24190F] border border-[#4A3521] text-[#D6B97A] font-bold focus:outline-none focus:border-[#C9A55A] cursor-pointer"
                 >
                   {Array.from({ length: 10 }, (_, i) => i + 1).map((a) => (
                     <option key={a} value={a}>
@@ -1928,7 +1928,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
               </div>
             </div>
 
-            <div className="text-[#D4AF37] text-xs flex items-center gap-1 font-medium">
+            <div className="text-[#C9A55A] text-xs flex items-center gap-1 font-medium">
               <span>Đại Vận ứng với năm {viewYear}:</span>
               <strong className="text-[#F5EAD4] font-serif">{activeDaiVan?.fullName}</strong> ({activeDaiVan?.ageStart} - {activeDaiVan?.ageEnd} tuổi)
             </div>
@@ -1960,14 +1960,14 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                     key={colIdx}
                     className={`flex flex-col border rounded-lg sm:rounded-2xl p-1 sm:p-3 sm:p-3.5 shadow-md transition-colors relative ${
                       colIdx === 1
-                        ? "bg-[#1B140D] border-[#553E26] hover:border-[#D4AF37]"
+                        ? "bg-[#1B140D] border-[#553E26] hover:border-[#C9A55A]"
                         : "bg-[#18130E] border-[#332619] hover:border-[#4D3A26]"
                     }`}
                   >
                     {/* Header Cột: Tên Trụ */}
                     <div className="text-center pb-1 mb-1 sm:pb-2 sm:mb-2 border-b border-[#281E14]">
                       <div className="flex items-center justify-center gap-1">
-                        <span className="text-[9.5px] sm:text-sm font-bold text-[#E2B755] font-serif whitespace-nowrap">
+                        <span className="text-[9.5px] sm:text-sm font-bold text-[#D6B97A] font-serif whitespace-nowrap">
                           {pillar.title}
                         </span>
                       </div>
@@ -1980,8 +1980,8 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                         onClick={() => setActiveSlot({ colIndex: colIdx, type: "can" })}
                         className={`relative min-h-[38px] sm:min-h-[58px] sm:min-h-[66px] rounded-md sm:rounded-xl border flex flex-col items-center justify-center p-0.5 sm:p-2 text-center cursor-pointer transition-all duration-200 select-none group ${
                           canData
-                            ? "bg-gradient-to-b from-[#251D14] to-[#1C160F] border-[#5A4328] hover:border-[#E2B755] shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
-                            : "bg-[#14100C]/70 border-dashed border-[#3D3021] hover:border-[#D4AF37] hover:bg-[#1A140F]"
+                            ? "bg-gradient-to-b from-[#251D14] to-[#1C160F] border-[#5A4328] hover:border-[#D6B97A] shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+                            : "bg-[#14100C]/70 border-dashed border-[#3D3021] hover:border-[#C9A55A] hover:bg-[#1A140F]"
                         }`}
                       >
                         {canData ? (
@@ -1996,7 +1996,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                           </div>
                         ) : (
                           <div className="text-center">
-                            <span className="text-[8px] sm:text-xs text-[#A89882] group-hover:text-[#E2B755] font-medium">
+                            <span className="text-[8px] sm:text-xs text-[#A89882] group-hover:text-[#D6B97A] font-medium">
                               + Can
                             </span>
                           </div>
@@ -2015,8 +2015,8 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                         onClick={() => setActiveSlot({ colIndex: colIdx, type: "chi" })}
                         className={`relative min-h-[38px] sm:min-h-[58px] sm:min-h-[66px] rounded-md sm:rounded-xl border flex flex-col items-center justify-center p-0.5 sm:p-2 text-center cursor-pointer transition-all duration-200 select-none group ${
                           chiData
-                            ? "bg-gradient-to-b from-[#231A12] to-[#1A140E] border-[#5A4328] hover:border-[#E2B755] shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
-                            : "bg-[#14100C]/70 border-dashed border-[#3D3021] hover:border-[#D4AF37] hover:bg-[#1A140F]"
+                            ? "bg-gradient-to-b from-[#231A12] to-[#1A140E] border-[#5A4328] hover:border-[#D6B97A] shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+                            : "bg-[#14100C]/70 border-dashed border-[#3D3021] hover:border-[#C9A55A] hover:bg-[#1A140F]"
                         }`}
                       >
                         {chiData ? (
@@ -2029,7 +2029,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                           </div>
                         ) : (
                           <div className="text-center">
-                            <span className="text-[8px] sm:text-xs text-[#A89882] group-hover:text-[#E2B755] font-medium">
+                            <span className="text-[8px] sm:text-xs text-[#A89882] group-hover:text-[#D6B97A] font-medium">
                               + Chi
                             </span>
                           </div>
@@ -2042,7 +2042,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                       {matchedJiazi ? (
                         <div className="bg-[#201810] border border-[#483724] rounded-md sm:rounded-xl p-1 sm:p-2 flex flex-col gap-0.5 sm:gap-1.5">
                           <div className="flex items-center justify-between">
-                            <span className="text-[8px] sm:text-[10px] text-[#D4AF37] font-bold truncate">
+                            <span className="text-[8px] sm:text-[10px] text-[#C9A55A] font-bold truncate">
                               #{matchedJiazi.order} {matchedJiazi.name}
                             </span>
                             <span className="hidden sm:inline text-[9px] px-1.5 py-0.2 rounded bg-[#15110C] text-[#A89882] whitespace-nowrap">
@@ -2057,8 +2057,8 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                               title={`Quẻ #${matchedJiazi.hexagramLink.hexagramNumber}: ${matchedJiazi.hexagramLink.hexagramName}`}
                               className="text-[7.5px] sm:text-[9px] text-[#A89882] flex items-center justify-center sm:justify-start gap-0.5 sm:gap-1 bg-[#15110B] px-0.5 sm:px-1.5 py-0.5 rounded border border-[#3E2E1D] overflow-hidden whitespace-nowrap"
                             >
-                              <span className="text-[#D4AF37] shrink-0 font-bold text-[7.5px] sm:text-xs">☯</span>
-                              <span className="text-[#FFE28A] font-serif whitespace-nowrap truncate font-semibold">
+                              <span className="text-[#C9A55A] shrink-0 font-bold text-[7.5px] sm:text-xs">☯</span>
+                              <span className="text-[#E6D3A3] font-serif whitespace-nowrap truncate font-semibold">
                                 #{matchedJiazi.hexagramLink.hexagramNumber} {matchedJiazi.hexagramLink.hexagramName}
                               </span>
                             </div>
@@ -2067,7 +2067,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                             <button
                               type="button"
                               onClick={() => onSelectJiazi(matchedJiazi.id)}
-                              className="mt-0.5 sm:mt-1 w-full flex items-center justify-center gap-0.5 py-0.5 sm:py-1 text-[7.5px] sm:text-[10px] font-semibold text-[#18130E] bg-[#D4AF37] hover:bg-[#E5C158] rounded sm:rounded-lg transition-colors cursor-pointer whitespace-nowrap"
+                              className="mt-0.5 sm:mt-1 w-full flex items-center justify-center gap-0.5 py-0.5 sm:py-1 text-[7.5px] sm:text-[10px] font-semibold text-[#18130E] bg-[#C9A55A] hover:bg-[#E5C158] rounded sm:rounded-lg transition-colors cursor-pointer whitespace-nowrap"
                             >
                               <Eye className="w-2.5 h-2.5 sm:w-3 sm:h-3 shrink-0" />
                               <span className="hidden sm:inline">Xem #{matchedJiazi.order}</span>
@@ -2099,12 +2099,12 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
 
                 return (
                   <div
-                    className="flex flex-col border rounded-lg sm:rounded-2xl p-1 sm:p-3 sm:p-3.5 shadow-md transition-colors relative bg-[#1D140C] border-[#5A4026] hover:border-[#D4AF37]"
+                    className="flex flex-col border rounded-lg sm:rounded-2xl p-1 sm:p-3 sm:p-3.5 shadow-md transition-colors relative bg-[#1D140C] border-[#5A4026] hover:border-[#C9A55A]"
                   >
                     {/* Header Cột: Trụ Đại Vận */}
                     <div className="text-center pb-1 mb-1 sm:pb-2 sm:mb-2 border-b border-[#2C1E12]">
                       <div className="flex items-center justify-center gap-1">
-                        <span className="text-[9.5px] sm:text-sm font-bold text-[#E2B755] font-serif whitespace-nowrap">
+                        <span className="text-[9.5px] sm:text-sm font-bold text-[#D6B97A] font-serif whitespace-nowrap">
                           Trụ Đ.Vận
                         </span>
                       </div>
@@ -2121,7 +2121,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                           if (el) el.scrollIntoView({ behavior: "smooth" });
                         }}
                         title="Nhấp để xem 10 Bước Đại Vận bên dưới"
-                        className="relative min-h-[38px] sm:min-h-[58px] sm:min-h-[66px] rounded-md sm:rounded-xl border flex flex-col items-center justify-center p-0.5 sm:p-2 text-center cursor-pointer transition-all duration-200 select-none bg-gradient-to-b from-[#2A1E14] to-[#1F1710] border-[#5E472D] hover:border-[#E2B755] shadow-[0_2px_8px_rgba(0,0,0,0.4)] group"
+                        className="relative min-h-[38px] sm:min-h-[58px] sm:min-h-[66px] rounded-md sm:rounded-xl border flex flex-col items-center justify-center p-0.5 sm:p-2 text-center cursor-pointer transition-all duration-200 select-none bg-gradient-to-b from-[#2A1E14] to-[#1F1710] border-[#5E472D] hover:border-[#D6B97A] shadow-[0_2px_8px_rgba(0,0,0,0.4)] group"
                       >
                         {canData ? (
                           <div className="flex flex-col sm:flex-row items-center justify-center gap-0 sm:gap-1.5 sm:gap-2">
@@ -2152,7 +2152,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                           if (el) el.scrollIntoView({ behavior: "smooth" });
                         }}
                         title="Nhấp để xem 10 Bước Đại Vận bên dưới"
-                        className="relative min-h-[38px] sm:min-h-[58px] sm:min-h-[66px] rounded-md sm:rounded-xl border flex flex-col items-center justify-center p-0.5 sm:p-2 text-center cursor-pointer transition-all duration-200 select-none bg-gradient-to-b from-[#261B12] to-[#1C140E] border-[#5E472D] hover:border-[#E2B755] shadow-[0_2px_8px_rgba(0,0,0,0.4)] group"
+                        className="relative min-h-[38px] sm:min-h-[58px] sm:min-h-[66px] rounded-md sm:rounded-xl border flex flex-col items-center justify-center p-0.5 sm:p-2 text-center cursor-pointer transition-all duration-200 select-none bg-gradient-to-b from-[#261B12] to-[#1C140E] border-[#5E472D] hover:border-[#D6B97A] shadow-[0_2px_8px_rgba(0,0,0,0.4)] group"
                       >
                         {chiData ? (
                           <div className="flex flex-col sm:flex-row items-center justify-center gap-0 sm:gap-1.5 sm:gap-2">
@@ -2173,7 +2173,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                       {matchedJiazi ? (
                         <div className="bg-[#24190F] border border-[#523A22] rounded-md sm:rounded-xl p-1 sm:p-2 flex flex-col gap-0.5 sm:gap-1.5">
                           <div className="flex items-center justify-between">
-                            <span className="text-[8px] sm:text-[10px] text-[#D4AF37] font-bold truncate">
+                            <span className="text-[8px] sm:text-[10px] text-[#C9A55A] font-bold truncate">
                               #{matchedJiazi.order} {matchedJiazi.name}
                             </span>
                             <span className="hidden sm:inline text-[9px] px-1.5 py-0.2 rounded bg-[#17110B] text-amber-300 font-medium border border-amber-900/60 whitespace-nowrap">
@@ -2203,7 +2203,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                             <button
                               type="button"
                               onClick={() => onSelectJiazi(matchedJiazi.id)}
-                              className="mt-0.5 sm:mt-1 w-full flex items-center justify-center gap-0.5 py-0.5 sm:py-1 text-[7.5px] sm:text-[10px] font-semibold text-[#18130E] bg-[#D4AF37] hover:bg-[#E5C158] rounded sm:rounded-lg transition-colors cursor-pointer whitespace-nowrap"
+                              className="mt-0.5 sm:mt-1 w-full flex items-center justify-center gap-0.5 py-0.5 sm:py-1 text-[7.5px] sm:text-[10px] font-semibold text-[#18130E] bg-[#C9A55A] hover:bg-[#E5C158] rounded sm:rounded-lg transition-colors cursor-pointer whitespace-nowrap"
                             >
                               <Eye className="w-2.5 h-2.5 sm:w-3 sm:h-3 shrink-0" />
                               <span className="hidden sm:inline">Xem #{matchedJiazi.order}</span>
@@ -2471,9 +2471,9 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4">
               <div>
                 <h3 className="text-sm sm:text-base font-bold text-[#F5EAD4] font-serif tracking-wide flex items-center gap-2">
-                  <Flame className="w-4.5 h-4.5 text-[#E2B755]" />
+                  <Flame className="w-4.5 h-4.5 text-[#D6B97A]" />
                   <span>10 BƯỚC ĐẠI VẬN (MỖI BƯỚC 10 NĂM)</span>
-                  <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-[#2E2012] text-[#D4AF37] border border-[#523A21]">
+                  <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-[#2E2012] text-[#C9A55A] border border-[#523A21]">
                     Khởi Vận: {startAge} tuổi
                   </span>
                 </h3>
@@ -2486,15 +2486,15 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsReversedOrder(!isReversedOrder)}
-                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#271C10] hover:bg-[#382817] text-[#E2B755] border border-[#523A21] text-xs font-medium cursor-pointer transition-colors"
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#271C10] hover:bg-[#382817] text-[#D6B97A] border border-[#523A21] text-xs font-medium cursor-pointer transition-colors"
                   title="Đảo chiều sắp xếp từ trái qua phải"
                 >
                   <ArrowLeftRight className="w-3.5 h-3.5" />
                   <span>{isReversedOrder ? "Sắp xếp: Ngược (10 ➔ 1)" : "Sắp xếp: Xuôi (1 ➔ 10)"}</span>
                 </button>
 
-                <div className="text-xs text-[#E2B755] flex items-center gap-1.5 bg-[#261A0E] px-3 py-1.5 rounded-lg border border-[#4A341E]">
-                  <Shield className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <div className="text-xs text-[#D6B97A] flex items-center gap-1.5 bg-[#261A0E] px-3 py-1.5 rounded-lg border border-[#4A341E]">
+                  <Shield className="w-3.5 h-3.5 text-[#C9A55A]" />
                   <span>
                     Đang chọn: <strong>{activeDaiVan?.fullName || "Chưa có"}</strong> {activeDaiVan ? `(${activeDaiVan.ageStart} - ${activeDaiVan.ageEnd} tuổi)` : ""}
                   </span>
@@ -2505,8 +2505,8 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
             {/* Grid 10 Card Đại Vận - Sắp xếp theo chiều được chọn (mặc định ngược 10 ➔ 1 từ trái qua phải) */}
             {displayedDaiVanList.length === 0 ? (
               <div className="py-6 px-4 text-center rounded-xl bg-[#16110B] border border-dashed border-[#3D2E1C] text-xs text-[#8C7D6B] space-y-1">
-                <p className="text-[#D4AF37] font-semibold">Chưa có thông tin 10 Bước Đại Vận</p>
-                <p>Vui lòng điền Can Chi cho Trụ Tháng hoặc bấm <strong className="text-[#FFE28A]">&quot;Lấy Ngày Giờ Hiện Tại&quot;</strong> để an 10 Bước Đại Vận.</p>
+                <p className="text-[#C9A55A] font-semibold">Chưa có thông tin 10 Bước Đại Vận</p>
+                <p>Vui lòng điền Can Chi cho Trụ Tháng hoặc bấm <strong className="text-[#E6D3A3]">&quot;Lấy Ngày Giờ Hiện Tại&quot;</strong> để an 10 Bước Đại Vận.</p>
               </div>
             ) : (
               <div className="overflow-x-auto pb-2.5 -mx-1 px-1 sm:mx-0 sm:px-0 scrollbar-thin">
@@ -2528,16 +2528,16 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                     }}
                     className={`p-1 sm:p-2 rounded-lg sm:rounded-xl border text-left transition-all duration-200 relative flex flex-col justify-between cursor-pointer ${
                       isSelected
-                        ? "bg-gradient-to-b from-[#332212] via-[#2A1C0E] to-[#1E140A] border-[#D4AF37] shadow-lg shadow-[#D4AF37]/25 ring-2 ring-[#D4AF37]/50 scale-[1.02]"
+                        ? "bg-gradient-to-b from-[#332212] via-[#2A1C0E] to-[#1E140A] border-[#C9A55A] shadow-lg shadow-[#C9A55A]/25 ring-2 ring-[#C9A55A]/50 scale-[1.02]"
                         : dv.isCurrent
-                        ? "bg-[#251A0E] border-[#A88235] hover:border-[#D4AF37]"
+                        ? "bg-[#251A0E] border-[#A88235] hover:border-[#C9A55A]"
                         : "bg-[#181109] border-[#382819] hover:border-[#593F27] hover:bg-[#20160C]"
                     }`}
                   >
                     {/* Header Cột: Vận, Tuổi, Thập Thần */}
                     <div className="text-center pb-1 mb-1 border-b border-[#2C1E12] w-full">
                       <div className="flex items-center justify-between text-[8.5px] sm:text-[10px] gap-0.5">
-                        <span className="font-serif font-bold text-[#E2B755]">Vận {dv.step}</span>
+                        <span className="font-serif font-bold text-[#D6B97A]">Vận {dv.step}</span>
                         {dv.isCurrent ? (
                           <span className="px-1 py-0.2 rounded bg-amber-500 text-[#1A1208] text-[7.5px] font-bold animate-pulse">
                             Nay
@@ -2558,7 +2558,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                     <div className="w-full mb-0.5 sm:mb-1">
                       <div
                         className={`rounded-md sm:rounded-lg border flex flex-col items-center justify-center py-1 px-0.5 text-center transition-all bg-gradient-to-b from-[#251D14] to-[#1C160F] ${
-                          isSelected ? "border-[#D4AF37]/80 shadow-[0_2px_6px_rgba(0,0,0,0.5)]" : "border-[#4A3723]"
+                          isSelected ? "border-[#C9A55A]/80 shadow-[0_2px_6px_rgba(0,0,0,0.5)]" : "border-[#4A3723]"
                         }`}
                       >
                         <div className="flex items-center justify-center gap-0.5">
@@ -2580,7 +2580,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                     <div className="w-full mb-1 sm:mb-1.5">
                       <div
                         className={`rounded-md sm:rounded-lg border flex flex-col items-center justify-center py-1 px-0.5 text-center transition-all bg-gradient-to-b from-[#231A12] to-[#1A140E] ${
-                          isSelected ? "border-[#D4AF37]/80 shadow-[0_2px_6px_rgba(0,0,0,0.5)]" : "border-[#4A3723]"
+                          isSelected ? "border-[#C9A55A]/80 shadow-[0_2px_6px_rgba(0,0,0,0.5)]" : "border-[#4A3723]"
                         }`}
                       >
                         <div className="flex items-center justify-center gap-0.5">
@@ -2689,7 +2689,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                     {/* Header: Năm, Tuổi, Năm Nay, Thập Thần Can */}
                     <div className="text-center pb-1 mb-1 border-b border-[#2C1E12] w-full">
                       <div className="flex items-center justify-between text-[8.5px] sm:text-[10px] gap-0.5">
-                        <span className="font-serif font-bold text-[#E2B755]">{ln.year}</span>
+                        <span className="font-serif font-bold text-[#D6B97A]">{ln.year}</span>
                         {ln.isRealCurrentYear ? (
                           <span className="px-1 py-0.2 rounded bg-amber-500 text-[#1A1208] text-[7.5px] font-bold">
                             Nay
@@ -2779,7 +2779,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                       Nạp Âm: <strong className="text-[#F5EAD4]">{activeLuuNien.napAm || "—"}</strong>
                     </span>
                   </div>
-                  <div className="text-[#E2B755] font-semibold">
+                  <div className="text-[#D6B97A] font-semibold">
                     Thập Thần: <span className={activeLuuNien.canTenGod.color}>{activeLuuNien.canTenGod.name}</span> ({activeLuuNien.canTenGod.aspect})
                   </div>
                 </div>
@@ -2846,7 +2846,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                 <div className="text-xs text-[#8C7D6B] uppercase font-bold tracking-wider">
                   {PILLAR_LABELS[activeSlot.colIndex].title} ({PILLAR_LABELS[activeSlot.colIndex].sub})
                 </div>
-                <h3 className="text-base sm:text-lg font-serif font-bold text-[#E2B755]">
+                <h3 className="text-base sm:text-lg font-serif font-bold text-[#D6B97A]">
                   {activeSlot.type === "can" ? "CHỌN THIÊN CAN (Ô TRÊN)" : "CHỌN ĐỊA CHI (Ô DƯỚI)"}
                 </h3>
               </div>
@@ -2885,7 +2885,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                           onClick={() => handleSelectCan(activeSlot.colIndex, item.name)}
                           className={`p-2 sm:p-2.5 rounded-xl border flex flex-col items-center justify-center transition-all cursor-pointer ${
                             isSelected
-                              ? "bg-[#D4AF37] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105"
+                              ? "bg-[#C9A55A] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105"
                               : "bg-[#221A12] hover:bg-[#2F2418] text-[#F3E7D0] border-[#3E2E1C] hover:border-yellow-500/60"
                           }`}
                         >
@@ -2920,7 +2920,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                           onClick={() => handleSelectCan(activeSlot.colIndex, item.name)}
                           className={`p-2 sm:p-2.5 rounded-xl border flex flex-col items-center justify-center transition-all cursor-pointer ${
                             isSelected
-                              ? "bg-[#D4AF37] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105"
+                              ? "bg-[#C9A55A] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105"
                               : "bg-[#221A12] hover:bg-[#2F2418] text-[#F3E7D0] border-[#3E2E1C] hover:border-amber-500/60"
                           }`}
                         >
@@ -2948,7 +2948,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                 <div className="space-y-4">
                   <div className="text-xs bg-[#24190E] p-2.5 rounded-xl border border-[#48331E] flex items-center justify-between">
                     <span>
-                      Thiên Can hiện tại: <strong className="text-[#E2B755]">{currentCan || "(Chưa chọn)"}</strong>
+                      Thiên Can hiện tại: <strong className="text-[#D6B97A]">{currentCan || "(Chưa chọn)"}</strong>
                     </span>
                     {allowedPolarity && (
                       <span className="text-[11px] font-bold text-amber-300">
@@ -2982,7 +2982,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                               isBlocked
                                 ? "opacity-30 cursor-not-allowed bg-[#18130E] border-[#2A1F14] text-[#6E5A44]"
                                 : isSelected
-                                ? "bg-[#D4AF37] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105 cursor-pointer"
+                                ? "bg-[#C9A55A] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105 cursor-pointer"
                                 : "bg-[#221A12] hover:bg-[#2F2418] text-[#F3E7D0] border-[#3E2E1C] hover:border-yellow-500/60 cursor-pointer"
                             }`}
                             title={isBlocked ? "Không thể chọn do Can là Can Âm" : item.zodiac}
@@ -3022,7 +3022,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                               isBlocked
                                 ? "opacity-30 cursor-not-allowed bg-[#18130E] border-[#2A1F14] text-[#6E5A44]"
                                 : isSelected
-                                ? "bg-[#D4AF37] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105 cursor-pointer"
+                                ? "bg-[#C9A55A] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105 cursor-pointer"
                                 : "bg-[#221A12] hover:bg-[#2F2418] text-[#F3E7D0] border-[#3E2E1C] hover:border-amber-500/60 cursor-pointer"
                             }`}
                             title={isBlocked ? "Không thể chọn do Can là Can Dương" : item.zodiac}
@@ -3048,10 +3048,10 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
           ======================================================== */}
       {isSaveModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-          <div className="w-full max-w-lg rounded-2xl bg-[#1A120A] border-2 border-[#D4AF37] p-5 sm:p-6 shadow-2xl space-y-4">
+          <div className="w-full max-w-lg rounded-2xl bg-[#1A120A] border-2 border-[#C9A55A] p-5 sm:p-6 shadow-2xl space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-[#3B2917]">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-[#332211] text-[#E2B755] flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-[#332211] text-[#D6B97A] flex items-center justify-center">
                   <Save className="w-4 h-4" />
                 </div>
                 <div>
@@ -3077,7 +3077,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                 onClick={() => setSaveMode("create_new")}
                 className={`py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                   saveMode === "create_new"
-                    ? "bg-[#D4AF37] text-[#1A1208] shadow-md shadow-[#D4AF37]/20"
+                    ? "bg-[#C9A55A] text-[#1A1208] shadow-md shadow-[#C9A55A]/20"
                     : "text-[#A89882] hover:text-[#F5EAD4] hover:bg-[#22160C]"
                 }`}
               >
@@ -3153,7 +3153,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                   value={saveTitle}
                   onChange={(e) => setSaveTitle(e.target.value)}
                   placeholder="Ví dụ: Lá số Bát Tự - Anh Minh (Giáp Tý)"
-                  className="w-full px-3 py-2 rounded-xl bg-[#23170D] border border-[#48331E] text-[#F5EAD4] focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full px-3 py-2 rounded-xl bg-[#23170D] border border-[#48331E] text-[#F5EAD4] focus:outline-none focus:border-[#C9A55A]"
                 />
               </div>
 
@@ -3164,7 +3164,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                   value={saveFullName}
                   onChange={(e) => setSaveFullName(e.target.value)}
                   placeholder="Ví dụ: Nguyễn Văn A"
-                  className="w-full px-3 py-2 rounded-xl bg-[#23170D] border border-[#48331E] text-[#F5EAD4] focus:outline-none focus:border-[#D4AF37]"
+                  className="w-full px-3 py-2 rounded-xl bg-[#23170D] border border-[#48331E] text-[#F5EAD4] focus:outline-none focus:border-[#C9A55A]"
                 />
               </div>
 
@@ -3177,7 +3177,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                 </div>
                 <div className="flex items-center justify-between text-[#8C7D6A]">
                   <span>Bốn Trụ Bát Tự:</span>
-                  <span className="font-serif font-bold text-[#D4AF37]">
+                  <span className="font-serif font-bold text-[#C9A55A]">
                     {pillars.map((p) => `${p.can || "?"} ${p.chi || "?"}`).join("  •  ")}
                   </span>
                 </div>
@@ -3190,7 +3190,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                   value={saveNotes}
                   onChange={(e) => setSaveNotes(e.target.value)}
                   placeholder="Nhập ghi chú về dụng thần, hỷ kỵ thần hoặc mục tiêu theo dõi..."
-                  className="w-full px-3 py-2 rounded-xl bg-[#23170D] border border-[#48331E] text-[#F5EAD4] focus:outline-none focus:border-[#D4AF37] resize-none"
+                  className="w-full px-3 py-2 rounded-xl bg-[#23170D] border border-[#48331E] text-[#F5EAD4] focus:outline-none focus:border-[#C9A55A] resize-none"
                 />
               </div>
             </div>
@@ -3209,7 +3209,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                 className={`px-4 py-2 rounded-xl text-xs font-bold shadow-md cursor-pointer hover:brightness-110 active:scale-95 flex items-center gap-1.5 ${
                   saveMode === "overwrite"
                     ? "bg-gradient-to-r from-amber-600 to-amber-700 text-white shadow-amber-700/30"
-                    : "bg-gradient-to-r from-[#D4AF37] to-[#B8860B] text-[#1A1208] shadow-[#D4AF37]/20"
+                    : "bg-gradient-to-r from-[#C9A55A] to-[#B8860B] text-[#1A1208] shadow-[#C9A55A]/20"
                 }`}
               >
                 {saveMode === "overwrite" ? (
@@ -3246,7 +3246,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
           <div className="w-full max-w-2xl max-h-[85vh] rounded-2xl bg-[#18110A] border-2 border-[#5E442B] p-5 sm:p-6 shadow-2xl flex flex-col justify-between">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#3B2917] gap-2 shrink-0">
               <div className="flex items-center gap-2">
-                <Bookmark className="w-5 h-5 text-[#E2B755]" />
+                <Bookmark className="w-5 h-5 text-[#D6B97A]" />
                 <h4 className="text-sm sm:text-base font-bold text-[#F5EAD4] font-serif">
                   DANH SÁCH HỒ SƠ LÁ SỐ BÁT TỰ ĐÃ LƯU ({savedProfiles.length})
                 </h4>
@@ -3299,11 +3299,11 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                   <div
                     key={p.id}
                     onClick={() => handleLoadProfile(p)}
-                    className="p-3.5 rounded-xl bg-[#21160D] border border-[#3E2B1A] hover:border-[#D4AF37] transition-all cursor-pointer group flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+                    className="p-3.5 rounded-xl bg-[#21160D] border border-[#3E2B1A] hover:border-[#C9A55A] transition-all cursor-pointer group flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
                   >
                     <div className="space-y-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-serif font-bold text-[#F5EAD4] group-hover:text-[#E2B755] transition-colors">
+                        <span className="font-serif font-bold text-[#F5EAD4] group-hover:text-[#D6B97A] transition-colors">
                           {p.title}
                         </span>
                         {p.fullName && <span className="text-xs text-[#A89882]">({p.fullName})</span>}
@@ -3320,7 +3320,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                           </span>
                         )}
                       </div>
-                      <div className="text-xs font-serif text-[#D4AF37]">
+                      <div className="text-xs font-serif text-[#C9A55A]">
                         {p.pillars.map((item) => `${item.can || "?"} ${item.chi || "?"}`).join("  •  ")}
                       </div>
                       <div className="text-[10px] text-[#8C7D6B]">
@@ -3335,7 +3335,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                           e.stopPropagation();
                           handleLoadProfile(p);
                         }}
-                        className="px-3 py-1 rounded-lg bg-[#332212] group-hover:bg-[#D4AF37] group-hover:text-[#1A1208] text-[#E2B755] text-xs font-semibold transition-all cursor-pointer"
+                        className="px-3 py-1 rounded-lg bg-[#332212] group-hover:bg-[#C9A55A] group-hover:text-[#1A1208] text-[#D6B97A] text-xs font-semibold transition-all cursor-pointer"
                         title="Nạp lá số và nhảy ra luôn thiết lập các Thiên"
                       >
                         Nạp Lá Số
@@ -3402,7 +3402,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                           e.stopPropagation();
                           handleExportJson(p);
                         }}
-                        className="p-1.5 rounded-lg bg-[#2B1D10] hover:bg-[#3D2916] text-[#D4AF37] transition-all cursor-pointer"
+                        className="p-1.5 rounded-lg bg-[#2B1D10] hover:bg-[#3D2916] text-[#C9A55A] transition-all cursor-pointer"
                         title="Tải file .json của lá số này về máy"
                       >
                         <FileDown className="w-3.5 h-3.5" />

@@ -53,7 +53,7 @@ export const SpreadMethodsSection: React.FC<SpreadMethodsSectionProps> = ({
       <div className="space-y-4">
         <div className="flex items-center justify-between border-b border-[#332617] pb-2.5">
           <div className="flex items-center gap-2">
-            <Layers className="w-4 h-4 text-[#D4AF37]" />
+            <Layers className="w-4 h-4 text-[#C9A55A]" />
             <h3 className="text-sm sm:text-base font-serif font-bold text-[#F5EAD4] tracking-wide uppercase">
               Quy Chuẩn 3 Phương Pháp Trải Bài Tarot Kinh Dịch
             </h3>
@@ -70,7 +70,7 @@ export const SpreadMethodsSection: React.FC<SpreadMethodsSectionProps> = ({
                 onClick={() => setActiveFilter(activeFilter === m.type ? "all" : (m.type as FilterType))}
                 className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
                   isFilterActive
-                    ? "bg-[#251C13] border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#D4AF37]/50"
+                    ? "bg-[#251C13] border-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.25)] ring-1 ring-[#C9A55A]/50"
                     : "bg-[#16120E] border-[#2C2115] hover:border-[#523E26] hover:bg-[#1C1611]"
                 }`}
               >
@@ -83,14 +83,14 @@ export const SpreadMethodsSection: React.FC<SpreadMethodsSectionProps> = ({
                   </div>
 
                   <h4 className="text-sm font-bold text-[#F4E8D0] mb-0.5">{m.name}</h4>
-                  <p className="text-[11px] text-[#D4AF37] font-sans font-semibold mb-2">{m.subName}</p>
+                  <p className="text-[11px] text-[#C9A55A] font-sans font-semibold mb-2">{m.subName}</p>
                   <p className="text-xs text-[#A89882] leading-relaxed mb-3">{m.desc}</p>
                 </div>
 
                 <div className="space-y-1.5 pt-2 border-t border-[#2A2015] text-[11px] text-[#C9BAA2]">
                   {m.steps.map((st, sIdx) => (
                     <div key={sIdx} className="flex items-start gap-1.5">
-                      <span className="text-[#D4AF37] font-mono font-bold shrink-0">{sIdx + 1}.</span>
+                      <span className="text-[#C9A55A] font-mono font-bold shrink-0">{sIdx + 1}.</span>
                       <span className="leading-snug">{st}</span>
                     </div>
                   ))}
@@ -106,7 +106,7 @@ export const SpreadMethodsSection: React.FC<SpreadMethodsSectionProps> = ({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#332617] pb-3">
           <div>
             <div className="flex items-center gap-2">
-              <Scroll className="w-4 h-4 text-[#D4AF37]" />
+              <Scroll className="w-4 h-4 text-[#C9A55A]" />
               <h3 className="text-base sm:text-lg font-serif font-bold text-[#F5EAD4]">
                 5 Ví Dụ Thực Tế Minh Họa & Hình Bài Trực Quan
               </h3>
@@ -123,7 +123,7 @@ export const SpreadMethodsSection: React.FC<SpreadMethodsSectionProps> = ({
               onClick={() => setActiveFilter("all")}
               className={`px-3 py-1.5 rounded-lg text-xs font-serif font-semibold transition-all cursor-pointer ${
                 activeFilter === "all"
-                  ? "bg-[#D4AF37] text-[#120F0C] shadow font-bold"
+                  ? "bg-[#C9A55A] text-[#120F0C] shadow font-bold"
                   : "text-[#A89882] hover:text-[#FFF]"
               }`}
             >
@@ -134,7 +134,7 @@ export const SpreadMethodsSection: React.FC<SpreadMethodsSectionProps> = ({
               onClick={() => setActiveFilter("1_card")}
               className={`px-2.5 py-1.5 rounded-lg text-xs font-serif font-semibold transition-all cursor-pointer ${
                 activeFilter === "1_card"
-                  ? "bg-[#D4AF37] text-[#120F0C] shadow font-bold"
+                  ? "bg-[#C9A55A] text-[#120F0C] shadow font-bold"
                   : "text-[#A89882] hover:text-[#FFF]"
               }`}
             >
@@ -145,7 +145,7 @@ export const SpreadMethodsSection: React.FC<SpreadMethodsSectionProps> = ({
               onClick={() => setActiveFilter("2_card")}
               className={`px-2.5 py-1.5 rounded-lg text-xs font-serif font-semibold transition-all cursor-pointer ${
                 activeFilter === "2_card"
-                  ? "bg-[#D4AF37] text-[#120F0C] shadow font-bold"
+                  ? "bg-[#C9A55A] text-[#120F0C] shadow font-bold"
                   : "text-[#A89882] hover:text-[#FFF]"
               }`}
             >
@@ -156,7 +156,7 @@ export const SpreadMethodsSection: React.FC<SpreadMethodsSectionProps> = ({
               onClick={() => setActiveFilter("3_card")}
               className={`px-2.5 py-1.5 rounded-lg text-xs font-serif font-semibold transition-all cursor-pointer ${
                 activeFilter === "3_card"
-                  ? "bg-[#D4AF37] text-[#120F0C] shadow font-bold"
+                  ? "bg-[#C9A55A] text-[#120F0C] shadow font-bold"
                   : "text-[#A89882] hover:text-[#FFF]"
               }`}
             >
@@ -177,7 +177,7 @@ export const SpreadMethodsSection: React.FC<SpreadMethodsSectionProps> = ({
                 {/* Header of Example Card */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-[#2C2115] pb-3.5">
                   <div className="flex items-center gap-2.5 flex-wrap">
-                    <span className="px-3 py-1 rounded-xl text-xs font-mono font-bold bg-[#D4AF37] text-[#14110C] shadow-sm tracking-wider">
+                    <span className="px-3 py-1 rounded-xl text-xs font-mono font-bold bg-[#C9A55A] text-[#14110C] shadow-sm tracking-wider">
                       {example.code}
                     </span>
                     <span className="px-2.5 py-0.5 rounded-lg text-[11px] font-mono bg-[#281F15] text-[#D8C7AA] border border-[#443423]">
@@ -200,7 +200,7 @@ export const SpreadMethodsSection: React.FC<SpreadMethodsSectionProps> = ({
                 {/* VISUAL SHOWCASE: HÌNH LÁ BÀI LIÊN QUAN TRONG VÍ DỤ */}
                 <div className="bg-[#0E0C09] border border-[#2B2014] rounded-2xl p-4 sm:p-5 shadow-inner">
                   <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#221A11]">
-                    <span className="text-xs font-serif font-bold text-[#D4AF37] flex items-center gap-1.5 uppercase tracking-wider">
+                    <span className="text-xs font-serif font-bold text-[#C9A55A] flex items-center gap-1.5 uppercase tracking-wider">
                       <Sparkles className="w-3.5 h-3.5" /> Hình Quẻ Bài Đã Rút Trong Ví Dụ Này
                     </span>
                     <span className="text-[11px] text-[#A69780] font-sans">
@@ -237,14 +237,14 @@ export const SpreadMethodsSection: React.FC<SpreadMethodsSectionProps> = ({
                                 size="sm"
                                 fitMode="cover"
                                 enableParallax={true}
-                                className="shadow-2xl border border-[#D4AF37]/30 rounded-xl"
+                                className="shadow-2xl border border-[#C9A55A]/30 rounded-xl"
                               />
                             </div>
 
                             {/* Hexagram Name & Trigram summary */}
                             <div className="mt-2.5 space-y-0.5 w-full">
                               <div className="flex items-center justify-center gap-1.5">
-                                <span className="font-mono text-xs font-bold text-[#D4AF37]">
+                                <span className="font-mono text-xs font-bold text-[#C9A55A]">
                                   #{hex.number}
                                 </span>
                                 <h5 className="font-serif font-bold text-xs sm:text-sm text-[#F4E8D0] truncate">
@@ -266,7 +266,7 @@ export const SpreadMethodsSection: React.FC<SpreadMethodsSectionProps> = ({
                               <button
                                 type="button"
                                 onClick={() => handleInspectHex(c.hexNumber)}
-                                className="mt-2 text-[10px] font-sans font-semibold text-[#D4AF37] hover:text-[#FFF] hover:underline inline-flex items-center gap-1 cursor-pointer"
+                                className="mt-2 text-[10px] font-sans font-semibold text-[#C9A55A] hover:text-[#FFF] hover:underline inline-flex items-center gap-1 cursor-pointer"
                               >
                                 <Eye className="w-3 h-3" /> Xem cẩm nang quẻ này
                               </button>
@@ -275,7 +275,7 @@ export const SpreadMethodsSection: React.FC<SpreadMethodsSectionProps> = ({
 
                           {/* Arrow Connector between cards if 2 or 3 cards */}
                           {cIdx < example.cards.length - 1 && (
-                            <div className="hidden sm:flex flex-col items-center justify-center text-[#D4AF37]/60 px-1">
+                            <div className="hidden sm:flex flex-col items-center justify-center text-[#C9A55A]/60 px-1">
                               {example.id === "example_d" ? (
                                 <div className="flex flex-col items-center gap-1">
                                   <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-[#2A2016] text-[#E0B861] border border-[#483723]">
@@ -285,7 +285,7 @@ export const SpreadMethodsSection: React.FC<SpreadMethodsSectionProps> = ({
                                 </div>
                               ) : (
                                 <div className="flex flex-col items-center gap-1">
-                                  <ArrowRight className="w-5 h-5 text-[#D4AF37]" />
+                                  <ArrowRight className="w-5 h-5 text-[#C9A55A]" />
                                   <span className="text-[9px] font-mono text-[#A89882]">Chuyển hóa</span>
                                 </div>
                               )}
@@ -312,8 +312,8 @@ export const SpreadMethodsSection: React.FC<SpreadMethodsSectionProps> = ({
 
                   {/* Panel 2: Phân Tích Ý Tượng Quẻ */}
                   <div className="bg-[#15110D] border border-[#2B2014] rounded-2xl p-4 space-y-2">
-                    <div className="flex items-center gap-2 text-[#D4AF37] text-xs font-bold uppercase tracking-wider font-sans border-b border-[#251A10] pb-1.5">
-                      <Compass className="w-4 h-4 text-[#D4AF37]" />
+                    <div className="flex items-center gap-2 text-[#C9A55A] text-xs font-bold uppercase tracking-wider font-sans border-b border-[#251A10] pb-1.5">
+                      <Compass className="w-4 h-4 text-[#C9A55A]" />
                       <span>2. Phân Tích Ý Tượng Dịch Học</span>
                     </div>
                     <p className="text-xs sm:text-sm text-[#D6C7AE] leading-relaxed whitespace-pre-line">

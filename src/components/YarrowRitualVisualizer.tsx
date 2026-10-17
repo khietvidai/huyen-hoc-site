@@ -80,7 +80,7 @@ export const YarrowRitualVisualizer: React.FC<YarrowRitualVisualizerProps> = ({
           description: "Từ 50 cọng Đại Diễn, cất riêng 1 cọng lên giá Thái Cực làm cội nguồn vạn vật bất sinh bất diệt. Cầm 49 cọng thao diễn.",
           leftDetail: "Cất 1 cọng Thái Cực lên đài cao",
           rightDetail: "Còn lại 49 cọng chuẩn bị phân chia",
-          accent: "text-[#FFE28A]",
+          accent: "text-[#E6D3A3]",
         };
       case "split":
         return {
@@ -129,19 +129,19 @@ export const YarrowRitualVisualizer: React.FC<YarrowRitualVisualizerProps> = ({
     <div className="w-full bg-[#15100B] border border-[#4A3722] rounded-2xl p-3 sm:p-5 shadow-2xl relative overflow-hidden">
       {/* Background Zen Mat with Traditional Clouds and Golden Bagua */}
       <div className="absolute inset-0 opacity-15 pointer-events-none overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(#D4AF37_1px,transparent_1px)] [background-size:20px_20px]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full border border-[#D4AF37] border-dashed animate-[spin_120s_linear_infinite]" />
+        <div className="absolute inset-0 bg-[radial-gradient(#C9A55A_1px,transparent_1px)] [background-size:20px_20px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full border border-[#C9A55A] border-dashed animate-[spin_120s_linear_infinite]" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full border border-[#A67C2E]/40" />
       </div>
 
       {/* Top Header */}
       <div className="flex flex-wrap items-center justify-between gap-2.5 pb-3 border-b border-[#342416] relative z-10">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-[#25170D] border border-[#5A381A] flex items-center justify-center text-[#D4AF37] shadow">
+          <div className="w-7 h-7 rounded-lg bg-[#25170D] border border-[#5A381A] flex items-center justify-center text-[#C9A55A] shadow">
             <span className="text-base">🌾</span>
           </div>
           <div>
-            <span className="text-[10px] font-mono uppercase tracking-widest text-[#D4AF37] block leading-none">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-[#C9A55A] block leading-none">
               NGHI THỨC ĐẠI DIỄN • BÀN TẾ CỎ THI
             </span>
             <span className="text-xs sm:text-sm font-serif font-bold text-[#F5EAD4]">
@@ -172,7 +172,7 @@ export const YarrowRitualVisualizer: React.FC<YarrowRitualVisualizerProps> = ({
 
           {/* Giá Thái Cực */}
           <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl border bg-[#1B1108] border-[#382312] text-[#B0987A]">
-            <div className="relative w-2 h-7 bg-gradient-to-b from-[#FFF2B2] via-[#D4AF37] to-[#8C6218] rounded-full shadow-[0_0_8px_rgba(212,175,55,0.7)] flex flex-col justify-between py-1 items-center">
+            <div className="relative w-2 h-7 bg-gradient-to-b from-[#FFF2B2] via-[#C9A55A] to-[#8C6218] rounded-full shadow-[0_0_8px_rgba(212,175,55,0.7)] flex flex-col justify-between py-1 items-center">
               <div className="w-2.5 h-[1.5px] bg-[#61440E] rounded-full" />
               <div className="w-2.5 h-[1.5px] bg-[#61440E] rounded-full" />
             </div>
@@ -210,8 +210,8 @@ export const YarrowRitualVisualizer: React.FC<YarrowRitualVisualizerProps> = ({
         <div className="mt-2 bg-gradient-to-r from-[#2A1A0F] via-[#352113] to-[#22150C] border border-[#5E3F21] rounded-xl p-3 shadow-lg">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#442B17] pb-2 mb-2">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-ping" />
-              <span className="text-[11px] font-mono uppercase text-[#D4AF37] font-bold">
+              <span className="w-2 h-2 rounded-full bg-[#C9A55A] animate-ping" />
+              <span className="text-[11px] font-mono uppercase text-[#C9A55A] font-bold">
                 BƯỚC {narrative.stepNum}:
               </span>
               <h4 className="font-serif font-bold text-xs sm:text-sm text-[#FFEAB3]">
@@ -240,12 +240,12 @@ export const YarrowRitualVisualizer: React.FC<YarrowRitualVisualizerProps> = ({
             {/* Cột Bên Trái: Bó Thiên */}
             <div className="bg-gradient-to-br from-[#1E130B] via-[#170E08] to-[#120B06] p-3 rounded-xl border border-[#523820] shadow-md flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#631811] to-[#45100B] text-[#FFE8A3] border border-[#D4AF37]/60 text-xs font-bold font-serif shadow-sm flex items-center gap-1.5">
+                <div className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#631811] to-[#45100B] text-[#E6D3A3] border border-[#C9A55A]/60 text-xs font-bold font-serif shadow-sm flex items-center gap-1.5">
                   <span className="text-[11px]">☯</span>
                   <span>Bó Trái (Thiên • Trời)</span>
                 </div>
               </div>
-              <span className="text-[11px] font-mono text-[#FFE28A] font-bold">
+              <span className="text-[11px] font-mono text-[#E6D3A3] font-bold">
                 {leftCount} cọng
               </span>
             </div>

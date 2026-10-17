@@ -483,7 +483,7 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
               }}
             >
               {/* Antique Coin Square Center */}
-              <div className={`${holeSizeClass} bg-[#14100C] border border-[#D4AF37] rounded-xs shadow-inner flex items-center justify-center`} />
+              <div className={`${holeSizeClass} bg-[#14100C] border border-[#C9A55A] rounded-xs shadow-inner flex items-center justify-center`} />
 
               {/* Coin Inscription */}
               <div className={`absolute inset-0 flex items-center justify-center font-serif ${fontSizeClass} font-bold text-[#FFF8E6] tracking-wider drop-shadow-md`}>
@@ -501,7 +501,7 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
 
               {/* Active Glowing Ring when Settled */}
               {isTossing && currentStage.id === "revealing" && (
-                <div className="absolute -inset-2 rounded-full border-2 border-[#FFE28A] animate-ping pointer-events-none" />
+                <div className="absolute -inset-2 rounded-full border-2 border-[#E6D3A3] animate-ping pointer-events-none" />
               )}
             </motion.div>
           );
@@ -532,26 +532,26 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
             >
               {/* Atmospheric Background Sacred Patterns */}
               <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-20">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] rounded-full border border-[#D4AF37] border-dashed animate-[spin_80s_linear_infinite]" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] rounded-full border border-[#C9A55A] border-dashed animate-[spin_80s_linear_infinite]" />
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] h-[380px] rounded-full border border-[#8C6218]" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[220px] h-[220px] rounded-full border border-[#D4AF37]/50" />
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-64 bg-radial from-[#D4AF37]/15 to-transparent blur-2xl" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[220px] h-[220px] rounded-full border border-[#C9A55A]/50" />
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-64 bg-radial from-[#C9A55A]/15 to-transparent blur-2xl" />
               </div>
 
               {/* Modal Top Control Bar */}
               <div className="flex items-center justify-between border-b border-[#3B2C1C] pb-4 mb-4 relative z-10">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-[#2B1D12] border border-[#5A3F23] flex items-center justify-center text-[#D4AF37] shadow">
+                  <div className="w-8 h-8 rounded-lg bg-[#2B1D12] border border-[#5A3F23] flex items-center justify-center text-[#C9A55A] shadow">
                     <Flame className="w-4 h-4 text-amber-400 animate-pulse" />
                   </div>
                   <div>
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-[#D4AF37] block">
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-[#C9A55A] block">
                       ĐÀN CHIÊM LỤC HÀO • HOẠT ẢNH RIÊNG
                     </span>
                     <h3 className="font-serif font-bold text-base sm:text-lg text-[#F4E8D1]">
                       Nghi Thức Gieo Ba Đồng Tiền Cổ (Lục Hào)
                     </h3>
-                    <p className="text-[11px] text-[#FFE28A] font-serif">
+                    <p className="text-[11px] text-[#E6D3A3] font-serif">
                       ⏱ Thời gian gieo quẻ trên 90 giây • Cần tập trung
                     </p>
                   </div>
@@ -576,14 +576,14 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
                 <div className="bg-gradient-to-r from-[#281A0E] via-[#332212] to-[#21150A] border border-[#684622] rounded-2xl p-4 shadow-xl">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2.5">
                     <div className="flex items-center gap-3">
-                      <span className={`w-3 h-3 rounded-full ${isTossing ? "bg-[#D4AF37] animate-ping" : "bg-emerald-400"}`} />
+                      <span className={`w-3 h-3 rounded-full ${isTossing ? "bg-[#C9A55A] animate-ping" : "bg-emerald-400"}`} />
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="text-sm sm:text-base font-serif font-bold text-[#FFE69A]">
                             {isTossing ? `Giai đoạn: ${currentStage.title}` : (isFinished ? "Đã Hoàn Tất 6 Hào!" : `Sẵn Sàng Gieo Hào ${currentLine}`)}
                           </span>
                           {isTossing && (
-                            <span className="text-xs font-mono text-[#D4AF37] bg-[#160E07] px-2 py-0.5 rounded border border-[#4A3319]">
+                            <span className="text-xs font-mono text-[#C9A55A] bg-[#160E07] px-2 py-0.5 rounded border border-[#4A3319]">
                               {currentStage.hanTu}
                             </span>
                           )}
@@ -605,7 +605,7 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
                         <span className="text-[10px] font-mono text-[#A89882] block leading-none">
                           THỜI GIAN
                         </span>
-                        <span className="text-base sm:text-lg font-mono font-bold text-[#FFE28A]">
+                        <span className="text-base sm:text-lg font-mono font-bold text-[#E6D3A3]">
                           {isTossing ? `⏳ ${remainingSeconds}s` : "✓ 15.5s/hào"}
                         </span>
                       </div>
@@ -615,7 +615,7 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
                   {/* Progress Bar */}
                   <div className="w-full bg-[#110B06] rounded-full h-2.5 border border-[#4A341D] overflow-hidden p-0.5">
                     <motion.div
-                      className="h-full bg-gradient-to-r from-[#8C6218] via-[#E2B755] to-[#FFF0B8] rounded-full shadow-[0_0_12px_rgba(226,183,85,0.8)]"
+                      className="h-full bg-gradient-to-r from-[#8C6218] via-[#D6B97A] to-[#FFF0B8] rounded-full shadow-[0_0_12px_rgba(226,183,85,0.8)]"
                       style={{ width: isTossing ? `${progressPercent}%` : "100%" }}
                       transition={{ ease: "linear", duration: 0.05 }}
                     />
@@ -648,26 +648,26 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
                 <div className={`relative min-h-[260px] sm:min-h-[300px] flex flex-col items-center justify-center p-6 bg-gradient-to-b from-[#18120D] to-[#0D0A07] border rounded-2xl shadow-inner overflow-hidden transition-all duration-300 ${
                   isTossing
                     ? currentStage.id === "shaking"
-                      ? "border-[#D4AF37] animate-coin-tumble-shake shadow-[0_0_35px_rgba(212,175,55,0.4)]"
+                      ? "border-[#C9A55A] animate-coin-tumble-shake shadow-[0_0_35px_rgba(212,175,55,0.4)]"
                       : currentStage.id === "casting"
-                      ? "border-[#E2B755] animate-spiritual-shake"
+                      ? "border-[#D6B97A] animate-spiritual-shake"
                       : currentStage.id === "mindfulness"
                       ? "border-[#5A4021] animate-ethereal-blur-pulse"
-                      : "border-[#D4AF37] animate-energy-ripple"
+                      : "border-[#C9A55A] animate-energy-ripple"
                     : "border-[#3E2D1D]"
                 }`}>
                   {/* Spiritual Incense Mist Overlay during ritual */}
                   {isTossing && (
                     <div
                       aria-hidden="true"
-                      className="absolute inset-0 pointer-events-none z-15 bg-gradient-to-t from-[#D4AF37]/5 via-transparent to-[#D4AF37]/5 animate-misty-blur"
+                      className="absolute inset-0 pointer-events-none z-15 bg-gradient-to-t from-[#C9A55A]/5 via-transparent to-[#C9A55A]/5 animate-misty-blur"
                     />
                   )}
 
                   {/* Glowing Lotus / Bagua Disk */}
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-25">
-                    <div className="w-72 h-72 sm:w-96 sm:h-96 rounded-full border-2 border-dashed border-[#D4AF37] animate-[spin_60s_linear_infinite]" />
-                    <div className="absolute w-56 h-56 sm:w-72 sm:h-72 rounded-full border border-[#D4AF37]" />
+                    <div className="w-72 h-72 sm:w-96 sm:h-96 rounded-full border-2 border-dashed border-[#C9A55A] animate-[spin_60s_linear_infinite]" />
+                    <div className="absolute w-56 h-56 sm:w-72 sm:h-72 rounded-full border border-[#C9A55A]" />
                   </div>
 
                   {/* 3 Large Animated Coins */}
@@ -677,8 +677,8 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
                   <div className="mt-8 text-center relative z-10 w-full max-w-md mx-auto">
                     {isTossing ? (
                       <div className="space-y-1">
-                        <p className="text-sm sm:text-base font-serif text-[#FFE28A] flex items-center justify-center gap-2">
-                          <Sparkles className="w-4 h-4 animate-spin text-[#D4AF37]" />
+                        <p className="text-sm sm:text-base font-serif text-[#E6D3A3] flex items-center justify-center gap-2">
+                          <Sparkles className="w-4 h-4 animate-spin text-[#C9A55A]" />
                           <span>
                             Đang diễn xướng nghi thức gieo Hào {currentLine}/6 ({remainingSeconds}s)...
                           </span>
@@ -717,7 +717,7 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
 
                         {history.length === 0 && !isTossing && (
                           <div className="mb-2 px-3.5 py-1.5 rounded-lg bg-[#24170E] border border-[#58391C] text-center">
-                            <p className="text-xs text-[#FFE28A] font-serif flex items-center justify-center gap-1.5 font-semibold">
+                            <p className="text-xs text-[#E6D3A3] font-serif flex items-center justify-center gap-1.5 font-semibold">
                               <span>⏱</span>
                               <span>Thời gian gieo quẻ trên 90 giây, cần tập trung.</span>
                             </p>
@@ -775,9 +775,9 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
                             key={lNum}
                             className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-mono font-bold transition-all ${
                               done
-                                ? "bg-[#382615] text-[#FFE28A] border border-[#6B4B27]"
+                                ? "bg-[#382615] text-[#E6D3A3] border border-[#6B4B27]"
                                 : isCur
-                                ? "bg-[#D4AF37] text-[#120F0C] animate-pulse"
+                                ? "bg-[#C9A55A] text-[#120F0C] animate-pulse"
                                 : "bg-[#18130E] text-[#554637] border border-[#271E15]"
                             }`}
                             title={`Hào ${lNum}`}
@@ -789,7 +789,7 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
                     </div>
                   </div>
 
-                  <div className="text-xs font-serif text-[#D4AF37] font-medium">
+                  <div className="text-xs font-serif text-[#C9A55A] font-medium">
                     {history.length === 6
                       ? "Đã nạp đủ 6 hào ➔ Sẵn sàng xem quẻ đã bốc!"
                       : `Đang lập Hào ${currentLine}: ${
@@ -831,10 +831,10 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
       <div className="flex flex-wrap items-center justify-between border-b border-[#2C261F] pb-4 mb-5 gap-3">
         <div>
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-[#D4AF37] bg-[#241B12] px-2 py-0.5 rounded border border-[#3E2E1D]">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-[#C9A55A] bg-[#241B12] px-2 py-0.5 rounded border border-[#3E2E1D]">
               Nghi Thức Cổ Truyền • Văn Vương Bặc Phệ
             </span>
-            <span className="text-[10px] font-mono font-bold text-[#FFE28A] bg-[#2B1B0E] border border-[#5A3819] px-2.5 py-0.5 rounded shadow-xs">
+            <span className="text-[10px] font-mono font-bold text-[#E6D3A3] bg-[#2B1B0E] border border-[#5A3819] px-2.5 py-0.5 rounded shadow-xs">
               ⏱ Thời gian gieo quẻ trên 90 giây • Cần tập trung
             </span>
             <span className="text-[10px] font-mono text-[#A89882] bg-[#1C1712] px-2 py-0.5 rounded">
@@ -842,11 +842,11 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
             </span>
           </div>
           <h3 className="text-lg sm:text-xl font-serif font-bold text-[#EAD8B1] flex items-center gap-2 mt-1">
-            <Coins className="w-5 h-5 text-[#D4AF37]" />
+            <Coins className="w-5 h-5 text-[#C9A55A]" />
             Gieo Ba Đồng Tiền Cổ (Lục Hào)
           </h3>
           <p className="text-xs text-[#9E907D] mt-0.5">
-            Gieo 6 lần từ Hào 1 (Sơ Hào) lên Hào 6 (Thượng Hào). Mặt Chữ = Âm (2đ), Mặt Rồng/Hình = Dương (3đ). <strong className="text-[#FFE28A]">Thời gian gieo quẻ trên 90 giây, cần trai giới mộc dục (rửa sạch đôi tay, thanh tịnh tâm ý) và tập trung tuyệt đối</strong>. Hoạt ảnh hành động 15 giây theo từng hào, không rút nhanh.
+            Gieo 6 lần từ Hào 1 (Sơ Hào) lên Hào 6 (Thượng Hào). Mặt Chữ = Âm (2đ), Mặt Rồng/Hình = Dương (3đ). <strong className="text-[#E6D3A3]">Thời gian gieo quẻ trên 90 giây, cần trai giới mộc dục (rửa sạch đôi tay, thanh tịnh tâm ý) và tập trung tuyệt đối</strong>. Hoạt ảnh hành động 15 giây theo từng hào, không rút nhanh.
           </p>
 
           {/* Nút Trai Giới Mộc Dục */}
@@ -854,7 +854,7 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
             <button
               type="button"
               onClick={() => setShowCoinPurificationGuide(!showCoinPurificationGuide)}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-serif text-[#E0C070] bg-[#1E1711] hover:bg-[#2A1F16] border border-[#48331E] hover:border-[#D4AF37] transition-all cursor-pointer shadow-xs active:scale-95"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-serif text-[#E0C070] bg-[#1E1711] hover:bg-[#2A1F16] border border-[#48331E] hover:border-[#C9A55A] transition-all cursor-pointer shadow-xs active:scale-95"
             >
               <span>⛩️</span>
               <span className="font-semibold underline decoration-dotted">
@@ -868,14 +868,14 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
 
           {showCoinPurificationGuide && (
             <div className="mt-2.5 text-left bg-[#140F0B] border border-[#4D351E] rounded-xl p-3.5 sm:p-4 shadow-xl text-xs font-serif text-[#DECAB2] space-y-2.5 animate-in fade-in duration-200">
-              <div className="flex items-center justify-between border-b border-[#302113] pb-1.5 text-[#FFE28A] font-bold text-xs">
+              <div className="flex items-center justify-between border-b border-[#302113] pb-1.5 text-[#E6D3A3] font-bold text-xs">
                 <span className="flex items-center gap-1.5">
                   <span>📜</span> TRAI GIỚI MỘC DỤC KHI GIEO ĐỒNG TIỀN CỔ VĂN VƯƠNG
                 </span>
                 <button
                   type="button"
                   onClick={() => setShowCoinPurificationGuide(false)}
-                  className="text-[#8C7A65] hover:text-[#FFE28A] text-[11px] font-sans px-1.5 py-0.5 rounded cursor-pointer"
+                  className="text-[#8C7A65] hover:text-[#E6D3A3] text-[11px] font-sans px-1.5 py-0.5 rounded cursor-pointer"
                 >
                   Đóng ✕
                 </button>
@@ -883,7 +883,7 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-[11px]">
                 <div className="bg-[#1C140D] p-2.5 rounded-lg border border-[#3E2917] space-y-1">
-                  <strong className="text-[#D4AF37] font-bold block text-xs">
+                  <strong className="text-[#C9A55A] font-bold block text-xs">
                     1. Mộc Dục (沐浴 - Rửa Sạch Đôi Tay Cầm Tiền):
                   </strong>
                   <p className="leading-relaxed text-[#BFB09A]">
@@ -893,7 +893,7 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
                 </div>
 
                 <div className="bg-[#1C140D] p-2.5 rounded-lg border border-[#3E2917] space-y-1">
-                  <strong className="text-[#D4AF37] font-bold block text-xs">
+                  <strong className="text-[#C9A55A] font-bold block text-xs">
                     2. Trai Giới (齋戒 - Tĩnh Tâm & Hư Tĩnh):
                   </strong>
                   <p className="leading-relaxed text-[#BFB09A]">
@@ -918,10 +918,10 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
           <button
             type="button"
             onClick={() => setIsDedicatedModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-[#FFE28A] bg-[#2A1D11] hover:bg-[#3E2B1A] rounded-lg border border-[#5C4023] transition-all cursor-pointer shadow active:scale-95"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-[#E6D3A3] bg-[#2A1D11] hover:bg-[#3E2B1A] rounded-lg border border-[#5C4023] transition-all cursor-pointer shadow active:scale-95"
             title="Mở hoạt ảnh riêng toàn màn hình với đài chiêm bặc trang nghiêm"
           >
-            <Maximize2 className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <Maximize2 className="w-3.5 h-3.5 text-[#C9A55A]" />
             <span>Mở Hoạt Ảnh Riêng</span>
           </button>
 
@@ -946,7 +946,7 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
           onClick={toggleAutoOpenModal}
           className={`px-2.5 py-0.5 rounded text-[11px] font-mono font-bold transition-all cursor-pointer border ${
             autoOpenModal
-              ? "bg-[#2E1E10] text-[#FFE28A] border-[#5A3F21]"
+              ? "bg-[#2E1E10] text-[#E6D3A3] border-[#5A3F21]"
               : "bg-[#1C1712] text-[#6E6050] border-[#312519]"
           }`}
         >
@@ -959,14 +959,14 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
         <div className="mb-4 bg-gradient-to-r from-[#22180D] via-[#2A1D0E] to-[#1C140B] border border-[#5A4021] rounded-xl p-3.5 shadow-lg animate-energy-ripple">
           <div className="flex items-center justify-between gap-2 mb-2">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#D4AF37] animate-ping" />
-              <span className="text-xs font-serif font-bold text-[#FFE28A]">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#C9A55A] animate-ping" />
+              <span className="text-xs font-serif font-bold text-[#E6D3A3]">
                 {currentStage.title}
               </span>
               <span className="text-[10px] font-mono text-[#C8A252] bg-[#160E07] px-1.5 py-0.2 rounded border border-[#3E2A15]">
                 {currentStage.hanTu}
               </span>
-              <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-serif text-[#FFE28A] bg-[#2A1D0E] border border-[#6D4F28] animate-pulse">
+              <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-serif text-[#E6D3A3] bg-[#2A1D0E] border border-[#6D4F28] animate-pulse">
                 ✨ Khí vận chấn động • Đồng tiền quy vị
               </span>
             </div>
@@ -985,7 +985,7 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
           {/* 15.5s Progress Bar */}
           <div className="w-full bg-[#140F0A] rounded-full h-2 border border-[#3E2E1D] overflow-hidden p-0.5">
             <motion.div
-              className="h-full bg-gradient-to-r from-[#8C6218] via-[#D4AF37] to-[#FFF0A8] rounded-full shadow-[0_0_8px_rgba(212,175,55,0.7)]"
+              className="h-full bg-gradient-to-r from-[#8C6218] via-[#C9A55A] to-[#FFF0A8] rounded-full shadow-[0_0_8px_rgba(212,175,55,0.7)]"
               style={{ width: `${progressPercent}%` }}
               transition={{ ease: "linear", duration: 0.05 }}
             />
@@ -1001,7 +1001,7 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
                   key={stage.id}
                   className={`text-[9px] font-mono truncate transition-colors ${
                     isCurrent
-                      ? "text-[#FFE28A] font-bold"
+                      ? "text-[#E6D3A3] font-bold"
                       : isPast
                       ? "text-[#8C7A65]"
                       : "text-[#4A3D2F]"
@@ -1019,26 +1019,26 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
       <div className={`relative flex flex-col items-center justify-center p-6 sm:p-8 bg-gradient-to-b from-[#211C16] to-[#12100E] border rounded-xl shadow-inner min-h-[220px] overflow-hidden transition-all duration-300 ${
         isTossing
           ? currentStage.id === "shaking"
-            ? "border-[#D4AF37] animate-coin-tumble-shake shadow-[0_0_30px_rgba(212,175,55,0.35)]"
+            ? "border-[#C9A55A] animate-coin-tumble-shake shadow-[0_0_30px_rgba(212,175,55,0.35)]"
             : currentStage.id === "casting"
-            ? "border-[#E2B755] animate-spiritual-shake"
+            ? "border-[#D6B97A] animate-spiritual-shake"
             : currentStage.id === "mindfulness"
             ? "border-[#5A4021] animate-ethereal-blur-pulse"
-            : "border-[#D4AF37] animate-energy-ripple"
+            : "border-[#C9A55A] animate-energy-ripple"
           : "border-[#3A3225]"
       }`}>
         {/* Spiritual Incense Mist Overlay during ritual */}
         {isTossing && (
           <div
             aria-hidden="true"
-            className="absolute inset-0 pointer-events-none z-15 bg-gradient-to-t from-[#D4AF37]/5 via-transparent to-[#D4AF37]/5 animate-misty-blur"
+            className="absolute inset-0 pointer-events-none z-15 bg-gradient-to-t from-[#C9A55A]/5 via-transparent to-[#C9A55A]/5 animate-misty-blur"
           />
         )}
 
         {/* Ancient Coin Plate Graphic */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
-          <div className="w-64 h-64 sm:w-72 sm:h-72 rounded-full border-2 border-dashed border-[#D4AF37] animate-[spin_60s_linear_infinite]" />
-          <div className="absolute w-48 h-48 rounded-full border border-[#D4AF37]" />
+          <div className="w-64 h-64 sm:w-72 sm:h-72 rounded-full border-2 border-dashed border-[#C9A55A] animate-[spin_60s_linear_infinite]" />
+          <div className="absolute w-48 h-48 rounded-full border border-[#C9A55A]" />
           <div className="absolute w-32 h-32 rounded-full border border-[#8C6218]" />
         </div>
 
@@ -1049,8 +1049,8 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
         <div className="mt-8 text-center relative z-10">
           {isTossing ? (
             <div className="space-y-1">
-              <p className="text-sm font-medium text-[#FFE28A] flex items-center justify-center gap-2">
-                <Sparkles className="w-4 h-4 animate-spin text-[#D4AF37]" />
+              <p className="text-sm font-medium text-[#E6D3A3] flex items-center justify-center gap-2">
+                <Sparkles className="w-4 h-4 animate-spin text-[#C9A55A]" />
                 <span>
                   Đang diễn xướng nghi thức gieo Hào {currentLine}... ({remainingSeconds}s)
                 </span>
@@ -1093,7 +1093,7 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
       <div className="mt-5 bg-[#1B1814] border border-[#2F2922] rounded-xl p-4">
         <div className="flex items-center justify-between mb-3 text-xs text-[#9E907D]">
           <span>Tiến trình quẻ (Xếp từ Sơ Hào lên Thượng Hào):</span>
-          <span className="font-mono text-[#D4AF37] font-bold">{history.length}/6 Hào</span>
+          <span className="font-mono text-[#C9A55A] font-bold">{history.length}/6 Hào</span>
         </div>
 
         {/* Hexagram Lines (Rendered 6 down to 1) */}
@@ -1109,7 +1109,7 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
                   toss
                     ? "bg-[#221D17] border-[#3E3426]"
                     : isCurrent
-                    ? "bg-[#1F1C16] border-[#D4AF37]/50 border-dashed"
+                    ? "bg-[#1F1C16] border-[#C9A55A]/50 border-dashed"
                     : "bg-[#141210] border-transparent opacity-40"
                 }`}
               >
@@ -1137,7 +1137,7 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
                       <div
                         className={`h-2.5 rounded-xs ${
                           toss.isChanging
-                            ? "bg-gradient-to-r from-[#D4AF37] via-red-500 to-[#D4AF37] shadow-[0_0_8px_rgba(239,68,68,0.5)]"
+                            ? "bg-gradient-to-r from-[#C9A55A] via-red-500 to-[#C9A55A] shadow-[0_0_8px_rgba(239,68,68,0.5)]"
                             : "bg-[#C89B3C]"
                         }`}
                       />
@@ -1146,14 +1146,14 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
                         <div
                           className={`w-[44%] rounded-xs ${
                             toss.isChanging
-                              ? "bg-gradient-to-r from-[#D4AF37] to-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]"
+                              ? "bg-gradient-to-r from-[#C9A55A] to-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]"
                               : "bg-[#8C7A63]"
                           }`}
                         />
                         <div
                           className={`w-[44%] rounded-xs ${
                             toss.isChanging
-                              ? "bg-gradient-to-r from-red-500 to-[#D4AF37] shadow-[0_0_8px_rgba(239,68,68,0.5)]"
+                              ? "bg-gradient-to-r from-red-500 to-[#C9A55A] shadow-[0_0_8px_rgba(239,68,68,0.5)]"
                               : "bg-[#8C7A63]"
                           }`}
                         />
@@ -1174,7 +1174,7 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
                       {toss.name}
                     </span>
                   ) : isCurrent ? (
-                    <span className="text-xs text-[#D4AF37] animate-pulse font-serif">
+                    <span className="text-xs text-[#C9A55A] animate-pulse font-serif">
                       {isTossing ? `Đang gieo (${remainingSeconds}s)...` : "Chờ gieo..."}
                     </span>
                   ) : (
@@ -1207,7 +1207,7 @@ export const CoinToss: React.FC<CoinTossProps> = ({ onComplete, onReset }) => {
 
           {history.length === 0 && !isTossing && (
             <div className="mb-1 px-4 py-2 rounded-xl bg-[#24170E] border border-[#58391C] text-center shadow-md">
-              <p className="text-xs text-[#FFE28A] font-serif flex items-center justify-center gap-1.5 font-semibold">
+              <p className="text-xs text-[#E6D3A3] font-serif flex items-center justify-center gap-1.5 font-semibold">
                 <span>⏱</span>
                 <span>Thời gian gieo quẻ trên 90 giây, cần tập trung.</span>
               </p>

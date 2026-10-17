@@ -560,8 +560,8 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
       }}
       className={`no-capture flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer shadow active:scale-95 group border ${
         internalAllFlipped
-          ? "bg-[#281E13] text-[#FFE28A] border-[#D4AF37] ring-1 ring-[#D4AF37]/50"
-          : "bg-[#221A12] text-[#EAD8B1] hover:text-[#FFF] border-[#52412B] hover:border-[#D4AF37]"
+          ? "bg-[#281E13] text-[#E6D3A3] border-[#C9A55A] ring-1 ring-[#C9A55A]/50"
+          : "bg-[#221A12] text-[#EAD8B1] hover:text-[#FFF] border-[#52412B] hover:border-[#C9A55A]"
       }`}
       title="Bật/Tắt trạng thái hiển thị lá bài: Mở Luôn (Mặt Ngửa) hoặc Úp Bài (Mặt Bát Quái)"
     >
@@ -576,12 +576,12 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
       onClick={handleToggleRotateAll}
       className={`no-capture flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer shadow active:scale-95 group border ${
         effectiveAllRotated
-          ? "bg-[#281E13] text-[#FFE28A] border-[#D4AF37] ring-1 ring-[#D4AF37]/40"
-          : "bg-[#221A12] text-[#EAD8B1] hover:text-[#FFF] border-[#52412B] hover:border-[#D4AF37]"
+          ? "bg-[#281E13] text-[#E6D3A3] border-[#C9A55A] ring-1 ring-[#C9A55A]/40"
+          : "bg-[#221A12] text-[#EAD8B1] hover:text-[#FFF] border-[#52412B] hover:border-[#C9A55A]"
       }`}
       title="Bật/Tắt xoay bài (180° Ngược / Xuôi) cho toàn bộ các lá bài trong trận pháp"
     >
-      <RotateCw className={`w-3.5 h-3.5 text-[#D4AF37] transition-transform duration-500 ${effectiveAllRotated ? "rotate-180 text-[#FFE28A]" : "group-hover:rotate-180"}`} />
+      <RotateCw className={`w-3.5 h-3.5 text-[#C9A55A] transition-transform duration-500 ${effectiveAllRotated ? "rotate-180 text-[#E6D3A3]" : "group-hover:rotate-180"}`} />
       <span>{effectiveAllRotated ? "Xoay Bài: 180° (Ngược)" : "Xoay Bài: 0° (Thuận)"}</span>
     </button>
   );
@@ -592,12 +592,12 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
       onClick={handleToggleAllowFlipOnClick}
       className={`no-capture flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer shadow active:scale-95 group border ${
         effectiveAllowFlipOnClick
-          ? "bg-[#281E13] text-[#FFE28A] border-[#D4AF37] ring-1 ring-[#D4AF37]/40"
-          : "bg-[#221A12] text-[#A89882] hover:text-[#FFF] border-[#52412B] hover:border-[#D4AF37]"
+          ? "bg-[#281E13] text-[#E6D3A3] border-[#C9A55A] ring-1 ring-[#C9A55A]/40"
+          : "bg-[#221A12] text-[#A89882] hover:text-[#FFF] border-[#52412B] hover:border-[#C9A55A]"
       }`}
       title="Bật/Tắt xoay bài qua mặt sau: Khi TẮT, nhấn vào lá bài sẽ không xoay lật mặt sau hay mặt trước nữa"
     >
-      <FlipHorizontal className={`w-3.5 h-3.5 ${effectiveAllowFlipOnClick ? "text-[#D4AF37]" : "text-[#8C7D6A]"}`} />
+      <FlipHorizontal className={`w-3.5 h-3.5 ${effectiveAllowFlipOnClick ? "text-[#C9A55A]" : "text-[#8C7D6A]"}`} />
       <span>{effectiveAllowFlipOnClick ? "Xoay Mặt Sau: BẬT" : "Xoay Mặt Sau: TẮT (Khóa)"}</span>
     </button>
   );
@@ -608,8 +608,8 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
       onClick={handleToggleHoverZoom}
       className={`no-capture flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-serif transition-colors cursor-pointer shadow border ${
         effectiveHoverZoom
-          ? "bg-[#281E13] text-[#FFE28A] border-[#D4AF37]"
-          : "bg-[#1C1712] text-[#8C7D6A] border-[#382B1D] hover:text-[#D4AF37]"
+          ? "bg-[#281E13] text-[#E6D3A3] border-[#C9A55A]"
+          : "bg-[#1C1712] text-[#8C7D6A] border-[#382B1D] hover:text-[#C9A55A]"
       }`}
       title="Bật/Tắt hiệu ứng cầm lá bài lên lại gần khi lia chuột vào bất kỳ lá bài nào trong trận pháp"
     >
@@ -624,7 +624,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
       onClick={handleToggleSelectionHighlight}
       className={`no-capture flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-serif transition-colors cursor-pointer shadow border ${
         effectiveSelectionHighlight
-          ? "bg-[#281E13] text-[#FFE28A] border-[#D4AF37]"
+          ? "bg-[#281E13] text-[#E6D3A3] border-[#C9A55A]"
           : "bg-[#1C1712] text-[#8C7D6A] border-[#382B1D] hover:text-[#8C7D6A]"
       }`}
       title="Bật/Tắt viền vòng vàng bao quanh lá bài khi nhấp chọn trong trận pháp"
@@ -642,7 +642,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
         onClick={handleToggleCompanionButton}
         className={`px-2 py-1 rounded-lg text-[10px] font-serif transition-colors cursor-pointer border flex items-center gap-1 ${
           effectiveShowCompanionButton
-            ? "bg-[#281E13] text-[#FFE28A] border-[#D4AF37]"
+            ? "bg-[#281E13] text-[#E6D3A3] border-[#C9A55A]"
             : "bg-[#1C1712] text-[#8C7D6A] border-[#382B1D] hover:text-[#B5A48F]"
         }`}
         title="Bật/Tắt hiển thị nút 'Bốc thêm' trên các lá bài"
@@ -657,7 +657,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
         onClick={handleToggleInterpretButton}
         className={`px-2 py-1 rounded-lg text-[10px] font-serif transition-colors cursor-pointer border flex items-center gap-1 ${
           effectiveShowInterpretButton
-            ? "bg-[#281E13] text-[#FFE28A] border-[#D4AF37]"
+            ? "bg-[#281E13] text-[#E6D3A3] border-[#C9A55A]"
             : "bg-[#1C1712] text-[#8C7D6A] border-[#382B1D] hover:text-[#B5A48F]"
         }`}
         title="Bật/Tắt hiển thị nút 'Luận giải' trên các lá bài"
@@ -684,7 +684,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
             onClick={() => handleUpdateCompanionCardSize(s.key)}
             className={`px-1.5 py-0.5 rounded text-[10px] font-medium transition-colors cursor-pointer ${
               effectiveCompanionCardSize === s.key
-                ? "bg-[#D4AF37] text-black font-bold shadow"
+                ? "bg-[#C9A55A] text-black font-bold shadow"
                 : "text-[#C4B49D] hover:text-white"
             }`}
             title={`Lá bổ trợ: ${s.label}`}
@@ -703,7 +703,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
         onClick={handleToggleCardDrag}
         className={`px-2 py-0.5 rounded text-[10px] font-medium transition-colors cursor-pointer flex items-center gap-1 ${
           effectiveCardDrag
-            ? "bg-[#281E13] text-[#FFE28A] border border-[#D4AF37]"
+            ? "bg-[#281E13] text-[#E6D3A3] border border-[#C9A55A]"
             : "text-[#C4B49D] hover:text-white"
         }`}
         title="Bật/Tắt chế độ nhấp chuột và kéo di chuyển lá bài tự do trên màn hình"
@@ -713,7 +713,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
       <button
         type="button"
         onClick={handleResetCardPositions}
-        className="px-1.5 py-0.5 rounded text-[10px] text-[#C4B49D] hover:text-[#FFE28A] transition-colors cursor-pointer"
+        className="px-1.5 py-0.5 rounded text-[10px] text-[#C4B49D] hover:text-[#E6D3A3] transition-colors cursor-pointer"
         title="Đặt lại vị trí tất cả các lá bài về đúng ô ban đầu"
       >
         Đặt lại vị trí
@@ -753,12 +753,12 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2.5">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#D4AF37] shadow-[0_0_8px_#D4AF37] shrink-0" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#C9A55A] shadow-[0_0_8px_#C9A55A] shrink-0" />
               <h3 className="text-sm sm:text-base md:text-lg font-serif font-bold text-[#F5EAD4] tracking-wide">
                 {title}
               </h3>
               {badgeText && (
-                <span className="text-[10px] font-mono text-[#D4AF37] bg-[#241D14] px-2 py-0.5 rounded border border-[#483723] shrink-0">
+                <span className="text-[10px] font-mono text-[#C9A55A] bg-[#241D14] px-2 py-0.5 rounded border border-[#483723] shrink-0">
                   {badgeText}
                 </span>
               )}
@@ -786,7 +786,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
             >
               {isCapturing ? (
                 <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#D4AF37]" />
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#C9A55A]" />
                   <span>Đang chụp...</span>
                 </>
               ) : capturedSuccess ? (
@@ -796,7 +796,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                 </>
               ) : (
                 <>
-                  <Camera className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <Camera className="w-3.5 h-3.5 text-[#C9A55A]" />
                   <span>Chụp Toàn Bộ Lá Bài</span>
                 </>
               )}
@@ -806,7 +806,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
               <button
                 type="button"
                 onClick={() => setShowExportModal(true)}
-                className="no-capture flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-serif text-[#D4AF37] bg-[#221A12] hover:bg-[#302418] border border-[#443522] transition-colors cursor-pointer"
+                className="no-capture flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-serif text-[#C9A55A] bg-[#221A12] hover:bg-[#302418] border border-[#443522] transition-colors cursor-pointer"
                 title="Mở lại ảnh đã xuất để phóng to/thu nhỏ lá bài"
               >
                 <ZoomIn className="w-3.5 h-3.5" />
@@ -820,15 +820,15 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
               onClick={toggleDetailedControls}
               className={`no-capture flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-serif transition-all cursor-pointer border shadow ${
                 showDetailedControls
-                  ? "bg-[#2E2013] text-[#FFE28A] border-[#D4AF37] font-bold ring-1 ring-[#D4AF37]/50"
-                  : "bg-[#1C1712] text-[#A89882] border-[#382B1D] hover:text-[#FFE28A] hover:border-[#523E28]"
+                  ? "bg-[#2E2013] text-[#E6D3A3] border-[#C9A55A] font-bold ring-1 ring-[#C9A55A]/50"
+                  : "bg-[#1C1712] text-[#A89882] border-[#382B1D] hover:text-[#E6D3A3] hover:border-[#523E28]"
               }`}
               title="Mở rộng / Thu gọn các nút điều khiển chi tiết (cỡ bài, xoay bài, cỡ lá bổ trợ, kéo bài, xem gần...)"
             >
-              <Settings className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <Settings className="w-3.5 h-3.5 text-[#C9A55A]" />
               <span>{showDetailedControls ? "Thu gọn tùy chỉnh" : "Tùy chỉnh (Cố định sẵn)"}</span>
               {showDetailedControls ? (
-                <ChevronUp className="w-3 h-3 text-[#D4AF37]" />
+                <ChevronUp className="w-3 h-3 text-[#C9A55A]" />
               ) : (
                 <ChevronDown className="w-3 h-3 text-[#A89882]" />
               )}
@@ -972,7 +972,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
         onClick={() => handleUpdateCardSizeScale("mini")}
         className={`px-1.5 py-0.5 rounded text-[10px] font-medium transition-colors ${
           cardSizeScale === "mini"
-            ? "bg-[#D4AF37] text-black font-bold"
+            ? "bg-[#C9A55A] text-black font-bold"
             : "text-[#C4B49D] hover:text-white"
         }`}
         title="Rất nhỏ"
@@ -984,7 +984,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
         onClick={() => handleUpdateCardSizeScale("compact")}
         className={`px-1.5 py-0.5 rounded text-[10px] font-medium transition-colors ${
           cardSizeScale === "compact"
-            ? "bg-[#D4AF37] text-black font-bold"
+            ? "bg-[#C9A55A] text-black font-bold"
             : "text-[#C4B49D] hover:text-white"
         }`}
         title="Nhỏ"
@@ -996,7 +996,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
         onClick={() => handleUpdateCardSizeScale("normal")}
         className={`px-1.5 py-0.5 rounded text-[10px] font-medium transition-colors ${
           cardSizeScale === "normal"
-            ? "bg-[#D4AF37] text-black font-bold"
+            ? "bg-[#C9A55A] text-black font-bold"
             : "text-[#C4B49D] hover:text-white"
         }`}
         title="Vừa (Tiêu chuẩn)"
@@ -1008,7 +1008,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
         onClick={() => handleUpdateCardSizeScale("large")}
         className={`px-1.5 py-0.5 rounded text-[10px] font-medium transition-colors ${
           cardSizeScale === "large"
-            ? "bg-[#D4AF37] text-black font-bold"
+            ? "bg-[#C9A55A] text-black font-bold"
             : "text-[#C4B49D] hover:text-white"
         }`}
         title="Lớn"
@@ -1020,7 +1020,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
         onClick={() => handleUpdateCardSizeScale("xlarge")}
         className={`px-1.5 py-0.5 rounded text-[10px] font-medium transition-colors ${
           cardSizeScale === "xlarge"
-            ? "bg-[#D4AF37] text-black font-bold"
+            ? "bg-[#C9A55A] text-black font-bold"
             : "text-[#C4B49D] hover:text-white"
         }`}
         title="Rất lớn (Cực đại)"
@@ -1184,7 +1184,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                 onClick={() => setNinePalacesView("grid")}
                 className={`flex items-center gap-1 px-2.5 py-1 rounded font-medium transition-colors ${
                   ninePalacesView === "grid"
-                    ? "bg-[#D4AF37] text-black font-bold shadow"
+                    ? "bg-[#C9A55A] text-black font-bold shadow"
                     : "text-[#C4B49D] hover:text-white"
                 }`}
                 title="Xem dạng Lưới Phong Thủy 3x3 (mỗi dòng 3 lá)"
@@ -1197,7 +1197,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                 onClick={() => setNinePalacesView("flight")}
                 className={`flex items-center gap-1 px-2.5 py-1 rounded font-medium transition-colors ${
                   ninePalacesView === "flight"
-                    ? "bg-[#D4AF37] text-black font-bold shadow"
+                    ? "bg-[#C9A55A] text-black font-bold shadow"
                     : "text-[#C4B49D] hover:text-white"
                 }`}
                 title="Xem theo thứ tự bay Phi Tinh (5 ở giữa ➔ 6 Tây Bắc ➔ 7 Chính Tây...)"
@@ -1283,8 +1283,8 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                   {/* DÒNG 2: 3 LÁ (Chính Đông • TRUNG CUNG • Chính Tây) */}
                   <div className="mb-2 sm:mb-4 bg-[#1D1711]/60 p-1.5 sm:p-2.5 rounded-xl border border-[#443321]">
                     <div className="text-[10px] font-serif font-semibold text-[#A89882] mb-1 px-1 flex items-center justify-between">
-                      <span className="text-[#FFE28A]">✦ Dòng 2 (Hàng Giữa - Trục Ngang)</span>
-                      <span className="text-[9px] text-[#D4AF37]">Chính Đông (Chấn 3) • <strong>Trung Cung (Ở Giữa 5)</strong> • Chính Tây (Đoài 7)</span>
+                      <span className="text-[#E6D3A3]">✦ Dòng 2 (Hàng Giữa - Trục Ngang)</span>
+                      <span className="text-[9px] text-[#C9A55A]">Chính Đông (Chấn 3) • <strong>Trung Cung (Ở Giữa 5)</strong> • Chính Tây (Đoài 7)</span>
                     </div>
                     <div className="grid grid-cols-3 gap-1.5 sm:gap-3 md:gap-4 justify-items-center items-start">
                       {/* Chính Đông (Cung 3 - Lá 8) */}
@@ -1300,7 +1300,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                       />
                       {/* Trung Cung (Cung 5 - Ở Giữa - Lá 1) */}
                       <div className="w-full flex flex-col items-center relative">
-                        <div className="absolute -inset-1 rounded-xl bg-gradient-to-r from-[#D4AF37]/20 via-[#FFE28A]/30 to-[#D4AF37]/20 blur-xs -z-0 pointer-events-none" />
+                        <div className="absolute -inset-1 rounded-xl bg-gradient-to-r from-[#C9A55A]/20 via-[#E6D3A3]/30 to-[#C9A55A]/20 blur-xs -z-0 pointer-events-none" />
                         <SpreadCardSlot
                           position={NINE_PALACES_POSITIONS[0]}
                           card={cards[0]}
@@ -1381,7 +1381,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
               /* Quỹ Đạo Phi Tinh: Chiều bay từ 5 ở giữa -> 6 -> 7... */
               <div className="space-y-4 max-w-4xl mx-auto">
                 <div className="p-3 bg-[#1B1611] rounded-xl border border-[#3E301F] text-xs text-[#C4B49D]">
-                  <p className="font-serif font-bold text-[#D4AF37] mb-1">
+                  <p className="font-serif font-bold text-[#C9A55A] mb-1">
                     ✦ Đường Bay Lượng Thiên Xích (Thứ Tự Phi Tinh 9 Cung):
                   </p>
                   <p className="leading-relaxed text-[11px]">
@@ -1396,18 +1396,18 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                       onClick={() => onSelectCard && onSelectCard(idx)}
                       className={`p-3 rounded-xl border transition-all cursor-pointer ${
                         selectedCardIndex === idx && effectiveSelectionHighlight
-                          ? "bg-[#251D14] border-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.3)]"
+                          ? "bg-[#251D14] border-[#C9A55A] shadow-[0_0_12px_rgba(212,175,55,0.3)]"
                           : "bg-[#16120E] border-[#312519] hover:border-[#4B3B28] hover:bg-[#1C1712]"
                       }`}
                     >
                       <div className="flex items-center justify-between gap-2 mb-2 pb-1.5 border-b border-[#2C2116]">
                         <span className="text-xs font-serif font-bold text-[#EAD8B1] flex items-center gap-1.5">
-                          <span className="w-5 h-5 rounded-full bg-[#2A1F14] text-[#D4AF37] flex items-center justify-center text-[11px] font-mono font-bold">
+                          <span className="w-5 h-5 rounded-full bg-[#2A1F14] text-[#C9A55A] flex items-center justify-center text-[11px] font-mono font-bold">
                             {idx + 1}
                           </span>
                           <span>{pos.name}</span>
                         </span>
-                        <span className="text-[10px] font-serif text-[#D4AF37] bg-[#221911] px-1.5 py-0.5 rounded border border-[#3E2E1D]">
+                        <span className="text-[10px] font-serif text-[#C9A55A] bg-[#221911] px-1.5 py-0.5 rounded border border-[#3E2E1D]">
                           Bước {idx + 1}
                         </span>
                       </div>
@@ -1426,7 +1426,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                           <div className="text-xs font-serif font-bold text-[#FFF] truncate">
                             Quẻ #{cards[idx]?.number}: {cards[idx]?.name}
                           </div>
-                          <div className="text-[11px] text-[#D4AF37] mt-0.5">
+                          <div className="text-[11px] text-[#C9A55A] mt-0.5">
                             {cards[idx]?.vietnameseName}
                           </div>
                           <p className="text-[10px] text-[#A89882] mt-1 line-clamp-2 leading-tight">
@@ -1444,7 +1444,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
           {/* PALACE EXPLANATION LIST */}
           <div className="mt-5 pt-4 border-t border-[#2C2317]">
             <h4 className="text-xs sm:text-sm font-serif font-bold text-[#EAD8B1] uppercase tracking-wider mb-3 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+              <Sparkles className="w-4 h-4 text-[#C9A55A]" />
               Chi Tiết 9 Cung Phong Thủy Ứng Với Quẻ Đã Bốc
             </h4>
 
@@ -1458,14 +1458,14 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                     onClick={() => onSelectCard && onSelectCard(idx)}
                     className={`p-3 rounded-xl border transition-all cursor-pointer flex flex-col justify-between ${
                       isSelected
-                        ? "bg-[#251D14] border-[#D4AF37] shadow-md"
+                        ? "bg-[#251D14] border-[#C9A55A] shadow-md"
                         : "bg-[#16120E] border-[#2E2317] hover:border-[#463624] hover:bg-[#1D1712]"
                     }`}
                   >
                     <div>
                       <div className="flex items-center justify-between gap-1.5 mb-1.5">
                         <span className="text-xs font-serif font-bold text-[#EAD8B1] flex items-center gap-1.5">
-                          <span className="w-4 h-4 rounded bg-[#2D2114] text-[#D4AF37] text-[10px] flex items-center justify-center font-mono font-bold">
+                          <span className="w-4 h-4 rounded bg-[#2D2114] text-[#C9A55A] text-[10px] flex items-center justify-center font-mono font-bold">
                             {idx + 1}
                           </span>
                           <span className="truncate">{pos.name}</span>
@@ -1474,7 +1474,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                           Lá {idx + 1}
                         </span>
                       </div>
-                      <div className="text-xs font-medium text-[#FFE28A] mb-1">
+                      <div className="text-xs font-medium text-[#E6D3A3] mb-1">
                         Quẻ #{card?.number}: {card?.name}
                       </div>
                       <p className="text-[11px] text-[#A89882] leading-relaxed">
@@ -1486,7 +1486,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                       <span className="text-[#8C7D6A] italic">
                         {pos.subtitle}
                       </span>
-                      <span className="text-[#D4AF37] font-serif font-bold">
+                      <span className="text-[#C9A55A] font-serif font-bold">
                         {isSelected ? "Đang chọn xem ✦" : "Nhấp để xem chi tiết →"}
                       </span>
                     </div>
@@ -1526,9 +1526,9 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
           key={branch.id}
           className={`relative p-1.5 sm:p-2 rounded-xl sm:rounded-2xl transition-all duration-300 flex flex-col items-center justify-between border text-center ${
             isMenh
-              ? "bg-gradient-to-b from-[#342412] via-[#22170D] to-[#160F09] border-[#FFE28A] shadow-[0_0_20px_rgba(212,175,55,0.4)] ring-2 ring-[#D4AF37]"
+              ? "bg-gradient-to-b from-[#342412] via-[#22170D] to-[#160F09] border-[#E6D3A3] shadow-[0_0_20px_rgba(212,175,55,0.4)] ring-2 ring-[#C9A55A]"
               : isSelected
-              ? "bg-[#251D14] border-[#D4AF37] ring-1 ring-[#D4AF37] shadow-lg"
+              ? "bg-[#251D14] border-[#C9A55A] ring-1 ring-[#C9A55A] shadow-lg"
               : "bg-[#16120E] border-[#302417] hover:border-[#523E28] hover:bg-[#1D1610]"
           }`}
         >
@@ -1537,7 +1537,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
             <span
               className={`text-[9px] sm:text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${
                 isMenh
-                  ? "bg-[#D4AF37] text-black"
+                  ? "bg-[#C9A55A] text-black"
                   : "bg-[#241A12] text-[#EAD8B1] border border-[#3E2E1E]"
               }`}
             >
@@ -1552,7 +1552,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
           <div
             className={`w-full py-0.5 px-1 rounded-md text-[10px] sm:text-[11px] font-serif font-bold uppercase mb-1.5 truncate border ${
               isMenh
-                ? "bg-[#D4AF37]/25 text-[#FFE28A] border-[#D4AF37] shadow-xs"
+                ? "bg-[#C9A55A]/25 text-[#E6D3A3] border-[#C9A55A] shadow-xs"
                 : "bg-[#1E1710] text-[#E0D1B8] border-[#382A1B]"
             }`}
           >
@@ -1611,7 +1611,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                   onClick={() => setTwelveBranchesView("grid")}
                   className={`px-2.5 py-1 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                     twelveBranchesView === "grid"
-                      ? "bg-[#D4AF37] text-black shadow"
+                      ? "bg-[#C9A55A] text-black shadow"
                       : "text-[#C4B49D] hover:text-white"
                   }`}
                 >
@@ -1623,7 +1623,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                   onClick={() => setTwelveBranchesView("list")}
                   className={`px-2.5 py-1 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                     twelveBranchesView === "list"
-                      ? "bg-[#D4AF37] text-black shadow"
+                      ? "bg-[#C9A55A] text-black shadow"
                       : "text-[#C4B49D] hover:text-white"
                   }`}
                 >
@@ -1639,11 +1639,11 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                 className={`no-capture px-2.5 py-1.5 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer flex items-center gap-1.5 border shadow ${
                   isReverseHouses
                     ? "bg-[#2D1B13] text-[#FFA07A] border-[#653620] hover:bg-[#382319]"
-                    : "bg-[#201811] text-[#FFE28A] border-[#4A3824] hover:bg-[#2C2116]"
+                    : "bg-[#201811] text-[#E6D3A3] border-[#4A3824] hover:bg-[#2C2116]"
                 }`}
                 title="Bấm để đảo chiều xoay 12 Cung Tử Vi (Thuận hành Dần-Mão vs Nghịch hành Dần-Sửu)"
               >
-                <RotateCw className={`w-3.5 h-3.5 transition-transform duration-300 ${isReverseHouses ? "rotate-180 text-[#FFA07A]" : "text-[#D4AF37]"}`} />
+                <RotateCw className={`w-3.5 h-3.5 transition-transform duration-300 ${isReverseHouses ? "rotate-180 text-[#FFA07A]" : "text-[#C9A55A]"}`} />
                 <span>{isReverseHouses ? "Xoay Nghịch" : "Xoay Thuận"}</span>
               </button>
             </>,
@@ -1669,13 +1669,13 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
 
                 {/* CENTER "THIÊN BÀN" (Cols 2-3, Rows 2-3) */}
                 <div className="col-span-2 row-span-2 bg-gradient-to-b from-[#1C150E] via-[#16100A] to-[#120D08] border-2 border-[#4C3822] rounded-2xl p-3 sm:p-5 flex flex-col items-center justify-center text-center relative shadow-inner overflow-hidden">
-                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#D4AF37]/10 via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#C9A55A]/10 via-transparent to-transparent pointer-events-none" />
 
                   {/* Celestial Centerpiece */}
                   <div className="relative z-10 flex flex-col items-center justify-center space-y-2.5 max-w-sm w-full">
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-[#2D2115] to-[#140F0A] border-2 border-[#D4AF37]/70 shadow-[0_0_18px_rgba(212,175,55,0.25)] flex items-center justify-center relative">
-                      <Compass className="w-6 h-6 sm:w-7 sm:h-7 text-[#FFE28A]" />
-                      <span className="absolute -bottom-1 px-1.5 py-0.2 bg-[#382816] border border-[#D4AF37]/60 rounded-full text-[9px] font-mono text-[#FFE28A] font-bold">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-[#2D2115] to-[#140F0A] border-2 border-[#C9A55A]/70 shadow-[0_0_18px_rgba(212,175,55,0.25)] flex items-center justify-center relative">
+                      <Compass className="w-6 h-6 sm:w-7 sm:h-7 text-[#E6D3A3]" />
+                      <span className="absolute -bottom-1 px-1.5 py-0.2 bg-[#382816] border border-[#C9A55A]/60 rounded-full text-[9px] font-mono text-[#E6D3A3] font-bold">
                         CHI {menhBranchInfo.number}
                       </span>
                     </div>
@@ -1691,8 +1691,8 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
 
                     {/* Mệnh Cung Info Badge */}
                     <div className="bg-[#241A11] border border-[#523C26] rounded-xl px-3 py-2 w-full shadow-md">
-                      <div className="text-xs sm:text-sm font-serif font-bold text-[#FFE28A] flex items-center justify-center gap-1.5">
-                        <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+                      <div className="text-xs sm:text-sm font-serif font-bold text-[#E6D3A3] flex items-center justify-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-[#C9A55A]" />
                         <span>Mệnh Cung an tại: <strong>Chi {menhBranchInfo.name}</strong></span>
                       </div>
                       <div className="text-[11px] text-[#C4B49D] mt-0.5 flex items-center justify-center gap-2">
@@ -1704,17 +1704,17 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
 
                     {/* Quẻ Chủ Mệnh */}
                     <div className="text-[11px] font-serif text-[#D6C7B2] bg-[#1A130C] px-3 py-1.5 rounded-lg border border-[#3A2B1C] w-full">
-                      Quẻ Chủ Mệnh: <strong className="text-[#FFE28A]">#{menhCard.number} {menhCard.name}</strong> ({menhCard.vietnameseName})
+                      Quẻ Chủ Mệnh: <strong className="text-[#E6D3A3]">#{menhCard.number} {menhCard.name}</strong> ({menhCard.vietnameseName})
                     </div>
 
                     {/* Rotation Direction Switcher */}
                     <button
                       type="button"
                       onClick={() => setIsReverseHouses(!isReverseHouses)}
-                      className="inline-flex items-center gap-1.5 text-[11px] font-serif text-[#D4AF37] hover:text-white bg-[#261B12] hover:bg-[#342518] px-3 py-1.5 rounded-full border border-[#4C3723] transition-colors cursor-pointer shadow"
+                      className="inline-flex items-center gap-1.5 text-[11px] font-serif text-[#C9A55A] hover:text-white bg-[#261B12] hover:bg-[#342518] px-3 py-1.5 rounded-full border border-[#4C3723] transition-colors cursor-pointer shadow"
                       title="Bấm để chuyển đổi chiều an 12 Cung"
                     >
-                      <RotateCw className={`w-3.5 h-3.5 transition-transform duration-300 ${isReverseHouses ? "rotate-180 text-[#FFA07A]" : "text-[#D4AF37]"}`} />
+                      <RotateCw className={`w-3.5 h-3.5 transition-transform duration-300 ${isReverseHouses ? "rotate-180 text-[#FFA07A]" : "text-[#C9A55A]"}`} />
                       <span>An 12 Cung: <strong>{isReverseHouses ? "Nghịch (Dần ➔ Sửu)" : "Thuận (Dần ➔ Mão)"}</strong></span>
                     </button>
                   </div>
@@ -1738,7 +1738,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
             <div className="space-y-4 max-w-5xl mx-auto">
               <div className="p-3 bg-[#1B1611] rounded-xl border border-[#3E301F] text-xs text-[#C4B49D] flex items-center justify-between flex-wrap gap-2">
                 <div>
-                  <span className="font-serif font-bold text-[#D4AF37]">
+                  <span className="font-serif font-bold text-[#C9A55A]">
                     ✦ An Vị 12 Cung Tử Vi (Mệnh Cung an tại Chi {menhBranchInfo.name} - Số {activeMenh}):
                   </span>
                   <p className="text-[11px] text-[#A89882] mt-0.5">
@@ -1746,15 +1746,15 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="px-2.5 py-1 rounded-lg bg-[#221A12] text-[#FFE28A] border border-[#483725] font-serif text-[11px]">
+                  <div className="px-2.5 py-1 rounded-lg bg-[#221A12] text-[#E6D3A3] border border-[#483725] font-serif text-[11px]">
                     Mệnh Cung: <strong>Chi {menhBranchInfo.name}</strong> (#{activeMenh})
                   </div>
                   <button
                     type="button"
                     onClick={() => setIsReverseHouses(!isReverseHouses)}
-                    className="flex items-center gap-1 text-[11px] font-serif font-bold px-2.5 py-1 rounded-lg bg-[#241A12] hover:bg-[#322318] text-[#FFE28A] border border-[#4E3924] transition-colors cursor-pointer"
+                    className="flex items-center gap-1 text-[11px] font-serif font-bold px-2.5 py-1 rounded-lg bg-[#241A12] hover:bg-[#322318] text-[#E6D3A3] border border-[#4E3924] transition-colors cursor-pointer"
                   >
-                    <RotateCw className={`w-3 h-3 transition-transform duration-300 ${isReverseHouses ? "rotate-180 text-[#FFA07A]" : "text-[#D4AF37]"}`} />
+                    <RotateCw className={`w-3 h-3 transition-transform duration-300 ${isReverseHouses ? "rotate-180 text-[#FFA07A]" : "text-[#C9A55A]"}`} />
                     <span>{isReverseHouses ? "Đảo sang Thuận" : "Đảo sang Nghịch"}</span>
                   </button>
                 </div>
@@ -1789,9 +1789,9 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                       }}
                       className={`p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between ${
                         isMenh
-                          ? "bg-gradient-to-r from-[#2F2113] to-[#1E160F] border-[#FFE28A] shadow-md ring-1 ring-[#D4AF37]"
+                          ? "bg-gradient-to-r from-[#2F2113] to-[#1E160F] border-[#E6D3A3] shadow-md ring-1 ring-[#C9A55A]"
                           : isSelected && effectiveSelectionHighlight
-                          ? "bg-[#251D14] border-[#D4AF37]"
+                          ? "bg-[#251D14] border-[#C9A55A]"
                           : "bg-[#16120E] border-[#2D2216] hover:border-[#4B3B28] hover:bg-[#1D1712]"
                       }`}
                     >
@@ -1800,7 +1800,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                           <span className="text-xs font-serif font-bold text-[#F3E7CF] flex items-center gap-1.5">
                             <span
                               className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-mono font-bold ${
-                                isMenh ? "bg-[#D4AF37] text-black" : "bg-[#2A1F14] text-[#D4AF37]"
+                                isMenh ? "bg-[#C9A55A] text-black" : "bg-[#2A1F14] text-[#C9A55A]"
                               }`}
                             >
                               {offset + 1}
@@ -1834,10 +1834,10 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                             />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="text-xs font-serif font-bold text-[#FFE28A] truncate">
+                            <div className="text-xs font-serif font-bold text-[#E6D3A3] truncate">
                               Quẻ #{card.number}: {card.name}
                             </div>
-                            <div className="text-[11px] text-[#D4AF37] mt-0.5">
+                            <div className="text-[11px] text-[#C9A55A] mt-0.5">
                               {card.vietnameseName}
                             </div>
                             <p className="text-[10px] text-[#A89882] mt-1 line-clamp-2 leading-tight">
@@ -1851,7 +1851,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                         <span className="text-[#8C7D6A] italic">
                           {branch.direction} • {branch.element}
                         </span>
-                        <span className="text-[#D4AF37] font-serif font-bold">
+                        <span className="text-[#C9A55A] font-serif font-bold">
                           {isSelected ? "Đang xem ✦" : "Xem chi tiết →"}
                         </span>
                       </div>
@@ -1865,7 +1865,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
           {/* PALACE EXPLANATION ACCORDION/GRID AT BOTTOM */}
           <div className="pt-4 border-t border-[#2C2317]">
             <h4 className="text-xs sm:text-sm font-serif font-bold text-[#EAD8B1] uppercase tracking-wider mb-3 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+              <Sparkles className="w-4 h-4 text-[#C9A55A]" />
               Ý Nghĩa 12 Cung Tử Vi & 12 Địa Chi Trong Trận Pháp
             </h4>
 
@@ -1884,9 +1884,9 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                     onClick={() => onSelectCard && onSelectCard(cardIdx)}
                     className={`p-2.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between ${
                       isMenh
-                        ? "bg-[#281C10] border-[#D4AF37] shadow-sm"
+                        ? "bg-[#281C10] border-[#C9A55A] shadow-sm"
                         : isSelected
-                        ? "bg-[#221A12] border-[#D4AF37]"
+                        ? "bg-[#221A12] border-[#C9A55A]"
                         : "bg-[#15110E] border-[#2A2016] hover:border-[#423222]"
                     }`}
                   >
@@ -1899,7 +1899,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                           {branch.name}
                         </span>
                       </div>
-                      <div className="text-[11px] font-medium text-[#FFE28A] mb-1 truncate">
+                      <div className="text-[11px] font-medium text-[#E6D3A3] mb-1 truncate">
                         Quẻ #{card.number}: {card.name}
                       </div>
                       <p className="text-[10px] text-[#8C7D6A] leading-tight line-clamp-2">
@@ -1909,7 +1909,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
 
                     <div className="mt-2 pt-1.5 border-t border-[#231A11] flex items-center justify-between text-[9px] text-[#716353]">
                       <span>{branch.lunarMonth}</span>
-                      <span className="text-[#D4AF37]">{isSelected ? "Đang chọn" : "Nhấp xem"}</span>
+                      <span className="text-[#C9A55A]">{isSelected ? "Đang chọn" : "Nhấp xem"}</span>
                     </div>
                   </div>
                 );
@@ -1951,7 +1951,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                   onClick={() => setTenStarView("cross")}
                   className={`px-2.5 py-1 text-xs font-serif rounded transition-all cursor-pointer ${
                     tenStarView === "cross"
-                      ? "bg-[#D4AF37] text-black font-bold shadow"
+                      ? "bg-[#C9A55A] text-black font-bold shadow"
                       : "text-[#C4B49D] hover:text-[#F3E7CF]"
                   }`}
                 >
@@ -1962,7 +1962,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                   onClick={() => setTenStarView("grid")}
                   className={`px-2.5 py-1 text-xs font-serif rounded transition-all cursor-pointer ${
                     tenStarView === "grid"
-                      ? "bg-[#D4AF37] text-black font-bold shadow"
+                      ? "bg-[#C9A55A] text-black font-bold shadow"
                       : "text-[#C4B49D] hover:text-[#F3E7CF]"
                   }`}
                 >
@@ -2167,7 +2167,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                                 e.stopPropagation();
                                 onToggleCard2AReversed();
                               }}
-                              className="mt-1 text-[9px] text-[#D4AF37] hover:underline cursor-pointer"
+                              className="mt-1 text-[9px] text-[#C9A55A] hover:underline cursor-pointer"
                             >
                               [Đổi 2A]
                             </button>
@@ -2195,7 +2195,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                                 e.stopPropagation();
                                 onToggleCard2BReversed();
                               }}
-                              className="mt-1 text-[9px] text-[#D4AF37] hover:underline cursor-pointer"
+                              className="mt-1 text-[9px] text-[#C9A55A] hover:underline cursor-pointer"
                             >
                               [Đổi 2B]
                             </button>
@@ -2343,7 +2343,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
               </>
             )}
           </span>
-          <span className="text-[#D4AF37]">
+          <span className="text-[#C9A55A]">
             {isExpanded ? (
               <>
                 Quẻ 2: 2A ({isCard2AReversed ? "Nghịch" : "Thuận"}) & 2B ({isCard2BReversed ? "Nghịch" : "Thuận"}) →{" "}
@@ -2432,17 +2432,17 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                       interactive ? "cursor-pointer group" : ""
                     } ${
                       isSelected
-                        ? "border-[#D4AF37] ring-2 ring-[#D4AF37]/50 shadow-[0_0_15px_rgba(212,175,55,0.25)] bg-[#1F1913]"
+                        ? "border-[#C9A55A] ring-2 ring-[#C9A55A]/50 shadow-[0_0_15px_rgba(212,175,55,0.25)] bg-[#1F1913]"
                         : "border-[#2D2318] hover:border-[#4E3C29] hover:bg-[#1A1511]"
                     }`}
                   >
                     {/* Top card index header */}
                     <div className="flex items-center justify-between w-full mb-2 px-1">
-                      <span className="text-[10px] font-mono font-bold text-[#D4AF37] bg-[#271E14] px-2 py-0.5 rounded border border-[#443522]">
+                      <span className="text-[10px] font-mono font-bold text-[#C9A55A] bg-[#271E14] px-2 py-0.5 rounded border border-[#443522]">
                         Lá #{idx + 1}
                       </span>
                       {isSelected && (
-                        <span className="no-capture w-4 h-4 rounded-full bg-[#D4AF37] text-[#120F0C] text-[9px] font-bold flex items-center justify-center shadow">
+                        <span className="no-capture w-4 h-4 rounded-full bg-[#C9A55A] text-[#120F0C] text-[9px] font-bold flex items-center justify-center shadow">
                           ✓
                         </span>
                       )}
@@ -2489,7 +2489,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                     <div
                       className={`text-[11px] font-serif leading-snug rounded p-1.5 border transition-colors ${
                         isSelected
-                          ? "bg-[#2A2016] text-[#FFF] border-[#D4AF37]/60 font-semibold"
+                          ? "bg-[#2A2016] text-[#FFF] border-[#C9A55A]/60 font-semibold"
                           : "bg-[#13100D] text-[#D8C4A0] border-[#2A2016]"
                       }`}
                       title={positionPurpose}
@@ -2508,7 +2508,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                       }}
                       className={`no-capture mt-2.5 w-full text-[10px] font-bold py-1 px-1.5 rounded-lg border transition-all ${
                         isSelected
-                          ? "bg-[#D4AF37] text-[#120F0C] border-[#D4AF37]"
+                          ? "bg-[#C9A55A] text-[#120F0C] border-[#C9A55A]"
                           : "bg-[#221B14] text-[#A89882] border-[#362B1D] hover:text-[#FFF] hover:bg-[#2C231A]"
                       }`}
                     >
@@ -2526,7 +2526,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
           <span>
             ✦ <strong>Trận pháp tự do:</strong> Bấm vào bất kỳ lá bài nào bên trên để xem chi tiết quẻ ứng với mục đích đã điền.
           </span>
-          <span className="text-[#D4AF37]">
+          <span className="text-[#C9A55A]">
             Tổng số: <strong>{cardCount} lá bài</strong>
           </span>
         </div>
@@ -2657,7 +2657,7 @@ const SpreadCardSlot: React.FC<SpreadCardSlotProps> = ({
         interactive ? "cursor-pointer group" : ""
       } ${
         isSelected && ctx.enableSelectionHighlight !== false
-          ? "bg-[#251D14] ring-2 ring-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.3)] scale-102"
+          ? "bg-[#251D14] ring-2 ring-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.3)] scale-102"
           : "hover:bg-[#1C1712]"
       }`}
     >
@@ -2695,7 +2695,7 @@ const SpreadCardSlot: React.FC<SpreadCardSlotProps> = ({
             <button
               type="button"
               onClick={handleToggleCardFlip}
-              className="no-capture absolute -top-1.5 -left-1.5 w-5 h-5 rounded-full bg-[#18120C]/90 hover:bg-[#2B2014] border border-[#523E27] hover:border-[#D4AF37] text-[#D4AF37] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow z-20 cursor-pointer"
+              className="no-capture absolute -top-1.5 -left-1.5 w-5 h-5 rounded-full bg-[#18120C]/90 hover:bg-[#2B2014] border border-[#523E27] hover:border-[#C9A55A] text-[#C9A55A] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow z-20 cursor-pointer"
               title="Lật 3D xem mặt sau Bát Quái ☯ / mặt Quẻ"
             >
               <RotateCw className="w-2.5 h-2.5" />
@@ -2703,7 +2703,7 @@ const SpreadCardSlot: React.FC<SpreadCardSlotProps> = ({
           )}
 
           {isSelected && ctx.enableSelectionHighlight !== false && (
-            <div className="no-capture absolute -top-1 -right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-[#D4AF37] text-[#120F0C] rounded-full text-[8px] sm:text-[9px] font-bold flex items-center justify-center shadow z-20">
+            <div className="no-capture absolute -top-1 -right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-[#C9A55A] text-[#120F0C] rounded-full text-[8px] sm:text-[9px] font-bold flex items-center justify-center shadow z-20">
               ✓
             </div>
           )}
@@ -2718,10 +2718,10 @@ const SpreadCardSlot: React.FC<SpreadCardSlotProps> = ({
                     e.stopPropagation();
                     ctx.onDrawCompanionCard?.(slotKey);
                   }}
-                  className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-[#241A10] hover:bg-[#D4AF37] text-[#E2B755] hover:text-[#120F0C] border border-[#583E24] hover:border-[#F2C965] text-[8px] sm:text-[9px] font-mono font-bold shadow-md transition-all cursor-pointer group active:scale-95 whitespace-nowrap"
+                  className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-[#241A10] hover:bg-[#C9A55A] text-[#D6B97A] hover:text-[#120F0C] border border-[#583E24] hover:border-[#F2C965] text-[8px] sm:text-[9px] font-mono font-bold shadow-md transition-all cursor-pointer group active:scale-95 whitespace-nowrap"
                   title="Bốc thêm 1 lá kế bên (Lá bổ trợ giải trình)"
                 >
-                  <Plus className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#E2B755] group-hover:text-[#120F0C] group-hover:rotate-90 transition-transform" />
+                  <Plus className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#D6B97A] group-hover:text-[#120F0C] group-hover:rotate-90 transition-transform" />
                   <span>Bốc thêm</span>
                 </button>
               )}
@@ -2732,10 +2732,10 @@ const SpreadCardSlot: React.FC<SpreadCardSlotProps> = ({
                     e.stopPropagation();
                     if (card) ctx.onNavigateToManual?.(card.number);
                   }}
-                  className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-[#1C1610] hover:bg-[#D4AF37] text-[#D4AF37] hover:text-[#120F0C] border border-[#523E28] hover:border-[#D4AF37] text-[8px] sm:text-[9px] font-serif font-bold shadow-md transition-all cursor-pointer group active:scale-95 whitespace-nowrap"
+                  className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-[#1C1610] hover:bg-[#C9A55A] text-[#C9A55A] hover:text-[#120F0C] border border-[#523E28] hover:border-[#C9A55A] text-[8px] sm:text-[9px] font-serif font-bold shadow-md transition-all cursor-pointer group active:scale-95 whitespace-nowrap"
                   title={`Xem luận giải Quẻ #${card?.number} ở Thuyết Minh`}
                 >
-                  <Eye className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#D4AF37] group-hover:text-[#120F0C] transition-colors" />
+                  <Eye className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#C9A55A] group-hover:text-[#120F0C] transition-colors" />
                   <span>Luận giải</span>
                 </button>
               )}
@@ -2743,7 +2743,7 @@ const SpreadCardSlot: React.FC<SpreadCardSlotProps> = ({
           )}
 
           {card?.deckNumber && (
-            <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 px-1.5 py-0.2 rounded bg-[#18120C] border border-[#523E27] text-[#D4AF37] text-[8.5px] font-mono font-bold whitespace-nowrap shadow z-10 pointer-events-none">
+            <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 px-1.5 py-0.2 rounded bg-[#18120C] border border-[#523E27] text-[#C9A55A] text-[8.5px] font-mono font-bold whitespace-nowrap shadow z-10 pointer-events-none">
               Bộ #{card.deckNumber}
             </div>
           )}
@@ -2768,7 +2768,7 @@ const SpreadCardSlot: React.FC<SpreadCardSlotProps> = ({
               className={`relative flex flex-col items-center shrink-0 animate-in fade-in zoom-in-95 duration-200 ${isLast ? "pr-8 sm:pr-10" : ""}`}
             >
               <div className="flex items-center justify-between w-full px-1 mb-0.5 gap-1">
-                <span className="text-[7.5px] sm:text-[8.5px] font-mono font-bold text-[#E2B755] bg-[#22170E] px-1 py-0.2 rounded border border-[#483421] truncate max-w-[62px] sm:max-w-none">
+                <span className="text-[7.5px] sm:text-[8.5px] font-mono font-bold text-[#D6B97A] bg-[#22170E] px-1 py-0.2 rounded border border-[#483421] truncate max-w-[62px] sm:max-w-none">
                   + Kế Bên {companionList.length > 1 ? `#${compIdx + 1}` : ""} #{compCard.number}
                 </span>
                 <div className="flex items-center gap-0.5 no-capture">
@@ -2779,7 +2779,7 @@ const SpreadCardSlot: React.FC<SpreadCardSlotProps> = ({
                         e.stopPropagation();
                         ctx.onNavigateToManual?.(compCard.number);
                       }}
-                      className="flex items-center gap-0.5 px-1 py-0.2 rounded-full bg-[#1A140E] hover:bg-[#D4AF37] text-[#D4AF37] hover:text-[#120F0C] border border-[#483421] text-[7.5px] font-serif font-bold transition-colors cursor-pointer"
+                      className="flex items-center gap-0.5 px-1 py-0.2 rounded-full bg-[#1A140E] hover:bg-[#C9A55A] text-[#C9A55A] hover:text-[#120F0C] border border-[#483421] text-[7.5px] font-serif font-bold transition-colors cursor-pointer"
                       title={`Xem luận giải Quẻ #${compCard.number} ở Thuyết Minh`}
                     >
                       <Eye className="w-2 h-2" />
@@ -2792,7 +2792,7 @@ const SpreadCardSlot: React.FC<SpreadCardSlotProps> = ({
                       e.stopPropagation();
                       ctx.onToggleCompanionCardSize?.();
                     }}
-                    className="text-[7.5px] font-mono px-1 py-0.2 rounded bg-[#251A10] hover:bg-[#382618] text-[#E2B755] border border-[#523A22] transition-colors cursor-pointer"
+                    className="text-[7.5px] font-mono px-1 py-0.2 rounded bg-[#251A10] hover:bg-[#382618] text-[#D6B97A] border border-[#523A22] transition-colors cursor-pointer"
                     title="Bấm đổi cỡ lá bốc thêm (Nhỏ 1/3 / Vừa / To / Bằng chính / Lớn chính)"
                   >
                     {ctx.companionCardSize === "third"
@@ -2812,7 +2812,7 @@ const SpreadCardSlot: React.FC<SpreadCardSlotProps> = ({
                       ctx.onRemoveCompanionCard?.(slotKey, compIdx);
                       ctx.onDrawCompanionCard?.(slotKey);
                     }}
-                    className="text-[#A89882] hover:text-[#D4AF37] p-0.5 transition-colors cursor-pointer"
+                    className="text-[#A89882] hover:text-[#C9A55A] p-0.5 transition-colors cursor-pointer"
                     title="Bốc đổi sang lá khác"
                   >
                     <RotateCw className="w-2.5 h-2.5" />
@@ -2869,10 +2869,10 @@ const SpreadCardSlot: React.FC<SpreadCardSlotProps> = ({
                       e.stopPropagation();
                       ctx.onDrawCompanionCard?.(slotKey);
                     }}
-                    className="no-capture absolute -top-1.5 -right-7 sm:-right-9 z-20 flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#241A10] hover:bg-[#D4AF37] text-[#E2B755] hover:text-[#120F0C] border border-[#583E24] hover:border-[#F2C965] text-[8.5px] sm:text-[9.5px] font-mono font-bold shadow-md transition-all cursor-pointer group active:scale-95 whitespace-nowrap"
+                    className="no-capture absolute -top-1.5 -right-7 sm:-right-9 z-20 flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#241A10] hover:bg-[#C9A55A] text-[#D6B97A] hover:text-[#120F0C] border border-[#583E24] hover:border-[#F2C965] text-[8.5px] sm:text-[9.5px] font-mono font-bold shadow-md transition-all cursor-pointer group active:scale-95 whitespace-nowrap"
                     title="Bốc thêm tiếp 1 lá kế bên nữa"
                   >
-                    <Plus className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#E2B755] group-hover:text-[#120F0C] group-hover:rotate-90 transition-transform" />
+                    <Plus className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#D6B97A] group-hover:text-[#120F0C] group-hover:rotate-90 transition-transform" />
                     <span>Bốc thêm</span>
                   </button>
                 )}

@@ -438,7 +438,7 @@ export const BaziTwoTierCard: React.FC<BaziTwoTierCardProps> = ({
       {/* Tên Gọi Tâm Ấn Phú gắn vào Địa Chi */}
       {showTamAnPhu && tamAnPhuName && (
         <span
-          className={`font-serif font-bold text-[#FFE28A] bg-[#291A0E]/95 px-1 py-0.2 rounded border border-amber-600/60 truncate max-w-full leading-tight shadow-xs ${sizeCfg.tamAnClasses} select-none my-0.5`}
+          className={`font-serif font-bold text-[#E6D3A3] bg-[#291A0E]/95 px-1 py-0.2 rounded border border-amber-600/60 truncate max-w-full leading-tight shadow-xs ${sizeCfg.tamAnClasses} select-none my-0.5`}
           title={tamAnPhuFullLine ? `Tâm Ấn Phú: ${tamAnPhuFullLine}` : `Tâm Ấn Phú: 《${tamAnPhuName}》${tamAnPhuChinese ? ` (${tamAnPhuChinese})` : ""}`}
         >
           《{tamAnPhuName}》
@@ -455,7 +455,7 @@ export const BaziTwoTierCard: React.FC<BaziTwoTierCardProps> = ({
       {/* Quick Move Menu Popup khi bấm vào thẻ */}
       {menuOpen && (
         <div
-          className="absolute left-1/2 -translate-x-1/2 top-full mt-1.5 w-52 rounded-xl bg-[#1C130B] border-2 border-[#D4AF37] shadow-2xl py-1.5 z-50 text-left animate-in fade-in"
+          className="absolute left-1/2 -translate-x-1/2 top-full mt-1.5 w-52 rounded-xl bg-[#1C130B] border-2 border-[#C9A55A] shadow-2xl py-1.5 z-50 text-left animate-in fade-in"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="px-2.5 py-1 text-[9px] uppercase tracking-wider text-[#A89882] font-semibold border-b border-[#362516] flex items-center justify-between">

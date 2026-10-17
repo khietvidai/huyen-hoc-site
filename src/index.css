@@ -2,8 +2,45 @@
 
 @theme {
   --font-sans: "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-serif: "Playfair Display", "Lora", "Noto Serif TC", Georgia, "Times New Roman", serif;
-  --font-display: "Playfair Display", "Lora", "Noto Serif TC", Georgia, serif;
+  --font-serif: "Lora", "Noto Serif TC", Georgia, "Times New Roman", serif;
+  --font-display: "Cormorant Garamond", "Noto Serif TC", Georgia, serif;
+
+  /* Cung đình Á Đông: sơn mài đen, vàng hoàng kim, son chu sa, ngà */
+  --color-lacquer-950: #0b0a08;
+  --color-lacquer-900: #12100d;
+  --color-lacquer-800: #1a1612;
+  --color-lacquer-700: #241f19;
+  --color-gold-200: #efe2c0;
+  --color-gold-300: #e6d3a3;
+  --color-gold-400: #d6b97a;
+  --color-gold-500: #c9a55a;
+  --color-gold-600: #a8843f;
+  --color-gold-700: #6e5730;
+  --color-gold-800: #3d3020;
+  --color-cinnabar-400: #c25a44;
+  --color-cinnabar-500: #a33a2a;
+  --color-cinnabar-600: #8e2a1f;
+  --color-ivory-100: #f2ebdd;
+  --color-ivory-300: #cfc4b0;
+  --color-ivory-500: #9c907c;
+
+  /* Thang amber dịu lại thành vàng hoàng kim trầm (áp dụng toàn app) */
+  --color-amber-100: #f4ead2;
+  --color-amber-200: #eadbb4;
+  --color-amber-300: #dec690;
+  --color-amber-400: #cfae6c;
+  --color-amber-500: #be9850;
+  --color-amber-600: #a07e3e;
+  --color-amber-700: #7d6131;
+  --color-amber-800: #5c4726;
+  --color-amber-900: #3d2f1b;
+  --color-amber-950: #241b10;
+
+  /* Góc vuông vức, trang trọng hơn */
+  --radius-xl: 0.5rem;
+  --radius-2xl: 0.625rem;
+  --radius-3xl: 0.75rem;
+
   --font-classic: "Lora", "Playfair Display", "Noto Serif TC", Georgia, serif;
   --font-book: "Lora", "Playfair Display", "Noto Serif TC", Georgia, serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -27,7 +64,11 @@ textarea {
 }
 
 .font-serif {
-  font-family: 'Playfair Display', 'Lora', 'Noto Serif TC', Georgia, Cambria, 'Times New Roman', serif !important;
+  font-family: 'Lora', 'Noto Serif TC', Georgia, Cambria, 'Times New Roman', serif !important;
+}
+
+.font-display {
+  font-family: 'Cormorant Garamond', 'Noto Serif TC', Georgia, serif !important;
 }
 
 .font-sans {
@@ -403,3 +444,183 @@ body {
   color: #241A11 !important;
 }
 
+
+/* ========================================================================== */
+/* CUNG ĐÌNH Á ĐÔNG — CÁC THÀNH PHẦN GIAO DIỆN DÙNG CHUNG                     */
+/* ========================================================================== */
+@layer components {
+  /* Nhãn nhỏ phía trên tiêu đề: chữ hoa giãn rộng, không viền, không nền */
+  .royal-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: "Be Vietnam Pro", sans-serif;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--color-gold-500);
+  }
+  .royal-eyebrow::before,
+  .royal-eyebrow::after {
+    content: "";
+    width: 1.75rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-gold-600));
+  }
+  .royal-eyebrow::after {
+    background: linear-gradient(90deg, var(--color-gold-600), transparent);
+  }
+
+  /* Tiêu đề hiển thị: Cormorant Garamond, mảnh và thanh lịch */
+  .royal-title {
+    font-family: "Cormorant Garamond", "Noto Serif TC", Georgia, serif;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 1.15;
+    color: var(--color-ivory-100);
+  }
+
+  /* Đường chỉ vàng mảnh có hình thoi ở giữa */
+  .royal-rule {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-gold-600);
+  }
+  .royal-rule::before,
+  .royal-rule::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-gold-600) 70%, transparent), transparent);
+  }
+
+  /* Ấn triện son chu sa */
+  .royal-seal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Noto Serif TC", serif;
+    font-weight: 700;
+    color: #f6e7d6;
+    background: var(--color-cinnabar-600);
+    border: 1px solid color-mix(in srgb, var(--color-cinnabar-400) 70%, transparent);
+    box-shadow: inset 0 0 0 2px var(--color-cinnabar-600), inset 0 0 0 3px rgba(246, 231, 214, 0.35);
+    border-radius: 2px;
+    line-height: 1;
+  }
+
+  /* Khung sơn mài: viền chỉ vàng kép, góc đính hoa văn */
+  .royal-frame {
+    position: relative;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201, 165, 90, 0.07), transparent 70%),
+      linear-gradient(180deg, #15120e 0%, #0e0c0a 100%);
+    border: 1px solid color-mix(in srgb, var(--color-gold-600) 45%, transparent);
+    outline: 1px solid color-mix(in srgb, var(--color-gold-600) 18%, transparent);
+    outline-offset: 5px;
+  }
+  .royal-frame > .royal-corner {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-color: var(--color-gold-500);
+    pointer-events: none;
+  }
+  .royal-corner.tl { top: -1px; left: -1px; border-top: 1px solid; border-left: 1px solid; }
+  .royal-corner.tr { top: -1px; right: -1px; border-top: 1px solid; border-right: 1px solid; }
+  .royal-corner.bl { bottom: -1px; left: -1px; border-bottom: 1px solid; border-left: 1px solid; }
+  .royal-corner.br { bottom: -1px; right: -1px; border-bottom: 1px solid; border-right: 1px solid; }
+
+  /* Thẻ phân hệ: nền sơn mài, viền mảnh, vạch vàng trên cùng khi rê chuột */
+  .royal-card {
+    position: relative;
+    background: linear-gradient(180deg, rgba(26, 22, 18, 0.92), rgba(15, 13, 11, 0.92));
+    border: 1px solid rgba(110, 87, 48, 0.45);
+    transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .royal-card::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 50%;
+    width: 0;
+    height: 1px;
+    background: var(--color-gold-400);
+    transform: translateX(-50%);
+    transition: width 0.4s ease;
+  }
+  .royal-card:hover {
+    border-color: rgba(201, 165, 90, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.9);
+  }
+  .royal-card:hover::before {
+    width: 100%;
+  }
+
+  /* Nút chính: vàng đặc trầm, chữ sơn mài */
+  .royal-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.5rem;
+    font-family: "Be Vietnam Pro", sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #14110c;
+    background: linear-gradient(180deg, #d9bd80 0%, #c09a52 100%);
+    border: 1px solid #e3cc96;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: filter 0.2s ease, transform 0.2s ease;
+  }
+  .royal-btn:hover { filter: brightness(1.08); }
+  .royal-btn:active { transform: translateY(1px); }
+
+  /* Nút phụ: viền chỉ vàng, nền trong suốt */
+  .royal-btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.5rem;
+    font-family: "Be Vietnam Pro", sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-gold-300);
+    background: transparent;
+    border: 1px solid rgba(201, 165, 90, 0.45);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+  }
+  .royal-btn-ghost:hover {
+    color: var(--color-gold-200);
+    border-color: var(--color-gold-400);
+    background: rgba(201, 165, 90, 0.06);
+  }
+
+  /* Liên kết chữ có gạch chân mảnh */
+  .royal-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+    color: var(--color-ivory-300);
+    border-bottom: 1px solid rgba(201, 165, 90, 0.35);
+    padding-bottom: 2px;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+  .royal-link:hover {
+    color: var(--color-gold-300);
+    border-color: var(--color-gold-400);
+  }
+}

@@ -32,7 +32,7 @@ export const JiaziSoundTable: React.FC<JiaziSoundTableProps> = ({
   const [tableSearch, setTableSearch] = useState<string>("");
 
   const elementIcons: Record<string, React.ReactNode> = {
-    Kim: <Sparkles className="w-4 h-4 text-[#E2B755]" />,
+    Kim: <Sparkles className="w-4 h-4 text-[#D6B97A]" />,
     Mộc: <Trees className="w-4 h-4 text-emerald-400" />,
     Thủy: <Droplets className="w-4 h-4 text-sky-400" />,
     Hỏa: <Flame className="w-4 h-4 text-rose-400" />,
@@ -41,8 +41,8 @@ export const JiaziSoundTable: React.FC<JiaziSoundTableProps> = ({
 
   const elementColors: Record<string, { badge: string; border: string; glow: string }> = {
     Kim: {
-      badge: "bg-[#2A2016] text-[#E2B755] border-[#52412E]",
-      border: "border-[#4A3B2A] hover:border-[#D4AF37]",
+      badge: "bg-[#2A2016] text-[#D6B97A] border-[#52412E]",
+      border: "border-[#4A3B2A] hover:border-[#C9A55A]",
       glow: "shadow-[0_0_20px_rgba(212,175,55,0.15)]",
     },
     Mộc: {
@@ -88,8 +88,8 @@ export const JiaziSoundTable: React.FC<JiaziSoundTableProps> = ({
       <div className="bg-[#181410] border border-[#3E3022] rounded-3xl p-6 sm:p-7 shadow-xl">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#271E15] border border-[#52412E] text-xs font-semibold text-[#E2B755] mb-2">
-              <Waves className="w-3.5 h-3.5 text-[#E2B755]" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#271E15] border border-[#52412E] text-xs font-semibold text-[#D6B97A] mb-2">
+              <Waves className="w-3.5 h-3.5 text-[#D6B97A]" />
               <span>30 CẶP TƯỢNG ÂM THANH HOA GIÁP</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-serif font-bold text-[#F5EAD4]">
@@ -110,7 +110,7 @@ export const JiaziSoundTable: React.FC<JiaziSoundTableProps> = ({
                 onClick={() => setSelectedElement(elm)}
                 className={`px-3 py-1.5 text-xs rounded-xl font-medium transition-all cursor-pointer flex items-center gap-1 ${
                   selectedElement === elm
-                    ? "bg-[#D4AF37] text-[#12100E] font-bold shadow-md"
+                    ? "bg-[#C9A55A] text-[#12100E] font-bold shadow-md"
                     : "bg-[#13100D] border border-[#302418] text-[#A89882] hover:text-white"
                 }`}
               >
@@ -129,7 +129,7 @@ export const JiaziSoundTable: React.FC<JiaziSoundTableProps> = ({
             value={tableSearch}
             onChange={(e) => setTableSearch(e.target.value)}
             placeholder="Tìm theo âm thanh (tiếng búa, suối ngầm, sấm sét...), trạng thái..."
-            className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-[#110E0B] border border-[#382B1E] focus:border-[#D4AF37] rounded-xl text-[#F3E7D0] outline-none placeholder-[#6B5C4B]"
+            className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-[#110E0B] border border-[#382B1E] focus:border-[#C9A55A] rounded-xl text-[#F3E7D0] outline-none placeholder-[#6B5C4B]"
           />
         </div>
       </div>
@@ -144,7 +144,7 @@ export const JiaziSoundTable: React.FC<JiaziSoundTableProps> = ({
             <div
               key={rec.napAm}
               className={`relative bg-[#17130F] border rounded-2xl p-5 transition-all duration-200 ${styling.border} ${
-                isPlaying ? `${styling.glow} ring-2 ring-[#D4AF37]/50` : ""
+                isPlaying ? `${styling.glow} ring-2 ring-[#C9A55A]/50` : ""
               }`}
             >
               {/* Header row: Nap Am + Element + Play button */}
@@ -170,7 +170,7 @@ export const JiaziSoundTable: React.FC<JiaziSoundTableProps> = ({
                               key={id}
                               type="button"
                               onClick={() => onSelectCanChi(id)}
-                              className="text-xs font-serif font-bold text-[#D4AF37] hover:underline flex items-center gap-0.5 cursor-pointer bg-[#221B13] px-2 py-0.5 rounded border border-[#3E3020]"
+                              className="text-xs font-serif font-bold text-[#C9A55A] hover:underline flex items-center gap-0.5 cursor-pointer bg-[#221B13] px-2 py-0.5 rounded border border-[#3E3020]"
                               title={`Xem chi tiết diễn giải cho ${name}`}
                             >
                               <span>{name}</span>
@@ -190,7 +190,7 @@ export const JiaziSoundTable: React.FC<JiaziSoundTableProps> = ({
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer active:scale-95 shrink-0 ${
                     isPlaying
                       ? "bg-rose-600 text-white shadow-[0_0_12px_rgba(225,29,72,0.6)] animate-pulse"
-                      : "bg-[#291F15] hover:bg-[#3B2C1E] text-[#E2B755] border border-[#52402B]"
+                      : "bg-[#291F15] hover:bg-[#3B2C1E] text-[#D6B97A] border border-[#52402B]"
                   }`}
                   title={isPlaying ? "Dừng âm tượng" : "Nghe mô phỏng âm thanh tượng trưng"}
                 >
@@ -210,16 +210,16 @@ export const JiaziSoundTable: React.FC<JiaziSoundTableProps> = ({
 
               {/* Sound Wave Animation if active */}
               {isPlaying && (
-                <div className="my-2.5 py-1.5 px-3 rounded-xl bg-[#231A12] border border-[#D4AF37]/40 flex items-center justify-between text-xs text-[#E2B755]">
+                <div className="my-2.5 py-1.5 px-3 rounded-xl bg-[#231A12] border border-[#C9A55A]/40 flex items-center justify-between text-xs text-[#D6B97A]">
                   <span className="flex items-center gap-1.5">
                     <Waves className="w-3.5 h-3.5 animate-bounce" />
                     <span className="font-semibold">Đang cộng hưởng âm tượng vũ trụ...</span>
                   </span>
                   <div className="flex items-center gap-0.5">
-                    <span className="w-1 h-3 bg-[#E2B755] rounded-full animate-pulse" />
-                    <span className="w-1 h-4 bg-[#E2B755] rounded-full animate-pulse delay-75" />
-                    <span className="w-1 h-2.5 bg-[#E2B755] rounded-full animate-pulse delay-150" />
-                    <span className="w-1 h-3.5 bg-[#E2B755] rounded-full animate-pulse delay-200" />
+                    <span className="w-1 h-3 bg-[#D6B97A] rounded-full animate-pulse" />
+                    <span className="w-1 h-4 bg-[#D6B97A] rounded-full animate-pulse delay-75" />
+                    <span className="w-1 h-2.5 bg-[#D6B97A] rounded-full animate-pulse delay-150" />
+                    <span className="w-1 h-3.5 bg-[#D6B97A] rounded-full animate-pulse delay-200" />
                   </div>
                 </div>
               )}
@@ -236,8 +236,8 @@ export const JiaziSoundTable: React.FC<JiaziSoundTableProps> = ({
                 </div>
 
                 <div className="bg-[#1C1610] border border-[#3E3020] p-2.5 rounded-xl">
-                  <span className="text-[#E2B755] font-bold flex items-center gap-1 mb-0.5 uppercase text-[10px]">
-                    <Volume2 className="w-3 h-3 text-[#E2B755]" />
+                  <span className="text-[#D6B97A] font-bold flex items-center gap-1 mb-0.5 uppercase text-[10px]">
+                    <Volume2 className="w-3 h-3 text-[#D6B97A]" />
                     Âm Thanh Tượng Trưng:
                   </span>
                   <p className="text-[#F5EAD4] font-medium leading-relaxed">

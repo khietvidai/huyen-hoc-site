@@ -55,8 +55,8 @@ export const OraclePoemDetailView: React.FC<{ lineItem: KhongMinhLineItem }> = (
     <div className="space-y-3 text-[11px] font-serif leading-relaxed pt-2.5 border-t border-[#251B12]">
       {/* 1. Dịch nghĩa thơ thuần Việt */}
       {poemTranslation && (
-        <div className="text-[#FFE294] italic bg-[#18110A] p-3 rounded-lg border border-[#2D2115] shadow-inner">
-          <span className="text-[#D4AF37] font-semibold not-italic">📜 Dịch nghĩa toàn bài: </span>
+        <div className="text-[#E6D3A3] italic bg-[#18110A] p-3 rounded-lg border border-[#2D2115] shadow-inner">
+          <span className="text-[#C9A55A] font-semibold not-italic">📜 Dịch nghĩa toàn bài: </span>
           "{poemTranslation}"
         </div>
       )}
@@ -72,7 +72,7 @@ export const OraclePoemDetailView: React.FC<{ lineItem: KhongMinhLineItem }> = (
             <span className="flex items-center gap-1.5">
               <span>✍️ Phân tích từng đoạn câu thơ ({poemSegments.length} đoạn)</span>
             </span>
-            <span className="text-[#D4AF37] flex items-center gap-1 text-[10px]">
+            <span className="text-[#C9A55A] flex items-center gap-1 text-[10px]">
               {showSegments ? "Thu gọn phân tích" : "Xem chi tiết từng đoạn"}
               {showSegments ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
             </span>
@@ -88,13 +88,13 @@ export const OraclePoemDetailView: React.FC<{ lineItem: KhongMinhLineItem }> = (
                   {/* Segment header: Hanzi & Transcription */}
                   <div className="flex items-center justify-between gap-2 flex-wrap pb-1 border-b border-[#24170D]">
                     <div className="flex items-center gap-2">
-                      <span className="w-4 h-4 rounded text-[9px] font-mono font-bold bg-[#291B10] text-[#D4AF37] flex items-center justify-center border border-[#483520]">
+                      <span className="w-4 h-4 rounded text-[9px] font-mono font-bold bg-[#291B10] text-[#C9A55A] flex items-center justify-center border border-[#483520]">
                         {idx + 1}
                       </span>
-                      <span className="font-serif font-bold text-sm text-[#FFE294] tracking-wide">
+                      <span className="font-serif font-bold text-sm text-[#E6D3A3] tracking-wide">
                         {seg.hanzi}
                       </span>
-                      <span className="text-[#D4AF37] font-medium italic text-[11.5px]">
+                      <span className="text-[#C9A55A] font-medium italic text-[11.5px]">
                         ({seg.transcription})
                       </span>
                     </div>
@@ -107,7 +107,7 @@ export const OraclePoemDetailView: React.FC<{ lineItem: KhongMinhLineItem }> = (
 
                   {/* Segment analysis */}
                   {seg.analysis && (
-                    <div className="text-[#D5C6AF] text-[10.5px] pl-2.5 border-l-2 border-[#D4AF37]/60 leading-relaxed bg-[#100A06]/60 p-2 rounded-r">
+                    <div className="text-[#D5C6AF] text-[10.5px] pl-2.5 border-l-2 border-[#C9A55A]/60 leading-relaxed bg-[#100A06]/60 p-2 rounded-r">
                       <strong className="text-[#E5B552] not-italic">💡 Phân tích & Đạo lý: </strong>
                       {seg.analysis}
                     </div>
@@ -165,17 +165,17 @@ export const KhongMinhSingleHexView: React.FC<KhongMinhSingleHexViewProps> = ({
       className={`bg-gradient-to-br from-[#1C1610] via-[#15110C] to-[#0D0A08] p-4 sm:p-5 rounded-2xl border border-[#483723] space-y-4 shadow-xl relative overflow-hidden ${className}`}
     >
       {/* Decorative Traditional Accent */}
-      <div className="absolute -top-10 -right-10 w-36 h-36 bg-[#D4AF37]/5 rounded-full blur-2xl pointer-events-none" />
+      <div className="absolute -top-10 -right-10 w-36 h-36 bg-[#C9A55A]/5 rounded-full blur-2xl pointer-events-none" />
 
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#2C1F14] pb-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#8C6D23] flex items-center justify-center text-[#120F0C] font-bold shadow">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#C9A55A] to-[#8C6D23] flex items-center justify-center text-[#120F0C] font-bold shadow">
             <Scroll className="w-4 h-4" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#D4AF37] bg-[#261B10] px-2 py-0.5 rounded border border-[#42311D]">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#C9A55A] bg-[#261B10] px-2 py-0.5 rounded border border-[#42311D]">
                 Khổng Minh Thần Quẻ (384 Quẻ)
               </span>
               <span className="text-[10px] text-[#A69780] hidden sm:inline-block">
@@ -185,11 +185,11 @@ export const KhongMinhSingleHexView: React.FC<KhongMinhSingleHexViewProps> = ({
             <h4 className="text-sm sm:text-base font-serif font-bold text-[#F5EAD4] mt-0.5 flex items-center gap-2 flex-wrap">
               <span>{bridgeData.name}</span>
               {bridgeData.hanzi && (
-                <span className="text-xs font-serif font-bold text-[#FFE294] bg-[#24180E] px-2 py-0.5 rounded border border-[#48341E]">
+                <span className="text-xs font-serif font-bold text-[#E6D3A3] bg-[#24180E] px-2 py-0.5 rounded border border-[#48341E]">
                   {bridgeData.hanzi}
                 </span>
               )}
-              <span className="text-xs text-[#D4AF37] font-normal">
+              <span className="text-xs text-[#C9A55A] font-normal">
                 (Quẻ #{kingWenNumber} Chu Dịch {bridgeData.vietnameseName ? `• ${bridgeData.vietnameseName}` : ""})
               </span>
             </h4>
@@ -199,7 +199,7 @@ export const KhongMinhSingleHexView: React.FC<KhongMinhSingleHexViewProps> = ({
         <button
           type="button"
           onClick={() => setIsExpanded(!isExpanded)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#22170E] hover:bg-[#2F2115] border border-[#3E2D1B] hover:border-[#D4AF37] text-xs font-serif font-bold text-[#D4AF37] transition-all cursor-pointer shadow-sm"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#22170E] hover:bg-[#2F2115] border border-[#3E2D1B] hover:border-[#C9A55A] text-xs font-serif font-bold text-[#C9A55A] transition-all cursor-pointer shadow-sm"
         >
           <span>{isExpanded ? "Thu gọn 6 hào Khổng Minh" : "Xem 6 quẻ Khổng Minh (Phân Tích Từng Đoạn, Điển Tích & Triết Lý)"}</span>
           {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
@@ -210,16 +210,16 @@ export const KhongMinhSingleHexView: React.FC<KhongMinhSingleHexViewProps> = ({
       <div className="bg-[#120E0A]/95 p-3.5 sm:p-4 rounded-xl border border-[#2D2115] grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
         <div className="space-y-1 bg-[#1A130C] p-2.5 rounded-lg border border-[#3A2A1A]">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[#D4AF37] font-serif font-bold">Tượng Quẻ:</span>
+            <span className="text-[#C9A55A] font-serif font-bold">Tượng Quẻ:</span>
             {bridgeData.tuongQueHanzi && (
-              <span className="text-sm font-serif font-bold text-[#FFE294]">
+              <span className="text-sm font-serif font-bold text-[#E6D3A3]">
                 {bridgeData.tuongQueHanzi}
               </span>
             )}
             <span className="text-[#E8DCB8] italic">({bridgeData.tuongQue})</span>
           </div>
           {bridgeData.tuongQueMeaning && (
-            <div className="text-[11px] text-[#D8CCA8] pl-2 border-l-2 border-[#D4AF37]/50 font-serif leading-relaxed">
+            <div className="text-[11px] text-[#D8CCA8] pl-2 border-l-2 border-[#C9A55A]/50 font-serif leading-relaxed">
               ➔ <strong>Dịch nghĩa:</strong> {bridgeData.tuongQueMeaning}
             </div>
           )}
@@ -229,7 +229,7 @@ export const KhongMinhSingleHexView: React.FC<KhongMinhSingleHexViewProps> = ({
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-[#C89B3C] font-serif font-bold">Ý Quẻ:</span>
             {bridgeData.yQueHanzi && (
-              <span className="text-sm font-serif font-bold text-[#FFE294]">
+              <span className="text-sm font-serif font-bold text-[#E6D3A3]">
                 {bridgeData.yQueHanzi}
               </span>
             )}
@@ -275,7 +275,7 @@ export const KhongMinhSingleHexView: React.FC<KhongMinhSingleHexViewProps> = ({
                         className={`w-5 h-5 rounded-full text-[10px] font-mono font-bold flex items-center justify-center ${
                           isChanging
                             ? "bg-amber-500 text-[#14100C]"
-                            : "bg-[#261C12] text-[#D4AF37] border border-[#3E2E1D]"
+                            : "bg-[#261C12] text-[#C9A55A] border border-[#3E2E1D]"
                         }`}
                       >
                         {item.line}
@@ -288,7 +288,7 @@ export const KhongMinhSingleHexView: React.FC<KhongMinhSingleHexViewProps> = ({
                         {item.lineName}
                       </span>
                       {item.lineHanzi && (
-                        <span className="text-[11px] font-serif font-bold text-[#FFE294] bg-[#22160C] px-1.5 py-0.5 rounded border border-[#3E2E1D]">
+                        <span className="text-[11px] font-serif font-bold text-[#E6D3A3] bg-[#22160C] px-1.5 py-0.5 rounded border border-[#3E2E1D]">
                           {item.lineHanzi}
                         </span>
                       )}
@@ -300,7 +300,7 @@ export const KhongMinhSingleHexView: React.FC<KhongMinhSingleHexViewProps> = ({
                           Hào Động
                         </span>
                       )}
-                      <span className="px-2 py-0.5 rounded-full bg-[#1C140D] border border-[#42311D] text-[#D4AF37] font-mono text-[10px] font-bold">
+                      <span className="px-2 py-0.5 rounded-full bg-[#1C140D] border border-[#42311D] text-[#C9A55A] font-mono text-[10px] font-bold">
                         Quẻ Khổng Minh #{String(item.oracleNum).padStart(3, "0")}
                       </span>
                     </div>
@@ -310,14 +310,14 @@ export const KhongMinhSingleHexView: React.FC<KhongMinhSingleHexViewProps> = ({
                   <div className="text-[11px] font-serif space-y-1.5 bg-[#0F0C08] p-2.5 rounded-lg border border-[#241A10]">
                     <div>
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <strong className="text-[#D4AF37]">Tượng:</strong>
+                        <strong className="text-[#C9A55A]">Tượng:</strong>
                         {item.tuongHaoHanzi && (
-                          <span className="font-serif font-bold text-[#FFE294]">{item.tuongHaoHanzi}</span>
+                          <span className="font-serif font-bold text-[#E6D3A3]">{item.tuongHaoHanzi}</span>
                         )}
                         <span className="text-[#C4B49C] italic">({item.tuongHao})</span>
                       </div>
                       {item.tuongHaoMeaning && (
-                        <div className="text-[10px] text-[#A69780] pl-2 border-l border-[#D4AF37]/30 mt-0.5">
+                        <div className="text-[10px] text-[#A69780] pl-2 border-l border-[#C9A55A]/30 mt-0.5">
                           ➔ {item.tuongHaoMeaning}
                         </div>
                       )}
@@ -327,7 +327,7 @@ export const KhongMinhSingleHexView: React.FC<KhongMinhSingleHexViewProps> = ({
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <strong className="text-[#C89B3C]">Ý nghĩa:</strong>
                         {item.yHaoHanzi && (
-                          <span className="font-serif font-bold text-[#FFE294]">{item.yHaoHanzi}</span>
+                          <span className="font-serif font-bold text-[#E6D3A3]">{item.yHaoHanzi}</span>
                         )}
                         <span className="text-[#C4B49C] italic">({item.yHao})</span>
                       </div>
@@ -340,15 +340,15 @@ export const KhongMinhSingleHexView: React.FC<KhongMinhSingleHexViewProps> = ({
                   </div>
 
                   {/* Khổng Minh Oracle Poem (Chữ Hán, Phiên Âm & Dịch Nghĩa) */}
-                  <div className="bg-[#0A0806] p-3 rounded-lg border border-[#281D13] space-y-2 border-l-2 border-l-[#D4AF37]">
+                  <div className="bg-[#0A0806] p-3 rounded-lg border border-[#281D13] space-y-2 border-l-2 border-l-[#C9A55A]">
                     {/* Chữ Hán */}
                     {item.oracleHanzi && (
-                      <div className="text-xs font-serif font-bold text-[#FFE294] tracking-wide leading-relaxed">
+                      <div className="text-xs font-serif font-bold text-[#E6D3A3] tracking-wide leading-relaxed">
                         {item.oracleHanzi}
                       </div>
                     )}
                     {/* Phiên âm Hán-Việt */}
-                    <div className="text-[11px] font-serif text-[#D4AF37] italic leading-relaxed">
+                    <div className="text-[11px] font-serif text-[#C9A55A] italic leading-relaxed">
                       "{item.oracleText}"
                     </div>
                     {/* Dịch nghĩa, Phân tích từng đoạn, Điển tích & Triết lý */}
@@ -461,11 +461,11 @@ export const KhongMinhFullBrowser: React.FC<{
       {/* Intro Box */}
       <div className="bg-gradient-to-br from-[#1C1610] via-[#16120D] to-[#0E0B08] p-5 sm:p-7 rounded-2xl border border-[#483723] space-y-4 shadow-xl relative overflow-hidden">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#2D2014] pb-3">
-          <div className="flex items-center gap-2 text-xs font-serif font-bold text-[#D4AF37] uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-xs font-serif font-bold text-[#C9A55A] uppercase tracking-wider">
             <Scroll className="w-4 h-4" />
             <span>Mối Liên Kết Vi Diệu: Chu Dịch 64 Quẻ & Khổng Minh Thần Toán 384 Quẻ</span>
           </div>
-          <span className="text-[11px] font-mono text-[#D4AF37] bg-[#22170D] px-2.5 py-0.5 rounded-full border border-[#42311D]">
+          <span className="text-[11px] font-mono text-[#C9A55A] bg-[#22170D] px-2.5 py-0.5 rounded-full border border-[#42311D]">
             64 Quẻ × 6 Hào = 384 Hào
           </span>
         </div>
@@ -486,19 +486,19 @@ export const KhongMinhFullBrowser: React.FC<{
         {/* Quick Highlights Summary Bar */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 text-center text-xs">
           <div className="bg-[#120E0A] p-2.5 rounded-xl border border-[#2D2115]">
-            <span className="block text-[#D4AF37] font-mono font-bold text-sm">64 Quẻ</span>
+            <span className="block text-[#C9A55A] font-mono font-bold text-sm">64 Quẻ</span>
             <span className="text-[10px] text-[#A69780]">Bát Cung Dịch Lý</span>
           </div>
           <div className="bg-[#120E0A] p-2.5 rounded-xl border border-[#2D2115]">
-            <span className="block text-[#D4AF37] font-mono font-bold text-sm">384 Hào</span>
+            <span className="block text-[#C9A55A] font-mono font-bold text-sm">384 Hào</span>
             <span className="text-[10px] text-[#A69780]">384 Thời Thế Nhân Sinh</span>
           </div>
           <div className="bg-[#120E0A] p-2.5 rounded-xl border border-[#2D2115]">
-            <span className="block text-[#D4AF37] font-mono font-bold text-sm">Phân Tích Đoạn Thơ</span>
+            <span className="block text-[#C9A55A] font-mono font-bold text-sm">Phân Tích Đoạn Thơ</span>
             <span className="text-[10px] text-[#A69780]">Từng Câu • Chữ Hán • Hàm Ý</span>
           </div>
           <div className="bg-[#120E0A] p-2.5 rounded-xl border border-[#2D2115]">
-            <span className="block text-[#D4AF37] font-mono font-bold text-sm">Điển Tích & Triết Lý</span>
+            <span className="block text-[#C9A55A] font-mono font-bold text-sm">Điển Tích & Triết Lý</span>
             <span className="text-[10px] text-[#A69780]">Đạo Gia • Nho Gia • Dịch Lý</span>
           </div>
         </div>
@@ -515,7 +515,7 @@ export const KhongMinhFullBrowser: React.FC<{
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Tìm theo tên quẻ, số quẻ (1-64), số Khổng Minh (1-384), câu thơ, điển tích hoặc triết lý..."
-              className="w-full bg-[#100D09] border border-[#352718] focus:border-[#D4AF37] text-xs text-[#E8DCB8] rounded-xl pl-9 pr-3 py-2.5 outline-none placeholder-[#6E5E4C]"
+              className="w-full bg-[#100D09] border border-[#352718] focus:border-[#C9A55A] text-xs text-[#E8DCB8] rounded-xl pl-9 pr-3 py-2.5 outline-none placeholder-[#6E5E4C]"
             />
           </div>
 
@@ -524,7 +524,7 @@ export const KhongMinhFullBrowser: React.FC<{
             <select
               value={selectedPalace}
               onChange={(e) => setSelectedPalace(e.target.value)}
-              className="w-full bg-[#100D09] border border-[#352718] focus:border-[#D4AF37] text-xs text-[#E8DCB8] rounded-xl px-3 py-2.5 outline-none cursor-pointer"
+              className="w-full bg-[#100D09] border border-[#352718] focus:border-[#C9A55A] text-xs text-[#E8DCB8] rounded-xl px-3 py-2.5 outline-none cursor-pointer"
             >
               {palaces.map((p) => (
                 <option key={p.id} value={p.id}>
@@ -537,13 +537,13 @@ export const KhongMinhFullBrowser: React.FC<{
 
         <div className="flex items-center justify-between text-[11px] text-[#A69780]">
           <span>
-            Đang hiển thị: <strong className="text-[#D4AF37]">{filteredHexagrams.length}</strong> / 64 quẻ
+            Đang hiển thị: <strong className="text-[#C9A55A]">{filteredHexagrams.length}</strong> / 64 quẻ
           </span>
           {searchTerm && (
             <button
               type="button"
               onClick={() => setSearchTerm("")}
-              className="text-[#D4AF37] hover:underline"
+              className="text-[#C9A55A] hover:underline"
             >
               Xóa tìm kiếm
             </button>
@@ -566,7 +566,7 @@ export const KhongMinhFullBrowser: React.FC<{
                 className="p-3.5 sm:p-4 flex items-center justify-between gap-3 cursor-pointer hover:bg-[#1E1710] transition-colors"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <span className="w-8 h-8 rounded-xl bg-[#241A11] border border-[#3E2D1B] text-[#D4AF37] font-mono text-xs font-bold flex items-center justify-center shrink-0">
+                  <span className="w-8 h-8 rounded-xl bg-[#241A11] border border-[#3E2D1B] text-[#C9A55A] font-mono text-xs font-bold flex items-center justify-center shrink-0">
                     #{hex.orderIndex}
                   </span>
                   <div className="min-w-0">
@@ -575,7 +575,7 @@ export const KhongMinhFullBrowser: React.FC<{
                         {hex.name}
                       </h4>
                       {hex.hanzi && (
-                        <span className="text-xs font-serif font-bold text-[#FFE294] bg-[#24180E] px-2 py-0.5 rounded border border-[#48341E]">
+                        <span className="text-xs font-serif font-bold text-[#E6D3A3] bg-[#24180E] px-2 py-0.5 rounded border border-[#48341E]">
                           {hex.hanzi}
                         </span>
                       )}
@@ -588,9 +588,9 @@ export const KhongMinhFullBrowser: React.FC<{
                       </span>
                     </div>
                     <div className="text-[11px] text-[#A69780] font-serif truncate mt-0.5">
-                      <span className="text-[#FFE294] font-medium">{hex.tuongQueHanzi}</span>{" "}
+                      <span className="text-[#E6D3A3] font-medium">{hex.tuongQueHanzi}</span>{" "}
                       <em>({hex.tuongQue})</em> •{" "}
-                      <span className="text-[#FFE294] font-medium">{hex.yQueHanzi}</span>{" "}
+                      <span className="text-[#E6D3A3] font-medium">{hex.yQueHanzi}</span>{" "}
                       <em>({hex.yQue})</em>
                     </div>
                   </div>
@@ -604,14 +604,14 @@ export const KhongMinhFullBrowser: React.FC<{
                         e.stopPropagation();
                         onNavigateToHex(hex.kingWenNumber);
                       }}
-                      className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#251A10] hover:bg-[#D4AF37] text-[#D4AF37] hover:text-[#120F0C] text-[11px] font-serif font-bold transition-all border border-[#3E2D1B]"
+                      className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#251A10] hover:bg-[#C9A55A] text-[#C9A55A] hover:text-[#120F0C] text-[11px] font-serif font-bold transition-all border border-[#3E2D1B]"
                       title="Xem toàn văn Thuyết Minh quẻ này"
                     >
                       <span>Xem Quẻ #{hex.kingWenNumber}</span>
                       <ArrowRight className="w-3 h-3" />
                     </button>
                   )}
-                  <span className="text-[#D4AF37] p-1">
+                  <span className="text-[#C9A55A] p-1">
                     {isOpened ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </span>
                 </div>
@@ -624,12 +624,12 @@ export const KhongMinhFullBrowser: React.FC<{
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 pt-3 text-xs">
                     <div className="bg-[#18130D] p-2.5 rounded-xl border border-[#2D2115] space-y-1">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <strong className="text-[#D4AF37] font-serif">Tượng Quẻ:</strong>
-                        <span className="font-serif font-bold text-[#FFE294]">{hex.tuongQueHanzi}</span>
+                        <strong className="text-[#C9A55A] font-serif">Tượng Quẻ:</strong>
+                        <span className="font-serif font-bold text-[#E6D3A3]">{hex.tuongQueHanzi}</span>
                         <span className="text-[#C4B49C] italic">({hex.tuongQue})</span>
                       </div>
                       {hex.tuongQueMeaning && (
-                        <div className="text-[11px] text-[#D8CCA8] pl-2 border-l border-[#D4AF37]/40 leading-relaxed font-serif">
+                        <div className="text-[11px] text-[#D8CCA8] pl-2 border-l border-[#C9A55A]/40 leading-relaxed font-serif">
                           ➔ {hex.tuongQueMeaning}
                         </div>
                       )}
@@ -638,7 +638,7 @@ export const KhongMinhFullBrowser: React.FC<{
                     <div className="bg-[#18130D] p-2.5 rounded-xl border border-[#2D2115] space-y-1">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <strong className="text-[#C89B3C] font-serif">Ý Quẻ:</strong>
-                        <span className="font-serif font-bold text-[#FFE294]">{hex.yQueHanzi}</span>
+                        <span className="font-serif font-bold text-[#E6D3A3]">{hex.yQueHanzi}</span>
                         <span className="text-[#C4B49C] italic">({hex.yQue})</span>
                       </div>
                       {hex.yQueMeaning && (
@@ -662,25 +662,25 @@ export const KhongMinhFullBrowser: React.FC<{
                               {line.lineName}
                             </span>
                             {line.lineHanzi && (
-                              <span className="text-[10px] font-serif font-bold text-[#FFE294] bg-[#22160C] px-1 py-0.2 rounded border border-[#3E2D1B]">
+                              <span className="text-[10px] font-serif font-bold text-[#E6D3A3] bg-[#22160C] px-1 py-0.2 rounded border border-[#3E2D1B]">
                                 {line.lineHanzi}
                               </span>
                             )}
                           </div>
-                          <span className="font-mono text-[10px] font-bold text-[#D4AF37] bg-[#22170D] px-1.5 py-0.5 rounded border border-[#3E2D1B]">
+                          <span className="font-mono text-[10px] font-bold text-[#C9A55A] bg-[#22170D] px-1.5 py-0.5 rounded border border-[#3E2D1B]">
                             Quẻ #{String(line.oracleNum).padStart(3, "0")}
                           </span>
                         </div>
 
                         <div className="text-[11px] text-[#A69780] font-serif space-y-1">
                           <div>
-                            <strong className="text-[#D4AF37]">Tượng:</strong>{" "}
+                            <strong className="text-[#C9A55A]">Tượng:</strong>{" "}
                             {line.tuongHaoHanzi && (
-                              <span className="font-serif font-bold text-[#FFE294]">{line.tuongHaoHanzi} </span>
+                              <span className="font-serif font-bold text-[#E6D3A3]">{line.tuongHaoHanzi} </span>
                             )}
                             <em>({line.tuongHao})</em>
                             {line.tuongHaoMeaning && (
-                              <div className="text-[10px] text-[#9E8E79] pl-1.5 border-l border-[#D4AF37]/30 mt-0.5">
+                              <div className="text-[10px] text-[#9E8E79] pl-1.5 border-l border-[#C9A55A]/30 mt-0.5">
                                 ➔ {line.tuongHaoMeaning}
                               </div>
                             )}
@@ -688,7 +688,7 @@ export const KhongMinhFullBrowser: React.FC<{
                           <div>
                             <strong className="text-[#C89B3C]">Ý nghĩa:</strong>{" "}
                             {line.yHaoHanzi && (
-                              <span className="font-serif font-bold text-[#FFE294]">{line.yHaoHanzi} </span>
+                              <span className="font-serif font-bold text-[#E6D3A3]">{line.yHaoHanzi} </span>
                             )}
                             <em>({line.yHao})</em>
                             {line.yHaoMeaning && (
@@ -700,9 +700,9 @@ export const KhongMinhFullBrowser: React.FC<{
                         </div>
 
                         {/* Oracle Poem */}
-                        <div className="bg-[#0C0907] p-2.5 rounded-lg border border-[#22170E] space-y-1.5 text-[11px] font-serif border-l-2 border-l-[#D4AF37]">
+                        <div className="bg-[#0C0907] p-2.5 rounded-lg border border-[#22170E] space-y-1.5 text-[11px] font-serif border-l-2 border-l-[#C9A55A]">
                           {line.oracleHanzi && (
-                            <div className="text-xs font-serif font-bold text-[#FFE294] tracking-wide">
+                            <div className="text-xs font-serif font-bold text-[#E6D3A3] tracking-wide">
                               {line.oracleHanzi}
                             </div>
                           )}

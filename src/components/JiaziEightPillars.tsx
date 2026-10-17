@@ -296,14 +296,14 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
       {/* Top Bar Header */}
       <div className="px-4 py-3.5 sm:px-6 sm:py-4 border-b border-[#2E2419] flex flex-wrap items-center justify-between gap-3 bg-[#1F1912]/80 backdrop-blur-sm">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-[#2A1E14] border border-[#52412E] text-[#E2B755] shadow-inner">
+          <div className="p-2 rounded-xl bg-[#2A1E14] border border-[#52412E] text-[#D6B97A] shadow-inner">
             <Compass className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-sm sm:text-base font-bold text-[#F5EAD4] font-serif tracking-wide flex items-center gap-2">
                 BẢNG 8 Ô BÁT TỰ CAN CHI
-                <span className="text-[11px] font-normal px-2 py-0.5 rounded-full bg-[#2E2215] text-[#D4AF37] border border-[#533F27]">
+                <span className="text-[11px] font-normal px-2 py-0.5 rounded-full bg-[#2E2215] text-[#C9A55A] border border-[#533F27]">
                   Giờ • Ngày • Tháng • Năm
                 </span>
               </h2>
@@ -319,7 +319,7 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
           <button
             type="button"
             onClick={handleCurrentBazi}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-[#271E15] hover:bg-[#382B1E] text-[#E2B755] border border-[#4F3B28] hover:border-[#D4AF37] transition-all cursor-pointer shadow-sm active:scale-95"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-[#271E15] hover:bg-[#382B1E] text-[#D6B97A] border border-[#4F3B28] hover:border-[#C9A55A] transition-all cursor-pointer shadow-sm active:scale-95"
             title="Tự động lấy ngày giờ hiện tại để điền 4 Trụ Bát Tự theo thời gian thực tế"
           >
             <Clock className="w-3.5 h-3.5" />
@@ -348,7 +348,7 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-[#261E16] text-[#D4AF37] border border-[#483724] hover:bg-[#34281D] transition-all cursor-pointer ml-1"
+            className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-[#261E16] text-[#C9A55A] border border-[#483724] hover:bg-[#34281D] transition-all cursor-pointer ml-1"
           >
             <span>{isOpen ? "Thu Gọn" : "Mở 8 Ô"}</span>
             <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
@@ -360,7 +360,7 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
       {noticeMessage && (
         <div className="px-4 py-2 sm:px-6 bg-[#261A10] border-b border-[#4A321E] text-xs text-[#FFE082] flex items-center justify-between gap-2 animate-in fade-in slide-in-from-top-1">
           <div className="flex items-center gap-2">
-            <Info className="w-4 h-4 text-[#E2B755] shrink-0" />
+            <Info className="w-4 h-4 text-[#D6B97A] shrink-0" />
             <span>{noticeMessage}</span>
           </div>
           <button
@@ -422,14 +422,14 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
                       key={colIdx}
                       className={`flex flex-col border rounded-2xl p-3 sm:p-3.5 shadow-md transition-colors relative ${
                         colIdx === 1
-                          ? "bg-[#1B140D] border-[#553E26] hover:border-[#D4AF37]"
+                          ? "bg-[#1B140D] border-[#553E26] hover:border-[#C9A55A]"
                           : "bg-[#18130E] border-[#332619] hover:border-[#4D3A26]"
                       }`}
                     >
                       {/* Header Cột: Tên Trụ & Nhật Chủ */}
                       <div className="text-center pb-2 mb-2 border-b border-[#281E14]">
                         <div className="flex items-center justify-center gap-1.5 flex-wrap">
-                          <span className="text-xs sm:text-sm font-bold text-[#E2B755] font-serif">
+                          <span className="text-xs sm:text-sm font-bold text-[#D6B97A] font-serif">
                             {pillar.title}
                           </span>
                           {colIdx === 1 && (
@@ -448,8 +448,8 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
                           onClick={() => setActiveSlot({ colIndex: colIdx, type: "can" })}
                           className={`relative min-h-[58px] sm:min-h-[66px] rounded-xl border flex flex-col items-center justify-center p-2 text-center cursor-pointer transition-all duration-200 select-none group ${
                             canData
-                              ? "bg-gradient-to-b from-[#251D14] to-[#1C160F] border-[#5A4328] hover:border-[#E2B755] shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
-                              : "bg-[#14100C]/70 border-dashed border-[#3D3021] hover:border-[#D4AF37] hover:bg-[#1A140F]"
+                              ? "bg-gradient-to-b from-[#251D14] to-[#1C160F] border-[#5A4328] hover:border-[#D6B97A] shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+                              : "bg-[#14100C]/70 border-dashed border-[#3D3021] hover:border-[#C9A55A] hover:bg-[#1A140F]"
                           }`}
                         >
                           {canData ? (
@@ -464,7 +464,7 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
                             </div>
                           ) : (
                             <div className="text-center">
-                              <span className="text-xs text-[#A89882] group-hover:text-[#E2B755] font-medium">
+                              <span className="text-xs text-[#A89882] group-hover:text-[#D6B97A] font-medium">
                                 + Chọn Can
                               </span>
                             </div>
@@ -484,8 +484,8 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
                           onClick={() => setActiveSlot({ colIndex: colIdx, type: "chi" })}
                           className={`relative min-h-[58px] sm:min-h-[66px] rounded-xl border flex flex-col items-center justify-center p-2 text-center cursor-pointer transition-all duration-200 select-none group ${
                             chiData
-                              ? "bg-gradient-to-b from-[#231A12] to-[#1A140E] border-[#5A4328] hover:border-[#E2B755] shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
-                              : "bg-[#14100C]/70 border-dashed border-[#3D3021] hover:border-[#D4AF37] hover:bg-[#1A140F]"
+                              ? "bg-gradient-to-b from-[#231A12] to-[#1A140E] border-[#5A4328] hover:border-[#D6B97A] shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+                              : "bg-[#14100C]/70 border-dashed border-[#3D3021] hover:border-[#C9A55A] hover:bg-[#1A140F]"
                           }`}
                         >
                           {chiData ? (
@@ -498,7 +498,7 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
                             </div>
                           ) : (
                             <div className="text-center">
-                              <span className="text-xs text-[#A89882] group-hover:text-[#E2B755] font-medium">
+                              <span className="text-xs text-[#A89882] group-hover:text-[#D6B97A] font-medium">
                                 + Chọn Chi
                               </span>
                             </div>
@@ -511,7 +511,7 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
                         {matchedJiazi ? (
                           <div className="bg-[#201810] border border-[#483724] rounded-xl p-2 flex flex-col gap-1.5">
                             <div className="flex items-center justify-between">
-                              <span className="text-[10px] text-[#D4AF37] font-bold">
+                              <span className="text-[10px] text-[#C9A55A] font-bold">
                                 #{matchedJiazi.order} {matchedJiazi.name}
                               </span>
                               <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#15110C] text-[#A89882]">
@@ -523,7 +523,7 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
                             </div>
                             {matchedJiazi.hexagramLink && (
                               <div className="text-[9px] text-[#8C7D6B] flex items-center gap-1">
-                                <span className="text-[#D4AF37]">☯</span>
+                                <span className="text-[#C9A55A]">☯</span>
                                 <span>
                                   #{matchedJiazi.hexagramLink.hexagramNumber} {matchedJiazi.hexagramLink.hexagramName}
                                 </span>
@@ -532,7 +532,7 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
                             <button
                               type="button"
                               onClick={() => onSelectJiazi(matchedJiazi.id)}
-                              className="mt-1 w-full flex items-center justify-center gap-1 py-1 text-[10px] font-semibold text-[#18130E] bg-[#D4AF37] hover:bg-[#E5C158] rounded-lg transition-colors cursor-pointer"
+                              className="mt-1 w-full flex items-center justify-center gap-1 py-1 text-[10px] font-semibold text-[#18130E] bg-[#C9A55A] hover:bg-[#E5C158] rounded-lg transition-colors cursor-pointer"
                             >
                               <Eye className="w-3 h-3" />
                               <span>Xem Hoa Giáp #{matchedJiazi.order}</span>
@@ -559,7 +559,7 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
           {pillars.some((p) => p.can && p.chi) && (
             <div className="p-3 sm:p-4 rounded-xl bg-[#17120C] border border-[#332619] flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
               <div className="flex items-center gap-2 flex-wrap">
-                <Sparkles className="w-4 h-4 text-[#E2B755]" />
+                <Sparkles className="w-4 h-4 text-[#D6B97A]" />
                 <span className="text-[#8C7D6B]">TỔNG THỂ BÁT TỰ:</span>
                 <span className="font-serif font-bold text-[#F5EAD4] tracking-wider">
                   {pillars.map((p) => `${p.can || "?"} ${p.chi || "?"}`).join("  •  ")}
@@ -586,7 +586,7 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
               <div className="text-[11px] text-[#A89882] flex items-center gap-3">
                 <span>
                   Đã phối thành công:{" "}
-                  <strong className="text-[#E2B755]">
+                  <strong className="text-[#D6B97A]">
                     {pillars.filter((p) => getMatchedJiazi(p.can, p.chi)).length} / 4
                   </strong>{" "}
                   Hoa Giáp
@@ -621,7 +621,7 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
                 <div className="text-xs text-[#8C7D6B] uppercase font-bold tracking-wider">
                   {PILLAR_LABELS[activeSlot.colIndex].title} ({PILLAR_LABELS[activeSlot.colIndex].sub})
                 </div>
-                <h3 className="text-base sm:text-lg font-serif font-bold text-[#E2B755]">
+                <h3 className="text-base sm:text-lg font-serif font-bold text-[#D6B97A]">
                   {activeSlot.type === "can"
                     ? "CHỌN THIÊN CAN (Ô TRÊN)"
                     : "CHỌN ĐỊA CHI (Ô DƯỚI)"}
@@ -664,7 +664,7 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
                           onClick={() => handleSelectCan(activeSlot.colIndex, item.name)}
                           className={`p-2 sm:p-2.5 rounded-xl border flex flex-col items-center justify-center transition-all cursor-pointer ${
                             isSelected
-                              ? "bg-[#D4AF37] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105"
+                              ? "bg-[#C9A55A] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105"
                               : "bg-[#221A12] hover:bg-[#2F2418] text-[#F3E7D0] border-[#3E2E1C] hover:border-yellow-500/60"
                           }`}
                         >
@@ -703,7 +703,7 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
                           onClick={() => handleSelectCan(activeSlot.colIndex, item.name)}
                           className={`p-2 sm:p-2.5 rounded-xl border flex flex-col items-center justify-center transition-all cursor-pointer ${
                             isSelected
-                              ? "bg-[#D4AF37] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105"
+                              ? "bg-[#C9A55A] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105"
                               : "bg-[#221A12] hover:bg-[#2F2418] text-[#F3E7D0] border-[#3E2E1C] hover:border-amber-500/60"
                           }`}
                         >
@@ -788,7 +788,7 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
                               isLocked
                                 ? "opacity-35 bg-[#15110D] border-[#251C14] text-[#6B5C4B] cursor-not-allowed"
                                 : isSelected
-                                ? "bg-[#D4AF37] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105 cursor-pointer"
+                                ? "bg-[#C9A55A] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105 cursor-pointer"
                                 : "bg-[#221A12] hover:bg-[#2F2418] text-[#F3E7D0] border-[#3E2E1C] hover:border-yellow-500/60 cursor-pointer"
                             }`}
                             title={
@@ -844,7 +844,7 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
                               isLocked
                                 ? "opacity-35 bg-[#15110D] border-[#251C14] text-[#6B5C4B] cursor-not-allowed"
                                 : isSelected
-                                ? "bg-[#D4AF37] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105 cursor-pointer"
+                                ? "bg-[#C9A55A] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105 cursor-pointer"
                                 : "bg-[#221A12] hover:bg-[#2F2418] text-[#F3E7D0] border-[#3E2E1C] hover:border-amber-500/60 cursor-pointer"
                             }`}
                             title={

@@ -62,16 +62,16 @@ export const TwelveSidedDice: React.FC<TwelveSidedDiceProps> = ({
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-serif font-bold transition-all shadow ${
             isRolling
               ? "bg-[#3A2D1F] text-[#A89882] cursor-not-allowed"
-              : "bg-[#D4AF37] hover:bg-[#FFE28A] text-black cursor-pointer active:scale-95"
+              : "bg-[#C9A55A] hover:bg-[#E6D3A3] text-black cursor-pointer active:scale-95"
           }`}
           title="Gieo xúc xắc 12 mặt để định Mệnh Cung ngẫu nhiên"
         >
-          <Dices className={`w-4 h-4 ${isRolling ? "animate-spin text-[#D4AF37]" : ""}`} />
+          <Dices className={`w-4 h-4 ${isRolling ? "animate-spin text-[#C9A55A]" : ""}`} />
           <span>{isRolling ? "Đang gieo..." : "Gieo Xúc Xắc 12 Mặt"}</span>
         </button>
 
         <div className="flex items-center gap-2 pl-2 border-l border-[#352718]">
-          <div className="w-7 h-7 rounded-lg bg-[#2A1E13] border border-[#523E28] flex items-center justify-center font-mono font-bold text-sm text-[#FFE28A] shadow-inner">
+          <div className="w-7 h-7 rounded-lg bg-[#2A1E13] border border-[#523E28] flex items-center justify-center font-mono font-bold text-sm text-[#E6D3A3] shadow-inner">
             {displayNumber}
           </div>
           <div className="text-[11px] leading-tight font-serif">
@@ -88,11 +88,11 @@ export const TwelveSidedDice: React.FC<TwelveSidedDiceProps> = ({
       className={`p-3 sm:p-4 rounded-2xl bg-gradient-to-b from-[#241A12] via-[#1B140E] to-[#140E0A] border border-[#483623] shadow-xl text-center relative overflow-hidden ${className}`}
     >
       {/* Background soft glow */}
-      <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-48 h-48 bg-[#D4AF37]/10 rounded-full blur-2xl pointer-events-none" />
+      <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-48 h-48 bg-[#C9A55A]/10 rounded-full blur-2xl pointer-events-none" />
 
       <div className="relative z-10 flex flex-col items-center">
-        <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#17110B] border border-[#3A2A1A] text-[11px] font-serif font-semibold text-[#D4AF37] mb-2">
-          <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+        <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#17110B] border border-[#3A2A1A] text-[11px] font-serif font-semibold text-[#C9A55A] mb-2">
+          <Sparkles className="w-3 h-3 text-[#C9A55A]" />
           <span>XÚC XẮC 12 MẶT • ĐỊNH VỊ MỆNH CUNG</span>
         </div>
 
@@ -101,8 +101,8 @@ export const TwelveSidedDice: React.FC<TwelveSidedDiceProps> = ({
           <div
             className={`w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-[#3B2B1B] via-[#241B12] to-[#17100B] border-2 ${
               isRolling
-                ? "border-[#FFE28A] animate-spin shadow-[0_0_24px_rgba(255,226,138,0.5)]"
-                : "border-[#D4AF37] shadow-[0_0_16px_rgba(212,175,55,0.25)] hover:scale-105"
+                ? "border-[#E6D3A3] animate-spin shadow-[0_0_24px_rgba(255,226,138,0.5)]"
+                : "border-[#C9A55A] shadow-[0_0_16px_rgba(212,175,55,0.25)] hover:scale-105"
             } transition-all duration-300 flex flex-col items-center justify-center p-2 relative select-none`}
             style={{
               clipPath: "polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%)",
@@ -112,7 +112,7 @@ export const TwelveSidedDice: React.FC<TwelveSidedDiceProps> = ({
               D12
             </span>
             <span
-              className={`text-2xl sm:text-3xl font-mono font-black text-[#FFE28A] transition-transform ${
+              className={`text-2xl sm:text-3xl font-mono font-black text-[#E6D3A3] transition-transform ${
                 isRolling ? "scale-110 blur-[0.5px]" : "scale-100"
               }`}
             >
@@ -123,7 +123,7 @@ export const TwelveSidedDice: React.FC<TwelveSidedDiceProps> = ({
             </span>
           </div>
 
-          <div className="absolute -bottom-1 -right-1 bg-[#D4AF37] text-black w-6 h-6 rounded-full flex items-center justify-center shadow-md">
+          <div className="absolute -bottom-1 -right-1 bg-[#C9A55A] text-black w-6 h-6 rounded-full flex items-center justify-center shadow-md">
             <Dices className={`w-3.5 h-3.5 ${isRolling ? "animate-spin" : ""}`} />
           </div>
         </div>
@@ -132,7 +132,7 @@ export const TwelveSidedDice: React.FC<TwelveSidedDiceProps> = ({
         <div className="mt-2 text-center">
           <div className="text-xs sm:text-sm font-serif font-bold text-[#FFF] flex items-center justify-center gap-1.5">
             <span>Mệnh Cung An Tại:</span>
-            <span className="text-[#FFE28A] bg-[#2E2014] px-2 py-0.5 rounded border border-[#543C25]">
+            <span className="text-[#E6D3A3] bg-[#2E2014] px-2 py-0.5 rounded border border-[#543C25]">
               Cung {currentBranch.name} ({currentBranch.lunarMonth})
             </span>
           </div>
@@ -151,12 +151,12 @@ export const TwelveSidedDice: React.FC<TwelveSidedDiceProps> = ({
             className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-serif font-bold flex items-center gap-2 transition-all cursor-pointer shadow-lg active:scale-95 ${
               isRolling
                 ? "bg-[#382B1E] text-[#8C7D6A] cursor-not-allowed border border-[#4D3B29]"
-                : "bg-gradient-to-r from-[#D4AF37] via-[#F3D787] to-[#C29826] text-black hover:brightness-110 border border-[#FFE28A]"
+                : "bg-gradient-to-r from-[#C9A55A] via-[#F3D787] to-[#C29826] text-black hover:brightness-110 border border-[#E6D3A3]"
             }`}
           >
             {isRolling ? (
               <>
-                <RefreshCw className="w-4 h-4 animate-spin text-[#D4AF37]" />
+                <RefreshCw className="w-4 h-4 animate-spin text-[#C9A55A]" />
                 <span>Đang Gieo Xúc Xắc 12 Mặt...</span>
               </>
             ) : (
@@ -189,7 +189,7 @@ export const TwelveSidedDice: React.FC<TwelveSidedDiceProps> = ({
                   disabled={disabled || isRolling}
                   className={`py-1 px-1 rounded-lg text-[10px] font-serif font-bold transition-all border ${
                     isSelected
-                      ? "bg-[#D4AF37] text-black border-[#FFE28A] shadow-[0_0_8px_rgba(212,175,55,0.4)]"
+                      ? "bg-[#C9A55A] text-black border-[#E6D3A3] shadow-[0_0_8px_rgba(212,175,55,0.4)]"
                       : "bg-[#1B140E] text-[#A89882] border-[#312519] hover:bg-[#2A1F16] hover:text-[#FFF]"
                   }`}
                   title={`Số ${branch.number} - Chi ${branch.name} (${branch.lunarMonth})`}

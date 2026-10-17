@@ -90,12 +90,12 @@ const TuongYKhongMinhBox: React.FC<{
         className="flex items-center justify-between border-b border-[#2C1D10] pb-2 flex-wrap gap-2 cursor-pointer select-none group"
         title={isExpanded ? "Bấm để thu gọn Tượng Ý" : "Bấm để xem chi tiết Tượng Ý"}
       >
-        <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-[#D4AF37] uppercase tracking-wider group-hover:text-amber-300 transition-colors">
-          <BookOpen className="w-3.5 h-3.5 text-[#D4AF37] group-hover:scale-110 transition-transform" />
+        <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-[#C9A55A] uppercase tracking-wider group-hover:text-amber-300 transition-colors">
+          <BookOpen className="w-3.5 h-3.5 text-[#C9A55A] group-hover:scale-110 transition-transform" />
           <span>TƯỢNG Ý KINH DỊCH • TRÍCH THUYẾT MINH QUẺ KHỔNG MINH</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-mono text-[#D4AF37] bg-[#22150A] px-2 py-0.5 rounded border border-[#482E16]">
+          <span className="text-[10px] font-mono text-[#C9A55A] bg-[#22150A] px-2 py-0.5 rounded border border-[#482E16]">
             {hexTitle} • {lineTitle}
           </span>
           <span className="text-[11px] font-mono text-amber-400/90 flex items-center gap-1 bg-[#25170E] px-2 py-0.5 rounded border border-[#523318] group-hover:bg-[#341F12] transition-colors">
@@ -116,9 +116,9 @@ const TuongYKhongMinhBox: React.FC<{
               {/* Tượng Quẻ */}
               <div className="bg-[#1C140C] p-2.5 rounded-lg border border-[#362413] space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-[#FFE294] font-bold">Tượng Quẻ (象卦):</span>
+                  <span className="text-[#E6D3A3] font-bold">Tượng Quẻ (象卦):</span>
                   {tuongY.tuongQueHanzi && (
-                    <span className="text-[#D4AF37] font-serif text-xs">{tuongY.tuongQueHanzi}</span>
+                    <span className="text-[#C9A55A] font-serif text-xs">{tuongY.tuongQueHanzi}</span>
                   )}
                 </div>
                 <div className="text-[#F5EAD4] font-medium">{tuongY.tuongQue}</div>
@@ -149,7 +149,7 @@ const TuongYKhongMinhBox: React.FC<{
             {/* Đại Tượng Truyện */}
             {tuongY.daiTuong && (
               <div className="bg-[#181109] px-3 py-2 rounded-lg border border-[#2D1B0D] text-[11.5px] text-[#CBB99E] space-y-0.5">
-                <strong className="text-[#FFE294] font-mono text-[10.5px] uppercase block">
+                <strong className="text-[#E6D3A3] font-mono text-[10.5px] uppercase block">
                   🏛️ Đại Tượng Truyện (Khổng Tử):
                 </strong>
                 <p className="italic text-[#EAE0D0]">"{tuongY.daiTuong}"</p>
@@ -162,16 +162,16 @@ const TuongYKhongMinhBox: React.FC<{
 
           {/* 2. Tượng Hào & Ý Hào (Hào Biến) */}
           <div className="space-y-1.5 pt-1 border-t border-[#26180E]">
-            <div className="text-[11px] font-mono text-[#D4AF37] font-bold uppercase tracking-wide">
+            <div className="text-[11px] font-mono text-[#C9A55A] font-bold uppercase tracking-wide">
               ❖ TƯỢNG HÀO & Ý HÀO (HÀO BIẾN):
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
               {/* Tượng Hào */}
               <div className="bg-[#1C140C] p-2.5 rounded-lg border border-[#362413] space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-[#FFE294] font-bold">Tượng Hào (象爻):</span>
+                  <span className="text-[#E6D3A3] font-bold">Tượng Hào (象爻):</span>
                   {tuongY.tuongHaoHanzi && (
-                    <span className="text-[#D4AF37] font-serif text-xs">{tuongY.tuongHaoHanzi}</span>
+                    <span className="text-[#C9A55A] font-serif text-xs">{tuongY.tuongHaoHanzi}</span>
                   )}
                 </div>
                 <div className="text-[#F5EAD4] font-medium">{tuongY.tuongHao}</div>
@@ -370,8 +370,8 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
       sub: "Thiên Thời & Khách Quan",
       desc: "Phản ánh vận hội vũ trụ, thời cơ khách quan, bối cảnh vĩ mô và các biến số bên ngoài chi phối.",
       guide: "Định hướng: Vận Thế & Đại Tượng",
-      color: "text-[#D4AF37]",
-      borderColor: "border-[#D4AF37]",
+      color: "text-[#C9A55A]",
+      borderColor: "border-[#C9A55A]",
       bgBadge: "bg-[#2D2114]",
       activeBg: "bg-[#271C11]",
       label: "Thiên Đạo (Thiên Thời & Khách Quan)",
@@ -410,18 +410,18 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
       className="bg-gradient-to-br from-[#1C150E] via-[#140F0A] to-[#0D0906] p-4 sm:p-6 rounded-2xl border border-[#523C23] shadow-2xl relative overflow-hidden space-y-6"
     >
       {/* Decorative Background Aura */}
-      <div className="absolute -top-12 -right-12 w-56 h-56 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -top-12 -right-12 w-56 h-56 bg-[#C9A55A]/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-10 -left-10 w-52 h-52 bg-[#EF4444]/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* Header Banner */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#342415] pb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#8C6218] flex items-center justify-center text-[#120F0C] font-black shadow-lg shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#C9A55A] to-[#8C6218] flex items-center justify-center text-[#120F0C] font-black shadow-lg shrink-0">
             <Dices className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#D4AF37] bg-[#291B10] px-2 py-0.5 rounded border border-[#4D351E]">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#C9A55A] bg-[#291B10] px-2 py-0.5 rounded border border-[#4D351E]">
                 Duy Nhất Lá Bài Nhân Đạo
               </span>
               <span className="text-[10px] text-[#A69780] font-serif">
@@ -430,14 +430,14 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
             </div>
             <h3 className="text-sm sm:text-base font-serif font-bold text-[#F8EBD4] mt-0.5 flex items-center gap-2">
               <span>Gieo Xúc Xắc 12 Mặt Lá Nhân Đạo (#{nhanHex.number} {nhanHex.name})</span>
-              <Sparkles className="w-3.5 h-3.5 text-[#D4AF37] animate-pulse" />
+              <Sparkles className="w-3.5 h-3.5 text-[#C9A55A] animate-pulse" />
             </h3>
           </div>
         </div>
 
         {/* Controls: Toggle Interpretation Box + Close Button */}
         <div className="flex items-center gap-2.5 self-end sm:self-auto flex-wrap">
-          <label className="flex items-center gap-2.5 cursor-pointer select-none bg-[#20160D] hover:bg-[#2C1E12] px-3 py-1.5 rounded-xl border border-[#4D3620] hover:border-[#D4AF37]/60 transition-all shadow-md group">
+          <label className="flex items-center gap-2.5 cursor-pointer select-none bg-[#20160D] hover:bg-[#2C1E12] px-3 py-1.5 rounded-xl border border-[#4D3620] hover:border-[#C9A55A]/60 transition-all shadow-md group">
             <input
               type="checkbox"
               checked={showInterpretationBox}
@@ -446,7 +446,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
             />
             <div
               className={`w-9 h-5 rounded-full transition-colors relative flex items-center p-0.5 ${
-                showInterpretationBox ? "bg-[#D4AF37]" : "bg-[#332517]"
+                showInterpretationBox ? "bg-[#C9A55A]" : "bg-[#332517]"
               }`}
             >
               <div
@@ -462,7 +462,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
               <span
                 className={`text-[9.5px] font-mono px-1.5 py-0.2 rounded font-black tracking-wider ${
                   showInterpretationBox
-                    ? "bg-[#D4AF37] text-[#120F0C]"
+                    ? "bg-[#C9A55A] text-[#120F0C]"
                     : "bg-[#291F14] text-[#8C7A65] border border-[#3E2D1B]"
                 }`}
               >
@@ -475,10 +475,10 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#261A10] hover:bg-[#382516] text-[#E0D0B8] hover:text-[#FFF] border border-[#523A21] hover:border-[#D4AF37] text-xs font-serif font-bold transition-all cursor-pointer shadow active:scale-95"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#261A10] hover:bg-[#382516] text-[#E0D0B8] hover:text-[#FFF] border border-[#523A21] hover:border-[#C9A55A] text-xs font-serif font-bold transition-all cursor-pointer shadow active:scale-95"
               title="Đóng bàn xúc xắc để trở về xem 3 lá bài bình thường"
             >
-              <X className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <X className="w-3.5 h-3.5 text-[#C9A55A]" />
               <span>Thu Gọn</span>
             </button>
           )}
@@ -498,7 +498,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
             title="Bấm vào đây hoặc nút Gieo Xúc Xắc để lắc xúc xắc 12 mặt"
           >
             {/* Outer Glow */}
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#D4AF37]/30 via-transparent to-[#EF4444]/20 blur-md group-hover:blur-lg transition-all" />
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#C9A55A]/30 via-transparent to-[#EF4444]/20 blur-md group-hover:blur-lg transition-all" />
 
             {/* D12 SVG Facet */}
             <svg
@@ -515,7 +515,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
                 </linearGradient>
                 <linearGradient id="goldEdge" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stopColor="#FFE082" />
-                  <stop offset="50%" stopColor="#D4AF37" />
+                  <stop offset="50%" stopColor="#C9A55A" />
                   <stop offset="100%" stopColor="#8C6218" />
                 </linearGradient>
               </defs>
@@ -530,18 +530,18 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
               />
 
               {/* Inner facet lines for 3D feel */}
-              <line x1="60" y1="6" x2="60" y2="48" stroke="#D4AF37" strokeWidth="1.2" opacity="0.6" />
-              <line x1="112" y1="43" x2="60" y2="48" stroke="#D4AF37" strokeWidth="1.2" opacity="0.6" />
-              <line x1="8" y1="43" x2="60" y2="48" stroke="#D4AF37" strokeWidth="1.2" opacity="0.6" />
-              <line x1="93" y1="103" x2="60" y2="78" stroke="#D4AF37" strokeWidth="1.2" opacity="0.6" />
-              <line x1="27" y1="103" x2="60" y2="78" stroke="#D4AF37" strokeWidth="1.2" opacity="0.6" />
-              <line x1="60" y1="48" x2="60" y2="78" stroke="#D4AF37" strokeWidth="1.2" opacity="0.6" />
+              <line x1="60" y1="6" x2="60" y2="48" stroke="#C9A55A" strokeWidth="1.2" opacity="0.6" />
+              <line x1="112" y1="43" x2="60" y2="48" stroke="#C9A55A" strokeWidth="1.2" opacity="0.6" />
+              <line x1="8" y1="43" x2="60" y2="48" stroke="#C9A55A" strokeWidth="1.2" opacity="0.6" />
+              <line x1="93" y1="103" x2="60" y2="78" stroke="#C9A55A" strokeWidth="1.2" opacity="0.6" />
+              <line x1="27" y1="103" x2="60" y2="78" stroke="#C9A55A" strokeWidth="1.2" opacity="0.6" />
+              <line x1="60" y1="48" x2="60" y2="78" stroke="#C9A55A" strokeWidth="1.2" opacity="0.6" />
 
               {/* Inner Center Pentagonal Facet */}
               <polygon
                 points="60,35 84,52 75,80 45,80 36,52"
                 fill="#24170C"
-                stroke="#D4AF37"
+                stroke="#C9A55A"
                 strokeWidth="1.5"
                 opacity="0.85"
               />
@@ -551,18 +551,18 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none z-10 pt-1">
               {hasRolled || isRolling ? (
                 <>
-                  <span className="font-serif font-black text-2xl sm:text-3xl text-[#FFE294] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                  <span className="font-serif font-black text-2xl sm:text-3xl text-[#E6D3A3] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                     {activeBranchDisplay.hanzi}
                   </span>
-                  <div className="flex items-center gap-1 font-mono font-bold text-xs text-[#D4AF37] bg-[#160E07]/90 px-1.5 py-0.5 rounded border border-[#48331E] shadow">
+                  <div className="flex items-center gap-1 font-mono font-bold text-xs text-[#C9A55A] bg-[#160E07]/90 px-1.5 py-0.5 rounded border border-[#48331E] shadow">
                     <span>{activeBranchDisplay.code}</span>
                     <span className="font-serif">{activeBranchDisplay.branchName}</span>
                   </div>
                 </>
               ) : (
                 <>
-                  <Dices className="w-8 h-8 text-[#FFE294] drop-shadow animate-pulse mb-1" />
-                  <div className="font-mono font-bold text-[10px] text-[#D4AF37] bg-[#160E07]/90 px-2 py-0.5 rounded border border-[#48331E] shadow">
+                  <Dices className="w-8 h-8 text-[#E6D3A3] drop-shadow animate-pulse mb-1" />
+                  <div className="font-mono font-bold text-[10px] text-[#C9A55A] bg-[#160E07]/90 px-2 py-0.5 rounded border border-[#48331E] shadow">
                     GIEO NGAY
                   </div>
                 </>
@@ -575,7 +575,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
             type="button"
             onClick={() => handleRollDice()}
             disabled={isRolling}
-            className="w-full sm:w-auto px-5 py-2.5 rounded-xl font-serif font-bold text-xs sm:text-sm bg-gradient-to-r from-[#D4AF37] via-[#E2B755] to-[#B38728] hover:from-[#F2C965] hover:to-[#D4AF37] text-[#120F0C] shadow-lg hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full sm:w-auto px-5 py-2.5 rounded-xl font-serif font-bold text-xs sm:text-sm bg-gradient-to-r from-[#C9A55A] via-[#D6B97A] to-[#B38728] hover:from-[#F2C965] hover:to-[#C9A55A] text-[#120F0C] shadow-lg hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
           >
             <RotateCw className={`w-4 h-4 ${isRolling ? "animate-spin" : ""}`} />
             <span>{isRolling ? "Đang Lắc Xúc Xắc 12 Mặt..." : "Gieo Xúc Xắc 12 Mặt (Thập Nhị Chi)"}</span>
@@ -591,7 +591,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
             <button
               type="button"
               onClick={() => setShowAllBranchesGrid(!showAllBranchesGrid)}
-              className="text-[10px] font-mono text-[#D4AF37] hover:underline flex items-center gap-1 cursor-pointer"
+              className="text-[10px] font-mono text-[#C9A55A] hover:underline flex items-center gap-1 cursor-pointer"
             >
               <span>{showAllBranchesGrid ? "Ẩn bảng 12 Chi" : "Xem bảng đối chiếu 12 Chi"}</span>
               {showAllBranchesGrid ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
@@ -603,10 +603,10 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
             <div className="space-y-2.5 animate-in fade-in duration-300">
               <div className="flex items-center gap-3 flex-wrap">
                 <div className="flex items-center gap-1.5 bg-[#281A0F] px-3 py-1.5 rounded-lg border border-[#523A20] shadow">
-                  <span className="text-xs font-mono font-bold text-[#D4AF37]">
+                  <span className="text-xs font-mono font-bold text-[#C9A55A]">
                     Mặt số: {currentBranchItem.code}
                   </span>
-                  <span className="text-sm font-serif font-black text-[#FFE294]">
+                  <span className="text-sm font-serif font-black text-[#E6D3A3]">
                     • Chi {currentBranchItem.branchName} ({currentBranchItem.hanzi})
                   </span>
                   <span className="text-[10.5px] text-[#A69780] font-serif">
@@ -621,7 +621,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
               </div>
 
               <div className="text-xs font-serif text-[#DFCBB2] leading-relaxed bg-[#100A06] p-2.5 rounded-lg border border-[#26170B]">
-                <strong className="text-[#D4AF37]">Luận biến Chu Dịch: </strong>
+                <strong className="text-[#C9A55A]">Luận biến Chu Dịch: </strong>
                 Quẻ gốc <strong className="text-[#FFE082]">#{targetHex.number} {targetHex.name}</strong> động <strong>Hào {currentBranchItem.line}</strong> ({currentBranchItem.note}).
               </div>
             </div>
@@ -632,7 +632,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
                 <span>Chưa gieo xúc xắc cho {cardRoleLabels[targetCardIdx]?.label.split(" (")[0]}</span>
               </div>
               <p className="text-xs font-serif text-[#A89882] leading-relaxed">
-                Quẻ <strong className="text-[#FFE082]">#{targetHex.number} {targetHex.name}</strong> chưa xác định hào động. Bấm nút vàng <strong className="text-[#FFE294]">"Gieo Xúc Xắc 12 Mặt"</strong> bên trái để bốc ngẫu nhiên một trong 12 Địa Chi (Tý ➔ Hợi) và mở phần luận giải chi tiết.
+                Quẻ <strong className="text-[#FFE082]">#{targetHex.number} {targetHex.name}</strong> chưa xác định hào động. Bấm nút vàng <strong className="text-[#E6D3A3]">"Gieo Xúc Xắc 12 Mặt"</strong> bên trái để bốc ngẫu nhiên một trong 12 Địa Chi (Tý ➔ Hợi) và mở phần luận giải chi tiết.
               </p>
             </div>
           )}
@@ -654,7 +654,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
                       className={`p-1.5 rounded-lg text-center font-serif text-[10.5px] border transition-all cursor-pointer ${
                         isCurrent
                           ? "bg-red-600 text-white font-bold border-red-400 shadow-[0_0_8px_#ef4444]"
-                          : "bg-[#1E140C] text-[#C4B49C] border-[#362313] hover:border-[#D4AF37]"
+                          : "bg-[#1E140C] text-[#C4B49C] border-[#362313] hover:border-[#C9A55A]"
                       }`}
                     >
                       <div className="font-mono text-[9px] font-bold opacity-80">{b.code}</div>
@@ -679,7 +679,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
       {/* ========================================================================= */}
       {!hasRolled ? (
         <div className="bg-[#140E09] border border-[#3E2B19] border-dashed rounded-2xl p-6 sm:p-8 text-center space-y-3.5 animate-in fade-in duration-300">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#2D1F12] to-[#1A120B] border border-[#523A20] flex items-center justify-center mx-auto text-[#D4AF37] shadow-inner">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#2D1F12] to-[#1A120B] border border-[#523A20] flex items-center justify-center mx-auto text-[#C9A55A] shadow-inner">
             <Dices className="w-7 h-7 animate-pulse text-[#FFE082]" />
           </div>
           <div className="space-y-1">
@@ -695,7 +695,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
               type="button"
               onClick={() => handleRollDice()}
               disabled={isRolling}
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-serif font-bold text-xs sm:text-sm bg-gradient-to-r from-[#D4AF37] via-[#E2B755] to-[#B38728] hover:from-[#F2C965] hover:to-[#D4AF37] text-[#120F0C] shadow-lg hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] cursor-pointer active:scale-95 transition-all disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-serif font-bold text-xs sm:text-sm bg-gradient-to-r from-[#C9A55A] via-[#D6B97A] to-[#B38728] hover:from-[#F2C965] hover:to-[#C9A55A] text-[#120F0C] shadow-lg hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] cursor-pointer active:scale-95 transition-all disabled:opacity-50"
             >
               <RotateCw className={`w-4 h-4 ${isRolling ? "animate-spin" : ""}`} />
               <span>{isRolling ? "Đang Gieo Xúc Xắc..." : "Gieo Xúc Xắc 12 Mặt Ngay"}</span>
@@ -705,14 +705,14 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
       ) : showInterpretationBox ? (
         <div
           id="tam-tai-comprehensive-interpretation-box"
-          className="bg-gradient-to-br from-[#1F150C] via-[#160E07] to-[#0D0804] p-4 sm:p-6 rounded-2xl border-2 border-[#D4AF37]/70 shadow-2xl space-y-6 relative overflow-hidden animate-in fade-in duration-300"
+          className="bg-gradient-to-br from-[#1F150C] via-[#160E07] to-[#0D0804] p-4 sm:p-6 rounded-2xl border-2 border-[#C9A55A]/70 shadow-2xl space-y-6 relative overflow-hidden animate-in fade-in duration-300"
         >
           {/* Header of the box */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#3E2B18] pb-4">
             <div className="flex items-center gap-2.5">
               <span className="w-3.5 h-3.5 rounded-full bg-red-500 shadow-[0_0_12px_#EF4444] animate-pulse shrink-0" />
               <div>
-                <h3 className="text-base sm:text-lg font-serif font-black text-[#FFE294] tracking-wide flex items-center gap-2 flex-wrap">
+                <h3 className="text-base sm:text-lg font-serif font-black text-[#E6D3A3] tracking-wide flex items-center gap-2 flex-wrap">
                   <span>LUẬN GIẢI HÀO ĐỘNG TAM TÀI & KHỔNG MINH THẦN QUẺ</span>
                   <span className="text-[11px] font-mono font-bold bg-red-600/90 text-white px-2.5 py-0.5 rounded-full border border-red-400 shadow">
                     🔥 ĐỘNG HÀO {activeLine} ({currentBranchItem.branchName})
@@ -726,7 +726,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
 
             {khongMinhLineItem && (
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-[11.5px] font-mono font-bold bg-gradient-to-r from-[#D4AF37] to-[#F59E0B] text-[#120F0C] px-3 py-1 rounded-lg shadow flex items-center gap-1.5">
+                <span className="text-[11.5px] font-mono font-bold bg-gradient-to-r from-[#C9A55A] to-[#F59E0B] text-[#120F0C] px-3 py-1 rounded-lg shadow flex items-center gap-1.5">
                   <Scroll className="w-3.5 h-3.5 text-[#120F0C]" />
                   <span>KHỔNG MINH SỐ #{khongMinhLineItem.oracleNum}</span>
                 </span>
@@ -740,7 +740,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
           <div className="space-y-3 bg-[#130D08] p-4 sm:p-5 rounded-xl border border-[#3A2817]">
             <div className="flex items-center gap-2 border-b border-[#2D1F12] pb-2">
               <span className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_8px_#ef4444]" />
-              <h4 className="font-serif font-bold text-sm sm:text-base text-[#FFE294] flex items-center gap-2">
+              <h4 className="font-serif font-bold text-sm sm:text-base text-[#E6D3A3] flex items-center gap-2">
                 <span>1. HÌNH QUẺ KINH DỊCH & HÀO ĐỘNG PHÁT SÁNG</span>
                 <span className="text-[10px] font-mono text-red-400 bg-red-950/60 px-2 py-0.5 rounded border border-red-500/50">
                   Hào {activeLine} Đỏ Phát Sáng
@@ -750,7 +750,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
 
             <div className="flex flex-col items-center justify-center py-2">
               <div className="w-full max-w-xs sm:max-w-sm flex flex-col items-center">
-                <div className="text-xs font-serif font-bold text-[#FFE294] mb-2.5 flex items-center gap-2">
+                <div className="text-xs font-serif font-bold text-[#E6D3A3] mb-2.5 flex items-center gap-2">
                   <span>Quẻ #{targetHex.number}: {targetHex.name} ({targetHex.vietnameseName})</span>
                   <span className="text-[10px] font-mono text-red-400 bg-red-950/70 px-2 py-0.5 rounded border border-red-500/60 shadow">
                     🔥 Hào {activeLine} Động
@@ -774,10 +774,10 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
             {/* Tiêu đề mục 2 */}
             <div className="flex items-center justify-between border-b border-[#2D1F12] pb-2">
               <div className="flex items-center gap-2">
-                <BookOpen className="w-4 h-4 text-[#D4AF37]" />
-                <h4 className="font-serif font-bold text-sm sm:text-base text-[#FFE294] flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-[#C9A55A]" />
+                <h4 className="font-serif font-bold text-sm sm:text-base text-[#E6D3A3] flex items-center gap-2">
                   <span>2. GIẢI THÍCH QUẺ THEO SÁCH THUYẾT MINH</span>
-                  <span className="text-[10px] font-mono text-[#D4AF37] bg-[#2E2013] px-2 py-0.5 rounded border border-[#523A20]">
+                  <span className="text-[10px] font-mono text-[#C9A55A] bg-[#2E2013] px-2 py-0.5 rounded border border-[#523A20]">
                     Trang {targetHex.number + 33} Sách Thuyết Minh
                   </span>
                 </h4>
@@ -786,7 +786,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
                 <button
                   type="button"
                   onClick={() => onNavigateToManual(targetHex.number)}
-                  className="text-[11px] font-mono text-[#D4AF37] hover:underline cursor-pointer flex items-center gap-1"
+                  className="text-[11px] font-mono text-[#C9A55A] hover:underline cursor-pointer flex items-center gap-1"
                   title="Mở toàn văn Thuyết Minh của quẻ này"
                 >
                   <span>Xem toàn văn sách</span>
@@ -811,7 +811,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
                 </h4>
                 <div className="flex items-baseline gap-2 mt-1">
                   <span className="text-xs font-mono text-[#A89882] uppercase tracking-wider">Hán tự:</span>
-                  <span className="text-xl sm:text-2xl font-serif font-black text-[#FFE294] tracking-widest drop-shadow-sm">
+                  <span className="text-xl sm:text-2xl font-serif font-black text-[#E6D3A3] tracking-widest drop-shadow-sm">
                     {bookHex?.hanzi || targetHex.hanzi}
                   </span>
                 </div>
@@ -846,7 +846,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
 
             {/* THƠ TƯỢNG & DỊCH NGHĨA */}
             <div className="bg-[#17120D] border border-[#3A2D1F] p-3.5 sm:p-4 rounded-xl space-y-2.5">
-              <div className="text-[11px] font-mono uppercase tracking-wider text-[#D4AF37] font-bold">
+              <div className="text-[11px] font-mono uppercase tracking-wider text-[#C9A55A] font-bold">
                 THƠ TƯỢNG & DỊCH NGHĨA
               </div>
 
@@ -854,7 +854,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
               <div className="pl-3 border-l-2 border-[#C89B3C] space-y-1.5">
                 {/* 1. Chữ Hán */}
                 {(khongMinhBridge?.tuongQueHanzi || khongMinhBridge?.yQueHanzi) && (
-                  <div className="font-serif text-sm sm:text-base text-[#FFE294] tracking-widest leading-relaxed whitespace-pre-line">
+                  <div className="font-serif text-sm sm:text-base text-[#E6D3A3] tracking-widest leading-relaxed whitespace-pre-line">
                     {khongMinhBridge.tuongQueHanzi ? `${khongMinhBridge.tuongQueHanzi}，\n` : ""}
                     {khongMinhBridge.yQueHanzi ? `${khongMinhBridge.yQueHanzi}。` : ""}
                   </div>
@@ -879,8 +879,8 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
             {/* ĐẠI TƯỢNG (SÁCH THUYẾT MINH) */}
             {bookHex?.bigImage && (
               <div className="bg-[#17120D]/80 p-3.5 rounded-xl border border-[#2B2116] space-y-1">
-                <div className="text-[11px] font-mono uppercase tracking-wider text-[#D4AF37] font-bold flex items-center gap-1.5">
-                  <Compass className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <div className="text-[11px] font-mono uppercase tracking-wider text-[#C9A55A] font-bold flex items-center gap-1.5">
+                  <Compass className="w-3.5 h-3.5 text-[#C9A55A]" />
                   <span>Đại Tượng (Sách Thuyết Minh)</span>
                 </div>
                 <p className="text-[#C8BBA5] text-xs sm:text-sm leading-relaxed pl-1">
@@ -920,12 +920,12 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
             <div className="bg-gradient-to-r from-[#241A10] to-[#1A130C] p-4 rounded-xl border border-[#523C22] space-y-2">
               <div className="flex items-center justify-between gap-2 border-b border-[#3E2B18] pb-2">
                 <div className="flex items-center gap-2">
-                  <Award className="w-4 h-4 text-[#D4AF37]" />
-                  <span className="text-xs sm:text-sm font-serif font-bold text-[#FFE294]">
+                  <Award className="w-4 h-4 text-[#C9A55A]" />
+                  <span className="text-xs sm:text-sm font-serif font-bold text-[#E6D3A3]">
                     Luận Giải Vị Trí: {cardRoleLabels[targetCardIdx]?.label}
                   </span>
                 </div>
-                <span className="text-[10px] font-mono text-[#D4AF37] bg-[#2E2013] px-2 py-0.5 rounded border border-[#5A3F24]">
+                <span className="text-[10px] font-mono text-[#C9A55A] bg-[#2E2013] px-2 py-0.5 rounded border border-[#5A3F24]">
                   Chuẩn Sách Thuyết Minh
                 </span>
               </div>
@@ -955,8 +955,8 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#2E2013] pb-3.5">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2.5">
-                      <BookOpen className="w-5 h-5 text-[#D4AF37]" />
-                      <h4 className="font-serif font-black text-sm sm:text-base text-[#FFE294] uppercase tracking-wide flex items-center gap-2">
+                      <BookOpen className="w-5 h-5 text-[#C9A55A]" />
+                      <h4 className="font-serif font-black text-sm sm:text-base text-[#E6D3A3] uppercase tracking-wide flex items-center gap-2">
                         <span>3. PHÂN TÍCH QUẺ XĂM KHỔNG MINH (TRÍCH SÁCH THUYẾT MINH)</span>
                       </h4>
                     </div>
@@ -972,17 +972,17 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
                       <span>Quẻ xăm #{oracleDetail.formattedNum}</span>
                     </div>
                     <div className="bg-[#2B1B10] border border-[#5A3922] px-3 py-1 rounded-full text-xs font-mono font-bold text-[#E5B552] shadow-sm flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+                      <Sparkles className="w-3.5 h-3.5 text-[#C9A55A]" />
                       <span>{oracleDetail.oracleType}</span>
                     </div>
                     {onNavigateToManual && (
                       <button
                         type="button"
                         onClick={() => onNavigateToManual(targetHex.number)}
-                        className="text-[11px] font-mono text-[#D4AF37] hover:underline flex items-center gap-1 cursor-pointer bg-[#1C130B] border border-[#422B16] px-2.5 py-1 rounded-lg hover:border-[#D4AF37]"
+                        className="text-[11px] font-mono text-[#C9A55A] hover:underline flex items-center gap-1 cursor-pointer bg-[#1C130B] border border-[#422B16] px-2.5 py-1 rounded-lg hover:border-[#C9A55A]"
                         title="Xem toàn văn Thuyết Minh Dịch Học"
                       >
-                        <BookOpen className="w-3 h-3 text-[#D4AF37]" />
+                        <BookOpen className="w-3 h-3 text-[#C9A55A]" />
                         <span>Xem Sách Thuyết Minh</span>
                         <ArrowRight className="w-3 h-3" />
                       </button>
@@ -993,20 +993,20 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
                 {/* 2. TƯỢNG HÀO & Ý HÀO (Trích Nguyên Văn Sách Thuyết Minh) */}
                 <div className="space-y-2">
                   <div className="text-xs font-mono text-[#E5C378] uppercase tracking-wider font-bold flex items-center gap-2">
-                    <Scroll className="w-4 h-4 text-[#D4AF37]" />
+                    <Scroll className="w-4 h-4 text-[#C9A55A]" />
                     <span>Tượng Hào & Ý Hào Khổng Minh (Trích Sách Thuyết Minh):</span>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {/* Tượng Hào */}
                     <div className="bg-[#1C140C] p-3.5 sm:p-4 rounded-xl border border-[#3E2B19] space-y-1.5">
-                      <div className="flex items-center justify-between text-[11px] font-mono text-[#D4AF37] font-bold">
+                      <div className="flex items-center justify-between text-[11px] font-mono text-[#C9A55A] font-bold">
                         <span className="flex items-center gap-1.5">
-                          <Compass className="w-3.5 h-3.5 text-[#D4AF37]" />
+                          <Compass className="w-3.5 h-3.5 text-[#C9A55A]" />
                           <span>TƯỢNG HÀO (象爻) — TRÍCH THUYẾT MINH</span>
                         </span>
                         {khongMinhLineItem.tuongHaoHanzi && (
-                          <span className="text-[#FFE294] text-xs font-serif">{khongMinhLineItem.tuongHaoHanzi}</span>
+                          <span className="text-[#E6D3A3] text-xs font-serif">{khongMinhLineItem.tuongHaoHanzi}</span>
                         )}
                       </div>
                       <div className="font-serif font-bold text-sm text-[#F5EAD4]">
@@ -1027,7 +1027,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
                           <span>Ý HÀO (意爻) — TRÍCH THUYẾT MINH</span>
                         </span>
                         {khongMinhLineItem.yHaoHanzi && (
-                          <span className="text-[#FFE294] text-xs font-serif">{khongMinhLineItem.yHaoHanzi}</span>
+                          <span className="text-[#E6D3A3] text-xs font-serif">{khongMinhLineItem.yHaoHanzi}</span>
                         )}
                       </div>
                       <div className="font-serif font-bold text-sm text-[#F5EAD4]">
@@ -1044,8 +1044,8 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
 
                 {/* 3. Bài thơ quẻ xăm (Trích Nguyên Bản Sách Thuyết Minh) */}
                 <div className="bg-[#19110B] p-4 sm:p-6 rounded-xl border border-[#3A2817] space-y-3.5 text-center shadow-inner">
-                  <div className="text-[11px] font-mono text-[#D4AF37] uppercase tracking-wider font-bold flex items-center justify-center gap-1.5">
-                    <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+                  <div className="text-[11px] font-mono text-[#C9A55A] uppercase tracking-wider font-bold flex items-center justify-center gap-1.5">
+                    <Sparkles className="w-3 h-3 text-[#C9A55A]" />
                     <span>Bài Thơ Quẻ Xăm (Trích Nguyên Tác Sách Thuyết Minh):</span>
                   </div>
                   <div className="font-serif font-black text-xl sm:text-2xl md:text-3xl text-[#FFE494] tracking-widest leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
@@ -1069,8 +1069,8 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
 
                 {/* 4. Giải nghĩa chi tiết từng câu thơ (Trích Sách Thuyết Minh) */}
                 <div className="space-y-3">
-                  <div className="text-xs font-mono text-[#FFE294] uppercase tracking-wider font-bold flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-[#D4AF37]" />
+                  <div className="text-xs font-mono text-[#E6D3A3] uppercase tracking-wider font-bold flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-[#C9A55A]" />
                     <span>Giải Nghĩa & Điển Cố Từng Câu Thơ (Trích Sách Thuyết Minh):</span>
                   </div>
                   <div className="space-y-2.5">
@@ -1085,7 +1085,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
                               <span className="text-[11px] font-mono text-amber-500 bg-[#291A0E] px-2 py-0.5 rounded border border-[#482F19]">
                                 Câu {idx + 1}
                               </span>
-                              <span className="text-base text-[#FFE294]">{seg.hanzi}</span>
+                              <span className="text-base text-[#E6D3A3]">{seg.hanzi}</span>
                               <span className="italic text-[#E5B552] text-xs font-normal">({seg.transcription})</span>
                             </div>
                             <span className="text-[10px] font-mono text-[#8C7A65] bg-[#120D09] px-2 py-0.5 rounded">
@@ -1138,12 +1138,12 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
                 <div className="bg-gradient-to-r from-[#2A180E] via-[#1E120A] to-[#140D07] p-4 sm:p-5 rounded-xl border border-[#5E3B1C] space-y-2.5 shadow-md">
                   <div className="flex items-center justify-between border-b border-[#3D2513] pb-2">
                     <div className="flex items-center gap-2">
-                      <Award className="w-4 h-4 text-[#D4AF37]" />
-                      <span className="text-xs sm:text-sm font-serif font-bold text-[#FFE294]">
+                      <Award className="w-4 h-4 text-[#C9A55A]" />
+                      <span className="text-xs sm:text-sm font-serif font-bold text-[#E6D3A3]">
                         Ứng Nghiệm Cho Ngôi Vị {tamTaiRealms[targetCardIdx]?.name} (Trích Sách Thuyết Minh)
                       </span>
                     </div>
-                    <span className="text-[10px] font-mono text-[#D4AF37] bg-[#2E1B0D] px-2 py-0.5 rounded border border-[#523318]">
+                    <span className="text-[10px] font-mono text-[#C9A55A] bg-[#2E1B0D] px-2 py-0.5 rounded border border-[#523318]">
                       Trận Pháp Tam Tài
                     </span>
                   </div>
@@ -1164,11 +1164,11 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
                   </div>
                   <div className="space-y-2 text-[#DDD0BD] leading-relaxed">
                     <p>
-                      <strong className="text-[#FFE294]">Luận giải tổng quan: </strong>
+                      <strong className="text-[#E6D3A3]">Luận giải tổng quan: </strong>
                       {oracleDetail.overallMeaning.detailedExplanation}
                     </p>
                     <p className="border-t border-[#2B1B0F] pt-2">
-                      <strong className="text-[#D4AF37]">Tượng số quy nạp: </strong>
+                      <strong className="text-[#C9A55A]">Tượng số quy nạp: </strong>
                       {oracleDetail.overallMeaning.symbolicFigure}
                     </p>
                   </div>
@@ -1204,13 +1204,13 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
                 {/* 8. Điển tích Lịch sử & Triết lý Đạo học (Trích Sách Thuyết Minh) */}
                 {(histText || philText) && (
                   <div className="bg-[#19110B] p-4 sm:p-5 rounded-xl border border-[#3A2817] space-y-3">
-                    <div className="text-xs font-mono text-[#D4AF37] uppercase tracking-wider font-bold flex items-center gap-2">
-                      <Scroll className="w-4 h-4 text-[#D4AF37]" />
+                    <div className="text-xs font-mono text-[#C9A55A] uppercase tracking-wider font-bold flex items-center gap-2">
+                      <Scroll className="w-4 h-4 text-[#C9A55A]" />
                       <span>Điển Tích Lịch Sử & Triết Lý Tu Thân (Trích Sách Thuyết Minh):</span>
                     </div>
                     {histText && (
                       <div className="space-y-1 text-xs sm:text-sm text-[#DDD0BD] leading-relaxed">
-                        <strong className="text-[#FFE294]">🏛️ Điển tích & Cổ thư: </strong>
+                        <strong className="text-[#E6D3A3]">🏛️ Điển tích & Cổ thư: </strong>
                         <span>{histText}</span>
                       </div>
                     )}
@@ -1286,7 +1286,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
                 <div className="border-b border-[#2E2013] pb-3.5 space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="text-amber-400 font-bold text-base sm:text-lg">◎</span>
-                    <h3 className="font-serif font-black text-base sm:text-lg md:text-xl text-[#FFE294] tracking-wide">
+                    <h3 className="font-serif font-black text-base sm:text-lg md:text-xl text-[#E6D3A3] tracking-wide">
                       QUẺ CHÍNH: {movingAnalysis.hexName} ({movingAnalysis.hexHanzi})
                     </h3>
                   </div>
@@ -1304,19 +1304,19 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
 
                   <div className="space-y-2.5 text-[#DDD0BD] leading-relaxed">
                     <p>
-                      <strong className="text-[#FFE294]">Lời hào: </strong>
+                      <strong className="text-[#E6D3A3]">Lời hào: </strong>
                       <span className="text-[#FFF4DD] font-medium">{movingAnalysis.coreLine.loiHao}</span>
                     </p>
                     <p>
-                      <strong className="text-[#FFE294]">Nghĩa lý: </strong>
+                      <strong className="text-[#E6D3A3]">Nghĩa lý: </strong>
                       {movingAnalysis.coreLine.nghiaLy}
                     </p>
                     <p>
-                      <strong className="text-[#FFE294]">Tượng số: </strong>
+                      <strong className="text-[#E6D3A3]">Tượng số: </strong>
                       {movingAnalysis.coreLine.tuongSo}
                     </p>
                     <p>
-                      <strong className="text-[#FFE294]">Vị trí: </strong>
+                      <strong className="text-[#E6D3A3]">Vị trí: </strong>
                       {movingAnalysis.coreLine.viTri}
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 pt-2 border-t border-[#291B0F]">
@@ -1345,8 +1345,8 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
 
                 {/* 2. GÓC NHÌN ỨNG DỤNG THEO QUẺ PHỤ */}
                 <div className="space-y-4 pt-1">
-                  <div className="text-xs sm:text-sm font-mono text-[#D4AF37] uppercase tracking-wider font-bold flex items-center gap-2 border-b border-[#2E2013] pb-2">
-                    <Scale className="w-4 h-4 text-[#D4AF37]" />
+                  <div className="text-xs sm:text-sm font-mono text-[#C9A55A] uppercase tracking-wider font-bold flex items-center gap-2 border-b border-[#2E2013] pb-2">
+                    <Scale className="w-4 h-4 text-[#C9A55A]" />
                     <span>GÓC NHÌN ỨNG DỤNG THEO QUẺ PHỤ:</span>
                   </div>
 
@@ -1364,19 +1364,19 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
 
                     <div className="space-y-2 text-[#DDD0BD] leading-relaxed text-xs sm:text-sm">
                       <p>
-                        <strong className="text-[#FFE294]">Lời hào: </strong>
+                        <strong className="text-[#E6D3A3]">Lời hào: </strong>
                         <span className="text-[#FFF4DD] font-medium">{movingAnalysis.queTong.lineHanziText}</span>
                       </p>
                       <p>
-                        <strong className="text-[#FFE294]">Áp dụng: </strong>
+                        <strong className="text-[#E6D3A3]">Áp dụng: </strong>
                         {movingAnalysis.queTong.apDung}
                       </p>
                       <p>
-                        <strong className="text-[#FFE294]">Nghĩa lý: </strong>
+                        <strong className="text-[#E6D3A3]">Nghĩa lý: </strong>
                         {movingAnalysis.queTong.nghiaLy}
                       </p>
                       <p>
-                        <strong className="text-[#FFE294]">Tượng số: </strong>
+                        <strong className="text-[#E6D3A3]">Tượng số: </strong>
                         {movingAnalysis.queTong.tuongSo}
                       </p>
 
@@ -1413,19 +1413,19 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
 
                     <div className="space-y-2 text-[#DDD0BD] leading-relaxed text-xs sm:text-sm">
                       <p>
-                        <strong className="text-[#FFE294]">Lời hào: </strong>
+                        <strong className="text-[#E6D3A3]">Lời hào: </strong>
                         <span className="text-[#FFF4DD] font-medium">{movingAnalysis.queHo.lineHanziText}</span>
                       </p>
                       <p>
-                        <strong className="text-[#FFE294]">Áp dụng: </strong>
+                        <strong className="text-[#E6D3A3]">Áp dụng: </strong>
                         {movingAnalysis.queHo.apDung}
                       </p>
                       <p>
-                        <strong className="text-[#FFE294]">Nghĩa lý: </strong>
+                        <strong className="text-[#E6D3A3]">Nghĩa lý: </strong>
                         {movingAnalysis.queHo.nghiaLy}
                       </p>
                       <p>
-                        <strong className="text-[#FFE294]">Tượng số: </strong>
+                        <strong className="text-[#E6D3A3]">Tượng số: </strong>
                         {movingAnalysis.queHo.tuongSo}
                       </p>
 
@@ -1462,19 +1462,19 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
 
                     <div className="space-y-2 text-[#DDD0BD] leading-relaxed text-xs sm:text-sm">
                       <p>
-                        <strong className="text-[#FFE294]">Lời hào: </strong>
+                        <strong className="text-[#E6D3A3]">Lời hào: </strong>
                         <span className="text-[#FFF4DD] font-medium">{movingAnalysis.queThac.lineHanziText}</span>
                       </p>
                       <p>
-                        <strong className="text-[#FFE294]">Áp dụng: </strong>
+                        <strong className="text-[#E6D3A3]">Áp dụng: </strong>
                         {movingAnalysis.queThac.apDung}
                       </p>
                       <p>
-                        <strong className="text-[#FFE294]">Nghĩa lý: </strong>
+                        <strong className="text-[#E6D3A3]">Nghĩa lý: </strong>
                         {movingAnalysis.queThac.nghiaLy}
                       </p>
                       <p>
-                        <strong className="text-[#FFE294]">Tượng số: </strong>
+                        <strong className="text-[#E6D3A3]">Tượng số: </strong>
                         {movingAnalysis.queThac.tuongSo}
                       </p>
 
@@ -1506,12 +1506,12 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
                   <div className="space-y-4 pt-4 border-t border-[#3E2B19]">
                     <div className="flex items-center justify-between flex-wrap gap-2 border-b border-[#2E2013] pb-2.5">
                       <div className="flex items-center gap-2">
-                        <Scale className="w-5 h-5 text-[#D4AF37]" />
-                        <h4 className="font-serif font-black text-sm sm:text-base text-[#FFE294] uppercase tracking-wide">
+                        <Scale className="w-5 h-5 text-[#C9A55A]" />
+                        <h4 className="font-serif font-black text-sm sm:text-base text-[#E6D3A3] uppercase tracking-wide">
                           3. TỔNG HỢP HÀNH ĐỘNG THUẬN NGHỊCH ĐÚC KẾT THEO 3 QUẺ PHỤ
                         </h4>
                       </div>
-                      <span className="text-[10px] font-mono text-[#D4AF37] bg-[#2E1E12] px-2.5 py-0.5 rounded border border-[#533920]">
+                      <span className="text-[10px] font-mono text-[#C9A55A] bg-[#2E1E12] px-2.5 py-0.5 rounded border border-[#533920]">
                         Tứ Quái Đồng Quan (Chính — Tông — Hỗ — Thác)
                       </span>
                     </div>
@@ -1554,7 +1554,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
                           </div>
 
                           <div className="mt-3 pt-2.5 border-t border-emerald-800/80 text-emerald-200">
-                            <strong className="text-[#FFE294] font-mono text-xs uppercase tracking-wide block mb-1">
+                            <strong className="text-[#E6D3A3] font-mono text-xs uppercase tracking-wide block mb-1">
                               ➔ Kim Chỉ Nam Hành Động Thuận:
                             </strong>
                             <p className="italic text-[#E8F5E9] font-medium leading-relaxed">
@@ -1627,7 +1627,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
           <button
             type="button"
             onClick={() => setShowInterpretationBox(true)}
-            className="text-[11px] font-mono text-[#D4AF37] hover:underline cursor-pointer ml-2 shrink-0 font-bold"
+            className="text-[11px] font-mono text-[#C9A55A] hover:underline cursor-pointer ml-2 shrink-0 font-bold"
           >
             Bật Lên
           </button>

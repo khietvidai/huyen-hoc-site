@@ -135,7 +135,7 @@ export const FullScreenCardHoverModal: React.FC<FullScreenCardHoverModalProps> =
             <motion.div
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-2 px-3.5 py-1 rounded-full text-xs font-serif font-bold text-[#FFE28A] bg-[#22170D]/95 border border-[#624726] shadow-[0_4px_16px_rgba(0,0,0,0.85)] backdrop-blur-sm truncate max-w-[300px] text-center"
+              className="mb-2 px-3.5 py-1 rounded-full text-xs font-serif font-bold text-[#E6D3A3] bg-[#22170D]/95 border border-[#624726] shadow-[0_4px_16px_rgba(0,0,0,0.85)] backdrop-blur-sm truncate max-w-[300px] text-center"
               style={{ transform: "translateZ(35px)" }}
             >
               {positionTitle}
@@ -160,7 +160,7 @@ export const FullScreenCardHoverModal: React.FC<FullScreenCardHoverModalProps> =
             {/* FRONT FACE (MẶT TRƯỚC / HÌNH QUẺ CHI TIẾT)                     */}
             {/* ============================================================== */}
             <div
-              className="absolute inset-0 rounded-2xl overflow-hidden border-2 border-[#D4AF37] bg-gradient-to-b from-[#201811] via-[#140F0A] to-[#0D0906] flex flex-col justify-between p-3 sm:p-4 shadow-2xl"
+              className="absolute inset-0 rounded-2xl overflow-hidden border-2 border-[#C9A55A] bg-gradient-to-b from-[#201811] via-[#140F0A] to-[#0D0906] flex flex-col justify-between p-3 sm:p-4 shadow-2xl"
               style={{
                 backfaceVisibility: "hidden",
                 WebkitBackfaceVisibility: "hidden",
@@ -172,7 +172,7 @@ export const FullScreenCardHoverModal: React.FC<FullScreenCardHoverModalProps> =
               }}
             >
               {/* Inner Gold Inset Foil Border */}
-              <div className="absolute inset-1 rounded-xl border border-[#FFE28A]/35 pointer-events-none z-20" />
+              <div className="absolute inset-1 rounded-xl border border-[#E6D3A3]/35 pointer-events-none z-20" />
 
               {/* Specular Glare / Light reflection on Front Face */}
               <div
@@ -216,7 +216,7 @@ export const FullScreenCardHoverModal: React.FC<FullScreenCardHoverModalProps> =
                 <div className="w-full h-full flex flex-col justify-between items-center text-center p-2 relative z-10">
                   {/* Top Card Info (Quẻ #, Hanzi, Ngũ Hành - strictly NO Cát/Hung) */}
                   <div className="w-full flex items-center justify-between text-[#8E7E69] pb-2 border-b border-[#2D2115]">
-                    <span className="font-mono text-xs font-bold text-[#D4AF37]">
+                    <span className="font-mono text-xs font-bold text-[#C9A55A]">
                       QUẺ #{card.number.toString().padStart(2, "0")}
                     </span>
                     <span className="font-serif text-lg text-[#F5EAD4] font-bold">
@@ -232,7 +232,7 @@ export const FullScreenCardHoverModal: React.FC<FullScreenCardHoverModalProps> =
                     <div className="w-24 my-2 drop-shadow-[0_0_12px_rgba(212,175,55,0.35)]">
                       <HexagramVisual hexagram={card} size="md" showLabels={false} />
                     </div>
-                    <div className="text-xs text-[#D4AF37] font-serif font-medium mt-1">
+                    <div className="text-xs text-[#C9A55A] font-serif font-medium mt-1">
                       {card.upperTrigram} (Thượng) / {card.lowerTrigram} (Hạ)
                     </div>
                   </div>
@@ -252,7 +252,7 @@ export const FullScreenCardHoverModal: React.FC<FullScreenCardHoverModalProps> =
               {/* Reversed Seal Badge (if card is reversed) */}
               {isReversed && (
                 <div className="absolute top-2.5 right-2.5 pointer-events-none z-30">
-                  <span className="px-2 py-0.5 rounded-md bg-amber-950/95 font-serif font-bold text-[10px] text-[#FFE28A] border border-[#D4AF37] shadow-[0_0_10px_rgba(212,175,55,0.4)]">
+                  <span className="px-2 py-0.5 rounded-md bg-amber-950/95 font-serif font-bold text-[10px] text-[#E6D3A3] border border-[#C9A55A] shadow-[0_0_10px_rgba(212,175,55,0.4)]">
                     VỊ TRÍ NGƯỢC
                   </span>
                 </div>
@@ -263,7 +263,7 @@ export const FullScreenCardHoverModal: React.FC<FullScreenCardHoverModalProps> =
             {/* BACK FACE (MẶT SAU / LƯNG BÀI THỰC TẾ 3D)                       */}
             {/* ============================================================== */}
             <div
-              className="absolute inset-0 rounded-2xl overflow-hidden border-2 border-[#D4AF37] bg-gradient-to-b from-[#1E1610] via-[#120D08] to-[#0A0704] flex flex-col justify-between p-3 sm:p-4 shadow-2xl"
+              className="absolute inset-0 rounded-2xl overflow-hidden border-2 border-[#C9A55A] bg-gradient-to-b from-[#1E1610] via-[#120D08] to-[#0A0704] flex flex-col justify-between p-3 sm:p-4 shadow-2xl"
               style={{
                 backfaceVisibility: "hidden",
                 WebkitBackfaceVisibility: "hidden",
@@ -276,7 +276,7 @@ export const FullScreenCardHoverModal: React.FC<FullScreenCardHoverModalProps> =
               }}
             >
               {/* Inner Gold Inset Foil Border */}
-              <div className="absolute inset-1 rounded-xl border border-[#FFE28A]/35 pointer-events-none z-20" />
+              <div className="absolute inset-1 rounded-xl border border-[#E6D3A3]/35 pointer-events-none z-20" />
 
               {/* Dynamic Glare Reflection on Back Face */}
               <div
@@ -301,10 +301,10 @@ export const FullScreenCardHoverModal: React.FC<FullScreenCardHoverModalProps> =
                 /* Classical I Ching Card Back Graphic */
                 <div className="w-full h-full flex flex-col items-center justify-between p-2 sm:p-3 text-center relative z-10 select-none">
                   {/* Top Seal */}
-                  <div className="w-full flex justify-between items-center text-[#D4AF37] font-serif text-xs font-bold tracking-wider opacity-90 border-b border-[#3B2C1A] pb-2">
+                  <div className="w-full flex justify-between items-center text-[#C9A55A] font-serif text-xs font-bold tracking-wider opacity-90 border-b border-[#3B2C1A] pb-2">
                     <span>周易</span>
                     <span className="text-[10px] tracking-widest text-[#E6C98A] flex items-center gap-1">
-                      <Sparkles className="w-2.5 h-2.5 text-[#D4AF37]" />
+                      <Sparkles className="w-2.5 h-2.5 text-[#C9A55A]" />
                       KINH DỊCH
                     </span>
                     <span>神卦</span>
@@ -312,16 +312,16 @@ export const FullScreenCardHoverModal: React.FC<FullScreenCardHoverModalProps> =
 
                   {/* Center Mystic Taiji Emblem with Spinning Trigram Ring */}
                   <div className="relative my-auto flex items-center justify-center py-4">
-                    <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-2 border-[#D4AF37]/50 border-dashed animate-[spin_50s_linear_infinite]" />
-                    <div className="absolute w-20 h-20 sm:w-22 sm:h-22 rounded-full border border-[#FFE28A]/40" />
-                    <div className="absolute w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#241A10] border-2 border-[#D4AF37] flex items-center justify-center shadow-[0_0_25px_rgba(212,175,55,0.45)]">
-                      <span className="text-2xl sm:text-3xl text-[#FFE28A] font-bold">☯</span>
+                    <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-2 border-[#C9A55A]/50 border-dashed animate-[spin_50s_linear_infinite]" />
+                    <div className="absolute w-20 h-20 sm:w-22 sm:h-22 rounded-full border border-[#E6D3A3]/40" />
+                    <div className="absolute w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#241A10] border-2 border-[#C9A55A] flex items-center justify-center shadow-[0_0_25px_rgba(212,175,55,0.45)]">
+                      <span className="text-2xl sm:text-3xl text-[#E6D3A3] font-bold">☯</span>
                     </div>
                   </div>
 
                   {/* Bottom Emblem */}
                   <div className="w-full border-t border-[#3B2C1A] pt-2 flex flex-col items-center gap-0.5">
-                    <span className="font-serif text-[11px] font-bold text-[#D4AF37] tracking-widest uppercase">
+                    <span className="font-serif text-[11px] font-bold text-[#C9A55A] tracking-widest uppercase">
                       Bát Quái • Lục Thập Tứ Quái
                     </span>
                     <span className="text-[9px] text-[#8C7A62] font-mono">
@@ -349,10 +349,10 @@ export const FullScreenCardHoverModal: React.FC<FullScreenCardHoverModalProps> =
             <button
               type="button"
               onClick={handleToggleFlip}
-              className="px-3.5 py-1.5 rounded-full text-xs font-serif font-bold text-[#FFE28A] bg-[#22170D]/95 hover:bg-[#342416] border border-[#D4AF37] shadow-[0_4px_16px_rgba(0,0,0,0.85)] backdrop-blur-sm flex items-center gap-1.5 transition-all cursor-pointer group hover:scale-105 active:scale-95"
+              className="px-3.5 py-1.5 rounded-full text-xs font-serif font-bold text-[#E6D3A3] bg-[#22170D]/95 hover:bg-[#342416] border border-[#C9A55A] shadow-[0_4px_16px_rgba(0,0,0,0.85)] backdrop-blur-sm flex items-center gap-1.5 transition-all cursor-pointer group hover:scale-105 active:scale-95"
             >
               <RotateCw
-                className={`w-3.5 h-3.5 text-[#D4AF37] transition-transform duration-500 ${
+                className={`w-3.5 h-3.5 text-[#C9A55A] transition-transform duration-500 ${
                   isFlipped ? "rotate-180" : "group-hover:rotate-90"
                 }`}
               />

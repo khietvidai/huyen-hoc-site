@@ -108,7 +108,7 @@ function analyzeTheDung(theElement: string, dungElement: string) {
       relation: "Dụng Sinh Thể (用生體)",
       verdict: "Đại Cát • Được Quý Nhân & Hưởng Lợi",
       meaning: "Ngoại cảnh và sự việc sinh trợ cho bản thân. Có quý nhân phù trợ, cầu tài đắc tài, mưu sự dễ thành, như hoa gặp mưa xuân.",
-      badgeColor: "bg-amber-950/80 text-[#FFE28A] border-[#D4AF37]",
+      badgeColor: "bg-amber-950/80 text-[#E6D3A3] border-[#C9A55A]",
     };
   }
   // Thể khắc Dụng
@@ -448,16 +448,16 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
   return (
     <div className="w-full max-w-4xl mx-auto bg-[#16120E] border border-[#483723] rounded-2xl p-4 sm:p-6 shadow-2xl relative">
       {/* Decorative Border Accent */}
-      <div className="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-[#D4AF37]/60 pointer-events-none" />
-      <div className="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-[#D4AF37]/60 pointer-events-none" />
-      <div className="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-[#D4AF37]/60 pointer-events-none" />
-      <div className="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-[#D4AF37]/60 pointer-events-none" />
+      <div className="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-[#C9A55A]/60 pointer-events-none" />
+      <div className="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-[#C9A55A]/60 pointer-events-none" />
+      <div className="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-[#C9A55A]/60 pointer-events-none" />
+      <div className="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-[#C9A55A]/60 pointer-events-none" />
 
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#2F2215] pb-4 mb-5">
         <div>
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-[#D4AF37] bg-[#261C12] px-2 py-0.5 rounded border border-[#3E2E1D]">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-[#C9A55A] bg-[#261C12] px-2 py-0.5 rounded border border-[#3E2E1D]">
               Tống Triều • Thiệu Khang Tiết (邵康節)
             </span>
             <span className="text-[10px] font-mono font-bold text-rose-300 bg-[#291316] border border-rose-800/60 px-2.5 py-0.5 rounded shadow-xs">
@@ -471,7 +471,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
             <span>🌸</span> Phép Thỉnh Quẻ Mai Hoa Dịch Số
           </h3>
           <p className="text-xs text-[#9E907D] mt-0.5 max-w-xl">
-            Phương pháp chiêm quẻ huyền diệu bậc nhất Trung Hoa do Thiệu Ung (Thiệu Khang Tiết) sáng lập. Khởi quẻ tức thì bằng thời khắc, con số, chữ viết hay hoa cỏ thiên nhiên, luận định Cát Hung sâu sắc qua thuyết <strong className="text-[#FFE28A]">Thể - Dụng Ngũ Hành</strong> sinh khắc.
+            Phương pháp chiêm quẻ huyền diệu bậc nhất Trung Hoa do Thiệu Ung (Thiệu Khang Tiết) sáng lập. Khởi quẻ tức thì bằng thời khắc, con số, chữ viết hay hoa cỏ thiên nhiên, luận định Cát Hung sâu sắc qua thuyết <strong className="text-[#E6D3A3]">Thể - Dụng Ngũ Hành</strong> sinh khắc.
           </p>
         </div>
 
@@ -479,10 +479,10 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
           <button
             type="button"
             onClick={() => setShowGuideModal(true)}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs text-[#FFE28A] hover:brightness-115 bg-gradient-to-r from-[#2A1B0E] via-[#3E2614] to-[#2A1B0E] hover:border-[#D4AF37] rounded-lg border border-[#6E4922] transition-all cursor-pointer shadow active:scale-95 font-serif font-bold"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs text-[#E6D3A3] hover:brightness-115 bg-gradient-to-r from-[#2A1B0E] via-[#3E2614] to-[#2A1B0E] hover:border-[#C9A55A] rounded-lg border border-[#6E4922] transition-all cursor-pointer shadow active:scale-95 font-serif font-bold"
             title="Xem cẩm nang hướng dẫn cách đặt câu hỏi và cách tính quẻ Chủ, Biến, Hỗ"
           >
-            <BookOpen className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <BookOpen className="w-3.5 h-3.5 text-[#C9A55A]" />
             <span>Hướng Dẫn & Cách Tính Quẻ</span>
           </button>
           {result && (
@@ -537,7 +537,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                     🌸
                   </div>
                   <div>
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-[#D4AF37] block leading-none">
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-[#C9A55A] block leading-none">
                       CẨM NANG MAI HOA TÂM DỊCH • THIỆU KHANG TIẾT
                     </span>
                     <h3 className="font-serif font-bold text-base sm:text-lg text-[#F5EAD4] mt-0.5">
@@ -566,12 +566,12 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                   </div>
 
                   <p className="text-[#BFB09A] leading-relaxed">
-                    Mai Hoa Dịch Số dựa trên triết lý <strong className="text-[#FFE28A]">“Tâm động sinh quái, vạn vật giai hữu số”</strong>. Khác với bốc bài ngẫu nhiên, Mai Hoa nắm bắt chính xác mối liên hệ giao cảm giữa tâm thức con người và biến chuyển của trời đất ngay tại thời khắc khởi niệm.
+                    Mai Hoa Dịch Số dựa trên triết lý <strong className="text-[#E6D3A3]">“Tâm động sinh quái, vạn vật giai hữu số”</strong>. Khác với bốc bài ngẫu nhiên, Mai Hoa nắm bắt chính xác mối liên hệ giao cảm giữa tâm thức con người và biến chuyển của trời đất ngay tại thời khắc khởi niệm.
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                     <div className="bg-[#1D140D] p-3 rounded-xl border border-[#48331E] space-y-1.5">
-                      <strong className="text-[#FFE28A] block font-mono text-xs">
+                      <strong className="text-[#E6D3A3] block font-mono text-xs">
                         1. Nguyên Tắc "Một Việc Một Quẻ":
                       </strong>
                       <p className="text-[11.5px] text-[#A89882]">
@@ -580,7 +580,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                     </div>
 
                     <div className="bg-[#1D140D] p-3 rounded-xl border border-[#48331E] space-y-1.5">
-                      <strong className="text-[#FFE28A] block font-mono text-xs">
+                      <strong className="text-[#E6D3A3] block font-mono text-xs">
                         2. Rõ Ràng Mốc Thời Gian & Chủ Thể:
                       </strong>
                       <p className="text-[11.5px] text-[#A89882]">
@@ -621,7 +621,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
 
                 {/* 2. BẢNG TIÊN THIÊN BÁT QUÁI CHI SỐ */}
                 <section className="bg-[#17110B] border border-[#3E2C1A] rounded-2xl p-4 sm:p-5 space-y-3">
-                  <div className="flex items-center gap-2 text-[#FFE28A] font-bold border-b border-[#2C1F13] pb-2">
+                  <div className="flex items-center gap-2 text-[#E6D3A3] font-bold border-b border-[#2C1F13] pb-2">
                     <span className="text-base">☯</span>
                     <h4 className="text-sm sm:text-base font-serif">PHẦN 2: BẢNG SỐ TIÊN THIÊN BÁT QUÁI (GỐC RỄ MAI HOA)</h4>
                   </div>
@@ -642,31 +642,31 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                       { num: 8, name: "Khôn", sym: "☷", ele: "Thổ", nature: "Đất (Địa)", border: "border-yellow-700/60" },
                     ].map((q) => (
                       <div key={q.num} className={`p-2.5 rounded-xl bg-[#1C140D] border ${q.border} shadow space-y-0.5`}>
-                        <div className="text-xl font-serif text-[#FFE28A]">{q.sym}</div>
+                        <div className="text-xl font-serif text-[#E6D3A3]">{q.sym}</div>
                         <div className="font-bold text-white text-xs">{q.num}. {q.name}</div>
                         <div className="text-[10px] text-[#A89882]">{q.nature}</div>
-                        <span className="inline-block text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#100A05] text-[#FFE28A]">
+                        <span className="inline-block text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#100A05] text-[#E6D3A3]">
                           Hành {q.ele}
                         </span>
                       </div>
                     ))}
                   </div>
 
-                  <p className="text-[11px] text-[#D4AF37] italic">
+                  <p className="text-[11px] text-[#C9A55A] italic">
                     * Quy tắc chia 8: Bất kể số lớn bao nhiêu, đem chia cho 8 lấy số dư. Số dư ứng với quẻ tương ứng. <strong>Nếu chia hết (số dư = 0), quy định lấy số 8 là quẻ Khôn ☷</strong>.
                   </p>
                 </section>
 
                 {/* 3. CÁCH LẤY QUẺ CHỦ, QUẺ BIẾN VÀ QUẺ HỖ */}
                 <section className="bg-[#17110B] border border-[#3E2C1A] rounded-2xl p-4 sm:p-5 space-y-4">
-                  <div className="flex items-center gap-2 text-[#FFE28A] font-bold border-b border-[#2C1F13] pb-2">
+                  <div className="flex items-center gap-2 text-[#E6D3A3] font-bold border-b border-[#2C1F13] pb-2">
                     <span className="text-base">📜</span>
                     <h4 className="text-sm sm:text-base font-serif">PHẦN 3: PHƯƠNG PHÁP TÍNH QUẺ CHỦ, QUẺ BIẾN & QUẺ HỖ</h4>
                   </div>
 
                   {/* 1. Quẻ Chủ */}
                   <div className="bg-[#1F150D] p-3.5 rounded-xl border border-[#523A21] space-y-2">
-                    <div className="flex items-center justify-between text-xs font-bold text-[#FFE28A]">
+                    <div className="flex items-center justify-between text-xs font-bold text-[#E6D3A3]">
                       <span>1. CÁCH LẤY QUẺ CHỦ (BẢN QUÁI - 本卦):</span>
                       <span className="text-[10px] font-mono text-emerald-400">Thực trạng ban đầu</span>
                     </div>
@@ -702,7 +702,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                       </li>
                       <li>
                         <strong>Quy tắc biến hào:</strong> Tại vị trí hào động, đổi tính chất âm dương:
-                        <span className="text-[#FFE28A]"> Hào Dương ⚊ biến thành Hào Âm ⚋; Hào Âm ⚋ biến thành Hào Dương ⚊</span>. 5 hào còn lại giữ nguyên tính chất.
+                        <span className="text-[#E6D3A3]"> Hào Dương ⚊ biến thành Hào Âm ⚋; Hào Âm ⚋ biến thành Hào Dương ⚊</span>. 5 hào còn lại giữ nguyên tính chất.
                       </li>
                       <li>
                         <strong>Kết quả:</strong> Quẻ Trạch Phong Đại Quá động Hào 1 biến thành <strong>Trạch Thiên Quải</strong> (Quẻ #43).
@@ -711,13 +711,13 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                   </div>
 
                   {/* 3. Quẻ Hỗ */}
-                  <div className="bg-[#1F150D] p-3.5 rounded-xl border-2 border-[#D4AF37]/80 shadow-lg space-y-3">
-                    <div className="flex items-center justify-between text-xs font-bold text-[#FFE28A]">
+                  <div className="bg-[#1F150D] p-3.5 rounded-xl border-2 border-[#C9A55A]/80 shadow-lg space-y-3">
+                    <div className="flex items-center justify-between text-xs font-bold text-[#E6D3A3]">
                       <span className="flex items-center gap-1.5">
                         <span className="text-sm">⚡</span>
                         3. CÁCH LẤY QUẺ HỖ (HỖ QUÁI / TƯƠNG QUÁI - 互卦):
                       </span>
-                      <span className="text-[10px] font-mono text-[#D4AF37] bg-[#2E1D0E] px-2 py-0.5 rounded border border-[#5A3819]">
+                      <span className="text-[10px] font-mono text-[#C9A55A] bg-[#2E1D0E] px-2 py-0.5 rounded border border-[#5A3819]">
                         Diễn biến ngầm ở giữa
                       </span>
                     </div>
@@ -728,7 +728,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                     {/* Sơ đồ trực quan Quẻ Hỗ */}
                     <div className="bg-[#140D07] p-3 rounded-xl border border-[#3E2918] grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
                       <div className="space-y-1 text-xs">
-                        <div className="text-[#FFE28A] font-bold pb-1 border-b border-[#2C1C0F]">
+                        <div className="text-[#E6D3A3] font-bold pb-1 border-b border-[#2C1C0F]">
                           Trực Quan 6 Hào Quẻ Chủ Rút Ra Quẻ Hỗ:
                         </div>
                         <div className="font-mono text-[11px] space-y-0.5 pt-1 text-[#CBB99E]">
@@ -766,7 +766,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
 
                     {/* Ví dụ mẫu thực tế Quẻ Hỗ */}
                     <div className="bg-[#181109] p-3 rounded-lg border border-[#4A321B] text-xs space-y-2">
-                      <span className="text-[#FFE28A] font-bold block flex items-center gap-1.5">
+                      <span className="text-[#E6D3A3] font-bold block flex items-center gap-1.5">
                         <span>💡</span>
                         <span>Ví Dụ Thực Tế Minh Họa Cách Tính Quẻ Hỗ:</span>
                       </span>
@@ -802,7 +802,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
 
                 {/* 4. PHÂN ĐỊNH THỂ DỤNG & LUẬN ĐOÁN CÁT HUNG */}
                 <section className="bg-[#17110B] border border-[#3E2C1A] rounded-2xl p-4 sm:p-5 space-y-3">
-                  <div className="flex items-center gap-2 text-[#FFE28A] font-bold border-b border-[#2C1F13] pb-2">
+                  <div className="flex items-center gap-2 text-[#E6D3A3] font-bold border-b border-[#2C1F13] pb-2">
                     <span className="text-base">👑</span>
                     <h4 className="text-sm sm:text-base font-serif">PHẦN 4: PHÂN ĐỊNH THỂ - DỤNG & LUẬN ĐOÁN CÁT HUNG</h4>
                   </div>
@@ -812,7 +812,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                   </p>
 
                   <div className="space-y-2 pt-1 text-xs">
-                    <div className="p-2.5 rounded-xl bg-amber-950/40 border border-amber-500/50 text-[#FFE28A]">
+                    <div className="p-2.5 rounded-xl bg-amber-950/40 border border-amber-500/50 text-[#E6D3A3]">
                       <strong>1. Dụng Sinh Thể (用生體) ➔ ĐẠI CÁT:</strong>
                       <p className="text-[11.5px] text-[#DECAB0] mt-0.5">
                         Hoàn cảnh sinh trợ bản thân, được quý nhân giúp đỡ, cầu tài đắc tài, việc dễ thành công mỹ mãn.
@@ -855,7 +855,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowGuideModal(false)}
-                  className="px-8 py-3 bg-gradient-to-r from-[#9C7026] via-[#E2B755] to-[#9C7026] hover:brightness-115 active:scale-95 text-[#14100C] font-bold font-serif text-sm sm:text-base rounded-2xl shadow-[0_0_25px_rgba(212,175,55,0.45)] transition-all flex items-center gap-2 cursor-pointer"
+                  className="px-8 py-3 bg-gradient-to-r from-[#9C7026] via-[#D6B97A] to-[#9C7026] hover:brightness-115 active:scale-95 text-[#14100C] font-bold font-serif text-sm sm:text-base rounded-2xl shadow-[0_0_25px_rgba(212,175,55,0.45)] transition-all flex items-center gap-2 cursor-pointer"
                 >
                   <Sparkles className="w-4 h-4 text-[#14100C]" />
                   <span>Đã Hiểu Rõ • Bắt Đầu Khởi Quẻ Mai Hoa</span>
@@ -876,7 +876,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
             <div className="flex items-center gap-3">
               <span className="text-2xl shrink-0">📖</span>
               <div>
-                <span className="text-xs sm:text-sm font-serif font-bold text-[#FFE28A] block">
+                <span className="text-xs sm:text-sm font-serif font-bold text-[#E6D3A3] block">
                   Cẩm Nang Mai Hoa: Cách Đặt Câu Hỏi & Tính Quẻ Chủ - Biến - Hỗ
                 </span>
                 <span className="text-[11px] text-[#A89882] block mt-0.5">
@@ -887,9 +887,9 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
             <button
               type="button"
               onClick={() => setShowGuideModal(true)}
-              className="shrink-0 self-end sm:self-center px-3.5 py-1.5 bg-[#4A3018] hover:bg-[#63401F] text-[#FFE28A] border border-[#8C6218] hover:border-[#D4AF37] rounded-lg text-xs font-serif font-bold transition-all cursor-pointer shadow active:scale-95 flex items-center gap-1.5"
+              className="shrink-0 self-end sm:self-center px-3.5 py-1.5 bg-[#4A3018] hover:bg-[#63401F] text-[#E6D3A3] border border-[#8C6218] hover:border-[#C9A55A] rounded-lg text-xs font-serif font-bold transition-all cursor-pointer shadow active:scale-95 flex items-center gap-1.5"
             >
-              <BookOpen className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <BookOpen className="w-3.5 h-3.5 text-[#C9A55A]" />
               <span>Xem Hướng Dẫn</span>
             </button>
           </div>
@@ -901,11 +901,11 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
               onClick={() => setActiveTab("time")}
               className={`p-2.5 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer flex flex-col items-center gap-1 ${
                 activeTab === "time"
-                  ? "bg-[#2A1D11] text-[#FFE28A] border border-[#6B4B27] shadow"
-                  : "text-[#8C7B67] hover:text-[#D4AF37]"
+                  ? "bg-[#2A1D11] text-[#E6D3A3] border border-[#6B4B27] shadow"
+                  : "text-[#8C7B67] hover:text-[#C9A55A]"
               }`}
             >
-              <Clock className="w-4 h-4 text-[#D4AF37]" />
+              <Clock className="w-4 h-4 text-[#C9A55A]" />
               <span>1. Theo Thời Khắc</span>
             </button>
 
@@ -914,11 +914,11 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
               onClick={() => setActiveTab("number")}
               className={`p-2.5 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer flex flex-col items-center gap-1 ${
                 activeTab === "number"
-                  ? "bg-[#2A1D11] text-[#FFE28A] border border-[#6B4B27] shadow"
-                  : "text-[#8C7B67] hover:text-[#D4AF37]"
+                  ? "bg-[#2A1D11] text-[#E6D3A3] border border-[#6B4B27] shadow"
+                  : "text-[#8C7B67] hover:text-[#C9A55A]"
               }`}
             >
-              <Hash className="w-4 h-4 text-[#D4AF37]" />
+              <Hash className="w-4 h-4 text-[#C9A55A]" />
               <span>2. Số Tùy Tâm</span>
             </button>
 
@@ -927,11 +927,11 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
               onClick={() => setActiveTab("word")}
               className={`p-2.5 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer flex flex-col items-center gap-1 ${
                 activeTab === "word"
-                  ? "bg-[#2A1D11] text-[#FFE28A] border border-[#6B4B27] shadow"
-                  : "text-[#8C7B67] hover:text-[#D4AF37]"
+                  ? "bg-[#2A1D11] text-[#E6D3A3] border border-[#6B4B27] shadow"
+                  : "text-[#8C7B67] hover:text-[#C9A55A]"
               }`}
             >
-              <Type className="w-4 h-4 text-[#D4AF37]" />
+              <Type className="w-4 h-4 text-[#C9A55A]" />
               <span>3. Trắc Tự (Đoán Chữ)</span>
             </button>
 
@@ -940,8 +940,8 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
               onClick={() => setActiveTab("blossom")}
               className={`p-2.5 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer flex flex-col items-center gap-1 ${
                 activeTab === "blossom"
-                  ? "bg-[#2A1D11] text-[#FFE28A] border border-[#6B4B27] shadow"
-                  : "text-[#8C7B67] hover:text-[#D4AF37]"
+                  ? "bg-[#2A1D11] text-[#E6D3A3] border border-[#6B4B27] shadow"
+                  : "text-[#8C7B67] hover:text-[#C9A55A]"
               }`}
             >
               <Flower2 className="w-4 h-4 text-rose-400" />
@@ -955,7 +955,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
               <div className="flex items-start justify-between gap-3 flex-wrap">
                 <div>
                   <h4 className="text-sm font-serif font-bold text-[#F3E5D0] flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-[#D4AF37]" />
+                    <Clock className="w-4 h-4 text-[#C9A55A]" />
                     <span>Khởi Quẻ Theo Niên Nguyệt Nhật Thời Hiện Tại</span>
                   </h4>
                   <p className="text-xs text-[#9E8D79] mt-1 leading-relaxed">
@@ -965,7 +965,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
               </div>
 
               {/* Real-time Astronomical Clock preview */}
-              <div className="p-3 bg-[#1D140C] border border-[#523A20] rounded-xl flex items-center justify-between gap-3 text-xs font-mono text-[#FFE28A]">
+              <div className="p-3 bg-[#1D140C] border border-[#523A20] rounded-xl flex items-center justify-between gap-3 text-xs font-mono text-[#E6D3A3]">
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
                   <span>Thời điểm hiện tại: {new Date().toLocaleDateString("vi-VN")} {new Date().toLocaleTimeString("vi-VN")}</span>
@@ -980,7 +980,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                   type="button"
                   onClick={handleCastByCurrentTime}
                   disabled={isCasting}
-                  className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#9C7026] via-[#E2B755] to-[#9C7026] hover:brightness-115 active:scale-95 text-[#14100C] font-bold font-serif text-sm sm:text-base rounded-2xl shadow-[0_0_25px_rgba(212,175,55,0.4)] transition-all flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
+                  className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#9C7026] via-[#D6B97A] to-[#9C7026] hover:brightness-115 active:scale-95 text-[#14100C] font-bold font-serif text-sm sm:text-base rounded-2xl shadow-[0_0_25px_rgba(212,175,55,0.4)] transition-all flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
                 >
                   <Sparkles className="w-4 h-4 text-[#14100C]" />
                   <span>🌸 Khởi Quẻ Mai Hoa Theo Giờ Hiện Tại</span>
@@ -995,7 +995,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
               <div className="flex items-center justify-between gap-2 flex-wrap">
                 <div>
                   <h4 className="text-sm font-serif font-bold text-[#F3E5D0] flex items-center gap-2">
-                    <Hash className="w-4 h-4 text-[#D4AF37]" />
+                    <Hash className="w-4 h-4 text-[#C9A55A]" />
                     <span>Khởi Quẻ Theo Ba Dãy Số Cảm Ứng</span>
                   </h4>
                   <p className="text-xs text-[#9E8D79] mt-0.5">
@@ -1005,7 +1005,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                 <button
                   type="button"
                   onClick={handleRandomizeNumbers}
-                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-serif bg-[#241A12] text-[#FFE28A] border border-[#523A21] hover:bg-[#342417] cursor-pointer shadow active:scale-95"
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-serif bg-[#241A12] text-[#E6D3A3] border border-[#523A21] hover:bg-[#342417] cursor-pointer shadow active:scale-95"
                 >
                   <RotateCw className="w-3.5 h-3.5" />
                   <span>Lắc số cảm ứng</span>
@@ -1014,7 +1014,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="bg-[#1B130B] p-3 rounded-xl border border-[#3D2B1B]">
-                  <label className="block text-[11px] font-mono text-[#D4AF37] mb-1">
+                  <label className="block text-[11px] font-mono text-[#C9A55A] mb-1">
                     Số 1: Thượng Quái (chia 8)
                   </label>
                   <input
@@ -1023,11 +1023,11 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                     placeholder="VD: 368"
                     value={num1}
                     onChange={(e) => setNum1(e.target.value)}
-                    className="w-full bg-[#120B06] border border-[#48331E] focus:border-[#D4AF37] rounded-lg px-3 py-2 text-sm text-[#F3E5CD] font-mono outline-none"
+                    className="w-full bg-[#120B06] border border-[#48331E] focus:border-[#C9A55A] rounded-lg px-3 py-2 text-sm text-[#F3E5CD] font-mono outline-none"
                   />
                 </div>
                 <div className="bg-[#1B130B] p-3 rounded-xl border border-[#3D2B1B]">
-                  <label className="block text-[11px] font-mono text-[#D4AF37] mb-1">
+                  <label className="block text-[11px] font-mono text-[#C9A55A] mb-1">
                     Số 2: Hạ Quái (chia 8)
                   </label>
                   <input
@@ -1036,11 +1036,11 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                     placeholder="VD: 589"
                     value={num2}
                     onChange={(e) => setNum2(e.target.value)}
-                    className="w-full bg-[#120B06] border border-[#48331E] focus:border-[#D4AF37] rounded-lg px-3 py-2 text-sm text-[#F3E5CD] font-mono outline-none"
+                    className="w-full bg-[#120B06] border border-[#48331E] focus:border-[#C9A55A] rounded-lg px-3 py-2 text-sm text-[#F3E5CD] font-mono outline-none"
                   />
                 </div>
                 <div className="bg-[#1B130B] p-3 rounded-xl border border-[#3D2B1B]">
-                  <label className="block text-[11px] font-mono text-[#D4AF37] mb-1">
+                  <label className="block text-[11px] font-mono text-[#C9A55A] mb-1">
                     Số 3: Hào Động (cộng tổng)
                   </label>
                   <input
@@ -1049,7 +1049,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                     placeholder="VD: 792"
                     value={num3}
                     onChange={(e) => setNum3(e.target.value)}
-                    className="w-full bg-[#120B06] border border-[#48331E] focus:border-[#D4AF37] rounded-lg px-3 py-2 text-sm text-[#F3E5CD] font-mono outline-none"
+                    className="w-full bg-[#120B06] border border-[#48331E] focus:border-[#C9A55A] rounded-lg px-3 py-2 text-sm text-[#F3E5CD] font-mono outline-none"
                   />
                 </div>
               </div>
@@ -1058,7 +1058,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                 <button
                   type="submit"
                   disabled={isCasting}
-                  className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#9C7026] via-[#E2B755] to-[#9C7026] hover:brightness-115 active:scale-95 text-[#14100C] font-bold font-serif text-sm sm:text-base rounded-2xl shadow-[0_0_25px_rgba(212,175,55,0.4)] transition-all flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
+                  className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#9C7026] via-[#D6B97A] to-[#9C7026] hover:brightness-115 active:scale-95 text-[#14100C] font-bold font-serif text-sm sm:text-base rounded-2xl shadow-[0_0_25px_rgba(212,175,55,0.4)] transition-all flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
                 >
                   <Sparkles className="w-4 h-4 text-[#14100C]" />
                   <span>🌸 Khởi Quẻ Mai Hoa Theo Số</span>
@@ -1072,7 +1072,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
             <form onSubmit={handleCastByWord} className="bg-[#15100B] border border-[#3E2C1A] rounded-xl p-4 sm:p-5 space-y-4 animate-in fade-in duration-300">
               <div>
                 <h4 className="text-sm font-serif font-bold text-[#F3E5D0] flex items-center gap-2">
-                  <Type className="w-4 h-4 text-[#D4AF37]" />
+                  <Type className="w-4 h-4 text-[#C9A55A]" />
                   <span>Trắc Tự Chiêm Đoán (Bí Pháp Đoán Chữ Mai Hoa)</span>
                 </h4>
                 <p className="text-xs text-[#9E8D79] mt-0.5">
@@ -1086,7 +1086,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                   placeholder="Nhập chữ hoặc từ cần chiêm bặc..."
                   value={customWord}
                   onChange={(e) => setCustomWord(e.target.value)}
-                  className="w-full bg-[#120B06] border border-[#48331E] focus:border-[#D4AF37] rounded-lg px-3.5 py-2.5 text-base text-[#F3E5CD] font-serif outline-none placeholder:text-[#655341]"
+                  className="w-full bg-[#120B06] border border-[#48331E] focus:border-[#C9A55A] rounded-lg px-3.5 py-2.5 text-base text-[#F3E5CD] font-serif outline-none placeholder:text-[#655341]"
                 />
               </div>
 
@@ -1094,7 +1094,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                 <button
                   type="submit"
                   disabled={isCasting}
-                  className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#9C7026] via-[#E2B755] to-[#9C7026] hover:brightness-115 active:scale-95 text-[#14100C] font-bold font-serif text-sm sm:text-base rounded-2xl shadow-[0_0_25px_rgba(212,175,55,0.4)] transition-all flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
+                  className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-[#9C7026] via-[#D6B97A] to-[#9C7026] hover:brightness-115 active:scale-95 text-[#14100C] font-bold font-serif text-sm sm:text-base rounded-2xl shadow-[0_0_25px_rgba(212,175,55,0.4)] transition-all flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
                 >
                   <Sparkles className="w-4 h-4 text-[#14100C]" />
                   <span>🌸 Khởi Quẻ Trắc Tự Mai Hoa</span>
@@ -1125,7 +1125,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                 <div className="text-4xl group-hover:scale-125 transition-transform duration-300 animate-bounce">
                   🌸
                 </div>
-                <span className="text-xs font-serif text-[#FFE28A] group-hover:text-rose-300 font-bold">
+                <span className="text-xs font-serif text-[#E6D3A3] group-hover:text-rose-300 font-bold">
                   ✦ Chạm Vào Nhành Hoa Mai Gieo Quẻ ✦
                 </span>
                 <span className="text-[10px] text-[#A89882] font-mono">
@@ -1144,7 +1144,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
           <div className="bg-[#1C140D] border border-[#583C1F] rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs font-serif">
             <div className="flex items-center gap-2">
               <span className="text-base">🌸</span>
-              <span className="font-bold text-[#FFE28A]">{result.methodLabel}</span>
+              <span className="font-bold text-[#E6D3A3]">{result.methodLabel}</span>
             </div>
             <div className="flex items-center gap-2 flex-wrap no-capture">
               <span className="text-[11px] font-mono text-[#A89882]">{result.methodDetail}</span>
@@ -1152,10 +1152,10 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                 type="button"
                 onClick={() => handleCaptureMaiHoa("primary")}
                 disabled={isCapturing}
-                className="flex items-center gap-1 px-2.5 py-1 text-[11px] font-serif font-bold text-[#FFE28A] hover:text-white bg-[#332011] hover:bg-[#462C18] border border-[#8C6218] hover:border-[#D4AF37] rounded-md transition-all cursor-pointer shadow-xs active:scale-95"
+                className="flex items-center gap-1 px-2.5 py-1 text-[11px] font-serif font-bold text-[#E6D3A3] hover:text-white bg-[#332011] hover:bg-[#462C18] border border-[#8C6218] hover:border-[#C9A55A] rounded-md transition-all cursor-pointer shadow-xs active:scale-95"
                 title="Chụp ảnh riêng Quẻ Hoa Mai Ban Đầu (Quẻ Chủ / Bản Quái)"
               >
-                {isCapturing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Camera className="w-3 h-3 text-[#D4AF37]" />}
+                {isCapturing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Camera className="w-3 h-3 text-[#C9A55A]" />}
                 <span>Chụp Quẻ Ban Đầu</span>
               </button>
               <button
@@ -1165,16 +1165,16 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                 className="flex items-center gap-1 px-2.5 py-1 text-[11px] font-serif font-bold text-[#C8B89E] hover:text-white bg-[#22170E] hover:bg-[#342417] border border-[#523A20] rounded-md transition-all cursor-pointer shadow-xs active:scale-95"
                 title="Chụp ảnh toàn bộ Tam Quái Mai Hoa (Chủ - Hỗ - Biến & Thể Dụng)"
               >
-                {isCapturing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Camera className="w-3 h-3 text-[#D4AF37]" />}
+                {isCapturing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Camera className="w-3 h-3 text-[#C9A55A]" />}
                 <span>Chụp Toàn Bộ Quẻ</span>
               </button>
               <button
                 type="button"
                 onClick={() => setShowGuideModal(true)}
-                className="flex items-center gap-1 px-2.5 py-1 text-[11px] text-[#FFE28A] hover:text-white bg-[#2A1D11] hover:bg-[#3E2918] border border-[#6B4B27] rounded-md transition-colors cursor-pointer"
+                className="flex items-center gap-1 px-2.5 py-1 text-[11px] text-[#E6D3A3] hover:text-white bg-[#2A1D11] hover:bg-[#3E2918] border border-[#6B4B27] rounded-md transition-colors cursor-pointer"
                 title="Xem hướng dẫn cách lấy quẻ Chủ, Biến, Hỗ"
               >
-                <BookOpen className="w-3 h-3 text-[#D4AF37]" />
+                <BookOpen className="w-3 h-3 text-[#C9A55A]" />
                 <span>Cách Tính Quẻ</span>
               </button>
             </div>
@@ -1185,21 +1185,21 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
             {/* Cột 1: QUẺ CHỦ (BẢN QUÁI) */}
             <div
               ref={primaryHexCaptureRef}
-              className="bg-gradient-to-b from-[#1C140D] to-[#120D08] border-2 border-[#D4AF37] rounded-2xl p-4 shadow-xl flex flex-col justify-between space-y-3 relative overflow-hidden"
+              className="bg-gradient-to-b from-[#1C140D] to-[#120D08] border-2 border-[#C9A55A] rounded-2xl p-4 shadow-xl flex flex-col justify-between space-y-3 relative overflow-hidden"
             >
               {/* Header của thẻ quẻ chủ */}
               <div className="flex items-center justify-between pb-1 border-b border-[#342213] no-capture">
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#2D1B0E] border border-[#D4AF37] text-[#FFE28A] font-bold">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#2D1B0E] border border-[#C9A55A] text-[#E6D3A3] font-bold">
                   1. BẢN QUÁI (QUẺ BAN ĐẦU)
                 </span>
                 <button
                   type="button"
                   onClick={() => handleCaptureMaiHoa("primary")}
                   disabled={isCapturing}
-                  className="flex items-center gap-1 px-2.5 py-1 text-[10.5px] font-serif font-bold rounded-lg bg-gradient-to-r from-amber-500/20 via-amber-400/30 to-amber-500/20 hover:from-amber-500/30 hover:to-amber-500/40 text-[#FFE28A] border border-[#8C6218] hover:border-[#D4AF37] transition-all cursor-pointer shadow-xs active:scale-95"
+                  className="flex items-center gap-1 px-2.5 py-1 text-[10.5px] font-serif font-bold rounded-lg bg-gradient-to-r from-amber-500/20 via-amber-400/30 to-amber-500/20 hover:from-amber-500/30 hover:to-amber-500/40 text-[#E6D3A3] border border-[#8C6218] hover:border-[#C9A55A] transition-all cursor-pointer shadow-xs active:scale-95"
                   title="Chụp hình lưu lại Quẻ Hoa Mai ban đầu (Quẻ Chủ / Bản Quái)"
                 >
-                  {isCapturing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Camera className="w-3 h-3 text-[#D4AF37]" />}
+                  {isCapturing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Camera className="w-3 h-3 text-[#C9A55A]" />}
                   <span>Chụp Quẻ</span>
                 </button>
               </div>
@@ -1208,7 +1208,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                 <span className="text-[10px] font-mono uppercase text-[#A89882] block">
                   Hiện Tại & Gốc Rễ
                 </span>
-                <h4 className="text-base font-serif font-bold text-[#FFE28A] mt-0.5">
+                <h4 className="text-base font-serif font-bold text-[#E6D3A3] mt-0.5">
                   Quẻ #{result.primaryHex.number}: {result.primaryHex.name}
                 </h4>
                 <span className="text-xs text-[#DECAB0] font-serif block">
@@ -1236,7 +1236,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                           <div
                             className={`h-2.5 rounded-xs transition-all ${
                               isChanging
-                                ? "bg-gradient-to-r from-[#D4AF37] via-rose-500 to-[#D4AF37] shadow-[0_0_8px_rgba(244,63,94,0.6)] animate-pulse"
+                                ? "bg-gradient-to-r from-[#C9A55A] via-rose-500 to-[#C9A55A] shadow-[0_0_8px_rgba(244,63,94,0.6)] animate-pulse"
                                 : "bg-[#C89B3C]"
                             }`}
                           />
@@ -1245,14 +1245,14 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                             <div
                               className={`w-[45%] rounded-xs ${
                                 isChanging
-                                  ? "bg-gradient-to-r from-[#D4AF37] to-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)] animate-pulse"
+                                  ? "bg-gradient-to-r from-[#C9A55A] to-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)] animate-pulse"
                                   : "bg-[#7A6A55]"
                               }`}
                             />
                             <div
                               className={`w-[45%] rounded-xs ${
                                 isChanging
-                                  ? "bg-gradient-to-r from-rose-500 to-[#D4AF37] shadow-[0_0_8px_rgba(244,63,94,0.6)] animate-pulse"
+                                  ? "bg-gradient-to-r from-rose-500 to-[#C9A55A] shadow-[0_0_8px_rgba(244,63,94,0.6)] animate-pulse"
                                   : "bg-[#7A6A55]"
                               }`}
                             />
@@ -1260,7 +1260,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                         )}
                       </div>
 
-                      <span className={`text-[9px] w-12 text-right ${isTheLine ? "text-[#FFE28A] font-bold" : "text-sky-300"}`}>
+                      <span className={`text-[9px] w-12 text-right ${isTheLine ? "text-[#E6D3A3] font-bold" : "text-sky-300"}`}>
                         {lineNum === 6 ? (result.isLowerThe ? "DỤNG" : "THỂ") : lineNum === 1 ? (result.isLowerThe ? "THỂ" : "DỤNG") : ""}
                       </span>
                     </div>
@@ -1274,7 +1274,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
                   <span className="text-[10px] text-[#A89882] block font-mono">
                     THỂ ({result.theTrigram.name})
                   </span>
-                  <span className="font-bold text-[#FFE28A]">{result.theTrigram.element}</span>
+                  <span className="font-bold text-[#E6D3A3]">{result.theTrigram.element}</span>
                 </div>
                 <div className="bg-[#140D07] p-2 rounded-lg border border-[#3E2816]">
                   <span className="text-[10px] text-sky-400 block font-mono">
@@ -1286,7 +1286,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
 
               {/* Tóm lược quan hệ Thể - Dụng cho Quẻ Ban Đầu */}
               <div className="p-2 rounded-xl bg-[#140C07] border border-[#3E2816] text-center space-y-0.5 shadow-inner">
-                <span className="text-[11px] font-serif font-bold text-[#FFE28A] block">
+                <span className="text-[11px] font-serif font-bold text-[#E6D3A3] block">
                   {result.relation} • {result.verdict}
                 </span>
                 <span className="text-[9.5px] text-[#A89882] font-mono block">
@@ -1401,8 +1401,8 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
           <div className="bg-gradient-to-r from-[#20150D] via-[#2A1C10] to-[#1D130B] border border-[#6B4B27] rounded-2xl p-4 sm:p-5 shadow-2xl space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#3D2916] pb-2.5">
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#D4AF37] animate-ping" />
-                <h4 className="text-sm sm:text-base font-serif font-bold text-[#FFE28A]">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#C9A55A] animate-ping" />
+                <h4 className="text-sm sm:text-base font-serif font-bold text-[#E6D3A3]">
                   Luận Định Thể - Dụng: {result.relation}
                 </h4>
               </div>
@@ -1419,7 +1419,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
             {/* Chi tiết tương tác ngũ hành */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2 text-xs font-serif">
               <div className="bg-[#140D07] p-3 rounded-xl border border-[#3A2615] space-y-1">
-                <span className="text-[#FFE28A] font-bold block flex items-center gap-1.5">
+                <span className="text-[#E6D3A3] font-bold block flex items-center gap-1.5">
                   <span>👑</span>
                   <span>THỂ QUÁI: Quẻ {result.theTrigram.name} ({result.theTrigram.nature})</span>
                 </span>
@@ -1461,7 +1461,7 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
               type="button"
               onClick={() => handleCaptureMaiHoa("primary")}
               disabled={isCapturing}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-2xl text-xs sm:text-sm font-serif font-bold bg-gradient-to-r from-[#8C6218] via-[#D4AF37] to-[#8C6218] hover:brightness-110 active:scale-95 text-[#14100C] border border-[#FFE28A]/80 shadow-[0_0_15px_rgba(212,175,55,0.3)] transition-all cursor-pointer"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-2xl text-xs sm:text-sm font-serif font-bold bg-gradient-to-r from-[#8C6218] via-[#C9A55A] to-[#8C6218] hover:brightness-110 active:scale-95 text-[#14100C] border border-[#E6D3A3]/80 shadow-[0_0_15px_rgba(212,175,55,0.3)] transition-all cursor-pointer"
               title="Chụp ảnh riêng Quẻ Hoa Mai Ban Đầu (Quẻ Chủ / Bản Quái)"
             >
               {isCapturing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4 text-[#14100C]" />}
@@ -1472,17 +1472,17 @@ export const MaiHoaDivination: React.FC<MaiHoaDivinationProps> = ({
               type="button"
               onClick={() => handleCaptureMaiHoa("full")}
               disabled={isCapturing}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-2xl text-xs sm:text-sm font-serif font-bold bg-[#2A1D11] hover:bg-[#3D2918] text-[#FFE28A] border border-[#6B4B27] hover:border-[#D4AF37] transition-all cursor-pointer shadow active:scale-95"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-2xl text-xs sm:text-sm font-serif font-bold bg-[#2A1D11] hover:bg-[#3D2918] text-[#E6D3A3] border border-[#6B4B27] hover:border-[#C9A55A] transition-all cursor-pointer shadow active:scale-95"
               title="Chụp ảnh toàn bộ Tam Quái Mai Hoa (Chủ - Hỗ - Biến & Thể Dụng)"
             >
-              {isCapturing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4 text-[#D4AF37]" />}
+              {isCapturing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4 text-[#C9A55A]" />}
               <span>Chụp Toàn Bộ Quẻ</span>
             </button>
 
             <button
               type="button"
               onClick={handleResetInternal}
-              className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl text-xs font-serif bg-[#241A12] hover:bg-[#342417] text-[#FFE28A] border border-[#523A21] cursor-pointer shadow active:scale-95"
+              className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl text-xs font-serif bg-[#241A12] hover:bg-[#342417] text-[#E6D3A3] border border-[#523A21] cursor-pointer shadow active:scale-95"
             >
               <RotateCw className="w-3.5 h-3.5" />
               <span>Khởi quẻ khác</span>

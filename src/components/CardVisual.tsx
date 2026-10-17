@@ -215,7 +215,7 @@ export const CardVisual: React.FC<CardVisualProps> = ({
         {slotNumber !== undefined && (
           <div
             style={{ transform: "translateZ(12px)" }}
-            className="absolute top-1 left-1 z-20 text-[9px] font-mono font-bold text-[#D4AF37] bg-[#120F0C]/85 px-1 py-0.2 rounded border border-[#3E3224] shadow"
+            className="absolute top-1 left-1 z-20 text-[9px] font-mono font-bold text-[#C9A55A] bg-[#120F0C]/85 px-1 py-0.2 rounded border border-[#3E3224] shadow"
           >
             #{slotNumber.toString().padStart(2, "0")}
           </div>
@@ -274,7 +274,7 @@ export const CardVisual: React.FC<CardVisualProps> = ({
                     : "w-8 h-8 sm:w-12 sm:h-12"
                 } rounded-full bg-[#241B13] border border-[#C89B3C] flex items-center justify-center shadow-[0_0_15px_rgba(200,155,60,0.3)]`}
               >
-                <span className={`text-[#E2B755] ${isTiny ? "text-[10px]" : isSmall ? "text-xs" : "text-sm sm:text-xl"} font-bold`}>
+                <span className={`text-[#D6B97A] ${isTiny ? "text-[10px]" : isSmall ? "text-xs" : "text-sm sm:text-xl"} font-bold`}>
                   ☯
                 </span>
               </div>
@@ -325,8 +325,8 @@ export const CardVisual: React.FC<CardVisualProps> = ({
         }}
         className={`group relative select-none rounded-xl sm:rounded-2xl overflow-hidden border-2 transition-colors duration-300 shadow-xl cursor-pointer ${
           imageUrl
-            ? "border-[#D4AF37]/60 hover:border-[#F3E6C8] shadow-[0_4px_16px_rgba(0,0,0,0.6)]"
-            : "border-[#4A3E2D] hover:border-[#D4AF37] bg-gradient-to-b from-[#241E17] via-[#181410] to-[#120F0C]"
+            ? "border-[#C9A55A]/60 hover:border-[#F3E6C8] shadow-[0_4px_16px_rgba(0,0,0,0.6)]"
+            : "border-[#4A3E2D] hover:border-[#C9A55A] bg-gradient-to-b from-[#241E17] via-[#181410] to-[#120F0C]"
         } ${sizeClasses[size]} ${className}`}
       >
         {/* 3D Dynamic Parallax Glare / Light Reflection */}
@@ -412,7 +412,7 @@ export const CardVisual: React.FC<CardVisualProps> = ({
             {/* Top Bar */}
             <div className="w-full flex items-center justify-between text-[#8E7E69]">
               <div className="flex items-center gap-1">
-                <span className="font-mono text-[9px] sm:text-[10px] font-bold text-[#D4AF37]">
+                <span className="font-mono text-[9px] sm:text-[10px] font-bold text-[#C9A55A]">
                   #{hexagram.number.toString().padStart(2, "0")}
                 </span>
                 {isReversed && (
@@ -467,7 +467,7 @@ export const CardVisual: React.FC<CardVisualProps> = ({
             {/* Top Toolbar */}
             <div className="flex items-center justify-between px-3 sm:px-5 py-2.5 bg-[#1B1612] border-b border-[#30251A] gap-2 flex-wrap z-20">
               <div className="flex items-center gap-2 min-w-0">
-                <span className="w-2 h-2 rounded-full bg-[#D4AF37] shadow-[0_0_6px_#D4AF37]" />
+                <span className="w-2 h-2 rounded-full bg-[#C9A55A] shadow-[0_0_6px_#C9A55A]" />
                 <h4 className="font-serif font-bold text-sm sm:text-base text-[#F5EBD6] truncate">
                   Quẻ #{hexagram.number} {hexagram.name}
                   <span className="text-[#A89882] font-normal text-xs ml-1.5 hidden sm:inline">
@@ -497,7 +497,7 @@ export const CardVisual: React.FC<CardVisualProps> = ({
                 <button
                   type="button"
                   onClick={handleResetZoom}
-                  className="px-2.5 py-1.5 rounded-lg bg-[#2B2219] hover:bg-[#392D20] text-[#D4AF37] border border-[#4E3D28] text-xs font-mono font-bold cursor-pointer transition-colors min-w-[52px] text-center"
+                  className="px-2.5 py-1.5 rounded-lg bg-[#2B2219] hover:bg-[#392D20] text-[#C9A55A] border border-[#4E3D28] text-xs font-mono font-bold cursor-pointer transition-colors min-w-[52px] text-center"
                   title="Đặt lại tỷ lệ 100%"
                 >
                   {Math.round(zoomScale * 100)}%
@@ -532,12 +532,12 @@ export const CardVisual: React.FC<CardVisualProps> = ({
                   }}
                   className={`p-1.5 sm:px-3 sm:py-1.5 rounded-lg border flex items-center gap-1.5 text-xs font-serif cursor-pointer transition-all shadow ${
                     isZoomFlipped
-                      ? "bg-[#3D2C1B] text-[#FFE28A] border-[#D4AF37]"
+                      ? "bg-[#3D2C1B] text-[#E6D3A3] border-[#C9A55A]"
                       : "bg-[#251E17] hover:bg-[#34291E] text-[#DCD0BC] border-[#3E3122]"
                   }`}
                   title="Lật 3D để xem mặt lưng / mặt trước lá bài"
                 >
-                  <RotateCw className={`w-3.5 h-3.5 transition-transform duration-500 ${isZoomFlipped ? "rotate-180 text-[#D4AF37]" : ""}`} />
+                  <RotateCw className={`w-3.5 h-3.5 transition-transform duration-500 ${isZoomFlipped ? "rotate-180 text-[#C9A55A]" : ""}`} />
                   <span className="hidden sm:inline">{isZoomFlipped ? "Xem Mặt Trước" : "Lật 3D (Lưng Bài)"}</span>
                 </button>
 
@@ -658,7 +658,7 @@ export const CardVisual: React.FC<CardVisualProps> = ({
                       WebkitBackfaceVisibility: "hidden",
                       transform: "rotateY(180deg)",
                     }}
-                    className="absolute inset-0 w-full h-full flex items-center justify-center rounded-xl overflow-hidden border-2 border-[#D4AF37]/80 shadow-[0_0_35px_rgba(0,0,0,0.9)] bg-gradient-to-b from-[#1C150E] via-[#120D08] to-[#0A0704]"
+                    className="absolute inset-0 w-full h-full flex items-center justify-center rounded-xl overflow-hidden border-2 border-[#C9A55A]/80 shadow-[0_0_35px_rgba(0,0,0,0.9)] bg-gradient-to-b from-[#1C150E] via-[#120D08] to-[#0A0704]"
                   >
                     {cardBackUrl ? (
                       <img
@@ -670,25 +670,25 @@ export const CardVisual: React.FC<CardVisualProps> = ({
                       />
                     ) : (
                       <div className="w-full h-full min-w-[280px] min-h-[400px] p-6 flex flex-col items-center justify-between text-center select-none">
-                        <div className="w-full flex justify-between items-center text-[#D4AF37] font-serif text-sm font-bold tracking-wider opacity-90 border-b border-[#3B2C1A] pb-2">
+                        <div className="w-full flex justify-between items-center text-[#C9A55A] font-serif text-sm font-bold tracking-wider opacity-90 border-b border-[#3B2C1A] pb-2">
                           <span>周易</span>
                           <span className="text-xs tracking-widest text-[#E6C98A] flex items-center gap-1">
-                            <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+                            <Sparkles className="w-3 h-3 text-[#C9A55A]" />
                             KINH DỊCH
                           </span>
                           <span>神卦</span>
                         </div>
 
                         <div className="relative my-auto flex items-center justify-center py-6">
-                          <div className="w-32 h-32 rounded-full border-2 border-[#D4AF37]/50 border-dashed animate-[spin_45s_linear_infinite]" />
-                          <div className="absolute w-24 h-24 rounded-full border border-[#FFE28A]/40" />
-                          <div className="absolute w-16 h-16 rounded-full bg-[#241A10] border-2 border-[#D4AF37] flex items-center justify-center shadow-[0_0_25px_rgba(212,175,55,0.45)]">
-                            <span className="text-3xl text-[#FFE28A] font-bold">☯</span>
+                          <div className="w-32 h-32 rounded-full border-2 border-[#C9A55A]/50 border-dashed animate-[spin_45s_linear_infinite]" />
+                          <div className="absolute w-24 h-24 rounded-full border border-[#E6D3A3]/40" />
+                          <div className="absolute w-16 h-16 rounded-full bg-[#241A10] border-2 border-[#C9A55A] flex items-center justify-center shadow-[0_0_25px_rgba(212,175,55,0.45)]">
+                            <span className="text-3xl text-[#E6D3A3] font-bold">☯</span>
                           </div>
                         </div>
 
                         <div className="w-full border-t border-[#3B2C1A] pt-3 flex flex-col items-center gap-1">
-                          <span className="font-serif text-xs font-bold text-[#D4AF37] tracking-widest uppercase">
+                          <span className="font-serif text-xs font-bold text-[#C9A55A] tracking-widest uppercase">
                             Bát Quái • Lục Thập Tứ Quái
                           </span>
                           <span className="text-[10px] text-[#8C7A62] font-mono">
@@ -703,7 +703,7 @@ export const CardVisual: React.FC<CardVisualProps> = ({
 
               {/* Bottom Hint */}
               <div className="absolute bottom-3 left-1/2 -translate-x-1/2 pointer-events-none bg-[#17130F]/90 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-[#3E3124] text-[11px] text-[#A69780] shadow-lg flex items-center gap-2 whitespace-nowrap">
-                <Move className="w-3 h-3 text-[#D4AF37]" />
+                <Move className="w-3 h-3 text-[#C9A55A]" />
                 <span>Bấm nút [Lật 3D] hoặc bấm vào lá bài để lật mặt trước/sau • Cuộn chuột để phóng to/thu nhỏ • Kéo để di chuyển</span>
               </div>
             </div>

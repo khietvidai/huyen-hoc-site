@@ -101,14 +101,14 @@ export const CanonicalHexagramCard: React.FC<CanonicalHexagramCardProps> = ({
   return (
     <div className="bg-gradient-to-br from-[#1C1610] via-[#16120E] to-[#0E0B08] border-2 border-[#523E26] rounded-2xl p-4 sm:p-6 shadow-2xl space-y-5 text-left relative overflow-hidden">
       {/* Decorative golden bar at top */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#D4AF37] via-[#FFF0B8] to-[#997A24]" />
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#C9A55A] via-[#FFF0B8] to-[#997A24]" />
 
       {/* Top Header & Hexagram Title */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 border-b border-[#382A1B] pb-4">
         <div>
           <div className="flex items-center gap-2 mb-1 flex-wrap">
             <span className="px-2.5 py-0.5 rounded-full bg-[#2B1D12] text-[#E5C378] font-mono text-xs font-bold border border-[#4E3722] flex items-center gap-1.5">
-              <Scroll className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <Scroll className="w-3.5 h-3.5 text-[#C9A55A]" />
               KHO TÀNG KINH DỊCH NGUYÊN BẢN • HÀO TỪ CỐT LÕI
             </span>
             <span className="text-[11px] font-mono text-[#A89882]">Quẻ #{hexData.number}/64</span>
@@ -129,7 +129,7 @@ export const CanonicalHexagramCard: React.FC<CanonicalHexagramCardProps> = ({
                 className="px-2.5 py-1 rounded-lg text-[#C8B89E] hover:text-[#FFF] hover:bg-[#251B12] flex items-center gap-1 transition-all cursor-pointer"
                 title={`Nhấn vào đây để trở về phần trước (Quẻ #${prevHexNum})`}
               >
-                <ChevronLeft className="w-4 h-4 text-[#D4AF37]" />
+                <ChevronLeft className="w-4 h-4 text-[#C9A55A]" />
                 <span className="hidden sm:inline">Trở về: Quẻ #{prevHexNum}</span>
                 <span className="sm:hidden">#{prevHexNum}</span>
               </button>
@@ -141,7 +141,7 @@ export const CanonicalHexagramCard: React.FC<CanonicalHexagramCardProps> = ({
               >
                 <span className="hidden sm:inline">Tiếp: Quẻ #{nextHexNum}</span>
                 <span className="sm:hidden">#{nextHexNum}</span>
-                <ChevronRight className="w-4 h-4 text-[#D4AF37]" />
+                <ChevronRight className="w-4 h-4 text-[#C9A55A]" />
               </button>
             </div>
           )}
@@ -171,7 +171,7 @@ export const CanonicalHexagramCard: React.FC<CanonicalHexagramCardProps> = ({
       <div className="bg-[#15110D] border border-[#3E2E1D] rounded-xl p-4 sm:p-5 space-y-3 shadow-inner">
         <div className="flex items-center justify-between border-b border-[#2B1F14] pb-2">
           <span className="text-xs font-serif font-bold text-[#E5C378] uppercase tracking-wider flex items-center gap-1.5">
-            <Layers className="w-4 h-4 text-[#D4AF37]" />
+            <Layers className="w-4 h-4 text-[#C9A55A]" />
             Tượng và Ý của toàn quẻ
           </span>
           <span className="text-[10px] font-mono text-[#8C7A65]">Đạo Lý Cốt Tủy & Thoán Từ</span>
@@ -185,10 +185,10 @@ export const CanonicalHexagramCard: React.FC<CanonicalHexagramCardProps> = ({
               <div className="space-y-2.5">
                 <div className="bg-gradient-to-r from-[#24190F] via-[#2F2013] to-[#1A120A] border border-[#4D361F] rounded-lg p-3 flex flex-wrap items-center justify-between gap-2 shadow-sm">
                   <div className="flex items-center gap-2.5 flex-wrap">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-[#D4AF37] bg-[#140E08] px-2 py-0.5 rounded border border-[#4A341C] font-bold">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-[#C9A55A] bg-[#140E08] px-2 py-0.5 rounded border border-[#4A341C] font-bold">
                       Thoán Từ Chữ Hán:
                     </span>
-                    <span className="text-base sm:text-lg font-serif font-black text-[#FFE8A3] tracking-widest">
+                    <span className="text-base sm:text-lg font-serif font-black text-[#E6D3A3] tracking-widest">
                       {hanziThoan.trim()}
                     </span>
                   </div>
@@ -203,7 +203,7 @@ export const CanonicalHexagramCard: React.FC<CanonicalHexagramCardProps> = ({
             );
           }
           return (
-            <p className="text-xs sm:text-sm font-serif leading-relaxed text-[#EDE3D0] first-letter:text-xl first-letter:font-bold first-letter:text-[#D4AF37] first-letter:mr-0.5">
+            <p className="text-xs sm:text-sm font-serif leading-relaxed text-[#EDE3D0] first-letter:text-xl first-letter:font-bold first-letter:text-[#C9A55A] first-letter:mr-0.5">
               {hexData.symbolAndMeaning}
             </p>
           );
@@ -213,7 +213,7 @@ export const CanonicalHexagramCard: React.FC<CanonicalHexagramCardProps> = ({
       {/* 2. THANH ĐIỀU HƯỚNG VÀ BỘ CHỌN HÀO */}
       <div className="bg-[#14100C] border border-[#342617] rounded-xl p-3 sm:p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-xs font-serif font-bold text-[#D4AF37] mr-1 flex items-center gap-1">
+          <span className="text-xs font-serif font-bold text-[#C9A55A] mr-1 flex items-center gap-1">
             <BookOpen className="w-3.5 h-3.5" />
             Chọn hào:
           </span>
@@ -222,7 +222,7 @@ export const CanonicalHexagramCard: React.FC<CanonicalHexagramCardProps> = ({
             onClick={() => setSelectedLine("all")}
             className={`px-2.5 py-1 rounded-lg text-xs font-serif transition-all cursor-pointer ${
               selectedLine === "all"
-                ? "bg-[#D4AF37] text-[#120F0C] font-bold shadow-md"
+                ? "bg-[#C9A55A] text-[#120F0C] font-bold shadow-md"
                 : "bg-[#201811] text-[#A6957E] hover:text-[#FFF]"
             }`}
           >
@@ -241,9 +241,9 @@ export const CanonicalHexagramCard: React.FC<CanonicalHexagramCardProps> = ({
                   isActive
                     ? isSpecial
                       ? "bg-gradient-to-r from-amber-400 to-yellow-300 text-black font-black shadow-lg scale-105 ring-2 ring-amber-300"
-                      : "bg-[#D4AF37] text-[#120F0C] font-bold shadow-md scale-105"
+                      : "bg-[#C9A55A] text-[#120F0C] font-bold shadow-md scale-105"
                     : isSpecial
-                    ? "bg-[#33200D] border border-[#D4AF37] text-[#FFD770] hover:text-[#FFF] hover:bg-[#482E15]"
+                    ? "bg-[#33200D] border border-[#C9A55A] text-[#FFD770] hover:text-[#FFF] hover:bg-[#482E15]"
                     : "bg-[#201811] text-[#A6957E] hover:text-[#FFF] hover:bg-[#2C1F15]"
                 }`}
                 title={isSpecial ? `Hào đặc biệt khi động cả 6 hào: ${yao.name}` : `Hào ${lineNum}: ${yao.name}`}
@@ -262,20 +262,20 @@ export const CanonicalHexagramCard: React.FC<CanonicalHexagramCardProps> = ({
           <button
             type="button"
             onClick={handlePrevLine}
-            className="px-3 py-1.5 rounded-lg bg-[#201710] hover:bg-[#2F2116] border border-[#3D2C1C] hover:border-[#D4AF37] text-xs font-serif text-[#CBB99E] hover:text-[#FFF] flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
+            className="px-3 py-1.5 rounded-lg bg-[#201710] hover:bg-[#2F2116] border border-[#3D2C1C] hover:border-[#C9A55A] text-xs font-serif text-[#CBB99E] hover:text-[#FFF] flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
             title="Nhấn vào đây để trở về phần trước"
           >
-            <ArrowLeft className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <ArrowLeft className="w-3.5 h-3.5 text-[#C9A55A]" />
             <span className="font-medium">Nhấn vào đây để trở về phần trước</span>
           </button>
           <button
             type="button"
             onClick={handleNextLine}
-            className="px-3 py-1.5 rounded-lg bg-[#201710] hover:bg-[#2F2116] border border-[#3D2C1C] hover:border-[#D4AF37] text-xs font-serif text-[#CBB99E] hover:text-[#FFF] flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
+            className="px-3 py-1.5 rounded-lg bg-[#201710] hover:bg-[#2F2116] border border-[#3D2C1C] hover:border-[#C9A55A] text-xs font-serif text-[#CBB99E] hover:text-[#FFF] flex items-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
             title="Nhấn vào đây để qua phần tiếp theo"
           >
             <span className="font-medium">Nhấn vào đây để qua phần tiếp theo</span>
-            <ArrowRight className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <ArrowRight className="w-3.5 h-3.5 text-[#C9A55A]" />
           </button>
         </div>
       </div>
@@ -295,7 +295,7 @@ export const CanonicalHexagramCard: React.FC<CanonicalHexagramCardProps> = ({
                 id={`canonical-line-${yao.line}`}
                 className={`${
                   isSpecial
-                    ? "bg-gradient-to-b from-[#23180E] via-[#1A120A] to-[#120D08] border-2 border-[#D4AF37] ring-1 ring-[#D4AF37]/50 shadow-[0_0_25px_rgba(212,175,55,0.18)]"
+                    ? "bg-gradient-to-b from-[#23180E] via-[#1A120A] to-[#120D08] border-2 border-[#C9A55A] ring-1 ring-[#C9A55A]/50 shadow-[0_0_25px_rgba(212,175,55,0.18)]"
                     : "bg-[#16120E] border-2 border-[#3E2E1D] hover:border-[#6B502C] shadow-lg"
                 } rounded-2xl p-4 sm:p-5 transition-all space-y-4 relative`}
               >
@@ -319,7 +319,7 @@ export const CanonicalHexagramCard: React.FC<CanonicalHexagramCardProps> = ({
                     )}
                     <div>
                       <h4 className="text-sm sm:text-base font-serif font-black text-[#F3E5AB] flex items-center gap-1.5">
-                        {isSpecial && <Sparkles className="w-4 h-4 text-[#D4AF37] animate-pulse shrink-0" />}
+                        {isSpecial && <Sparkles className="w-4 h-4 text-[#C9A55A] animate-pulse shrink-0" />}
                         {isSpecial ? yao.name : `HÀO ${yao.line}: ${yao.name}`}
                       </h4>
                       <span className={`text-[10px] font-mono ${isSpecial ? "text-[#E5C378] font-bold" : "text-[#9E8B75]"}`}>
@@ -335,8 +335,8 @@ export const CanonicalHexagramCard: React.FC<CanonicalHexagramCardProps> = ({
                   <div className="flex items-center gap-2">
                     <span className={`text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded border ${
                       isSpecial
-                        ? "text-black bg-[#D4AF37] font-black border-[#FFE082]"
-                        : "text-[#D4AF37] bg-[#23180F] border-[#3E2B18]"
+                        ? "text-black bg-[#C9A55A] font-black border-[#FFE082]"
+                        : "text-[#C9A55A] bg-[#23180F] border-[#3E2B18]"
                     }`}>
                       {isSpecial ? "QUY TẮC ĐỘNG 6 HÀO" : "KINH DỊCH HÀO TỪ CỐT LÕI"}
                     </span>
@@ -356,26 +356,26 @@ export const CanonicalHexagramCard: React.FC<CanonicalHexagramCardProps> = ({
                 </div>
 
                 {/* Ô CHỮ HÁN NGUYÊN BẢN CỦA LỜI HÀO */}
-                <div className="bg-gradient-to-r from-[#2A1D11] via-[#382615] to-[#1E140B] border-2 border-[#D4AF37] rounded-xl p-3 shadow-md flex flex-wrap items-center justify-between gap-2.5">
+                <div className="bg-gradient-to-r from-[#2A1D11] via-[#382615] to-[#1E140B] border-2 border-[#C9A55A] rounded-xl p-3 shadow-md flex flex-wrap items-center justify-between gap-2.5">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-[#D4AF37] bg-[#16100A] px-2.5 py-1 rounded border border-[#523A1E] font-bold flex items-center gap-1.5">
-                      <Scroll className="w-3 h-3 text-[#D4AF37]" />
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-[#C9A55A] bg-[#16100A] px-2.5 py-1 rounded border border-[#523A1E] font-bold flex items-center gap-1.5">
+                      <Scroll className="w-3 h-3 text-[#C9A55A]" />
                       Ô CHỮ HÁN NGUYÊN BẢN:
                     </span>
                     <span className="text-[11px] font-serif text-[#C5B39B] hidden sm:inline">
                       Hào Từ Kinh Dịch:
                     </span>
                   </div>
-                  <div className="text-base sm:text-xl font-serif font-black text-[#FFE8A3] tracking-widest bg-[#140F0A] px-3.5 py-1.5 rounded-lg border border-[#583E20] shadow-inner">
+                  <div className="text-base sm:text-xl font-serif font-black text-[#E6D3A3] tracking-widest bg-[#140F0A] px-3.5 py-1.5 rounded-lg border border-[#583E20] shadow-inner">
                     {yao.hanzi}
                   </div>
                 </div>
 
                 {/* 1. Lời hào (Chỉ để chữ Hán Việt vs dịch nghĩa, không để chữ Hán) */}
-                <div className="bg-[#1C1610] p-3 rounded-xl border-l-4 border-[#D4AF37] border-y border-r border-[#382819] text-xs font-serif space-y-1.5">
+                <div className="bg-[#1C1610] p-3 rounded-xl border-l-4 border-[#C9A55A] border-y border-r border-[#382819] text-xs font-serif space-y-1.5">
                   <div className="flex items-center gap-2 flex-wrap">
                     <strong className="text-[#E6C673] uppercase font-mono text-[10px] tracking-wider flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#C9A55A]" />
                       Lời hào (Hán Việt & Dịch nghĩa):
                     </strong>
                   </div>
@@ -386,7 +386,7 @@ export const CanonicalHexagramCard: React.FC<CanonicalHexagramCardProps> = ({
 
                 {/* 2. Nghĩa lý */}
                 <div className="bg-[#120E0A] p-3 rounded-xl border border-[#2B1E13] text-xs font-serif leading-relaxed text-[#DDD2BF] pl-3.5 border-l-2 border-[#A87B2C]">
-                  <strong className="text-[#D4AF37] block mb-0.5 font-bold">
+                  <strong className="text-[#C9A55A] block mb-0.5 font-bold">
                     Nghĩa lý:
                   </strong>
                   <p>{yao.meaning}</p>
@@ -435,8 +435,8 @@ export const CanonicalHexagramCard: React.FC<CanonicalHexagramCardProps> = ({
                   if (!metaLine?.detailedExplanation) return null;
                   return (
                     <div className="bg-gradient-to-r from-[#1C140C] to-[#120E09] p-3.5 rounded-xl border border-[#4D361F] text-xs font-serif space-y-1.5 shadow-sm">
-                      <div className="text-[10px] font-mono text-[#D4AF37] uppercase font-bold tracking-wider flex items-center gap-1.5">
-                        <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+                      <div className="text-[10px] font-mono text-[#C9A55A] uppercase font-bold tracking-wider flex items-center gap-1.5">
+                        <Sparkles className="w-3 h-3 text-[#C9A55A]" />
                         <span>Luận Giải Triết Lý & Ứng Dụng Thực Tiễn:</span>
                       </div>
                       <p className="text-xs text-[#EADAC5] leading-relaxed pl-1">
@@ -470,12 +470,12 @@ export const CanonicalHexagramCard: React.FC<CanonicalHexagramCardProps> = ({
                 setSelectedLine(1);
               }
             }}
-            className="bg-[#14100C] hover:bg-[#201811] p-3.5 rounded-xl border border-[#3A2A19] hover:border-[#D4AF37] text-left transition-all cursor-pointer group shadow-md hover:shadow-xl active:scale-[0.99] flex flex-col justify-between"
+            className="bg-[#14100C] hover:bg-[#201811] p-3.5 rounded-xl border border-[#3A2A19] hover:border-[#C9A55A] text-left transition-all cursor-pointer group shadow-md hover:shadow-xl active:scale-[0.99] flex flex-col justify-between"
             title="Nhấn vào đây để trở về phần trước"
           >
             <div className="space-y-1">
               <span className="text-[10px] font-mono text-[#C89B3C] uppercase tracking-wider block font-bold flex items-center gap-1.5">
-                <ArrowLeft className="w-3.5 h-3.5 text-[#D4AF37] group-hover:-translate-x-1 transition-transform" />
+                <ArrowLeft className="w-3.5 h-3.5 text-[#C9A55A] group-hover:-translate-x-1 transition-transform" />
                 👈 TRỞ VỀ PHẦN TRƯỚC:
               </span>
               <p className="text-[#EDE3CF] font-bold text-xs sm:text-sm">
@@ -484,7 +484,7 @@ export const CanonicalHexagramCard: React.FC<CanonicalHexagramCardProps> = ({
                   : `Quẻ #${prevHexNum}: ${prevHexMeta?.name || ""}`}
               </p>
             </div>
-            <div className="mt-2 pt-1 border-t border-[#251A10] text-[10px] text-[#A6957E] group-hover:text-[#D4AF37]">
+            <div className="mt-2 pt-1 border-t border-[#251A10] text-[10px] text-[#A6957E] group-hover:text-[#C9A55A]">
               👉 <strong>Nhấn vào đây để trở về phần trước</strong>
             </div>
           </button>
@@ -500,13 +500,13 @@ export const CanonicalHexagramCard: React.FC<CanonicalHexagramCardProps> = ({
                 setSelectedLine(1);
               }
             }}
-            className="bg-[#14100C] hover:bg-[#201811] p-3.5 rounded-xl border border-[#3A2A19] hover:border-[#D4AF37] text-left sm:text-right transition-all cursor-pointer group shadow-md hover:shadow-xl active:scale-[0.99] flex flex-col justify-between"
+            className="bg-[#14100C] hover:bg-[#201811] p-3.5 rounded-xl border border-[#3A2A19] hover:border-[#C9A55A] text-left sm:text-right transition-all cursor-pointer group shadow-md hover:shadow-xl active:scale-[0.99] flex flex-col justify-between"
             title="Nhấn vào đây để qua phần tiếp theo"
           >
             <div className="space-y-1">
               <span className="text-[10px] font-mono text-[#C89B3C] uppercase tracking-wider block font-bold flex items-center justify-start sm:justify-end gap-1.5">
                 👉 QUA PHẦN TIẾP THEO:
-                <ArrowRight className="w-3.5 h-3.5 text-[#D4AF37] group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-3.5 h-3.5 text-[#C9A55A] group-hover:translate-x-1 transition-transform" />
               </span>
               <p className="text-[#EDE3CF] font-bold text-xs sm:text-sm">
                 {selectedLine !== "all" && typeof selectedLine === "number" && selectedLine < maxLines
@@ -514,7 +514,7 @@ export const CanonicalHexagramCard: React.FC<CanonicalHexagramCardProps> = ({
                   : `Quẻ #${nextHexNum}: ${nextHexMeta?.name || ""}`}
               </p>
             </div>
-            <div className="mt-2 pt-1 border-t border-[#251A10] text-[10px] text-[#A6957E] group-hover:text-[#D4AF37]">
+            <div className="mt-2 pt-1 border-t border-[#251A10] text-[10px] text-[#A6957E] group-hover:text-[#C9A55A]">
               <strong>Nhấn vào đây để qua phần tiếp theo</strong> 👈
             </div>
           </button>
