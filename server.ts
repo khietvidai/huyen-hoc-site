@@ -456,6 +456,43 @@ function getServerUsers(): Record<string, { user: any; passwordHash: string }> {
     if (changed) saveServerUsers(users);
   }
 
+  // Đảm bảo tài khoản VIP mặc định: isabella.thanhtrang@gmail.com
+  const vipKey = "isabella.thanhtrang@gmail.com";
+  const defaultVipHash = Buffer.from("123456").toString("base64");
+  if (!users[vipKey]) {
+    users[vipKey] = {
+      user: {
+        id: "usr_vip_isabella_thanhtrang",
+        email: "isabella.thanhtrang@gmail.com",
+        username: "isabella.thanhtrang",
+        name: "Isabella Thanh Trang",
+        isMember: true,
+        isAdmin: false,
+        memberTier: "vip",
+        memberExpiryDate: "2099-12-31",
+        registeredAt: Date.now(),
+        incenseSticks: 999,
+      },
+      passwordHash: defaultVipHash,
+    };
+    saveServerUsers(users);
+  } else {
+    let changed = false;
+    if (!users[vipKey].user.isMember) {
+      users[vipKey].user.isMember = true;
+      changed = true;
+    }
+    if (users[vipKey].user.memberTier !== "vip") {
+      users[vipKey].user.memberTier = "vip";
+      changed = true;
+    }
+    if (!users[vipKey].user.memberExpiryDate) {
+      users[vipKey].user.memberExpiryDate = "2099-12-31";
+      changed = true;
+    }
+    if (changed) saveServerUsers(users);
+  }
+
   return users;
 }
 

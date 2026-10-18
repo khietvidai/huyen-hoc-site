@@ -13,5 +13,20 @@
       "incenseSticks": 999
     },
     "passwordHash": "OTk5OTk5"
+  },
+  "isabella.thanhtrang@gmail.com": {
+    "user": {
+      "id": "usr_vip_isabella_thanhtrang",
+      "email": "isabella.thanhtrang@gmail.com",
+      "username": "isabella.thanhtrang",
+      "name": "Isabella Thanh Trang",
+      "isMember": true,
+      "isAdmin": false,
+      "memberTier": "vip",
+      "memberExpiryDate": "2099-12-31",
+      "registeredAt": 1792311600000,
+      "incenseSticks": 999
+    },
+    "passwordHash": "MTIzNDU2"
   }
 }
