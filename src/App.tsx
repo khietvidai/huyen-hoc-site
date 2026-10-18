@@ -1060,7 +1060,7 @@ export default function App() {
       />
 
       {/* Main Content Area */}
-      <main className="relative z-10 flex-1 max-w-6xl w-full mx-auto px-4 py-8">
+      <main className={`relative z-10 flex-1 w-full mx-auto px-3 sm:px-4 py-6 sm:py-8 ${currentTab === "detail" ? "max-w-7xl" : "max-w-6xl"}`}>
         {/* TAB 0: TRANG CHỦ (PHƯƠNG PHÁP BỐC BÀI I CHING TAROT & LIÊN LẠC) */}
         <div className={currentTab === "home" ? "space-y-6" : "hidden"}>
           <HomeSection

@@ -379,7 +379,14 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
   const [capturedSuccess, setCapturedSuccess] = useState(false);
   const [exportedCardsUrl, setExportedCardsUrl] = useState<string | null>(null);
   const [showExportModal, setShowExportModal] = useState(false);
-  const [cardFitMode, setCardFitMode] = useState<"contain" | "cover">("contain");
+  const [cardFitMode, setCardFitMode] = useState<"contain" | "cover">(() => {
+    try {
+      const saved = localStorage.getItem("iching_card_fit_mode");
+      return saved === "contain" || saved === "cover" ? saved : "cover";
+    } catch {
+      return "cover";
+    }
+  });
   const cardsContainerRef = useRef<HTMLDivElement>(null);
   const primaryCardRef = useRef<HTMLDivElement>(null);
   const [hoveredCardData, setHoveredCardData] = useState<HoverCardData | null>(null);
@@ -741,7 +748,7 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-6">
+    <div className="w-full max-w-6xl xl:max-w-7xl mx-auto space-y-6">
       {/* Top Card: Question & Hexagrams Summary */}
       <div className="royal-frame p-5 sm:p-8">
         <span className="royal-corner tl" />
@@ -1141,7 +1148,7 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
           </div>
         ) : (
           <div
-            className="bg-lacquer-950/60 border border-gold-800 rounded-sm p-3 sm:p-5 md:p-6 overflow-hidden"
+            className="bg-lacquer-950/60 border border-gold-800 rounded-sm p-3 sm:p-5 md:p-6 overflow-visible shadow-2xl"
           >
             {/* Header of Cards section: Cố định sẵn */}
             <div className="relative z-10 bg-lacquer-950/95 border border-gold-800 rounded-sm p-3 sm:p-4 mb-4 space-y-2.5 transition-all">
@@ -1468,10 +1475,10 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                         })
                       }
                       onMouseLeave={handleLeaveCard}
-                      className={`bg-lacquer-800 border rounded-sm p-1.5 sm:p-3 flex flex-col items-center text-center relative overflow-hidden transition-all cursor-pointer ${
+                      className={`bg-lacquer-800 border rounded-sm p-2 sm:p-4 md:p-5 flex flex-col items-center text-center relative overflow-visible transition-all cursor-pointer shadow-lg ${
                         showHighlight
                           ? "border-gold-500 ring-2 ring-gold-500 bg-lacquer-800 scale-101"
-                          : "border-gold-800 hover:border-gold-800"
+                          : "border-gold-800 hover:border-gold-700"
                       }`}
                     >
                       {showHighlight && (
@@ -1543,7 +1550,7 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                             imageUrl={cardImages[card.number]}
                             videoUrl={cardVideos[card.number]}
                             cardBackUrl={cardBackImage}
-                            size={getDetailCardSize("draw-3")}
+                            size={getDetailCardSize("lg")}
                             defaultFlipped={allCardsFlipped}
                             fitMode={cardFitMode}
                             isReversed={card.isReversed ?? false}
@@ -1684,12 +1691,12 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
             ) : (
               <div
                 ref={cardsContainerRef}
-                className={`grid gap-3 sm:gap-6 items-center p-2 sm:p-4 bg-lacquer-900 rounded-md ${
+                className={`grid gap-4 sm:gap-8 items-center p-3 sm:p-6 bg-lacquer-900 rounded-md ${
                   transformedHexagram
                     ? "grid-cols-1 md:grid-cols-2 max-w-5xl lg:max-w-6xl mx-auto"
                     : getCompanionList("primary").length > 0
-                    ? "grid-cols-1 max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto"
-                    : "grid-cols-1 max-w-xl sm:max-w-2xl mx-auto"
+                    ? "grid-cols-1 max-w-3xl sm:max-w-4xl mx-auto"
+                    : "grid-cols-1 max-w-3xl sm:max-w-4xl mx-auto"
                 }`}
               >
                 {/* Primary Hexagram Card */}
@@ -1713,12 +1720,12 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                       onMouseLeave={handleLeaveCard}
                       onClick={() => setSelectedCardIdx(0)}
                       ref={primaryCardRef}
-                      className={`bg-lacquer-800 border rounded-sm p-2 sm:p-5 flex flex-col items-center text-center relative overflow-hidden transition-all ${
+                      className={`bg-lacquer-800 border rounded-sm p-3 sm:p-6 flex flex-col items-center text-center relative overflow-visible transition-all shadow-xl ${
                         transformedHexagram ? "cursor-pointer" : ""
                       } ${
                         selectedCardIdx === 0 && enableSelectionHighlight && transformedHexagram
                           ? "border-gold-500 ring-2 ring-gold-500 bg-lacquer-800 scale-101"
-                          : "border-gold-800 hover:border-gold-800"
+                          : "border-gold-800 hover:border-gold-700"
                       }`}
                     >
                       {selectedCardIdx === 0 && enableSelectionHighlight && transformedHexagram && (
@@ -1776,7 +1783,7 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                             imageUrl={cardImages[primaryHexagram.number]}
                             videoUrl={cardVideos[primaryHexagram.number]}
                             cardBackUrl={cardBackImage}
-                            size={getDetailCardSize(transformedHexagram ? "draw-2" : "xl")}
+                            size={getDetailCardSize(transformedHexagram ? "lg" : "xl")}
                             defaultFlipped={allCardsFlipped}
                             fitMode={cardFitMode}
                             isReversed={primaryHexagram.isReversed ?? false}
@@ -1936,10 +1943,10 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                       }
                       onMouseLeave={handleLeaveCard}
                       onClick={() => setSelectedCardIdx(1)}
-                      className={`bg-lacquer-800 border rounded-sm p-2 sm:p-5 flex flex-col items-center text-center relative overflow-hidden transition-all cursor-pointer ${
+                      className={`bg-lacquer-800 border rounded-sm p-3 sm:p-6 flex flex-col items-center text-center relative overflow-visible transition-all cursor-pointer shadow-xl ${
                         selectedCardIdx === 1 && enableSelectionHighlight
                           ? "border-gold-500 ring-2 ring-gold-500 bg-lacquer-800 scale-101"
-                          : "border-gold-800 hover:border-gold-800"
+                          : "border-gold-800 hover:border-gold-700"
                       }`}
                     >
                       {selectedCardIdx === 1 && enableSelectionHighlight && (
@@ -1997,7 +2004,7 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                             imageUrl={cardImages[transformedHexagram.number]}
                             videoUrl={cardVideos[transformedHexagram.number]}
                             cardBackUrl={cardBackImage}
-                            size={getDetailCardSize("draw-2")}
+                            size={getDetailCardSize("lg")}
                             defaultFlipped={allCardsFlipped}
                             fitMode={cardFitMode}
                             isReversed={isCard2Reversed ?? transformedHexagram.isReversed ?? false}

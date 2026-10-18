@@ -2660,9 +2660,7 @@ const SpreadCardSlot: React.FC<SpreadCardSlotProps> = ({
           ctx.onLeaveCard();
         }
       }}
-      className={`flex flex-col items-center text-center p-1 sm:p-1.5 rounded-xl transition-all relative z-10 hover:z-40 ${
-        companionList.length > 0 ? "w-auto max-w-none" : "w-full max-w-[145px]"
-      } ${
+      className={`flex flex-col items-center text-center p-1 sm:p-2 rounded-xl transition-all relative z-10 hover:z-40 w-auto max-w-none min-w-0 ${
         interactive ? "cursor-pointer group" : ""
       } ${
         isSelected && ctx.enableSelectionHighlight !== false
