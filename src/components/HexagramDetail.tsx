@@ -183,10 +183,14 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
   const [companionCardSize, setCompanionCardSize] = useState<"third" | "normal" | "large" | "same" | "xlarge">(() => {
     try {
       const saved = localStorage.getItem("iching_companion_card_size");
-      if (saved === "third" || saved === "normal" || saved === "large" || saved === "same" || saved === "xlarge") return saved;
-      return "third";
+      if (saved === "large" || saved === "same" || saved === "xlarge") return saved;
+      // Tự động nâng cấp các thiết lập cũ "third" (1/3) hoặc "normal" sang "same" để các lá bốc thêm luôn to rõ bằng lá chính
+      try {
+        localStorage.setItem("iching_companion_card_size", "same");
+      } catch {}
+      return "same"; // Mặc định hiển thị cùng kích cỡ với lá bài chính ("same")
     } catch {
-      return "third";
+      return "same";
     }
   });
 
@@ -250,36 +254,18 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
   };
 
   const handleUpdateCompanionCardSize = (size: "third" | "normal" | "large" | "same" | "xlarge") => {
-    setCompanionCardSize(size);
+    const effectiveSize = size === "third" || size === "normal" ? "same" : size;
+    setCompanionCardSize(effectiveSize);
     try {
-      localStorage.setItem("iching_companion_card_size", size);
+      localStorage.setItem("iching_companion_card_size", effectiveSize);
     } catch {}
   };
 
   const getCompanionCardSize = (context: "single" | "double" | "three"): "tiny" | "xs" | "sm" | "md" | "lg" | "xl" | "draw-2" | "draw-3" => {
-    if (companionCardSize === "third") {
-      if (context === "three") return "tiny";
-      if (context === "double") return "tiny";
-      return "xs";
-    }
-    if (companionCardSize === "normal") {
-      if (context === "three") return "xs";
-      if (context === "double") return "xs";
-      return "sm";
-    }
-    if (companionCardSize === "large") {
-      if (context === "three") return "sm";
-      if (context === "double") return "sm";
-      return "md";
-    }
-    if (companionCardSize === "same") {
-      // 100% bằng kích cỡ lá chính
-      if (context === "three") return "draw-3";
-      if (context === "double") return "draw-2";
-      return "xl";
-    }
-    // "xlarge": lớn như lá chính / cực đại
-    if (context === "three") return "draw-2";
+    if (companionCardSize === "xlarge") return "xl";
+    if (companionCardSize === "large") return "lg";
+    // "same" / mặc định: Luôn bằng kích cỡ lá chính, không bao giờ bị thu nhỏ thành ô bé
+    if (context === "three") return "draw-3";
     if (context === "double") return "lg";
     return "xl";
   };
@@ -1352,11 +1338,9 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                     <span className="text-[10px] text-ivory-500 px-1.5 font-mono">Bổ trợ:</span>
                     {(
                       [
-                        { key: "third", label: "Nhỏ (1/3)" },
-                        { key: "normal", label: "Vừa" },
-                        { key: "large", label: "To" },
                         { key: "same", label: "Bằng lá chính" },
-                        { key: "xlarge", label: "Lớn như lá chính" },
+                        { key: "large", label: "To rõ" },
+                        { key: "xlarge", label: "Cực đại" },
                       ] as const
                     ).map((s) => (
                       <button
@@ -1364,7 +1348,7 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                         type="button"
                         onClick={() => handleUpdateCompanionCardSize(s.key)}
                         className={`px-2 py-0.5 text-[10px] font-mono rounded transition-colors cursor-pointer ${
-                          companionCardSize === s.key
+                          companionCardSize === s.key || (s.key === "same" && (companionCardSize === "third" || companionCardSize === "normal"))
                             ? "bg-gold-500 text-black font-bold shadow-xs"
                             : "text-ivory-300 hover:text-gold-300 hover:bg-lacquer-700"
                         }`}
@@ -1422,10 +1406,15 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
 
             {/* Cards 3 or 1/2 - KHU VỰC CHỤP CHỈ LẤY CÁC LÁ BÀI */}
             {drawnCards && drawnCards.length === 3 ? (
-              <div
-                ref={cardsContainerRef}
-                className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-6 items-stretch p-2 sm:p-4 bg-lacquer-900 rounded-md max-w-7xl mx-auto"
-              >
+              (() => {
+                const hasAnyThreeComp = drawnCards.some((_, i) => getCompanionList(`card_${i}`).length > 0);
+                return (
+                  <div
+                    ref={cardsContainerRef}
+                    className={`grid gap-4 sm:gap-6 items-stretch p-3 sm:p-6 bg-lacquer-900 rounded-md max-w-7xl mx-auto ${
+                      hasAnyThreeComp ? "grid-cols-1" : "grid-cols-1 md:grid-cols-3"
+                    }`}
+                  >
                 {drawnCards.map((card, idx) => {
                   const slotKey = `card_${idx}`;
                   const companionList = getCompanionList(slotKey);
@@ -1541,7 +1530,7 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                         </div>
                       </div>
 
-                      <div className={`flex items-center justify-center gap-2 sm:gap-3 my-1.5 sm:my-2.5 ${companionList.length > 0 ? "flex-row flex-nowrap overflow-x-auto max-w-full pb-1" : ""}`}>
+                      <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 my-2 sm:my-3 w-full">
                         {/* Main Card - Kích thước ổn định tuyệt đối không co rút khi bốc thêm */}
                         <div className="shrink-0">
                           <FlippableSpiritualCard
@@ -1590,27 +1579,23 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                                     type="button"
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      const cycleMap: Record<"third" | "normal" | "large" | "same" | "xlarge", "third" | "normal" | "large" | "same" | "xlarge"> = {
-                                        third: "normal",
-                                        normal: "large",
-                                        large: "same",
-                                        same: "xlarge",
-                                        xlarge: "third",
+                                      const cycleMap: Record<string, "same" | "large" | "xlarge"> = {
+                                        same: "large",
+                                        large: "xlarge",
+                                        xlarge: "same",
+                                        third: "same",
+                                        normal: "same",
                                       };
-                                      handleUpdateCompanionCardSize(cycleMap[companionCardSize] || "third");
+                                      handleUpdateCompanionCardSize(cycleMap[companionCardSize] || "same");
                                     }}
-                                    className="text-[7.5px] sm:text-[8.5px] font-mono px-1 py-0.2 rounded bg-lacquer-800 hover:bg-gold-800 text-gold-400 border border-gold-800 transition-colors cursor-pointer"
-                                    title="Bấm đổi cỡ lá bốc thêm (Nhỏ 1/3 / Vừa / To / Bằng chính / Lớn chính)"
+                                    className="text-[7.5px] sm:text-[8.5px] font-mono px-1.5 py-0.5 rounded bg-lacquer-800 hover:bg-gold-800 text-gold-400 border border-gold-800 transition-colors cursor-pointer"
+                                    title="Bấm đổi cỡ lá bốc thêm (Bằng chính / To rõ / Cực đại)"
                                   >
-                                    {companionCardSize === "third"
-                                      ? "1/3"
-                                      : companionCardSize === "normal"
-                                      ? "Vừa"
+                                    {companionCardSize === "xlarge"
+                                      ? "Cực đại"
                                       : companionCardSize === "large"
-                                      ? "To"
-                                      : companionCardSize === "same"
-                                      ? "Bằng chính"
-                                      : "Lớn chính"}
+                                      ? "To rõ"
+                                      : "Bằng chính"}
                                   </button>
                                   <button
                                     type="button"
@@ -1687,24 +1672,31 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                     </div>
                   );
                 })}
-              </div>
+                  </div>
+                );
+              })()
             ) : (
-              <div
-                ref={cardsContainerRef}
-                className={`grid gap-4 sm:gap-8 items-center p-3 sm:p-6 bg-lacquer-900 rounded-md ${
-                  transformedHexagram
-                    ? "grid-cols-1 md:grid-cols-2 max-w-5xl lg:max-w-6xl mx-auto"
-                    : getCompanionList("primary").length > 0
-                    ? "grid-cols-1 max-w-3xl sm:max-w-4xl mx-auto"
-                    : "grid-cols-1 max-w-3xl sm:max-w-4xl mx-auto"
-                }`}
-              >
-                {/* Primary Hexagram Card */}
-                {(() => {
-                  const slotKey = "primary";
-                  const primaryList = getCompanionList(slotKey);
-                  return (
-                    <div
+              (() => {
+                const primaryList = getCompanionList("primary");
+                const transformedList = transformedHexagram ? getCompanionList("transformed") : [];
+                const hasCompanion = primaryList.length > 0 || transformedList.length > 0;
+
+                return (
+                  <div
+                    ref={cardsContainerRef}
+                    className={`grid gap-6 sm:gap-10 items-stretch p-3 sm:p-6 bg-lacquer-900 rounded-md max-w-7xl mx-auto ${
+                      hasCompanion
+                        ? "grid-cols-1"
+                        : transformedHexagram
+                        ? "grid-cols-1 md:grid-cols-2 max-w-6xl"
+                        : "grid-cols-1 max-w-3xl"
+                    }`}
+                  >
+                    {/* Primary Hexagram Card */}
+                    {(() => {
+                      const slotKey = "primary";
+                      return (
+                        <div
                       onMouseEnter={() =>
                         handleHoverCard({
                           card: primaryHexagram,
@@ -1775,7 +1767,7 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                         </div>
                       </div>
 
-                      <div className={`flex items-center justify-center gap-2 sm:gap-4 my-1 sm:my-2 ${primaryList.length > 0 ? "flex-row flex-nowrap overflow-x-auto max-w-full pb-1" : ""}`}>
+                      <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 my-2 sm:my-4 w-full">
                         <div className="shrink-0">
                           <FlippableSpiritualCard
                             key={`primary_${primaryHexagram.number}_${flipSequenceKey}`}
@@ -1823,27 +1815,23 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                                     type="button"
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      const cycleMap: Record<"third" | "normal" | "large" | "same" | "xlarge", "third" | "normal" | "large" | "same" | "xlarge"> = {
-                                        third: "normal",
-                                        normal: "large",
-                                        large: "same",
-                                        same: "xlarge",
-                                        xlarge: "third",
+                                      const cycleMap: Record<string, "same" | "large" | "xlarge"> = {
+                                        same: "large",
+                                        large: "xlarge",
+                                        xlarge: "same",
+                                        third: "same",
+                                        normal: "same",
                                       };
-                                      handleUpdateCompanionCardSize(cycleMap[companionCardSize] || "third");
+                                      handleUpdateCompanionCardSize(cycleMap[companionCardSize] || "same");
                                     }}
-                                    className="text-[7.5px] sm:text-[8.5px] font-mono px-1 py-0.2 rounded bg-lacquer-800 hover:bg-gold-800 text-gold-400 border border-gold-800 transition-colors cursor-pointer"
-                                    title="Bấm đổi cỡ lá bốc thêm (Nhỏ 1/3 / Vừa / To / Bằng chính / Lớn chính)"
+                                    className="text-[7.5px] sm:text-[8.5px] font-mono px-1.5 py-0.5 rounded bg-lacquer-800 hover:bg-gold-800 text-gold-400 border border-gold-800 transition-colors cursor-pointer"
+                                    title="Bấm đổi cỡ lá bốc thêm (Bằng chính / To rõ / Cực đại)"
                                   >
-                                    {companionCardSize === "third"
-                                      ? "1/3"
-                                      : companionCardSize === "normal"
-                                      ? "Vừa"
+                                    {companionCardSize === "xlarge"
+                                      ? "Cực đại"
                                       : companionCardSize === "large"
-                                      ? "To"
-                                      : companionCardSize === "same"
-                                      ? "Bằng chính"
-                                      : "Lớn chính"}
+                                      ? "To rõ"
+                                      : "Bằng chính"}
                                   </button>
                                   <button
                                     type="button"
@@ -1996,7 +1984,7 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                         </div>
                       </div>
 
-                      <div className={`flex items-center justify-center gap-2 sm:gap-4 my-1 sm:my-2 ${transformedList.length > 0 ? "flex-row flex-nowrap overflow-x-auto max-w-full pb-1" : ""}`}>
+                      <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 my-2 sm:my-4 w-full">
                         <div className="shrink-0">
                           <FlippableSpiritualCard
                             key={`transformed_${transformedHexagram.number}_${flipSequenceKey}`}
@@ -2044,27 +2032,23 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                                     type="button"
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      const cycleMap: Record<"third" | "normal" | "large" | "same" | "xlarge", "third" | "normal" | "large" | "same" | "xlarge"> = {
-                                        third: "normal",
-                                        normal: "large",
-                                        large: "same",
-                                        same: "xlarge",
-                                        xlarge: "third",
+                                      const cycleMap: Record<string, "same" | "large" | "xlarge"> = {
+                                        same: "large",
+                                        large: "xlarge",
+                                        xlarge: "same",
+                                        third: "same",
+                                        normal: "same",
                                       };
-                                      handleUpdateCompanionCardSize(cycleMap[companionCardSize] || "third");
+                                      handleUpdateCompanionCardSize(cycleMap[companionCardSize] || "same");
                                     }}
-                                    className="text-[7.5px] sm:text-[8.5px] font-mono px-1 py-0.2 rounded bg-lacquer-800 hover:bg-gold-800 text-gold-400 border border-gold-800 transition-colors cursor-pointer"
-                                    title="Bấm đổi cỡ lá bốc thêm (Nhỏ 1/3 / Vừa / To / Bằng chính / Lớn chính)"
+                                    className="text-[7.5px] sm:text-[8.5px] font-mono px-1.5 py-0.5 rounded bg-lacquer-800 hover:bg-gold-800 text-gold-400 border border-gold-800 transition-colors cursor-pointer"
+                                    title="Bấm đổi cỡ lá bốc thêm (Bằng chính / To rõ / Cực đại)"
                                   >
-                                    {companionCardSize === "third"
-                                      ? "1/3"
-                                      : companionCardSize === "normal"
-                                      ? "Vừa"
+                                    {companionCardSize === "xlarge"
+                                      ? "Cực đại"
                                       : companionCardSize === "large"
-                                      ? "To"
-                                      : companionCardSize === "same"
-                                      ? "Bằng chính"
-                                      : "Lớn chính"}
+                                      ? "To rõ"
+                                      : "Bằng chính"}
                                   </button>
                                   <button
                                     type="button"
@@ -2143,7 +2127,9 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                   );
                 })()}
               </div>
-            )}
+            );
+          })()
+        )}
           </div>
         )}
 

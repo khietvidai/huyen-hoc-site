@@ -213,10 +213,13 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
   const [internalCompanionCardSize, setInternalCompanionCardSize] = useState<"third" | "normal" | "large" | "same" | "xlarge">(() => {
     try {
       const saved = localStorage.getItem("iching_companion_card_size");
-      if (saved === "normal" || saved === "large" || saved === "third" || saved === "same" || saved === "xlarge") return saved;
-      return "third";
+      if (saved === "large" || saved === "same" || saved === "xlarge") return saved;
+      try {
+        localStorage.setItem("iching_companion_card_size", "same");
+      } catch {}
+      return "same";
     } catch {
-      return "third";
+      return "same";
     }
   });
 
@@ -494,14 +497,14 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
       onRemoveCompanionCard,
       companionCardSize: effectiveCompanionCardSize,
       onToggleCompanionCardSize: () => {
-        const cycleMap: Record<"third" | "normal" | "large" | "same" | "xlarge", "third" | "normal" | "large" | "same" | "xlarge"> = {
-          third: "normal",
-          normal: "large",
-          large: "same",
-          same: "xlarge",
-          xlarge: "third",
+        const cycleMap: Record<string, "same" | "large" | "xlarge"> = {
+          same: "large",
+          large: "xlarge",
+          xlarge: "same",
+          third: "same",
+          normal: "same",
         };
-        const next = cycleMap[effectiveCompanionCardSize] || "third";
+        const next = cycleMap[effectiveCompanionCardSize] || "same";
         handleUpdateCompanionCardSize(next);
       },
       showCompanionButton: effectiveShowCompanionButton,
@@ -671,11 +674,9 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
         <span className="text-[10px] text-[#A89882] hidden md:inline font-serif">Lá bổ trợ:</span>
         {(
           [
-            { key: "third", label: "Nhỏ (1/3)" },
-            { key: "normal", label: "Vừa" },
-            { key: "large", label: "To" },
             { key: "same", label: "Bằng lá chính" },
-            { key: "xlarge", label: "Lớn như lá chính" },
+            { key: "large", label: "To rõ" },
+            { key: "xlarge", label: "Cực đại" },
           ] as const
         ).map((s) => (
           <button
@@ -683,7 +684,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
             type="button"
             onClick={() => handleUpdateCompanionCardSize(s.key)}
             className={`px-1.5 py-0.5 rounded text-[10px] font-medium transition-colors cursor-pointer ${
-              effectiveCompanionCardSize === s.key
+              effectiveCompanionCardSize === s.key || (s.key === "same" && (effectiveCompanionCardSize === "third" || effectiveCompanionCardSize === "normal"))
                 ? "bg-[#C9A55A] text-black font-bold shadow"
                 : "text-[#C4B49D] hover:text-white"
             }`}
@@ -2674,7 +2675,7 @@ const SpreadCardSlot: React.FC<SpreadCardSlotProps> = ({
         </div>
       )}
 
-      <div className={`flex items-center justify-center gap-1.5 sm:gap-2.5 ${companionList.length > 0 ? "flex-row flex-nowrap overflow-visible max-w-full pb-1" : ""}`}>
+      <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 my-1 w-full">
         {/* Main Card */}
         <div className="relative shrink-0 hover:z-50">
           <FlippableSpiritualCard
@@ -2760,15 +2761,11 @@ const SpreadCardSlot: React.FC<SpreadCardSlotProps> = ({
         {companionList.map((compCard, compIdx) => {
           const isLast = compIdx === companionList.length - 1;
           const compSize: "tiny" | "xs" | "sm" | "md" | "lg" | "xl" =
-            ctx.companionCardSize === "third"
-              ? "tiny"
-              : ctx.companionCardSize === "normal"
-              ? (size === "tiny" ? "tiny" : size === "xs" ? "tiny" : "xs")
+            ctx.companionCardSize === "xlarge"
+              ? "xl"
               : ctx.companionCardSize === "large"
-              ? (size === "tiny" ? "xs" : size === "xs" ? "sm" : "md")
-              : ctx.companionCardSize === "same"
-              ? size
-              : (size === "tiny" ? "sm" : size === "xs" ? "md" : size === "sm" ? "lg" : "xl");
+              ? (size === "tiny" ? "md" : size === "xs" ? "md" : "lg")
+              : size; // "same" / mặc định: Bằng 100% kích cỡ lá chính
           return (
             <div
               key={`comp_${compCard.number}_${compIdx}`}
@@ -2799,18 +2796,14 @@ const SpreadCardSlot: React.FC<SpreadCardSlotProps> = ({
                       e.stopPropagation();
                       ctx.onToggleCompanionCardSize?.();
                     }}
-                    className="text-[7.5px] font-mono px-1 py-0.2 rounded bg-[#251A10] hover:bg-[#382618] text-[#D6B97A] border border-[#523A22] transition-colors cursor-pointer"
-                    title="Bấm đổi cỡ lá bốc thêm (Nhỏ 1/3 / Vừa / To / Bằng chính / Lớn chính)"
+                    className="text-[7.5px] font-mono px-1.5 py-0.5 rounded bg-[#251A10] hover:bg-[#382618] text-[#D6B97A] border border-[#523A22] transition-colors cursor-pointer"
+                    title="Bấm đổi cỡ lá bốc thêm (Bằng chính / To rõ / Cực đại)"
                   >
-                    {ctx.companionCardSize === "third"
-                      ? "1/3"
-                      : ctx.companionCardSize === "normal"
-                      ? "Vừa"
+                    {ctx.companionCardSize === "xlarge"
+                      ? "Cực đại"
                       : ctx.companionCardSize === "large"
-                      ? "To"
-                      : ctx.companionCardSize === "same"
-                      ? "Bằng chính"
-                      : "Lớn chính"}
+                      ? "To rõ"
+                      : "Bằng chính"}
                   </button>
                   <button
                     type="button"

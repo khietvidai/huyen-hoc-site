@@ -176,14 +176,14 @@ export const CardVisual: React.FC<CardVisualProps> = ({
 
   // Size configurations
   const sizeClasses = {
-    tiny: "w-20 h-30 sm:w-24 sm:h-36 text-[10px]",
-    xs: "w-28 h-42 sm:w-32 sm:h-48 text-[11px]",
-    sm: "w-36 h-54 sm:w-44 sm:h-66 text-xs",
+    tiny: "w-32 h-48 sm:w-36 sm:h-54 text-[10px]",
+    xs: "w-36 h-54 sm:w-44 sm:h-66 text-[11px]",
+    sm: "w-44 h-66 sm:w-52 sm:h-[312px] text-xs",
     md: "w-52 h-[312px] sm:w-60 sm:h-[360px] text-sm",
     lg: "w-64 h-[384px] sm:w-72 sm:h-[432px] text-base",
     xl: "w-72 h-[432px] sm:w-84 sm:h-[504px] text-lg",
-    "draw-2": "w-52 h-[312px] sm:w-64 sm:h-[384px] md:w-72 md:h-[432px] text-xs sm:text-sm",
-    "draw-3": "w-44 h-[264px] sm:w-56 sm:h-[336px] md:w-52 md:h-[312px] lg:w-64 lg:h-[384px] text-xs sm:text-sm",
+    "draw-2": "w-56 h-[336px] sm:w-64 sm:h-[384px] md:w-72 md:h-[432px] text-xs sm:text-sm",
+    "draw-3": "w-48 h-[288px] sm:w-56 sm:h-[336px] md:w-56 md:h-[336px] lg:w-64 lg:h-[384px] text-xs sm:text-sm",
   };
 
   const isTiny = size === "tiny" || size === "xs";
