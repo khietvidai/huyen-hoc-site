@@ -753,6 +753,50 @@ app.post("/api/auth/login", (req: Request, res: Response) => {
   }
 });
 
+// 5.1 API Đổi mật khẩu tài khoản
+app.post("/api/auth/change-password", (req: Request, res: Response) => {
+  try {
+    const { identifier, currentPass, newPass } = req.body;
+    const cleanId = (identifier || "").trim().toLowerCase();
+    if (!cleanId || !currentPass || !newPass) {
+      return res.status(400).json({ success: false, message: "Vui lòng nhập đầy đủ mật khẩu hiện tại và mật khẩu mới!" });
+    }
+    if (newPass.length < 6) {
+      return res.status(400).json({ success: false, message: "Mật khẩu mới cần tối thiểu 6 ký tự!" });
+    }
+
+    const users = getServerUsers();
+    let entry = users[cleanId] || Object.values(users).find(
+      (u) => (u.user.username && u.user.username.toLowerCase() === cleanId) || (u.user.email && u.user.email.toLowerCase() === cleanId)
+    );
+
+    if (!entry) {
+      return res.status(404).json({ success: false, message: "Không tìm thấy tài khoản người dùng trên hệ thống!" });
+    }
+
+    const currentHash = Buffer.from(currentPass).toString("base64");
+    if (entry.passwordHash !== currentHash) {
+      return res.status(400).json({ success: false, message: "Mật khẩu hiện tại không chính xác!" });
+    }
+
+    const newHash = Buffer.from(newPass).toString("base64");
+    entry.passwordHash = newHash;
+
+    const key = Object.keys(users).find((k) => users[k] === entry) || cleanId;
+    users[key].passwordHash = newHash;
+    saveServerUsers(users);
+
+    console.log(`[PASSWORD CHANGED] Người dùng ${entry.user.name} (${cleanId}) đã đổi mật khẩu.`);
+
+    return res.json({
+      success: true,
+      message: `Đổi mật khẩu thành công cho tài khoản ${entry.user.name}!`,
+    });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, message: err?.message || "Lỗi máy chủ" });
+  }
+});
+
 // 6. API Admin đổi quyền Hội viên VIP
 app.post("/api/admin/users/update-member", (req: Request, res: Response) => {
   try {

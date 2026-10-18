@@ -587,6 +587,74 @@ export class AuthService {
   }
 
   /**
+   * Đổi mật khẩu tài khoản người dùng (đồng bộ server & local)
+   */
+  public static async changePassword(
+    identifier: string,
+    currentPass: string,
+    newPass: string
+  ): Promise<{ success: boolean; message: string }> {
+    const cleanId = identifier.trim().toLowerCase();
+    if (!currentPass || !newPass) {
+      return { success: false, message: "Vui lòng nhập đầy đủ mật khẩu hiện tại và mật khẩu mới!" };
+    }
+    if (newPass.length < 6) {
+      return { success: false, message: "Mật khẩu mới phải có tối thiểu 6 ký tự!" };
+    }
+
+    // 1. Thử gửi lên server
+    try {
+      const resp = await fetch("/api/auth/change-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ identifier: cleanId, currentPass, newPass }),
+      });
+      const data = await resp.json();
+      if (data.success) {
+        // Cập nhật local
+        const users = this.getUsers();
+        let foundKey =
+          Object.keys(users).find(
+            (k) =>
+              k.toLowerCase() === cleanId ||
+              users[k].user.email.toLowerCase() === cleanId ||
+              users[k].user.username?.toLowerCase() === cleanId
+          ) || cleanId;
+        if (users[foundKey]) {
+          users[foundKey].passwordHash = btoa(newPass);
+          this.saveUsers(users);
+        }
+        return { success: true, message: data.message || "Đổi mật khẩu thành công!" };
+      } else {
+        return { success: false, message: data.message || "Không thể đổi mật khẩu!" };
+      }
+    } catch {}
+
+    // 2. Fallback offline
+    const users = this.getUsers();
+    let foundKey =
+      Object.keys(users).find(
+        (k) =>
+          k.toLowerCase() === cleanId ||
+          users[k].user.email.toLowerCase() === cleanId ||
+          users[k].user.username?.toLowerCase() === cleanId
+      ) || cleanId;
+
+    if (!users[foundKey]) {
+      return { success: false, message: "Không tìm thấy tài khoản người dùng!" };
+    }
+
+    if (users[foundKey].passwordHash !== btoa(currentPass)) {
+      return { success: false, message: "Mật khẩu hiện tại không chính xác!" };
+    }
+
+    users[foundKey].passwordHash = btoa(newPass);
+    this.saveUsers(users);
+
+    return { success: true, message: "Đổi mật khẩu thành công!" };
+  }
+
+  /**
    * Nâng cấp người dùng hiện tại lên thành viên VIP (nhận thêm 30 nén nhang)
    */
   public static upgradeToMember(email?: string): { success: boolean; message: string; user?: AppUser } {

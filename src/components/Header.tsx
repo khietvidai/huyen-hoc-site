@@ -32,6 +32,7 @@ import {
 import { ZenAudioPlayer } from "./ZenAudioPlayer";
 import { BrandLockup } from "./BrandMark";
 import { AppUser } from "../services/authService";
+import { MemberProfileModal } from "./MemberProfileModal";
 
 export type NavTab =
   | "home"
@@ -110,6 +111,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [isWorkspaceMenuOpen, setIsWorkspaceMenuOpen] = useState(false);
   const [isFontSizeMenuOpen, setIsFontSizeMenuOpen] = useState(false);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const navMenuRef = useRef<HTMLDivElement>(null);
   const fontSizeMenuRef = useRef<HTMLDivElement>(null);
 
@@ -435,40 +437,54 @@ export const Header: React.FC<HeaderProps> = ({
           )}
 
           {currentUser ? (
-            <div className="flex items-center gap-2 pl-1 pr-1.5 py-1 border border-gold-700/50 rounded-[2px]">
+            <div
+              onClick={() => setIsProfileModalOpen(true)}
+              className="flex items-center gap-2 pl-1 pr-1.5 py-1 border border-gold-700/60 hover:border-gold-400 bg-black/40 hover:bg-gold-950/40 rounded-xl transition-all cursor-pointer group shadow-xs select-none"
+              title="Nhấn để xem thông tin Hội Viên, thời hạn và Đổi Mật Khẩu"
+            >
               <span
-                className={`w-7 h-7 flex items-center justify-center text-[11px] font-display font-bold rounded-[2px] ${
+                className={`w-7 h-7 flex items-center justify-center text-[11px] font-display font-bold rounded-lg ${
                   currentUser.isAdmin
-                    ? "bg-cinnabar-600 text-[#F6E7D6]"
+                    ? "bg-cinnabar-600 text-[#F6E7D6] shadow-[0_0_8px_rgba(239,68,68,0.5)]"
+                    : currentUser.isMember
+                    ? "bg-gradient-to-br from-[#C9A55A] to-[#8C6218] text-black font-bold border border-gold-400 shadow-[0_0_8px_rgba(201,165,90,0.4)]"
                     : "bg-gold-800 text-gold-300 border border-gold-700"
                 }`}
               >
-                {currentUser.name?.charAt(0).toUpperCase() || "•"}
+                {currentUser.isAdmin ? (
+                  "🛡️"
+                ) : currentUser.isMember ? (
+                  "👑"
+                ) : (
+                  currentUser.name?.charAt(0).toUpperCase() || "•"
+                )}
               </span>
               <span className="hidden xs:flex sm:flex flex-col leading-tight min-w-0">
-                <span className="text-xs font-sans font-medium text-ivory-100 max-w-[90px] sm:max-w-[130px] truncate">
+                <span className="text-xs font-sans font-medium text-ivory-100 group-hover:text-gold-300 max-w-[90px] sm:max-w-[130px] truncate transition-colors">
                   {currentUser.name}
                 </span>
                 {currentUser.isAdmin ? (
-                  <span className="text-[9px] uppercase tracking-[0.2em] text-cinnabar-400">Quản trị</span>
+                  <span className="text-[9px] uppercase tracking-[0.16em] text-cinnabar-400 font-bold">
+                    Quản trị
+                  </span>
                 ) : currentUser.isMember ? (
-                  <span className="text-[9px] uppercase tracking-[0.2em] text-gold-500">Hội viên</span>
+                  <span className="text-[9px] uppercase tracking-[0.16em] text-gold-400 font-bold flex items-center gap-0.5">
+                    <span>Hội viên VIP</span>
+                  </span>
                 ) : (
-                  <button
-                    type="button"
-                    onClick={() => onOpenAuthModal && onOpenAuthModal("upgrade")}
-                    className="text-left text-[9px] uppercase tracking-[0.2em] text-gold-500 hover:text-gold-300 cursor-pointer"
-                    title="Nâng cấp lên Hội Viên Thường Niên để đọc toàn văn thuyết minh và mở rộng tiện ích"
-                  >
-                    Nâng cấp hội viên
-                  </button>
+                  <span className="text-[9px] uppercase tracking-[0.16em] text-[#998772]">
+                    Thành viên
+                  </span>
                 )}
               </span>
               {onLogout && (
                 <button
                   type="button"
-                  onClick={onLogout}
-                  className="text-ivory-500 hover:text-cinnabar-400 p-1 cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onLogout();
+                  }}
+                  className="text-ivory-500 hover:text-cinnabar-400 p-1 cursor-pointer transition-colors"
                   title="Đăng xuất tài khoản"
                   aria-label="Đăng xuất"
                 >
@@ -560,6 +576,45 @@ export const Header: React.FC<HeaderProps> = ({
                   <X className="w-4 h-4" />
                 </button>
               </div>
+
+              {currentUser && (
+                <div
+                  onClick={() => {
+                    setIsNavMenuOpen(false);
+                    setIsProfileModalOpen(true);
+                  }}
+                  className="mx-5 mb-3 p-3 border border-gold-700/60 bg-gold-950/30 hover:bg-gold-950/50 rounded-2xl cursor-pointer hover:border-gold-400 transition-colors flex items-center justify-between shadow-xs select-none"
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm shadow ${
+                        currentUser.isAdmin
+                          ? "bg-cinnabar-600 text-white"
+                          : currentUser.isMember
+                          ? "bg-gradient-to-br from-[#C9A55A] to-[#8C6218] text-black"
+                          : "bg-gold-800 text-gold-300"
+                      }`}
+                    >
+                      {currentUser.isAdmin ? "🛡️" : currentUser.isMember ? "👑" : "👤"}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-xs font-bold text-ivory-100 truncate">{currentUser.name}</div>
+                      <div className="text-[10px] text-gold-400 flex items-center gap-1">
+                        <span>
+                          {currentUser.isAdmin
+                            ? "Quản Trị Viên"
+                            : currentUser.isMember
+                            ? "⭐ Hội Viên VIP"
+                            : "Thành Viên Thường"}
+                        </span>
+                        <span>•</span>
+                        <span className="underline">Xem hạn & Đổi pass</span>
+                      </div>
+                    </div>
+                  </div>
+                  <span className="text-gold-500 text-xs font-mono">→</span>
+                </div>
+              )}
 
               {currentUser?.isAdmin && (
                 <div className="mx-5 mb-4 p-3 border border-cinnabar-600/50 bg-cinnabar-600/10">
@@ -753,6 +808,17 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
       {/* Đường chỉ vàng dưới header */}
       <div className="h-px bg-gradient-to-r from-transparent via-gold-600/50 to-transparent" />
+
+      {/* Modal Thông Tin Hội Viên & Đổi Mật Khẩu */}
+      <MemberProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        currentUser={currentUser || null}
+        onShowToast={onShowToast}
+        onOpenAdminModal={onOpenAdminModal}
+        onOpenAuthModal={onOpenAuthModal}
+        onLogout={onLogout}
+      />
     </header>
   );
 };
