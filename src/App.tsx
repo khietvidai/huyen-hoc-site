@@ -2327,6 +2327,7 @@ export default function App() {
                   const hex = HEXAGRAMS.find((h) => h.number === hexNum);
                   showToast(`Đã mở Thuyết Minh Quẻ #${hexNum} ${hex ? hex.name : ""}`);
                 }}
+                onShowToast={showToast}
               />
             ) : (
               <div className="bg-[#171512] border border-[#3A3225] rounded-2xl p-12 text-center text-[#8C7D6A] max-w-lg mx-auto">

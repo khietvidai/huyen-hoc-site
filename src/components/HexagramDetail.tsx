@@ -56,6 +56,7 @@ import { XiangzhuanView } from "./XiangzhuanView";
 import { KhongMinhSingleHexView } from "./KhongMinhBridgeView";
 import { ChangingLinesGuideView } from "./ChangingLinesGuideView";
 import { TamTaiDiceRollSection, EarthlyBranchDiceItem } from "./TamTaiDiceRollSection";
+import { KhongMinhKinhDichView } from "./KhongMinhKinhDichView";
 
 interface HexagramDetailProps {
   question: string;
@@ -97,6 +98,7 @@ interface HexagramDetailProps {
   onNavigateToManual?: (hexNumber: number) => void;
   defaultCardFaceOpen?: boolean;
   onToggleDefaultCardFaceOpen?: () => void;
+  onShowToast?: (msg: string) => void;
 }
 
 export const HexagramDetail: React.FC<HexagramDetailProps> = ({
@@ -139,6 +141,7 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
   onNavigateToManual,
   defaultCardFaceOpen: propDefaultCardFaceOpen,
   onToggleDefaultCardFaceOpen,
+  onShowToast,
 }) => {
   const [internalCompanionCards, setInternalCompanionCards] = useState<Record<string, Hexagram | Hexagram[]>>({});
   const companionCards = externalCompanionCards || internalCompanionCards;
@@ -2244,6 +2247,7 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
               onJumpToThuyetMinh={handleJumpToThuyetMinh}
               onNavigateToManual={onNavigateToManual}
               onClose={() => setSelectedCardIdx(null)}
+              onShowToast={onShowToast}
             />
           </div>
         )}
@@ -2545,12 +2549,21 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
 
               {/* TAB 4: KHỔNG MINH THẦN QUẺ (384 HÀO) */}
               {detailActiveTab === "khongminh" && (
-                <div className="space-y-4 pt-1">
-                  <KhongMinhSingleHexView
-                    kingWenNumber={primaryHexagram.number}
-                    changingLines={changingLines}
-                    defaultExpanded={true}
+                <div className="space-y-6 pt-1">
+                  <KhongMinhKinhDichView
+                    primaryHex={primaryHexagram}
+                    activeLine={changingLines && changingLines.length > 0 ? changingLines[0] : 2}
+                    sourceName={changingLines && changingLines.length > 0 ? "Chiêm Thời" : "Hoạt Thời"}
+                    onShowToast={onShowToast}
                   />
+
+                  <div className="border-t border-[#3A2817] pt-4">
+                    <KhongMinhSingleHexView
+                      kingWenNumber={primaryHexagram.number}
+                      changingLines={changingLines}
+                      defaultExpanded={false}
+                    />
+                  </div>
                 </div>
               )}
             </div>

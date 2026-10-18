@@ -34,6 +34,7 @@ import {
   KhongMinhTuongYAnalysis,
 } from "../data/ichingAuxiliaryAnalysis";
 import { zenAudio } from "../utils/zenAudio";
+import { KhongMinhKinhDichView } from "./KhongMinhKinhDichView";
 
 export interface EarthlyBranchDiceItem {
   number: number; // 1 to 12
@@ -70,6 +71,7 @@ interface TamTaiDiceRollSectionProps {
   onJumpToThuyetMinh?: (line: number, targetTab?: "canonical" | "khongminh") => void;
   onNavigateToManual?: (hexNum: number) => void;
   onClose?: () => void;
+  onShowToast?: (msg: string) => void;
 }
 
 // Component hiển thị Tượng Ý Kinh Dịch (Trích Thuyết Minh Quẻ Khổng Minh) cho Quẻ Chính, Tông, Hỗ, Thác
@@ -243,6 +245,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
   onJumpToThuyetMinh,
   onNavigateToManual,
   onClose,
+  onShowToast,
 }) => {
   // Duy nhất lá bài Nhân Đạo (Lá 3 - index 2) mới hiện xúc xắc 12 mặt
   const targetCardIdx = 2;
@@ -257,6 +260,8 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
   const [cyclingNumber, setCyclingNumber] = useState(1);
   const [showInterpretationBox, setShowInterpretationBox] = useState(true);
   const [showAllBranchesGrid, setShowAllBranchesGrid] = useState(false);
+  const [showLegacyDeepAnalysis, setShowLegacyDeepAnalysis] = useState(false);
+  const [showLegacyTuQuaiAnalysis, setShowLegacyTuQuaiAnalysis] = useState(false);
 
   const rollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -937,20 +942,45 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
           </div>
 
           {/* ========================================================================= */}
-          {/* MỤC 3: PHÂN TÍCH QUẺ XĂM KHỔNG MINH (TRÍCH SÁCH THUYẾT MINH)              */}
+          {/* QUẺ KHỔNG MINH KINH DỊCH (CHUẨN FORM MẪU ĐOÁN QUẺ TOÀN DIỆN)             */}
           {/* ========================================================================= */}
-          {khongMinhLineItem ? (() => {
-            const oracleDetail = getKhongMinhComprehensive(
-              khongMinhLineItem.oracleNum,
-              khongMinhLineItem,
-              canonicalYao,
-              targetHex.name
-            );
+          <KhongMinhKinhDichView
+            primaryHex={targetHex}
+            activeLine={activeLine}
+            sourceName={currentCardDice ? "Hoạt Thời" : "Chiêm Thời"}
+            onShowToast={onShowToast}
+          />
 
-            const hasSegments = khongMinhLineItem.poemSegments && khongMinhLineItem.poemSegments.length > 0;
+          {/* MỤC MỞ RỘNG: BÌNH GIẢNG & ĐIỂN TÍCH TỪNG CÂU THƠ (SÁCH THUYẾT MINH) */}
+          {khongMinhLineItem && (
+            <div className="bg-[#120C07] border border-[#352314] hover:border-[#523720] rounded-xl overflow-hidden transition-colors">
+              <button
+                type="button"
+                onClick={() => setShowLegacyDeepAnalysis(!showLegacyDeepAnalysis)}
+                className="w-full p-3.5 sm:p-4 flex items-center justify-between text-left hover:bg-[#1A120B] transition-colors cursor-pointer select-none group"
+              >
+                <div className="flex items-center gap-2 text-xs sm:text-sm font-serif font-bold text-[#E6D3A3] group-hover:text-amber-300 transition-colors">
+                  <BookOpen className="w-4 h-4 text-[#C9A55A]" />
+                  <span>Chi Tiết Điển Cố & Bình Giảng Từng Câu Thơ (Mở Rộng Từ Sách Thuyết Minh)</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-xs text-[#A89882] font-mono bg-[#1E140C] px-2.5 py-1 rounded border border-[#3E2917]">
+                  <span>{showLegacyDeepAnalysis ? "Thu gọn" : "Xem thêm"}</span>
+                  {showLegacyDeepAnalysis ? <ChevronUp className="w-3.5 h-3.5 text-amber-400" /> : <ChevronDown className="w-3.5 h-3.5 text-amber-400" />}
+                </div>
+              </button>
 
-            return (
-              <div className="bg-[#140D07] border border-[#3A2817] p-5 sm:p-7 rounded-2xl space-y-6 shadow-xl text-xs sm:text-sm font-serif">
+              {showLegacyDeepAnalysis && (() => {
+                const oracleDetail = getKhongMinhComprehensive(
+                  khongMinhLineItem.oracleNum,
+                  khongMinhLineItem,
+                  canonicalYao,
+                  targetHex.name
+                );
+
+                const hasSegments = khongMinhLineItem.poemSegments && khongMinhLineItem.poemSegments.length > 0;
+
+                return (
+                  <div className="bg-[#140D07] border-t border-[#3A2817] p-5 sm:p-7 rounded-b-xl space-y-6 shadow-xl text-xs sm:text-sm font-serif">
                 {/* 1. Tiêu đề mục & Đối chiếu Thuyết Minh */}
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#2E2013] pb-3.5">
                   <div className="space-y-1">
@@ -1268,20 +1298,34 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
                 )}
               </div>
             );
-          })() : (
-            <div className="text-xs font-serif text-[#A69780] italic">
-              Không tìm thấy thông tin thơ Khổng Minh cho hào này trong Sách Thuyết Minh.
-            </div>
-          )}
+          })()}
+        </div>
+      )}
 
-          {/* ========================================================================= */}
-          {/* PHÂN TÍCH QUẺ KINH DỊCH ĐỘNG HÀO (CHÍNH - TÔNG - HỖ - THÁC)              */}
-          {/* ========================================================================= */}
-          {(() => {
-            const movingAnalysis = getMovingLineComprehensiveAnalysis(targetHex, activeLine);
+      {/* ========================================================================= */}
+      {/* MỤC MỞ RỘNG: TỔNG HỢP HÀNH ĐỘNG TỨ QUÁI (BẢN CHI TIẾT CŨ)                 */}
+      {/* ========================================================================= */}
+      <div className="bg-[#120C07] border border-[#352314] hover:border-[#523720] rounded-xl overflow-hidden transition-colors">
+        <button
+          type="button"
+          onClick={() => setShowLegacyTuQuaiAnalysis(!showLegacyTuQuaiAnalysis)}
+          className="w-full p-3.5 sm:p-4 flex items-center justify-between text-left hover:bg-[#1A120B] transition-colors cursor-pointer select-none group"
+        >
+          <div className="flex items-center gap-2 text-xs sm:text-sm font-serif font-bold text-[#E6D3A3] group-hover:text-amber-300 transition-colors">
+            <Scale className="w-4 h-4 text-[#C9A55A]" />
+            <span>Xem Tổng Hợp Hành Động Tứ Quái (Bản Chi Tiết Cũ)</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-xs text-[#A89882] font-mono bg-[#1E140C] px-2.5 py-1 rounded border border-[#3E2917]">
+            <span>{showLegacyTuQuaiAnalysis ? "Thu gọn" : "Xem thêm"}</span>
+            {showLegacyTuQuaiAnalysis ? <ChevronUp className="w-3.5 h-3.5 text-amber-400" /> : <ChevronDown className="w-3.5 h-3.5 text-amber-400" />}
+          </div>
+        </button>
 
-            return (
-              <div className="bg-[#140D07] border border-[#3A2817] p-5 sm:p-7 rounded-2xl space-y-6 shadow-xl text-xs sm:text-sm font-serif">
+        {showLegacyTuQuaiAnalysis && (() => {
+          const movingAnalysis = getMovingLineComprehensiveAnalysis(targetHex, activeLine);
+
+          return (
+            <div className="bg-[#140D07] border-t border-[#3A2817] p-5 sm:p-7 rounded-b-xl space-y-6 shadow-xl text-xs sm:text-sm font-serif">
                 {/* Tiêu đề & Thông tin quẻ chính + Hào động */}
                 <div className="border-b border-[#2E2013] pb-3.5 space-y-1">
                   <div className="flex items-center gap-2">
@@ -1617,6 +1661,7 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
             );
           })()}
         </div>
+      </div>
       ) : (
         /* Notice when toggle is OFF */
         <div className="bg-[#130E09] p-3.5 rounded-xl border border-[#2D1E12] flex items-center justify-between text-xs font-serif text-[#8C7A65]">

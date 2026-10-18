@@ -41,6 +41,65 @@ export interface KhongMinhOracleComprehensive {
 }
 
 export const KHONG_MINH_ORACLE_DETAILS: Record<number, KhongMinhOracleComprehensive> = {
+  80: {
+    oracleNum: 80,
+    formattedNum: "080",
+    oracleType: "Trung Bình",
+    poemHanzi: "木向陽春發，三陰又伏根，樵夫不知道，砍去作柴薪。",
+    poemHaniViet: "Mộc hướng dương xuân phát, Tam âm hựu phục căn, Tiều phu bất tri đạo, Khảm khứ tác sài tân.",
+    poemMeaning:
+      "Cây cối hướng về mùa xuân ấm áp mà đâm chồi nảy lộc, nhưng khí lạnh lẽo vẫn còn đang tiềm ẩn dưới rễ sâu. Gã tiều phu ngu ngốc không hiểu được đạo lý sinh tồn ấy, vác búa đốn hạ đem đi làm củi đốt",
+    lineExplanations: [
+      {
+        lineTitle: "Mộc hướng dương xuân phát",
+        literalMeaning: "Cây cối hướng về mùa xuân ấm áp mà đâm chồi nảy lộc.",
+        implication: "Có tài năng, có khởi đầu tốt, sinh khí hé lộ nhưng cần thời gian tích lũy.",
+      },
+      {
+        lineTitle: "Tam âm hựu phục căn",
+        literalMeaning: "Khí lạnh giá vẫn còn tiềm ẩn sâu dưới rễ.",
+        implication: "Nguy cơ tiềm ẩn chưa tan, môi trường khắc nghiệt thử thách sức bền.",
+      },
+      {
+        lineTitle: "Tiều phu bất tri đạo",
+        literalMeaning: "Gã tiều phu vô tri không hiểu được giá trị sinh tồn ấy.",
+        implication: "Bị kẻ phàm phu tục tử và thiển cận coi thường, không nhận ra giá trị.",
+      },
+      {
+        lineTitle: "Khảm khứ tác sài tân",
+        literalMeaning: "Đem đốn hạ làm củi đốt tầm thường.",
+        implication: "Tài năng bị vùi dập, lãng phí nhân lực và tinh hoa vào những việc phế phẩm.",
+      },
+    ],
+    overallMeaning: {
+      detailedExplanation:
+        "Quẻ xăm này phản ánh hoàn cảnh của một \"con rồng mắc cạn\" hoặc một người anh hùng bị kẻ phàm phu tục tử coi thường. Bạn có tài năng, có khởi đầu tốt nhưng môi trường hiện tại không hiểu được giá trị của bạn. Bạn dễ bị chèn ép, vùi dập bởi những kẻ thiển cận, coi bạn như những thứ tầm thường vô dụng.",
+      symbolicFigure:
+        "Có hình tượng cây non vươn cành đón xuân nhưng rễ còn ngậm hàn khí, bị gã tiều phu vô tri đốn hạ làm củi khô. Báo hiệu tài năng bị vùi dập, người không biết nhìn xa làm hỏng việc lớn, vật quý bị lãng phí biến thành phế phẩm.",
+    },
+    actionGuidance: {
+      doList:
+        "Biết quý trọng vạn vật, không lãng phí tài nguyên. Bản thân nên tạm thời uốn mình chịu khuất phục, chờ đợi thời cơ mây tuôn mưa dội để thể hiện sức mạnh thực sự.",
+      avoidList:
+        "Không bộc lộ sự xuất chúng quá sớm ở nơi có nhiều tiểu nhân. Tuyệt đối không hủy hoại đồ vật hay lãng phí nhân lực một cách mù quáng.",
+      attitude:
+        "Nhẫn nhịn, tĩnh lặng bảo toàn thực lực, điềm đạm trước sự khinh khi.",
+    },
+    invertedVersion: {
+      poemHanzi: "枯木遭寒冬，暖氣透深根，智者明大道，培植作棟梁。",
+      poemHaniViet:
+        "Khô mộc tao hàn đông, Noãn khí thấu thâm căn, Trí giả minh đại đạo, Bồi thực tác đống lương.",
+      poemMeaning:
+        "Cây khô héo tao ngộ mùa đông giá rét, nhưng hơi ấm lại xuyên thấu mọc lên từ tận rễ sâu. Bậc trí giả thấu suốt được đại đạo, ra sức vun trồng để tạo thành bậc rường cột.",
+      detailedExplanation:
+        "Hoàn cảnh tưởng chừng như bế tắc tột cùng, bề ngoài lụi tàn mục nát nhưng thực chất bên trong đang tích tụ sức sống vô cùng mạnh mẽ. Người gieo quẻ may mắn gặp được quý nhân, những người tinh đời nhìn thấu đáo được tiềm năng phi thường ẩn giấu bên trong và dốc lòng bồi dưỡng.",
+      actionAdvice:
+        "Hãy giữ vững niềm tin, tiếp tục trau dồi bản thân dù hoàn cảnh bề ngoài có khắc nghiệt. Đặt trọn niềm tin vào người đang nâng đỡ và dìu dắt mình.",
+      symbolicFigure:
+        "Có hình tượng cây khô trong sương giá nhưng rễ vươn hơi ấm, được người trí giả chăm bón thành gỗ quý. Báo hiệu sự hồi sinh kỳ diệu, tài năng tàng ẩn được nhìn nhận và cất nhắc đúng vị trí.",
+    },
+  },
+
   1: {
     oracleNum: 1,
     formattedNum: "001",

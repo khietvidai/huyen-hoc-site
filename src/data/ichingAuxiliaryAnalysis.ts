@@ -215,6 +215,104 @@ export const CUSTOM_MOVING_LINE_ANALYSES: Record<string, MovingLineComprehensive
       },
     },
   },
+  "28-2": {
+    hexNumber: 28,
+    hexName: "TRẠCH PHONG ĐẠI QUÁ",
+    hexHanzi: "大過",
+    activeLine: 2,
+    lineName: "Cửu Nhị",
+    coreLine: {
+      loiHao: "枯楊生稊，老夫得其女妻，無不利 (Khô dương sinh đề, lão phu đắc kỳ nữ thê, vô bất lợi - Cây dương khô nảy chồi, ông già lấy được vợ trẻ, không gì không lợi).",
+      nghiaLy:
+        "Trong thời kỳ quá tải, những phương pháp truyền thống đã trở nên khô héo, bế tắc (cây dương khô). Sự hồi sinh kỳ diệu chỉ đến từ những sự kết hợp trái với luân thường đạo lý thông thường (ông già lấy vợ trẻ). Sự bù đắp giữa kinh nghiệm dày dặn (ông già/hào 2) và sức sống tươi mới (vợ trẻ/hào 1) tạo ra một nguồn sinh khí mãnh liệt, đâm chồi nảy lộc, mang lại sự đơm hoa kết trái viên mãn ngoài mong đợi.",
+      tuongSo:
+        "Tượng của việc vượt rào cản luân thường đạo lý để tìm được sự bổ khuyết sinh khí. Có tượng \"cây khô nảy lộc\", \"trâu già gặm cỏ non\", trái khoáy nhưng lại được viên mãn bề trong.",
+      viTri:
+        "Hào Dương cư ngôi Âm, đắc trung, là trụ cột của hạ quái. Tuy là Dương cường nhưng nhờ ở ngôi Âm nên có tính nhu hòa. Hào 2 lại gần gũi với Sơ Lục (Âm nhu), biết hạ mình để hút lấy khí Âm nuôi dưỡng khí Dương đang cạn kiệt, tạo nên thế hồi sinh ngoạn mục.",
+      hanhDongThuan:
+        "Thiết lập các liên minh chéo thế hệ, áp dụng những giải pháp đột phá phi truyền thống, kết nối kinh nghiệm cũ với công nghệ mới.",
+      hanhDongNguoc:
+        "Duy trì các phương thức làm việc lối mòn, chỉ kết giao với những đối tác cùng độ tuổi hoặc cùng chuyên môn, từ chối mọi sự giao thoa tuổi tác.",
+    },
+    queTong: {
+      name: "Trạch Phong Đại Quá",
+      hanzi: "大過",
+      number: 28,
+      line: 2,
+      lineName: "Hào 2 (Cửu Nhị)",
+      lineHanziText:
+        "枯楊生稊，老夫得其女妻，無不利 (Khô dương sinh đề, lão phu đắc kỳ nữ thê, vô bất lợi).",
+      apDung:
+        "Khách quan cho thấy đối phương cũng đang thực hiện những cuộc lột xác ngoạn mục bằng các liên minh chênh lệch, tạo ra sức bật lớn.",
+      nghiaLy:
+        "Bức tranh toàn cảnh chỉ ra một xu thế khách quan. Môi trường hay đối thủ không hề đứng im chịu trận. Họ cũng đang phá vỡ ranh giới (ông già lấy vợ trẻ) để bổ khuyết sinh lực. Rào cản là sức sống mới bừng lên từ đối phương, buộc bạn không được phép bảo thủ. Bạn bắt buộc phải linh hoạt và sáng tạo không kém họ thì mới mong tạo ra chồi non trên thân gỗ mục của chính mình.",
+      tuongSo:
+        "Tượng của việc môi trường khách quan đang lột xác nhờ sự phá cách táo bạo. Có tượng \"tre già măng mọc\", \"bình cũ rượu mới\", sự biến ảo khôn lường của thời cuộc.",
+      hanhDongThuan:
+        "Thiết lập các liên minh chéo thế hệ, áp dụng những giải pháp đột phá phi truyền thống, kết nối kinh nghiệm cũ với công nghệ mới.",
+      hanhDongNguoc:
+        "Duy trì các phương thức làm việc lối mòn, chỉ kết giao với những đối tác cùng độ tuổi hoặc cùng chuyên môn, từ chối mọi sự giao thoa tuổi tác.",
+    },
+    queHo: {
+      name: "Càn Vi Thiên",
+      hanzi: "乾為天",
+      number: 1,
+      line: 2,
+      lineName: "Hào 2 (Cửu Nhị)",
+      lineHanziText: "見龍在田，利見大人 (Hiện long tại điền, lợi kiến đại nhân).",
+      apDung:
+        "Bóc tách tâm lý cho thấy động lực sâu xa của sự kết hợp trái ngang này là khao khát được vươn lên, phô diễn tài năng trước đại cục.",
+      nghiaLy:
+        "Ẩn sâu bên trong việc \"cây khô nảy chồi\" là một ý chí mãnh liệt muốn tỏa sáng (Càn). Tổ chức không chịu khuất phục sự già cỗi, mà ngầm mượn sức bật mới (rồng xuất hiện) để tái khẳng định vị thế. Trạng thái tâm lý đầy nhuệ khí này chính là chất xúc tác ngầm, biến những sự kết hợp tưởng chừng lố bịch bề ngoài thành bước đệm hoàn hảo để ra mắt những bậc quý nhân.",
+      tuongSo:
+        "Tượng lúc này nội tâm khát khao tỏa sáng, vươn mình ra biển lớn. Tượng rơi vào cảnh \"như cá gặp nước\", \"thời tới cản không kịp\" sau những ngày u ám.",
+      hanhDongThuan:
+        "Tự tin bộc lộ tài năng, tìm kiếm minh sư và quý nhân tương trợ, nắm bắt cơ hội để khẳng định chỗ đứng.",
+      hanhDongNguoc:
+        "Tự ti mặc cảm, giấu kín năng lực hoặc kiêu căng tự phụ trước khi kịp tạo lập uy tín vững chắc.",
+    },
+    queThac: {
+      name: "Sơn Lôi Di",
+      hanzi: "山雷頤",
+      number: 27,
+      line: 2,
+      lineName: "Hào 2 (Lục Nhị)",
+      lineHanziText:
+        "顛頤，拂經于丘頤，征凶 (Điên di, phất kinh vu khâu di, chinh hung).",
+      apDung:
+        "Lời cảnh báo đanh thép: sự kết hợp phi truyền thống phải dựa trên sự tự nhiên bổ khuyết, nếu khiên cưỡng cầu xin ngược ngạo ắt mang họa.",
+      nghiaLy:
+        "Mặt trái của việc \"ông già lấy vợ trẻ\" là sự đảo lộn giá trị (Nuôi ngược). Nếu sự hợp tác của bạn không xuất phát từ nhu cầu sinh tồn hợp lý mà lại đi \"trái đạo\", đảo lộn trật tự trên dưới (cầu núi nuôi), bạn sẽ đứt gãy. Sáng tạo phi truyền thống khác với sự cưỡng cầu dị hợm. Bước sai lầm ranh giới này sẽ biến chồi non thành thuốc độc.",
+      tuongSo:
+        "Tượng rơi vào thế nếu lật lọng, đi ngược lại tự nhiên sẽ chuốc họa diệt vong. Có tượng \"xây nhà từ nóc\", \"trống đánh xuôi kèn thổi ngược\" tự mình làm hỏng cơ nghiệp.",
+      hanhDongThuan:
+        "Hợp tác trên cơ sở tôn trọng đạo lý tự nhiên, đôi bên cùng có lợi, giữ gìn giới hạn chuẩn mực lành mạnh.",
+      hanhDongNguoc:
+        "Cưỡng cầu dị hợm, đảo lộn tôn ti trật tự và luân thường đạo lý khiến nảy sinh tai họa khôn lường.",
+    },
+    tongHopHanhDong: {
+      thuan: {
+        tieuDe: "HÀNH ĐỘNG THUẬN (ĐẮC THỜI - HỢP NGOẠI - AN NỘI - VỮNG NỀN)",
+        chinh:
+          "Thiết lập các liên minh chéo thế hệ, áp dụng những giải pháp đột phá phi truyền thống, kết nối kinh nghiệm cũ với công nghệ mới.",
+        tong: "Nương theo sức bật đổi mới từ đối phương, linh hoạt sáng tạo để tạo ra chồi non trên thân gỗ mục của chính mình.",
+        ho: "Nắm bắt cơ hội phô diễn năng lực trước các bậc quý nhân, biến sự kết hợp đột phá thành bước đệm hoàn hảo.",
+        thac: "Giữ vững nguyên tắc bổ khuyết tự nhiên, không đi ngược lại luân thường đạo lý và giới hạn đạo đức nền tảng.",
+        loiKhuyenCotLoi:
+          "Hợp nhất 4 góc nhìn: Mạnh dạn bứt phá ranh giới lối mòn, kết hợp kinh nghiệm vững vàng với sinh khí tươi trẻ, giữ trọn đạo lý tự nhiên để hồi sinh rực rỡ.",
+      },
+      nghich: {
+        tieuDe: "HÀNH ĐỘNG NGHỊCH (NGHỊCH LÝ - CƯỠNG CẦU - RẠN NỨT - TAI HỌA)",
+        chinh:
+          "Duy trì các phương thức làm việc lối mòn, chỉ kết giao với những đối tác cùng độ tuổi hoặc cùng chuyên môn, từ chối mọi sự giao thoa tuổi tác.",
+        tong: "Bảo thủ đứng yên thụ động trước sự vươn lên mạnh mẽ của đối phương.",
+        ho: "Tự ti mặc cảm hoặc giấu tài quá kỹ làm vuột mất cơ hội ra mắt quý nhân.",
+        thac: "Cưỡng cầu dị hợm, đảo lộn giá trị và trật tự luân thường khiến biến chồi non thành thuốc độc.",
+        canhBaoCotLoi:
+          "Tuyệt đối tránh: Khư khư giữ định kiến già cỗi, đồng thời cảnh giác không sa vào cạm bẫy cưỡng cầu nghịch đạo phá hoại cơ nghiệp.",
+      },
+    },
+  },
 };
 
 /**
