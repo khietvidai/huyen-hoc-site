@@ -165,11 +165,17 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
 
   const [detailCardSize, setDetailCardSize] = useState<"mini" | "compact" | "normal" | "large" | "xlarge">(() => {
     try {
+      const isInit = localStorage.getItem("iching_detail_card_size_v2_init");
+      if (!isInit) {
+        localStorage.setItem("iching_detail_card_size_v2_init", "true");
+        localStorage.setItem("iching_detail_card_size", "mini");
+        return "mini";
+      }
       const saved = localStorage.getItem("iching_detail_card_size");
       if (saved === "mini" || saved === "compact" || saved === "normal" || saved === "large" || saved === "xlarge") return saved;
-      return "large";
+      return "mini";
     } catch {
-      return "large";
+      return "mini";
     }
   });
 
@@ -177,6 +183,7 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
     setDetailCardSize(size);
     try {
       localStorage.setItem("iching_detail_card_size", size);
+      localStorage.setItem("iching_detail_card_size_v2_init", "true");
     } catch {}
   };
 
@@ -271,9 +278,9 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
   };
 
   const getDetailCardSize = (defaultSize: "xs" | "sm" | "md" | "lg" | "xl" | "draw-2" | "draw-3" | "tiny"): "xs" | "sm" | "md" | "lg" | "xl" | "draw-2" | "draw-3" | "tiny" => {
-    if (detailCardSize === "mini") return "xs";
-    if (detailCardSize === "compact") return "sm";
-    if (detailCardSize === "normal") return defaultSize;
+    if (detailCardSize === "mini") return "tiny";
+    if (detailCardSize === "compact") return "xs";
+    if (detailCardSize === "normal") return "sm";
     if (detailCardSize === "large") return "lg";
     if (detailCardSize === "xlarge") return "xl";
     return defaultSize;

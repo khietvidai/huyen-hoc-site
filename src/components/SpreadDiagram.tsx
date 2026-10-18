@@ -906,11 +906,17 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
   const [showExportModal, setShowExportModal] = useState(false);
   const [cardSizeScale, setCardSizeScale] = useState<"mini" | "compact" | "normal" | "large" | "xlarge">(() => {
     try {
+      const isInit = localStorage.getItem("iching_spread_card_size_v2_init");
+      if (!isInit) {
+        localStorage.setItem("iching_spread_card_size_v2_init", "true");
+        localStorage.setItem("iching_spread_card_size_scale", "mini");
+        return "mini";
+      }
       const saved = localStorage.getItem("iching_spread_card_size_scale");
       if (saved === "mini" || saved === "compact" || saved === "normal" || saved === "large" || saved === "xlarge") return saved;
-      return "large";
+      return "mini";
     } catch {
-      return "large";
+      return "mini";
     }
   });
   const localCardsRef = useRef<HTMLDivElement>(null);
@@ -920,6 +926,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
     setCardSizeScale(size);
     try {
       localStorage.setItem("iching_spread_card_size_scale", size);
+      localStorage.setItem("iching_spread_card_size_v2_init", "true");
     } catch {}
   };
 
@@ -985,9 +992,9 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
             ? "bg-[#C9A55A] text-black font-bold"
             : "text-[#C4B49D] hover:text-white"
         }`}
-        title="Rất nhỏ"
+        title="Mini (Rất nhỏ)"
       >
-        Rất nhỏ
+        Mini
       </button>
       <button
         type="button"
