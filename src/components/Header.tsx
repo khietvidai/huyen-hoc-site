@@ -46,7 +46,7 @@ export type NavTab =
   | "decks"
   | "history";
 
-export type FontSizeId = "sm" | "md" | "lg" | "xl";
+export type FontSizeId = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
 
 export interface FontSizeOption {
   id: FontSizeId;
@@ -59,9 +59,12 @@ export interface FontSizeOption {
 
 export const FONT_SIZE_OPTIONS: FontSizeOption[] = [
   { id: "sm", label: "Chữ Nhỏ", badge: "A⁻", sizePx: "14px", percent: "88%", desc: "Gọn gàng, vừa vặn" },
-  { id: "md", label: "Chữ Chuẩn", badge: "A", sizePx: "16px", percent: "100%", desc: "Mặc định tiêu chuẩn" },
+  { id: "md", label: "Tiêu Chuẩn", badge: "A", sizePx: "16px", percent: "100%", desc: "Mặc định hệ điều hành" },
   { id: "lg", label: "Chữ Lớn", badge: "A⁺", sizePx: "18px", percent: "113%", desc: "To rõ, dễ đọc kinh văn" },
-  { id: "xl", label: "Rất Lớn", badge: "A⁺⁺", sizePx: "20.5px", percent: "128%", desc: "Cực đại, mắt kém nhìn rõ" },
+  { id: "xl", label: "Rất Lớn (Chuẩn)", badge: "A⁺⁺", sizePx: "20.5px", percent: "128%", desc: "Mặc định khởi đầu (128%)" },
+  { id: "2xl", label: "Cực Đại", badge: "A³⁺", sizePx: "23.5px", percent: "147%", desc: "Chữ to vượt trội, xem từ xa" },
+  { id: "3xl", label: "Siêu Lớn", badge: "A⁴⁺", sizePx: "27px", percent: "169%", desc: "Khổng lồ, nhìn rõ từng nét" },
+  { id: "4xl", label: "Đại Tự Max", badge: "MAX", sizePx: "31px", percent: "194%", desc: "Cỡ cực đại tối đa, không cần kính" },
 ];
 
 interface HeaderProps {
@@ -113,13 +116,13 @@ export const Header: React.FC<HeaderProps> = ({
   const [fontSize, setFontSize] = useState<FontSizeId>(() => {
     try {
       const saved = localStorage.getItem("cuunhi_font_size");
-      if (saved && FONT_SIZE_OPTIONS.some((o) => o.id === saved)) {
+      if (saved && FONT_SIZE_OPTIONS.some((o) => o.id === saved) && saved !== "md") {
         return saved as FontSizeId;
       }
     } catch {
       // fallback
     }
-    return "md";
+    return "xl"; // Luôn ở chế độ chữ 128% khi mới vào
   });
 
   useEffect(() => {
@@ -355,7 +358,7 @@ export const Header: React.FC<HeaderProps> = ({
                   className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[1px]"
                   onClick={() => setIsFontSizeMenuOpen(false)}
                 />
-                <div className="absolute right-0 top-full mt-2 w-64 royal-frame !outline-offset-[2px] shadow-[0_20px_50px_rgba(0,0,0,0.95)] z-50 p-3 bg-lacquer-950/98 backdrop-blur">
+                <div className="absolute right-0 top-full mt-2 w-72 royal-frame !outline-offset-[2px] shadow-[0_20px_50px_rgba(0,0,0,0.95)] z-50 p-3 bg-lacquer-950/98 backdrop-blur max-h-[75vh] overflow-y-auto">
                   <div className="flex items-center justify-between pb-2 mb-2 border-b border-gold-700/40">
                     <div className="flex items-center gap-1.5 text-xs font-sans uppercase tracking-[0.14em] text-gold-400">
                       <Type className="w-3.5 h-3.5" />
@@ -404,13 +407,13 @@ export const Header: React.FC<HeaderProps> = ({
                     })}
                   </div>
 
-                  {fontSize !== "md" && (
+                  {fontSize !== "xl" && (
                     <button
                       type="button"
-                      onClick={() => handleSelectFontSize("md")}
+                      onClick={() => handleSelectFontSize("xl")}
                       className="w-full mt-2 pt-2 border-t border-gold-700/30 text-center text-[11px] text-gold-500 hover:text-gold-300 transition cursor-pointer"
                     >
-                      Đặt lại cỡ chữ chuẩn (100%)
+                      Đặt lại cỡ mặc định (128%)
                     </button>
                   )}
                 </div>
@@ -590,7 +593,7 @@ export const Header: React.FC<HeaderProps> = ({
                   </span>
                   <span className="text-[10px] font-mono text-gold-500">{currentFontOption.label} ({currentFontOption.percent})</span>
                 </div>
-                <div className="grid grid-cols-4 gap-1">
+                <div className="grid grid-cols-7 gap-1">
                   {FONT_SIZE_OPTIONS.map((opt) => (
                     <button
                       key={opt.id}

@@ -23,10 +23,19 @@
       (function() {
         try {
           var saved = localStorage.getItem('cuunhi_font_size');
-          var map = { sm: '14px', md: '16px', lg: '18px', xl: '20.5px' };
-          if (saved && map[saved]) {
-            document.documentElement.style.fontSize = map[saved];
+          var map = {
+            sm: '14px',
+            md: '16px',
+            lg: '18px',
+            xl: '20.5px',
+            '2xl': '23.5px',
+            '3xl': '27px',
+            '4xl': '31px'
+          };
+          if (!saved || saved === 'md') {
+            saved = 'xl';
           }
+          document.documentElement.style.fontSize = map[saved] || map['xl'];
         } catch (e) {}
       })();
     </script>
