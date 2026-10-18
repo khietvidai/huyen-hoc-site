@@ -133,6 +133,7 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
   currentUser,
   onOpenAuthModal,
 }) => {
+  const isVip = Boolean(currentUser?.isMember || currentUser?.isAdmin);
   const [isExpanded, setIsExpanded] = useState<boolean>(defaultExpanded);
   const [activeSectionId, setActiveSectionId] = useState<string>("hexagram_interpretations");
   const [showChaptersMenu, setShowChaptersMenu] = useState<boolean>(true);
@@ -429,12 +430,24 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
           {onOpenDecks && (
             <button
               type="button"
-              onClick={onOpenDecks}
-              className="royal-btn-ghost !px-3.5 !py-2 !text-[11px]"
-              title="Xem và quản lý các bộ ảnh 64 Quẻ bài Tarot"
+              onClick={() => {
+                if (!isVip) {
+                  if (onOpenAuthModal) {
+                    onOpenAuthModal(currentUser ? "upgrade" : "login");
+                  }
+                  return;
+                }
+                onOpenDecks();
+              }}
+              className="royal-btn-ghost !px-3.5 !py-2 !text-[11px] flex items-center gap-1.5"
+              title={isVip ? "Xem và quản lý các bộ ảnh 64 Quẻ bài Tarot" : "Đặc quyền Hội Viên VIP: Xem và quản lý các bộ ảnh 64 Quẻ bài Tarot"}
             >
               <Palette className="w-3.5 h-3.5 text-gold-500" />
               <span>Bộ Hình 64 Quẻ</span>
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded text-[9.5px] font-sans font-bold bg-gold-950 text-gold-400 border border-gold-700/60">
+                <Crown className="w-2.5 h-2.5 text-amber-400" />
+                VIP
+              </span>
             </button>
           )}
 

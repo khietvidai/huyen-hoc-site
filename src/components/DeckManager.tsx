@@ -21,6 +21,8 @@ import {
   ArrowRight,
   FolderUp,
   HardDrive,
+  Crown,
+  Lock,
 } from "lucide-react";
 import { HEXAGRAMS } from "../data/hexagrams";
 import { Hexagram } from "../types";
@@ -30,22 +32,30 @@ import {
   cardImageStore,
   DeckInfo,
   fileToDataUrl,
+  DEFAULT_DECK_ID,
 } from "../services/cardImageStore";
+import { AppUser } from "../services/authService";
 
 interface DeckManagerProps {
   activeDeckId: string;
   onActiveDeckChanged: (newDeckId: string) => void;
   onClose?: () => void;
+  currentUser?: AppUser | null;
+  onOpenAuthModal?: (mode?: "login" | "register" | "upgrade") => void;
 }
 
 export const DeckManager: React.FC<DeckManagerProps> = ({
   activeDeckId,
   onActiveDeckChanged,
   onClose,
+  currentUser,
+  onOpenAuthModal,
 }) => {
+  const isVip = Boolean(currentUser?.isMember || currentUser?.isAdmin);
+
   // Decks list state
   const [decks, setDecks] = useState<DeckInfo[]>([]);
-  const [selectedDeckId, setSelectedDeckId] = useState<string>(activeDeckId || "deck_golden");
+  const [selectedDeckId, setSelectedDeckId] = useState<string>(activeDeckId || DEFAULT_DECK_ID);
   const [deckImages, setDeckImages] = useState<Record<number, string>>({});
   const [deckCardBack, setDeckCardBack] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -467,6 +477,75 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
       }
     }
   };
+
+  if (currentUser !== undefined && !isVip) {
+    return (
+      <div className="royal-frame p-6 sm:p-10 text-center max-w-xl mx-auto my-8 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+        <span className="royal-corner tl" />
+        <span className="royal-corner tr" />
+        <span className="royal-corner bl" />
+        <span className="royal-corner br" />
+
+        <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-amber-500/25 to-amber-700/10 border border-gold-600/60 flex items-center justify-center text-gold-400 shadow-xl">
+          <Crown className="w-8 h-8 text-amber-400 animate-pulse" />
+        </div>
+
+        <div className="royal-eyebrow mt-4">Đặc Quyền Hội Viên VIP Cửu Nhị</div>
+
+        <h3 className="royal-title mt-2 text-2xl sm:text-3xl text-gold-200">
+          Thư Viện Bộ Hình 64 Quẻ
+        </h3>
+
+        <p className="text-sm font-serif text-ivory-300 leading-relaxed mt-3 max-w-md mx-auto">
+          Tính năng xem trọn bộ tranh 64 quẻ vẽ tay nghệ thuật, chuyển đổi linh hoạt giữa các bộ bài độc quyền (Bộ Quân Tử, Bộ 1 Có Chữ, Bộ 2, Bộ Không Chữ) và tùy biến nạp ảnh cá nhân là đặc quyền dành riêng cho <strong>Hội Viên VIP</strong>.
+        </p>
+
+        <div className="p-4 rounded-xl bg-lacquer-900/90 border border-gold-800/80 text-left space-y-2 mt-5 text-xs font-serif text-ivory-400">
+          <div className="flex items-center gap-2 text-gold-300 font-bold">
+            <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+            <span>Đặc quyền mở khóa cho Hội Viên VIP:</span>
+          </div>
+          <div className="flex items-start gap-2 pl-6">
+            <span className="text-gold-500">•</span>
+            <span>Truy cập trọn bộ 64 lá bài tranh vẽ sơn mài cổ truyền & chiêm tinh huyền bí</span>
+          </div>
+          <div className="flex items-start gap-2 pl-6">
+            <span className="text-gold-500">•</span>
+            <span>Tự do đổi giữa 4 bộ bài nguyên bản: Bộ Quân Tử, Bộ Có Chữ 1 & 2, Bộ Không Chữ</span>
+          </div>
+          <div className="flex items-start gap-2 pl-6">
+            <span className="text-gold-500">•</span>
+            <span>Tải lên bộ bài cá nhân, thay đổi hình ảnh từng quẻ và sao lưu dữ liệu riêng</span>
+          </div>
+        </div>
+
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={() => {
+              if (onOpenAuthModal) {
+                onOpenAuthModal(currentUser ? "upgrade" : "login");
+              }
+            }}
+            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-gold-500 via-amber-400 to-gold-600 text-stone-950 font-serif font-bold text-sm shadow-lg shadow-amber-950/60 hover:brightness-110 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
+          >
+            <Crown className="w-4 h-4 text-stone-950" />
+            <span>{currentUser ? "Nâng Cấp Hội Viên VIP (1.000.000 VNĐ/Năm)" : "Đăng Nhập / Đăng Ký VIP"}</span>
+          </button>
+
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-lacquer-800 hover:bg-lacquer-700 text-ivory-300 border border-gold-800/80 font-serif text-xs font-semibold transition-all cursor-pointer"
+            >
+              Về Sách Thuyết Minh
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-8 animate-fadeIn">

@@ -187,7 +187,19 @@ export const PRESET_DECK_CONFIG: Record<string, { ext: string; back: string }> =
   deck_quan_tu: { ext: "jpg", back: "/decks/deck_quan_tu/back.svg" },
 };
 
+export const DEFAULT_DECK_ID = "deck_quan_tu";
+
 export const INITIAL_PRESET_DECKS: DeckInfo[] = [
+  {
+    id: "deck_quan_tu",
+    name: "Bộ Quân Tử (64 Quẻ)",
+    description: "Bộ bài Quân Tử 64 quẻ phong cách chiêm tinh huyền bí, hàm súc đạo lý người quân tử.",
+    isPreset: true,
+    themeStyle: "mystic",
+    cardBackImage: "/decks/deck_quan_tu/back.svg",
+    cardCount: 64,
+    createdAt: 1700000000000,
+  },
   {
     id: "deck_bo_1",
     name: "Bộ 1 (Nguyên Bản Có Chữ)",
@@ -196,7 +208,7 @@ export const INITIAL_PRESET_DECKS: DeckInfo[] = [
     themeStyle: "golden",
     cardBackImage: "/decks/deck_bo_1/back.jpg",
     cardCount: 64,
-    createdAt: 1700000000000,
+    createdAt: 1700000001000,
   },
   {
     id: "deck_bo_2",
@@ -206,7 +218,7 @@ export const INITIAL_PRESET_DECKS: DeckInfo[] = [
     themeStyle: "golden",
     cardBackImage: "/decks/deck_bo_2/back.svg",
     cardCount: 64,
-    createdAt: 1700000001000,
+    createdAt: 1700000002000,
   },
   {
     id: "deck_bo_khong_chu",
@@ -215,16 +227,6 @@ export const INITIAL_PRESET_DECKS: DeckInfo[] = [
     isPreset: true,
     themeStyle: "golden",
     cardBackImage: "/decks/deck_bo_khong_chu/back.jpg",
-    cardCount: 64,
-    createdAt: 1700000002000,
-  },
-  {
-    id: "deck_quan_tu",
-    name: "Bộ Quân Tử (64 Quẻ)",
-    description: "Bộ bài Quân Tử 64 quẻ phong cách chiêm tinh huyền bí, hàm súc đạo lý người quân tử.",
-    isPreset: true,
-    themeStyle: "mystic",
-    cardBackImage: "/decks/deck_quan_tu/back.svg",
     cardCount: 64,
     createdAt: 1700000003000,
   },
@@ -271,19 +273,19 @@ export async function getActiveDeckId(): Promise<string> {
       const tx = db.transaction([STORE_NAME], "readonly");
       const req = tx.objectStore(STORE_NAME).get("_system_active_deck_id");
       req.onsuccess = () => {
-        let id = (req.result as string) || "deck_bo_1";
+        let id = (req.result as string) || DEFAULT_DECK_ID;
         if (LEGACY_OLD_PRESET_IDS.has(id)) {
-          id = "deck_bo_1";
+          id = DEFAULT_DECK_ID;
         }
         if (typeof window !== "undefined") {
           localStorage.setItem(ACTIVE_DECK_STORAGE_KEY, id);
         }
         resolve(id);
       };
-      req.onerror = () => resolve("deck_bo_1");
+      req.onerror = () => resolve(DEFAULT_DECK_ID);
     });
   } catch {
-    return "deck_bo_1";
+    return DEFAULT_DECK_ID;
   }
 }
 
@@ -338,7 +340,7 @@ export async function getDeckList(): Promise<DeckInfo[]> {
           !storedList ||
           !Array.isArray(storedList) ||
           storedList.some((d) => LEGACY_OLD_PRESET_IDS.has(d.id)) ||
-          !storedList.some((d) => d.id === "deck_bo_1");
+          !storedList.some((d) => d.id === DEFAULT_DECK_ID);
 
         if (needsUpdate) {
           store.put(mergedList, "_system_decks_meta");
@@ -440,7 +442,7 @@ export async function deleteDeck(deckId: string): Promise<void> {
 
   const currentActive = await getActiveDeckId();
   if (currentActive === deckId) {
-    await setActiveDeckId("deck_bo_1");
+    await setActiveDeckId(DEFAULT_DECK_ID);
   } else {
     notifyListeners(undefined, deckId);
   }

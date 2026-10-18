@@ -163,7 +163,15 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
     return changingLines.length > 0 ? changingLines[0] : 1;
   });
 
-  const [detailCardSize, setDetailCardSize] = useState<"mini" | "compact" | "normal" | "large" | "xlarge">("xlarge");
+  const [detailCardSize, setDetailCardSize] = useState<"mini" | "compact" | "normal" | "large" | "xlarge">(() => {
+    try {
+      const saved = localStorage.getItem("iching_detail_card_size");
+      if (saved === "mini" || saved === "compact" || saved === "normal" || saved === "large" || saved === "xlarge") return saved;
+      return "large";
+    } catch {
+      return "large";
+    }
+  });
 
   const handleUpdateDetailCardSize = (size: "mini" | "compact" | "normal" | "large" | "xlarge") => {
     setDetailCardSize(size);
@@ -172,14 +180,22 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
     } catch {}
   };
 
-  const [companionCardSize, setCompanionCardSize] = useState<"third" | "normal" | "large" | "same" | "xlarge">("xlarge");
+  const [companionCardSize, setCompanionCardSize] = useState<"third" | "normal" | "large" | "same" | "xlarge">(() => {
+    try {
+      const saved = localStorage.getItem("iching_companion_card_size");
+      if (saved === "third" || saved === "normal" || saved === "large" || saved === "same" || saved === "xlarge") return saved;
+      return "third";
+    } catch {
+      return "third";
+    }
+  });
 
   const [showCompanionButton, setShowCompanionButton] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem("iching_show_companion_btn");
-      return saved !== null ? saved === "true" : true;
+      return saved !== null ? saved === "true" : false;
     } catch {
-      return true;
+      return false;
     }
   });
 
@@ -198,9 +214,9 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
   const [showInterpretButton, setShowInterpretButton] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem("iching_show_interpret_btn");
-      return saved !== null ? saved === "true" : true;
+      return saved !== null ? saved === "true" : false;
     } catch {
-      return true;
+      return false;
     }
   });
 
@@ -217,9 +233,9 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
   const [enableSelectionHighlight, setEnableSelectionHighlight] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem("iching_enable_selection_ring");
-      return saved !== null ? saved === "true" : true;
+      return saved !== null ? saved === "true" : false;
     } catch {
-      return true;
+      return false;
     }
   });
 
@@ -280,9 +296,9 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
   const [allowFlipOnClick, setAllowFlipOnClick] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem("iching_allow_flip_on_click");
-      return saved !== null ? saved === "true" : true;
+      return saved !== null ? saved === "true" : false;
     } catch {
-      return true;
+      return false;
     }
   });
 
@@ -370,17 +386,17 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
   const [enableHoverZoom, setEnableHoverZoom] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem("iching_enable_hover_zoom");
-      return saved !== null ? saved === "true" : true;
+      return saved !== null ? saved === "true" : false;
     } catch {
-      return true;
+      return false;
     }
   });
   const [showDetailedControls, setShowDetailedControls] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem("iching_detail_show_controls");
-      return saved === "true";
+      return saved !== null ? saved === "true" : true;
     } catch {
-      return false;
+      return true;
     }
   });
 
@@ -1127,8 +1143,8 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
           <div
             className="bg-lacquer-950/60 border border-gold-800 rounded-sm p-3 sm:p-5 md:p-6 overflow-hidden"
           >
-            {/* Header of Cards section: Cố định sẵn + Sticky */}
-            <div className="sticky top-0 z-30 bg-lacquer-950/95 border border-gold-800 rounded-sm p-3 sm:p-4 mb-4 space-y-2.5 transition-all">
+            {/* Header of Cards section: Cố định sẵn */}
+            <div className="relative z-10 bg-lacquer-950/95 border border-gold-800 rounded-sm p-3 sm:p-4 mb-4 space-y-2.5 transition-all">
               <div className="flex flex-col items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 flex-wrap">

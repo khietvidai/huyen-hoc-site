@@ -28,9 +28,11 @@ import {
   Scroll,
   Lock,
   Flame,
+  Crown,
 } from "lucide-react";
 import { captureElementToPng } from "../utils/captureHelper";
 import { Hexagram, DoubleCardMode, ThreeCardMode, SpreadType, CustomCardPosition } from "../types";
+import { AppUser } from "../services/authService";
 import { HEXAGRAMS } from "../data/hexagrams";
 import {
   SEVEN_STARS_POSITIONS,
@@ -101,6 +103,8 @@ interface CardDrawProps {
   defaultCardFaceOpen?: boolean;
   onToggleDefaultCardFaceOpen?: () => void;
   onShowToast?: (msg: string) => void;
+  currentUser?: AppUser | null;
+  onRequireAuth?: (mode?: "login" | "register" | "upgrade", message?: string) => void;
 }
 
 type DrawMode = "single" | "double" | "three" | "seven" | "nine" | "ten" | "ten_expanded" | "twelve" | "custom";
@@ -119,6 +123,8 @@ export const CardDraw: React.FC<CardDrawProps> = ({
   suggestedChoiceBLabel,
   suggestedThreeMode,
   suggestedChoiceCLabel,
+  currentUser = null,
+  onRequireAuth,
   onComplete,
   onOpenDeckManager,
   onManageDeck,
@@ -130,10 +136,44 @@ export const CardDraw: React.FC<CardDrawProps> = ({
   onToggleDefaultCardFaceOpen: propOnToggleDefaultCardFaceOpen,
   onShowToast,
 }) => {
+  const isRegisteredUser = Boolean(currentUser);
+  const isVip = Boolean(currentUser?.isMember || currentUser?.isAdmin);
   const handleOpenManager = onOpenDeckManager || onManageDeck || (() => {});
   const [drawMode, setDrawMode] = useState<DrawMode>(() =>
     isKhongMinhMethod ? "three" : suggestedDrawMode || "single"
   );
+
+  const handleSelectDrawMode = (mode: DrawMode) => {
+    if (!isKhongMinhMethod && !isRegisteredUser && (mode === "seven" || mode === "nine" || mode === "ten" || mode === "ten_expanded" || mode === "twelve" || mode === "custom")) {
+      const modeNames: Record<string, string> = {
+        seven: "Trận Thất Tinh (7 Lá)",
+        nine: "Trận Cửu Cung (9 Lá)",
+        ten: "Trận Thập Tinh (10 Lá)",
+        ten_expanded: "Trận Thập Tinh Mở Rộng (11 Lá)",
+        twelve: "Trận Thập Nhị Cung (12 Lá)",
+        custom: "Trận Tự Định Nghĩa (Tùy Ý Số Lá)",
+      };
+      const name = modeNames[mode] || "Trận pháp này";
+      if (onShowToast) {
+        onShowToast(`${name} yêu cầu đăng ký tài khoản. Vui lòng đăng ký tài khoản miễn phí để mở khóa toàn bộ trận pháp!`);
+      }
+      if (onRequireAuth) {
+        onRequireAuth("register", `${name} yêu cầu đăng ký tài khoản. Đăng ký tài khoản miễn phí để mở khóa toàn bộ trận pháp bốc bài Kinh Dịch!`);
+      }
+      return;
+    }
+    setDrawMode(mode);
+    setSelectedDeckIndices([]);
+    setRevealedCards([]);
+  };
+
+  useEffect(() => {
+    if (!isKhongMinhMethod && !isRegisteredUser && drawMode !== "single" && drawMode !== "double" && drawMode !== "three") {
+      setDrawMode("single");
+      setSelectedDeckIndices([]);
+      setRevealedCards([]);
+    }
+  }, [isRegisteredUser, isKhongMinhMethod, drawMode]);
 
   useEffect(() => {
     if (isKhongMinhMethod) {
@@ -287,9 +327,9 @@ export const CardDraw: React.FC<CardDrawProps> = ({
   const [allowFlipOnClick, setAllowFlipOnClick] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem("iching_allow_flip_on_click");
-      return saved !== null ? saved === "true" : true;
+      return saved !== null ? saved === "true" : false;
     } catch {
-      return true;
+      return false;
     }
   });
 
@@ -551,7 +591,26 @@ export const CardDraw: React.FC<CardDrawProps> = ({
   const [selectedIndicesByDeck, setSelectedIndicesByDeck] = useState<Record<number, number[]>>({});
 
   const updateDeckCount = (newCount: number) => {
-    const valid = Math.max(1, Math.min(12, newCount));
+    if (newCount > 2 && !isVip) {
+      if (!isRegisteredUser) {
+        if (onShowToast) {
+          onShowToast("Tính năng sử dụng nhiều hơn 2 bộ bài (3 - 12 bộ, 192 - 768 lá) là đặc quyền dành cho Hội Viên VIP. Vui lòng đăng nhập!");
+        }
+        if (onRequireAuth) {
+          onRequireAuth("login", "Đăng ký hoặc đăng nhập tài khoản VIP để mở khóa từ 3 đến 12 bộ bài cùng lúc (192 - 768 lá)!");
+        }
+      } else {
+        if (onShowToast) {
+          onShowToast("Tính năng sử dụng nhiều hơn 2 bộ bài (3 - 12 bộ, 192 - 768 lá) là đặc quyền dành riêng cho Hội Viên VIP. Vui lòng nâng cấp gói VIP!");
+        }
+        if (onRequireAuth) {
+          onRequireAuth("upgrade", "Nâng cấp Hội Viên VIP để sử dụng từ 3 đến 12 bộ bài cùng lúc (192 - 768 lá)!");
+        }
+      }
+      return;
+    }
+    const maxAllowed = isVip ? 12 : 2;
+    const valid = Math.max(1, Math.min(maxAllowed, newCount));
     setDeckCount(valid);
     setSelectedDeckIndices([]);
     setSelectedIndicesByDeck({});
@@ -562,6 +621,13 @@ export const CardDraw: React.FC<CardDrawProps> = ({
     setCombinedDeck(generateCombinedDeck(valid));
     setSeparateDecks(generateSeparateDecks(valid));
   };
+
+  // Tự động giới hạn tối đa 2 bộ bài cho tài khoản chưa phải VIP
+  useEffect(() => {
+    if (!isVip && deckCount > 2) {
+      updateDeckCount(2);
+    }
+  }, [isVip, deckCount]);
 
   const updateMultiDeckMode = (mode: "separate" | "combined") => {
     setMultiDeckMode(mode);
@@ -1294,14 +1360,27 @@ export const CardDraw: React.FC<CardDrawProps> = ({
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
-            onClick={handleOpenManager}
+            onClick={() => {
+              if (!isVip) {
+                if (!isRegisteredUser) {
+                  if (onShowToast) onShowToast("Thư viện Bộ Hình 64 Quẻ chỉ dành riêng cho Hội Viên VIP. Vui lòng đăng nhập!");
+                  if (onRequireAuth) onRequireAuth("login", "Đăng nhập hoặc đăng ký tài khoản VIP để truy cập Thư Viện Bộ Hình 64 Quẻ!");
+                } else {
+                  if (onShowToast) onShowToast("Thư viện Bộ Hình 64 Quẻ chỉ dành riêng cho Hội Viên VIP. Vui lòng nâng cấp gói VIP!");
+                  if (onRequireAuth) onRequireAuth("upgrade", "Nâng cấp Hội Viên VIP để mở khóa Thư Viện Bộ Hình 64 Quẻ và đổi giữa các bộ bài độc quyền!");
+                }
+                return;
+              }
+              handleOpenManager();
+            }}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#241C15] hover:bg-[#34271C] border border-[#483724] text-[#F3E7D0] text-xs font-serif font-bold transition-all shadow-sm cursor-pointer"
-            title="Đổi bộ hình hoặc nạp ảnh cho 64 quẻ"
+            title={isVip ? "Đổi bộ hình hoặc nạp ảnh cho 64 quẻ" : "Đặc quyền Hội Viên VIP: Đổi bộ hình hoặc nạp ảnh cho 64 quẻ"}
           >
             <Palette className="w-3.5 h-3.5 text-[#C9A55A]" />
-            <span>Đổi Bộ Hình / Nạp 64 Quẻ</span>
-            <span className="text-[10px] text-[#A89882] font-mono font-normal">
-              ({uploadedCount}/64 ảnh)
+            <span>Đổi Bộ Hình / 64 Quẻ</span>
+            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded text-[9.5px] font-sans font-bold bg-amber-950/90 text-amber-300 border border-amber-600/50 font-mono">
+              <Crown className="w-2.5 h-2.5 text-amber-400" />
+              VIP
             </span>
           </button>
 
@@ -1336,152 +1415,167 @@ export const CardDraw: React.FC<CardDrawProps> = ({
               </div>
             </div>
           ) : (
-            <div className="flex flex-wrap items-center p-1 bg-[#100D0B] border border-[#2D241A] rounded-xl gap-1">
-              <button
-                onClick={() => {
-                  setDrawMode("single");
-                  setSelectedDeckIndices([]);
-                  setRevealedCards([]);
-                }}
-                className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer ${
-                  drawMode === "single"
-                    ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
-                    : "text-[#9E907D] hover:text-white"
-                }`}
-              >
-                1 Lá (Độc Quẻ)
-              </button>
-              <button
-                onClick={() => {
-                  setDrawMode("double");
-                  setSelectedDeckIndices([]);
-                  setRevealedCards([]);
-                }}
-                className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer ${
-                  drawMode === "double"
-                    ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
-                    : "text-[#9E907D] hover:text-white"
-                }`}
-              >
-                2 Lá (Song Quẻ)
-              </button>
-              <button
-                onClick={() => {
-                  setDrawMode("three");
-                  setSelectedDeckIndices([]);
-                  setRevealedCards([]);
-                }}
-                className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer ${
-                  drawMode === "three"
-                    ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
-                    : "text-[#9E907D] hover:text-white"
-                }`}
-              >
-                3 Lá (Quá Khứ - Hiện Tại - Tương Lai)
-              </button>
-              {/* 7 Lá */}
-              <button
-                onClick={() => {
-                  setDrawMode("seven");
-                  setSelectedDeckIndices([]);
-                  setRevealedCards([]);
-                }}
-                className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
-                  drawMode === "seven"
-                    ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
-                    : "text-[#9E907D] hover:text-white"
-                }`}
-                title="7 Lá (Thất Tinh Trận)"
-              >
-                <span>7 Lá (Thất Tinh Trận)</span>
-              </button>
+            <div className="flex flex-col gap-1.5 w-full sm:w-auto">
+              <div className="flex flex-wrap items-center p-1 bg-[#100D0B] border border-[#2D241A] rounded-xl gap-1">
+                <button
+                  type="button"
+                  onClick={() => handleSelectDrawMode("single")}
+                  className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer ${
+                    drawMode === "single"
+                      ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
+                      : "text-[#9E907D] hover:text-white"
+                  }`}
+                >
+                  1 Lá (Độc Quẻ)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSelectDrawMode("double")}
+                  className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer ${
+                    drawMode === "double"
+                      ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
+                      : "text-[#9E907D] hover:text-white"
+                  }`}
+                >
+                  2 Lá (Song Quẻ)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSelectDrawMode("three")}
+                  className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer ${
+                    drawMode === "three"
+                      ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
+                      : "text-[#9E907D] hover:text-white"
+                  }`}
+                >
+                  3 Lá (Tam Tài / Thời Gian)
+                </button>
 
-              {/* 9 Lá */}
-              <button
-                onClick={() => {
-                  setDrawMode("nine");
-                  setSelectedDeckIndices([]);
-                  setRevealedCards([]);
-                }}
-                className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
-                  drawMode === "nine"
-                    ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
-                    : "text-[#9E907D] hover:text-white"
-                }`}
-                title="9 Lá (Cửu Cung Phong Thủy)"
-              >
-                <span>9 Lá (Cửu Cung)</span>
-              </button>
+                {/* 7 Lá */}
+                <button
+                  type="button"
+                  onClick={() => handleSelectDrawMode("seven")}
+                  className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                    drawMode === "seven"
+                      ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
+                      : "text-[#9E907D] hover:text-white"
+                  } ${!isRegisteredUser ? "opacity-80" : ""}`}
+                  title={!isRegisteredUser ? "Cần đăng ký tài khoản để mở khóa 7 Lá (Thất Tinh Trận)" : "7 Lá (Thất Tinh Trận)"}
+                >
+                  <span>7 Lá (Thất Tinh Trận)</span>
+                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-400 shrink-0" />}
+                </button>
 
-              {/* 10 Lá */}
-              <button
-                onClick={() => {
-                  setDrawMode("ten");
-                  setSelectedDeckIndices([]);
-                  setRevealedCards([]);
-                }}
-                className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
-                  drawMode === "ten"
-                    ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
-                    : "text-[#9E907D] hover:text-white"
-                }`}
-                title="10 Lá (Thập Tinh Chuẩn)"
-              >
-                <span>10 Lá (Thập Tinh)</span>
-              </button>
+                {/* 9 Lá */}
+                <button
+                  type="button"
+                  onClick={() => handleSelectDrawMode("nine")}
+                  className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                    drawMode === "nine"
+                      ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
+                      : "text-[#9E907D] hover:text-white"
+                  } ${!isRegisteredUser ? "opacity-80" : ""}`}
+                  title={!isRegisteredUser ? "Cần đăng ký tài khoản để mở khóa 9 Lá (Cửu Cung)" : "9 Lá (Cửu Cung Phong Thủy)"}
+                >
+                  <span>9 Lá (Cửu Cung)</span>
+                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-400 shrink-0" />}
+                </button>
 
-              {/* 11 Lá */}
-              <button
-                onClick={() => {
-                  setDrawMode("ten_expanded");
-                  setSelectedDeckIndices([]);
-                  setRevealedCards([]);
-                }}
-                className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
-                  drawMode === "ten_expanded"
-                    ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
-                    : "text-[#9E907D] hover:text-white"
-                }`}
-                title="11 Lá (Thập Tinh 2A & 2B)"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-inherit" />
-                <span>11 Lá (2A & 2B)</span>
-              </button>
+                {/* 10 Lá */}
+                <button
+                  type="button"
+                  onClick={() => handleSelectDrawMode("ten")}
+                  className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                    drawMode === "ten"
+                      ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
+                      : "text-[#9E907D] hover:text-white"
+                  } ${!isRegisteredUser ? "opacity-80" : ""}`}
+                  title={!isRegisteredUser ? "Cần đăng ký tài khoản để mở khóa 10 Lá (Thập Tinh)" : "10 Lá (Thập Tinh Chuẩn)"}
+                >
+                  <span>10 Lá (Thập Tinh)</span>
+                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-400 shrink-0" />}
+                </button>
 
-              {/* 12 Lá */}
-              <button
-                onClick={() => {
-                  setDrawMode("twelve");
-                  setSelectedDeckIndices([]);
-                  setRevealedCards([]);
-                }}
-                className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
-                  drawMode === "twelve"
-                    ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
-                    : "text-[#9E907D] hover:text-white"
-                }`}
-                title="12 Lá (Địa Chi & Tử Vi)"
-              >
-                <span>12 Lá (Địa Chi)</span>
-              </button>
+                {/* 11 Lá */}
+                <button
+                  type="button"
+                  onClick={() => handleSelectDrawMode("ten_expanded")}
+                  className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                    drawMode === "ten_expanded"
+                      ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
+                      : "text-[#9E907D] hover:text-white"
+                  } ${!isRegisteredUser ? "opacity-80" : ""}`}
+                  title={!isRegisteredUser ? "Cần đăng ký tài khoản để mở khóa 11 Lá (2A & 2B)" : "11 Lá (Thập Tinh 2A & 2B)"}
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-inherit" />
+                  <span>11 Lá (2A &amp; 2B)</span>
+                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-400 shrink-0" />}
+                </button>
 
-              {/* Tùy ý số lá */}
-              <button
-                onClick={() => {
-                  setDrawMode("custom");
-                  setSelectedDeckIndices([]);
-                  setRevealedCards([]);
-                }}
-                className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
-                  drawMode === "custom"
-                    ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
-                    : "text-[#9E907D] hover:text-white"
-                }`}
-                title="Tùy Ý Số Lá"
-              >
-                <Sliders className="w-3 h-3 text-inherit" />
-                <span>Tùy Ý ({customCount} Lá)</span>
-              </button>
+                {/* 12 Lá */}
+                <button
+                  type="button"
+                  onClick={() => handleSelectDrawMode("twelve")}
+                  className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                    drawMode === "twelve"
+                      ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
+                      : "text-[#9E907D] hover:text-white"
+                  } ${!isRegisteredUser ? "opacity-80" : ""}`}
+                  title={!isRegisteredUser ? "Cần đăng ký tài khoản để mở khóa 12 Lá (Địa Chi)" : "12 Lá (Địa Chi & Tử Vi)"}
+                >
+                  <span>12 Lá (Địa Chi)</span>
+                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-400 shrink-0" />}
+                </button>
+
+                {/* Tùy ý số lá */}
+                <button
+                  type="button"
+                  onClick={() => handleSelectDrawMode("custom")}
+                  className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                    drawMode === "custom"
+                      ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
+                      : "text-[#9E907D] hover:text-white"
+                  } ${!isRegisteredUser ? "opacity-80" : ""}`}
+                  title={!isRegisteredUser ? "Cần đăng ký tài khoản để mở khóa Tùy Ý Số Lá" : "Tùy Ý Số Lá"}
+                >
+                  <Sliders className="w-3 h-3 text-inherit" />
+                  <span>Tùy Ý ({customCount} Lá)</span>
+                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-400 shrink-0" />}
+                </button>
+              </div>
+
+              {/* Access tier indicator banner */}
+              {!isRegisteredUser ? (
+                <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-r from-[#24170D] via-[#1B1108] to-[#24170D] border border-amber-600/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs font-serif">
+                  <div className="flex items-center gap-2">
+                    <Lock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span className="text-[#E6D3A3]">
+                      Chưa đăng ký: Bạn đang sử dụng trải nghiệm <strong>1, 2 và 3 Lá</strong>. Đăng ký tài khoản miễn phí để mở khóa <strong>toàn bộ trận pháp (7, 9, 10, 11, 12 lá và Tùy ý)</strong>!
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => onRequireAuth?.("register", "Đăng ký tài khoản miễn phí để mở khóa toàn bộ trận pháp bốc bài Kinh Dịch!")}
+                    className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F0C] font-bold text-[11px] shrink-0 cursor-pointer shadow-xs whitespace-nowrap"
+                  >
+                    Đăng Ký Miễn Phí
+                  </button>
+                </div>
+              ) : (
+                <div className="p-2 sm:p-2.5 rounded-xl bg-[#141C14]/80 border border-emerald-600/40 flex items-center justify-between gap-2 text-xs font-serif text-emerald-300">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span>
+                      Tài khoản <strong>{currentUser?.name}</strong>: Đã mở khóa <strong>toàn bộ trận pháp</strong> bốc bài Kinh Dịch (1 đến 12 lá và Tùy ý).
+                    </span>
+                  </div>
+                  {currentUser?.isMember && (
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-950 text-amber-300 border border-amber-600/60 font-mono font-bold shrink-0">
+                      Hội Viên VIP
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -1500,9 +1594,17 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 <span className="text-[10px] font-sans font-normal px-2 py-0.5 rounded-full bg-[#34271A] text-[#E0C895] border border-[#503D28]">
                   {deckCount} bộ = {deckCount * 64} lá
                 </span>
+                {!isVip && (
+                  <span className="text-[10px] font-sans px-2 py-0.5 rounded-full bg-amber-950/90 text-amber-300 border border-amber-600/50 flex items-center gap-1 font-bold">
+                    <Crown className="w-2.5 h-2.5 text-amber-400" />
+                    VIP: Mở khóa 3-12 bộ
+                  </span>
+                )}
               </h4>
               <p className="text-xs text-[#9E8E79] mt-0.5">
-                Lựa chọn từ 1 đến 12 bộ bài cùng lúc. Khi có từ 2 bộ trở lên, bạn có thể chọn bốc từng bộ riêng lẻ hoặc trộn chung nhiều bộ với nhau.
+                {isVip
+                  ? "Tài khoản VIP có đặc quyền sử dụng từ 1 đến 12 bộ bài cùng lúc (64 - 768 lá). Chọn bốc từng bộ riêng lẻ hoặc trộn chung nhiều bộ."
+                  : "Tài khoản tiêu chuẩn sử dụng tối đa 2 bộ bài (128 lá). Nâng cấp VIP để mở khóa từ 3 đến 12 bộ bài cùng lúc (192 - 768 lá)."}
               </p>
             </div>
           </div>
@@ -1521,24 +1623,37 @@ export const CardDraw: React.FC<CardDrawProps> = ({
             <span className="flex items-center gap-1.5 font-medium">
               <span>Bấm chọn số lượng bộ bài tham gia:</span>
             </span>
-            <span className="text-[11px] text-[#8A7963] font-mono">1 bộ = 64 lá • 12 bộ = 768 lá</span>
+            <span className="text-[11px] text-[#8A7963] font-mono">1-2 bộ miễn phí • 3-12 bộ VIP</span>
           </div>
 
           <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-12 gap-1.5">
             {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => {
               const isSelected = deckCount === n;
+              const isVipOnly = n > 2;
               return (
                 <button
                   key={n}
                   type="button"
                   onClick={() => updateDeckCount(n)}
-                  className={`py-2 px-1 text-center rounded-xl border text-xs font-serif font-bold transition-all cursor-pointer ${
+                  className={`relative py-2 px-1 text-center rounded-xl border text-xs font-serif font-bold transition-all cursor-pointer ${
                     isSelected
                       ? "bg-gradient-to-b from-[#C9A55A] to-[#AA8222] text-[#14120F] border-[#E8C55A] shadow-[0_0_12px_rgba(212,175,55,0.35)] scale-105 z-10"
+                      : isVipOnly && !isVip
+                      ? "bg-[#14100D]/80 hover:bg-[#221A13] text-[#7A6D5B] hover:text-[#D4C3AC] border-[#2C2116] hover:border-amber-800/40"
                       : "bg-[#14100D] hover:bg-[#221A13] text-[#A89882] hover:text-[#F3E7CF] border-[#2C2116] hover:border-[#4B3724]"
                   }`}
-                  title={`${n} bộ bài Kinh Dịch (Tổng cộng ${n * 64} lá)`}
+                  title={
+                    isVipOnly && !isVip
+                      ? `Đặc quyền VIP: ${n} bộ bài Kinh Dịch (${n * 64} lá)`
+                      : `${n} bộ bài Kinh Dịch (Tổng cộng ${n * 64} lá)`
+                  }
                 >
+                  {isVipOnly && !isVip && (
+                    <span className="absolute -top-1.5 -right-1 px-1 py-0.2 rounded-full bg-amber-950 text-amber-400 border border-amber-600/60 text-[8px] font-sans font-bold flex items-center gap-0.5 leading-none shadow-xs">
+                      <Crown className="w-2 h-2 text-amber-400" />
+                      VIP
+                    </span>
+                  )}
                   <div className="text-[10px] font-sans font-normal opacity-80">{n === 1 ? "1 bộ" : `${n} bộ`}</div>
                   <div className="text-xs sm:text-sm font-mono leading-tight mt-0.5">{n * 64} lá</div>
                 </button>
@@ -2014,16 +2129,35 @@ export const CardDraw: React.FC<CardDrawProps> = ({
           {/* Gợi ý chuyển sang Xăm Khổng Minh */}
           <div className="pt-1">
             <div className="text-[11px] font-serif text-[#A89882] bg-[#120F0C] border border-[#2E2215] p-2.5 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
-              <span>💡 Muốn thỉnh quẻ <strong>Tam Tài (Thiên — Địa — Nhân) & Xăm Khổng Minh</strong>?</span>
+              <span className="flex items-center gap-1.5 flex-wrap">
+                <span>💡 Muốn thỉnh quẻ <strong>Tam Tài (Thiên — Địa — Nhân) & Xăm Khổng Minh</strong>?</span>
+                {!isVip && (
+                  <span className="text-[10px] uppercase font-sans font-bold text-amber-300 bg-amber-950/80 border border-amber-600/50 rounded px-1.5 py-0.2 flex items-center gap-0.5">
+                    <Lock className="w-2.5 h-2.5 text-amber-400" /> VIP
+                  </span>
+                )}
+              </span>
               <button
                 type="button"
                 onClick={() => {
+                  if (!isVip) {
+                    if (!currentUser) {
+                      onRequireAuth?.("login", "Xăm Khổng Minh dành riêng cho tài khoản VIP. Vui lòng đăng ký hoặc đăng nhập!");
+                    } else {
+                      onRequireAuth?.("upgrade", "Xăm Khổng Minh dành riêng cho Hội Viên VIP. Vui lòng nâng cấp VIP!");
+                    }
+                    return;
+                  }
                   window.dispatchEvent(new CustomEvent("switch-divination-method", { detail: "khongminh" }));
                 }}
-                className="px-3 py-1 rounded-lg bg-[#2E2013] hover:bg-[#3D2B1A] border border-[#C9A55A]/60 text-[#E6D3A3] text-xs font-semibold cursor-pointer transition-all active:scale-95 shadow-xs flex items-center gap-1.5"
+                className={`px-3 py-1 rounded-lg border text-xs font-semibold cursor-pointer transition-all active:scale-95 shadow-xs flex items-center gap-1.5 ${
+                  !isVip
+                    ? "bg-amber-950/40 hover:bg-amber-900/50 border-amber-500/50 text-amber-300"
+                    : "bg-[#2E2013] hover:bg-[#3D2B1A] border-[#C9A55A]/60 text-[#E6D3A3]"
+                }`}
               >
-                <span>📜</span>
-                <span>Chuyển Sang Xăm Khổng Minh</span>
+                {!isVip ? <Lock className="w-3 h-3 text-amber-400" /> : <span>📜</span>}
+                <span>{!isVip ? "Khóa VIP · Xăm Khổng Minh" : "Chuyển Sang Xăm Khổng Minh"}</span>
               </button>
             </div>
           </div>

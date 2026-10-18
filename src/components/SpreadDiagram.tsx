@@ -186,9 +186,9 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
   const [internalHoverZoom, setInternalHoverZoom] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem("iching_enable_hover_zoom");
-      return saved !== null ? saved === "true" : true;
+      return saved !== null ? saved === "true" : false;
     } catch {
-      return true;
+      return false;
     }
   });
 
@@ -237,9 +237,9 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
   const [internalShowCompanionButton, setInternalShowCompanionButton] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem("iching_show_companion_btn");
-      return saved !== null ? saved === "true" : true;
+      return saved !== null ? saved === "true" : false;
     } catch {
-      return true;
+      return false;
     }
   });
 
@@ -268,9 +268,9 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
   const [internalShowInterpretButton, setInternalShowInterpretButton] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem("iching_show_interpret_btn");
-      return saved !== null ? saved === "true" : true;
+      return saved !== null ? saved === "true" : false;
     } catch {
-      return true;
+      return false;
     }
   });
 
@@ -345,9 +345,9 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
   const [internalSelectionHighlight, setInternalSelectionHighlight] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem("iching_enable_selection_ring");
-      return saved !== null ? saved === "true" : true;
+      return saved !== null ? saved === "true" : false;
     } catch {
-      return true;
+      return false;
     }
   });
 
@@ -425,9 +425,9 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
   const [internalAllowFlipOnClick, setInternalAllowFlipOnClick] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem("iching_allow_flip_on_click");
-      return saved !== null ? saved === "true" : true;
+      return saved !== null ? saved === "true" : false;
     } catch {
-      return true;
+      return false;
     }
   });
 
@@ -721,13 +721,13 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
     </div>
   );
 
-  // Trạng thái mở rộng bảng tùy chỉnh chi tiết (mặc định thu gọn để cố định sẵn thông tin gọn gàng)
+  // Trạng thái mở rộng bảng tùy chỉnh chi tiết (mặc định mở sẵn như hình người dùng yêu cầu, người dùng đóng/mở thì lưu nhớ theo ý người dùng)
   const [showDetailedControls, setShowDetailedControls] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem("iching_show_detailed_controls");
-      return saved === "true";
+      return saved !== null ? saved === "true" : true;
     } catch {
-      return false;
+      return true;
     }
   });
 
@@ -748,32 +748,41 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
     badgeText?: string
   ) => {
     return (
-      <div className="sticky top-0 z-30 bg-[#15120E]/95 backdrop-blur-md border border-[#3D3121] rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 shadow-xl space-y-2.5 transition-all">
-        {/* Hàng 1: Tiêu đề + Thông tin bố cục cố định sẵn + Nút thao tác nhanh */}
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2.5">
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#C9A55A] shadow-[0_0_8px_#C9A55A] shrink-0" />
-              <h3 className="text-sm sm:text-base md:text-lg font-serif font-bold text-[#F5EAD4] tracking-wide">
-                {title}
-              </h3>
-              {badgeText && (
-                <span className="text-[10px] font-mono text-[#C9A55A] bg-[#241D14] px-2 py-0.5 rounded border border-[#483723] shrink-0">
-                  {badgeText}
-                </span>
-              )}
-              <span className="text-[10px] font-mono text-emerald-400/90 bg-[#122416] px-2 py-0.5 rounded border border-[#234D2B] shrink-0">
-                ✓ Cố định sẵn
+      <div className="relative z-10 bg-[#15120E] border border-[#3D3121] rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 shadow-xl space-y-2.5 transition-all">
+        {/* Hàng 1: Tiêu đề + Thông tin bố cục cố định sẵn (Full-width, không bao giờ bị chèn ép) */}
+        <div className="w-full">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#C9A55A] shadow-[0_0_8px_#C9A55A] shrink-0" />
+            <h3 className="text-sm sm:text-base md:text-lg font-serif font-bold text-[#F5EAD4] tracking-wide">
+              {title}
+            </h3>
+            {badgeText && (
+              <span className="text-[10px] font-mono text-[#C9A55A] bg-[#241D14] px-2 py-0.5 rounded border border-[#483723] shrink-0">
+                {badgeText}
               </span>
-            </div>
+            )}
+            <span className="text-[10px] font-mono text-emerald-400/90 bg-[#122416] px-2 py-0.5 rounded border border-[#234D2B] shrink-0">
+              ✓ Cố định sẵn
+            </span>
+          </div>
+          {subtitle && (
             <p className="text-xs text-[#A89882] font-serif mt-1 leading-relaxed">
               {subtitle}
             </p>
-          </div>
+          )}
+        </div>
+
+        {/* Hàng 2: Thanh công cụ thao tác nhanh (Chế độ xem, Lật bài, Chụp ảnh, Tùy chỉnh) */}
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-[#2C2115] w-full">
+          {/* Nhóm điều khiển đặc thù trận pháp */}
+          {extraControls ? (
+            <div className="flex items-center flex-wrap gap-2">
+              {extraControls}
+            </div>
+          ) : <div />}
 
           {/* Quick Primary Actions: View Mode, Flip, Capture, Toggle detailed toolbar */}
-          <div className="flex items-center flex-wrap gap-2 w-full lg:w-auto justify-start sm:justify-end shrink-0">
-            {extraControls}
+          <div className="flex items-center flex-wrap gap-2 sm:ml-auto">
             {renderFlipAllButton()}
 
             {/* Chụp màn hình nhanh */}
@@ -898,9 +907,9 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
     try {
       const saved = localStorage.getItem("iching_spread_card_size_scale");
       if (saved === "mini" || saved === "compact" || saved === "normal" || saved === "large" || saved === "xlarge") return saved;
-      return "xlarge";
+      return "large";
     } catch {
-      return "xlarge";
+      return "large";
     }
   });
   const localCardsRef = useRef<HTMLDivElement>(null);

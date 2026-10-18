@@ -25,6 +25,8 @@ import {
   Crown,
   LogOut,
   ShieldCheck,
+  Receipt,
+  Lock,
 } from "lucide-react";
 import { ZenAudioPlayer } from "./ZenAudioPlayer";
 import { BrandLockup } from "./BrandMark";
@@ -32,6 +34,7 @@ import { AppUser } from "../services/authService";
 
 export type NavTab =
   | "home"
+  | "pricing"
   | "divination"
   | "manual"
   | "jiazi"
@@ -54,6 +57,7 @@ interface HeaderProps {
   onOpenAuthModal?: (mode?: "login" | "register" | "upgrade") => void;
   onLogout?: () => void;
   onOpenAdminModal?: () => void;
+  onShowToast?: (msg: string) => void;
 }
 
 interface TabConfig {
@@ -63,6 +67,7 @@ interface TabConfig {
   desc: string;
   icon: React.ComponentType<{ className?: string }>;
   showOnlyIf?: boolean;
+  vipOnly?: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -77,6 +82,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAuthModal,
   onLogout,
   onOpenAdminModal,
+  onShowToast,
 }) => {
   const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
   const [isWorkspaceMenuOpen, setIsWorkspaceMenuOpen] = useState(false);
@@ -120,8 +126,15 @@ export const Header: React.FC<HeaderProps> = ({
       id: "home",
       label: "Trang Chủ",
       chinese: "首頁",
-      desc: "Lời chào Cửu Nhị, bảng giá dịch vụ & đặc quyền hội viên",
+      desc: "Phương pháp bốc bài I Ching Tarot & thông tin liên lạc Cửu Nhị",
       icon: Home,
+    },
+    {
+      id: "pricing",
+      label: "Báo Giá",
+      chinese: "報價",
+      desc: "Bảng giá dịch vụ phong thủy, mệnh lý & đặc quyền hội viên",
+      icon: Receipt,
     },
     {
       id: "divination",
@@ -136,6 +149,7 @@ export const Header: React.FC<HeaderProps> = ({
       chinese: "說卦",
       desc: "Sách thuyết minh 64 quẻ dịch & thư viện bộ hình",
       icon: BookOpen,
+      vipOnly: true,
     },
     {
       id: "jiazi",
@@ -143,6 +157,7 @@ export const Header: React.FC<HeaderProps> = ({
       chinese: "六十花甲",
       desc: "Lục Thập Hoa Giáp, nạp ảnh & Bát Tự Lục Nhâm",
       icon: Compass,
+      vipOnly: true,
     },
     {
       id: "calendar",
@@ -150,6 +165,7 @@ export const Header: React.FC<HeaderProps> = ({
       chinese: "用事曆",
       desc: "Can Chi, Trực Nhật Tinh & 12 Giờ Tâm Ấn Phú",
       icon: CalendarDays,
+      vipOnly: true,
     },
     {
       id: "hannhiet",
@@ -157,6 +173,7 @@ export const Header: React.FC<HeaderProps> = ({
       chinese: "寒熱命",
       desc: "Bát Tự Hàn Nhiệt Tô Dân Phong, Cửu Cung Phi Tinh & Vận Trình 2027",
       icon: Flame,
+      vipOnly: true,
     },
     {
       id: "detail",
@@ -176,8 +193,25 @@ export const Header: React.FC<HeaderProps> = ({
   ];
 
   const currentTabObj = tabs.find((t) => t.id === currentTab) || tabs[0];
+  const isVip = Boolean(currentUser?.isMember || currentUser?.isAdmin);
 
   const handleSelectTab = (tabId: NavTab) => {
+    const targetTab = tabs.find((t) => t.id === tabId);
+    if (targetTab?.vipOnly && !isVip) {
+      setIsNavMenuOpen(false);
+      if (!currentUser) {
+        if (onShowToast) {
+          onShowToast(`Phân hệ "${targetTab.label}" chỉ dành riêng cho Hội Viên VIP. Vui lòng đăng nhập!`);
+        }
+        if (onOpenAuthModal) onOpenAuthModal("login");
+      } else {
+        if (onShowToast) {
+          onShowToast(`Phân hệ "${targetTab.label}" là đặc quyền dành cho Hội Viên VIP. Vui lòng nâng cấp VIP!`);
+        }
+        if (onOpenAuthModal) onOpenAuthModal("upgrade");
+      }
+      return;
+    }
     onSelectTab(tabId);
     setIsNavMenuOpen(false);
   };
@@ -384,7 +418,7 @@ export const Header: React.FC<HeaderProps> = ({
                           }`}
                         />
                         <span className="min-w-0 flex-1">
-                          <span className="flex items-baseline gap-2">
+                          <span className="flex items-baseline gap-2 flex-wrap">
                             <span
                               className={`font-display text-[17px] leading-tight ${
                                 isActive ? "text-gold-200" : "text-ivory-100"
@@ -393,6 +427,12 @@ export const Header: React.FC<HeaderProps> = ({
                               {tab.label}
                             </span>
                             <span className="text-[11px] text-ivory-500 font-serif">{tab.chinese}</span>
+                            {tab.vipOnly && (
+                              <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-amber-500/15 text-amber-300 border border-amber-500/40 inline-flex items-center gap-0.5 tracking-tight">
+                                <Crown className="w-2.5 h-2.5 text-amber-400" />
+                                VIP
+                              </span>
+                            )}
                           </span>
                           <span className="block text-[11px] text-ivory-500 truncate mt-0.5">{tab.desc}</span>
                         </span>
@@ -403,6 +443,9 @@ export const Header: React.FC<HeaderProps> = ({
                           <span className="text-[10px] font-sans text-gold-500 tabular-nums shrink-0">
                             {historyCount}
                           </span>
+                        )}
+                        {tab.vipOnly && !isVip && (
+                          <Lock className="w-3.5 h-3.5 text-amber-500/70 shrink-0" />
                         )}
                         {isActive && <Check className="w-3.5 h-3.5 text-gold-400 shrink-0" />}
                       </button>
