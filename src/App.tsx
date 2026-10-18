@@ -240,6 +240,9 @@ export default function App() {
   const [authModalMode, setAuthModalMode] = useState<"login" | "register" | "upgrade">("login");
 
   useEffect(() => {
+    // Tự động đồng bộ tài khoản với máy chủ backend khi mở ứng dụng
+    AuthService.syncUsersWithServer();
+
     const handleAuthChange = (e: any) => {
       if (e.detail && e.detail.user !== undefined) {
         setCurrentUser(e.detail.user);

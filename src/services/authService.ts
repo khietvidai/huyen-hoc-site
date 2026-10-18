@@ -175,11 +175,15 @@ export class AuthService {
    * Bước 1 Đăng ký: Kiểm tra thông tin, tạo mã xác thực 6 số gửi tới mail
    * (Đồng thời hiển thị thông báo/toast với mã OTP để tiện điền xác thực ngay)
    */
-  public static requestRegistrationCode(
+  /**
+   * Bước 1 Đăng ký: Kiểm tra thông tin, tạo mã xác thực 6 số gửi tới mail
+   * Đồng thời lưu vào cơ sở dữ liệu máy chủ để đồng bộ trên toàn hệ thống
+   */
+  public static async requestRegistrationCode(
     email: string,
     pass: string,
     name: string
-  ): { success: boolean; message: string; code?: string; email?: string } {
+  ): Promise<{ success: boolean; message: string; code?: string; email?: string }> {
     const cleanEmail = email.trim().toLowerCase();
     if (!cleanEmail || !cleanEmail.includes("@")) {
       return { success: false, message: "Email không hợp lệ. Vui lòng nhập đúng định dạng email!" };
@@ -188,40 +192,66 @@ export class AuthService {
       return { success: false, message: "Mật khẩu cần tối thiểu 6 ký tự!" };
     }
 
-    const users = this.getUsers();
-    if (users[cleanEmail]) {
-      return { success: false, message: "Tài khoản hoặc Email này đã tồn tại trong hệ thống. Vui lòng đăng nhập!" };
+    // 1. Thử gửi lên máy chủ server trước
+    try {
+      const resp = await fetch("/api/auth/request-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: cleanEmail, pass, name }),
+      });
+      const data = await resp.json();
+      if (data.success) {
+        // Lưu backup vào pending local
+        const pending = this.getPendingRegistrations();
+        pending[cleanEmail] = {
+          email: cleanEmail,
+          passwordHash: btoa(pass),
+          name: name.trim() || cleanEmail.split("@")[0],
+          code: data.code,
+          expiresAt: Date.now() + 10 * 60 * 1000,
+        };
+        this.savePendingRegistrations(pending);
+        return data;
+      } else {
+        return { success: false, message: data.message || "Không thể yêu cầu mã OTP!" };
+      }
+    } catch {
+      // 2. Fallback offline nếu máy chủ tạm thời không phản hồi
+      const users = this.getUsers();
+      if (users[cleanEmail]) {
+        return { success: false, message: "Tài khoản hoặc Email này đã tồn tại trong hệ thống. Vui lòng đăng nhập!" };
+      }
+
+      const code = this.generateOtpCode();
+      const expiresAt = Date.now() + 10 * 60 * 1000;
+
+      const pending = this.getPendingRegistrations();
+      pending[cleanEmail] = {
+        email: cleanEmail,
+        passwordHash: btoa(pass),
+        name: name.trim() || cleanEmail.split("@")[0],
+        code,
+        expiresAt,
+      };
+      this.savePendingRegistrations(pending);
+
+      return {
+        success: true,
+        message: `Mã xác thực 6 số [${code}] đã được gửi đến email ${cleanEmail}!`,
+        code,
+        email: cleanEmail,
+      };
     }
-
-    // Tạo mã OTP 6 chữ số
-    const code = this.generateOtpCode();
-    const expiresAt = Date.now() + 10 * 60 * 1000; // Có hiệu lực trong 10 phút
-
-    const pending = this.getPendingRegistrations();
-    pending[cleanEmail] = {
-      email: cleanEmail,
-      passwordHash: btoa(pass),
-      name: name.trim() || cleanEmail.split("@")[0],
-      code,
-      expiresAt,
-    };
-    this.savePendingRegistrations(pending);
-
-    return {
-      success: true,
-      message: `Mã xác thực 6 số [${code}] đã được gửi đến email ${cleanEmail}!`,
-      code,
-      email: cleanEmail,
-    };
   }
 
   /**
    * Bước 2 Đăng ký: Nhập mã 6 số để kích hoạt và chính thức đăng nhập
+   * Lưu ngay vào cơ sở dữ liệu server để Admin nhìn thấy ngay lập tức
    */
-  public static verifyOtpAndRegister(
+  public static async verifyOtpAndRegister(
     email: string,
     inputCode: string
-  ): { success: boolean; message: string; user?: AppUser } {
+  ): Promise<{ success: boolean; message: string; user?: AppUser }> {
     const cleanEmail = email.trim().toLowerCase();
     const cleanCode = inputCode.trim();
 
@@ -229,68 +259,124 @@ export class AuthService {
       return { success: false, message: "Vui lòng nhập đủ 6 chữ số mã xác thực!" };
     }
 
-    const pending = this.getPendingRegistrations();
-    const entry = pending[cleanEmail];
+    // 1. Gửi lên máy chủ server để kích hoạt và lưu vào users_db.json
+    try {
+      const resp = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: cleanEmail, code: cleanCode }),
+      });
+      const data = await resp.json();
+      if (data.success && data.user) {
+        const newUser = data.user as AppUser;
+        const users = this.getUsers();
+        const pending = this.getPendingRegistrations();
+        const pEntry = pending[cleanEmail];
+        users[cleanEmail] = {
+          user: newUser,
+          passwordHash: pEntry ? pEntry.passwordHash : "",
+        };
+        this.saveUsers(users);
+        delete pending[cleanEmail];
+        this.savePendingRegistrations(pending);
 
-    if (!entry) {
-      return {
-        success: false,
-        message: "Không tìm thấy phiên đăng ký hoặc yêu cầu đã hết hạn. Vui lòng đăng ký lại!",
+        this.setCurrentUser(newUser);
+
+        // Thông báo cho các tab/cửa sổ khác
+        window.dispatchEvent(new CustomEvent("iching-admin-data-change", { detail: { action: "user-registered", user: newUser } }));
+
+        return {
+          success: true,
+          message: data.message || `Đăng ký thành công! Kính chào ${newUser.name}.`,
+          user: newUser,
+        };
+      } else {
+        return { success: false, message: data.message || "Xác thực không thành công!" };
+      }
+    } catch {
+      // 2. Fallback offline nếu mất kết nối mạng
+      const pending = this.getPendingRegistrations();
+      const entry = pending[cleanEmail];
+
+      if (!entry) {
+        return {
+          success: false,
+          message: "Không tìm thấy phiên đăng ký hoặc yêu cầu đã hết hạn. Vui lòng đăng ký lại!",
+        };
+      }
+
+      if (Date.now() > entry.expiresAt) {
+        delete pending[cleanEmail];
+        this.savePendingRegistrations(pending);
+        return { success: false, message: "Mã xác thực đã hết hạn (sau 10 phút). Vui lòng gửi lại mã mới!" };
+      }
+
+      if (entry.code !== cleanCode) {
+        return { success: false, message: "Mã xác thực không chính xác. Vui lòng kiểm tra lại 6 chữ số!" };
+      }
+
+      const expiry = new Date();
+      expiry.setFullYear(expiry.getFullYear() + 1);
+
+      const newUser: AppUser = {
+        id: `usr_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+        email: cleanEmail,
+        name: entry.name,
+        isMember: true,
+        memberTier: "vip",
+        memberExpiryDate: expiry.toISOString().split("T")[0],
+        registeredAt: Date.now(),
+        incenseSticks: 30,
       };
-    }
 
-    if (Date.now() > entry.expiresAt) {
+      const users = this.getUsers();
+      users[cleanEmail] = {
+        user: newUser,
+        passwordHash: entry.passwordHash,
+      };
+      this.saveUsers(users);
+
       delete pending[cleanEmail];
       this.savePendingRegistrations(pending);
-      return { success: false, message: "Mã xác thực đã hết hạn (sau 10 phút). Vui lòng gửi lại mã mới!" };
+
+      this.setCurrentUser(newUser);
+
+      return {
+        success: true,
+        message: `Xác thực email thành công! Kính chào ${newUser.name}, bạn đã chính thức đăng nhập và mở khóa quyền đọc Thuyết Minh.`,
+        user: newUser,
+      };
     }
-
-    if (entry.code !== cleanCode) {
-      return { success: false, message: "Mã xác thực không chính xác. Vui lòng kiểm tra lại 6 chữ số!" };
-    }
-
-    // Xác thực thành công: Chính thức tạo tài khoản và tự động đăng nhập
-    const expiry = new Date();
-    expiry.setFullYear(expiry.getFullYear() + 1);
-
-    const newUser: AppUser = {
-      id: `usr_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-      email: cleanEmail,
-      name: entry.name,
-      isMember: true,
-      memberTier: "vip",
-      memberExpiryDate: expiry.toISOString().split("T")[0],
-      registeredAt: Date.now(),
-    };
-
-    const users = this.getUsers();
-    users[cleanEmail] = {
-      user: newUser,
-      passwordHash: entry.passwordHash,
-    };
-    this.saveUsers(users);
-
-    // Xóa pending
-    delete pending[cleanEmail];
-    this.savePendingRegistrations(pending);
-
-    // Chính thức đăng nhập
-    this.setCurrentUser(newUser);
-
-    return {
-      success: true,
-      message: `Xác thực email thành công! Kính chào ${newUser.name}, bạn đã chính thức đăng nhập và mở khóa quyền đọc Thuyết Minh.`,
-      user: newUser,
-    };
   }
 
   /**
    * Gửi lại mã xác thực OTP
    */
-  public static resendRegistrationCode(
+  public static async resendRegistrationCode(
     email: string
-  ): { success: boolean; message: string; code?: string } {
+  ): Promise<{ success: boolean; message: string; code?: string }> {
     const cleanEmail = email.trim().toLowerCase();
+
+    // 1. Thử gọi API máy chủ
+    try {
+      const resp = await fetch("/api/auth/resend-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: cleanEmail }),
+      });
+      const data = await resp.json();
+      if (data.success) {
+        const pending = this.getPendingRegistrations();
+        if (pending[cleanEmail]) {
+          pending[cleanEmail].code = data.code;
+          pending[cleanEmail].expiresAt = Date.now() + 10 * 60 * 1000;
+          this.savePendingRegistrations(pending);
+        }
+        return data;
+      }
+    } catch {}
+
+    // 2. Fallback offline
     const pending = this.getPendingRegistrations();
     const entry = pending[cleanEmail];
 
@@ -312,14 +398,14 @@ export class AuthService {
   }
 
   /**
-   * Đăng ký tài khoản trực tiếp (fallback nếu cần)
+   * Đăng ký tài khoản trực tiếp (đồng bộ server)
    */
-  public static register(
+  public static async register(
     email: string,
     pass: string,
     name: string,
     registerAsMember: boolean = true
-  ): { success: boolean; message: string; user?: AppUser } {
+  ): Promise<{ success: boolean; message: string; user?: AppUser }> {
     const cleanEmail = email.trim().toLowerCase();
     if (!cleanEmail || (!cleanEmail.includes("@") && cleanEmail !== "cuunhi")) {
       return { success: false, message: "Email không hợp lệ. Vui lòng nhập đúng định dạng email!" };
@@ -328,6 +414,27 @@ export class AuthService {
       return { success: false, message: "Mật khẩu cần tối thiểu 6 ký tự!" };
     }
 
+    try {
+      const resp = await fetch("/api/auth/register-direct", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: cleanEmail, pass, name, registerAsMember }),
+      });
+      const data = await resp.json();
+      if (data.success && data.user) {
+        const newUser = data.user as AppUser;
+        const users = this.getUsers();
+        users[cleanEmail] = { user: newUser, passwordHash: btoa(pass) };
+        this.saveUsers(users);
+        this.setCurrentUser(newUser);
+        window.dispatchEvent(new CustomEvent("iching-admin-data-change", { detail: { action: "user-registered", user: newUser } }));
+        return { success: true, message: data.message, user: newUser };
+      } else if (!resp.ok) {
+        return { success: false, message: data.message || "Đăng ký thất bại!" };
+      }
+    } catch {}
+
+    // Fallback offline
     const users = this.getUsers();
     if (users[cleanEmail]) {
       return { success: false, message: "Tài khoản hoặc Email này đã tồn tại trong hệ thống. Vui lòng đăng nhập!" };
@@ -344,7 +451,7 @@ export class AuthService {
       memberTier: registerAsMember ? "vip" : undefined,
       memberExpiryDate: registerAsMember ? expiry.toISOString().split("T")[0] : undefined,
       registeredAt: Date.now(),
-      incenseSticks: 30, // Thành viên đăng ký nhận ngay 30 nén nhang
+      incenseSticks: 30,
     };
 
     users[cleanEmail] = {
@@ -363,14 +470,35 @@ export class AuthService {
   }
 
   /**
-   * Đăng nhập tài khoản (hỗ trợ cả Email hoặc Tên đăng nhập cuunhi, mật khẩu 999999)
+   * Đăng nhập tài khoản (xác thực trực tiếp qua server backend)
    */
-  public static login(identifier: string, pass: string): { success: boolean; message: string; user?: AppUser } {
+  public static async login(identifier: string, pass: string): Promise<{ success: boolean; message: string; user?: AppUser }> {
     const cleanId = identifier.trim().toLowerCase();
+
+    // 1. Thử gửi lên server để xác thực
+    try {
+      const resp = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ identifier: cleanId, pass }),
+      });
+      const data = await resp.json();
+      if (data.success && data.user) {
+        const user = data.user as AppUser;
+        const users = this.getUsers();
+        users[cleanId] = { user, passwordHash: btoa(pass) };
+        this.saveUsers(users);
+        this.setCurrentUser(user);
+        return { success: true, message: data.message, user };
+      } else if (resp.status === 401 || resp.status === 400) {
+        return { success: false, message: data.message || "Tài khoản hoặc mật khẩu không chính xác!" };
+      }
+    } catch {}
+
+    // 2. Fallback offline nếu máy chủ không kết nối được
     this.ensureAdminAccount();
     const users = this.getUsers();
 
-    // 1. Tìm tài khoản theo key hoặc username hoặc email
     let account = users[cleanId];
     if (!account) {
       const foundEntry = Object.values(users).find(
@@ -383,7 +511,6 @@ export class AuthService {
       }
     }
 
-    // 2. Xử lý đặc biệt nếu là admin cuunhi với pass 999999
     if (cleanId === "cuunhi" && pass === "999999") {
       account = users["cuunhi"];
     }
@@ -679,7 +806,90 @@ export class AuthService {
   // ========================================================
 
   /**
-   * Lấy toàn bộ danh sách tài khoản đã đăng ký trong hệ thống
+   * Lấy toàn bộ danh sách tài khoản từ máy chủ Server (đồng bộ tức thì)
+   * Bất kỳ ai vừa đăng ký trên thiết bị/trình duyệt khác sẽ lập tức xuất hiện
+   */
+  public static async fetchUsersFromServer(): Promise<Array<{
+    user: AppUser;
+    todayIncenseCount: number;
+    accountKey: string;
+  }>> {
+    try {
+      const resp = await fetch("/api/admin/users");
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data.success && Array.isArray(data.users)) {
+          // Hòa trộn vào bộ nhớ local để dự phòng
+          const localUsers = this.getUsers();
+          let changed = false;
+          for (const item of data.users) {
+            if (item.accountKey && item.user) {
+              if (
+                !localUsers[item.accountKey] ||
+                JSON.stringify(localUsers[item.accountKey].user) !== JSON.stringify(item.user)
+              ) {
+                localUsers[item.accountKey] = {
+                  user: item.user,
+                  passwordHash: localUsers[item.accountKey]?.passwordHash || "",
+                };
+                changed = true;
+              }
+            }
+          }
+          if (changed) {
+            this.saveUsers(localUsers);
+          }
+
+          return data.users.map((item: any) => ({
+            user: item.user,
+            accountKey: item.accountKey,
+            todayIncenseCount: this.getTodayIncenseCount(item.user.id),
+          }));
+        }
+      }
+    } catch (e) {
+      console.warn("fetchUsersFromServer fallback to local:", e);
+    }
+    return this.getAllUsers();
+  }
+
+  /**
+   * Đồng bộ hai chiều giữa local và máy chủ khi khởi động ứng dụng
+   */
+  public static async syncUsersWithServer(): Promise<void> {
+    try {
+      this.ensureAdminAccount();
+      const localUsers = this.getUsers();
+      const resp = await fetch("/api/auth/sync", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ localUsers }),
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data.success && data.users) {
+          const merged = this.getUsers();
+          for (const [key, item] of Object.entries(data.users as Record<string, any>)) {
+            if (key && item?.user) {
+              merged[key] = {
+                user: item.user,
+                passwordHash: merged[key]?.passwordHash || item.passwordHash || "",
+              };
+            }
+          }
+          this.saveUsers(merged);
+          window.dispatchEvent(
+            new CustomEvent("iching-admin-data-change", { detail: { action: "sync-completed" } })
+          );
+        }
+      }
+    } catch (e) {
+      console.warn("syncUsersWithServer warning:", e);
+    }
+  }
+
+  /**
+   * Lấy toàn bộ danh sách tài khoản đã đăng ký (từ cache bộ nhớ local)
    */
   public static getAllUsers(): Array<{
     user: AppUser;
@@ -767,94 +977,121 @@ export class AuthService {
   }
 
   /**
-   * Admin chỉnh sửa quyền Hội Viên của tài khoản
+   * Admin chỉnh sửa quyền Hội Viên của tài khoản (lưu server & local)
    */
-  public static updateUserMembership(
+  public static async updateUserMembership(
     targetKeyOrId: string,
     isMember: boolean,
     tier: "standard" | "vip" = "vip"
-  ): { success: boolean; message: string; user?: AppUser } {
+  ): Promise<{ success: boolean; message: string; user?: AppUser }> {
     const users = this.getUsers();
     const cleanTarget = targetKeyOrId.trim().toLowerCase();
 
-    let foundKey = Object.keys(users).find(
-      (k) =>
-        k.toLowerCase() === cleanTarget ||
-        users[k].user.id === targetKeyOrId ||
-        users[k].user.email.toLowerCase() === cleanTarget ||
-        users[k].user.username?.toLowerCase() === cleanTarget
-    );
+    let foundKey =
+      Object.keys(users).find(
+        (k) =>
+          k.toLowerCase() === cleanTarget ||
+          users[k].user.id === targetKeyOrId ||
+          users[k].user.email.toLowerCase() === cleanTarget ||
+          users[k].user.username?.toLowerCase() === cleanTarget
+      ) || targetKeyOrId;
 
-    if (!foundKey) {
-      return { success: false, message: "Không tìm thấy tài khoản cần chỉnh sửa." };
+    if (users[foundKey]) {
+      users[foundKey].user.isMember = isMember;
+      users[foundKey].user.memberTier = isMember ? tier : undefined;
+      if (isMember && !users[foundKey].user.memberExpiryDate) {
+        const exp = new Date();
+        exp.setFullYear(exp.getFullYear() + 1);
+        users[foundKey].user.memberExpiryDate = exp.toISOString().split("T")[0];
+      }
+      this.saveUsers(users);
+
+      const curUser = this.getCurrentUser();
+      if (curUser && curUser.id === users[foundKey].user.id) {
+        this.setCurrentUser(users[foundKey].user);
+      }
     }
 
-    users[foundKey].user.isMember = isMember;
-    users[foundKey].user.memberTier = isMember ? tier : undefined;
-    if (isMember && !users[foundKey].user.memberExpiryDate) {
-      const exp = new Date();
-      exp.setFullYear(exp.getFullYear() + 1);
-      users[foundKey].user.memberExpiryDate = exp.toISOString().split("T")[0];
-    }
-    this.saveUsers(users);
-
-    const curUser = this.getCurrentUser();
-    if (curUser && curUser.id === users[foundKey].user.id) {
-      this.setCurrentUser(users[foundKey].user);
-    }
+    // Gửi yêu cầu cập nhật lên server
+    try {
+      const resp = await fetch("/api/admin/users/update-member", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ targetKey: foundKey, isMember, memberTier: tier }),
+      });
+      const data = await resp.json();
+      if (data.success && data.user) {
+        if (users[foundKey]) {
+          users[foundKey].user = data.user;
+          this.saveUsers(users);
+        }
+      }
+    } catch {}
 
     window.dispatchEvent(
       new CustomEvent("iching-admin-data-change", {
-        detail: { action: "update-membership", userId: users[foundKey].user.id, isMember },
+        detail: { action: "update-membership", targetKey: foundKey, isMember },
       })
     );
 
     return {
       success: true,
-      message: `Đã cập nhật trạng thái hội viên của [${users[foundKey].user.name}] thành ${isMember ? "Hội Viên VIP" : "Khách thường"}.`,
-      user: users[foundKey].user,
+      message: `Đã cập nhật trạng thái hội viên của [${users[foundKey]?.user?.name || foundKey}] thành ${isMember ? "Hội Viên VIP" : "Khách thường"}.`,
+      user: users[foundKey]?.user,
     };
   }
 
   /**
-   * Admin xóa tài khoản khác (bảo vệ tuyệt đối tài khoản admin cuunhi)
+   * Admin xóa tài khoản khác (bảo vệ tuyệt đối tài khoản admin cuunhi, đồng bộ server)
    */
-  public static deleteUser(targetKeyOrId: string): { success: boolean; message: string } {
-    const users = this.getUsers();
+  public static async deleteUser(targetKeyOrId: string): Promise<{ success: boolean; message: string }> {
     const cleanTarget = targetKeyOrId.trim().toLowerCase();
 
-    let foundKey = Object.keys(users).find(
-      (k) =>
-        k.toLowerCase() === cleanTarget ||
-        users[k].user.id === targetKeyOrId ||
-        users[k].user.email.toLowerCase() === cleanTarget ||
-        users[k].user.username?.toLowerCase() === cleanTarget
-    );
-
-    if (!foundKey) {
-      return { success: false, message: "Không tìm thấy tài khoản cần xóa." };
+    if (cleanTarget === "cuunhi") {
+      return { success: false, message: "Tuyệt đối không thể xóa tài khoản Quản Trị Viên Tối Cao (cuunhi)!" };
     }
 
-    // Bảo vệ tài khoản admin cuunhi
+    const users = this.getUsers();
+    let foundKey =
+      Object.keys(users).find(
+        (k) =>
+          k.toLowerCase() === cleanTarget ||
+          users[k].user.id === targetKeyOrId ||
+          users[k].user.email.toLowerCase() === cleanTarget ||
+          users[k].user.username?.toLowerCase() === cleanTarget
+      ) || targetKeyOrId;
+
     if (
       foundKey === "cuunhi" ||
-      users[foundKey].user.username === "cuunhi" ||
-      users[foundKey].user.email === "cuunhi" ||
-      users[foundKey].user.isAdmin
+      users[foundKey]?.user?.username === "cuunhi" ||
+      users[foundKey]?.user?.email === "cuunhi" ||
+      users[foundKey]?.user?.isAdmin
     ) {
       return { success: false, message: "Tuyệt đối không thể xóa tài khoản Quản Trị Viên Tối Cao (cuunhi)!" };
     }
 
-    const deletedUserName = users[foundKey].user.name;
-    const deletedUserId = users[foundKey].user.id;
+    const deletedUserName = users[foundKey]?.user?.name || targetKeyOrId;
+    const deletedUserId = users[foundKey]?.user?.id;
 
-    // Xóa khỏi bảng lưu trữ
-    delete users[foundKey];
-    this.saveUsers(users);
+    // Xóa khỏi bảng lưu trữ local
+    if (users[foundKey]) {
+      delete users[foundKey];
+      this.saveUsers(users);
+    }
 
-    // Xóa bộ đếm dâng hương liên quan
+    if (deletedUserId) {
+      try {
+        localStorage.removeItem(`${INCENSE_DAILY_KEY}_${deletedUserId}`);
+      } catch {}
+    }
+
+    // Gửi lệnh xóa lên server
     try {
-      localStorage.removeItem(`${INCENSE_DAILY_KEY}_${deletedUserId}`);
+      await fetch("/api/admin/users/delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ targetKey: foundKey }),
+      });
     } catch {}
 
     window.dispatchEvent(
@@ -870,20 +1107,54 @@ export class AuthService {
   }
 
   /**
-   * Admin tạo nhanh một tài khoản mới
+   * Admin tạo nhanh một tài khoản mới (đồng bộ server)
    */
-  public static createUserByAdmin(data: {
+  public static async createUserByAdmin(data: {
     name: string;
     email: string;
     pass: string;
     isMember?: boolean;
     incenseSticks?: number;
-  }): { success: boolean; message: string; user?: AppUser } {
+  }): Promise<{ success: boolean; message: string; user?: AppUser }> {
     const cleanEmail = data.email.trim().toLowerCase();
     if (!cleanEmail) {
       return { success: false, message: "Email hoặc tên đăng nhập không được để trống!" };
     }
 
+    // 1. Thử gửi lên server
+    try {
+      const resp = await fetch("/api/admin/users/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const resData = await resp.json();
+      if (resData.success && resData.user) {
+        const newUser = resData.user as AppUser;
+        const users = this.getUsers();
+        users[cleanEmail] = {
+          user: newUser,
+          passwordHash: btoa(data.pass || "123456"),
+        };
+        this.saveUsers(users);
+
+        window.dispatchEvent(
+          new CustomEvent("iching-admin-data-change", {
+            detail: { action: "create-user", user: newUser },
+          })
+        );
+
+        return {
+          success: true,
+          message: resData.message || `Đã tạo tài khoản [${newUser.name}] thành công.`,
+          user: newUser,
+        };
+      } else if (!resp.ok) {
+        return { success: false, message: resData.message || "Không thể tạo tài khoản trên máy chủ!" };
+      }
+    } catch {}
+
+    // 2. Fallback offline
     const users = this.getUsers();
     if (users[cleanEmail]) {
       return { success: false, message: "Tài khoản hoặc email này đã tồn tại!" };

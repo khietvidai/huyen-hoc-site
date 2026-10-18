@@ -62,12 +62,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     handleResetForm();
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg(null);
 
     if (mode === "login") {
-      const res = AuthService.login(email, password);
+      const res = await AuthService.login(email, password);
       if (!res.success) {
         setErrorMsg(res.message);
         return;
@@ -78,7 +78,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     } else if (mode === "register") {
       if (regStep === "form") {
         // Bước 1: Yêu cầu gửi mã 6 số tới mail
-        const res = AuthService.requestRegistrationCode(email, password, name);
+        const res = await AuthService.requestRegistrationCode(email, password, name);
         if (!res.success) {
           setErrorMsg(res.message);
           return;
@@ -90,7 +90,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         }
       } else {
         // Bước 2: Điền mã 6 số để chính thức đăng nhập
-        const res = AuthService.verifyOtpAndRegister(email, otpCode);
+        const res = await AuthService.verifyOtpAndRegister(email, otpCode);
         if (!res.success) {
           setErrorMsg(res.message);
           return;
@@ -111,11 +111,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     }
   };
 
-  const handleResendOtp = () => {
+  const handleResendOtp = async () => {
     setIsResending(true);
     setErrorMsg(null);
-    setTimeout(() => {
-      const res = AuthService.resendRegistrationCode(email);
+    try {
+      const res = await AuthService.resendRegistrationCode(email);
       setIsResending(false);
       if (res.success) {
         setLastGeneratedOtp(res.code || null);
@@ -123,7 +123,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       } else {
         setErrorMsg(res.message);
       }
-    }, 400);
+    } catch {
+      setIsResending(false);
+    }
   };
 
   return (

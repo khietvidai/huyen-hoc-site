@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import path from "path";
+import fs from "fs";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
@@ -395,6 +396,450 @@ async function generateWithFallback(
 // Health check API
 app.get("/api/health", (_req: Request, res: Response) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
+// ============================================================================
+// HỆ THỐNG QUẢN LÝ TÀI KHOẢN & NGƯỜI DÙNG PHÍA SERVER (ĐỒNG BỘ ĐA THIẾT BỊ)
+// ============================================================================
+const DATA_DIR = path.join(process.cwd(), "data");
+const USERS_FILE = path.join(DATA_DIR, "users_db.json");
+const PENDING_FILE = path.join(DATA_DIR, "pending_db.json");
+
+function ensureDataDir() {
+  if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+  }
+}
+
+function getServerUsers(): Record<string, { user: any; passwordHash: string }> {
+  ensureDataDir();
+  let users: Record<string, { user: any; passwordHash: string }> = {};
+  try {
+    if (fs.existsSync(USERS_FILE)) {
+      const data = fs.readFileSync(USERS_FILE, "utf-8");
+      users = JSON.parse(data);
+    }
+  } catch (e) {
+    console.error("Lỗi đọc users_db.json:", e);
+  }
+
+  // Khởi tạo tài khoản Quản trị tối cao mặc định
+  const adminKey = "cuunhi";
+  const expectedHash = Buffer.from("999999").toString("base64");
+  if (!users[adminKey]) {
+    users[adminKey] = {
+      user: {
+        id: "usr_admin_cuunhi",
+        email: "cuunhi",
+        username: "cuunhi",
+        name: "Cửu Nhị Admin",
+        isMember: true,
+        isAdmin: true,
+        memberTier: "vip",
+        memberExpiryDate: "2099-12-31",
+        registeredAt: Date.now(),
+        incenseSticks: 999,
+      },
+      passwordHash: expectedHash,
+    };
+    saveServerUsers(users);
+  } else {
+    let changed = false;
+    if (!users[adminKey].user.isAdmin) {
+      users[adminKey].user.isAdmin = true;
+      changed = true;
+    }
+    if (users[adminKey].passwordHash !== expectedHash) {
+      users[adminKey].passwordHash = expectedHash;
+      changed = true;
+    }
+    if (changed) saveServerUsers(users);
+  }
+
+  return users;
+}
+
+function saveServerUsers(users: Record<string, { user: any; passwordHash: string }>) {
+  try {
+    ensureDataDir();
+    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), "utf-8");
+  } catch (e) {
+    console.error("Lỗi lưu users_db.json:", e);
+  }
+}
+
+function getServerPending(): Record<string, any> {
+  ensureDataDir();
+  try {
+    if (fs.existsSync(PENDING_FILE)) {
+      return JSON.parse(fs.readFileSync(PENDING_FILE, "utf-8"));
+    }
+  } catch {}
+  return {};
+}
+
+function saveServerPending(pending: Record<string, any>) {
+  try {
+    ensureDataDir();
+    fs.writeFileSync(PENDING_FILE, JSON.stringify(pending, null, 2), "utf-8");
+  } catch (e) {
+    console.error("Lỗi lưu pending_db.json:", e);
+  }
+}
+
+// 1. API lấy toàn bộ danh sách tài khoản cho Admin (người khác đăng ký sẽ hiện ngay lập tức)
+app.get("/api/admin/users", (_req: Request, res: Response) => {
+  try {
+    const users = getServerUsers();
+    const list = Object.entries(users).map(([accountKey, item]) => ({
+      accountKey,
+      user: item.user,
+    }));
+    return res.json({ success: true, users: list, total: list.length });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, message: err?.message || "Lỗi máy chủ" });
+  }
+});
+
+// 2. API Yêu cầu gửi mã xác thực OTP đăng ký
+app.post("/api/auth/request-otp", (req: Request, res: Response) => {
+  try {
+    const { email, pass, name } = req.body;
+    const cleanEmail = (email || "").trim().toLowerCase();
+    if (!cleanEmail || !cleanEmail.includes("@")) {
+      return res.status(400).json({ success: false, message: "Email không hợp lệ. Vui lòng nhập đúng định dạng!" });
+    }
+    if (!pass || pass.length < 6) {
+      return res.status(400).json({ success: false, message: "Mật khẩu cần tối thiểu 6 ký tự!" });
+    }
+
+    const users = getServerUsers();
+    if (users[cleanEmail]) {
+      return res.status(400).json({ success: false, message: "Tài khoản hoặc Email này đã tồn tại trên hệ thống!" });
+    }
+
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = Date.now() + 10 * 60 * 1000; // 10 phút
+
+    const pending = getServerPending();
+    pending[cleanEmail] = {
+      email: cleanEmail,
+      passwordHash: Buffer.from(pass).toString("base64"),
+      name: (name || "").trim() || cleanEmail.split("@")[0],
+      code,
+      expiresAt,
+    };
+    saveServerPending(pending);
+
+    console.log(`[OTP Generated] Mã xác thực cho ${cleanEmail}: ${code}`);
+
+    return res.json({
+      success: true,
+      message: `Mã xác thực 6 số [${code}] đã được gửi đến email ${cleanEmail}!`,
+      code,
+      email: cleanEmail,
+    });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, message: err?.message || "Lỗi máy chủ" });
+  }
+});
+
+// API Gửi lại mã xác thực OTP
+app.post("/api/auth/resend-otp", (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+    const cleanEmail = (email || "").trim().toLowerCase();
+    const pending = getServerPending();
+    const entry = pending[cleanEmail];
+    if (!entry) {
+      return res.status(400).json({ success: false, message: "Không tìm thấy yêu cầu đăng ký nào cho email này. Vui lòng đăng ký lại!" });
+    }
+    const newCode = Math.floor(100000 + Math.random() * 900000).toString();
+    entry.code = newCode;
+    entry.expiresAt = Date.now() + 10 * 60 * 1000;
+    pending[cleanEmail] = entry;
+    saveServerPending(pending);
+
+    console.log(`[OTP Resent] Mã xác thực mới cho ${cleanEmail}: ${newCode}`);
+    return res.json({
+      success: true,
+      message: `Mã xác thực mới [${newCode}] đã được gửi đến email ${cleanEmail}!`,
+      code: newCode,
+    });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, message: err?.message || "Lỗi máy chủ" });
+  }
+});
+
+// 3. API Xác thực OTP & tạo tài khoản (Lưu ngay vào cơ sở dữ liệu máy chủ)
+app.post("/api/auth/verify-otp", (req: Request, res: Response) => {
+  try {
+    const { email, code } = req.body;
+    const cleanEmail = (email || "").trim().toLowerCase();
+    const cleanCode = (code || "").trim();
+
+    if (!cleanCode || cleanCode.length !== 6) {
+      return res.status(400).json({ success: false, message: "Vui lòng nhập đủ 6 chữ số mã xác thực!" });
+    }
+
+    const pending = getServerPending();
+    const entry = pending[cleanEmail];
+
+    if (!entry) {
+      return res.status(400).json({ success: false, message: "Yêu cầu đăng ký không tồn tại hoặc đã hết hạn!" });
+    }
+    if (Date.now() > entry.expiresAt) {
+      delete pending[cleanEmail];
+      saveServerPending(pending);
+      return res.status(400).json({ success: false, message: "Mã xác thực đã hết hạn. Vui lòng gửi lại mã mới!" });
+    }
+    if (entry.code !== cleanCode) {
+      return res.status(400).json({ success: false, message: "Mã xác thực không chính xác. Vui lòng kiểm tra lại!" });
+    }
+
+    const expiry = new Date();
+    expiry.setFullYear(expiry.getFullYear() + 1);
+
+    const newUser = {
+      id: `usr_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      email: cleanEmail,
+      name: entry.name,
+      isMember: true,
+      memberTier: "vip",
+      memberExpiryDate: expiry.toISOString().split("T")[0],
+      registeredAt: Date.now(),
+      incenseSticks: 30,
+    };
+
+    const users = getServerUsers();
+    users[cleanEmail] = {
+      user: newUser,
+      passwordHash: entry.passwordHash,
+    };
+    saveServerUsers(users);
+
+    delete pending[cleanEmail];
+    saveServerPending(pending);
+
+    console.log(`[USER REGISTERED] Tài khoản mới từ người dùng: ${newUser.name} (${cleanEmail}) -> Đã lưu vào server!`);
+
+    return res.json({
+      success: true,
+      message: `Đăng ký thành công! Kính chào ${newUser.name}, bạn đã chính thức kích hoạt tài khoản.`,
+      user: newUser,
+    });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, message: err?.message || "Lỗi máy chủ" });
+  }
+});
+
+// 4. API Đăng ký trực tiếp (Direct Register)
+app.post("/api/auth/register-direct", (req: Request, res: Response) => {
+  try {
+    const { email, pass, name, registerAsMember } = req.body;
+    const cleanEmail = (email || "").trim().toLowerCase();
+    if (!cleanEmail || (!cleanEmail.includes("@") && cleanEmail !== "cuunhi")) {
+      return res.status(400).json({ success: false, message: "Email không hợp lệ!" });
+    }
+    if (!pass || pass.length < 6) {
+      return res.status(400).json({ success: false, message: "Mật khẩu tối thiểu 6 ký tự!" });
+    }
+
+    const users = getServerUsers();
+    if (users[cleanEmail]) {
+      return res.status(400).json({ success: false, message: "Tài khoản hoặc Email này đã tồn tại trên hệ thống!" });
+    }
+
+    const expiry = new Date();
+    expiry.setFullYear(expiry.getFullYear() + 1);
+    const isMember = registerAsMember !== false;
+
+    const newUser = {
+      id: `usr_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      email: cleanEmail,
+      name: (name || "").trim() || cleanEmail.split("@")[0],
+      isMember,
+      memberTier: isMember ? "vip" : undefined,
+      memberExpiryDate: isMember ? expiry.toISOString().split("T")[0] : undefined,
+      registeredAt: Date.now(),
+      incenseSticks: isMember ? 30 : 5,
+    };
+
+    users[cleanEmail] = {
+      user: newUser,
+      passwordHash: Buffer.from(pass).toString("base64"),
+    };
+    saveServerUsers(users);
+
+    console.log(`[DIRECT REGISTER] ${newUser.name} (${cleanEmail}) đã lưu vào server.`);
+
+    return res.json({
+      success: true,
+      message: `Đăng ký thành công tài khoản ${newUser.name}!`,
+      user: newUser,
+    });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, message: err?.message || "Lỗi máy chủ" });
+  }
+});
+
+// 5. API Đăng nhập xác thực máy chủ
+app.post("/api/auth/login", (req: Request, res: Response) => {
+  try {
+    const { identifier, pass } = req.body;
+    const cleanId = (identifier || "").trim().toLowerCase();
+    if (!cleanId || !pass) {
+      return res.status(400).json({ success: false, message: "Vui lòng nhập tài khoản/email và mật khẩu!" });
+    }
+
+    const users = getServerUsers();
+    const entry = users[cleanId] || Object.values(users).find(
+      (u) => (u.user.username && u.user.username.toLowerCase() === cleanId) || (u.user.email && u.user.email.toLowerCase() === cleanId)
+    );
+
+    if (!entry) {
+      return res.status(401).json({ success: false, message: "Tài khoản không tồn tại trên hệ thống!" });
+    }
+
+    const inputHash = Buffer.from(pass).toString("base64");
+    if (entry.passwordHash !== inputHash) {
+      return res.status(401).json({ success: false, message: "Mật khẩu không chính xác!" });
+    }
+
+    return res.json({
+      success: true,
+      message: `Đăng nhập thành công! Kính chào ${entry.user.name}.`,
+      user: entry.user,
+    });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, message: err?.message || "Lỗi máy chủ" });
+  }
+});
+
+// 6. API Admin đổi quyền Hội viên VIP
+app.post("/api/admin/users/update-member", (req: Request, res: Response) => {
+  try {
+    const { targetKey, isMember, memberTier } = req.body;
+    const users = getServerUsers();
+    const entry = users[targetKey];
+    if (!entry) {
+      return res.status(404).json({ success: false, message: "Không tìm thấy người dùng!" });
+    }
+
+    entry.user.isMember = Boolean(isMember);
+    if (isMember) {
+      entry.user.memberTier = memberTier || "vip";
+      const exp = new Date();
+      exp.setFullYear(exp.getFullYear() + 1);
+      entry.user.memberExpiryDate = exp.toISOString().split("T")[0];
+    } else {
+      entry.user.memberTier = undefined;
+      entry.user.memberExpiryDate = undefined;
+    }
+
+    saveServerUsers(users);
+    return res.json({
+      success: true,
+      message: `Đã ${isMember ? "kích hoạt VIP Hội Viên" : "hạ cấp xuống thường"} cho ${entry.user.name}!`,
+      user: entry.user,
+    });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, message: err?.message || "Lỗi máy chủ" });
+  }
+});
+
+// 7. API Admin xóa tài khoản
+app.post("/api/admin/users/delete", (req: Request, res: Response) => {
+  try {
+    const { targetKey } = req.body;
+    if (targetKey === "cuunhi") {
+      return res.status(400).json({ success: false, message: "Không thể xóa tài khoản Quản trị viên tối cao!" });
+    }
+    const users = getServerUsers();
+    if (!users[targetKey]) {
+      return res.status(404).json({ success: false, message: "Không tìm thấy tài khoản cần xóa!" });
+    }
+
+    const name = users[targetKey].user.name;
+    delete users[targetKey];
+    saveServerUsers(users);
+
+    return res.json({ success: true, message: `Đã xóa vĩnh viễn tài khoản của ${name} khỏi hệ thống!` });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, message: err?.message || "Lỗi máy chủ" });
+  }
+});
+
+// 8. API Admin tạo tài khoản mới trực tiếp
+app.post("/api/admin/users/create", (req: Request, res: Response) => {
+  try {
+    const { name, email, pass, isMember, memberTier } = req.body;
+    const cleanEmail = (email || "").trim().toLowerCase();
+    if (!cleanEmail || !cleanEmail.includes("@")) {
+      return res.status(400).json({ success: false, message: "Email không hợp lệ!" });
+    }
+    const users = getServerUsers();
+    if (users[cleanEmail]) {
+      return res.status(400).json({ success: false, message: "Email này đã tồn tại trên hệ thống!" });
+    }
+
+    const expiry = new Date();
+    expiry.setFullYear(expiry.getFullYear() + 1);
+
+    const newUser = {
+      id: `usr_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      email: cleanEmail,
+      name: (name || "").trim() || cleanEmail.split("@")[0],
+      isMember: Boolean(isMember),
+      memberTier: isMember ? (memberTier || "vip") : undefined,
+      memberExpiryDate: isMember ? expiry.toISOString().split("T")[0] : undefined,
+      registeredAt: Date.now(),
+      incenseSticks: isMember ? 30 : 5,
+    };
+
+    users[cleanEmail] = {
+      user: newUser,
+      passwordHash: Buffer.from(pass || "123456").toString("base64"),
+    };
+    saveServerUsers(users);
+
+    return res.json({
+      success: true,
+      message: `Đã tạo tài khoản cho ${newUser.name} (${cleanEmail}) thành công!`,
+      user: newUser,
+    });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, message: err?.message || "Lỗi máy chủ" });
+  }
+});
+
+// 9. API Đồng bộ hai chiều (Sync)
+app.post("/api/auth/sync", (req: Request, res: Response) => {
+  try {
+    const { localUsers } = req.body;
+    const users = getServerUsers();
+
+    if (localUsers && typeof localUsers === "object") {
+      let merged = false;
+      for (const [key, item] of Object.entries(localUsers as Record<string, any>)) {
+        if (key && item?.user && !users[key]) {
+          users[key] = item;
+          merged = true;
+        }
+      }
+      if (merged) {
+        saveServerUsers(users);
+      }
+    }
+
+    const list = Object.entries(users).map(([accountKey, item]) => ({
+      accountKey,
+      user: item.user,
+    }));
+    return res.json({ success: true, users: list, allUsersMap: users });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, message: err?.message || "Lỗi máy chủ" });
+  }
 });
 
 // AI I Ching Interpretation endpoint (Luận giải thuần theo Sách Thuyết Minh)

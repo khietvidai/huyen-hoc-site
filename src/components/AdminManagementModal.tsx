@@ -37,6 +37,8 @@ export const AdminManagementModal: React.FC<AdminManagementModalProps> = ({
   const [usersList, setUsersList] = useState<UserRecordItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState<"all" | "member" | "admin">("all");
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastSyncTime, setLastSyncTime] = useState<string>("Đang kết nối...");
 
   // State xác nhận xóa tài khoản
   const [deletingUser, setDeletingUser] = useState<UserRecordItem | null>(null);
@@ -48,20 +50,65 @@ export const AdminManagementModal: React.FC<AdminManagementModalProps> = ({
   const [newUserPass, setNewUserPass] = useState("123456");
   const [newUserIsMember, setNewUserIsMember] = useState(true);
 
-  const loadData = () => {
-    const list = AuthService.getAllUsers();
-    setUsersList(list.map((i) => ({ user: i.user, accountKey: i.accountKey })));
+  // Lưu trữ các ID người dùng đã thấy để thông báo khi có người mới đăng ký
+  const knownUserIdsRef = React.useRef<Set<string>>(new Set());
+  const isInitialLoadRef = React.useRef(true);
+
+  const loadData = async (showToastOnNew = true) => {
+    setIsRefreshing(true);
+    try {
+      const list = await AuthService.fetchUsersFromServer();
+      const mapped = list.map((i) => ({ user: i.user, accountKey: i.accountKey }));
+
+      // Kiểm tra xem có người đăng ký mới trên các máy khác không
+      if (!isInitialLoadRef.current && showToastOnNew) {
+        const newUsers = mapped.filter((item) => !knownUserIdsRef.current.has(item.user.id));
+        if (newUsers.length > 0) {
+          const names = newUsers.map((u) => `${u.user.name} (${u.user.email})`).join(", ");
+          if (onShowToast) {
+            onShowToast(`🔔 Có ${newUsers.length} tài khoản mới vừa đăng ký: ${names}!`);
+          }
+        }
+      }
+
+      const updatedIds = new Set<string>();
+      mapped.forEach((item) => updatedIds.add(item.user.id));
+      knownUserIdsRef.current = updatedIds;
+      isInitialLoadRef.current = false;
+
+      setUsersList(mapped);
+      const now = new Date();
+      setLastSyncTime(
+        now.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit", second: "2-digit" })
+      );
+    } catch (e) {
+      console.error("Lỗi khi tải danh sách người dùng:", e);
+      const list = AuthService.getAllUsers();
+      setUsersList(list.map((i) => ({ user: i.user, accountKey: i.accountKey })));
+    } finally {
+      setIsRefreshing(false);
+    }
   };
 
+  // Tự động kiểm tra và đồng bộ mỗi 3.5 giây khi mở bảng Quản trị
   useEffect(() => {
-    if (isOpen) {
-      loadData();
+    if (!isOpen) {
+      isInitialLoadRef.current = true;
+      return;
     }
+
+    loadData(false);
+
+    const interval = setInterval(() => {
+      loadData(true);
+    }, 3500);
+
+    return () => clearInterval(interval);
   }, [isOpen]);
 
   useEffect(() => {
     const handleAdminEvent = () => {
-      loadData();
+      loadData(false);
     };
     window.addEventListener("iching-admin-data-change", handleAdminEvent);
     return () => window.removeEventListener("iching-admin-data-change", handleAdminEvent);
@@ -92,25 +139,25 @@ export const AdminManagementModal: React.FC<AdminManagementModalProps> = ({
   const totalAdmins = usersList.filter((u) => u.user.isAdmin).length;
 
   // Xử lý chuyển đổi quyền hội viên
-  const handleToggleMembership = (targetKey: string, currentIsMember: boolean) => {
-    const res = AuthService.updateUserMembership(targetKey, !currentIsMember);
+  const handleToggleMembership = async (targetKey: string, currentIsMember: boolean) => {
+    const res = await AuthService.updateUserMembership(targetKey, !currentIsMember);
     if (onShowToast) onShowToast(res.message);
-    loadData();
+    await loadData(false);
   };
 
   // Xử lý xóa tài khoản
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (!deletingUser) return;
-    const res = AuthService.deleteUser(deletingUser.accountKey);
+    const res = await AuthService.deleteUser(deletingUser.accountKey);
     if (onShowToast) onShowToast(res.message);
     setDeletingUser(null);
-    loadData();
+    await loadData(false);
   };
 
   // Xử lý tạo tài khoản mới
-  const handleCreateUserSubmit = (e: React.FormEvent) => {
+  const handleCreateUserSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = AuthService.createUserByAdmin({
+    const res = await AuthService.createUserByAdmin({
       name: newUserName,
       email: newUserEmail,
       pass: newUserPass,
@@ -122,7 +169,7 @@ export const AdminManagementModal: React.FC<AdminManagementModalProps> = ({
       setNewUserName("");
       setNewUserEmail("");
       setNewUserPass("123456");
-      loadData();
+      await loadData(false);
     } else {
       if (onShowToast) onShowToast(res.message);
     }
@@ -141,14 +188,20 @@ export const AdminManagementModal: React.FC<AdminManagementModalProps> = ({
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base sm:text-lg font-bold text-[#F5EAD4] flex items-center gap-2">
-                <span>QUẢN TRỊ VIÊN HỆ THỐNG CỬU NHỊ</span>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-base sm:text-lg font-bold text-[#F5EAD4]">
+                  QUẢN TRỊ VIÊN HỆ THỐNG CỬU NHỊ
+                </h2>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-red-950/80 text-red-300 border border-red-600/60">
                   ROOT ADMIN
                 </span>
-              </h2>
-              <p className="text-xs text-[#A89882]">
-                Xem danh sách tài khoản • Quản lý hội viên VIP • Phân quyền & Quản trị hệ thống
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-600/50 text-[10px] font-sans">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>Trực tuyến • Tự động đồng bộ 3s</span>
+                </span>
+              </div>
+              <p className="text-xs text-[#A89882] flex items-center gap-2 mt-0.5">
+                <span>Xem danh sách tài khoản • Quản lý hội viên VIP • Cập nhật lúc: {lastSyncTime}</span>
               </p>
             </div>
           </div>
@@ -156,11 +209,13 @@ export const AdminManagementModal: React.FC<AdminManagementModalProps> = ({
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={loadData}
-              className="p-2 rounded-xl bg-[#22170D] hover:bg-[#342416] text-[#C9A55A] border border-[#4A321D] transition-colors cursor-pointer"
-              title="Làm mới dữ liệu"
+              onClick={() => loadData(false)}
+              disabled={isRefreshing}
+              className="px-3 py-1.5 rounded-xl bg-[#22170D] hover:bg-[#342416] text-[#C9A55A] border border-[#4A321D] transition-colors cursor-pointer flex items-center gap-1.5 text-xs font-serif shadow-xs"
+              title="Làm mới dữ liệu từ máy chủ"
             >
-              <RefreshCw className="w-4 h-4" />
+              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-amber-300" : ""}`} />
+              <span className="hidden sm:inline">Làm mới</span>
             </button>
             <button
               type="button"
