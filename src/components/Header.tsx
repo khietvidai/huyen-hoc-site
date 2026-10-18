@@ -27,6 +27,7 @@ import {
   ShieldCheck,
   Receipt,
   Lock,
+  Type,
 } from "lucide-react";
 import { ZenAudioPlayer } from "./ZenAudioPlayer";
 import { BrandLockup } from "./BrandMark";
@@ -44,6 +45,24 @@ export type NavTab =
   | "library"
   | "decks"
   | "history";
+
+export type FontSizeId = "sm" | "md" | "lg" | "xl";
+
+export interface FontSizeOption {
+  id: FontSizeId;
+  label: string;
+  badge: string;
+  sizePx: string;
+  percent: string;
+  desc: string;
+}
+
+export const FONT_SIZE_OPTIONS: FontSizeOption[] = [
+  { id: "sm", label: "Chữ Nhỏ", badge: "A⁻", sizePx: "14px", percent: "88%", desc: "Gọn gàng, vừa vặn" },
+  { id: "md", label: "Chữ Chuẩn", badge: "A", sizePx: "16px", percent: "100%", desc: "Mặc định tiêu chuẩn" },
+  { id: "lg", label: "Chữ Lớn", badge: "A⁺", sizePx: "18px", percent: "113%", desc: "To rõ, dễ đọc kinh văn" },
+  { id: "xl", label: "Rất Lớn", badge: "A⁺⁺", sizePx: "20.5px", percent: "128%", desc: "Cực đại, mắt kém nhìn rõ" },
+];
 
 interface HeaderProps {
   currentTab: NavTab;
@@ -86,8 +105,52 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
   const [isWorkspaceMenuOpen, setIsWorkspaceMenuOpen] = useState(false);
+  const [isFontSizeMenuOpen, setIsFontSizeMenuOpen] = useState(false);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const navMenuRef = useRef<HTMLDivElement>(null);
+  const fontSizeMenuRef = useRef<HTMLDivElement>(null);
+
+  const [fontSize, setFontSize] = useState<FontSizeId>(() => {
+    try {
+      const saved = localStorage.getItem("cuunhi_font_size");
+      if (saved && FONT_SIZE_OPTIONS.some((o) => o.id === saved)) {
+        return saved as FontSizeId;
+      }
+    } catch {
+      // fallback
+    }
+    return "md";
+  });
+
+  useEffect(() => {
+    const opt = FONT_SIZE_OPTIONS.find((o) => o.id === fontSize) || FONT_SIZE_OPTIONS[1];
+    try {
+      document.documentElement.style.fontSize = opt.sizePx;
+      localStorage.setItem("cuunhi_font_size", fontSize);
+    } catch {
+      // ignore
+    }
+  }, [fontSize]);
+
+  const currentFontIndex = FONT_SIZE_OPTIONS.findIndex((o) => o.id === fontSize);
+  const currentFontOption = FONT_SIZE_OPTIONS[currentFontIndex >= 0 ? currentFontIndex : 1];
+
+  const handleDecreaseFontSize = () => {
+    if (currentFontIndex > 0) {
+      setFontSize(FONT_SIZE_OPTIONS[currentFontIndex - 1].id);
+    }
+  };
+
+  const handleIncreaseFontSize = () => {
+    if (currentFontIndex < FONT_SIZE_OPTIONS.length - 1) {
+      setFontSize(FONT_SIZE_OPTIONS[currentFontIndex + 1].id);
+    }
+  };
+
+  const handleSelectFontSize = (id: FontSizeId) => {
+    setFontSize(id);
+    setIsFontSizeMenuOpen(false);
+  };
 
   // Listen to audio playing state to show subtle indicator on hamburger button
   useEffect(() => {
@@ -106,6 +169,7 @@ export const Header: React.FC<HeaderProps> = ({
       if (e.key === "Escape") {
         setIsNavMenuOpen(false);
         setIsWorkspaceMenuOpen(false);
+        setIsFontSizeMenuOpen(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -230,7 +294,130 @@ export const Header: React.FC<HeaderProps> = ({
         </button>
 
         {/* Hành động bên phải */}
-        <div className="flex items-center gap-1.5 sm:gap-3 justify-end">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 justify-end">
+          {/* Bộ điều khiển cỡ chữ: Lớn / Nhỏ */}
+          <div className="relative" ref={fontSizeMenuRef}>
+            <div
+              className="flex items-center h-8 sm:h-9 rounded-[2px] border border-gold-700/60 bg-lacquer-900/90 p-0.5 shadow-inner"
+              title="Chế độ cỡ chữ: Thu nhỏ / Phóng to chữ toàn trang"
+            >
+              <button
+                type="button"
+                onClick={handleDecreaseFontSize}
+                disabled={currentFontIndex <= 0}
+                aria-label="Thu nhỏ chữ"
+                title={
+                  currentFontIndex <= 0
+                    ? "Đã ở cỡ nhỏ nhất"
+                    : `Thu nhỏ chữ (${FONT_SIZE_OPTIONS[currentFontIndex - 1]?.label})`
+                }
+                className="w-6 sm:w-7 h-full flex items-center justify-center font-serif text-[11px] sm:text-xs font-bold text-gold-300 hover:text-gold-100 hover:bg-gold-500/15 disabled:opacity-25 disabled:hover:bg-transparent disabled:cursor-not-allowed rounded-[2px] transition cursor-pointer select-none"
+              >
+                A⁻
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsFontSizeMenuOpen(!isFontSizeMenuOpen)}
+                aria-label="Tùy chọn cỡ chữ"
+                aria-expanded={isFontSizeMenuOpen}
+                title="Nhấn để chọn cỡ chữ chi tiết (88%, 100%, 113%, 128%)"
+                className={`px-1.5 sm:px-2 h-full flex items-center gap-1 text-[11px] font-sans font-medium transition cursor-pointer rounded-[2px] ${
+                  isFontSizeMenuOpen
+                    ? "bg-gold-500/20 text-gold-200"
+                    : "text-gold-300 hover:text-gold-100 hover:bg-gold-500/10"
+                }`}
+              >
+                <Type className="w-3.5 h-3.5 text-gold-400" />
+                <span className="text-[10px] sm:text-[11px] font-mono tracking-tight text-gold-300">
+                  {currentFontOption.percent}
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={handleIncreaseFontSize}
+                disabled={currentFontIndex >= FONT_SIZE_OPTIONS.length - 1}
+                aria-label="Phóng to chữ"
+                title={
+                  currentFontIndex >= FONT_SIZE_OPTIONS.length - 1
+                    ? "Đã ở cỡ lớn nhất"
+                    : `Phóng to chữ (${FONT_SIZE_OPTIONS[currentFontIndex + 1]?.label})`
+                }
+                className="w-6 sm:w-7 h-full flex items-center justify-center font-serif text-[11px] sm:text-xs font-bold text-gold-300 hover:text-gold-100 hover:bg-gold-500/15 disabled:opacity-25 disabled:hover:bg-transparent disabled:cursor-not-allowed rounded-[2px] transition cursor-pointer select-none"
+              >
+                A⁺
+              </button>
+            </div>
+
+            {/* Popover danh mục cỡ chữ chi tiết */}
+            {isFontSizeMenuOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[1px]"
+                  onClick={() => setIsFontSizeMenuOpen(false)}
+                />
+                <div className="absolute right-0 top-full mt-2 w-64 royal-frame !outline-offset-[2px] shadow-[0_20px_50px_rgba(0,0,0,0.95)] z-50 p-3 bg-lacquer-950/98 backdrop-blur">
+                  <div className="flex items-center justify-between pb-2 mb-2 border-b border-gold-700/40">
+                    <div className="flex items-center gap-1.5 text-xs font-sans uppercase tracking-[0.14em] text-gold-400">
+                      <Type className="w-3.5 h-3.5" />
+                      <span>Cỡ chữ trang</span>
+                    </div>
+                    <span className="text-[10px] font-mono text-gold-500">
+                      {currentFontOption.percent}
+                    </span>
+                  </div>
+
+                  <div className="space-y-1">
+                    {FONT_SIZE_OPTIONS.map((opt) => {
+                      const isSelected = opt.id === fontSize;
+                      return (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          onClick={() => handleSelectFontSize(opt.id)}
+                          className={`w-full flex items-center justify-between px-2.5 py-2 text-left rounded-[2px] transition cursor-pointer group ${
+                            isSelected
+                              ? "bg-gold-500/15 border border-gold-500/40 text-gold-200"
+                              : "hover:bg-white/[0.04] text-ivory-300 hover:text-ivory-100 border border-transparent"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <span
+                              className={`w-6 h-6 flex items-center justify-center font-serif font-bold text-xs rounded-[2px] border ${
+                                isSelected
+                                  ? "bg-gold-600/30 border-gold-500 text-gold-200"
+                                  : "bg-lacquer-800 border-gold-800 text-gold-400 group-hover:border-gold-600"
+                              }`}
+                            >
+                              {opt.badge}
+                            </span>
+                            <div className="min-w-0">
+                              <div className="flex items-baseline gap-1.5">
+                                <span className="text-xs font-medium">{opt.label}</span>
+                                <span className="text-[10px] font-mono text-ivory-500">({opt.percent})</span>
+                              </div>
+                              <div className="text-[10px] text-ivory-500 truncate">{opt.desc}</div>
+                            </div>
+                          </div>
+                          {isSelected && <Check className="w-3.5 h-3.5 text-gold-400 shrink-0 ml-2" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {fontSize !== "md" && (
+                    <button
+                      type="button"
+                      onClick={() => handleSelectFontSize("md")}
+                      className="w-full mt-2 pt-2 border-t border-gold-700/30 text-center text-[11px] text-gold-500 hover:text-gold-300 transition cursor-pointer"
+                    >
+                      Đặt lại cỡ chữ chuẩn (100%)
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+
           {currentUser?.isAdmin && (
             <button
               type="button"
@@ -393,6 +580,34 @@ export const Header: React.FC<HeaderProps> = ({
                   </button>
                 </div>
               )}
+
+              {/* Tùy chỉnh cỡ chữ trong danh mục */}
+              <div className="mx-5 mb-3 p-2.5 bg-lacquer-800/60 border border-gold-800/70 rounded-[2px]">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] uppercase tracking-[0.16em] text-gold-400 font-sans flex items-center gap-1.5">
+                    <Type className="w-3 h-3" />
+                    Cỡ chữ trang
+                  </span>
+                  <span className="text-[10px] font-mono text-gold-500">{currentFontOption.label} ({currentFontOption.percent})</span>
+                </div>
+                <div className="grid grid-cols-4 gap-1">
+                  {FONT_SIZE_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => handleSelectFontSize(opt.id)}
+                      className={`py-1 text-center rounded-[2px] border text-xs font-serif font-bold transition cursor-pointer ${
+                        opt.id === fontSize
+                          ? "bg-gold-500/20 border-gold-400 text-gold-200"
+                          : "bg-lacquer-900/60 border-gold-800/60 text-ivory-400 hover:text-gold-300 hover:border-gold-700"
+                      }`}
+                      title={`${opt.label} (${opt.percent})`}
+                    >
+                      {opt.badge}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
               {/* Danh sách phân hệ */}
               <nav className="px-2 pb-2">

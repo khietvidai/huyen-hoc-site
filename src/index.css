@@ -54,6 +54,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+html {
+  transition: font-size 0.2s ease-in-out;
+}
+
 html,
 body,
 button,
