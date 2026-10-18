@@ -59,9 +59,9 @@ export interface FontSizeOption {
 
 export const FONT_SIZE_OPTIONS: FontSizeOption[] = [
   { id: "sm", label: "Chữ Nhỏ", badge: "A⁻", sizePx: "14px", percent: "88%", desc: "Gọn gàng, vừa vặn" },
-  { id: "md", label: "Tiêu Chuẩn", badge: "A", sizePx: "16px", percent: "100%", desc: "Mặc định hệ điều hành" },
+  { id: "md", label: "Tiêu Chuẩn (100%)", badge: "A", sizePx: "16px", percent: "100%", desc: "Mặc định chuẩn ban đầu (100%)" },
   { id: "lg", label: "Chữ Lớn", badge: "A⁺", sizePx: "18px", percent: "113%", desc: "To rõ, dễ đọc kinh văn" },
-  { id: "xl", label: "Rất Lớn (Chuẩn)", badge: "A⁺⁺", sizePx: "20.5px", percent: "128%", desc: "Mặc định khởi đầu (128%)" },
+  { id: "xl", label: "Rất Lớn", badge: "A⁺⁺", sizePx: "20.5px", percent: "128%", desc: "To rõ, thoáng đãng (128%)" },
   { id: "2xl", label: "Cực Đại", badge: "A³⁺", sizePx: "23.5px", percent: "147%", desc: "Chữ to vượt trội, xem từ xa" },
   { id: "3xl", label: "Siêu Lớn", badge: "A⁴⁺", sizePx: "27px", percent: "169%", desc: "Khổng lồ, nhìn rõ từng nét" },
   { id: "4xl", label: "Đại Tự Max", badge: "MAX", sizePx: "31px", percent: "194%", desc: "Cỡ cực đại tối đa, không cần kính" },
@@ -116,13 +116,14 @@ export const Header: React.FC<HeaderProps> = ({
   const [fontSize, setFontSize] = useState<FontSizeId>(() => {
     try {
       const saved = localStorage.getItem("cuunhi_font_size");
-      if (saved && FONT_SIZE_OPTIONS.some((o) => o.id === saved) && saved !== "md") {
+      // Giữ nguyên tỷ lệ phóng to nhỏ trước đó người dùng đã chọn
+      if (saved && FONT_SIZE_OPTIONS.some((o) => o.id === saved)) {
         return saved as FontSizeId;
       }
     } catch {
       // fallback
     }
-    return "xl"; // Luôn ở chế độ chữ 128% khi mới vào
+    return "md"; // Tỷ lệ mới vào lần đầu là 100% (md = 16px)
   });
 
   useEffect(() => {

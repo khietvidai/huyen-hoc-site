@@ -32,10 +32,11 @@
             '3xl': '27px',
             '4xl': '31px'
           };
-          if (!saved || saved === 'md') {
-            saved = 'xl';
+          // Giữ nguyên tỷ lệ người dùng đã chọn trước đó; nếu là người mới vào lần đầu thì mặc định 100% (md = 16px)
+          if (!saved || !map[saved]) {
+            saved = 'md';
           }
-          document.documentElement.style.fontSize = map[saved] || map['xl'];
+          document.documentElement.style.fontSize = map[saved] || '16px';
         } catch (e) {}
       })();
     </script>
