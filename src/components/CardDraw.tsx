@@ -55,6 +55,7 @@ import { Fan360Deck } from "./Fan360Deck";
 import { ShuffleDeckAnimation } from "./ShuffleDeckAnimation";
 import { TwelveSidedDice } from "./TwelveSidedDice";
 import { zenAudio } from "../utils/zenAudio";
+import { PRESET_DECK_NAMES } from "../services/cardImageStore";
 
 interface CardDrawProps {
   cardImages?: Record<number, string>;
@@ -105,6 +106,8 @@ interface CardDrawProps {
   onShowToast?: (msg: string) => void;
   currentUser?: AppUser | null;
   onRequireAuth?: (mode?: "login" | "register" | "upgrade", message?: string) => void;
+  activeDeckId?: string;
+  onActiveDeckChanged?: (newDeckId: string) => void;
 }
 
 type DrawMode = "single" | "double" | "three" | "seven" | "nine" | "ten" | "ten_expanded" | "twelve" | "custom";
@@ -135,9 +138,16 @@ export const CardDraw: React.FC<CardDrawProps> = ({
   defaultCardFaceOpen: propDefaultCardFaceOpen,
   onToggleDefaultCardFaceOpen: propOnToggleDefaultCardFaceOpen,
   onShowToast,
+  activeDeckId,
+  onActiveDeckChanged,
 }) => {
   const isRegisteredUser = Boolean(currentUser);
   const isVip = Boolean(currentUser?.isMember || currentUser?.isAdmin);
+  const activeDeckName = activeDeckId
+    ? PRESET_DECK_NAMES[activeDeckId] || "Bộ Bài Đang Dùng"
+    : isVip
+    ? "Bộ Không Chữ (Nguyên Bản)"
+    : "Bộ Quân Tử (64 Quẻ)";
   const handleOpenManager = onOpenDeckManager || onManageDeck || (() => {});
   const [drawMode, setDrawMode] = useState<DrawMode>(() =>
     isKhongMinhMethod ? "three" : suggestedDrawMode || "single"
@@ -1358,31 +1368,49 @@ export const CardDraw: React.FC<CardDrawProps> = ({
 
         {/* Action buttons: Deck Manager button & Draw Modes */}
         <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              if (!isVip) {
-                if (!isRegisteredUser) {
-                  if (onShowToast) onShowToast("Thư viện Bộ Hình 64 Quẻ chỉ dành riêng cho Hội Viên VIP. Vui lòng đăng nhập!");
-                  if (onRequireAuth) onRequireAuth("login", "Đăng nhập hoặc đăng ký tài khoản VIP để truy cập Thư Viện Bộ Hình 64 Quẻ!");
-                } else {
-                  if (onShowToast) onShowToast("Thư viện Bộ Hình 64 Quẻ chỉ dành riêng cho Hội Viên VIP. Vui lòng nâng cấp gói VIP!");
-                  if (onRequireAuth) onRequireAuth("upgrade", "Nâng cấp Hội Viên VIP để mở khóa Thư Viện Bộ Hình 64 Quẻ và đổi giữa các bộ bài độc quyền!");
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <button
+              type="button"
+              onClick={() => {
+                if (!isVip) {
+                  if (!isRegisteredUser) {
+                    if (onShowToast) onShowToast("Thư viện Bộ Hình 64 Quẻ chỉ dành riêng cho Hội Viên VIP. Vui lòng đăng nhập!");
+                    if (onRequireAuth) onRequireAuth("login", "Đăng nhập hoặc đăng ký tài khoản VIP để truy cập Thư Viện Bộ Hình 64 Quẻ!");
+                  } else {
+                    if (onShowToast) onShowToast("Thư viện Bộ Hình 64 Quẻ chỉ dành riêng cho Hội Viên VIP. Vui lòng nâng cấp gói VIP!");
+                    if (onRequireAuth) onRequireAuth("upgrade", "Nâng cấp Hội Viên VIP để mở khóa Thư Viện Bộ Hình 64 Quẻ và đổi giữa các bộ bài độc quyền!");
+                  }
+                  return;
                 }
-                return;
-              }
-              handleOpenManager();
-            }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#241C15] hover:bg-[#34271C] border border-[#483724] text-[#F3E7D0] text-xs font-serif font-bold transition-all shadow-sm cursor-pointer"
-            title={isVip ? "Đổi bộ hình hoặc nạp ảnh cho 64 quẻ" : "Đặc quyền Hội Viên VIP: Đổi bộ hình hoặc nạp ảnh cho 64 quẻ"}
-          >
-            <Palette className="w-3.5 h-3.5 text-[#C9A55A]" />
-            <span>Đổi Bộ Hình / 64 Quẻ</span>
-            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded text-[9.5px] font-sans font-bold bg-amber-950/90 text-amber-300 border border-amber-600/50 font-mono">
-              <Crown className="w-2.5 h-2.5 text-amber-400" />
-              VIP
-            </span>
-          </button>
+                handleOpenManager();
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#241C15] hover:bg-[#34271C] border border-[#483724] text-[#F3E7D0] text-xs font-serif font-bold transition-all shadow-sm cursor-pointer"
+              title={isVip ? "Quản lý ảnh 64 quẻ & nạp hình (Mở Thư Viện)" : "Đặc quyền Hội Viên VIP: Đổi bộ hình hoặc nạp ảnh cho 64 quẻ"}
+            >
+              <Palette className="w-3.5 h-3.5 text-[#C9A55A]" />
+              <span>Bộ Hình:</span>
+              <span className="text-[#C9A55A] font-bold">{activeDeckName}</span>
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded text-[9.5px] font-sans font-bold bg-amber-950/90 text-amber-300 border border-amber-600/50 font-mono">
+                <Crown className="w-2.5 h-2.5 text-amber-400" />
+                VIP
+              </span>
+            </button>
+
+            {/* Quick Deck Switcher for VIP */}
+            {isVip && onActiveDeckChanged && (
+              <select
+                value={activeDeckId || "deck_bo_khong_chu"}
+                onChange={(e) => onActiveDeckChanged(e.target.value)}
+                className="px-2.5 py-1.5 rounded-xl bg-[#1D1711] hover:bg-[#282017] border border-[#4E3B27] hover:border-[#C9A55A] text-[#F3E7D0] text-xs font-serif font-semibold cursor-pointer outline-none transition-all shadow-sm"
+                title="Tùy chỉnh đổi nhanh bộ bài đang dùng"
+              >
+                <option value="deck_bo_khong_chu">Bộ Không Chữ (Nguyên Bản) [VIP]</option>
+                <option value="deck_quan_tu">Bộ Quân Tử (64 Quẻ)</option>
+                <option value="deck_bo_1">Bộ 1 (Nguyên Bản Có Chữ)</option>
+                <option value="deck_bo_2">Bộ 2 (Có Chữ)</option>
+              </select>
+            )}
+          </div>
 
           {/* Quick Ambient Zen Music Button (Vũ Lâm Linh) */}
           <button

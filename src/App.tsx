@@ -56,7 +56,13 @@ import { GoogleWorkspaceModal, WorkspaceTab, DivinationReadingData } from "./com
 import { AuthModal } from "./components/AuthModal";
 import { AdminManagementModal } from "./components/AdminManagementModal";
 import { AuthService, AppUser } from "./services/authService";
-import { cardImageStore } from "./services/cardImageStore";
+import {
+  cardImageStore,
+  DEFAULT_DECK_ID,
+  DEFAULT_VIP_DECK_ID,
+  getUserCustomDeckId,
+  setUserCustomDeckId,
+} from "./services/cardImageStore";
 import {
   useThemeConfig,
   DynamicBackgroundLayer,
@@ -183,7 +189,12 @@ export default function App() {
   };
 
   // Custom loaded card images (64 hexagrams & card back) & active deck
-  const [activeDeckId, setActiveDeckId] = useState<string>("deck_quan_tu");
+  const [activeDeckId, setActiveDeckId] = useState<string>(() => {
+    const curUser = AuthService.getCurrentUser();
+    const isVip = Boolean(curUser?.isMember || curUser?.isAdmin);
+    if (!isVip) return DEFAULT_DECK_ID;
+    return getUserCustomDeckId(curUser?.id, curUser?.preferredDeckId) || DEFAULT_VIP_DECK_ID;
+  });
   const [cardImages, setCardImages] = useState<Record<number, string>>({});
   const [cardVideos, setCardVideos] = useState<Record<number, string>>({});
   const [cardBackImage, setCardBackImage] = useState<string | null>(null);
@@ -245,11 +256,21 @@ export default function App() {
 
     const handleAuthChange = (e: any) => {
       if (e.detail && e.detail.user !== undefined) {
-        setCurrentUser(e.detail.user);
-        const isNowVip = Boolean(e.detail.user?.isMember || e.detail.user?.isAdmin);
+        const nextUser = e.detail.user;
+        setCurrentUser(nextUser);
+        const isNowVip = Boolean(nextUser?.isMember || nextUser?.isAdmin);
         if (!isNowVip) {
           setManualSubTab("book");
-          loadCustomDeck("deck_quan_tu");
+          loadCustomDeck(DEFAULT_DECK_ID);
+        } else {
+          // Khi là tài khoản VIP: tự động chuyển qua Bộ Không Chữ (Nguyên Bản)
+          // hoặc bộ bài người dùng đã từng tùy chọn trước đó
+          const customDeck = getUserCustomDeckId(nextUser?.id, nextUser?.preferredDeckId);
+          const targetDeck = customDeck || DEFAULT_VIP_DECK_ID;
+          loadCustomDeck(targetDeck);
+          if (!customDeck) {
+            showToast("Tài khoản VIP: Đã tự động kích hoạt Bộ Không Chữ (Nguyên Bản)!");
+          }
         }
       }
     };
@@ -259,7 +280,11 @@ export default function App() {
       const isNowVip = Boolean(cur?.isMember || cur?.isAdmin);
       if (!isNowVip) {
         setManualSubTab("book");
-        loadCustomDeck("deck_quan_tu");
+        loadCustomDeck(DEFAULT_DECK_ID);
+      } else {
+        const customDeck = getUserCustomDeckId(cur?.id, cur?.preferredDeckId);
+        const targetDeck = customDeck || DEFAULT_VIP_DECK_ID;
+        loadCustomDeck(targetDeck);
       }
     };
     window.addEventListener("iching-auth-change", handleAuthChange);
@@ -554,17 +579,27 @@ export default function App() {
   // Load custom card images from IndexedDB based on active deck
   const loadCustomDeck = async (deckIdToLoad?: string) => {
     try {
-      let targetId = deckIdToLoad;
-      if (!targetId) {
-        targetId = await cardImageStore.getActiveDeckId();
-      }
-      // Người dùng chưa là VIP luôn dùng mặc định Bộ Quân Tử
       const curUser = AuthService.getCurrentUser();
       const curIsVip = Boolean(curUser?.isMember || curUser?.isAdmin);
-      if (!curIsVip) {
-        targetId = "deck_quan_tu";
+
+      let targetId = deckIdToLoad;
+      if (!targetId) {
+        if (!curIsVip) {
+          targetId = DEFAULT_DECK_ID;
+        } else {
+          // Là tài khoản VIP: tự động dùng Bộ Không Chữ (Nguyên Bản), hoặc bộ đã tùy chỉnh trước đó
+          const customDeck = getUserCustomDeckId(curUser?.id, curUser?.preferredDeckId);
+          targetId = customDeck || DEFAULT_VIP_DECK_ID;
+        }
+      } else {
+        if (!curIsVip) {
+          targetId = DEFAULT_DECK_ID;
+        }
       }
+
       setActiveDeckId(targetId);
+      await cardImageStore.setActiveDeckId(targetId);
+
       const [images, back, videos] = await Promise.all([
         cardImageStore.getDeckImages(targetId),
         cardImageStore.getDeckCardBack(targetId),
@@ -616,7 +651,15 @@ export default function App() {
   }, []);
 
   const handleActiveDeckChanged = async (newDeckId: string) => {
+    const curUser = AuthService.getCurrentUser();
+    const curIsVip = Boolean(curUser?.isMember || curUser?.isAdmin);
+    if (curIsVip) {
+      // Lưu lại tùy chỉnh bộ bài của người dùng VIP vào local & server
+      setUserCustomDeckId(newDeckId, curUser?.id);
+      AuthService.updateUserPreferredDeck(newDeckId);
+    }
     setActiveDeckId(newDeckId);
+    await cardImageStore.setActiveDeckId(newDeckId);
     await loadCustomDeck(newDeckId);
     showToast("Đã kích hoạt bộ hình mới thành công!");
   };
@@ -1558,6 +1601,8 @@ export default function App() {
                     cardImages={cardImages}
                     cardVideos={cardVideos}
                     cardBackImage={cardBackImage}
+                    activeDeckId={activeDeckId}
+                    onActiveDeckChanged={handleActiveDeckChanged}
                     allowReversedCards={allowReversedCards}
                     onToggleAllowReversedCards={handleToggleAllowReversedCards}
                     defaultCardFaceOpen={defaultCardFaceOpen}
@@ -1600,6 +1645,8 @@ export default function App() {
                   cardImages={cardImages}
                   cardVideos={cardVideos}
                   cardBackImage={cardBackImage}
+                  activeDeckId={activeDeckId}
+                  onActiveDeckChanged={handleActiveDeckChanged}
                   allowReversedCards={allowReversedCards}
                   onToggleAllowReversedCards={handleToggleAllowReversedCards}
                   defaultCardFaceOpen={defaultCardFaceOpen}
@@ -2460,9 +2507,15 @@ export default function App() {
         defaultMode={authModalMode}
         onSuccess={(user) => {
           setCurrentUser(user);
+          const isVipUser = Boolean(user.isMember || user.isAdmin);
+          if (isVipUser) {
+            const customDeck = getUserCustomDeckId(user.id, user.preferredDeckId);
+            const targetDeck = customDeck || DEFAULT_VIP_DECK_ID;
+            loadCustomDeck(targetDeck);
+          }
           showToast(
             user.isMember
-              ? `Chúc mừng ${user.name}! Bạn đã là Hội Viên VIP (5 lần hương/ngày & mở toàn văn Thuyết Minh).`
+              ? `Chúc mừng ${user.name}! Bạn đã là Hội Viên VIP - Đã kích hoạt Bộ Không Chữ (Nguyên Bản).`
               : `Chào mừng ${user.name} đã đăng nhập!`
           );
         }}

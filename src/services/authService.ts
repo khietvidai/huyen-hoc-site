@@ -9,6 +9,7 @@ export interface AppUser {
   memberExpiryDate?: string; // YYYY-MM-DD
   registeredAt: number;
   incenseSticks?: number;
+  preferredDeckId?: string;
 }
 
 export interface DailyIncenseRecord {
@@ -186,6 +187,34 @@ export class AuthService {
         localStorage.removeItem(CURRENT_USER_KEY);
       }
       window.dispatchEvent(new CustomEvent("iching-auth-change", { detail: { user } }));
+    } catch {}
+  }
+
+  /**
+   * Lưu và đồng bộ bộ bài tùy chỉnh của người dùng
+   */
+  public static updateUserPreferredDeck(deckId: string): void {
+    try {
+      const curUser = this.getCurrentUser();
+      if (!curUser) return;
+      const updatedUser: AppUser = {
+        ...curUser,
+        preferredDeckId: deckId,
+      };
+      const users = this.getUsers();
+      const userKey = curUser.email.toLowerCase();
+      if (users[userKey]) {
+        users[userKey].user = updatedUser;
+        this.saveUsers(users);
+      }
+      this.setCurrentUser(updatedUser);
+
+      // Gửi đồng bộ lên máy chủ backend
+      fetch("/api/auth/update-preferred-deck", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ identifier: curUser.email, preferredDeckId: deckId }),
+      }).catch(() => {});
     } catch {}
   }
 

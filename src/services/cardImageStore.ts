@@ -188,8 +188,26 @@ export const PRESET_DECK_CONFIG: Record<string, { ext: string; back: string }> =
 };
 
 export const DEFAULT_DECK_ID = "deck_quan_tu";
+export const DEFAULT_VIP_DECK_ID = "deck_bo_khong_chu";
+
+export const PRESET_DECK_NAMES: Record<string, string> = {
+  deck_bo_khong_chu: "Bộ Không Chữ (Nguyên Bản)",
+  deck_quan_tu: "Bộ Quân Tử (64 Quẻ)",
+  deck_bo_1: "Bộ 1 (Nguyên Bản Có Chữ)",
+  deck_bo_2: "Bộ 2 (Có Chữ)",
+};
 
 export const INITIAL_PRESET_DECKS: DeckInfo[] = [
+  {
+    id: "deck_bo_khong_chu",
+    name: "Bộ Không Chữ (Nguyên Bản)",
+    description: "Bộ bài Kinh Dịch 64 quẻ không in chữ, tranh thủy mặc và biểu tượng quẻ nguyên sơ thuần khiết.",
+    isPreset: true,
+    themeStyle: "golden",
+    cardBackImage: "/decks/deck_bo_khong_chu/back.jpg",
+    cardCount: 64,
+    createdAt: 1700000000000,
+  },
   {
     id: "deck_quan_tu",
     name: "Bộ Quân Tử (64 Quẻ)",
@@ -198,7 +216,7 @@ export const INITIAL_PRESET_DECKS: DeckInfo[] = [
     themeStyle: "mystic",
     cardBackImage: "/decks/deck_quan_tu/back.svg",
     cardCount: 64,
-    createdAt: 1700000000000,
+    createdAt: 1700000001000,
   },
   {
     id: "deck_bo_1",
@@ -208,7 +226,7 @@ export const INITIAL_PRESET_DECKS: DeckInfo[] = [
     themeStyle: "golden",
     cardBackImage: "/decks/deck_bo_1/back.jpg",
     cardCount: 64,
-    createdAt: 1700000001000,
+    createdAt: 1700000002000,
   },
   {
     id: "deck_bo_2",
@@ -218,19 +236,35 @@ export const INITIAL_PRESET_DECKS: DeckInfo[] = [
     themeStyle: "golden",
     cardBackImage: "/decks/deck_bo_2/back.svg",
     cardCount: 64,
-    createdAt: 1700000002000,
-  },
-  {
-    id: "deck_bo_khong_chu",
-    name: "Bộ Không Chữ (Nguyên Bản)",
-    description: "Bộ bài Kinh Dịch 64 quẻ không in chữ, tranh thủy mặc và biểu tượng quẻ nguyên sơ thuần khiết.",
-    isPreset: true,
-    themeStyle: "golden",
-    cardBackImage: "/decks/deck_bo_khong_chu/back.jpg",
-    cardCount: 64,
     createdAt: 1700000003000,
   },
 ];
+
+/**
+ * Lấy ID bộ bài mà người dùng VIP đã tự tay tùy chỉnh chọn dùng (nếu có)
+ */
+export function getUserCustomDeckId(userId?: string, userPreferredDeckId?: string): string | null {
+  if (userPreferredDeckId && !LEGACY_OLD_PRESET_IDS.has(userPreferredDeckId)) return userPreferredDeckId;
+  if (typeof window === "undefined") return null;
+  if (userId) {
+    const custom = localStorage.getItem(`iching_user_deck_${userId}`);
+    if (custom && !LEGACY_OLD_PRESET_IDS.has(custom)) return custom;
+  }
+  const globalVipCustom = localStorage.getItem("iching_vip_custom_deck");
+  if (globalVipCustom && !LEGACY_OLD_PRESET_IDS.has(globalVipCustom)) return globalVipCustom;
+  return null;
+}
+
+/**
+ * Lưu ID bộ bài mà người dùng VIP tùy chỉnh chọn dùng
+ */
+export function setUserCustomDeckId(deckId: string, userId?: string): void {
+  if (typeof window === "undefined") return;
+  if (userId) {
+    localStorage.setItem(`iching_user_deck_${userId}`, deckId);
+  }
+  localStorage.setItem("iching_vip_custom_deck", deckId);
+}
 
 function openDB(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
@@ -263,7 +297,8 @@ const LEGACY_OLD_PRESET_IDS = new Set(["deck_golden", "deck_ink", "deck_woodbloc
 /**
  * Get active deck ID (sync with localStorage)
  */
-export async function getActiveDeckId(): Promise<string> {
+export async function getActiveDeckId(isVip?: boolean): Promise<string> {
+  const defaultFallback = isVip ? DEFAULT_VIP_DECK_ID : DEFAULT_DECK_ID;
   const local = typeof window !== "undefined" ? localStorage.getItem(ACTIVE_DECK_STORAGE_KEY) : null;
   if (local && !LEGACY_OLD_PRESET_IDS.has(local)) return local;
 
@@ -273,19 +308,19 @@ export async function getActiveDeckId(): Promise<string> {
       const tx = db.transaction([STORE_NAME], "readonly");
       const req = tx.objectStore(STORE_NAME).get("_system_active_deck_id");
       req.onsuccess = () => {
-        let id = (req.result as string) || DEFAULT_DECK_ID;
+        let id = (req.result as string) || defaultFallback;
         if (LEGACY_OLD_PRESET_IDS.has(id)) {
-          id = DEFAULT_DECK_ID;
+          id = defaultFallback;
         }
         if (typeof window !== "undefined") {
           localStorage.setItem(ACTIVE_DECK_STORAGE_KEY, id);
         }
         resolve(id);
       };
-      req.onerror = () => resolve(DEFAULT_DECK_ID);
+      req.onerror = () => resolve(defaultFallback);
     });
   } catch {
-    return DEFAULT_DECK_ID;
+    return defaultFallback;
   }
 }
 
@@ -942,6 +977,11 @@ export const cardImageStore = {
   clearDeckImages,
   exportDeckBundle,
   importDeckBundle,
+  DEFAULT_DECK_ID,
+  DEFAULT_VIP_DECK_ID,
+  PRESET_DECK_NAMES,
+  getUserCustomDeckId,
+  setUserCustomDeckId,
   PRESET_CARD_BACKS,
   INITIAL_PRESET_DECKS,
   PRESET_DECK_CONFIG,

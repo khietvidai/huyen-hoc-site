@@ -894,7 +894,36 @@ app.post("/api/admin/users/create", (req: Request, res: Response) => {
   }
 });
 
-// 9. API Đồng bộ hai chiều (Sync)
+// 9. API Cập nhật bộ bài tùy chỉnh cho tài khoản
+app.post("/api/auth/update-preferred-deck", (req: Request, res: Response) => {
+  try {
+    const { identifier, preferredDeckId } = req.body;
+    if (!identifier) {
+      return res.status(400).json({ success: false, message: "Thiếu identifier" });
+    }
+    const cleanId = String(identifier).trim().toLowerCase();
+    const users = getServerUsers();
+    let foundKey =
+      Object.keys(users).find(
+        (k) =>
+          k.toLowerCase() === cleanId ||
+          users[k]?.user?.email?.toLowerCase() === cleanId ||
+          users[k]?.user?.id === identifier ||
+          users[k]?.user?.username?.toLowerCase() === cleanId
+      ) || cleanId;
+
+    if (users[foundKey]?.user) {
+      users[foundKey].user.preferredDeckId = preferredDeckId;
+      saveServerUsers(users);
+      return res.json({ success: true, user: users[foundKey].user });
+    }
+    return res.status(404).json({ success: false, message: "Không tìm thấy người dùng" });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, message: err?.message || "Lỗi máy chủ" });
+  }
+});
+
+// 10. API Đồng bộ hai chiều (Sync)
 app.post("/api/auth/sync", (req: Request, res: Response) => {
   try {
     const { localUsers } = req.body;
@@ -902,12 +931,31 @@ app.post("/api/auth/sync", (req: Request, res: Response) => {
 
     if (localUsers && typeof localUsers === "object") {
       let merged = false;
-      for (const [key, item] of Object.entries(localUsers as Record<string, any>)) {
-        if (key && item?.user && !users[key]) {
-          users[key] = item;
+      const entries = Array.isArray(localUsers)
+        ? localUsers.map((item: any) => [item.accountKey || item.user?.email || item.user?.username, item])
+        : Object.entries(localUsers as Record<string, any>);
+
+      for (const [key, item] of entries) {
+        if (key && !/^\d+$/.test(key) && item?.user) {
+          const userKey = (item.accountKey || item.user?.email || item.user?.username || key).toLowerCase();
+          if (userKey && !users[userKey]) {
+            users[userKey] = item;
+            merged = true;
+          } else if (userKey && users[userKey] && item.user?.preferredDeckId) {
+            users[userKey].user.preferredDeckId = item.user.preferredDeckId;
+            merged = true;
+          }
+        }
+      }
+
+      // Xóa các key dạng số không hợp lệ nếu còn sót
+      for (const k of Object.keys(users)) {
+        if (/^\d+$/.test(k)) {
+          delete users[k];
           merged = true;
         }
       }
+
       if (merged) {
         saveServerUsers(users);
       }
