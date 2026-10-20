@@ -49,6 +49,7 @@ import { LucNhamHoaDichSection } from "./components/LucNhamHoaDichSection";
 import { LichDungSuSection } from "./components/LichDungSuSection";
 import { HanNhietMenhSection } from "./components/HanNhietMenhSection";
 import { HomeSection } from "./components/HomeSection";
+import { LandingPage } from "./components/LandingPage";
 import { PricingSection } from "./components/PricingSection";
 import { DailyHexagramModal } from "./components/DailyHexagramModal";
 import { DailyHexagramWidget } from "./components/DailyHexagramWidget";
@@ -60,6 +61,7 @@ import {
   cardImageStore,
   DEFAULT_DECK_ID,
   DEFAULT_VIP_DECK_ID,
+  PRESET_DECK_VERSION,
   getUserCustomDeckId,
   setUserCustomDeckId,
 } from "./services/cardImageStore";
@@ -87,7 +89,7 @@ const CATEGORIES = [
   "Khởi sự & Ra quyết định",
 ];
 
-type DivinationMethodId = "cards" | "khongminh" | "yarrow" | "coins" | "maihoa" | "lucnham" | "kymon" | "thaiat";
+type DivinationMethodId = "cards" | "khongminh" | "nguche" | "yarrow" | "coins" | "maihoa" | "lucnham" | "kymon" | "thaiat";
 
 const DIVINATION_METHODS: {
   id: DivinationMethodId;
@@ -115,8 +117,17 @@ const DIVINATION_METHODS: {
     toast: "Đã chọn hình thức: Xăm Khổng Minh (Gia Cát Thần Toán)",
   },
   {
-    id: "yarrow",
+    id: "nguche",
     numeral: "參",
+    title: "Ngự Chế Đoán Dịch Tinh Túy",
+    chinese: "御製新集斷易精粹",
+    desc: "Bốc 3 lá Thiên - Địa - Nhân (lấy lá cuối làm quẻ), lắc xí ngầu 12 mặt & trích hình + thơ đoán của quẻ và ngày đó",
+    toast: "Đã chọn hình thức: Ngự Chế Tân Tập Đoán Dịch Tinh Túy (Cố Cung Bản • 12 Mặt Xí Ngầu)",
+    badge: "Cố Cung",
+  },
+  {
+    id: "yarrow",
+    numeral: "肆",
     title: "Rút Cỏ Thi",
     chinese: "大衍筮法",
     desc: "Đại Diễn 50 cọng cỏ thi nguyên bản, 18 biến đổi định hào",
@@ -124,7 +135,7 @@ const DIVINATION_METHODS: {
   },
   {
     id: "coins",
-    numeral: "肆",
+    numeral: "伍",
     title: "Gieo 3 Đồng Xu",
     chinese: "金錢卦",
     desc: "Ba đồng Càn Long gieo 6 lần định hào biến & Lục Hào chiêm đoán",
@@ -132,7 +143,7 @@ const DIVINATION_METHODS: {
   },
   {
     id: "maihoa",
-    numeral: "伍",
+    numeral: "陸",
     title: "Mai Hoa Dịch Số",
     chinese: "梅花易數",
     desc: "Thiệu Khang Tiết • Khởi quẻ thời khắc, con số, trắc tự & Thể Dụng ngũ hành",
@@ -140,7 +151,7 @@ const DIVINATION_METHODS: {
   },
   {
     id: "lucnham",
-    numeral: "陸",
+    numeral: "柒",
     title: "Lục Nhâm Đại Độn",
     chinese: "大六壬",
     desc: "Thiên Bàn, Tứ Khóa, Tam Truyền, 12 Thần Tướng & Hoạt Thời chiêm đoán",
@@ -149,7 +160,7 @@ const DIVINATION_METHODS: {
   },
   {
     id: "kymon",
-    numeral: "柒",
+    numeral: "捌",
     title: "Kỳ Môn Độn Giáp",
     chinese: "奇門遁甲",
     desc: "Bát Trận Đồ • Cửu Cung Lạc Thư, Cửu Tinh, Bát Môn, Bát Thần & Kỳ Môn Hóa Dịch",
@@ -158,7 +169,7 @@ const DIVINATION_METHODS: {
   },
   {
     id: "thaiat",
-    numeral: "捌",
+    numeral: "玖",
     title: "Thái Ất Thần Số",
     chinese: "太乙神數",
     desc: "Thiên Thời & Vận Thế • Thái Ất Cửu Cung, Chủ Toán - Khách Toán & Thái Ất Hóa Dịch",
@@ -449,7 +460,7 @@ export default function App() {
   const isVip = Boolean(currentUser?.isMember || currentUser?.isAdmin);
 
   const handleSelectDivinationMethod = (methodId: DivinationMethodId) => {
-    if (methodId !== "cards" && !isVip) {
+    if (methodId !== "cards" && methodId !== "nguche" && !isVip) {
       if (!currentUser) {
         showToast("Phương pháp này dành riêng cho tài khoản VIP. Vui lòng đăng nhập hoặc đăng ký!");
         setAuthModalMode("login");
@@ -471,7 +482,7 @@ export default function App() {
 
   // Tự động chuyển về Bốc Bài Kinh Dịch nếu người dùng không phải VIP
   useEffect(() => {
-    if (divinationMethod && divinationMethod !== "cards" && !isVip) {
+    if (divinationMethod && divinationMethod !== "cards" && divinationMethod !== "nguche" && !isVip) {
       setDivinationMethod("cards");
     }
   }, [isVip, divinationMethod]);
@@ -581,10 +592,13 @@ export default function App() {
     try {
       const curUser = AuthService.getCurrentUser();
       const curIsVip = Boolean(curUser?.isMember || curUser?.isAdmin);
+      const savedActive = typeof window !== "undefined" ? localStorage.getItem("iching_active_deck_id") : null;
 
       let targetId = deckIdToLoad;
       if (!targetId) {
-        if (!curIsVip) {
+        if (savedActive === "deck_ngu_che" || savedActive === "deck_ngu_che_khong_chu") {
+          targetId = savedActive;
+        } else if (!curIsVip) {
           targetId = DEFAULT_DECK_ID;
         } else {
           // Là tài khoản VIP: tự động dùng Bộ Không Chữ (Nguyên Bản), hoặc bộ đã tùy chỉnh trước đó
@@ -592,7 +606,7 @@ export default function App() {
           targetId = customDeck || DEFAULT_VIP_DECK_ID;
         }
       } else {
-        if (!curIsVip) {
+        if (!curIsVip && targetId !== "deck_ngu_che" && targetId !== "deck_ngu_che_khong_chu") {
           targetId = DEFAULT_DECK_ID;
         }
       }
@@ -616,7 +630,7 @@ export default function App() {
   };
 
   useEffect(() => {
-    loadCustomDeck();
+    loadCustomDeck(activeDeckId);
     // Subscribe to store updates (e.g. from DeckManager or individual updates)
     const unsubscribe = cardImageStore.subscribe((_cardNum, updatedDeckId) => {
       loadCustomDeck(updatedDeckId);
@@ -624,10 +638,10 @@ export default function App() {
     // Lắng nghe sự kiện chuyển đổi nhanh phương thức thỉnh quẻ từ các thành phần con
     const handleSwitchMethod = (e: any) => {
       if (e.detail) {
-        const methodId = e.detail as DivinationMethodId;
+        const methodId = (e.detail === "cards_nguche" ? "nguche" : e.detail) as DivinationMethodId;
         const curUser = AuthService.getCurrentUser();
         const curIsVip = Boolean(curUser?.isMember || curUser?.isAdmin);
-        if (methodId !== "cards" && !curIsVip) {
+        if (methodId !== "cards" && methodId !== "nguche" && !curIsVip) {
           if (!curUser) {
             setAuthModalMode("login");
             setIsAuthModalOpen(true);
@@ -648,7 +662,7 @@ export default function App() {
       unsubscribe();
       window.removeEventListener("switch-divination-method", handleSwitchMethod);
     };
-  }, []);
+  }, [PRESET_DECK_VERSION]);
 
   const handleActiveDeckChanged = async (newDeckId: string) => {
     const curUser = AuthService.getCurrentUser();
@@ -1067,6 +1081,61 @@ export default function App() {
     setCurrentTab("divination");
   };
 
+  if (currentTab === "home") {
+    return (
+      <>
+        <LandingPage
+          currentUser={currentUser}
+          onEnterApp={(tab) => {
+            setCurrentTab(tab || "divination");
+          }}
+          onOpenAuthModal={(mode) => {
+            setAuthModalMode(mode || "login");
+            setIsAuthModalOpen(true);
+          }}
+          onLogout={() => {
+            AuthService.logout();
+            setCurrentUser(null);
+            showToast("Đã đăng xuất tài khoản Cửu Nhị.");
+          }}
+        />
+
+        {/* Toast Notification khi ở Trang Chủ */}
+        {toastMessage && (
+          <div className="fixed bottom-6 right-6 z-[200] bg-[#1E1914] border border-[#C89B3C] text-[#F3E6C8] px-4 py-2.5 rounded-xl shadow-2xl text-xs sm:text-sm flex items-center gap-2 animate-bounce">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <span>{toastMessage}</span>
+          </div>
+        )}
+
+        {/* Modal Đăng Ký & Đăng Nhập Cửu Nhị */}
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={() => setIsAuthModalOpen(false)}
+          defaultMode={authModalMode}
+          onSuccess={(user) => {
+            setCurrentUser(user);
+            setIsAuthModalOpen(false);
+            const isVipUser = Boolean(user.isMember || user.isAdmin);
+            if (isVipUser) {
+              const customDeck = getUserCustomDeckId(user.id, user.preferredDeckId);
+              const targetDeck = customDeck || DEFAULT_VIP_DECK_ID;
+              loadCustomDeck(targetDeck);
+            }
+            showToast(
+              user.isAdmin
+                ? `Chào mừng Quản Trị Viên Cửu Nhị (${user.name})!`
+                : `Đăng nhập Cửu Nhị thành công! Kính chào ${user.name}.`
+            );
+            // Sau khi bấm đăng nhập thành công nhảy vào trang bốc quẻ của Cửu Nhị
+            setCurrentTab("divination");
+          }}
+          onShowToast={showToast}
+        />
+      </>
+    );
+  }
+
   return (
     <div
       className="min-h-screen text-[#EAE2D2] flex flex-col font-sans selection:bg-[#C89B3C] selection:text-[#121110] relative"
@@ -1108,7 +1177,7 @@ export default function App() {
       {/* Main Content Area */}
       <main className={`relative z-10 flex-1 w-full mx-auto px-3 sm:px-4 py-6 sm:py-8 ${currentTab === "detail" ? "max-w-7xl" : "max-w-6xl"}`}>
         {/* TAB 0: TRANG CHỦ (PHƯƠNG PHÁP BỐC BÀI I CHING TAROT & LIÊN LẠC) */}
-        <div className={currentTab === "home" ? "space-y-6" : "hidden"}>
+        <div className={(currentTab as string) === "home" ? "space-y-6" : "hidden"}>
           <HomeSection
             onNavigateTab={handleSelectTabWithVipCheck}
             onSelectDrawMode={handleSelectDrawModeFromHome}
@@ -1445,10 +1514,10 @@ export default function App() {
               )}
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {DIVINATION_METHODS.map((method) => {
                 const isActive = divinationMethod === method.id;
-                const isLocked = method.id !== "cards" && !isVip;
+                const isLocked = method.id !== "cards" && method.id !== "nguche" && !isVip;
                 return (
                   <button
                     key={method.id}
@@ -1472,6 +1541,10 @@ export default function App() {
                         ) : method.id === "cards" ? (
                           <span className="text-[10px] uppercase font-sans font-semibold tracking-wider text-emerald-400 border border-emerald-800/80 bg-emerald-950/50 rounded-sm px-1.5 py-0.5">
                             {!currentUser ? "1-3 Lá" : "12 Trận"}
+                          </span>
+                        ) : method.id === "nguche" ? (
+                          <span className="text-[10px] uppercase font-sans font-semibold tracking-wider text-amber-300 border border-amber-700/80 bg-amber-950/60 rounded-sm px-1.5 py-0.5">
+                            3 Lá • 12 Mặt
                           </span>
                         ) : isVip ? (
                           <span className="flex items-center gap-0.5 text-[10px] uppercase font-sans font-bold tracking-wider text-amber-300 border border-amber-600/70 bg-amber-950/50 rounded-sm px-1.5 py-0.5">
@@ -1527,7 +1600,7 @@ export default function App() {
                   <div className="royal-rule mt-6 text-xs">◆</div>
                   <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
                     {DIVINATION_METHODS.map((method) => {
-                      const isLocked = method.id !== "cards" && !isVip;
+                      const isLocked = method.id !== "cards" && method.id !== "nguche" && !isVip;
                       return (
                         <button
                           key={method.id}
@@ -1546,7 +1619,7 @@ export default function App() {
               )}
 
               {/* VIP Barrier Fallback if non-VIP opens a VIP method */}
-              {divinationMethod && divinationMethod !== "cards" && !isVip && (
+              {divinationMethod && divinationMethod !== "cards" && divinationMethod !== "nguche" && !isVip && (
                 <div className="py-12 px-4 text-center max-w-lg mx-auto">
                   <div className="w-16 h-16 rounded-2xl bg-amber-950/60 border border-amber-600/40 text-amber-400 mx-auto flex items-center justify-center shadow-lg mb-4">
                     <Crown className="w-8 h-8 text-amber-400" />
@@ -1555,7 +1628,7 @@ export default function App() {
                   <p className="text-sm text-ivory-400 font-serif leading-relaxed mb-6">
                     Phương pháp <strong className="text-gold-300">{DIVINATION_METHODS.find((m) => m.id === divinationMethod)?.title}</strong> chỉ dành cho tài khoản VIP.
                     {!currentUser
-                      ? " Vui lòng đăng ký hoặc đăng nhập tài khoản VIP để sử dụng tất cả 8 phương pháp huyền học đỉnh cao!"
+                      ? " Vui lòng đăng ký hoặc đăng nhập tài khoản VIP để sử dụng tất cả phương pháp huyền học đỉnh cao!"
                       : " Nâng cấp hội viên VIP ngay hôm nay để mở khóa toàn bộ tất cả phương pháp huyền học!"}
                   </p>
                   <div className="flex flex-wrap items-center justify-center gap-3">
@@ -1590,6 +1663,7 @@ export default function App() {
                 <div id="ban-boc-que" className="scroll-mt-24">
                   <CardDraw
                     isKhongMinhMethod={false}
+                    isNguCheMethod={false}
                     suggestedDrawMode={suggestedDrawMode}
                     currentUser={currentUser}
                     onRequireAuth={(mode, msg) => {
@@ -1635,9 +1709,54 @@ export default function App() {
                 <CardDraw
                   key="khongminh-card-draw"
                   isKhongMinhMethod={true}
+                  isNguCheMethod={false}
                   currentUser={currentUser}
                   onRequireAuth={(mode, msg) => {
                     setAuthModalMode(mode || "upgrade");
+                    setIsAuthModalOpen(true);
+                    if (msg) showToast(msg);
+                  }}
+                  onComplete={handleDivinationComplete}
+                  cardImages={cardImages}
+                  cardVideos={cardVideos}
+                  cardBackImage={cardBackImage}
+                  activeDeckId={activeDeckId}
+                  onActiveDeckChanged={handleActiveDeckChanged}
+                  allowReversedCards={allowReversedCards}
+                  onToggleAllowReversedCards={handleToggleAllowReversedCards}
+                  defaultCardFaceOpen={defaultCardFaceOpen}
+                  onToggleDefaultCardFaceOpen={handleToggleDefaultCardFaceOpen}
+                  onImageUpdated={handleImageUpdated}
+                  onVideoUpdated={handleVideoUpdated}
+                  onShowToast={showToast}
+                  onOpenDeckManager={() => {
+                    if (!isVip) {
+                      if (!currentUser) {
+                        setAuthModalMode("login");
+                        setIsAuthModalOpen(true);
+                        showToast("Thư viện Bộ Hình 64 Quẻ chỉ dành riêng cho Hội Viên VIP. Vui lòng đăng nhập!");
+                      } else {
+                        setAuthModalMode("upgrade");
+                        setIsAuthModalOpen(true);
+                        showToast("Thư viện Bộ Hình 64 Quẻ là đặc quyền dành riêng cho Hội Viên VIP. Vui lòng nâng cấp VIP!");
+                      }
+                      return;
+                    }
+                    setManualSubTab("decks");
+                    setCurrentTab("manual");
+                  }}
+                />
+              )}
+
+              {/* 3. Ngự Chế Tân Tập Đoán Dịch Tinh Túy (Bốc 3 lá Thiên - Địa - Nhân, lấy lá cuối làm quẻ, lắc xí ngầu 12 mặt) */}
+              {divinationMethod === "nguche" && (
+                <CardDraw
+                  key="nguche-card-draw"
+                  isKhongMinhMethod={false}
+                  isNguCheMethod={true}
+                  currentUser={currentUser}
+                  onRequireAuth={(mode, msg) => {
+                    setAuthModalMode(mode || "register");
                     setIsAuthModalOpen(true);
                     if (msg) showToast(msg);
                   }}
@@ -2518,6 +2637,7 @@ export default function App() {
               ? `Chúc mừng ${user.name}! Bạn đã là Hội Viên VIP - Đã kích hoạt Bộ Không Chữ (Nguyên Bản).`
               : `Chào mừng ${user.name} đã đăng nhập!`
           );
+          setCurrentTab("divination");
         }}
         onShowToast={showToast}
       />

@@ -1,0 +1,736 @@
+{
+  "user": {
+    "id": "c6e4506d-950b-419f-a372-01afe8dc49a5",
+    "role": "user",
+    "user_tags": null,
+    "created_at": "2026-08-04T08:40:23.320744+00:00",
+    "yl_id": "YL104062",
+    "timezone": "Asia/Saigon",
+    "birth_date": "1992-10-16",
+    "birth_hour": 9,
+    "lunar_year": "壬申年",
+    "lunar_month": 9,
+    "lunar_day": 21,
+    "lunar_hour": "巳时",
+    "destiny_gua_binary": "011001",
+    "destiny_gua_calculated_at": "2026-10-19T19:08:37.140534+00:00",
+    "user_name": "d",
+    "bazi": "壬申,庚戌,乙丑,辛巳",
+    "gender": "male",
+    "birthplace": "广东 · 广州",
+    "heluo_pre_heaven_gua_binary": "001011",
+    "heluo_yuan_tang_position": 6,
+    "heluo_post_heaven_gua_binary": "010001",
+    "heluo_yuan_qi_level": "无元气",
+    "heluo_yuan_qi_heaven": false,
+    "heluo_yuan_qi_earth": false,
+    "heluo_calculated_at": "2026-10-19T19:08:36.811607+00:00",
+    "birthplace_longitude": 113.2644,
+    "birthplace_latitude": 23.1291,
+    "dayun": "{\"current\":{\"endAge\":38,\"endYear\":2029,\"ganZhi\":\"癸丑\",\"startAge\":29,\"startYear\":2020},\"next\":{\"endAge\":48,\"endYear\":2039,\"ganZhi\":\"甲寅\",\"startAge\":39,\"startYear\":2030},\"previous\":{\"endAge\":28,\"endYear\":2019,\"ganZhi\":\"壬子\",\"startAge\":19,\"startYear\":2010},\"startDescription\":\"7年4个月10天后起运\"}",
+    "birth_minute": 0,
+    "ziwei": "{\"body\":\"天梁\",\"chineseDate\":\"壬申 庚戌 乙丑 辛巳\",\"earthlyBranchOfBodyPalace\":\"卯\",\"earthlyBranchOfSoulPalace\":\"巳\",\"fiveElementsClass\":\"火六局\",\"gender\":\"男\",\"lunarDate\":\"一九九二年九月廿一\",\"palaces\":[{\"adjectiveStars\":[{\"name\":\"凤阁\",\"type\":\"adjective\"},{\"name\":\"天月\",\"type\":\"adjective\"},{\"name\":\"截路\",\"type\":\"adjective\"},{\"name\":\"天虚\",\"type\":\"adjective\"},{\"name\":\"年解\",\"type\":\"helper\"}],\"ages\":[5,17,29,41,53,65,77,89,101,113],\"boshi12\":\"小耗\",\"changsheng12\":\"长生\",\"decadal\":{\"earthlyBranch\":\"寅\",\"heavenlyStem\":\"壬\",\"range\":[96,105]},\"earthlyBranch\":\"寅\",\"heavenlyStem\":\"壬\",\"isBodyPalace\":false,\"isOriginalPalace\":true,\"majorStars\":[{\"brightness\":\"旺\",\"mutagen\":\"权\",\"name\":\"紫微\",\"type\":\"major\"},{\"brightness\":\"庙\",\"mutagen\":\"\",\"name\":\"天府\",\"type\":\"major\"}],\"minorStars\":[{\"brightness\":\"\",\"mutagen\":\"\",\"name\":\"右弼\",\"type\":\"soft\"},{\"brightness\":\"\",\"mutagen\":\"\",\"name\":\"天马\",\"type\":\"tianma\"}],\"name\":\"子女\"},{\"adjectiveStars\":[{\"name\":\"空亡\",\"type\":\"adjective\"}],\"ages\":[6,18,30,42,54,66,78,90,102,114],\"boshi12\":\"将军\",\"changsheng12\":\"沐浴\",\"decadal\":{\"earthlyBranch\":\"卯\",\"heavenlyStem\":\"癸\",\"range\":[106,115]},\"earthlyBranch\":\"卯\",\"heavenlyStem\":\"癸\",\"isBodyPalace\":true,\"isOriginalPalace\":false,\"majorStars\":[{\"brightness\":\"陷\",\"mutagen\":\"\",\"name\":\"太阴\",\"type\":\"major\"}],\"minorStars\":[{\"brightness\":\"\",\"mutagen\":\"\",\"name\":\"天魁\",\"type\":\"soft\"},{\"brightness\":\"利\",\"mutagen\":\"\",\"name\":\"铃星\",\"type\":\"tough\"}],\"name\":\"夫妻\"},{\"adjectiveStars\":[{\"name\":\"解神\",\"type\":\"helper\"},{\"name\":\"天贵\",\"type\":\"adjective\"},{\"name\":\"华盖\",\"type\":\"adjective\"},{\"name\":\"蜚廉\",\"type\":\"adjective\"}],\"ages\":[7,19,31,43,55,67,79,91,103,115],\"boshi12\":\"奏书\",\"changsheng12\":\"冠带\",\"decadal\":{\"earthlyBranch\":\"辰\",\"heavenlyStem\":\"甲\",\"range\":[116,125]},\"earthlyBranch\":\"辰\",\"heavenlyStem\":\"甲\",\"isBodyPalace\":false,\"isOriginalPalace\":false,\"majorStars\":[{\"brightness\":\"庙\",\"mutagen\":\"\",\"name\":\"贪狼\",\"type\":\"major\"}],\"minorStars\":[{\"brightness\":\"\",\"mutagen\":\"\",\"name\":\"地劫\",\"type\":\"tough\"}],\"name\":\"兄弟\"},{\"adjectiveStars\":[{\"name\":\"天巫\",\"type\":\"adjective\"},{\"name\":\"天德\",\"type\":\"adjective\"},{\"name\":\"天刑\",\"type\":\"adjective\"}],\"ages\":[8,20,32,44,56,68,80,92,104,116],\"boshi12\":\"飞廉\",\"changsheng12\":\"临官\",\"decadal\":{\"earthlyBranch\":\"巳\",\"heavenlyStem\":\"乙\",\"range\":[6,15]},\"earthlyBranch\":\"巳\",\"heavenlyStem\":\"乙\",\"isBodyPalace\":false,\"isOriginalPalace\":false,\"majorStars\":[{\"brightness\":\"旺\",\"mutagen\":\"\",\"name\":\"巨门\",\"type\":\"major\"}],\"minorStars\":[{\"brightness\":\"庙\",\"mutagen\":\"\",\"name\":\"文昌\",\"type\":\"soft\"},{\"brightness\":\"\",\"mutagen\":\"\",\"name\":\"天钺\",\"type\":\"soft\"}],\"name\":\"命宫\"},{\"adjectiveStars\":[{\"name\":\"八座\",\"type\":\"adjective\"},{\"name\":\"天福\",\"type\":\"adjective\"}],\"ages\":[9,21,33,45,57,69,81,93,105,117],\"boshi12\":\"喜神\",\"changsheng12\":\"帝旺\",\"decadal\":{\"earthlyBranch\":\"午\",\"heavenlyStem\":\"丙\",\"range\":[16,25]},\"earthlyBranch\":\"午\",\"heavenlyStem\":\"丙\",\"isBodyPalace\":false,\"isOriginalPalace\":false,\"majorStars\":[{\"brightness\":\"平\",\"mutagen\":\"\",\"name\":\"廉贞\",\"type\":\"major\"},{\"brightness\":\"庙\",\"mutagen\":\"\",\"name\":\"天相\",\"type\":\"major\"}],\"minorStars\":[{\"brightness\":\"\",\"mutagen\":\"\",\"name\":\"地空\",\"type\":\"tough\"}],\"name\":\"父母\"},{\"adjectiveStars\":[{\"name\":\"红鸾\",\"type\":\"flower\"},{\"name\":\"封诰\",\"type\":\"adjective\"},{\"name\":\"寡宿\",\"type\":\"adjective\"}],\"ages\":[10,22,34,46,58,70,82,94,106,118],\"boshi12\":\"病符\",\"changsheng12\":\"衰\",\"decadal\":{\"earthlyBranch\":\"未\",\"heavenlyStem\":\"丁\",\"range\":[26,35]},\"earthlyBranch\":\"未\",\"heavenlyStem\":\"丁\",\"isBodyPalace\":false,\"isOriginalPalace\":false,\"majorStars\":[{\"brightness\":\"旺\",\"mutagen\":\"禄\",\"name\":\"天梁\",\"type\":\"major\"}],\"minorStars\":[{\"brightness\":\"利\",\"mutagen\":\"\",\"name\":\"火星\",\"type\":\"tough\"}],\"name\":\"福德\"},{\"adjectiveStars\":[{\"name\":\"三台\",\"type\":\"adjective\"}],\"ages\":[11,23,35,47,59,71,83,95,107,119],\"boshi12\":\"大耗\",\"changsheng12\":\"病\",\"decadal\":{\"earthlyBranch\":\"申\",\"heavenlyStem\":\"戊\",\"range\":[36,45]},\"earthlyBranch\":\"申\",\"heavenlyStem\":\"戊\",\"isBodyPalace\":false,\"isOriginalPalace\":false,\"majorStars\":[{\"brightness\":\"庙\",\"mutagen\":\"\",\"name\":\"七杀\",\"type\":\"major\"}],\"minorStars\":[],\"name\":\"田宅\"},{\"adjectiveStars\":[{\"name\":\"天姚\",\"type\":\"flower\"},{\"name\":\"咸池\",\"type\":\"flower\"},{\"name\":\"天厨\",\"type\":\"adjective\"},{\"name\":\"天空\",\"type\":\"adjective\"},{\"name\":\"破碎\",\"type\":\"adjective\"}],\"ages\":[12,24,36,48,60,72,84,96,108,120],\"boshi12\":\"伏兵\",\"changsheng12\":\"死\",\"decadal\":{\"earthlyBranch\":\"酉\",\"heavenlyStem\":\"己\",\"range\":[46,55]},\"earthlyBranch\":\"酉\",\"heavenlyStem\":\"己\",\"isBodyPalace\":false,\"isOriginalPalace\":false,\"majorStars\":[{\"brightness\":\"平\",\"mutagen\":\"\",\"name\":\"天同\",\"type\":\"major\"}],\"minorStars\":[{\"brightness\":\"庙\",\"mutagen\":\"\",\"name\":\"文曲\",\"type\":\"soft\"}],\"name\":\"官禄\"},{\"adjectiveStars\":[{\"name\":\"天官\",\"type\":\"adjective\"},{\"name\":\"旬空\",\"type\":\"adjective\"},{\"name\":\"阴煞\",\"type\":\"adjective\"},{\"name\":\"天哭\",\"type\":\"adjective\"},{\"name\":\"天伤\",\"type\":\"adjective\"}],\"ages\":[1,13,25,37,49,61,73,85,97,109],\"boshi12\":\"官府\",\"changsheng12\":\"墓\",\"decadal\":{\"earthlyBranch\":\"戌\",\"heavenlyStem\":\"庚\",\"range\":[56,65]},\"earthlyBranch\":\"戌\",\"heavenlyStem\":\"庚\",\"isBodyPalace\":false,\"isOriginalPalace\":false,\"majorStars\":[{\"brightness\":\"庙\",\"mutagen\":\"忌\",\"name\":\"武曲\",\"type\":\"major\"}],\"minorStars\":[{\"brightness\":\"庙\",\"mutagen\":\"\",\"name\":\"陀罗\",\"type\":\"tough\"}],\"name\":\"仆役\"},{\"adjectiveStars\":[{\"name\":\"天寿\",\"type\":\"adjective\"},{\"name\":\"台辅\",\"type\":\"adjective\"},{\"name\":\"孤辰\",\"type\":\"adjective\"}],\"ages\":[2,14,26,38,50,62,74,86,98,110],\"boshi12\":\"博士\",\"changsheng12\":\"绝\",\"decadal\":{\"earthlyBranch\":\"亥\",\"heavenlyStem\":\"辛\",\"range\":[66,75]},\"earthlyBranch\":\"亥\",\"heavenlyStem\":\"辛\",\"isBodyPalace\":false,\"isOriginalPalace\":false,\"majorStars\":[{\"brightness\":\"陷\",\"mutagen\":\"\",\"name\":\"太阳\",\"type\":\"major\"}],\"minorStars\":[{\"brightness\":\"\",\"mutagen\":\"\",\"name\":\"禄存\",\"type\":\"lucun\"}],\"name\":\"迁移\"},{\"adjectiveStars\":[{\"name\":\"恩光\",\"type\":\"adjective\"},{\"name\":\"龙池\",\"type\":\"adjective\"},{\"name\":\"天使\",\"type\":\"adjective\"}],\"ages\":[3,15,27,39,51,63,75,87,99,111],\"boshi12\":\"力士\",\"changsheng12\":\"胎\",\"decadal\":{\"earthlyBranch\":\"子\",\"heavenlyStem\":\"壬\",\"range\":[76,85]},\"earthlyBranch\":\"子\",\"heavenlyStem\":\"壬\",\"isBodyPalace\":false,\"isOriginalPalace\":false,\"majorStars\":[{\"brightness\":\"庙\",\"mutagen\":\"\",\"name\":\"破军\",\"type\":\"major\"}],\"minorStars\":[{\"brightness\":\"\",\"mutagen\":\"科\",\"name\":\"左辅\",\"type\":\"soft\"},{\"brightness\":\"陷\",\"mutagen\":\"\",\"name\":\"擎羊\",\"type\":\"tough\"}],\"name\":\"疾厄\"},{\"adjectiveStars\":[{\"name\":\"天喜\",\"type\":\"flower\"},{\"name\":\"天才\",\"type\":\"adjective\"},{\"name\":\"月德\",\"type\":\"adjective\"}],\"ages\":[4,16,28,40,52,64,76,88,100,112],\"boshi12\":\"青龙\",\"changsheng12\":\"养\",\"decadal\":{\"earthlyBranch\":\"丑\",\"heavenlyStem\":\"癸\",\"range\":[86,95]},\"earthlyBranch\":\"丑\",\"heavenlyStem\":\"癸\",\"isBodyPalace\":false,\"isOriginalPalace\":false,\"majorStars\":[{\"brightness\":\"陷\",\"mutagen\":\"\",\"name\":\"天机\",\"type\":\"major\"}],\"minorStars\":[],\"name\":\"财帛\"}],\"sign\":\"天秤座\",\"solarDate\":\"1992-10-16\",\"soul\":\"武曲\",\"time\":\"巳时\",\"timeRange\":\"09:00~11:00\",\"zodiac\":\"猴\"}",
+    "oracle_use_personal_data": true,
+    "bazi_detail": null,
+    "birth_timezone": "Asia/Shanghai",
+    "use_true_solar_time": false,
+    "login_provider": "google",
+    "phone": null,
+    "phone_country_code": null,
+    "google_sub": "103875234671378104754",
+    "registration_platform": "web",
+    "last_login_platform": "web",
+    "destiny_gua": {
+      "gua_name": "山风蛊",
+      "gua_card_title": "净手扫积尘",
+      "gua_destiny_title": "重塑者",
+      "gua_destiny_exp": "从不逃避问题，富有责任感和远见，善于在混乱中洞悉本质，重构秩序，利用深刻的洞察力与坚定的行动力直面弊端，在绝境和混乱中找到解决办法",
+      "gua_destiny_keywords": "担当,坚韧,果决​",
+      "gua_frontimage_url": "https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/18/18a.webp",
+      "binary_code": "011001",
+      "position": 18
+    },
+    "heluo_lishu_data": {
+      "pre_heaven_gua": {
+        "binary": "001011",
+        "upper_binary": "001",
+        "lower_binary": "011",
+        "gua_name": "风山渐",
+        "gua_frontimage_url": "https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/53/53a.webp",
+        "gua_backimage_url": "https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/53/53b.webp",
+        "panci": "几度江边钓，游鱼未上钩。潇湘一片景，将久快心头。"
+      },
+      "post_heaven_gua": {
+        "binary": "010001",
+        "gua_name": "山水蒙",
+        "gua_frontimage_url": "https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/4/4a.webp",
+        "gua_backimage_url": "https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/4/4b.webp",
+        "panci": "隔江惊晓不成危，木尽烟消总作灰。阳气复来先报喜，雪含观笑赏江梅。"
+      },
+      "yuan_tang": {
+        "position": 6,
+        "gua_binary": "001011",
+        "yao_name": "上九，鴻漸于陸，其羽可用為儀，吉",
+        "yao_frontimage_url": "https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/53/53-6a.webp",
+        "yao_backimage_url": "https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/53/53-6b.webp",
+        "panci": "人存清远志，脱迹离尘埃。万里人扶上，端为庙廊材。"
+      },
+      "yuan_qi": {
+        "level": "无元气",
+        "has_heaven_qi": false,
+        "has_earth_qi": false
+      },
+      "rizhu": {
+        "rizhu": "乙丑",
+        "title": "雪原幽兰",
+        "panci": "凌寒嫩蕊欺霜雪，冻土深根养暗金",
+        "tag": "#外柔内刚 #务实隐忍 #外圆内方",
+        "intro": "如同一株在寒冬冻土中顽强绽放的幽兰，这是一种极具韧性与现实主义精神的性格底色。乙木虽柔，却能克制脚下的丑土，意味着看似柔弱的外表下，藏着惊人的生存能力与掌控力。生于寒湿之境，不求一时的绚烂夺目，而习惯在逆境中默默扎根（丑土为金库），在无人问津的角落积蓄力量。这是一种“低开高走”的生命形态，内里潜藏的价值（海中金）往往要在历经风霜后，才会发出夺目的光芒。",
+        "url": "https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/rizhu/rizhu_webp/2.webp"
+      }
+    },
+    "email": "thedat.hk@gmail.com"
+  },
+  "credits": {
+    "balance": 100009,
+    "total_purchased": 99999,
+    "total_consumed": 0
+  },
+  "subscription": {
+    "is_member": true,
+    "expires_at": "2099-12-31T23:59:59.000Z",
+    "plan_type": "lifetime_vip"
+  },
+  "conversations": [
+    {
+      "id": "conv-1792447654165",
+      "user_id": "c6e4506d-950b-419f-a372-01afe8dc49a5",
+      "title": "Hội thoại mới",
+      "created_at": "2026-10-19T22:07:34.165Z",
+      "updated_at": "2026-10-19T22:07:34.165Z",
+      "message_count": 0
+    },
+    {
+      "id": "conv-1792447653343",
+      "user_id": "c6e4506d-950b-419f-a372-01afe8dc49a5",
+      "title": "Hội thoại mới",
+      "created_at": "2026-10-19T22:07:33.343Z",
+      "updated_at": "2026-10-19T22:07:33.343Z",
+      "message_count": 0
+    },
+    {
+      "id": "conv-1792445591396",
+      "user_id": "c6e4506d-950b-419f-a372-01afe8dc49a5",
+      "title": "Hội thoại mới",
+      "created_at": "2026-10-19T21:33:11.396Z",
+      "updated_at": "2026-10-19T21:33:11.396Z",
+      "message_count": 0
+    },
+    {
+      "id": "conv-1792445585661",
+      "user_id": "c6e4506d-950b-419f-a372-01afe8dc49a5",
+      "title": "Hội thoại mới",
+      "created_at": "2026-10-19T21:33:05.661Z",
+      "updated_at": "2026-10-19T21:33:05.661Z",
+      "message_count": 0
+    },
+    {
+      "id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+      "user_id": "c6e4506d-950b-419f-a372-01afe8dc49a5",
+      "title": "打招呼",
+      "context_refs": {
+        "active_person_ids": [],
+        "active_report_ids": [
+          "b72d4ac3-30ce-4125-b707-d9140c2b0722",
+          "16813bd0-b255-48bb-82f4-bdb5967105ec"
+        ]
+      },
+      "created_at": "2026-10-19T19:17:27.30416+00:00",
+      "updated_at": "2026-10-19T20:15:47.494688+00:00",
+      "message_count": 39,
+      "is_user_deleted": false,
+      "oracle_reading_ids": [
+        "b72d4ac3-30ce-4125-b707-d9140c2b0722",
+        "16813bd0-b255-48bb-82f4-bdb5967105ec"
+      ],
+      "oracle_imagediv_ids": []
+    },
+    {
+      "id": "604d031e-4153-4d7d-86a7-1f5e1b3b4808",
+      "user_id": "c6e4506d-950b-419f-a372-01afe8dc49a5",
+      "title": null,
+      "context_refs": {},
+      "created_at": "2026-10-19T19:17:17.306996+00:00",
+      "updated_at": "2026-10-19T19:17:17.306996+00:00",
+      "message_count": 0,
+      "is_user_deleted": false,
+      "oracle_reading_ids": [],
+      "oracle_imagediv_ids": []
+    },
+    {
+      "id": "bc953b1f-f17e-46e5-884d-7f8ade346eb6",
+      "user_id": "c6e4506d-950b-419f-a372-01afe8dc49a5",
+      "title": null,
+      "context_refs": {},
+      "created_at": "2026-10-19T08:36:18.007822+00:00",
+      "updated_at": "2026-10-19T08:36:18.007822+00:00",
+      "message_count": 0,
+      "is_user_deleted": false,
+      "oracle_reading_ids": [],
+      "oracle_imagediv_ids": []
+    }
+  ],
+  "messages": {
+    "592076b9-e879-4835-8fa9-e74cd8a55ad7": [
+      {
+        "id": "7fe8db63-734b-4ab9-8f74-e432bad6e2bb",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "user",
+        "content": "xin chào",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:17:29.777628+00:00"
+      },
+      {
+        "id": "33a3e3d6-2e86-418e-97c0-762e202f5ff9",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "user",
+        "content": "我抽了一簽易經靈簽",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:17:30.080526+00:00"
+      },
+      {
+        "id": "7147625f-e8b3-44f5-89b3-57aefe64bba5",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "assistant",
+        "content": "你好，我是易小羅。\n\n看你用越南語打招呼，是剛好在測試，還是最近有什麼事讓你心緒不寧，想找人聊聊？",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:17:31.15569+00:00"
+      },
+      {
+        "id": "27cc2b51-387f-48f6-9271-44f0b5bf8985",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "system",
+        "content": "{\"__type\":\"quick_lot_card\",\"position\":4,\"gua_name\":\"山水蒙\",\"gua_card_title\":\"幼童觀山泉\",\"gua_ci\":\"亨。匪我求童蒙，童蒙求我。初筮告，再三渎，渎则不告。利贞\",\"luck_tier\":\"ping\",\"gua_frontimage_url\":\"https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/card_hant_webp/4a.webp\",\"gua_backimage_url\":\"https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/card_hant_webp/4b.webp\"}",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:17:31.668791+00:00"
+      },
+      {
+        "id": "a8b70ade-91a1-46bb-a7af-cff852719ea8",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "assistant",
+        "content": "這支「山水蒙」籤，屬於**中平**。\n\n簡單來說，這是一個「啟蒙」與「學習」的階段。就像小孩子站在山腳下看著泉水，雖然清澈，但源頭在哪、流向何處還不清楚。\n\n卦辭裡最關鍵的一句是：「匪我求童蒙，童蒙求我。」意思是說，現在不是別人來求你，而是你需要主動去請教、去學習。如果你心裡有疑惑，就要誠心誠意地去尋找答案或導師；但如果猶豫不決、反覆無常（再三瀆），那反而得不到指引。\n\n這通常暗示你當下可能處於一個資訊不對稱、或者對某件事看不清全貌的狀態。別急著做重大決定，先搞清楚狀況，多問、多看、多學。\n\n你是剛好隨手抽著玩，還是最近真碰到了什麼讓你覺得「看不透」的事？",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:17:38.587168+00:00"
+      },
+      {
+        "id": "6106dde3-b00c-45b8-a1e2-8cfa37a741be",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "user",
+        "content": "📜 Hãy giúp tôi hiểu báo cáo này#",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:17:56.172617+00:00"
+      },
+      {
+        "id": "31d796c4-56e4-48da-9c3d-dc3d73390ab7",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "assistant",
+        "content": "沒問題，我們一起來看看。\n\n不過你好像還沒把具體的報告內容貼上來？是剛才那支「山水蒙」的籤詩解讀，還是其他的八字或命理報告？\n\n你可以直接把內容複製貼上，或者告訴我你想重點了解哪一部分（比如運勢、建議、或是某個特定的詞彙）。我會用大白話幫你拆解，不整那些虛無飄渺的術語。",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:17:58.312232+00:00"
+      },
+      {
+        "id": "18992201-4237-42fc-9631-0ba50db8d646",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "user",
+        "content": "rút cho tôi một quẻ với câu hỏi tôi làm vậy đúng không?",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:25:42.771328+00:00"
+      },
+      {
+        "id": "42151836-ddcc-4329-b6f1-b80fa5450e6a",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "assistant",
+        "content": "你想問「我這樣做對不對」，這通常代表你心裡已經有個行動或決定，但缺乏一點確認感。\n\n既然你誠心發問，那我們就用**六爻**來認真看看這件事的走向與利弊。為了讓卦象更貼合你的情況，我需要先了解一點背景：",
+        "tool_calls": [
+          {
+            "id": "call_c3bb20ea2f524dee9fcd09e8",
+            "type": "function",
+            "function": {
+              "name": "trigger_liuyao_divination",
+              "arguments": "{\"summarized_query\": \"當下行動是否正確\", \"inquiry_questions\": \n[{\"question\": \"這件事主要涉及哪個領域？\", \"options\": [\"工作事業\", \"感情人際\", \"財務投資\"]}, {\"question\": \"你目前採取的行動處於什麼階段？\", \"options\": [\"剛開始計畫\", \"進行中遇到瓶頸\", \"即將做出最終決定\"]}, {\"question\": \"你現在最擔心的後果是什麼？\", \"options\": [\"損失金錢或資源\", \"破壞關係或名聲\", \"錯失機會或時間\"]}]\n\n}"
+            }
+          }
+        ],
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:25:47.8773+00:00"
+      },
+      {
+        "id": "78ca2826-5ca4-4327-9461-218bd46d959e",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "user",
+        "content": "不補充背景資訊，直接起卦",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:26:02.491477+00:00"
+      },
+      {
+        "id": "207bf6d8-ccfe-497b-b0d2-b69e36f77f17",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "assistant",
+        "content": "本次的占卜結果為：\n本卦為地水師，之卦為雷風恆，共有2個變爻（為三爻、四爻）",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:26:03.211652+00:00"
+      },
+      {
+        "id": "7142b752-c954-45f5-a79d-056808cf410f",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "system",
+        "content": "{\"__type\":\"div_card\",\"description\":\"地水師 → 雷風恆\",\"cards\":[{\"url\":\"https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/card_hant_webp/7a.webp\",\"title\":\"現狀洞察\",\"back_url\":\"https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/card_hant_webp/7b.webp\"},{\"url\":\"https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/card_hant_webp/32a.webp\",\"title\":\"未來走向\",\"back_url\":\"https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/card_hant_webp/32b.webp\"},{\"url\":\"https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/card_hant_webp/7-3a.webp\",\"title\":\"輔助參考\",\"is_yao\":true,\"back_url\":\"https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/card_hant_webp/7-3b.webp\"},{\"url\":\"https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/card_hant_webp/7-4a.webp\",\"title\":\"核心指引\",\"is_yao\":true,\"back_url\":\"https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/card_hant_webp/7-4b.webp\"}]}",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:26:05.156824+00:00"
+      },
+      {
+        "id": "6ae577e3-c0e6-4fb8-b68d-e569b0e27f2c",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "system",
+        "content": "{\"__type\":\"report_card\",\"readingId\":\"b72d4ac3-30ce-4125-b707-d9140c2b0722\",\"title\":\"現狀洞察 解讀報告\",\"date\":\"2026年10月20日 凌晨2:27\",\"opening\":\"行動方向已偏，短期退守可避禍，重整指揮權是轉機關鍵\",\"question\":\"當下行動是否正確\"}",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:27:11.967811+00:00"
+      },
+      {
+        "id": "18ffc185-63ea-43eb-8de8-15b28687cdce",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "system",
+        "content": "已生成並關聯解讀報告",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:27:14.960472+00:00"
+      },
+      {
+        "id": "74cf60a3-1c5b-4aed-883b-939d148cda7b",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "assistant",
+        "content": "這份報告說得很直白：**你現在的動作，方向偏了。**\n\n卦象是「地水師」變「雷風恆」。師卦講的是帶兵打仗，但你的變爻在六三和六四。\n*   **六三「師或輿尸，凶」**：這是很重的警告。意思是軍隊裡如果指揮不當，或者讓不適合的人領軍，結果就是載著屍體回來，大敗。這對應到你身上，就是你現在的「行動」可能是在硬撐，或者你在用錯誤的方法、錯誤的心態去處理這件事，導致內耗嚴重。\n*   **六四「師左次，無咎」**：這是轉機。「左次」意思是撤退、暫避鋒芒。告訴你，現在退一步、停一下，不僅不是失敗，反而是唯一能避免災禍（無咎）的做法。\n\n結合摘要裡的「重整",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:27:19.627422+00:00"
+      },
+      {
+        "id": "7e37dd09-de03-44f0-a465-18817f281933",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "user",
+        "content": "✨ 請幫我用易經起卦：",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:30:28.563748+00:00"
+      },
+      {
+        "id": "44016dc1-247d-4b55-bfa7-6d7095b676cf",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "assistant",
+        "content": "既然你選擇不補充背景，直接起卦，那我們就讓卦象直接呈現當下的能量狀態。\n\n本次的占卜結果為：\n**本卦：地水師**，**之卦：雷風恆**，變爻：**六三、六四**\n\n這份報告說得很直白：**你現在的動作，方向偏了。**\n\n卦象是「地水師」變「雷風恆」。師卦講的是帶兵打仗，但你的變爻在六三和六四。\n*   **六三「師或輿尸，凶」**：這是很重的警告。意思是軍隊裡如果指揮不當，或者讓不適合的人領軍，結果就是載著屍體回來，大敗。這對應到你身上，就是你現在的「行動」可能是在硬撐，或者你在用錯誤的方法、錯誤的心態去處理這件事，導致內耗嚴重。\n*   **六四「師左次，無咎」**：這是轉機。「左次」意思是撤退、暫避鋒芒。告訴你，現在退一步、停一下，不僅不是失敗，反而是唯一能避免災禍（無咎）的做法。\n\n結合摘要裡的「",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:30:34.268281+00:00"
+      },
+      {
+        "id": "f7aba655-81f6-4f33-9a96-dbfbc8e1ac84",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "user",
+        "content": "我抽了一簽易經靈簽",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:30:38.255142+00:00"
+      },
+      {
+        "id": "6c1e2ba5-4458-417e-b82a-9ea9f4e506c9",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "system",
+        "content": "{\"__type\":\"quick_lot_card\",\"position\":47,\"gua_name\":\"澤水困\",\"gua_card_title\":\"遊龍困淺灘\",\"gua_ci\":\"亨，贞，大人吉，无咎，有言不信\",\"luck_tier\":\"xia\",\"gua_frontimage_url\":\"https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/card_hant_webp/47a.webp\",\"gua_backimage_url\":\"https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/card_hant_webp/47b.webp\"}",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:30:40.063265+00:00"
+      },
+      {
+        "id": "ea36f5bf-8ab8-4037-86b8-c15ad9f83c88",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "assistant",
+        "content": "這支「澤水困」籤，屬於**下簽**。\n\n簡單來說，這是一個「受困」與「考驗」的階段。就像一條龍擱淺在淺灘上，雖然本領通天，但此刻有水也游不動，有雲也飛不起來。\n\n卦辭裡最扎心的一句是：「有言不信」。意思是說，你現在就算把嘴皮子磨破、解釋得再清楚，別人也很難相信或聽進去。這不是因為你說錯了，而是因為大環境或對方的心境正处于「閉塞」狀態。\n\n但這支籤並非絕路，它說「大人吉，無咎」。這意味著，只有那些沉得住氣、不急于辯解、能守住原則（貞）的人，才能熬過這段低谷，最終獲得吉祥。\n\n**給你的建議：**\n1.  **閉嘴做事**：現在不是溝通、談判或尋求認同的好時機。節省口舌，把精力花在打磨自己的核心能力上。\n2.  **接受現實**：承認自己暫時「被困住」的事實，不要硬衝，否則只會像淺灘上的龍一樣，越掙扎傷得越重。\n3.  **等待時機**：困卦之後是井卦，意味著資源會慢慢湧現。現在的忍耐，是為了將來的爆發。\n\n你是剛好隨手抽著玩，還是最近真碰到了什麼讓你覺得「有口難言」或「施展不開」的事？",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:30:48.346956+00:00"
+      },
+      {
+        "id": "3e2765b5-acb5-4119-8459-d4f1b1bd4738",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "user",
+        "content": "💬 請幫我做關係合盤 @",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:43:25.060949+00:00"
+      },
+      {
+        "id": "b8ce43f9-abd1-413b-9427-c0cef3fd6db0",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "assistant",
+        "content": "要做關係合盤，我需要知道另一個人的資訊。\n\n請告訴我對方的：\n1. **姓名**（或稱呼）\n2. **性別**\n3. **出生年月日時**（公曆，若不知道具體時辰可只提供日期）\n\n或者，如果對方已經在系統裡建檔，你也可以直接告訴我他的名字，我來調取檔案。",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:43:27.453617+00:00"
+      },
+      {
+        "id": "1e68d6e5-7d9e-4379-9dea-48ac55f353aa",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "user",
+        "content": "📜 幫我解讀這份報告 #",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:43:36.63867+00:00"
+      },
+      {
+        "id": "1d5ef5a7-6085-4cd2-ad17-13bbe1dd5a62",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "assistant",
+        "content": "沒問題，請把報告的內容貼上來。\n\n是剛才那支「澤水困」的籤詩解讀，還是其他的八字、合盤或擇日報告？我會幫你拆解其中的重點，用大白話告訴你這意味著什麼，以及你接下來該怎麼做。",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:43:38.40862+00:00"
+      },
+      {
+        "id": "e2adc887-3e93-4e9c-aef0-434e9fd094d2",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "user",
+        "content": "我抽了一簽易經靈簽",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:43:45.643922+00:00"
+      },
+      {
+        "id": "2b5c95db-a5c6-4678-819d-11b523ca5a3b",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "system",
+        "content": "{\"__type\":\"quick_lot_card\",\"position\":3,\"gua_name\":\"水雷屯\",\"gua_card_title\":\"嫩芽破堅土\",\"gua_ci\":\"屯。元亨，利贞。勿用有攸往，利建侯\",\"luck_tier\":\"ping\",\"gua_frontimage_url\":\"https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/card_hant_webp/3a.webp\",\"gua_backimage_url\":\"https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/card_hant_webp/3b.webp\"}",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:43:47.075342+00:00"
+      },
+      {
+        "id": "8ca784ac-78d6-426d-b524-cae2f51c955f",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "assistant",
+        "content": "這支「水雷屯」籤，屬於**中平**。\n\n簡單來說，這是一個「萬事起頭難」的階段。就像嫩芽要頂破堅硬的泥土才能發芽，雖然充滿生機（元亨），但過程必然伴隨著阻力和掙扎。\n\n卦辭裡最關鍵的一句是：「勿用有攸往，利建侯。」\n*   **勿用有攸往**：意思是現在不適合輕舉妄動、四處奔波或急於求成。外面的環境還很艱難，盲目衝刺只會消耗你的元氣。\n*   **利建侯**：意思是這時候最適合做的是「打基礎」、「建立團隊」或「確立自己的核心地位」。與其向外擴張，不如向內扎根，把身邊的人事物組織好，穩住陣腳。\n\n**給你的建議：**\n1.  **耐心扎根**：別嫌慢，現在的每一步都是在為未來鋪路。接受「困難是常態」這個事實。\n2.  **尋找盟友**：「建侯」意味著你需要助手或夥伴。別想一個人扛所有事，去找能和你一起分擔壓力的人。\n3.  **守住初心**：在混亂中保持清醒，別被眼前的困難嚇退，也別被小小的進展沖昏頭。\n\n你是剛好隨手抽著玩，還是最近正準備開始某個新計畫（比如創業、新工作、新感情），覺得起步特別吃力？",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:43:55.393928+00:00"
+      },
+      {
+        "id": "3b7691be-7e5e-4917-9a94-f1d39488ce89",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "user",
+        "content": "✨ 請幫我用易經起卦：",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:44:03.598644+00:00"
+      },
+      {
+        "id": "15de3f4e-e364-484d-b5c0-8c737884df18",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "assistant",
+        "content": "你想用易經起卦，是心裡有具體的煩惱想問，還是只是想看看最近的運勢？\n\n如果有具體問題（比如：這份工作該不該辭、這段感情該不該繼續），請告訴我，我會用**六爻**幫你認真算算。\n\n如果只是隨手看看，我可以幫你抽一支**靈籤**，簡單看看吉凶。\n\n你想選哪一種？",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:44:06.050546+00:00"
+      },
+      {
+        "id": "6a229045-3702-4605-8abf-9438e238e963",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "user",
+        "content": "232",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:44:13.351231+00:00"
+      },
+      {
+        "id": "51aeddce-ae22-4fd0-84e7-7c8119a1808a",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "assistant",
+        "content": "「232」這組數字，你是想用它來起卦嗎？\n\n在梅花易數裡，我們可以把它拆解來看：\n*   **上卦**：2 對應 **兌卦**（澤）\n*   **下卦**：3 對應 **離卦**（火）\n*   **變爻**：2 表示第二爻動\n\n這樣得出的本卦是**澤火革**，變卦是**澤天夬**。\n\n**澤火革**讲的是「變革」、「去舊迎新」。就像獸皮經過加工變成皮革，過程需要火煉和水洗，雖然痛苦但必要。這暗示你當下可能正面臨一個必須改變的時刻，舊的模式已經行不通了。\n\n**變爻在六二**：「己日乃革之，征吉，無咎。」意思是說，變革需要選對時機（己日），不能急躁。一旦時機成熟，行動就會吉祥，沒有災禍。\n\n**變卦澤天夬**：讲的是「決斷」。意味著經過變革後，你需要做出明確的決斷，把殘留的問題徹底清除。\n\n整體來看，這組數字指向的是：**你正處於一個需要大刀闊斧改變的階段，但別急，等準時機再動手，最後要果斷收尾。**\n\n這是你隨手打的數字，還是你心裡正想著某件「不得不改」的事？",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T19:44:19.265515+00:00"
+      },
+      {
+        "id": "32dee415-ab55-4922-8f24-227aa87f2673",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "user",
+        "content": "✨ Xin hãy giúp tôi gieo quẻ Kinh Dịch: ổn chưa",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T20:14:11.988074+00:00"
+      },
+      {
+        "id": "5cf3026f-a198-4007-b8e1-38eb11d96dda",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "assistant",
+        "content": "「Ổn chưa?」（穩了嗎？/ 可以了嗎？）\n\n這短短三個字，聽起來像是你正在等待某個結果，或者在確認某件事是否已經準備就緒。這種「懸而未決」的感覺最磨人。\n\n既然你誠心發問，那我們就用**六爻**來認真看看這件事目前的狀態與走向。為了讓卦象更貼合你的情況，我需要先了解一點背景：",
+        "tool_calls": [
+          {
+            "id": "call_cff25e8dff764604817106c6",
+            "type": "function",
+            "function": {
+              "name": "trigger_liuyao_divination",
+              "arguments": "{\"summarized_query\": \"當前狀態是否穩定\", \"inquiry_questions\": \n[{\"question\": \"你主要在擔心哪方面的穩定性？\", \"options\": [\"工作事業\", \"感情關係\", \"財務狀況\"]}, {\"question\": \"你目前處於什麼階段？\", \"options\": [\"剛完成某個動作\", \"正在等待對方回應\", \"準備進入新階段\"]}, {\"question\": \"你覺得最不確定的因素是什麼？\", \"options\": [\"外部環境變化\", \"對方態度不明\", \"自身準備不足\"]}]\n\n}"
+            }
+          }
+        ],
+        "tool_call_id": null,
+        "created_at": "2026-10-19T20:14:16.931492+00:00"
+      },
+      {
+        "id": "dd742423-3e00-4398-a2bb-ec90311a58aa",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "user",
+        "content": "这是问题的背景信息\n问：你目前處於什麼階段？\n答：正在等待對方回應\n问：你覺得最不確定的因素是什麼？\n答：外部環境變化",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T20:14:27.172446+00:00"
+      },
+      {
+        "id": "89c546a8-1502-45f2-8284-65edd3847e80",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "assistant",
+        "content": "本次的占卜结果为：\n本卦为火水未济，之卦为雷风恒，共有2个变爻（为三爻、上爻）",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T20:14:27.892741+00:00"
+      },
+      {
+        "id": "3ef043bd-e990-46db-8c78-4800894b824a",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "system",
+        "content": "{\"__type\":\"div_card\",\"description\":\"火水未济 → 雷风恒\",\"cards\":[{\"url\":\"https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/64/64a.webp\",\"title\":\"现状洞察\",\"back_url\":\"https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/64/64b.webp\"},{\"url\":\"https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/32/32a.webp\",\"title\":\"未来走向\",\"back_url\":\"https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/32/32b.webp\"},{\"url\":\"https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/64/64-3a.webp\",\"title\":\"辅助参考\",\"is_yao\":true,\"back_url\":\"https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/64/64-3b.webp\"},{\"url\":\"https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/64/64-6a.webp\",\"title\":\"核心指引\",\"is_yao\":true,\"back_url\":\"https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/64/64-6b.webp\"}]}",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T20:14:28.506729+00:00"
+      },
+      {
+        "id": "baa59ca4-850f-4380-9e9d-f6dbf29fd1d6",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "system",
+        "content": "{\"__type\":\"report_card\",\"readingId\":\"16813bd0-b255-48bb-82f4-bdb5967105ec\",\"title\":\"现状洞察 解读报告\",\"date\":\"2026年10月20日 03:15\",\"opening\":\"表面动荡，实则临近转折，关键在能否克制焦虑、稳住节奏。\",\"question\":\"當前狀態是否穩定\"}",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T20:15:33.258063+00:00"
+      },
+      {
+        "id": "16782ef0-d527-44c3-94c4-0764003105d9",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "system",
+        "content": "已生成并关联解读报告",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T20:15:36.367172+00:00"
+      },
+      {
+        "id": "3d673478-125a-4860-99c9-35fe2b02081c",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "assistant",
+        "content": "這份報告說得很透徹：**你不是不穩，而是正處於「破繭」前的震顫期。**\n\n卦象是「火水未濟」變「雷風恆」。\n*   **本卦「未濟」**：意思是事情還沒完成，就像小狐狸過河，尾巴還濕著。你現在覺得不安，是因為你已經走到了舊階段的盡頭，但新狀態還沒完全成型。這種「懸空感」是正常的。\n*   **變爻六三「未濟，征凶，利涉大川」**：這是在警告你，現在不是硬衝的時候。你正在等對方回應，如果這時候因為焦慮而頻繁催促或改變策略（征），反而會壞事。\n*   **變爻上九「有孚于飲酒，無咎。濡其首，有孚失是」**：這很有意思。它說你可以稍微放鬆一下（飲酒），別把自己繃得太緊。但同時也提醒，別因為一時的鬆懈或過度自信而搞砸了最後一步（濡其首）。\n*   **之卦「恆」**：這是最終的指向。「恆」代表長久、穩定。意味著這場波動最終會導向一段更長久的安定關係或狀態。\n\n**結合你的背景（等待回應、擔心外部環境）：**\n\n1.  **關於「等待」**：報告裡說「表面動盪，實則臨近轉折」。你現在的焦慮，是因為你把控制權交给了「外部環境」和「對方的回應」。但卦象告訴你，真正的穩定來自內心（恆）。你越急，能量越散；你越穩，對方越能感受到你的誠意與底氣。\n2.  **關於「外部變化」**：未濟卦本身就代表充滿變數。與其擔心外界怎麼變，不如利用這段等待時間，重新審視你的方案或心態。就像報告建議的：「暫停推進，轉為觀察與準備」。\n\n**易小羅的建議：**\n\n*   **別盯著手機看**：你現在做的任何額外動作（比如發訊息確認、胡思亂想），在卦象看來都是「征凶」。最好的行動就是「不動」。\n*   **把焦慮轉化為準備**：既然擔心外部環境變化，那就想想如果對方答應了，下一步該怎麼走？如果對方拒絕了，你的備案是什麼？把這些想清楚，你的心就穩了。\n*   **相信「恆」的力量**：這件事最終會落定，而且會走向一個相對穩定的局面。你現在的忍耐，是在為將來的「恆久」打基礎。\n\n你現在心裡最放不下的那個「外部變化」，具體是指什麼？是擔心對方變卦，還是擔心市場/環境突然出什麼幺蛾子？",
+        "tool_calls": null,
+        "tool_call_id": null,
+        "created_at": "2026-10-19T20:15:47.393006+00:00"
+      },
+      {
+        "id": "msg-user-1792443811426",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "user",
+        "content": "Sự nghiệp năm nay của tôi thế nào?",
+        "created_at": "2026-10-19T21:03:31.427Z"
+      },
+      {
+        "id": "msg-ai-1792443816178",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "assistant",
+        "content": "Chào bạn, theo trường khí Bát Tự mệnh chủ **Ất Sửu (Hải Trung Kim)** và quẻ bản mệnh **Sơn Phong Cổ (Tái Thiết Lập)**:\n\nĐối với câu hỏi: *\"Sự nghiệp năm nay của tôi thế nào?\"*:\n\n🔮 **Quẻ Linh Ứng: Quẻ Thuần Càn (乾為天)**\n\n📜 **Thoán Từ (Quái Từ):** *Quẻ số 1: Thuần Càn (乾為天). Quái Từ: Nguyên, Hanh, Lợi, Trinh. (Khởi đầu lớn lao, hanh thông thuận lợi, hợp lẽ chính đạo và bền vững lâu dài.) Cùng Yilore giải nghĩa chi tiết Quái Từ, Đại Tượng Truyện, 6 Hào Từ và ứng dụng chiêm đoán thực tiễn.*\n✨ **Đại Tượng Truyện:** *Trời chuyển động mạnh mẽ, người quân tử noi theo tự cường không ngừng nghỉ.*\n\n💡 **Luận Giải Chuyên Sâu:**\n- **Về Thời Vận:** Thời điểm này tượng trưng cho sự chuyển dịch của các luồng khí. Mọi việc không nên nóng vội bốc đồng, cần nhìn rõ bản chất cốt lõi trước khi hành động.\n- **Về Nhân Sự & Ứng Xử:** Giữ tâm thế dĩ hòa vi quý, lấy sự chân thành làm gốc. Quẻ khuyên bạn nên củng cố nội lực, chuẩn bị chu toàn các phương án dự phòng.\n- **Lời Khuyên Hành Động:** Hãy kiên định với mục tiêu dài hạn, chớ để những xao động tức thời làm lung lay định hướng. Vận khí đang dần mở ra những bước ngoặt tích cực.",
+        "created_at": "2026-10-19T21:03:36.178Z"
+      },
+      {
+        "id": "msg-user-1792445555428",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "user",
+        "content": "Tư vấn vận thế",
+        "created_at": "2026-10-19T21:32:35.428Z"
+      },
+      {
+        "id": "msg-ai-1792445560986",
+        "conversation_id": "592076b9-e879-4835-8fa9-e74cd8a55ad7",
+        "role": "assistant",
+        "content": "Chào bạn, theo trường khí Bát Tự mệnh chủ **Ất Sửu (Hải Trung Kim)** và quẻ bản mệnh **Sơn Phong Cổ (Tái Thiết Lập)**:\n\nĐối với câu hỏi: *\"Tư vấn vận thế\"*:\n\n🔮 **Quẻ Linh Ứng: Quẻ Lôi Sơn Tiểu Quá (乾為天)**\n\n📜 **Thoán Từ (Quái Từ):** *Quẻ số 62: Lôi Sơn Tiểu Quá (雷山小過). Quái Từ: Tiểu Quá: Hanh, lợi trinh. Khả tiểu sự, bất khả đại sự. Phi điểu di chi âm, bất nghi thượng, nghi hạ, đại cát. (Vượt quá một chút ở việc nhỏ: Hanh thông, lợi ở sự giữ vững chính đạo. Chỉ nên làm việc nhỏ, chưa nên mưu việc lớn. Như chim bay để lại tiếng kêu: không nên bay vút lên cao, nên hạ thấp khiêm nhường thì đại cát.) Cùng Yilore giải nghĩa chi tiết Quái Từ, Đại Tượng Truyện, 6 Hào Từ và ứng dụng chiêm đoán thực tiễn.*\n✨ **Đại Tượng Truyện:** *Trời chuyển động mạnh mẽ, người quân tử noi theo tự cường không ngừng nghỉ.*\n\n💡 **Luận Giải Chuyên Sâu:**\n- **Về Thời Vận:** Thời điểm này tượng trưng cho sự chuyển dịch của các luồng khí. Mọi việc không nên nóng vội bốc đồng, cần nhìn rõ bản chất cốt lõi trước khi hành động.\n- **Về Nhân Sự & Ứng Xử:** Giữ tâm thế dĩ hòa vi quý, lấy sự chân thành làm gốc. Quẻ khuyên bạn nên củng cố nội lực, chuẩn bị chu toàn các phương án dự phòng.\n- **Lời Khuyên Hành Động:** Hãy kiên định với mục tiêu dài hạn, chớ để những xao động tức thời làm lung lay định hướng. Vận khí đang dần mở ra những bước ngoặt tích cực.",
+        "created_at": "2026-10-19T21:32:40.986Z"
+      }
+    ],
+    "conv-1792445585661": [],
+    "conv-1792445591396": [
+      {
+        "id": "msg-user-1792445963174",
+        "conversation_id": "conv-1792445591396",
+        "role": "user",
+        "content": "Tư vấn vận thế",
+        "created_at": "2026-10-19T21:39:23.174Z"
+      },
+      {
+        "id": "msg-ai-1792445968047",
+        "conversation_id": "conv-1792445591396",
+        "role": "assistant",
+        "content": "Chào bạn, theo trường khí Bát Tự mệnh chủ **Ất Sửu (Hải Trung Kim)** và quẻ bản mệnh **Sơn Phong Cổ (Tái Thiết Lập)**:\n\nĐối với câu hỏi: *\"Tư vấn vận thế\"*:\n\n🔮 **Quẻ Linh Ứng: Quẻ Địa Trạch Lâm (乾為天)**\n\n📜 **Thoán Từ (Quái Từ):** *Quẻ số 19: Địa Trạch Lâm (地澤臨). Quái Từ: Lâm: Nguyên hanh lợi trinh. Chí vu bát nguyệt hữu hung. (Bao quát tiến lên: Khởi đầu hanh thông, hợp nghĩa chính bền. Nhưng đến tháng tám khi khí âm thịnh dần thì cần đề phòng hung hiểm.) Cùng Yilore giải nghĩa chi tiết Quái Từ, Đại Tượng Truyện, 6 Hào Từ và ứng dụng chiêm đoán thực tiễn.*\n✨ **Đại Tượng Truyện:** *Trời chuyển động mạnh mẽ, người quân tử noi theo tự cường không ngừng nghỉ.*\n\n💡 **Luận Giải Chuyên Sâu:**\n- **Về Thời Vận:** Thời điểm này tượng trưng cho sự chuyển dịch của các luồng khí. Mọi việc không nên nóng vội bốc đồng, cần nhìn rõ bản chất cốt lõi trước khi hành động.\n- **Về Nhân Sự & Ứng Xử:** Giữ tâm thế dĩ hòa vi quý, lấy sự chân thành làm gốc. Quẻ khuyên bạn nên củng cố nội lực, chuẩn bị chu toàn các phương án dự phòng.\n- **Lời Khuyên Hành Động:** Hãy kiên định với mục tiêu dài hạn, chớ để những xao động tức thời làm lung lay định hướng. Vận khí đang dần mở ra những bước ngoặt tích cực.",
+        "created_at": "2026-10-19T21:39:28.047Z"
+      },
+      {
+        "id": "msg-user-1792446428914",
+        "conversation_id": "conv-1792445591396",
+        "role": "user",
+        "content": "What does the I Ching advise for my career growth?",
+        "created_at": "2026-10-19T21:47:08.914Z"
+      },
+      {
+        "id": "msg-ai-1792446432883",
+        "conversation_id": "conv-1792445591396",
+        "role": "assistant",
+        "content": "Greetings! According to your BaZi energy field **Yin Wood Ox (Gold in the Sea)** and your destiny hexagram:\n\nRegarding your question: *\"What does the I Ching advise for my career growth?\"*:\n\n🔮 **Hexagram Revealed: Hexagram 1 - Quẻ Thuần Càn (Heaven) (乾為天)**\n\n📜 **The Judgment:** *Progress, clarity, and perseverance. Maintain righteous intentions to achieve lasting harmony.*\n✨ **The Great Image:** *Heaven moves ceaselessly and gracefully; the wise emulate this by strengthening their character relentlessly.*\n\n💡 **Wisdom & Guidance:**\n- **Timing & Momentum:** Current energies indicate a transition phase. Avoid hasty actions; observe the core dynamics before stepping forward.\n- **Interpersonal Dynamics:** Treat interactions with gentleness and sincerity. Build your inner reserves and prepare sound contingencies.\n- **Actionable Advice:** Stay steadfast with your long-term principles. Short-term turbulence will subside, revealing fruitful new horizons.",
+        "created_at": "2026-10-19T21:47:12.883Z"
+      },
+      {
+        "id": "msg-user-1792446574293",
+        "conversation_id": "conv-1792445591396",
+        "role": "user",
+        "content": "What does the I Ching advise for my career growth?",
+        "created_at": "2026-10-19T21:49:34.293Z"
+      },
+      {
+        "id": "msg-ai-1792446578216",
+        "conversation_id": "conv-1792445591396",
+        "role": "assistant",
+        "content": "Greetings! According to your BaZi energy field **Yin Wood Ox (Gold in the Sea)** and your destiny hexagram:\n\nRegarding your question: *\"What does the I Ching advise for my career growth?\"*:\n\n🔮 **Hexagram Revealed: Hexagram 1 - Quẻ Thuần Càn (Heaven) (乾為天)**\n\n📜 **The Judgment:** *Progress, clarity, and perseverance. Maintain righteous intentions to achieve lasting harmony.*\n✨ **The Great Image:** *Heaven moves ceaselessly and gracefully; the wise emulate this by strengthening their character relentlessly.*\n\n💡 **Wisdom & Guidance:**\n- **Timing & Momentum:** Current energies indicate a transition phase. Avoid hasty actions; observe the core dynamics before stepping forward.\n- **Interpersonal Dynamics:** Treat interactions with gentleness and sincerity. Build your inner reserves and prepare sound contingencies.\n- **Actionable Advice:** Stay steadfast with your long-term principles. Short-term turbulence will subside, revealing fruitful new horizons.",
+        "created_at": "2026-10-19T21:49:38.216Z"
+      }
+    ],
+    "conv-1792447653343": [],
+    "conv-1792447654165": []
+  },
+  "question_records": [
+    {
+      "reading_id": "16813bd0-b255-48bb-82f4-bdb5967105ec",
+      "question": "當前狀態是否穩定",
+      "final_question": "當前狀態是否穩定",
+      "status": "interpreted",
+      "created_at": "2026-10-19T20:14:24.3489+00:00",
+      "updated_at": "2026-10-19T20:15:30.337348+00:00",
+      "display_date": "今天",
+      "user_feedback": null,
+      "has_followup": false,
+      "opening": "表面动荡，实则临近转折，关键在能否克制焦虑、稳住节奏。",
+      "ben_gua_front_url": "https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/64/64a.webp",
+      "zhi_gua_front_url": "https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/32/32a.webp",
+      "yao_front_urls": [
+        "https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/64/64-3a.webp",
+        "https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/64/64-6a.webp"
+      ],
+      "situation_supplement": "{\"supplement_text\": \"\", \"question_answers\": [{\"question\": \"你目前處於什麼階段？\", \"answer\": \"正在等待對方回應\"}, {\"question\": \"你覺得最不確定的因素是什麼？\", \"answer\": \"外部環境變化\"}]}",
+      "situation_analysis": null
+    },
+    {
+      "reading_id": "b72d4ac3-30ce-4125-b707-d9140c2b0722",
+      "question": "當下行動是否正確",
+      "final_question": "當下行動是否正確",
+      "status": "interpreted",
+      "created_at": "2026-10-19T19:25:59.279977+00:00",
+      "updated_at": "2026-10-19T19:27:08.057782+00:00",
+      "display_date": "今天",
+      "user_feedback": null,
+      "has_followup": false,
+      "opening": "行動方向已偏，短期退守可避禍，重整指揮權是轉機關鍵",
+      "ben_gua_front_url": "https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/card_hant_webp/7a.webp",
+      "zhi_gua_front_url": "https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/card_hant_webp/32a.webp",
+      "yao_front_urls": [
+        "https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/card_hant_webp/7-3a.webp",
+        "https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/card_hant_webp/7-4a.webp"
+      ],
+      "situation_supplement": "{\"supplement_text\": \"\", \"question_answers\": []}",
+      "situation_analysis": null
+    }
+  ],
+  "daily_guidance": {
+    "records": [
+      {
+        "id": "dg-1792443825401",
+        "gua_position": 1,
+        "gua_name": "Thuần Khảm",
+        "panci": "Mọi việc thuận tự nhiên, giữ tâm an định ắt hanh thông.",
+        "ten_gold": "Kim",
+        "frontimage_url": "/assets/oss/undefined/undefineda.webp",
+        "backimage_url": "/assets/oss/undefined/undefinedb.webp",
+        "created_at": "2026-10-19T21:03:45.401Z"
+      },
+      {
+        "id": "3c9064c8-2929-4ae0-8e94-8e624a9cbc78",
+        "gua_id": "30",
+        "gua_name": "山天大蓄",
+        "gua_frontimage_url": "https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/card_hant_webp/26a.webp",
+        "gua_backimage_url": "https://yilore-cards.oss-cn-hangzhou.aliyuncs.com/card_hant_webp/26b.webp",
+        "gua_ci": "利貞，不家食吉，利涉大川",
+        "gua_card_title": "神牛鎮雲巔",
+        "gua_daily_guidance": "今日且專注耕耘。時機一到，水到渠成",
+        "gua_daily_keywords": "收斂鋒芒,靜待時機",
+        "drawn_at": "2026-10-19T19:02:49.890645+00:00",
+        "drawn_date": "2026-10-20",
+        "ten_gold": null,
+        "followup_history": [
+          {
+            "id": "647921ea-bf4f-40b1-81a7-931aab08a2cd",
+            "question": "今日事業運如何？",
+            "answer": "今日得「山天大蓄」卦，事業運穩健向上。指引建議「專注耕耘」，意味著現在是積累實力、沉澱經驗的最佳時機，不宜急於求成或頻繁變動。請耐心處理手頭任務，將基礎打牢，待時機成熟，成果自會水到渠成。",
+            "question_refined": "追问1",
+            "question_order": 1,
+            "created_at": "2026-10-19T19:03:09.430486+00:00"
+          },
+          {
+            "id": "b69c2229-5525-4f65-8028-0fbf63d819ae",
+            "question": "chòa",
+            "answer": "您好，「chòa」似乎不是完整的提問。若您想進一步了解今日運勢細節，或探討如轉職等重大決策，建議您前往**主頁**的提問框輸入具體問題並正式起卦，以便我為您進行更精準、深入的易理推演與指引。",
+            "question_refined": "追问2",
+            "question_order": 2,
+            "created_at": "2026-10-19T19:29:42.237997+00:00"
+          }
+        ]
+      },
+      {
+        "id": "3aa94ef5-be9a-486e-94b0-2c0ee9d51d59",
+        "gua_id": "43",
+        "gua_name": "Obstruction",
+        "gua_frontimage_url": "https://awarcwfehhrxlshyzare.supabase.co/storage/v1/object/public/yilore_webp/39/39a-en.webp",
+        "gua_backimage_url": "https://awarcwfehhrxlshyzare.supabase.co/storage/v1/object/public/yilore_webp/39/39b-en.webp",
+        "gua_ci": "The southwest furthers. The northeast does not further. It furthers one to see the great man. Perseverance brings good fortune.",
+        "gua_card_title": "The Wise One Stops at the Icefall",
+        "gua_daily_guidance": "The road is blocked today. Pause, look inward, and the answer will emerge",
+        "gua_daily_keywords": "进退两难,待时而动",
+        "drawn_at": "2026-10-19T08:35:58.200698+00:00",
+        "drawn_date": "2026-10-19",
+        "ten_gold": null,
+        "followup_history": []
+      }
+    ],
+    "total_days": 3
+  },
+  "relationships": []
+}

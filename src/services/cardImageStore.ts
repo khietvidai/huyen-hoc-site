@@ -180,11 +180,15 @@ export const PRESET_CARD_BACKS: Record<string, string> = {
 `)}`,
 };
 
-export const PRESET_DECK_CONFIG: Record<string, { ext: string; back: string }> = {
+export const PRESET_DECK_VERSION = "20261019_11";
+
+export const PRESET_DECK_CONFIG: Record<string, { ext: string; back: string; version?: string }> = {
   deck_bo_1: { ext: "png", back: "/decks/deck_bo_1/back.jpg" },
   deck_bo_2: { ext: "png", back: "/decks/deck_bo_2/back.svg" },
   deck_bo_khong_chu: { ext: "png", back: "/decks/deck_bo_khong_chu/back.jpg" },
   deck_quan_tu: { ext: "jpg", back: "/decks/deck_quan_tu/back.svg" },
+  deck_ngu_che: { ext: "png", back: `/decks/deck_ngu_che/back.jpg?v=${PRESET_DECK_VERSION}`, version: PRESET_DECK_VERSION },
+  deck_ngu_che_khong_chu: { ext: "png", back: `/decks/deck_ngu_che_khong_chu/back.jpg?v=${PRESET_DECK_VERSION}`, version: PRESET_DECK_VERSION },
 };
 
 export const DEFAULT_DECK_ID = "deck_quan_tu";
@@ -195,6 +199,8 @@ export const PRESET_DECK_NAMES: Record<string, string> = {
   deck_quan_tu: "Bộ Quân Tử (64 Quẻ)",
   deck_bo_1: "Bộ 1 (Nguyên Bản Có Chữ)",
   deck_bo_2: "Bộ 2 (Có Chữ)",
+  deck_ngu_che: "Bộ Ngự Chế Tinh Túy (Có Chữ)",
+  deck_ngu_che_khong_chu: "Bộ Ngự Chế Tinh Túy (Không Chữ)",
 };
 
 export const INITIAL_PRESET_DECKS: DeckInfo[] = [
@@ -237,6 +243,26 @@ export const INITIAL_PRESET_DECKS: DeckInfo[] = [
     cardBackImage: "/decks/deck_bo_2/back.svg",
     cardCount: 64,
     createdAt: 1700000003000,
+  },
+  {
+    id: "deck_ngu_che",
+    name: "Bộ Ngự Chế Tinh Túy (Có Chữ)",
+    description: "Bộ bài Kinh Dịch 64 quẻ vẽ theo phong cách cung đình Ngự Chế Tân Tập Đoán Dịch Tinh Túy dựa trên Bộ 1 (Nguyên Bản Có Chữ).",
+    isPreset: true,
+    themeStyle: "golden",
+    cardBackImage: "/decks/deck_ngu_che/back.jpg",
+    cardCount: 64,
+    createdAt: 1700000004000,
+  },
+  {
+    id: "deck_ngu_che_khong_chu",
+    name: "Bộ Ngự Chế Tinh Túy (Không Chữ)",
+    description: "Bộ bài Kinh Dịch 64 quẻ không chữ full khung dọc dựa theo thuyết minh tượng ý và bố cục tranh gốc Ngự Chế Tân Tập Đoán Dịch Tinh Túy 100%.",
+    isPreset: true,
+    themeStyle: "golden",
+    cardBackImage: "/decks/deck_ngu_che_khong_chu/back.jpg",
+    cardCount: 64,
+    createdAt: 1700000005000,
   },
 ];
 
@@ -370,12 +396,12 @@ export async function getDeckList(): Promise<DeckInfo[]> {
         // Combined list
         const mergedList = [...presets, ...customDecks];
 
-        // If stored list was empty or still had old presets, update database
+        // If stored list was empty or still had old presets or missing any current preset, update database
         const needsUpdate =
           !storedList ||
           !Array.isArray(storedList) ||
           storedList.some((d) => LEGACY_OLD_PRESET_IDS.has(d.id)) ||
-          !storedList.some((d) => d.id === DEFAULT_DECK_ID);
+          INITIAL_PRESET_DECKS.some((p) => !storedList.some((d) => d.id === p.id));
 
         if (needsUpdate) {
           store.put(mergedList, "_system_decks_meta");
@@ -536,9 +562,14 @@ export async function getDeckImages(deckId: string): Promise<Record<number, stri
 
   // If this is a preset deck, populate default static paths for all 64 cards
   if (presetConfig) {
+    const vQuery = presetConfig.version ? `?v=${presetConfig.version}` : "";
     for (let i = 1; i <= 64; i++) {
-      results[i] = `/decks/${deckId}/${i}.${presetConfig.ext}`;
+      results[i] = `/decks/${deckId}/${i}.${presetConfig.ext}${vQuery}`;
     }
+  }
+
+  if (deckId === "deck_ngu_che" || deckId === "deck_ngu_che_khong_chu") {
+    return results;
   }
 
   try {
@@ -761,21 +792,25 @@ export async function importDeckBundle(bundle: {
 
 export async function getCardImage(cardNumber: number): Promise<string | null> {
   const activeDeckId = await getActiveDeckId();
-  try {
-    const db = await openDB();
-    const custom = await new Promise<string | null>((resolve) => {
-      const tx = db.transaction([STORE_NAME], "readonly");
-      const req = tx.objectStore(STORE_NAME).get(`${activeDeckId}_card_${cardNumber}`);
-      req.onsuccess = () => resolve((req.result as string) || null);
-      req.onerror = () => resolve(null);
-    });
-    if (custom) return custom;
-  } catch {
-    // ignore
+  if (activeDeckId !== "deck_ngu_che" && activeDeckId !== "deck_ngu_che_khong_chu") {
+    try {
+      const db = await openDB();
+      const custom = await new Promise<string | null>((resolve) => {
+        const tx = db.transaction([STORE_NAME], "readonly");
+        const req = tx.objectStore(STORE_NAME).get(`${activeDeckId}_card_${cardNumber}`);
+        req.onsuccess = () => resolve((req.result as string) || null);
+        req.onerror = () => resolve(null);
+      });
+      if (custom) return custom;
+    } catch {
+      // ignore
+    }
   }
 
   if (PRESET_DECK_CONFIG[activeDeckId]) {
-    return `/decks/${activeDeckId}/${cardNumber}.${PRESET_DECK_CONFIG[activeDeckId].ext}`;
+    const cfg = PRESET_DECK_CONFIG[activeDeckId];
+    const vQuery = cfg.version ? `?v=${cfg.version}` : "";
+    return `/decks/${activeDeckId}/${cardNumber}.${cfg.ext}${vQuery}`;
   }
   return null;
 }

@@ -62,6 +62,7 @@ interface CardDrawProps {
   cardVideos?: Record<number, string>;
   cardBackImage?: string | null;
   isKhongMinhMethod?: boolean;
+  isNguCheMethod?: boolean;
   suggestedDrawMode?: DrawMode;
   suggestedCustomCount?: number;
   suggestedCustomPurposes?: string[];
@@ -118,6 +119,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
   cardVideos = {},
   cardBackImage = null,
   isKhongMinhMethod = false,
+  isNguCheMethod = false,
   suggestedDrawMode,
   suggestedCustomCount,
   suggestedCustomPurposes,
@@ -150,11 +152,11 @@ export const CardDraw: React.FC<CardDrawProps> = ({
     : "Bộ Quân Tử (64 Quẻ)";
   const handleOpenManager = onOpenDeckManager || onManageDeck || (() => {});
   const [drawMode, setDrawMode] = useState<DrawMode>(() =>
-    isKhongMinhMethod ? "three" : suggestedDrawMode || "single"
+    isKhongMinhMethod || isNguCheMethod ? "three" : suggestedDrawMode || "single"
   );
 
   const handleSelectDrawMode = (mode: DrawMode) => {
-    if (!isKhongMinhMethod && !isRegisteredUser && (mode === "seven" || mode === "nine" || mode === "ten" || mode === "ten_expanded" || mode === "twelve" || mode === "custom")) {
+    if (!isKhongMinhMethod && !isNguCheMethod && !isRegisteredUser && (mode === "seven" || mode === "nine" || mode === "ten" || mode === "ten_expanded" || mode === "twelve" || mode === "custom")) {
       const modeNames: Record<string, string> = {
         seven: "Trận Thất Tinh (7 Lá)",
         nine: "Trận Cửu Cung (9 Lá)",
@@ -178,12 +180,12 @@ export const CardDraw: React.FC<CardDrawProps> = ({
   };
 
   useEffect(() => {
-    if (!isKhongMinhMethod && !isRegisteredUser && drawMode !== "single" && drawMode !== "double" && drawMode !== "three") {
+    if (!isKhongMinhMethod && !isNguCheMethod && !isRegisteredUser && drawMode !== "single" && drawMode !== "double" && drawMode !== "three") {
       setDrawMode("single");
       setSelectedDeckIndices([]);
       setRevealedCards([]);
     }
-  }, [isRegisteredUser, isKhongMinhMethod, drawMode]);
+  }, [isRegisteredUser, isKhongMinhMethod, isNguCheMethod, drawMode]);
 
   useEffect(() => {
     if (isKhongMinhMethod) {
@@ -191,12 +193,20 @@ export const CardDraw: React.FC<CardDrawProps> = ({
       setThreeSpreadMode("tam_tai");
       setSelectedDeckIndices([]);
       setRevealedCards([]);
+    } else if (isNguCheMethod) {
+      setDrawMode("three");
+      setThreeSpreadMode("ngu_che");
+      setSelectedDeckIndices([]);
+      setRevealedCards([]);
+      if (onActiveDeckChanged) {
+        onActiveDeckChanged("deck_ngu_che");
+      }
     } else if (suggestedDrawMode) {
       setDrawMode(suggestedDrawMode);
       setSelectedDeckIndices([]);
       setRevealedCards([]);
     }
-  }, [isKhongMinhMethod, suggestedDrawMode]);
+  }, [isKhongMinhMethod, isNguCheMethod, suggestedDrawMode]);
 
   useEffect(() => {
     if (suggestedDoubleMode) {
@@ -213,13 +223,15 @@ export const CardDraw: React.FC<CardDrawProps> = ({
   useEffect(() => {
     if (isKhongMinhMethod) {
       setThreeSpreadMode("tam_tai");
+    } else if (isNguCheMethod) {
+      setThreeSpreadMode("ngu_che");
     } else if (suggestedThreeMode) {
       setThreeSpreadMode(suggestedThreeMode);
     }
     if (suggestedChoiceCLabel) {
       setChoiceCLabel(suggestedChoiceCLabel);
     }
-  }, [isKhongMinhMethod, suggestedThreeMode, suggestedChoiceCLabel]);
+  }, [isKhongMinhMethod, isNguCheMethod, suggestedThreeMode, suggestedChoiceCLabel]);
 
   useEffect(() => {
     if (suggestedCustomPurposes && suggestedCustomPurposes.length > 0) {
@@ -235,7 +247,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
   const [choiceALabel, setChoiceALabel] = useState<string>("Lựa chọn A");
   const [choiceBLabel, setChoiceBLabel] = useState<string>("Lựa chọn B");
   const [threeSpreadMode, setThreeSpreadMode] = useState<ThreeCardMode>(() =>
-    isKhongMinhMethod ? "tam_tai" : "past_present_future"
+    isKhongMinhMethod ? "tam_tai" : isNguCheMethod ? "ngu_che" : "past_present_future"
   );
   const [choiceCLabel, setChoiceCLabel] = useState<string>("Lựa chọn C");
   const [menhBranchNumber, setMenhBranchNumber] = useState<number>(3); // 1..12 (default 3 = Dần)
@@ -1133,6 +1145,20 @@ export const CardDraw: React.FC<CardDrawProps> = ({
               ...multiDeckMeta,
             }
           );
+        } else if (isNguCheMethod || threeSpreadMode === "ngu_che") {
+          onComplete(
+            cardC, // Lấy lá cuối cùng (lá thứ 3 - Nhân) làm Quẻ Chủ Ngự Chế
+            [],
+            cardA,
+            `Ngự Chế Tân Tập Đoán Dịch Tinh Túy (Tam Tài): Thiên (${cardA.name}) • Địa (${cardB.name}) • Nhân — Quẻ Chủ (${cardC.name})`,
+            cards,
+            {
+              threeCards: true,
+              threeMode: "ngu_che",
+              spreadType: "nguche",
+              ...multiDeckMeta,
+            }
+          );
         } else if (isKhongMinhMethod || threeSpreadMode === "tam_tai") {
           onComplete(
             cardA,
@@ -1396,14 +1422,16 @@ export const CardDraw: React.FC<CardDrawProps> = ({
               </span>
             </button>
 
-            {/* Quick Deck Switcher for VIP */}
-            {isVip && onActiveDeckChanged && (
+            {/* Quick Deck Switcher */}
+            {(isVip || isNguCheMethod) && onActiveDeckChanged && (
               <select
                 value={activeDeckId || "deck_bo_khong_chu"}
                 onChange={(e) => onActiveDeckChanged(e.target.value)}
                 className="px-2.5 py-1.5 rounded-xl bg-[#1D1711] hover:bg-[#282017] border border-[#4E3B27] hover:border-[#C9A55A] text-[#F3E7D0] text-xs font-serif font-semibold cursor-pointer outline-none transition-all shadow-sm"
                 title="Tùy chỉnh đổi nhanh bộ bài đang dùng"
               >
+                <option value="deck_ngu_che_khong_chu">Bộ Ngự Chế Tinh Túy (Không Chữ)</option>
+                <option value="deck_ngu_che">Bộ Ngự Chế Tinh Túy (Có Chữ)</option>
                 <option value="deck_bo_khong_chu">Bộ Không Chữ (Nguyên Bản) [VIP]</option>
                 <option value="deck_quan_tu">Bộ Quân Tử (64 Quẻ)</option>
                 <option value="deck_bo_1">Bộ 1 (Nguyên Bản Có Chữ)</option>
@@ -1429,7 +1457,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
             <span>{isZenAudioPlaying ? "Đang Phát Vũ Lâm Linh" : "Bật Nhạc Vũ Lâm Linh"}</span>
           </button>
 
-          {/* Draw Mode Selectors or Khong Minh Method Banner */}
+          {/* Draw Mode Selectors or Khong Minh / Ngu Che Method Banner */}
           {isKhongMinhMethod ? (
             <div className="flex items-center gap-2.5 bg-gradient-to-r from-[#2A1D11] via-[#1D140C] to-[#120D08] border border-[#5A3F20] px-3.5 py-1.5 rounded-xl shadow-md">
               <Scroll className="w-4 h-4 text-[#C9A55A] shrink-0" />
@@ -1439,6 +1467,18 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 </span>
                 <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/80 px-2 py-0.2 rounded border border-emerald-500/40">
                   Tam Tài: 3 Lá
+                </span>
+              </div>
+            </div>
+          ) : isNguCheMethod ? (
+            <div className="flex items-center gap-2.5 bg-gradient-to-r from-[#3A160E] via-[#26110A] to-[#160A06] border border-[#C9A55A]/70 px-3.5 py-1.5 rounded-xl shadow-md">
+              <Crown className="w-4 h-4 text-[#F3D787] shrink-0" />
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs font-serif font-black text-[#FCE6B4] tracking-wide">
+                  NGỰ CHẾ ĐOÁN DỊCH TINH TÚY
+                </span>
+                <span className="text-[10px] font-mono text-amber-300 bg-amber-950/80 px-2 py-0.2 rounded border border-amber-500/40">
+                  Tam Tài: 3 Lá (Lấy Lá Cuối Làm Quẻ)
                 </span>
               </div>
             </div>
@@ -1988,7 +2028,57 @@ export const CardDraw: React.FC<CardDrawProps> = ({
         </motion.div>
       )}
 
-      {drawMode === "three" && !isKhongMinhMethod && (
+      {drawMode === "three" && isNguCheMethod && (
+        <motion.div
+          initial={{ opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gradient-to-br from-[#23140D] via-[#190F0A] to-[#130B07] border border-[#8B5E28] rounded-2xl p-4 shadow-xl space-y-3"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#3E2718] pb-2">
+            <h4 className="text-xs sm:text-sm font-serif font-bold text-[#FCE6B4] flex items-center gap-2">
+              <Crown className="w-4 h-4 text-[#F3D787]" />
+              <span>NGỰ CHẾ TÂN TẬP ĐOÁN DỊCH TINH TÚY (TAM TÀI: THIÊN — ĐỊA — NHÂN)</span>
+              <span className="text-[10px] font-mono text-amber-300 bg-amber-950/80 px-2 py-0.5 rounded border border-amber-500/40">
+                Lấy Lá Cuối Làm Quẻ Chủ + Xí Ngầu 12 Mặt
+              </span>
+            </h4>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+            <div className="bg-[#140C08] p-3 rounded-xl border border-[#362214]">
+              <span className="text-[#C9A55A] font-serif font-bold flex items-center gap-1.5 mb-1 text-xs">
+                <span className="w-4 h-4 rounded bg-[#2D1D12] text-[#C9A55A] text-[10px] flex items-center justify-center font-bold">天</span>
+                Lá 1: Thiên Thời (Khởi Cơ)
+              </span>
+              <p className="text-[11px] text-[#B8A58E] leading-relaxed">
+                Đại diện đạo Trời, thời vận khách quan và khí số khởi nguồn của sự việc.
+              </p>
+            </div>
+
+            <div className="bg-[#140C08] p-3 rounded-xl border border-[#362214]">
+              <span className="text-[#EAD8B1] font-serif font-bold flex items-center gap-1.5 mb-1 text-xs">
+                <span className="w-4 h-4 rounded bg-[#2D1D12] text-[#EAD8B1] text-[10px] flex items-center justify-center font-bold">地</span>
+                Lá 2: Địa Lợi (Nền Tảng)
+              </span>
+              <p className="text-[11px] text-[#B8A58E] leading-relaxed">
+                Đại diện đạo Đất, hoàn cảnh thực địa, nội tình và môi trường trung gian.
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-[#2E160D] to-[#1A0D08] p-3 rounded-xl border border-[#C9A55A]/80 shadow">
+              <span className="text-[#F3D787] font-serif font-bold flex items-center gap-1.5 mb-1 text-xs">
+                <span className="w-4 h-4 rounded bg-[#8B1E14] text-[#FCE6B4] text-[10px] flex items-center justify-center font-bold">人</span>
+                Lá 3 (Lá Cuối): Nhân Hòa — QUẺ CHỦ
+              </span>
+              <p className="text-[11px] text-[#E5D3B3] leading-relaxed">
+                <strong>Lấy lá cuối cùng làm Quẻ Chủ</strong>, sau đó <strong>lắc xí ngầu 12 mặt</strong> để trích xuất tranh vẽ Cố Cung & thơ đoán của quẻ cùng tranh & thơ đoán của ngày hôm đó.
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {drawMode === "three" && !isKhongMinhMethod && !isNguCheMethod && (
         <motion.div
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
@@ -2003,12 +2093,12 @@ export const CardDraw: React.FC<CardDrawProps> = ({
               </h4>
             </div>
             <span className="text-[11px] text-[#A2927C]">
-              Tiến trình thời gian hoặc so sánh 3 lựa chọn
+              Tiến trình thời gian, So sánh 3 lựa chọn hoặc Ngự Chế Đoán Dịch Tinh Túy
             </span>
           </div>
 
-          {/* Hai chế độ của bốc 3 lá trong Bốc Bài Kinh Dịch */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {/* Ba chế độ của bốc 3 lá trong Bốc Bài Kinh Dịch */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {/* Mode A: Dòng thời gian */}
             <button
               type="button"
@@ -2072,6 +2162,38 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 <span className="text-[#E0D0B6] font-semibold">Lá 1:</span> Lựa chọn A • <span className="text-[#E0D0B6] font-semibold">Lá 2:</span> Lựa chọn B • <span className="text-[#E0D0B6] font-semibold">Lá 3:</span> Lựa chọn C (Đối chiếu 3 ngã rẽ).
               </p>
             </button>
+
+            {/* Mode C: Ngự Chế Tân Tập Đoán Dịch Tinh Túy (Thiên - Địa - Nhân, lấy lá cuối làm quẻ) */}
+            <button
+              type="button"
+              onClick={() => {
+                setThreeSpreadMode("ngu_che");
+                setSelectedDeckIndices([]);
+                setRevealedCards([]);
+              }}
+              className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                threeSpreadMode === "ngu_che"
+                  ? "bg-gradient-to-r from-[#381C11] to-[#24120B] border-[#F3D787] shadow-[0_0_15px_rgba(243,215,135,0.25)]"
+                  : "bg-[#14110E] border-[#2C2216] hover:border-[#6E4726] opacity-80 hover:opacity-100"
+              }`}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs sm:text-sm font-serif font-bold text-[#FCE6B4] flex items-center gap-1.5">
+                  <Crown className="w-4 h-4 text-[#F3D787]" />
+                  c. Ngự Chế Đoán Dịch Tinh Túy
+                </span>
+                {threeSpreadMode === "ngu_che" ? (
+                  <span className="w-5 h-5 rounded-full bg-[#F3D787] text-[#120F0C] text-xs font-bold flex items-center justify-center shadow">
+                    ✓
+                  </span>
+                ) : (
+                  <span className="w-4 h-4 rounded-full border border-[#483929]" />
+                )}
+              </div>
+              <p className="text-[11px] text-[#C8B69E] leading-relaxed">
+                Bốc 3 lá <span className="text-[#F3D787] font-semibold">Thiên — Địa — Nhân</span>, lấy <span className="text-[#F3D787] font-bold">lá cuối cùng làm quẻ</span>, lắc xí ngầu 12 mặt trích tranh & thơ đoán của quẻ và ngày đó.
+              </p>
+            </button>
           </div>
 
           {/* Sub-inputs when in choice_abc mode */}
@@ -2115,6 +2237,41 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   placeholder="VD: Tự khởi nghiệp / ở lại cũ..."
                   className="w-full bg-[#120F0C] border border-[#3E3122] focus:border-[#C9A55A] rounded-xl px-3 py-1.5 text-xs text-[#EFE5D3] placeholder-[#6C5E4E] outline-none"
                 />
+              </div>
+            </div>
+          )}
+
+          {/* Explanatory box for ngu_che */}
+          {threeSpreadMode === "ngu_che" && (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs pt-1">
+              <div className="bg-[#14110E] p-3 rounded-xl border border-[#2D2216]">
+                <span className="text-[#C9A55A] font-serif font-bold flex items-center gap-1.5 mb-1 text-xs">
+                  <span className="w-4 h-4 rounded bg-[#2D2114] text-[#C9A55A] text-[10px] flex items-center justify-center font-bold">天</span>
+                  Lá 1: Thiên Thời
+                </span>
+                <p className="text-[11px] text-[#9E8E79] leading-relaxed">
+                  Đại diện đạo Trời, thời cơ khách quan và khí vận mở đầu.
+                </p>
+              </div>
+
+              <div className="bg-[#14110E] p-3 rounded-xl border border-[#2D2216]">
+                <span className="text-[#EAD8B1] font-serif font-bold flex items-center gap-1.5 mb-1 text-xs">
+                  <span className="w-4 h-4 rounded bg-[#2D2114] text-[#EAD8B1] text-[10px] flex items-center justify-center font-bold">地</span>
+                  Lá 2: Địa Lợi
+                </span>
+                <p className="text-[11px] text-[#9E8E79] leading-relaxed">
+                  Đại diện đạo Đất, nền tảng hoàn cảnh và môi trường thực tại.
+                </p>
+              </div>
+
+              <div className="bg-[#24140C] p-3 rounded-xl border border-[#C9A55A]/70">
+                <span className="text-[#F3D787] font-serif font-bold flex items-center gap-1.5 mb-1 text-xs">
+                  <span className="w-4 h-4 rounded bg-[#8B1E14] text-[#FCE6B4] text-[10px] flex items-center justify-center font-bold">人</span>
+                  Lá 3 (Lá Cuối): Nhân Hòa — Quẻ Chủ
+                </span>
+                <p className="text-[11px] text-[#E5D3B3] leading-relaxed">
+                  Lấy lá cuối cùng làm Quẻ Chủ, sau đó lắc xí ngầu 12 mặt (1–6: Hào 1–6, 7: Tĩnh, 8: Thế, 9: Thoán Dương, 10: Tượng Âm, 11: Ứng, 12: Động 6 hào).
+                </p>
               </div>
             </div>
           )}
@@ -2778,6 +2935,15 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                     : selectedDeckIndices.length === 1
                     ? "Lượt 2: Thỉnh lá ĐỊA (Địa Lợi / Nền Tảng Môi Trường)"
                     : "Lượt 3: Thỉnh lá NHÂN (Nhân Hòa / Con Người & Hành Động)"})
+                </span>
+              )}
+              {drawMode === "three" && threeSpreadMode === "ngu_che" && (
+                <span className="text-[#F3D787] font-bold ml-2">
+                  ({selectedDeckIndices.length === 0
+                    ? "Lượt 1: Thỉnh lá THIÊN (Đạo Trời)"
+                    : selectedDeckIndices.length === 1
+                    ? "Lượt 2: Thỉnh lá ĐỊA (Đạo Đất)"
+                    : "Lượt 3: Thỉnh lá NHÂN (Lá Cuối Cùng — Lấy Làm Quẻ Chủ Ngự Chế)"})
                 </span>
               )}
               {drawMode === "three" && threeSpreadMode === "past_present_future" && (
@@ -3890,6 +4056,12 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                             : i === 1
                             ? "LÁ 2: ĐỊA ĐẠO (ĐỊA LỢI & NỀN TẢNG MÔI TRƯỜNG)"
                             : "LÁ 3: NHÂN ĐẠO (NHÂN HÒA & CON NGƯỜI HÀNH ĐỘNG)"
+                          : drawMode === "three" && threeSpreadMode === "ngu_che"
+                          ? i === 0
+                            ? "LÁ 1: THIÊN ĐẠO (THIÊN THỜI & KHỞI CƠ)"
+                            : i === 1
+                            ? "LÁ 2: ĐỊA ĐẠO (ĐỊA LỢI & NỀN TẢNG)"
+                            : "👑 LÁ 3 (LÁ CUỐI): NHÂN ĐẠO — LẤY LÀM QUẺ CHỦ NGỰ CHẾ"
                           : i === 0
                           ? "LÁ 1: QUÁ KHỨ (CĂN NGUYÊN & KHỞI ĐẦU)"
                           : i === 1

@@ -9,7 +9,7 @@ import { BOOK_HEXAGRAMS } from "./src/data/bookHexagrams";
 dotenv.config();
 
 const app = express();
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 5168;
 
 app.use(express.json({ limit: "30mb" }));
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
@@ -1454,7 +1454,7 @@ async function startServer() {
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server Kinh Dịch đang chạy tại cổng http://0.0.0.0:${PORT}`);
+    console.log(`Server Kinh Dịch đang chạy tại: http://localhost:${PORT}`);
   });
 }
 

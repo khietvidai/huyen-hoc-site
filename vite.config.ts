@@ -16,8 +16,16 @@ export default defineConfig(() => {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
-      // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
+      proxy: {
+        '/vi/hexagram': 'http://localhost:3000',
+        '/zh-TW/hexagram': 'http://localhost:3000',
+        '/en/hexagram': 'http://localhost:3000',
+        '/hexagram': 'http://localhost:3000',
+        '/vi/blog': 'http://localhost:3000',
+        '/cards': 'http://localhost:3000',
+        '/cards_zh': 'http://localhost:3000',
+      },
     },
   };
 });

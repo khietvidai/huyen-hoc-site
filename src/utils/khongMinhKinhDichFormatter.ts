@@ -276,7 +276,7 @@ export function formatKhongMinhKinhDich(
       : (bookHex?.poemHan ? bookHex.poemHan.replace(/\n/g, " ") : `${kmBridge?.tuongQue || ""}, ${kmBridge?.yQue || ""}.`),
     trichNghiaLuanGiai: is28_2
       ? "大過：棟橈，利有攸往，亨 (Đại Quá: Đống nạo, lợi hữu du vãng, hanh - Cột nhà oằn xuống, lợi về việc tiến đi, hanh thông). Quẻ Đại Quá đại diện cho một thời kỳ chịu áp lực quá tải, vượt qua mức bình thường (Đại Quá). Hình tượng Đầm (Đoài) ở trên làm ngập lụt Cây cối (Tốn) ở dưới, hoặc hình ảnh cái cột nhà ở giữa thì to đặc (4 hào Dương) mà hai đầu lại mỏng manh yếu ớt (2 hào Âm) nên sức nặng đè nén khiến cột uốn cong, sắp gãy. Bản chất của quẻ là một tình thế vô cùng ngặt nghèo, đòi hỏi người đứng mũi chịu sào phải có hành động phi thường, mạo hiểm và vượt ra ngoài khuôn khổ thông thường để cứu vãn cơ đồ. Tượng trưng cho hoàn cảnh khủng hoảng, yêu cầu bản lĩnh vĩ đại để chuyển nguy thành an."
-      : `${canonicalHex?.hanzi ? `${canonicalHex.hanzi}：` : ""}${canonicalHex?.judgment ? `${canonicalHex.judgment} ` : ""}${canonicalHex?.overview || primaryHex.overview || ""}`,
+      : `${canonicalHex?.hanzi ? `${canonicalHex.hanzi}：` : ""}${(canonicalHex as any)?.judgment ? `${(canonicalHex as any).judgment} ` : ""}${(canonicalHex as any)?.overview || primaryHex.overview || ""}`,
     daiTuong: is28_2
       ? "Đại tượng: Ở giữa là bốn hào dương, là rường cột vững chắc, nhưng đầu cuối là hào âm, sức yếu không chịu nổi, thì thế sẽ bị bẻ gãy."
       : (bookHex?.bigImage ? `Đại tượng: ${bookHex.bigImage}` : primaryHex.image || ""),

@@ -10,7 +10,8 @@
       "memberTier": "vip",
       "memberExpiryDate": "2099-12-31",
       "registeredAt": 1792310651523,
-      "incenseSticks": 999
+      "incenseSticks": 999,
+      "preferredDeckId": "deck_ngu_che"
     },
     "passwordHash": "OTk5OTk5"
   },

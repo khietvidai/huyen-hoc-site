@@ -33,6 +33,7 @@ import {
   DeckInfo,
   fileToDataUrl,
   DEFAULT_DECK_ID,
+  PRESET_DECK_VERSION,
 } from "../services/cardImageStore";
 import { AppUser } from "../services/authService";
 
@@ -129,7 +130,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
     if (selectedDeckId) {
       loadSelectedDeckData(selectedDeckId);
     }
-  }, [selectedDeckId]);
+  }, [selectedDeckId, PRESET_DECK_VERSION]);
 
   // Keep selected deck in sync if activeDeckId changes from parent
   useEffect(() => {

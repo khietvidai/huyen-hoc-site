@@ -57,6 +57,7 @@ import { KhongMinhSingleHexView } from "./KhongMinhBridgeView";
 import { ChangingLinesGuideView } from "./ChangingLinesGuideView";
 import { TamTaiDiceRollSection, EarthlyBranchDiceItem } from "./TamTaiDiceRollSection";
 import { KhongMinhKinhDichView } from "./KhongMinhKinhDichView";
+import { NguCheTinhTuySection } from "./NguCheTinhTuySection";
 
 interface HexagramDetailProps {
   question: string;
@@ -367,10 +368,17 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
       drawnCards.length === 3
   );
 
+  // Ngự Chế Tân Tập Đoán Dịch Tinh Túy (Tam Tài: Thiên - Địa - Nhân, lấy lá cuối làm quẻ, lắc xí ngầu 12 mặt)
+  const isNguChe = Boolean(
+    (threeMode === "ngu_che" || spreadType === "nguche") &&
+      drawnCards &&
+      drawnCards.length === 3
+  );
+
   const [userNote, setUserNote] = useState("");
   const [isSaved, setIsSaved] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [selectedCardIdx, setSelectedCardIdx] = useState<number | null>(() => (isTamTai ? 2 : 0));
+  const [selectedCardIdx, setSelectedCardIdx] = useState<number | null>(() => (isTamTai || isNguChe ? 2 : 0));
   const [isCapturing, setIsCapturing] = useState(false);
   const [capturedSuccess, setCapturedSuccess] = useState(false);
   const [exportedCardsUrl, setExportedCardsUrl] = useState<string | null>(null);
@@ -706,6 +714,12 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
           `- Lựa chọn A [${choiceALabel || "Lựa chọn A"}]: Quẻ #${drawnCards[0].number} ${drawnCards[0].name}\n` +
           `- Lựa chọn B [${choiceBLabel || "Lựa chọn B"}]: Quẻ #${drawnCards[1].number} ${drawnCards[1].name}\n` +
           `- Lựa chọn C [${choiceCLabel || "Lựa chọn C"}]: Quẻ #${drawnCards[2].number} ${drawnCards[2].name}\n\n`;
+      } else if (threeMode === "ngu_che" || spreadType === "nguche") {
+        spreadInfo =
+          `\n【Ngự Chế Tân Tập Đoán Dịch Tinh Túy - Bốc 3 Lá Thiên Địa Nhân (Lấy Lá Cuối Làm Quẻ)】:\n` +
+          `- Lá 1 (Thiên Đạo): Quẻ #${drawnCards[0].number} ${drawnCards[0].name}\n` +
+          `- Lá 2 (Địa Đạo): Quẻ #${drawnCards[1].number} ${drawnCards[1].name}\n` +
+          `- Lá 3 (Nhân Đạo • Lá Cuối Cùng Làm Quẻ Chủ): Quẻ #${drawnCards[2].number} ${drawnCards[2].name}\n\n`;
       } else if (threeMode === "tam_tai") {
         spreadInfo =
           `\n【Trận Pháp 3 Lá - Tam Tài (Thiên — Địa — Nhân)】:\n` +
@@ -1156,6 +1170,8 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                       {drawnCards && drawnCards.length === 3
                         ? threeMode === "choice_abc"
                           ? "CÁC LÁ BÀI DỊCH HỌC: SO SÁNH 3 LỰA CHỌN (A — B — C)"
+                          : threeMode === "ngu_che" || spreadType === "nguche"
+                          ? "NGỰ CHẾ TÂN TẬP ĐOÁN DỊCH TINH TÚY: TAM TÀI (THIÊN — ĐỊA — NHÂN • LẤY LÁ CUỐI LÀM QUẺ)"
                           : threeMode === "tam_tai"
                           ? "CÁC LÁ BÀI DỊCH HỌC: TAM TÀI (THIÊN — ĐỊA — NHÂN)"
                           : "CÁC LÁ BÀI DỊCH HỌC: QUÁ KHỨ — HIỆN TẠI — TƯƠNG LAI"
@@ -1435,6 +1451,12 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                         : idx === 1
                         ? `LÁ 2: [LỰA CHỌN B] ${choiceBLabel || "Phương án B"}`
                         : `LÁ 3: [LỰA CHỌN C] ${choiceCLabel || "Phương án C"}`
+                      : threeMode === "ngu_che" || spreadType === "nguche"
+                      ? idx === 0
+                        ? "LÁ 1: THIÊN ĐẠO (THIÊN THỜI)"
+                        : idx === 1
+                        ? "LÁ 2: ĐỊA ĐẠO (ĐỊA LỢI)"
+                        : "LÁ 3 (LÁ CUỐI): NHÂN ĐẠO • QUẺ CHỦ NGỰ CHẾ"
                       : threeMode === "tam_tai"
                       ? idx === 0
                         ? "LÁ 1: THIÊN ĐẠO (THIÊN THỜI & HOÀN CẢNH KHÁCH QUAN)"
@@ -1449,6 +1471,12 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                   const roleSubtitle =
                     threeMode === "choice_abc"
                       ? `Lựa chọn: ${card.name} (${card.vietnameseName})`
+                      : threeMode === "ngu_che" || spreadType === "nguche"
+                      ? idx === 0
+                        ? `Thiên Đạo: ${card.name} (${card.vietnameseName})`
+                        : idx === 1
+                        ? `Địa Đạo: ${card.name} (${card.vietnameseName})`
+                        : `Nhân Đạo • Lá Cuối Làm Quẻ Chủ: ${card.name} (${card.vietnameseName})`
                       : threeMode === "tam_tai"
                       ? idx === 0
                         ? `Thiên Đạo: ${card.name} (${card.vietnameseName})`
@@ -1475,12 +1503,12 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                       }
                       onMouseLeave={handleLeaveCard}
                       className={`bg-lacquer-800 border rounded-sm p-2 sm:p-4 md:p-5 flex flex-col items-center text-center relative overflow-visible transition-all cursor-pointer shadow-lg ${
-                        showHighlight
+                        showHighlight || (isNguChe && idx === 2)
                           ? "border-gold-500 ring-2 ring-gold-500 bg-lacquer-800 scale-101"
                           : "border-gold-800 hover:border-gold-700"
                       }`}
                     >
-                      {showHighlight && (
+                      {(showHighlight || (isNguChe && idx === 2)) && (
                         <div className="no-capture absolute -top-1 -right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-gold-500 text-lacquer-900 rounded-full text-[8px] sm:text-[9px] font-bold flex items-center justify-center shadow z-20">
                           ✓
                         </div>
@@ -1503,6 +1531,12 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                             }`}>
                               <Dices className="w-2.5 h-2.5" />
                               <span>{selectedCardIdx === 2 ? "Đang mở xúc xắc 12 mặt" : "Chạm thẻ để mở xúc xắc"}</span>
+                            </span>
+                          )}
+                          {isNguChe && idx === 2 && (
+                            <span className="text-[8px] sm:text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border flex items-center gap-1 shadow-xs bg-amber-950/90 text-amber-200 border-amber-500/70">
+                              <Dices className="w-2.5 h-2.5 text-amber-400" />
+                              <span>Lá Cuối Làm Quẻ Chủ • Xí Ngầu 12 Mặt</span>
                             </span>
                           )}
                         </div>
@@ -2247,6 +2281,18 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
               onJumpToThuyetMinh={handleJumpToThuyetMinh}
               onNavigateToManual={onNavigateToManual}
               onClose={() => setSelectedCardIdx(null)}
+              onShowToast={onShowToast}
+            />
+          </div>
+        )}
+
+        {/* NGỰ CHẾ TÂN TẬP ĐOÁN DỊCH TINH TÚY: BỐC 3 LÁ THIÊN - ĐỊA - NHÂN, LẤY LÁ CUỐI LÀM QUẺ, LẮC XÍ NGẦU 12 MẶT, TRÍCH HÌNH & THƠ ĐOÁN CỦA QUẺ ĐÓ + HÌNH & THƠ ĐOÁN CỦA NGÀY ĐÓ CỦA QUẺ ĐÓ */}
+        {isNguChe && drawnCards && (
+          <div id="ngu-che-tinh-tuy-container" className="pt-2 animate-in fade-in duration-300">
+            <NguCheTinhTuySection
+              drawnCards={drawnCards}
+              question={question}
+              category={category}
               onShowToast={onShowToast}
             />
           </div>
