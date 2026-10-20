@@ -60,6 +60,7 @@ export interface DynamicCardItem {
   sub: string;
   desc: string;
   img: string;
+  backImg: string;
 }
 
 /* ─── Helper: Rút 1 lá ngẫu nhiên từ 64 quẻ và 384 hào ─── */
@@ -75,6 +76,7 @@ function drawRandomCard(): DynamicCardItem {
       sub: "Càn Vi Thiên (Trời cương kiện)",
       desc: "Khởi đầu lớn lao, hanh thông suôn sẻ, thu được lợi ích chính đáng.",
       img: "/assets/oss/1/1a.webp",
+      backImg: "/assets/oss/1/1b.webp",
     };
   }
 
@@ -94,6 +96,7 @@ function drawRandomCard(): DynamicCardItem {
       sub: `${hex.vietnameseName || hex.name} · Hào ${line.line}/6`,
       desc: `${line.text} — ${line.meaning}`,
       img: `/assets/oss/${hex.number}/${hex.number}-${line.line}a.webp`,
+      backImg: `/assets/oss/${hex.number}/${hex.number}-${line.line}b.webp`,
     };
   }
 
@@ -107,6 +110,7 @@ function drawRandomCard(): DynamicCardItem {
     sub: hex.vietnameseName || `${hex.upperTrigram} trên ${hex.lowerTrigram}`,
     desc: hex.overview || hex.judgment || hex.image,
     img: `/assets/oss/${hex.number}/${hex.number}a.webp`,
+    backImg: `/assets/oss/${hex.number}/${hex.number}b.webp`,
   };
 }
 
@@ -129,6 +133,98 @@ function drawCardsForMode(mode: SpreadMode): DynamicCardItem[] {
 }
 
 const SPREAD_MODES: SpreadMode[] = ["3_to_5", "1_to_3", "1_to_2", "1_single"];
+
+/* ─── Helper: Sao chép nội dung văn bản vào clipboard an toàn ─── */
+async function copyToClipboard(text: string): Promise<boolean> {
+  try {
+    if (navigator?.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch (err) {
+    console.warn("navigator.clipboard.writeText failed:", err);
+  }
+  try {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-9999px";
+    textArea.style.top = "-9999px";
+    textArea.style.opacity = "0";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    const successful = document.execCommand("copy");
+    document.body.removeChild(textArea);
+    return successful;
+  } catch (err) {
+    console.error("Fallback execCommand failed:", err);
+    return false;
+  }
+}
+
+/* ─── Helper: Định dạng thông tin các lá bài để dán cho AI phân tích ─── */
+/* Thứ tự: Trái trước phải sau (theo danh sách card), Trên trước dưới sau (Quẻ tượng -> Tên -> Ý nghĩa -> Lời giải) */
+function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: SpreadMode): string {
+  const getSpreadName = (m: SpreadMode) => {
+    switch (m) {
+      case "1_single": return "1 Lá (Đơn Quẻ Chí Tôn)";
+      case "1_to_2": return "2 Lá (Âm Dương Đối Đãi)";
+      case "1_to_3": return "3 Lá (Tam Tài: Quá Khứ - Hiện Tại - Tương Lai)";
+      case "3_to_5": return "5 Lá (Ngũ Hành Tương Sinh Tương Khắc)";
+      default: return `${cardsList.length} Lá`;
+    }
+  };
+
+  const getPositionLabel = (idx: number, total: number) => {
+    if (total === 1) return "Lá Bài Trung Tâm";
+    if (total === 2) {
+      return idx === 0 ? "Lá 1 (Bên Trái)" : "Lá 2 (Bên Phải)";
+    }
+    if (total === 3) {
+      if (idx === 0) return "Lá 1 (Bên Trái - Khởi Nguyên / Quá Khứ)";
+      if (idx === 1) return "Lá 2 (Ở Giữa - Trọng Tâm / Hiện Tại)";
+      return "Lá 3 (Bên Phải - Kết Quả / Tương Lai)";
+    }
+    if (total === 5) {
+      const labels = [
+        "Lá 1 (Cực Trái - Căn Nguyên Vấn Đề)",
+        "Lá 2 (Cận Trái - Bối Cảnh / Môi Trường)",
+        "Lá 3 (Chính Giữa - Quẻ Chủ / Bản Mệnh)",
+        "Lá 4 (Cận Phải - Biến Chuyển / Thử Thách)",
+        "Lá 5 (Cực Phải - Kết Quả / Lối Thoát)",
+      ];
+      return labels[idx] || `Lá ${idx + 1} (Từ trái sang phải)`;
+    }
+    return `Lá ${idx + 1} (Từ trái sang phải)`;
+  };
+
+  const lines: string[] = [];
+  lines.push(`=== THÔNG TIN TRẢI BÀI KINH DỊCH (THỨ TỰ TỪ TRÁI SANG PHẢI) ===`);
+  lines.push(`Trải bài: ${getSpreadName(currentMode)} | Số lượng: ${cardsList.length} lá\n`);
+
+  cardsList.forEach((c, idx) => {
+    const pos = getPositionLabel(idx, cardsList.length);
+    lines.push(`----------------------------------------`);
+    lines.push(`【${pos}】`);
+    // Thứ tự thông tin: trên trước dưới sau (Quẻ tượng -> Tên -> Ý nghĩa -> Lời giải)
+    lines.push(`• Quẻ tượng: ${c.symbol}`);
+    lines.push(`• Tên: ${c.name}`);
+    lines.push(`• Ý nghĩa: ${c.sub}`);
+    lines.push(`• Lời giải: ${c.desc}`);
+    lines.push("");
+  });
+
+  lines.push(`========================================`);
+  lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI]:`);
+  lines.push(`Xin hãy phân tích trải bài Kinh Dịch trên theo đúng thứ tự từ trái sang phải:`);
+  lines.push(`1. Luận giải ý nghĩa chi tiết từng lá bài theo vị trí tương ứng.`);
+  lines.push(`2. Phân tích mối liên kết và dòng chảy chuyển dịch năng lượng từ lá bài bên trái sang lá bài bên phải.`);
+  lines.push(`3. Đánh giá hoàn cảnh hiện tại, nguy cơ tiềm ẩn và cơ hội phát triển.`);
+  lines.push(`4. Đưa ra lời khuyên hành động thực tế, thấu đáo và sáng suốt nhất theo triết lý Kinh Dịch.`);
+
+  return lines.join("\n");
+}
 
 /* ─── 15 drifting particles in hero ─── */
 const PARTICLES = [
@@ -154,6 +250,273 @@ function smoothstep(t: number) {
   return c * c * (3 - 2 * c);
 }
 
+/* ══════════════════════════════════════════════════════════════════
+   RITUAL HOLD BUTTON COMPONENT
+   - Yêu cầu: Đè giữ ~3 giây và thực hiện 3 lần liên tục mới kích hoạt
+   - Hiệu ứng: Vòng sáng xung quanh viền lan hết 1 vòng (100%) mỗi lần đè
+   - Hỗ trợ: Đè liên tục 3 vòng (3 x 3s = 9s) HOẶC nhả ra đè 3 lần riêng biệt
+   ══════════════════════════════════════════════════════════════════ */
+interface RitualHoldButtonProps {
+  id: string;
+  onClick: () => void;
+  active?: boolean;
+  className?: string;
+  children: React.ReactNode;
+  title?: string;
+  holdDuration?: number; // 3000ms
+  requiredCount?: number; // 3 lần
+}
+
+const RitualHoldButton: React.FC<RitualHoldButtonProps> = ({
+  id,
+  onClick,
+  active = false,
+  className = "",
+  children,
+  title,
+  holdDuration = 3000,
+  requiredCount = 3,
+}) => {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [dimensions, setDimensions] = useState({ width: 120, height: 36 });
+  const [holdProgress, setHoldProgress] = useState(0); // 0 đến 1
+  const [isHolding, setIsHolding] = useState(false);
+  const [revealedStep, setRevealedStep] = useState<string | null>(null);
+  const [showHint, setShowHint] = useState(false);
+  const [isFlashing, setIsFlashing] = useState(false);
+
+  const holdStartRef = useRef<number | null>(null);
+  const animFrameRef = useRef<number | null>(null);
+  const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const currentCountRef = useRef(0);
+  const hasFinishedCycleRef = useRef(false);
+
+  const RITUAL_STEPS = ["Kính Thiên", "Kính Địa", "Kính Nhân"];
+
+  // Đo kích thước thực tế của nút để vẽ đường viền SVG khít hoàn hảo
+  useEffect(() => {
+    if (!buttonRef.current) return;
+    const updateSize = () => {
+      if (buttonRef.current) {
+        const rect = buttonRef.current.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+          setDimensions({ width: rect.width, height: rect.height });
+        }
+      }
+    };
+    updateSize();
+    const ro = new ResizeObserver(updateSize);
+    ro.observe(buttonRef.current);
+    return () => ro.disconnect();
+  }, []);
+
+  const clearHold = () => {
+    if (animFrameRef.current) {
+      cancelAnimationFrame(animFrameRef.current);
+      animFrameRef.current = null;
+    }
+    holdStartRef.current = null;
+    setIsHolding(false);
+    setHoldProgress(0);
+  };
+
+  const startHold = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (e.button !== 0 && e.pointerType === "mouse") return;
+
+    if (idleTimerRef.current) {
+      clearTimeout(idleTimerRef.current);
+      idleTimerRef.current = null;
+    }
+
+    setIsHolding(true);
+    setRevealedStep(null); // Đang chạy thì không hiện chữ
+    hasFinishedCycleRef.current = false;
+    holdStartRef.current = performance.now();
+
+    const loop = (now: number) => {
+      if (!holdStartRef.current) return;
+      const elapsed = now - holdStartRef.current;
+      const progress = Math.min(1, elapsed / holdDuration);
+      setHoldProgress(progress);
+
+      if (progress >= 1) {
+        // ĐÃ CHẠY XONG 1 VÒNG TRỌN VẸN (3 GIÂY) -> BÂY GIỜ MỚI HIỆN CHỮ!
+        hasFinishedCycleRef.current = true;
+        setHoldProgress(1);
+
+        // Hiện chữ thiêng liêng tương ứng ngay khi chạy xong 1 vòng
+        const stepName = RITUAL_STEPS[currentCountRef.current] || "Kính Thiên";
+        setRevealedStep(stepName);
+
+        // Chớp sáng báo hiệu vòng sáng đã lan đủ 1 vòng
+        setIsFlashing(true);
+        setTimeout(() => setIsFlashing(false), 380);
+
+        if (typeof navigator !== "undefined" && navigator.vibrate) {
+          try { navigator.vibrate(60); } catch (_) {}
+        }
+
+        // BẮT BUỘC BUÔNG TAY RA MỚI TÍNH LẦN TIẾP THEO:
+        return;
+      }
+
+      animFrameRef.current = requestAnimationFrame(loop);
+    };
+
+    animFrameRef.current = requestAnimationFrame(loop);
+  };
+
+  const endHold = () => {
+    if (!isHolding && !holdStartRef.current) return;
+
+    const finished = hasFinishedCycleRef.current;
+    clearHold();
+
+    if (finished) {
+      // Đã đè đủ 3s và bây giờ buông tay ra -> Chính thức tính 1 lần!
+      const nextCount = currentCountRef.current + 1;
+      currentCountRef.current = nextCount;
+
+      if (nextCount >= requiredCount) {
+        // Đã hoàn thành đủ 3 lần: Kính Thiên -> Kính Địa -> Kính Nhân!
+        currentCountRef.current = 0;
+        setRevealedStep("Kính Nhân ➔ Khai mở quẻ!");
+        setTimeout(() => setRevealedStep(null), 2500);
+
+        if (typeof navigator !== "undefined" && navigator.vibrate) {
+          try { navigator.vibrate([60, 40, 100]); } catch (_) {}
+        }
+        onClick();
+        return;
+      }
+
+      // Giữ chữ vừa hoàn thành trong 2.5 giây để người dùng chiêm ngưỡng
+      setTimeout(() => {
+        setRevealedStep(null);
+      }, 2500);
+
+      // Giữ số lần tích lũy trong 8 giây; quá 8s không đè tiếp thì reset về 0
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+      idleTimerRef.current = setTimeout(() => {
+        currentCountRef.current = 0;
+      }, 8000);
+    } else {
+      // Buông tay sớm khi vòng sáng chưa hoàn thành 1 vòng -> Không hiện chữ
+      setHoldProgress(0);
+      setRevealedStep(null);
+    }
+  };
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowHint(true);
+    setTimeout(() => setShowHint(false), 350);
+  };
+
+  // Tính chu vi chính xác của hình viên thuốc (pill shape)
+  const rx = Math.max(12, (dimensions.height - 2) / 2);
+  const straightEdge = Math.max(0, dimensions.width - 2 * rx);
+  const perimeter = 2 * straightEdge + 2 * Math.PI * rx;
+  const strokeOffset = perimeter * (1 - holdProgress);
+
+  return (
+    <div className="relative inline-flex items-center">
+      {/* Chỉ hiện chữ khi ĐÃ CHẠY XONG 1 VÒNG */}
+      {revealedStep && (
+        <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none whitespace-nowrap px-3 py-1 rounded-full bg-zinc-950/95 border border-[#C4963E] shadow-2xl text-[11px] font-serif font-bold text-amber-300 flex items-center gap-1.5 animate-bounce">
+          <span className="text-amber-400">✦</span>
+          <span>{revealedStep}</span>
+          <span className="text-amber-400">✦</span>
+        </div>
+      )}
+
+      <button
+        ref={buttonRef}
+        type="button"
+        title={title || "Kính Thiên, Kính Địa, Kính Nhân"}
+        onClick={handleClick}
+        onPointerDown={startHold}
+        onPointerUp={endHold}
+        onPointerLeave={endHold}
+        onPointerCancel={endHold}
+        onContextMenu={(e) => e.preventDefault()}
+        className={`relative select-none touch-none overflow-visible transition-all duration-200 ${className} ${
+          isHolding ? "scale-95 brightness-110 shadow-lg" : ""
+        } ${isFlashing ? "ring-4 ring-amber-400/80 shadow-[0_0_24px_rgba(245,158,11,0.6)]" : ""} ${
+          showHint ? "animate-ritual-wiggle" : ""
+        }`}
+        style={{
+          WebkitTouchCallout: "none",
+          WebkitUserSelect: "none",
+        }}
+      >
+        {/* SVG viền sáng lan tỏa 1 vòng xung quanh viền ngoài nút */}
+        <svg
+          className="absolute -inset-[2px] pointer-events-none overflow-visible rounded-full"
+          style={{
+            width: "calc(100% + 4px)",
+            height: "calc(100% + 4px)",
+            zIndex: 20,
+          }}
+        >
+          <defs>
+            <linearGradient id={`glowGrad-${id}`} x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#F59E0B" />
+              <stop offset="35%" stopColor="#FFFBEB" />
+              <stop offset="70%" stopColor="#FBBF24" />
+              <stop offset="100%" stopColor="#D97706" />
+            </linearGradient>
+            <filter id={`glowFilter-${id}`} x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="2.5" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          {/* Vòng nền mờ khi đang giữ */}
+          {isHolding && (
+            <rect
+              x="2"
+              y="2"
+              width={Math.max(1, dimensions.width)}
+              height={Math.max(1, dimensions.height)}
+              rx={rx}
+              fill="none"
+              stroke="rgba(245, 158, 11, 0.25)"
+              strokeWidth="2.5"
+            />
+          )}
+
+          {/* Vòng tia sáng vàng lan tỏa chính xác 1 vòng theo tiến độ */}
+          {isHolding && (
+            <rect
+              x="2"
+              y="2"
+              width={Math.max(1, dimensions.width)}
+              height={Math.max(1, dimensions.height)}
+              rx={rx}
+              fill="none"
+              stroke={`url(#glowGrad-${id})`}
+              strokeWidth="3.2"
+              strokeLinecap="round"
+              strokeDasharray={perimeter}
+              strokeDashoffset={strokeOffset}
+              filter={`url(#glowFilter-${id})`}
+            />
+          )}
+        </svg>
+
+        {/* Nội dung nút sạch sẽ 100%, không hiện 3 dấu chấm, giữ nguyên thiết kế ban đầu */}
+        <span className="relative z-10 flex items-center justify-center gap-1.5 pointer-events-none">
+          {children}
+        </span>
+      </button>
+    </div>
+  );
+};
+
 export const LandingPage: React.FC<LandingPageProps> = ({
   currentUser,
   onEnterApp,
@@ -177,6 +540,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
   /* Modals state */
   const [selectedCard, setSelectedCard] = useState<DynamicCardItem | null>(null);
+  const [modalCardView, setModalCardView] = useState<"both" | "front" | "back">("both");
   const [isOracleOpen, setIsOracleOpen] = useState(false);
   const [isLifeConfigOpen, setIsLifeConfigOpen] = useState(false);
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
@@ -193,6 +557,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const [birthHour, setBirthHour] = useState("7-9");
   const [gender, setGender] = useState("Nam");
   const [receiptGenerated, setReceiptGenerated] = useState(false);
+
+  /* Copy to AI states */
+  const [copiedAI, setCopiedAI] = useState(false);
+  const [copiedSingle, setCopiedSingle] = useState(false);
+  const [copiedToast, setCopiedToast] = useState<string | null>(null);
 
   /* Trigger tick ref for recalculating physics */
   const requestTickRef = useRef<() => void>(() => {});
@@ -241,45 +610,49 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       }
 
       const s1 = Math.max(120, destinyDocY - originY);
-      const s2 = Math.max(s1 + 200, featuresDocY - originY);
+      const s1_hold = s1 + 400; // Vùng giữ vững vàng trong toàn bộ khu vực phần trắng
+      const s2 = Math.max(s1_hold + 350, featuresDocY - originY);
 
       const curHeroY = (heroDocY - scrollY) - originY;
       const curDestinyY = (destinyDocY - scrollY) - originY;
       const curFeaturesY = (featuresDocY - scrollY) - originY;
 
       if (scrollY <= s1) {
-        // GIAI ĐOẠN 1: Hero -> Destiny Cards
+        // GIAI ĐOẠN 1: Hero -> Destiny Cards (Xòe bài sớm 100% ngay từ 35% hành trình để khi vào phần trắng là đã tách hoàn toàn)
         const p1 = Math.min(1, Math.max(0, scrollY / s1));
         const t1 = smoothstep(p1);
 
         tgtX = heroStageX * (1 - t1) + destinyStageX * t1;
         tgtY = curHeroY * (1 - t1) + curDestinyY * t1;
         tgtG = smoothstep(Math.min(1, p1 / 0.50));
-        tgtF = p1 < 0.55 ? 0 : smoothstep((p1 - 0.55) / 0.45);
+        tgtF = smoothstep(Math.min(1, p1 / 0.35)); // Đạt 100% tách biệt cực sớm
+        if (layer) layer.style.opacity = "1";
+      } else if (scrollY <= s1_hold) {
+        // GIAI ĐOẠN 2: Giữ yên vị hoàn toàn tại trung tâm phần trắng (Destiny Cards)
+        // Không di chuyển lệch sang phải, không co cụm, giữ 100% tách biệt rộng rãi
+        tgtX = destinyStageX;
+        tgtY = curDestinyY;
+        tgtG = 1;
+        tgtF = 1;
         if (layer) layer.style.opacity = "1";
       } else if (scrollY <= s2) {
-        // GIAI ĐOẠN 2: Destiny Cards -> Features
-        const p2 = Math.min(1, Math.max(0, (scrollY - s1) / (s2 - s1)));
+        // GIAI ĐOẠN 3: Destiny Cards -> Features
+        const p2 = Math.min(1, Math.max(0, (scrollY - s1_hold) / (s2 - s1_hold)));
         const t2 = smoothstep(p2);
 
         tgtX = destinyStageX * (1 - t2) + featuresStageX * t2;
         tgtY = curDestinyY * (1 - t2) + curFeaturesY * t2;
         tgtG = 1;
 
-        if (p2 <= 0.38) {
-          tgtF = 1 - smoothstep(p2 / 0.38);
-        } else if (p2 < 0.62) {
-          tgtF = 0;
-        } else {
-          tgtF = smoothstep((p2 - 0.62) / 0.38);
-        }
+        // Khi kéo xuống Section Features: các lá bài gom mượt mà lại thành 1 lá duy nhất (f giảm dần từ 1 về 0)
+        tgtF = 1 - smoothstep(p2);
         if (layer) layer.style.opacity = "1";
       } else {
-        // GIAI ĐOẠN 3: Đã yên vị tại Features
+        // GIAI ĐOẠN 4: Đã yên vị tại Features
         tgtX = featuresStageX;
         tgtY = curFeaturesY;
         tgtG = 1;
-        tgtF = 1;
+        tgtF = 0; // Gom lại hoàn toàn thành 1 lá duy nhất tại Features!
 
         if (featuresSecRef.current && layer) {
           const fRect = featuresSecRef.current.getBoundingClientRect();
@@ -297,117 +670,126 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       if (stage) stage.style.transform = `translate3d(${sX.toFixed(2)}px, ${sY.toFixed(2)}px, 0)`;
 
       const w = window.innerWidth;
-      const factor = w < 420 ? 0.42 : w < 520 ? 0.52 : w < 640 ? 0.65 : w < 900 ? 0.82 : w < 1100 ? 0.92 : 1.0;
+      const factor = w < 380 ? 0.52 : w < 480 ? 0.60 : w < 640 ? 0.72 : w < 900 ? 0.85 : w < 1200 ? 0.95 : 1.05;
       const slots = slotRefs.current;
+      const cardCount = cards.length;
 
-      if (mode === "3_to_5") {
-        // ── CHẾ ĐỘ: 3 LÁ Ở TRÊN -> XÒE RA 5 LÁ Ở DƯỚI ──
-        // Slot 0 (Far Left)
+      if (cardCount === 5 || mode === "3_to_5") {
+        // ── CHẾ ĐỘ: 5 LÁ (NGŨ HÀNH) ──
+        // Ở Destiny Cards (f=1): xòe 5 lá rộng rãi
+        // Khi kéo xuống Features (f=0): gôm toàn bộ lại thành 1 lá duy nhất tại Slot 2!
+        // Slot 0 (Cực Trái)
         if (slots[0]) {
-          const x0 = (-36 + -174 * f) * factor;
-          const y0 = 10 + 12 * f;
-          const rot0 = -3 + -21 * f;
-          slots[0].style.transform = `perspective(1200px) translate3d(${x0.toFixed(1)}px, ${y0.toFixed(1)}px, 0) rotate(${rot0.toFixed(1)}deg) scale(0.96)`;
+          const x0 = (-460 * f) * factor;
+          const y0 = 8 * f;
+          const rot0 = -7 * f;
+          slots[0].style.transform = `perspective(1200px) translate3d(${x0.toFixed(1)}px, ${y0.toFixed(1)}px, 0) rotate(${rot0.toFixed(1)}deg) scale(0.98)`;
           slots[0].style.opacity = f.toFixed(3);
-          slots[0].style.pointerEvents = f > 0.4 ? "auto" : "none";
+          slots[0].style.pointerEvents = f > 0.25 ? "auto" : "none";
           slots[0].style.zIndex = "8";
         }
-        // Slot 1 (Inner Left - hiện từ đầu)
+        // Slot 1 (Cận Trái): ở Hero x=-140, ở Destiny x=-230, ở Features gôm về 0
         if (slots[1]) {
-          const x1 = (-140 + 104 * g + -69 * f) * factor;
-          const y1 = 10 + -2 * f;
-          const rot1 = -12 + 9 * g + -9 * f;
-          const sc1 = 1.02 + 0.03 * f;
+          const heroX1 = -140 * (1 - g);
+          const spreadX1 = -230 * f;
+          const x1 = (heroX1 + spreadX1) * factor;
+          const y1 = 3 * f;
+          const rot1 = -3.5 * f;
+          const sc1 = 1.02 + 0.02 * f;
           slots[1].style.transform = `perspective(1200px) translate3d(${x1.toFixed(1)}px, ${y1.toFixed(1)}px, 0) rotate(${rot1.toFixed(1)}deg) scale(${sc1.toFixed(3)})`;
-          slots[1].style.opacity = "1";
-          slots[1].style.pointerEvents = "auto";
+          const op1 = g < 0.5 ? 1 : f;
+          slots[1].style.opacity = op1.toFixed(3);
+          slots[1].style.pointerEvents = f > 0.25 ? "auto" : "none";
           slots[1].style.zIndex = "10";
         }
-        // Slot 2 (Center - hiện từ đầu)
+        // Slot 2 (Trung Tâm): là lá trụ cột luôn hiển thị 1 lá uy nghi tại Features
         if (slots[2]) {
-          slots[2].style.transform = `perspective(1200px) translate3d(0, 0, 26px) scale(1.14)`;
+          slots[2].style.transform = `perspective(1200px) translate3d(0, 0, 26px) scale(1.10)`;
           slots[2].style.opacity = "1";
           slots[2].style.pointerEvents = "auto";
           slots[2].style.zIndex = "14";
         }
-        // Slot 3 (Inner Right - hiện từ đầu)
+        // Slot 3 (Cận Phải): ở Hero x=140, ở Destiny x=230, ở Features gôm về 0
         if (slots[3]) {
-          const x3 = (140 + -104 * g + 69 * f) * factor;
-          const y3 = 10 + -2 * f;
-          const rot3 = 12 + -9 * g + 9 * f;
-          const sc3 = 1.02 + 0.03 * f;
+          const heroX3 = 140 * (1 - g);
+          const spreadX3 = 230 * f;
+          const x3 = (heroX3 + spreadX3) * factor;
+          const y3 = 3 * f;
+          const rot3 = 3.5 * f;
+          const sc3 = 1.02 + 0.02 * f;
           slots[3].style.transform = `perspective(1200px) translate3d(${x3.toFixed(1)}px, ${y3.toFixed(1)}px, 0) rotate(${rot3.toFixed(1)}deg) scale(${sc3.toFixed(3)})`;
-          slots[3].style.opacity = "1";
-          slots[3].style.pointerEvents = "auto";
+          const op3 = g < 0.5 ? 1 : f;
+          slots[3].style.opacity = op3.toFixed(3);
+          slots[3].style.pointerEvents = f > 0.25 ? "auto" : "none";
           slots[3].style.zIndex = "10";
         }
-        // Slot 4 (Far Right)
+        // Slot 4 (Cực Phải)
         if (slots[4]) {
-          const x4 = (36 + 174 * f) * factor;
-          const y4 = 10 + 12 * f;
-          const rot4 = 3 + 21 * f;
-          slots[4].style.transform = `perspective(1200px) translate3d(${x4.toFixed(1)}px, ${y4.toFixed(1)}px, 0) rotate(${rot4.toFixed(1)}deg) scale(0.96)`;
+          const x4 = (460 * f) * factor;
+          const y4 = 8 * f;
+          const rot4 = 7 * f;
+          slots[4].style.transform = `perspective(1200px) translate3d(${x4.toFixed(1)}px, ${y4.toFixed(1)}px, 0) rotate(${rot4.toFixed(1)}deg) scale(0.98)`;
           slots[4].style.opacity = f.toFixed(3);
-          slots[4].style.pointerEvents = f > 0.4 ? "auto" : "none";
+          slots[4].style.pointerEvents = f > 0.25 ? "auto" : "none";
           slots[4].style.zIndex = "8";
         }
-      } else if (mode === "1_to_3") {
-        // ── CHẾ ĐỘ: 1 LÁ Ở TRÊN -> XÒE RA 3 LÁ (TAM TÀI) Ở DƯỚI ──
-        // Slot 0 (Left): nép sau slot 1 lúc ở Hero, xòe sang trái khi cuộn
+      } else if (cardCount === 3 || mode === "1_to_3") {
+        // ── CHẾ ĐỘ: 3 LÁ (TAM TÀI) ──
+        // Ở Destiny (f=1): xòe 3 lá rộng rãi (-340, 0, +340)
+        // Khi kéo xuống Features (f=0): gôm lại thành 1 lá duy nhất tại Slot 1!
         if (slots[0]) {
-          const x0 = (-135 * f) * factor;
-          const y0 = 6 * f;
-          const rot0 = -12 * f;
-          const sc0 = 1.0 + 0.02 * f;
+          const x0 = (-340 * f) * factor;
+          const y0 = 3 * f;
+          const rot0 = -4.5 * f;
+          const sc0 = 1.02;
           slots[0].style.transform = `perspective(1200px) translate3d(${x0.toFixed(1)}px, ${y0.toFixed(1)}px, 0) rotate(${rot0.toFixed(1)}deg) scale(${sc0.toFixed(3)})`;
-          slots[0].style.opacity = (0.05 + 0.95 * f).toFixed(3);
-          slots[0].style.pointerEvents = f > 0.3 ? "auto" : "none";
+          slots[0].style.opacity = f.toFixed(3);
+          slots[0].style.pointerEvents = f > 0.20 ? "auto" : "none";
           slots[0].style.zIndex = "10";
         }
-        // Slot 1 (Center): 1 lá duy nhất ở Hero, trung tâm uy nghi
         if (slots[1]) {
-          slots[1].style.transform = `perspective(1200px) translate3d(0, 0, 26px) scale(1.14)`;
+          slots[1].style.transform = `perspective(1200px) translate3d(0, 0, 26px) scale(1.08)`;
           slots[1].style.opacity = "1";
           slots[1].style.pointerEvents = "auto";
           slots[1].style.zIndex = "14";
         }
-        // Slot 2 (Right): nép sau slot 1 lúc ở Hero, xòe sang phải khi cuộn
         if (slots[2]) {
-          const x2 = (135 * f) * factor;
-          const y2 = 6 * f;
-          const rot2 = 12 * f;
-          const sc2 = 1.0 + 0.02 * f;
+          const x2 = (340 * f) * factor;
+          const y2 = 3 * f;
+          const rot2 = 4.5 * f;
+          const sc2 = 1.02;
           slots[2].style.transform = `perspective(1200px) translate3d(${x2.toFixed(1)}px, ${y2.toFixed(1)}px, 0) rotate(${rot2.toFixed(1)}deg) scale(${sc2.toFixed(3)})`;
-          slots[2].style.opacity = (0.05 + 0.95 * f).toFixed(3);
-          slots[2].style.pointerEvents = f > 0.3 ? "auto" : "none";
+          slots[2].style.opacity = f.toFixed(3);
+          slots[2].style.pointerEvents = f > 0.20 ? "auto" : "none";
           slots[2].style.zIndex = "10";
         }
-      } else if (mode === "1_to_2") {
-        // ── CHẾ ĐỘ: 1 LÁ Ở TRÊN -> NỞ RA 2 LÁ (ÂM DƯƠNG ĐỐI QUẺ) Ở DƯỚI ──
+      } else if (cardCount === 2 || mode === "1_to_2") {
+        // ── CHẾ ĐỘ: 2 LÁ (ÂM DƯƠNG) ──
+        // Ở Destiny (f=1): xòe đôi rộng rãi (-220 và +220)
+        // Khi kéo xuống Features (f=0): gôm lại thành 1 lá duy nhất tại Slot 1!
         if (slots[0]) {
-          const x0 = (-10 - 85 * f) * factor;
-          const y0 = 4 * f;
-          const rot0 = -8 * f;
-          const sc0 = 1.08;
-          slots[0].style.transform = `perspective(1200px) translate3d(${x0.toFixed(1)}px, ${y0.toFixed(1)}px, 0) rotate(${rot0.toFixed(1)}deg) scale(${sc0.toFixed(3)})`;
-          slots[0].style.opacity = "1";
-          slots[0].style.pointerEvents = "auto";
-          slots[0].style.zIndex = "12";
+          const x0 = (-220 * f) * factor;
+          const rot0 = -3 * f;
+          const sc0 = 1.05;
+          slots[0].style.transform = `perspective(1200px) translate3d(${x0.toFixed(1)}px, 0, 0) rotate(${rot0.toFixed(1)}deg) scale(${sc0.toFixed(3)})`;
+          slots[0].style.opacity = f.toFixed(3);
+          slots[0].style.pointerEvents = f > 0.20 ? "auto" : "none";
+          slots[0].style.zIndex = "10";
         }
         if (slots[1]) {
-          const x1 = (10 + 85 * f) * factor;
-          const y1 = 4 * f;
-          const rot1 = 8 * f;
-          const sc1 = 1.08;
-          slots[1].style.transform = `perspective(1200px) translate3d(${x1.toFixed(1)}px, ${y1.toFixed(1)}px, 0) rotate(${rot1.toFixed(1)}deg) scale(${sc1.toFixed(3)})`;
+          // Slot 1: khi f=1 ở +220px, khi kéo xuống Features f=0 gôm về chính giữa x=0 thành 1 lá duy nhất!
+          const x1 = (220 * f) * factor;
+          const rot1 = 3 * f;
+          const sc1 = 1.05;
+          slots[1].style.transform = `perspective(1200px) translate3d(${x1.toFixed(1)}px, 0, 0) rotate(${rot1.toFixed(1)}deg) scale(${sc1.toFixed(3)})`;
           slots[1].style.opacity = "1";
           slots[1].style.pointerEvents = "auto";
-          slots[1].style.zIndex = "11";
+          slots[1].style.zIndex = "14";
         }
       } else {
         // ── CHẾ ĐỘ: 1 LÁ DUY NHẤT (ĐƠN QUẺ CHÍ TÔN) ──
         if (slots[0]) {
-          const sc0 = 1.15 + 0.05 * f;
+          const sc0 = 1.15;
           slots[0].style.transform = `perspective(1200px) translate3d(0, 0, 26px) scale(${sc0.toFixed(3)})`;
           slots[0].style.opacity = "1";
           slots[0].style.pointerEvents = "auto";
@@ -479,6 +861,41 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       requestTickRef.current();
     }, 50);
   }, [mode]);
+
+  /* ── Sao chép toàn bộ trải bài cho AI (Thứ tự: Trái trước phải sau, Trên trước dưới sau) ── */
+  const handleCopyCardsForAI = useCallback(async () => {
+    const text = formatSpreadForAI(cards, mode);
+    const ok = await copyToClipboard(text);
+    if (ok) {
+      setCopiedAI(true);
+      setCopiedToast("Đã chép thông tin các lá bài cho AI (trái sang phải, trên xuống dưới)!");
+      setTimeout(() => setCopiedAI(false), 2500);
+      setTimeout(() => setCopiedToast(null), 3200);
+    }
+  }, [cards, mode]);
+
+  /* ── Sao chép 1 lá bài đơn lẻ cho AI (Quẻ tượng -> Tên -> Ý nghĩa -> Lời giải) ── */
+  const handleCopySingleCardForAI = useCallback(async (card: DynamicCardItem) => {
+    const text = `【THÔNG TIN LÁ BÀI KINH DỊCH】
+• Quẻ tượng: ${card.symbol}
+• Tên: ${card.name}
+• Ý nghĩa: ${card.sub}
+• Lời giải: ${card.desc}
+
+[YÊU CẦU LUẬN GIẢI CHO AI]:
+Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
+1. Ý nghĩa biểu tượng quẻ tượng và tên quẻ/hào.
+2. Hoàn cảnh thực tế mà quẻ/hào này đang phản ánh.
+3. Lời khuyên định hướng và hành động thấu đáo nhất.`;
+
+    const ok = await copyToClipboard(text);
+    if (ok) {
+      setCopiedSingle(true);
+      setCopiedToast(`Đã sao chép lá bài ${card.name} cho AI!`);
+      setTimeout(() => setCopiedSingle(false), 2200);
+      setTimeout(() => setCopiedToast(null), 2800);
+    }
+  }, []);
 
   /* ── Nhấn Bắt đầu Bốc Quẻ: Rút ngẫu nhiên bài mới và cuộn mượt xuống khu vực trải bài ── */
   const handleStartDivinationOrShuffle = useCallback(() => {
@@ -569,6 +986,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         .destiny-card-item:active .destiny-card-inner {
           transform: translateY(-6px) scale(1.02);
           transition-duration: 0.1s;
+        }
+        @keyframes ritual-wiggle {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-4px); }
+          75% { transform: translateX(4px); }
+        }
+        .animate-ritual-wiggle {
+          animation: ritual-wiggle 0.3s ease-in-out;
         }
       `}</style>
 
@@ -865,7 +1290,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         {/* ══════════════════════════════════════════════════════════════════
             3. SECTION 2: DESTINY CARDS – 100% IDENTICAL TO YILORE
             ══════════════════════════════════════════════════════════════════ */}
-        <section id="destiny-cards" aria-label="命运卡牌" className="relative w-full bg-white px-5 pb-16 pt-[4.5rem] sm:px-8 sm:pb-28">
+        <section
+          id="destiny-cards"
+          aria-label="命运卡牌"
+          className="relative w-full bg-white px-5 pt-12 pb-36 sm:px-8 sm:pt-20 sm:pb-52 min-h-[95vh] sm:min-h-[110vh] overflow-hidden flex flex-col justify-between"
+        >
           {/* Lưới tọa độ ngầm mờ ảo */}
           <div
             className="pointer-events-none absolute inset-0 opacity-[0.055]"
@@ -876,27 +1305,122 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             }}
           />
 
-          {/* Tiêu đề dính cố định khi cuộn (Sticky title) */}
-          <div className="sticky top-[4.5rem] z-[38] mx-auto max-w-3xl bg-white/95 px-2 pb-4 pt-4 text-center backdrop-blur-sm sm:px-0 sm:pt-8">
+          {/* Tiêu đề thanh nhã, giữ vị trí tự nhiên phía trên các lá bài để không bao giờ bị lá bài che khuất */}
+          <div className="relative z-[38] mx-auto max-w-4xl px-4 pt-4 pb-4 text-center sm:px-0 sm:pt-6 sm:pb-6">
             <div className="relative">
-              <h2 className="mb-3 text-3xl font-bold text-zinc-900 sm:text-5xl lg:text-6xl">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200/80 text-[#C4963E] text-xs font-semibold mb-3 tracking-widest uppercase">
+                <span>✦</span>
+                <span>Hệ Thống 64 Quẻ & 384 Hào Chu Dịch</span>
+                <span>✦</span>
+              </div>
+              <h2 className="mb-3 text-3xl font-bold text-zinc-900 sm:text-5xl lg:text-6xl tracking-tight font-serif">
                 Bộ Bài I Ching Tarot Phong Cách Đông Phương
               </h2>
-              <p className="mx-auto max-w-xl text-base leading-relaxed text-zinc-500 sm:text-lg">
+              <p className="mx-auto max-w-2xl text-base leading-relaxed text-zinc-500 sm:text-lg">
                 Ngàn năm tinh hoa Kinh Dịch, tái hiện qua ngôn ngữ trực quan hiện đại<br />
                 Khám phá con đường vận mệnh và định hướng cuộc đời với sự sáng suốt
               </p>
+
+              {/* Bộ nút chuyển đổi số lượng lá trực tiếp trên khoảng trắng */}
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+                <RitualHoldButton
+                  id="mode-1"
+                  active={mode === "1_single"}
+                  onClick={() => handleSwitchMode("1_single")}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer shadow-sm ${
+                    mode === "1_single"
+                      ? "bg-zinc-900 text-[#C4963E] border border-[#C4963E]/60 shadow-md scale-105"
+                      : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 border border-zinc-200 hover:text-zinc-900"
+                  }`}
+                  title="Kính Thiên, Kính Địa, Kính Nhân (1 Lá - Đơn Quẻ)"
+                >
+                  1 Lá (Đơn Quẻ)
+                </RitualHoldButton>
+
+                <RitualHoldButton
+                  id="mode-2"
+                  active={mode === "1_to_2"}
+                  onClick={() => handleSwitchMode("1_to_2")}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer shadow-sm ${
+                    mode === "1_to_2"
+                      ? "bg-zinc-900 text-[#C4963E] border border-[#C4963E]/60 shadow-md scale-105"
+                      : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 border border-zinc-200 hover:text-zinc-900"
+                  }`}
+                  title="Kính Thiên, Kính Địa, Kính Nhân (2 Lá - Âm Dương)"
+                >
+                  2 Lá (Âm Dương)
+                </RitualHoldButton>
+
+                <RitualHoldButton
+                  id="mode-3"
+                  active={mode === "1_to_3"}
+                  onClick={() => handleSwitchMode("1_to_3")}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer shadow-sm ${
+                    mode === "1_to_3"
+                      ? "bg-zinc-900 text-[#C4963E] border border-[#C4963E]/60 shadow-md scale-105"
+                      : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 border border-zinc-200 hover:text-zinc-900"
+                  }`}
+                  title="Kính Thiên, Kính Địa, Kính Nhân (3 Lá - Tam Tài)"
+                >
+                  3 Lá (Tam Tài)
+                </RitualHoldButton>
+
+                <RitualHoldButton
+                  id="mode-5"
+                  active={mode === "3_to_5"}
+                  onClick={() => handleSwitchMode("3_to_5")}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer shadow-sm ${
+                    mode === "3_to_5"
+                      ? "bg-zinc-900 text-[#C4963E] border border-[#C4963E]/60 shadow-md scale-105"
+                      : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 border border-zinc-200 hover:text-zinc-900"
+                  }`}
+                  title="Kính Thiên, Kính Địa, Kính Nhân (5 Lá - Ngũ Hành)"
+                >
+                  5 Lá (Ngũ Hành)
+                </RitualHoldButton>
+
+                <RitualHoldButton
+                  id="action-shuffle"
+                  active={false}
+                  onClick={handleShuffleCards}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-900 hover:bg-amber-100 border border-amber-300 transition cursor-pointer shadow-sm"
+                  title="Kính Thiên, Kính Địa, Kính Nhân (Rút lại quẻ khác)"
+                >
+                  <span>🎲</span>
+                  <span>Rút lại</span>
+                </RitualHoldButton>
+                <button
+                  type="button"
+                  onClick={handleCopyCardsForAI}
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer shadow-sm active:scale-95 ${
+                    copiedAI
+                      ? "bg-emerald-600 text-white border border-emerald-600 shadow-md scale-105"
+                      : "bg-[#C4963E]/15 hover:bg-[#C4963E]/25 text-[#7C5516] hover:text-[#5E400F] border border-[#C4963E]/50 shadow-sm"
+                  }`}
+                  title="Sao chép toàn bộ thông tin các lá bài theo thứ tự (trái qua phải, trên xuống dưới) để gửi cho AI phân tích"
+                >
+                  <span>{copiedAI ? "✓" : "📋"}</span>
+                  <span>{copiedAI ? "Đã chép cho AI!" : "Chép cho AI"}</span>
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Điểm neo cho các lá bài xòe ra ở giữa phần trắng */}
-          <div className="flex min-h-[320px] sm:min-h-[400px] items-center justify-center pt-10 pb-20 sm:pt-14 sm:pb-28">
+          {/* Điểm neo cho các lá bài xòe ra ở giữa phần trắng – Khoảng trắng kéo dài rộng rãi */}
+          <div className="flex min-h-[480px] sm:min-h-[580px] items-center justify-center pt-4 pb-4">
             <div
               ref={destinyAnchorRef}
               id="destiny-card-anchor"
               className="pointer-events-none h-56 w-36 shrink-0 rounded-2xl sm:h-[272px] sm:w-44 md:h-72 md:w-48 opacity-0"
               aria-hidden="true"
             />
+          </div>
+
+          {/* Chú thích gợi ý tương tác đặt riêng biệt phía dưới xa, hoàn toàn không chạm hay che vào đáy lá bài */}
+          <div className="mt-6 mb-10 text-center pointer-events-auto">
+            <p className="text-xs sm:text-sm text-zinc-400 font-sans tracking-wide">
+              ✦ Nhấp vào từng lá bài để tra cứu quẻ tượng, hào từ & lời giải AI ✦
+            </p>
           </div>
         </section>
       </div>
@@ -913,7 +1437,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div
           ref={stageRef}
           id="cards-stage"
-          className="relative h-[min(52vh,440px)] w-full max-w-[min(920px,92vw)] overflow-visible will-change-transform"
+          className="relative h-[min(56vh,500px)] w-full max-w-[min(1240px,96vw)] overflow-visible will-change-transform"
           style={{ pointerEvents: "none" }}
         >
           {cards.map((card, idx) => (
@@ -930,7 +1454,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 opacity: 1,
                 pointerEvents: "auto",
               }}
-              onClick={() => setSelectedCard(card)}
+              onClick={() => {
+                setModalCardView("both");
+                setSelectedCard(card);
+              }}
             >
               <div
                 className="destiny-card-inner relative w-full h-full rounded-2xl overflow-hidden cursor-pointer bg-zinc-950/90 shadow-2xl"
@@ -948,7 +1475,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                         {card.name}
                       </span>
                       <span className="text-[10px] text-[#C4963E] block mt-0.5 opacity-80">
-                        {card.type === "yao" ? `Hào ${card.yaoNumber}/6` : "64 Quẻ Chu Dịch"}
+                        {card.type === "yao" ? "Hào Từ Chu Dịch" : "64 Quẻ Chu Dịch"}
                       </span>
                     </div>
                   </div>
@@ -977,13 +1504,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     className="absolute inset-0 pointer-events-none rounded-2xl z-20"
                     style={{ border: "1px solid rgba(196,150,62,0.32)" }}
                   />
-
-                  {/* Huy hiệu nhỏ phân biệt Quẻ hay Hào ở góc lá bài */}
-                  <div className="absolute top-2 left-2 z-30 pointer-events-none">
-                    <span className="inline-block px-1.5 py-0.5 rounded text-[9px] font-bold bg-black/60 text-[#C4963E] border border-[#C4963E]/40 backdrop-blur-sm">
-                      {card.type === "yao" ? `Hào ${card.yaoNumber}` : `Quẻ #${card.hexNumber}`}
-                    </span>
-                  </div>
                 </div>
               </div>
             </div>
@@ -1129,55 +1649,174 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </footer>
 
       {/* ══════════════════════════════════════════════════════════════════
-          7. MODAL: CHI TIẾT THẺ BÀI 3D (CARD INSPECTOR)
+          7. MODAL: CHI TIẾT THẺ BÀI (MẶT TRƯỚC & MẶT SAU)
           ══════════════════════════════════════════════════════════════════ */}
       {selectedCard && (
         <div
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+          className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md overflow-y-auto"
           onClick={() => setSelectedCard(null)}
         >
           <div
-            className="relative w-full max-w-md rounded-3xl bg-[#17181C] border border-[#C4963E]/40 shadow-2xl p-6 text-center text-stone-200"
+            className="relative w-full max-w-lg sm:max-w-xl my-auto rounded-3xl bg-[#16171B] border border-[#C4963E]/40 shadow-2xl p-5 sm:p-6 text-center text-stone-200"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               type="button"
               onClick={() => setSelectedCard(null)}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-stone-300 hover:text-white transition cursor-pointer"
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-stone-300 hover:text-white transition cursor-pointer z-10"
+              title="Đóng bảng chi tiết"
             >
               ✕
             </button>
 
-            {/* Khung hiển thị trọn vẹn lá bài (Full hình 100% không bị crop xén) */}
-            <div className="mx-auto flex items-center justify-center mb-4">
-              <div
-                className="relative rounded-2xl overflow-hidden shadow-2xl border border-[#C4963E]/50 bg-black/70 flex items-center justify-center p-1"
-                style={{
-                  width: selectedCard.type === "yao" ? "240px" : "180px",
-                  height: selectedCard.type === "yao" ? "280px" : "284px",
-                  maxWidth: "85vw",
-                  maxHeight: "44vh",
-                }}
+            {/* Bộ chuyển đổi góc nhìn: Cả 2 mặt / Mặt trước / Mặt sau */}
+            <div className="flex items-center justify-center gap-1.5 mb-4">
+              <button
+                type="button"
+                onClick={() => setModalCardView("both")}
+                className={`px-3 py-1 rounded-full text-xs font-semibold transition cursor-pointer ${
+                  modalCardView === "both"
+                    ? "bg-[#C4963E] text-stone-950 font-bold shadow-md"
+                    : "bg-white/10 text-stone-300 hover:bg-white/15"
+                }`}
               >
-                <img
-                  src={selectedCard.img}
-                  alt={selectedCard.name}
-                  className="w-full h-full object-contain rounded-xl drop-shadow-md"
-                  onError={(e) => {
-                    const target = e.currentTarget;
-                    if (selectedCard.type === "yao") {
-                      target.src = `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}-${selectedCard.yaoNumber}a.webp`;
-                    } else {
-                      target.src = `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}a.webp`;
-                    }
-                  }}
-                />
-              </div>
+                ✦ Cả 2 mặt
+              </button>
+              <button
+                type="button"
+                onClick={() => setModalCardView("front")}
+                className={`px-3 py-1 rounded-full text-xs font-semibold transition cursor-pointer ${
+                  modalCardView === "front"
+                    ? "bg-[#C4963E] text-stone-950 font-bold shadow-md"
+                    : "bg-white/10 text-stone-300 hover:bg-white/15"
+                }`}
+              >
+                Mặt trước
+              </button>
+              <button
+                type="button"
+                onClick={() => setModalCardView("back")}
+                className={`px-3 py-1 rounded-full text-xs font-semibold transition cursor-pointer ${
+                  modalCardView === "back"
+                    ? "bg-[#C4963E] text-stone-950 font-bold shadow-md"
+                    : "bg-white/10 text-stone-300 hover:bg-white/15"
+                }`}
+              >
+                Mặt sau
+              </button>
             </div>
+
+            {/* Khung hiển thị các lá bài (Full hình 100% không bị crop xén) */}
+            {modalCardView === "both" ? (
+              <div className="flex items-center justify-center gap-3 sm:gap-6 mb-4">
+                {/* Khung Mặt Trước */}
+                <div className="flex flex-col items-center">
+                  <span className="text-[11px] font-semibold text-amber-300/80 mb-1.5 flex items-center gap-1">
+                    <span className="text-amber-400">✦</span> Mặt Trước
+                  </span>
+                  <div
+                    className="relative rounded-2xl overflow-hidden shadow-2xl border border-[#C4963E]/50 bg-black/80 flex items-center justify-center p-1 group hover:border-amber-400 transition"
+                    style={{
+                      width: selectedCard.type === "yao" ? "150px" : "140px",
+                      height: selectedCard.type === "yao" ? "200px" : "205px",
+                      maxWidth: "42vw",
+                      maxHeight: "36vh",
+                    }}
+                  >
+                    <img
+                      src={selectedCard.img}
+                      alt={`${selectedCard.name} - Mặt trước`}
+                      className="w-full h-full object-contain rounded-xl drop-shadow-md transition-transform duration-300 group-hover:scale-105"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        if (selectedCard.type === "yao") {
+                          target.src = `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}-${selectedCard.yaoNumber}a.webp`;
+                        } else {
+                          target.src = `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}a.webp`;
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Khung Mặt Sau */}
+                <div className="flex flex-col items-center">
+                  <span className="text-[11px] font-semibold text-amber-300/80 mb-1.5 flex items-center gap-1">
+                    <span className="text-amber-400">✦</span> Mặt Sau
+                  </span>
+                  <div
+                    className="relative rounded-2xl overflow-hidden shadow-2xl border border-[#C4963E]/50 bg-black/80 flex items-center justify-center p-1 group hover:border-amber-400 transition"
+                    style={{
+                      width: selectedCard.type === "yao" ? "150px" : "140px",
+                      height: selectedCard.type === "yao" ? "200px" : "205px",
+                      maxWidth: "42vw",
+                      maxHeight: "36vh",
+                    }}
+                  >
+                    <img
+                      src={
+                        selectedCard.backImg ||
+                        (selectedCard.type === "yao"
+                          ? `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}-${selectedCard.yaoNumber}b.webp`
+                          : `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}b.webp`)
+                      }
+                      alt={`${selectedCard.name} - Mặt sau`}
+                      className="w-full h-full object-contain rounded-xl drop-shadow-md transition-transform duration-300 group-hover:scale-105"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        if (selectedCard.type === "yao") {
+                          target.src = `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}-${selectedCard.yaoNumber}b.webp`;
+                        } else {
+                          target.src = `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}b.webp`;
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="mx-auto flex flex-col items-center justify-center mb-4">
+                <span className="text-[11px] font-semibold text-amber-300/80 mb-1.5 flex items-center gap-1">
+                  <span className="text-amber-400">✦</span> {modalCardView === "front" ? "Mặt Trước" : "Mặt Sau"}
+                </span>
+                <div
+                  className="relative rounded-2xl overflow-hidden shadow-2xl border border-[#C4963E]/50 bg-black/80 flex items-center justify-center p-1 group hover:border-amber-400 transition"
+                  style={{
+                    width: selectedCard.type === "yao" ? "220px" : "180px",
+                    height: selectedCard.type === "yao" ? "290px" : "265px",
+                    maxWidth: "80vw",
+                    maxHeight: "40vh",
+                  }}
+                >
+                  <img
+                    src={
+                      modalCardView === "front"
+                        ? selectedCard.img
+                        : selectedCard.backImg ||
+                          (selectedCard.type === "yao"
+                            ? `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}-${selectedCard.yaoNumber}b.webp`
+                            : `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}b.webp`)
+                    }
+                    alt={`${selectedCard.name} - ${modalCardView === "front" ? "Mặt trước" : "Mặt sau"}`}
+                    className="w-full h-full object-contain rounded-xl drop-shadow-md transition-transform duration-300 group-hover:scale-105"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      const isBack = modalCardView === "back";
+                      const suffix = isBack ? "b.webp" : "a.webp";
+                      if (selectedCard.type === "yao") {
+                        target.src = `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}-${selectedCard.yaoNumber}${suffix}`;
+                      } else {
+                        target.src = `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}${suffix}`;
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            )}
 
             <div className="mb-2">
               <span className="inline-block px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#C4963E]/20 text-[#C4963E] border border-[#C4963E]/30 uppercase tracking-wider">
-                {selectedCard.type === "yao" ? `Hào ${selectedCard.yaoNumber}/6 · 384 Hào Chu Dịch` : `Quẻ #${selectedCard.hexNumber} · 64 Quẻ Chu Dịch`}
+                {selectedCard.type === "yao" ? "384 Hào Từ Chu Dịch" : "64 Quẻ Chu Dịch"}
               </span>
             </div>
 
@@ -1188,14 +1827,27 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               {selectedCard.desc}
             </p>
 
-            <div className="mt-5 flex justify-center">
+            <div className="mt-5 flex flex-col sm:flex-row gap-2.5 justify-center">
+              <button
+                type="button"
+                onClick={() => handleCopySingleCardForAI(selectedCard)}
+                className={`px-4 py-2.5 rounded-2xl text-xs font-semibold border transition cursor-pointer flex items-center justify-center gap-1.5 shadow-md active:scale-95 ${
+                  copiedSingle
+                    ? "bg-emerald-600 text-white border-emerald-500"
+                    : "bg-white/10 hover:bg-white/15 text-stone-200 hover:text-white border-white/20"
+                }`}
+                title="Sao chép nội dung lá bài này (quẻ tượng -> tên -> ý nghĩa -> lời giải) để gửi cho AI"
+              >
+                <span>{copiedSingle ? "✓" : "📋"}</span>
+                <span>{copiedSingle ? "Đã chép cho AI!" : "Chép lá này cho AI"}</span>
+              </button>
               <button
                 type="button"
                 onClick={() => {
                   const targetUrl = getHexDetailUrl(selectedCard.hexNumber, selectedCard.yaoNumber);
                   window.open(targetUrl, "_blank", "noopener,noreferrer");
                 }}
-                className="w-full max-w-sm px-6 py-3 rounded-2xl bg-gradient-to-r from-[#C4963E] to-[#E5B558] text-stone-950 font-bold text-sm hover:brightness-110 transition shadow-lg cursor-pointer flex items-center justify-center gap-2"
+                className="flex-1 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-[#C4963E] to-[#E5B558] text-stone-950 font-bold text-xs hover:brightness-110 transition shadow-lg cursor-pointer flex items-center justify-center gap-2"
                 title="Mở trang luận giải chi tiết của quẻ này trong Bách Khoa Kinh Dịch"
               >
                 <span>📖</span>
@@ -1468,6 +2120,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </div>
             )}
           </div>
+        </div>
+      )}
+
+      {/* Toast thông báo đã sao chép cho AI */}
+      {copiedToast && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] flex items-center gap-2 px-5 py-3 rounded-full bg-zinc-950/95 text-amber-300 border border-[#C4963E]/60 shadow-2xl backdrop-blur-md text-xs sm:text-sm font-sans tracking-wide pointer-events-none transition-all"
+        >
+          <span className="text-emerald-400 font-bold text-base">✓</span>
+          <span>{copiedToast}</span>
         </div>
       )}
     </div>
