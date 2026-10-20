@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cửu Nhị · Mệnh Lý, Phong Thủy & Kinh Dịch</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#0B0A08" />
+    <meta name="description" content="Ứng dụng bốc bài gieo quẻ Kinh Dịch, tra cứu Thuyết Minh 64 quẻ, kho tàng diễn giải Lục Thập Hoa Giáp (60 Can Chi) & nạp ảnh cá nhân hóa, âm thanh thiền định và lưu trữ lịch sử bói." />
+    <meta property="og:title" content="Cửu Nhị · Mệnh Lý, Phong Thủy & Kinh Dịch" />
+    <meta property="og:description" content="Ứng dụng bốc bài gieo quẻ Kinh Dịch, tra cứu Thuyết Minh 64 quẻ, kho tàng diễn giải Lục Thập Hoa Giáp (60 Can Chi) & nạp ảnh cá nhân hóa, âm thanh thiền định và lưu trữ lịch sử bói." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="og:image" content="https://huyen-hoc-site.khietvidai.workers.dev/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:image" content="https://huyen-hoc-site.khietvidai.workers.dev/og-image.jpg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&family=Lora:ital,wght@0,400..700;1,400..700&family=Noto+Serif+TC:wght@400;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" crossorigin="anonymous">
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('cuunhi_font_size');
+          var map = {
+            sm: '14px',
+            md: '16px',
+            lg: '18px',
+            xl: '20.5px',
+            '2xl': '23.5px',
+            '3xl': '27px',
+            '4xl': '31px'
+          };
+          // Giữ nguyên tỷ lệ người dùng đã chọn trước đó; nếu là người mới vào lần đầu thì mặc định 100% (md = 16px)
+          if (!saved || !map[saved]) {
+            saved = 'md';
+          }
+          document.documentElement.style.fontSize = map[saved] || '16px';
+        } catch (e) {}
+      })();
+    </script>
+    <script src="https://apis.google.com/js/api.js"></script>
+  </head>
+  <body class="bg-[#0B0A08] text-[#E8E2D5] antialiased selection:bg-[#C89B3C]/30 selection:text-[#F3EFE6]">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
