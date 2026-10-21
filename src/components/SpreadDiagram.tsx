@@ -2385,20 +2385,26 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
     );
   }
 
-  // Custom Spread Layout (Cho phép số lượng lá bài bất kỳ như 4, 6, 8, 12 lá...)
+    // Custom Spread Layout (Cho phép số lượng lá bài bất kỳ như 4, 6, 8, 12 lá...)
   if (spreadType === "custom" || (cards && cards.length > 0)) {
     const cardCount = cards.length;
     let gridColsClass = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3";
-    if (cardCount <= 2) {
+    if (cardCount <= 1) {
+      gridColsClass = "grid grid-cols-1 max-w-xs mx-auto";
+    } else if (cardCount === 2) {
       gridColsClass = "grid grid-cols-2 gap-3 sm:gap-4 max-w-xl mx-auto";
     } else if (cardCount === 3) {
       gridColsClass = "grid grid-cols-3 gap-2 sm:gap-3 max-w-3xl mx-auto";
     } else if (cardCount === 4) {
       gridColsClass = "grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-4xl mx-auto";
+    } else if (cardCount === 5) {
+      // 5 Lá: Trên màn hình nhỏ/điện thoại: 3 lá ở hàng trên, 2 lá cuối cùng bên phải (lá 4 & 5) nhảy xuống hàng dưới và căn giữa
+      // Trên màn hình lớn (md: trở lên): dàn đủ 5 lá thành 1 hàng ngang
+      gridColsClass = "grid grid-cols-6 md:grid-cols-5 gap-2.5 sm:gap-3 max-w-5xl mx-auto";
     } else if (cardCount <= 6) {
-      gridColsClass = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3";
+      gridColsClass = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 max-w-6xl mx-auto";
     } else if (cardCount <= 8) {
-      gridColsClass = "grid grid-cols-2 sm:grid-cols-4 gap-3";
+      gridColsClass = "grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-3";
     } else if (cardCount <= 12) {
       gridColsClass = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3";
     } else {
@@ -2429,6 +2435,20 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                   customPositions?.[idx]?.name ||
                   `Lá ${idx + 1}: Mục đích xem số ${idx + 1}`;
 
+                // Định vị cột linh hoạt theo kích thước màn hình
+                // Khi 5 lá: trên mobile/màn hình nhỏ (< md), 3 lá đầu chiếm 2/6 cột (đủ hàng 1), 2 lá sau nhảy xuống hàng 2 và căn giữa
+                // Trên md trở lên: mỗi lá chiếm 1/5 cột (thành 1 hàng ngang hoàn chỉnh)
+                let cardColSpanClass = "";
+                if (cardCount === 5) {
+                  if (idx === 0 || idx === 1 || idx === 2) {
+                    cardColSpanClass = "col-span-2 md:col-span-1";
+                  } else if (idx === 3) {
+                    cardColSpanClass = "col-start-2 col-span-2 md:col-start-auto md:col-span-1";
+                  } else if (idx === 4) {
+                    cardColSpanClass = "col-span-2 md:col-span-1";
+                  }
+                }
+
                 return (
                   <div
                     key={`${card.number}-${idx}`}
@@ -2445,7 +2465,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                     onMouseLeave={() => {
                       if (onLeaveCard) onLeaveCard();
                     }}
-                    className={`flex flex-col items-center bg-[#181410] rounded-xl p-2.5 border transition-all ${
+                    className={`flex flex-col items-center bg-[#181410] rounded-xl p-2.5 border transition-all ${cardColSpanClass} ${
                       interactive ? "cursor-pointer group" : ""
                     } ${
                       isSelected

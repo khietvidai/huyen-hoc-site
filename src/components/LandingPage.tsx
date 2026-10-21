@@ -676,62 +676,135 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
       if (cardCount === 5 || mode === "3_to_5") {
         // ── CHẾ ĐỘ: 5 LÁ (NGŨ HÀNH) ──
-        // Ở Destiny Cards (f=1): xòe 5 lá rộng rãi
-        // Khi kéo xuống Features (f=0): gôm toàn bộ lại thành 1 lá duy nhất tại Slot 2!
-        // Slot 0 (Cực Trái)
-        if (slots[0]) {
-          const x0 = (-460 * f) * factor;
-          const y0 = 8 * f;
-          const rot0 = -7 * f;
-          slots[0].style.transform = `perspective(1200px) translate3d(${x0.toFixed(1)}px, ${y0.toFixed(1)}px, 0) rotate(${rot0.toFixed(1)}deg) scale(0.98)`;
-          slots[0].style.opacity = f.toFixed(3);
-          slots[0].style.pointerEvents = f > 0.25 ? "auto" : "none";
-          slots[0].style.zIndex = "8";
-        }
-        // Slot 1 (Cận Trái): ở Hero x=-140, ở Destiny x=-230, ở Features gôm về 0
-        if (slots[1]) {
-          const heroX1 = -140 * (1 - g);
-          const spreadX1 = -230 * f;
-          const x1 = (heroX1 + spreadX1) * factor;
-          const y1 = 3 * f;
-          const rot1 = -3.5 * f;
-          const sc1 = 1.02 + 0.02 * f;
-          slots[1].style.transform = `perspective(1200px) translate3d(${x1.toFixed(1)}px, ${y1.toFixed(1)}px, 0) rotate(${rot1.toFixed(1)}deg) scale(${sc1.toFixed(3)})`;
-          const op1 = g < 0.5 ? 1 : f;
-          slots[1].style.opacity = op1.toFixed(3);
-          slots[1].style.pointerEvents = f > 0.25 ? "auto" : "none";
-          slots[1].style.zIndex = "10";
-        }
-        // Slot 2 (Trung Tâm): là lá trụ cột luôn hiển thị 1 lá uy nghi tại Features
-        if (slots[2]) {
-          slots[2].style.transform = `perspective(1200px) translate3d(0, 0, 26px) scale(1.10)`;
-          slots[2].style.opacity = "1";
-          slots[2].style.pointerEvents = "auto";
-          slots[2].style.zIndex = "14";
-        }
-        // Slot 3 (Cận Phải): ở Hero x=140, ở Destiny x=230, ở Features gôm về 0
-        if (slots[3]) {
-          const heroX3 = 140 * (1 - g);
-          const spreadX3 = 230 * f;
-          const x3 = (heroX3 + spreadX3) * factor;
-          const y3 = 3 * f;
-          const rot3 = 3.5 * f;
-          const sc3 = 1.02 + 0.02 * f;
-          slots[3].style.transform = `perspective(1200px) translate3d(${x3.toFixed(1)}px, ${y3.toFixed(1)}px, 0) rotate(${rot3.toFixed(1)}deg) scale(${sc3.toFixed(3)})`;
-          const op3 = g < 0.5 ? 1 : f;
-          slots[3].style.opacity = op3.toFixed(3);
-          slots[3].style.pointerEvents = f > 0.25 ? "auto" : "none";
-          slots[3].style.zIndex = "10";
-        }
-        // Slot 4 (Cực Phải)
-        if (slots[4]) {
-          const x4 = (460 * f) * factor;
-          const y4 = 8 * f;
-          const rot4 = 7 * f;
-          slots[4].style.transform = `perspective(1200px) translate3d(${x4.toFixed(1)}px, ${y4.toFixed(1)}px, 0) rotate(${rot4.toFixed(1)}deg) scale(0.98)`;
-          slots[4].style.opacity = f.toFixed(3);
-          slots[4].style.pointerEvents = f > 0.25 ? "auto" : "none";
-          slots[4].style.zIndex = "8";
+        // Tùy thuộc vào kích thước màn hình mà các lá bài sắp xếp linh hoạt:
+        // - Trên màn hình nhỏ/điện thoại (w < 860): Không đủ chỗ bày ngang 5 lá,
+        //   nên 3 lá đầu ở hàng trên, 2 lá cuối cùng bên phải (Slot 3 & 4) nhảy xuống hàng dưới và căn giữa.
+        // - Trên màn hình lớn (w >= 860): xòe đủ 5 lá thành 1 hàng ngang rộng rãi.
+        // Khi kéo xuống Features (f=0): toàn bộ gôm lại thành 1 lá duy nhất tại Slot 2!
+
+        const isSmallScreen = w < 860;
+        const mobFactor = w < 380 ? 0.82 : w < 440 ? 0.92 : 1.0;
+
+        if (isSmallScreen) {
+          // ── BỐ CỤC MOBILE / MÀN HÌNH NHỎ (Hàng trên 3 lá, Hàng dưới 2 lá) ──
+          // Hàng 1 (Trên): Slot 0 (trái), Slot 1 (giữa), Slot 2 (phải)
+          // Slot 0 (Trái trên)
+          if (slots[0]) {
+            const x0 = (-122 * f) * mobFactor;
+            const y0 = -82 * f;
+            const rot0 = -4.5 * f;
+            slots[0].style.transform = `perspective(1200px) translate3d(${x0.toFixed(1)}px, ${y0.toFixed(1)}px, 0) rotate(${rot0.toFixed(1)}deg) scale(0.92)`;
+            slots[0].style.opacity = f.toFixed(3);
+            slots[0].style.pointerEvents = f > 0.25 ? "auto" : "none";
+            slots[0].style.zIndex = "8";
+          }
+          // Slot 1 (Giữa trên): ở Hero nằm cận trái (-120px), khi xuống Destiny tiến vào giữa trên (x=0, y=-88px)
+          if (slots[1]) {
+            const heroX1 = -120 * (1 - g) * mobFactor;
+            const x1 = heroX1;
+            const y1 = -88 * f;
+            const rot1 = 0;
+            const sc1 = 0.95 + 0.05 * (1 - f);
+            slots[1].style.transform = `perspective(1200px) translate3d(${x1.toFixed(1)}px, ${y1.toFixed(1)}px, 0) rotate(${rot1}deg) scale(${sc1.toFixed(3)})`;
+            const op1 = g < 0.5 ? 1 : Math.max(f, 0.4);
+            slots[1].style.opacity = op1.toFixed(3);
+            slots[1].style.pointerEvents = f > 0.25 ? "auto" : "none";
+            slots[1].style.zIndex = "10";
+          }
+          // Slot 2 (Phải trên): ở Hero là lá trung tâm, khi xuống Destiny dạt sang phải trên
+          if (slots[2]) {
+            const destX2 = 122 * f * mobFactor;
+            const y2 = -82 * f;
+            const rot2 = 4.5 * f;
+            const sc2 = 0.92 + 0.18 * (1 - f); // Khi về Features phóng lên 1.10
+            slots[2].style.transform = `perspective(1200px) translate3d(${destX2.toFixed(1)}px, ${y2.toFixed(1)}px, 26px) rotate(${rot2.toFixed(1)}deg) scale(${sc2.toFixed(3)})`;
+            slots[2].style.opacity = "1";
+            slots[2].style.pointerEvents = "auto";
+            slots[2].style.zIndex = "14";
+          }
+
+          // Hàng 2 (Dưới): 2 lá cuối cùng bên phải nhảy xuống (Slot 3 & Slot 4 căn giữa bên dưới)
+          // Slot 3 (Trái dưới)
+          if (slots[3]) {
+            const heroX3 = 120 * (1 - g) * mobFactor;
+            const destX3 = -70 * f * mobFactor;
+            const x3 = heroX3 + destX3;
+            const y3 = 108 * f;
+            const rot3 = -3 * f;
+            const sc3 = 0.92;
+            slots[3].style.transform = `perspective(1200px) translate3d(${x3.toFixed(1)}px, ${y3.toFixed(1)}px, 0) rotate(${rot3.toFixed(1)}deg) scale(${sc3.toFixed(3)})`;
+            const op3 = g < 0.5 ? 1 : f;
+            slots[3].style.opacity = op3.toFixed(3);
+            slots[3].style.pointerEvents = f > 0.25 ? "auto" : "none";
+            slots[3].style.zIndex = "9";
+          }
+          // Slot 4 (Phải dưới)
+          if (slots[4]) {
+            const x4 = (70 * f) * mobFactor;
+            const y4 = 108 * f;
+            const rot4 = 3 * f;
+            slots[4].style.transform = `perspective(1200px) translate3d(${x4.toFixed(1)}px, ${y4.toFixed(1)}px, 0) rotate(${rot4.toFixed(1)}deg) scale(0.92)`;
+            slots[4].style.opacity = f.toFixed(3);
+            slots[4].style.pointerEvents = f > 0.25 ? "auto" : "none";
+            slots[4].style.zIndex = "9";
+          }
+        } else {
+          // ── BỐ CỤC DESKTOP (1 hàng ngang rộng rãi cả 5 lá) ──
+          // Slot 0 (Cực Trái)
+          if (slots[0]) {
+            const x0 = (-460 * f) * factor;
+            const y0 = 8 * f;
+            const rot0 = -7 * f;
+            slots[0].style.transform = `perspective(1200px) translate3d(${x0.toFixed(1)}px, ${y0.toFixed(1)}px, 0) rotate(${rot0.toFixed(1)}deg) scale(0.98)`;
+            slots[0].style.opacity = f.toFixed(3);
+            slots[0].style.pointerEvents = f > 0.25 ? "auto" : "none";
+            slots[0].style.zIndex = "8";
+          }
+          // Slot 1 (Cận Trái): ở Hero x=-140, ở Destiny x=-230, ở Features gôm về 0
+          if (slots[1]) {
+            const heroX1 = -140 * (1 - g);
+            const spreadX1 = -230 * f;
+            const x1 = (heroX1 + spreadX1) * factor;
+            const y1 = 3 * f;
+            const rot1 = -3.5 * f;
+            const sc1 = 1.02 + 0.02 * f;
+            slots[1].style.transform = `perspective(1200px) translate3d(${x1.toFixed(1)}px, ${y1.toFixed(1)}px, 0) rotate(${rot1.toFixed(1)}deg) scale(${sc1.toFixed(3)})`;
+            const op1 = g < 0.5 ? 1 : f;
+            slots[1].style.opacity = op1.toFixed(3);
+            slots[1].style.pointerEvents = f > 0.25 ? "auto" : "none";
+            slots[1].style.zIndex = "10";
+          }
+          // Slot 2 (Trung Tâm): là lá trụ cột luôn hiển thị 1 lá uy nghi tại Features
+          if (slots[2]) {
+            slots[2].style.transform = `perspective(1200px) translate3d(0, 0, 26px) scale(1.10)`;
+            slots[2].style.opacity = "1";
+            slots[2].style.pointerEvents = "auto";
+            slots[2].style.zIndex = "14";
+          }
+          // Slot 3 (Cận Phải): ở Hero x=140, ở Destiny x=230, ở Features gôm về 0
+          if (slots[3]) {
+            const heroX3 = 140 * (1 - g);
+            const spreadX3 = 230 * f;
+            const x3 = (heroX3 + spreadX3) * factor;
+            const y3 = 3 * f;
+            const rot3 = 3.5 * f;
+            const sc3 = 1.02 + 0.02 * f;
+            slots[3].style.transform = `perspective(1200px) translate3d(${x3.toFixed(1)}px, ${y3.toFixed(1)}px, 0) rotate(${rot3.toFixed(1)}deg) scale(${sc3.toFixed(3)})`;
+            const op3 = g < 0.5 ? 1 : f;
+            slots[3].style.opacity = op3.toFixed(3);
+            slots[3].style.pointerEvents = f > 0.25 ? "auto" : "none";
+            slots[3].style.zIndex = "10";
+          }
+          // Slot 4 (Cực Phải)
+          if (slots[4]) {
+            const x4 = (460 * f) * factor;
+            const y4 = 8 * f;
+            const rot4 = 7 * f;
+            slots[4].style.transform = `perspective(1200px) translate3d(${x4.toFixed(1)}px, ${y4.toFixed(1)}px, 0) rotate(${rot4.toFixed(1)}deg) scale(0.98)`;
+            slots[4].style.opacity = f.toFixed(3);
+            slots[4].style.pointerEvents = f > 0.25 ? "auto" : "none";
+            slots[4].style.zIndex = "8";
+          }
         }
       } else if (cardCount === 3 || mode === "1_to_3") {
         // ── CHẾ ĐỘ: 3 LÁ (TAM TÀI) ──
@@ -1407,7 +1480,7 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
           </div>
 
           {/* Điểm neo cho các lá bài xòe ra ở giữa phần trắng – Khoảng trắng kéo dài rộng rãi */}
-          <div className="flex min-h-[480px] sm:min-h-[580px] items-center justify-center pt-4 pb-4">
+          <div className="flex min-h-[540px] sm:min-h-[580px] items-center justify-center pt-4 pb-4">
             <div
               ref={destinyAnchorRef}
               id="destiny-card-anchor"
