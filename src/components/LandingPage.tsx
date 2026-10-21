@@ -841,14 +841,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
         const isSmallScreen = w < 860;
         const mobFactor = w < 380 ? 0.76 : w < 440 ? 0.88 : 1.0;
-        const mobScale = w < 380 ? 0.82 : w < 440 ? 0.88 : 0.92;
+        const mobScale = w < 380 ? 0.70 : w < 440 ? 0.76 : 0.82;
 
         if (isSmallScreen) {
           // ── BỐ CỤC MOBILE / MÀN HÌNH NHỎ (Hàng trên 3 lá, Hàng dưới 2 lá) ──
           // Hàng 1 (Trên): Slot 0 (trái), Slot 1 (giữa), Slot 2 (phải)
           // Slot 0 (Trái trên)
           if (slots[0]) {
-            const x0 = (-120 * f) * mobFactor;
+            const x0 = (-115 * f) * mobFactor;
             const y0 = -82 * f;
             const rot0 = -4.5 * f;
             slots[0].style.transform = `perspective(1200px) translate3d(${x0.toFixed(1)}px, ${y0.toFixed(1)}px, 0) rotate(${rot0.toFixed(1)}deg) scale(${mobScale})`;
@@ -858,7 +858,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           }
           // Slot 1 (Giữa trên): ở Hero nằm cận trái (-120px), khi xuống Destiny tiến vào giữa trên (x=0, y=-88px)
           if (slots[1]) {
-            const heroX1 = -120 * (1 - g) * mobFactor;
+            const heroX1 = -115 * (1 - g) * mobFactor;
             const x1 = heroX1;
             const y1 = -88 * f;
             const rot1 = 0;
@@ -871,7 +871,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           }
           // Slot 2 (Phải trên): ở Hero là lá trung tâm, khi xuống Destiny dạt sang phải trên
           if (slots[2]) {
-            const destX2 = 120 * f * mobFactor;
+            const destX2 = 115 * f * mobFactor;
             const y2 = -82 * f;
             const rot2 = 4.5 * f;
             const sc2 = mobScale + (1.10 - mobScale) * (1 - f); // Khi về Features phóng lên 1.10
@@ -884,10 +884,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           // Hàng 2 (Dưới): 2 lá cuối cùng bên phải nhảy xuống (Slot 3 & Slot 4 căn giữa bên dưới)
           // Slot 3 (Trái dưới)
           if (slots[3]) {
-            const heroX3 = 120 * (1 - g) * mobFactor;
-            const destX3 = -68 * f * mobFactor;
+            const heroX3 = 115 * (1 - g) * mobFactor;
+            const destX3 = -65 * f * mobFactor;
             const x3 = heroX3 + destX3;
-            const y3 = 108 * f;
+            const y3 = 105 * f;
             const rot3 = -3 * f;
             const sc3 = mobScale;
             slots[3].style.transform = `perspective(1200px) translate3d(${x3.toFixed(1)}px, ${y3.toFixed(1)}px, 0) rotate(${rot3.toFixed(1)}deg) scale(${sc3.toFixed(3)})`;
@@ -898,8 +898,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           }
           // Slot 4 (Phải dưới)
           if (slots[4]) {
-            const x4 = (68 * f) * mobFactor;
-            const y4 = 108 * f;
+            const x4 = (65 * f) * mobFactor;
+            const y4 = 105 * f;
             const rot4 = 3 * f;
             slots[4].style.transform = `perspective(1200px) translate3d(${x4.toFixed(1)}px, ${y4.toFixed(1)}px, 0) rotate(${rot4.toFixed(1)}deg) scale(${mobScale})`;
             slots[4].style.opacity = f.toFixed(3);
@@ -907,25 +907,28 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             slots[4].style.zIndex = "9";
           }
         } else {
-          // ── BỐ CỤC DESKTOP (1 hàng ngang rộng rãi cả 5 lá) ──
+          // ── BỐ CỤC DESKTOP (1 hàng ngang rộng rãi cả 5 lá, tự co giãn theo độ rộng màn hình) ──
+          const scale5Desk = w < 1000 ? 0.74 : w < 1200 ? 0.82 : w < 1440 ? 0.90 : 0.98;
+          const col5Step = 220 * (scale5Desk / 0.98) * factor;
+
           // Slot 0 (Cực Trái)
           if (slots[0]) {
-            const x0 = (-460 * f) * factor;
+            const x0 = (-col5Step * 2 * f);
             const y0 = 8 * f;
             const rot0 = -7 * f;
-            slots[0].style.transform = `perspective(1200px) translate3d(${x0.toFixed(1)}px, ${y0.toFixed(1)}px, 0) rotate(${rot0.toFixed(1)}deg) scale(0.98)`;
+            slots[0].style.transform = `perspective(1200px) translate3d(${x0.toFixed(1)}px, ${y0.toFixed(1)}px, 0) rotate(${rot0.toFixed(1)}deg) scale(${scale5Desk.toFixed(3)})`;
             slots[0].style.opacity = f.toFixed(3);
             slots[0].style.pointerEvents = f > 0.25 ? "auto" : "none";
             slots[0].style.zIndex = "8";
           }
-          // Slot 1 (Cận Trái): ở Hero x=-140, ở Destiny x=-230, ở Features gôm về 0
+          // Slot 1 (Cận Trái): ở Hero x=-140, ở Destiny x=-col5Step, ở Features gôm về 0
           if (slots[1]) {
             const heroX1 = -140 * (1 - g);
-            const spreadX1 = -230 * f;
-            const x1 = (heroX1 + spreadX1) * factor;
+            const spreadX1 = -col5Step * f;
+            const x1 = (heroX1 + spreadX1);
             const y1 = 3 * f;
             const rot1 = -3.5 * f;
-            const sc1 = 1.02 + 0.02 * f;
+            const sc1 = scale5Desk + (1.10 - scale5Desk) * (1 - f);
             slots[1].style.transform = `perspective(1200px) translate3d(${x1.toFixed(1)}px, ${y1.toFixed(1)}px, 0) rotate(${rot1.toFixed(1)}deg) scale(${sc1.toFixed(3)})`;
             const op1 = g < 0.5 ? 1 : f;
             slots[1].style.opacity = op1.toFixed(3);
@@ -934,19 +937,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           }
           // Slot 2 (Trung Tâm): là lá trụ cột luôn hiển thị 1 lá uy nghi tại Features
           if (slots[2]) {
-            slots[2].style.transform = `perspective(1200px) translate3d(0, 0, 26px) scale(1.10)`;
+            const sc2 = scale5Desk + (1.10 - scale5Desk) * (1 - f);
+            slots[2].style.transform = `perspective(1200px) translate3d(0, 0, 26px) scale(${sc2.toFixed(3)})`;
             slots[2].style.opacity = "1";
             slots[2].style.pointerEvents = "auto";
             slots[2].style.zIndex = "14";
           }
-          // Slot 3 (Cận Phải): ở Hero x=140, ở Destiny x=230, ở Features gôm về 0
+          // Slot 3 (Cận Phải): ở Hero x=140, ở Destiny x=col5Step, ở Features gôm về 0
           if (slots[3]) {
             const heroX3 = 140 * (1 - g);
-            const spreadX3 = 230 * f;
-            const x3 = (heroX3 + spreadX3) * factor;
+            const spreadX3 = col5Step * f;
+            const x3 = (heroX3 + spreadX3);
             const y3 = 3 * f;
             const rot3 = 3.5 * f;
-            const sc3 = 1.02 + 0.02 * f;
+            const sc3 = scale5Desk + (1.10 - scale5Desk) * (1 - f);
             slots[3].style.transform = `perspective(1200px) translate3d(${x3.toFixed(1)}px, ${y3.toFixed(1)}px, 0) rotate(${rot3.toFixed(1)}deg) scale(${sc3.toFixed(3)})`;
             const op3 = g < 0.5 ? 1 : f;
             slots[3].style.opacity = op3.toFixed(3);
@@ -955,10 +959,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           }
           // Slot 4 (Cực Phải)
           if (slots[4]) {
-            const x4 = (460 * f) * factor;
+            const x4 = (col5Step * 2 * f);
             const y4 = 8 * f;
             const rot4 = 7 * f;
-            slots[4].style.transform = `perspective(1200px) translate3d(${x4.toFixed(1)}px, ${y4.toFixed(1)}px, 0) rotate(${rot4.toFixed(1)}deg) scale(0.98)`;
+            slots[4].style.transform = `perspective(1200px) translate3d(${x4.toFixed(1)}px, ${y4.toFixed(1)}px, 0) rotate(${rot4.toFixed(1)}deg) scale(${scale5Desk.toFixed(3)})`;
             slots[4].style.opacity = f.toFixed(3);
             slots[4].style.pointerEvents = f > 0.25 ? "auto" : "none";
             slots[4].style.zIndex = "8";
@@ -1021,20 +1025,45 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         // ── CHẾ ĐỘ: THÁP LA KINH DỊCH ──
         // Quẻ Biến LUÔN ở DƯỚI song song tuyệt đối (rotate 0deg, trùng tọa độ X, opacity 1) với Quẻ Chủ (Quẻ Chính ở trên).
         // Kế bên Quẻ Chủ là dải các lá bài Hào Từ (ở 384 lá bài hào từ) thay đổi từ Hào Sơ đến Hào Lục.
+        // TỰ ĐỘNG THU NHỎ KHI XUẤT HIỆN NHIỀU LÁ BÀI (tối đa 8 lá bài) để vừa vặn khung hình cả máy tính và điện thoại.
         const isSmallScreen = w < 860;
         const mobFactor = w < 380 ? 0.76 : w < 440 ? 0.88 : 1.0;
         const yaoCount = cardCount - 2;
 
         if (isSmallScreen) {
-          // ── MOBILE / MÀN HÌNH NHỎ ──
-          // Cột trái: Quẻ Chủ (trên) & Quẻ Biến (dưới) luôn song song tuyệt đối
-          const xCol0 = (-88 * f) * mobFactor;
-          const scaleHexMob = 0.78;
+          // ── MOBILE / MÀN HÌNH NHỎ (ĐIỆN THOẠI) ──
+          // Tự động thu nhỏ linh hoạt theo số lượng lá bài
+          let baseScaleMob = 0.74;
+          if (yaoCount >= 5) {
+            baseScaleMob = 0.54; // 7-8 lá bài (nhiều lá): thu nhỏ 0.54 để trọn vẹn màn hình
+          } else if (yaoCount >= 3) {
+            baseScaleMob = 0.62; // 5-6 lá bài: thu nhỏ vừa vặn 0.62
+          } else {
+            baseScaleMob = 0.72; // 3-4 lá bài: hiển thị thoải mái 0.72
+          }
+
+          // Điều chỉnh theo độ phân giải màn hình điện thoại
+          if (w < 380) baseScaleMob *= 0.88;
+          else if (w < 440) baseScaleMob *= 0.94;
+          if (vh < 700) baseScaleMob *= 0.90;
+
+          const scaleHexMob = Math.max(0.46, Math.min(0.75, baseScaleMob));
+          const scaleYaoMob = scaleHexMob * 0.92;
+
+          const cardHMob = 224 * scaleHexMob;
+          const cardWMob = 144 * scaleHexMob;
+          const xOffsetMob = Math.min(95, cardWMob * 0.62 + 14) * mobFactor;
+          const xCol0 = -xOffsetMob * f;
+          const xYaoMob = xOffsetMob * f;
+
+          // Khoảng cách trục dọc giữa Quẻ Chủ và Quẻ Biến (tự co giãn vừa vặn chiều cao)
+          const distYMob = Math.max(130, cardHMob + 22);
+          const y0 = (-distYMob / 2) * f;
+          const y1 = (distYMob / 2) * f;
 
           // 1. Quẻ Chủ (Quẻ Chính) ở trên
           if (slots[0]) {
-            const y0 = -135 * f;
-            slots[0].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${y0.toFixed(1)}px, 20px) rotate(0deg) scale(${scaleHexMob})`;
+            slots[0].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${y0.toFixed(1)}px, 20px) rotate(0deg) scale(${scaleHexMob.toFixed(3)})`;
             slots[0].style.opacity = "1";
             slots[0].style.pointerEvents = "auto";
             slots[0].style.zIndex = "18";
@@ -1042,43 +1071,84 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
           // 2. Quẻ Biến LUÔN ở dưới song song với Quẻ Chính (Cùng toạ độ X, rotate 0deg, opacity 1)
           if (slots[1]) {
-            const y1 = 135 * f;
-            slots[1].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${y1.toFixed(1)}px, 20px) rotate(0deg) scale(${scaleHexMob})`;
+            slots[1].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${y1.toFixed(1)}px, 20px) rotate(0deg) scale(${scaleHexMob.toFixed(3)})`;
             slots[1].style.opacity = "1";
             slots[1].style.pointerEvents = "auto";
             slots[1].style.zIndex = "17";
           }
 
           // 3. Các lá hào từ (ở 384 lá bài hào từ) ở cột bên phải theo thứ tự từ Sơ đến Lục
-          const xYaoMob = (88 * f) * mobFactor;
-          const stepY = yaoCount > 1 ? Math.min(54, 270 / (yaoCount - 1)) : 0;
-          for (let i = 0; i < yaoCount; i++) {
-            const sIdx = i + 2;
-            if (slots[sIdx]) {
-              const yYao = (-135 + i * stepY) * f;
-              slots[sIdx].style.transform = `perspective(1200px) translate3d(${xYaoMob.toFixed(1)}px, ${yYao.toFixed(1)}px, 12px) rotate(0deg) scale(0.74)`;
-              slots[sIdx].style.opacity = "1";
-              slots[sIdx].style.pointerEvents = "auto";
-              slots[sIdx].style.zIndex = (10 + i).toString();
+          if (yaoCount === 1) {
+            // Chỉ 1 lá: đặt ngang hàng Quẻ Chủ
+            if (slots[2]) {
+              slots[2].style.transform = `perspective(1200px) translate3d(${xYaoMob.toFixed(1)}px, ${y0.toFixed(1)}px, 12px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
+              slots[2].style.opacity = "1";
+              slots[2].style.pointerEvents = "auto";
+              slots[2].style.zIndex = "12";
+            }
+          } else if (yaoCount === 2) {
+            // 2 lá: lá 1 ngang hàng Quẻ Chủ, lá 2 ngang hàng Quẻ Biến
+            if (slots[2]) {
+              slots[2].style.transform = `perspective(1200px) translate3d(${xYaoMob.toFixed(1)}px, ${y0.toFixed(1)}px, 12px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
+              slots[2].style.opacity = "1";
+              slots[2].style.pointerEvents = "auto";
+              slots[2].style.zIndex = "12";
+            }
+            if (slots[3]) {
+              slots[3].style.transform = `perspective(1200px) translate3d(${xYaoMob.toFixed(1)}px, ${y1.toFixed(1)}px, 12px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
+              slots[3].style.opacity = "1";
+              slots[3].style.pointerEvents = "auto";
+              slots[3].style.zIndex = "13";
+            }
+          } else {
+            // 3 lá trở lên: trải đều theo chiều dọc từ y0 đến y1
+            const stepY = distYMob / (yaoCount - 1);
+            for (let i = 0; i < yaoCount; i++) {
+              const sIdx = i + 2;
+              if (slots[sIdx]) {
+                const yYao = (y0 + i * stepY);
+                slots[sIdx].style.transform = `perspective(1200px) translate3d(${xYaoMob.toFixed(1)}px, ${yYao.toFixed(1)}px, 12px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
+                slots[sIdx].style.opacity = "1";
+                slots[sIdx].style.pointerEvents = "auto";
+                slots[sIdx].style.zIndex = (10 + i).toString();
+              }
             }
           }
         } else {
-          // ── DESKTOP / MÀN HÌNH LỚN ──
-          // Tính toán số cột và căn giữa toàn bộ trải bài
+          // ── DESKTOP / MÀN HÌNH LỚN (MÁY TÍNH / LAPTOP) ──
+          // Tự động thu nhỏ linh hoạt theo số lượng lá bài
+          let baseScaleDesk = 0.82;
+          if (yaoCount >= 5) {
+            baseScaleDesk = 0.63; // 7-8 lá bài (nhiều lá): tự động thu nhỏ 0.63 để vừa vặn khung màn hình
+          } else if (yaoCount >= 3) {
+            baseScaleDesk = 0.72; // 5-6 lá bài: thu nhỏ vừa vặn 0.72
+          } else {
+            baseScaleDesk = 0.82; // 3-4 lá bài: kích thước 0.82 rộng rãi
+          }
+
+          // Điều chỉnh theo độ phân giải màn hình máy tính (chiều ngang & chiều dọc)
+          if (w < 1050) baseScaleDesk *= 0.88;
+          else if (w < 1250) baseScaleDesk *= 0.94;
+          if (vh < 780) baseScaleDesk *= 0.88;
+
+          const scaleHexDesk = Math.max(0.50, Math.min(0.85, baseScaleDesk));
+          const scaleYaoDesk = scaleHexDesk * 0.95;
+
           const topYaoLimit = yaoCount <= 3 ? yaoCount : Math.ceil(yaoCount / 2);
           const totalCols = 1 + topYaoLimit;
-          const colStep = 175 * factor;
+          const cardWDesk = 192 * scaleHexDesk;
+          const cardHDesk = 288 * scaleHexDesk;
+          const colStep = (cardWDesk + 22) * factor;
           const startX = -((totalCols - 1) * colStep) / 2;
 
           const xCol0 = startX * f;
-          const yTop = -140 * f;
-          const yBottom = 140 * f;
-          const scaleHexDesk = 0.83;
-          const scaleYaoDesk = 0.80;
+          const distYDesk = Math.max(160, cardHDesk + 26);
+          const yTop = (-distYDesk / 2) * f;
+          const yBottom = (distYDesk / 2) * f;
 
           // 1. Quẻ Chủ (Quẻ Chính) ở trên
           if (slots[0]) {
-            slots[0].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${yTop.toFixed(1)}px, 25px) rotate(0deg) scale(${scaleHexDesk})`;
+            slots[0].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${yTop.toFixed(1)}px, 25px) rotate(0deg) scale(${scaleHexDesk.toFixed(3)})`;
             slots[0].style.opacity = "1";
             slots[0].style.pointerEvents = "auto";
             slots[0].style.zIndex = "18";
@@ -1086,7 +1156,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
           // 2. Quẻ Biến LUÔN ở dưới song song với Quẻ Chính (Cùng toạ độ X, rotate 0deg, opacity 1)
           if (slots[1]) {
-            slots[1].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${yBottom.toFixed(1)}px, 25px) rotate(0deg) scale(${scaleHexDesk})`;
+            slots[1].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${yBottom.toFixed(1)}px, 25px) rotate(0deg) scale(${scaleHexDesk.toFixed(3)})`;
             slots[1].style.opacity = "1";
             slots[1].style.pointerEvents = "auto";
             slots[1].style.zIndex = "17";
@@ -1116,7 +1186,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 }
               }
 
-              slots[sIdx].style.transform = `perspective(1200px) translate3d(${xYao.toFixed(1)}px, ${yYao.toFixed(1)}px, 15px) rotate(0deg) scale(${scaleYaoDesk})`;
+              slots[sIdx].style.transform = `perspective(1200px) translate3d(${xYao.toFixed(1)}px, ${yYao.toFixed(1)}px, 15px) rotate(0deg) scale(${scaleYaoDesk.toFixed(3)})`;
               slots[sIdx].style.opacity = "1";
               slots[sIdx].style.pointerEvents = "auto";
               slots[sIdx].style.zIndex = (10 + i).toString();
