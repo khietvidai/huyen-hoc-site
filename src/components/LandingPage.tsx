@@ -1304,12 +1304,34 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
     }
   }, []);
 
-  /* ── Nhấn Bắt đầu Bốc Quẻ: Rút ngẫu nhiên bài mới và cuộn mượt xuống khu vực trải bài ── */
+  /* ── Chuyển chế độ và cuộn mượt xuống khu vực trải bài ── */
+  const handleSwitchModeAndScroll = useCallback((newMode: SpreadMode) => {
+    setMode(newMode);
+    setCards(drawCardsForMode(newMode));
+    setTimeout(() => {
+      requestTickRef.current();
+    }, 50);
+    const sec = document.getElementById("destiny-cards");
+    if (sec) {
+      sec.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, []);
+
+  /* ── Rút lại bài cho chế độ hiện tại và cuộn mượt xuống khu vực trải bài ── */
+  const handleShuffleCardsAndScroll = useCallback(() => {
+    setCards(drawCardsForMode(mode));
+    setTimeout(() => {
+      requestTickRef.current();
+    }, 50);
+    const sec = document.getElementById("destiny-cards");
+    if (sec) {
+      sec.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [mode]);
+
+  /* ── Nhấn Bắt đầu Bốc Quẻ: Rút bài cho chế độ hiện tại và cuộn mượt xuống khu vực trải bài ── */
   const handleStartDivinationOrShuffle = useCallback(() => {
-    const modes: SpreadMode[] = ["1_single", "1_to_2", "1_to_3", "3_to_5"];
-    const randomMode = modes[Math.floor(Math.random() * modes.length)];
-    setMode(randomMode);
-    setCards(drawCardsForMode(randomMode));
+    setCards(drawCardsForMode(mode));
     setTimeout(() => {
       requestTickRef.current();
     }, 50);
@@ -1318,7 +1340,7 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
     if (sec) {
       sec.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-  }, []);
+  }, [mode]);
 
   /* ── Coin Toss Handler ── */
   const handleTossCoin = () => {
@@ -1607,8 +1629,8 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
                 </span>
               </p>
 
-              {/* Dải nút hành động Desktop (Bắt Đầu Bốc Quẻ + 64 Quẻ Kinh Dịch) */}
-              <div className="hidden lg:flex w-full lg:w-auto lg:items-start relative z-[55] mt-6">
+              {/* Dải nút hành động Desktop (Bắt Đầu Bốc Quẻ + 64 Quẻ Kinh Dịch + Cụm nút hình thức gieo quẻ) */}
+              <div className="hidden lg:flex w-full lg:w-auto flex-col items-start relative z-[55] mt-6">
                 <div className="flex w-full max-w-xl flex-row items-stretch gap-3 lg:w-auto">
                   <button
                     type="button"
@@ -1638,6 +1660,110 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
                     <span className="text-xl">📖</span>
                     <span className="truncate">64 Quẻ Kinh Dịch</span>
                   </button>
+                </div>
+
+                {/* Cụm nút chọn hình thức gieo quẻ & thao tác (Kéo lên đặt ngay dưới Bắt Đầu Bốc Quẻ) */}
+                <div className="mt-3.5 flex flex-col gap-2 max-w-xl">
+                  {/* Hàng 1: 1 Lá, 2 Lá, 3 Lá, 5 Lá */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <RitualHoldButton
+                      id="hero-mode-1"
+                      active={mode === "1_single"}
+                      onClick={() => handleSwitchModeAndScroll("1_single")}
+                      className={`flex items-center justify-center px-4 py-2 rounded-full text-xs transition cursor-pointer shadow-sm ${
+                        mode === "1_single"
+                          ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.03]"
+                          : "bg-white/95 hover:bg-white text-zinc-800 hover:text-zinc-950 border border-white font-medium shadow-sm hover:scale-[1.02]"
+                      }`}
+                      title="Kính Thiên, Kính Địa, Kính Nhân (1 Lá - Đơn Quẻ)"
+                    >
+                      1 Lá (Đơn Quẻ)
+                    </RitualHoldButton>
+
+                    <RitualHoldButton
+                      id="hero-mode-2"
+                      active={mode === "1_to_2"}
+                      onClick={() => handleSwitchModeAndScroll("1_to_2")}
+                      className={`flex items-center justify-center px-4 py-2 rounded-full text-xs transition cursor-pointer shadow-sm ${
+                        mode === "1_to_2"
+                          ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.03]"
+                          : "bg-white/95 hover:bg-white text-zinc-800 hover:text-zinc-950 border border-white font-medium shadow-sm hover:scale-[1.02]"
+                      }`}
+                      title="Kính Thiên, Kính Địa, Kính Nhân (2 Lá - Âm Dương)"
+                    >
+                      2 Lá (Âm Dương)
+                    </RitualHoldButton>
+
+                    <RitualHoldButton
+                      id="hero-mode-3"
+                      active={mode === "1_to_3"}
+                      onClick={() => handleSwitchModeAndScroll("1_to_3")}
+                      className={`flex items-center justify-center px-4 py-2 rounded-full text-xs transition cursor-pointer shadow-sm ${
+                        mode === "1_to_3"
+                          ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.03]"
+                          : "bg-white/95 hover:bg-white text-zinc-800 hover:text-zinc-950 border border-white font-medium shadow-sm hover:scale-[1.02]"
+                      }`}
+                      title="Kính Thiên, Kính Địa, Kính Nhân (3 Lá - Tam Tài)"
+                    >
+                      3 Lá (Tam Tài)
+                    </RitualHoldButton>
+
+                    <RitualHoldButton
+                      id="hero-mode-5"
+                      active={mode === "3_to_5"}
+                      onClick={() => handleSwitchModeAndScroll("3_to_5")}
+                      className={`flex items-center justify-center px-4 py-2 rounded-full text-xs transition cursor-pointer shadow-sm ${
+                        mode === "3_to_5"
+                          ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.03]"
+                          : "bg-white/95 hover:bg-white text-zinc-800 hover:text-zinc-950 border border-white font-medium shadow-sm hover:scale-[1.02]"
+                      }`}
+                      title="Kính Thiên, Kính Địa, Kính Nhân (5 Lá - Ngũ Hành)"
+                    >
+                      5 Lá (Ngũ Hành)
+                    </RitualHoldButton>
+                  </div>
+
+                  {/* Hàng 2: Tháp La Kinh Dịch (bỏ icon âm dương) + Rút lại + Chép cho AI */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <RitualHoldButton
+                      id="hero-mode-thap-la"
+                      active={mode === "thap_la"}
+                      onClick={() => handleSwitchModeAndScroll("thap_la")}
+                      className={`flex items-center justify-center px-4 py-2 rounded-full text-xs transition cursor-pointer shadow-sm ${
+                        mode === "thap_la"
+                          ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.03]"
+                          : "bg-white/95 hover:bg-white text-zinc-800 hover:text-zinc-950 border border-white font-medium shadow-sm hover:scale-[1.02]"
+                      }`}
+                      title="Tháp La Kinh Dịch: Quẻ Chủ & Quẻ Biến Song Song Trên - Dưới & Dải Hào Từ Biến Dịch (384 Hào)"
+                    >
+                      Tháp La Kinh Dịch
+                    </RitualHoldButton>
+
+                    <RitualHoldButton
+                      id="hero-action-shuffle"
+                      active={false}
+                      onClick={handleShuffleCardsAndScroll}
+                      className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-[#fef8ed] hover:bg-[#fcf1db] text-[#7c5516] border border-amber-300 transition cursor-pointer shadow-sm active:scale-95"
+                      title="Kính Thiên, Kính Địa, Kính Nhân (Rút lại quẻ khác)"
+                    >
+                      <span className="text-sm">🎲</span>
+                      <span>Rút lại</span>
+                    </RitualHoldButton>
+
+                    <button
+                      type="button"
+                      onClick={handleCopyCardsForAI}
+                      className={`inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition cursor-pointer shadow-sm active:scale-95 select-none ${
+                        copiedAI
+                          ? "bg-emerald-600 text-white border border-emerald-500 shadow-md scale-[1.02]"
+                          : "bg-[#fbf4e6] hover:bg-[#f6ebd1] text-[#7c5516] border border-[#c4963e]/50 shadow-sm"
+                      }`}
+                      title="Sao chép toàn bộ thông tin các lá bài theo thứ tự để gửi cho AI phân tích"
+                    >
+                      <span className="text-sm">{copiedAI ? "✓" : "📋"}</span>
+                      <span>{copiedAI ? "Đã chép cho AI!" : "Chép cho AI"}</span>
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -1676,8 +1802,8 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
               </div>
             </div>
 
-            {/* Dải nút hành động Mobile */}
-            <div id="hero-mobile-actions" className="order-3 flex w-full max-w-xl shrink-0 flex-col items-center gap-2.5 pointer-events-auto max-lg:pt-2 lg:hidden relative z-[55]">
+            {/* Dải nút hành động Mobile (Bắt Đầu Bốc Quẻ + 64 Quẻ + Cụm nút hình thức gieo quẻ) */}
+            <div id="hero-mobile-actions" className="order-3 flex w-full max-w-xl shrink-0 flex-col items-center gap-2 pointer-events-auto max-lg:pt-2 lg:hidden relative z-[55]">
               <div className="flex w-full max-w-xl flex-row items-stretch gap-2">
                 <button
                   type="button"
@@ -1706,6 +1832,103 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
                   <span className="text-base sm:text-lg">📖</span>
                   <span className="truncate">64 Quẻ</span>
                 </button>
+              </div>
+
+              {/* Cụm nút chọn hình thức gieo quẻ & thao tác trên Mobile (Kéo lên đặt ngay dưới Bắt Đầu Bốc Quẻ) */}
+              <div className="w-full flex flex-col gap-1.5 pt-1">
+                {/* Hàng 1: 1 Lá, 2 Lá, 3 Lá, 5 Lá */}
+                <div className="grid grid-cols-2 gap-1.5 sm:flex sm:flex-wrap sm:justify-center">
+                  <RitualHoldButton
+                    id="hero-mobile-mode-1"
+                    active={mode === "1_single"}
+                    onClick={() => handleSwitchModeAndScroll("1_single")}
+                    className={`flex items-center justify-center px-2 py-2 rounded-full text-xs min-h-[38px] transition cursor-pointer shadow-sm ${
+                      mode === "1_single"
+                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md scale-[1.02]"
+                        : "bg-white/95 text-zinc-800 border border-white font-medium"
+                    }`}
+                  >
+                    1 Lá (Đơn Quẻ)
+                  </RitualHoldButton>
+
+                  <RitualHoldButton
+                    id="hero-mobile-mode-2"
+                    active={mode === "1_to_2"}
+                    onClick={() => handleSwitchModeAndScroll("1_to_2")}
+                    className={`flex items-center justify-center px-2 py-2 rounded-full text-xs min-h-[38px] transition cursor-pointer shadow-sm ${
+                      mode === "1_to_2"
+                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md scale-[1.02]"
+                        : "bg-white/95 text-zinc-800 border border-white font-medium"
+                    }`}
+                  >
+                    2 Lá (Âm Dương)
+                  </RitualHoldButton>
+
+                  <RitualHoldButton
+                    id="hero-mobile-mode-3"
+                    active={mode === "1_to_3"}
+                    onClick={() => handleSwitchModeAndScroll("1_to_3")}
+                    className={`flex items-center justify-center px-2 py-2 rounded-full text-xs min-h-[38px] transition cursor-pointer shadow-sm ${
+                      mode === "1_to_3"
+                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md scale-[1.02]"
+                        : "bg-white/95 text-zinc-800 border border-white font-medium"
+                    }`}
+                  >
+                    3 Lá (Tam Tài)
+                  </RitualHoldButton>
+
+                  <RitualHoldButton
+                    id="hero-mobile-mode-5"
+                    active={mode === "3_to_5"}
+                    onClick={() => handleSwitchModeAndScroll("3_to_5")}
+                    className={`flex items-center justify-center px-2 py-2 rounded-full text-xs min-h-[38px] transition cursor-pointer shadow-sm ${
+                      mode === "3_to_5"
+                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md scale-[1.02]"
+                        : "bg-white/95 text-zinc-800 border border-white font-medium"
+                    }`}
+                  >
+                    5 Lá (Ngũ Hành)
+                  </RitualHoldButton>
+                </div>
+
+                {/* Hàng 2: Tháp La Kinh Dịch (bỏ icon âm dương) + Rút lại + Chép cho AI */}
+                <div className="flex flex-wrap items-center justify-center gap-1.5">
+                  <RitualHoldButton
+                    id="hero-mobile-mode-thap-la"
+                    active={mode === "thap_la"}
+                    onClick={() => handleSwitchModeAndScroll("thap_la")}
+                    className={`flex-1 sm:flex-none flex items-center justify-center px-3 py-2 rounded-full text-xs min-h-[38px] transition cursor-pointer shadow-sm ${
+                      mode === "thap_la"
+                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md scale-[1.02]"
+                        : "bg-white/95 text-zinc-800 border border-white font-medium"
+                    }`}
+                  >
+                    Tháp La Kinh Dịch
+                  </RitualHoldButton>
+
+                  <RitualHoldButton
+                    id="hero-mobile-action-shuffle"
+                    active={false}
+                    onClick={handleShuffleCardsAndScroll}
+                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1 px-3 py-2 rounded-full text-xs font-semibold min-h-[38px] bg-[#fef8ed] hover:bg-[#fcf1db] text-[#7c5516] border border-amber-300 shadow-sm active:scale-95"
+                  >
+                    <span className="text-sm">🎲</span>
+                    <span>Rút lại</span>
+                  </RitualHoldButton>
+
+                  <button
+                    type="button"
+                    onClick={handleCopyCardsForAI}
+                    className={`w-full sm:w-auto inline-flex items-center justify-center gap-1 px-3 py-2 rounded-full text-xs font-semibold min-h-[38px] transition cursor-pointer shadow-sm active:scale-95 ${
+                      copiedAI
+                        ? "bg-emerald-600 text-white border border-emerald-500 shadow-md scale-[1.02]"
+                        : "bg-[#fbf4e6] hover:bg-[#f6ebd1] text-[#7c5516] border border-[#c4963e]/50 shadow-sm"
+                    }`}
+                  >
+                    <span className="text-sm">{copiedAI ? "✓" : "📋"}</span>
+                    <span>{copiedAI ? "Đã chép cho AI!" : "Chép cho AI"}</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1744,105 +1967,6 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
                 Ngàn năm tinh hoa Kinh Dịch, tái hiện qua ngôn ngữ trực quan hiện đại<br />
                 Khám phá con đường vận mệnh và định hướng cuộc đời với sự sáng suốt
               </p>
-
-              {/* Bộ nút chuyển đổi số lượng lá trực tiếp trên khoảng trắng */}
-              <div className="mt-5 grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-center gap-2.5 sm:gap-2.5 max-w-2xl mx-auto px-3 sm:px-2">
-                <RitualHoldButton
-                  id="mode-1"
-                  active={mode === "1_single"}
-                  onClick={() => handleSwitchMode("1_single")}
-                  className={`w-full sm:w-auto flex items-center justify-center px-4 sm:px-5 py-3 sm:py-2.5 rounded-full text-[13.5px] sm:text-xs font-bold sm:font-semibold min-h-[50px] sm:min-h-[40px] transition cursor-pointer shadow-sm ${
-                    mode === "1_single"
-                      ? "bg-zinc-900 text-[#C4963E] border border-[#C4963E]/60 shadow-md scale-[1.02] sm:scale-105"
-                      : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 border border-zinc-200 hover:text-zinc-900"
-                  }`}
-                  title="Kính Thiên, Kính Địa, Kính Nhân (1 Lá - Đơn Quẻ)"
-                >
-                  1 Lá (Đơn Quẻ)
-                </RitualHoldButton>
-
-                <RitualHoldButton
-                  id="mode-2"
-                  active={mode === "1_to_2"}
-                  onClick={() => handleSwitchMode("1_to_2")}
-                  className={`w-full sm:w-auto flex items-center justify-center px-4 sm:px-5 py-3 sm:py-2.5 rounded-full text-[13.5px] sm:text-xs font-bold sm:font-semibold min-h-[50px] sm:min-h-[40px] transition cursor-pointer shadow-sm ${
-                    mode === "1_to_2"
-                      ? "bg-zinc-900 text-[#C4963E] border border-[#C4963E]/60 shadow-md scale-[1.02] sm:scale-105"
-                      : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 border border-zinc-200 hover:text-zinc-900"
-                  }`}
-                  title="Kính Thiên, Kính Địa, Kính Nhân (2 Lá - Âm Dương)"
-                >
-                  2 Lá (Âm Dương)
-                </RitualHoldButton>
-
-                <RitualHoldButton
-                  id="mode-3"
-                  active={mode === "1_to_3"}
-                  onClick={() => handleSwitchMode("1_to_3")}
-                  className={`w-full sm:w-auto flex items-center justify-center px-4 sm:px-5 py-3 sm:py-2.5 rounded-full text-[13.5px] sm:text-xs font-bold sm:font-semibold min-h-[50px] sm:min-h-[40px] transition cursor-pointer shadow-sm ${
-                    mode === "1_to_3"
-                      ? "bg-zinc-900 text-[#C4963E] border border-[#C4963E]/60 shadow-md scale-[1.02] sm:scale-105"
-                      : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 border border-zinc-200 hover:text-zinc-900"
-                  }`}
-                  title="Kính Thiên, Kính Địa, Kính Nhân (3 Lá - Tam Tài)"
-                >
-                  3 Lá (Tam Tài)
-                </RitualHoldButton>
-
-                <RitualHoldButton
-                  id="mode-5"
-                  active={mode === "3_to_5"}
-                  onClick={() => handleSwitchMode("3_to_5")}
-                  className={`w-full sm:w-auto flex items-center justify-center px-4 sm:px-5 py-3 sm:py-2.5 rounded-full text-[13.5px] sm:text-xs font-bold sm:font-semibold min-h-[50px] sm:min-h-[40px] transition cursor-pointer shadow-sm ${
-                    mode === "3_to_5"
-                      ? "bg-zinc-900 text-[#C4963E] border border-[#C4963E]/60 shadow-md scale-[1.02] sm:scale-105"
-                      : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 border border-zinc-200 hover:text-zinc-900"
-                  }`}
-                  title="Kính Thiên, Kính Địa, Kính Nhân (5 Lá - Ngũ Hành)"
-                >
-                  5 Lá (Ngũ Hành)
-                </RitualHoldButton>
-
-                <RitualHoldButton
-                  id="mode-thap-la"
-                  active={mode === "thap_la"}
-                  onClick={() => handleSwitchMode("thap_la")}
-                  className={`w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 sm:px-5 py-3 sm:py-2.5 rounded-full text-[13.5px] sm:text-xs font-bold sm:font-semibold min-h-[50px] sm:min-h-[40px] transition cursor-pointer shadow-sm ${
-                    mode === "thap_la"
-                      ? "bg-zinc-900 text-[#C4963E] border border-[#C4963E]/60 shadow-md scale-[1.02] sm:scale-105"
-                      : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 border border-zinc-200 hover:text-zinc-900"
-                  }`}
-                  title="Tháp La Kinh Dịch: Quẻ Chủ & Quẻ Biến Song Song Trên - Dưới & Dải Hào Từ Biến Dịch (384 Hào)"
-                >
-                  <span className="text-amber-500 font-serif">☯</span>
-                  <span>Tháp La Kinh Dịch</span>
-                </RitualHoldButton>
-
-                <RitualHoldButton
-                  id="action-shuffle"
-                  active={false}
-                  onClick={handleShuffleCards}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-3 sm:py-2.5 rounded-full text-[13.5px] sm:text-xs font-bold sm:font-semibold min-h-[50px] sm:min-h-[40px] bg-amber-50 text-amber-900 hover:bg-amber-100 border border-amber-300 transition cursor-pointer shadow-sm"
-                  title="Kính Thiên, Kính Địa, Kính Nhân (Rút lại quẻ khác)"
-                >
-                  <span className="text-lg sm:text-sm">🎲</span>
-                  <span>Rút lại</span>
-                </RitualHoldButton>
-
-                <button
-                  type="button"
-                  onClick={handleCopyCardsForAI}
-                  className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-3 sm:py-2.5 rounded-full text-[13.5px] sm:text-xs font-bold sm:font-semibold min-h-[50px] sm:min-h-[40px] transition cursor-pointer shadow-sm active:scale-95 select-none touch-manipulation ${
-                    copiedAI
-                      ? "bg-emerald-600 text-white border border-emerald-600 shadow-md scale-[1.02] sm:scale-105"
-                      : "bg-[#C4963E]/15 hover:bg-[#C4963E]/25 text-[#7C5516] hover:text-[#5E400F] border border-[#C4963E]/50 shadow-sm"
-                  }`}
-                  title="Sao chép toàn bộ thông tin các lá bài theo thứ tự (trái qua phải, trên xuống dưới) để gửi cho AI phân tích"
-                >
-                  <span className="text-lg sm:text-sm">{copiedAI ? "✓" : "📋"}</span>
-                  <span className="truncate">{copiedAI ? "Đã chép cho AI!" : "Chép cho AI"}</span>
-                </button>
-              </div>
             </div>
           </div>
 
