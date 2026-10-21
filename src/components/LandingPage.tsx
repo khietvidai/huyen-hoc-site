@@ -1766,85 +1766,11 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
           </div>
 
           {/* Chú thích gợi ý tương tác đặt riêng biệt phía dưới xa, hoàn toàn không chạm hay che vào đáy lá bài */}
-          <div className="mt-6 mb-4 text-center pointer-events-auto">
+          <div className="mt-6 mb-10 text-center pointer-events-auto">
             <p className="text-xs sm:text-sm text-zinc-400 font-sans tracking-wide">
               ✦ Nhấp vào từng lá bài để tra cứu quẻ tượng, hào từ & lời giải AI ✦
             </p>
           </div>
-
-          {/* Khối triết lý 3 ngôi đặc trưng cho Tháp La Kinh Dịch */}
-          {mode === "thap_la" && cards.length >= 2 && (
-            <div className="relative z-30 max-w-4xl mx-auto my-6 pointer-events-auto px-4 w-full">
-              <div className="rounded-2xl p-5 sm:p-6 bg-gradient-to-b from-[#1C1813] via-[#14100C] to-[#0D0A08] border border-[#C4963E]/40 text-[#F5EAD4] shadow-2xl space-y-4">
-                {/* Header bar */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#3E2E1B] pb-3">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[#C4963E] text-base font-serif">☯</span>
-                    <h3 className="font-bold text-sm sm:text-base text-[#FAF5EB] font-serif uppercase tracking-wide">
-                      Tháp La Kinh Dịch — Triết Lý 3 Ngôi
-                    </h3>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => onEnterApp("divination", "thapla")}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#C4963E] hover:bg-[#D4A64E] text-zinc-950 transition cursor-pointer shadow-md active:scale-95"
-                    title="Mở Bàn Bốc Quẻ Tháp La Chuyên Sâu với chuông thiền Zen & xuất ảnh PNG"
-                  >
-                    <span>Vào Bàn Bốc Quẻ Tháp La Chuyên Sâu</span>
-                    <span>→</span>
-                  </button>
-                </div>
-
-                {/* 3 Cột: Bản Quái - Hào Động - Biến Quái */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
-                  {/* 1. Bản Quái */}
-                  <div className="p-3.5 rounded-xl bg-black/40 border border-[#C4963E]/30 space-y-1.5">
-                    <div className="flex items-center gap-1.5 text-[#C4963E] font-bold uppercase tracking-wider text-[11px]">
-                      <span>Lá Trên</span>
-                      <span>•</span>
-                      <span>Bản Quái</span>
-                    </div>
-                    <div className="font-semibold text-white text-sm">
-                      {cards[0]?.name.replace("Quẻ Chủ: ", "")}
-                    </div>
-                    <p className="text-[#D1C2A5] text-[11px] leading-relaxed">
-                      <strong className="text-[#F3D99B]">Nhìn nhận cục diện:</strong> Định vị toàn bộ bối cảnh thực tại, thế lực xung quanh, khó khăn và cơ hội tiềm ẩn.
-                    </p>
-                  </div>
-
-                  {/* 2. Hào Động */}
-                  <div className="p-3.5 rounded-xl bg-black/40 border border-amber-500/30 space-y-1.5">
-                    <div className="flex items-center gap-1.5 text-amber-400 font-bold uppercase tracking-wider text-[11px]">
-                      <span>Kế Bên</span>
-                      <span>•</span>
-                      <span>Hào Động ({cards.length - 2} Hào)</span>
-                    </div>
-                    <div className="font-semibold text-white text-sm truncate">
-                      {cards.slice(2).map((c) => c.hanzi).join(", ") || "Hào Sơ"}
-                    </div>
-                    <p className="text-[#D1C2A5] text-[11px] leading-relaxed">
-                      <strong className="text-amber-300">Nhận diện bước ngoặt:</strong> Trích từ bộ 384 lá bài hào từ Chu Dịch, chỉ ra mấu chốt chuyển dịch theo thứ tự từ hào Sơ đến hào Lục.
-                    </p>
-                  </div>
-
-                  {/* 3. Biến Quái */}
-                  <div className="p-3.5 rounded-xl bg-black/40 border border-emerald-500/30 space-y-1.5">
-                    <div className="flex items-center gap-1.5 text-emerald-400 font-bold uppercase tracking-wider text-[11px]">
-                      <span>Lá Dưới</span>
-                      <span>•</span>
-                      <span>Biến Quái</span>
-                    </div>
-                    <div className="font-semibold text-white text-sm">
-                      {cards[1]?.name.replace("Quẻ Biến: ", "")}
-                    </div>
-                    <p className="text-[#D1C2A5] text-[11px] leading-relaxed">
-                      <strong className="text-emerald-300">Thấu suốt tương lai:</strong> Xu thế phát triển tất yếu khi sự chuyển hóa hoàn tất, gợi mở phương châm hành động sáng suốt.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
         </section>
       </div>
 
