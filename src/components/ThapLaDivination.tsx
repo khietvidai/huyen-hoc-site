@@ -20,6 +20,7 @@ import {
   ChevronRight,
   Eye,
   Sliders,
+  Copy,
 } from "lucide-react";
 import { Hexagram } from "../types";
 import { HEXAGRAMS } from "../data/hexagrams";
@@ -63,6 +64,9 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
   const [primaryHex, setPrimaryHex] = useState<Hexagram | null>(null);
   const [transformedHex, setTransformedHex] = useState<Hexagram | null>(null);
   const [changingLines, setChangingLines] = useState<number[]>([]);
+
+  // Sao chép trải bài cho AI
+  const [copiedAI, setCopiedAI] = useState(false);
 
   // Thẻ hào đang được chọn xem sâu
   const [selectedYaoLine, setSelectedYaoLine] = useState<number | null>(null);
@@ -191,6 +195,93 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
       if (onShowToast) onShowToast("Không thể tạo ảnh, vui lòng thử lại!");
     } finally {
       setIsCapturing(false);
+    }
+  };
+
+  // Sao chép trải bài cho AI theo đúng chuẩn 3 ngôi
+  const handleCopyForAI = async () => {
+    if (!primaryHex || !transformedHex) return;
+
+    const lines: string[] = [];
+    lines.push(`=== BẢNG LUẬN GIẢI THÁP LA KINH DỊCH (周易塔羅) ===`);
+    lines.push(`Cấu trúc: Quẻ Chủ & Quẻ Biến song song Trên - Dưới • Dải Hào Động (Bộ 384 Lá) kế bên Quẻ Chủ`);
+    lines.push(`Thứ tự đọc chiêm bốc: 1. Bản Quái (Quẻ Chủ) ➔ 2. Hào Động (Bước Ngoặt) ➔ 3. Biến Quái (Quẻ Biến)\n`);
+
+    lines.push(`----------------------------------------`);
+    lines.push(`【1. BẢN QUÁI (QUẺ CHỦ) — LÁ TRÊN SONG SONG】`);
+    lines.push(`• Văn Bản Trọng Tâm: Thoán Từ (Quái Từ), Đại Tượng Truyện`);
+    lines.push(`• Ý Nghĩa Thực Tiễn Trong Đời Sống: Định vị bối cảnh: Nhận diện bản chất loại hoàn cảnh thực tại bạn đang đối mặt`);
+    lines.push(`• Quẻ số: #${primaryHex.number} - ${primaryHex.name} (${primaryHex.hanzi || primaryHex.name}) [${primaryHex.symbol}]`);
+    lines.push(`• Cấu tạo: ${primaryHex.upperTrigram} vi Thượng • ${primaryHex.lowerTrigram} vi Hạ | Khí số: ${primaryHex.omen}`);
+    lines.push(`• Thoán Từ (Quái Từ): "${primaryHex.judgment}"`);
+    lines.push(`• Đại Tượng Truyện: "${primaryHex.image}"`);
+    if (primaryHex.overview) lines.push(`• Bối cảnh thực tại: ${primaryHex.overview}`);
+    if (primaryHex.advice) lines.push(`• Lời khuyên nền tảng: ${primaryHex.advice}`);
+    lines.push("");
+
+    lines.push(`----------------------------------------`);
+    lines.push(`【2. HÀO ĐỘNG (BỘ 384 LÁ BÀI HÀO TỪ) — KẾ BÊN QUẺ CHỦ】`);
+    lines.push(`• Văn Bản Trọng Tâm: Hào Từ của chính hào biến động`);
+    lines.push(`• Ý Nghĩa Thực Tiễn Trong Đời Sống: Lời khuyên then chốt: Trọng tâm hành động và biến số mấu chốt bạn cần lưu tâm`);
+    lines.push(`• Số lượng hào biến động: ${changingLines.length} hào (Sắp xếp theo thứ tự từ Hào Sơ ➔ Hào Lục)`);
+    lines.push("");
+
+    if (changingLines.length === 0) {
+      lines.push(`• Tình trạng: Quẻ Tĩnh (Không có hào biến). Cục diện kiên định bất biến, dĩ bất biến ứng vạn biến, bám sát Thoán Từ của Bản Quái.`);
+    } else {
+      changingLines.forEach((lineNum, idx) => {
+        const lineMeaning = primaryHex.lineMeanings?.find((m) => m.line === lineNum);
+        const isYangToYin = (primaryHex.lines?.[lineNum - 1] === 1);
+        lines.push(`▶ Hào Động thứ ${idx + 1} (Hào ${lineNum} - ${lineMeaning?.name || `Hào ${lineNum}`}):`);
+        lines.push(`  - Biến chuyển: ${isYangToYin ? "⚊ Dương biến sang ⚏ Âm" : "⚏ Âm biến sang ⚊ Dương"}`);
+        lines.push(`  - Hào Từ: "${lineMeaning?.text || ""}"`);
+        lines.push(`  - Lời khuyên then chốt: ${lineMeaning?.meaning || ""}`);
+        if (lineMeaning?.detailedExplanation) {
+          lines.push(`  - Trọng tâm hành động & Biến số mấu chốt: ${lineMeaning.detailedExplanation}`);
+        }
+      });
+    }
+    lines.push("");
+
+    lines.push(`----------------------------------------`);
+    lines.push(`【3. BIẾN QUÁI (QUẺ BIẾN) — LÁ DƯỚI SONG SONG】`);
+    lines.push(`• Văn Bản Trọng Tâm: Quái Từ của Quẻ Biến (Thoán Từ, Đại Tượng Truyện)`);
+    lines.push(`• Ý Nghĩa Thực Tiễn Trong Đời Sống: Định hướng tương lai: Xu thế phát triển tiếp theo sau khi sự chuyển hóa hoàn tất`);
+    lines.push(`• Quẻ số: #${transformedHex.number} - ${transformedHex.name} (${transformedHex.hanzi || transformedHex.name}) [${transformedHex.symbol}]`);
+    lines.push(`• Cấu tạo: ${transformedHex.upperTrigram} vi Thượng • ${transformedHex.lowerTrigram} vi Hạ | Khí số: ${transformedHex.omen}`);
+    lines.push(`• Quái Từ (Thoán Từ Quẻ Biến): "${transformedHex.judgment}"`);
+    lines.push(`• Đại Tượng Truyện: "${transformedHex.image}"`);
+    if (transformedHex.overview) lines.push(`• Định hướng xu thế tương lai: ${transformedHex.overview}`);
+    if (transformedHex.advice) lines.push(`• Phương châm hành động sáng suốt: ${transformedHex.advice}`);
+    lines.push("");
+
+    lines.push(`========================================`);
+    lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI (THEO PHƯƠNG PHÁP THÁP LA KINH DỊCH)]:`);
+    lines.push(`Xin hãy phân tích trải bài Tháp La Kinh Dịch theo đúng 3 tầng thứ tự và ý nghĩa thực tiễn trong đời sống:`);
+    lines.push(`1. BẢN QUÁI (Định vị bối cảnh): Dựa vào Thoán Từ (Quái Từ) và Đại Tượng Truyện, nhận diện bản chất loại hoàn cảnh thực tại đương số đang đối mặt. Cục diện đang ở đâu? Cơ hội và trở lực tiềm ẩn xung quanh là gì?`);
+    lines.push(`2. HÀO ĐỘNG (Lời khuyên then chốt): Dựa vào Hào Từ của chính các hào biến động (phân tích tuần tự từ Hào Sơ lên Hào Lục). Đâu là trọng tâm hành động và biến số mấu chốt đương số cần lưu tâm? Chỉ rõ việc nên làm, việc cần tránh và thời điểm chuyển hóa quyết định.`);
+    lines.push(`3. BIẾN QUÁI (Định hướng tương lai): Dựa vào Quái Từ của Quẻ Biến, dự báo xu thế phát triển tiếp theo sau khi sự chuyển hóa hoàn tất. Đưa ra chiến lược tổng thể và tâm thế sáng suốt nhất để đương số chủ động kiến tạo cát tường.`);
+
+    const text = lines.join("\n");
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+      setCopiedAI(true);
+      if (onShowToast) onShowToast("Đã sao chép nội dung trải bài Tháp La chuẩn 3 ngôi cho AI!");
+      setTimeout(() => setCopiedAI(false), 2500);
+    } catch (err) {
+      console.error(err);
+      if (onShowToast) onShowToast("Không thể sao chép vào clipboard, vui lòng thử lại!");
     }
   };
 
@@ -682,8 +773,22 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
             </div>
           </div>
 
-          {/* C. NÚT ĐIỀU HƯỚNG SANG XEM CHI TIẾT ĐẦY ĐỦ */}
+          {/* C. NÚT ĐIỀU HƯỚNG SANG XEM CHI TIẾT ĐẦY ĐỦ & SAO CHÉP AI */}
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <button
+              type="button"
+              onClick={handleCopyForAI}
+              className={`!px-5 !py-2.5 text-xs font-bold flex items-center gap-2 shadow-lg cursor-pointer rounded-xl transition ${
+                copiedAI
+                  ? "bg-emerald-600 text-white border border-emerald-500 scale-[1.02]"
+                  : "royal-btn-gold"
+              }`}
+              title="Sao chép toàn bộ thông tin 3 ngôi (Bản Quái • Hào Động • Biến Quái) gửi AI phân tích"
+            >
+              {copiedAI ? <Check className="w-4 h-4 text-white" /> : <Copy className="w-4 h-4" />}
+              <span>{copiedAI ? "Đã Sao Chép Cho AI!" : "Sao Chép Cho AI"}</span>
+            </button>
+
             {onNavigateToDetail && (
               <button
                 type="button"
