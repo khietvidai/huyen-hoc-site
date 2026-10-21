@@ -323,6 +323,10 @@ const RitualHoldButton: React.FC<RitualHoldButtonProps> = ({
   const startHold = (e: React.PointerEvent<HTMLButtonElement>) => {
     if (e.button !== 0 && e.pointerType === "mouse") return;
 
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch (_) {}
+
     if (idleTimerRef.current) {
       clearTimeout(idleTimerRef.current);
       idleTimerRef.current = null;
@@ -330,6 +334,7 @@ const RitualHoldButton: React.FC<RitualHoldButtonProps> = ({
 
     setIsHolding(true);
     setRevealedStep(null); // Đang chạy thì không hiện chữ
+    setShowHint(false); // Đang giữ thì tắt tooltip nhắc nhở
     hasFinishedCycleRef.current = false;
     holdStartRef.current = performance.now();
 
@@ -366,7 +371,15 @@ const RitualHoldButton: React.FC<RitualHoldButtonProps> = ({
     animFrameRef.current = requestAnimationFrame(loop);
   };
 
-  const endHold = () => {
+  const endHold = (e?: React.PointerEvent<HTMLButtonElement>) => {
+    if (e && e.currentTarget && e.pointerId !== undefined) {
+      try {
+        if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+          e.currentTarget.releasePointerCapture(e.pointerId);
+        }
+      } catch (_) {}
+    }
+
     if (!isHolding && !holdStartRef.current) return;
 
     const finished = hasFinishedCycleRef.current;
@@ -410,7 +423,7 @@ const RitualHoldButton: React.FC<RitualHoldButtonProps> = ({
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     setShowHint(true);
-    setTimeout(() => setShowHint(false), 350);
+    setTimeout(() => setShowHint(false), 1200);
   };
 
   // Tính chu vi chính xác của hình viên thuốc (pill shape)
@@ -420,13 +433,20 @@ const RitualHoldButton: React.FC<RitualHoldButtonProps> = ({
   const strokeOffset = perimeter * (1 - holdProgress);
 
   return (
-    <div className="relative inline-flex items-center">
+    <div className="relative flex sm:inline-flex items-center justify-center w-full sm:w-auto">
       {/* Chỉ hiện chữ khi ĐÃ CHẠY XONG 1 VÒNG */}
       {revealedStep && (
-        <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none whitespace-nowrap px-3 py-1 rounded-full bg-zinc-950/95 border border-[#C4963E] shadow-2xl text-[11px] font-serif font-bold text-amber-300 flex items-center gap-1.5 animate-bounce">
+        <div className="absolute -top-10 left-1/2 -translate-x-1/2 z-50 pointer-events-none whitespace-nowrap px-3.5 py-1.5 rounded-full bg-zinc-950/95 border border-[#C4963E] shadow-2xl text-xs sm:text-[11px] font-serif font-bold text-amber-300 flex items-center gap-1.5 animate-bounce">
           <span className="text-amber-400">✦</span>
           <span>{revealedStep}</span>
           <span className="text-amber-400">✦</span>
+        </div>
+      )}
+
+      {/* Nhắc nhở người dùng khi bấm nhẹ thay vì giữ */}
+      {showHint && !revealedStep && (
+        <div className="absolute -top-10 left-1/2 -translate-x-1/2 z-50 pointer-events-none whitespace-nowrap px-3 py-1 rounded-full bg-zinc-950/95 border border-amber-400/80 shadow-2xl text-[11px] font-sans font-semibold text-amber-300 flex items-center gap-1 animate-fadeIn">
+          <span>✦ Nhấn & giữ 3 giây ✦</span>
         </div>
       )}
 
@@ -440,8 +460,8 @@ const RitualHoldButton: React.FC<RitualHoldButtonProps> = ({
         onPointerLeave={endHold}
         onPointerCancel={endHold}
         onContextMenu={(e) => e.preventDefault()}
-        className={`relative select-none touch-none overflow-visible transition-all duration-200 ${className} ${
-          isHolding ? "scale-95 brightness-110 shadow-lg" : ""
+        className={`relative w-full sm:w-auto select-none touch-none overflow-visible transition-all duration-200 ${className} ${
+          isHolding ? "scale-[0.97] brightness-110 shadow-lg ring-2 ring-amber-400/60" : ""
         } ${isFlashing ? "ring-4 ring-amber-400/80 shadow-[0_0_24px_rgba(245,158,11,0.6)]" : ""} ${
           showHint ? "animate-ritual-wiggle" : ""
         }`}
@@ -1396,14 +1416,14 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
               </p>
 
               {/* Bộ nút chuyển đổi số lượng lá trực tiếp trên khoảng trắng */}
-              <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+              <div className="mt-5 grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-center gap-2.5 sm:gap-2.5 max-w-2xl mx-auto px-3 sm:px-2">
                 <RitualHoldButton
                   id="mode-1"
                   active={mode === "1_single"}
                   onClick={() => handleSwitchMode("1_single")}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer shadow-sm ${
+                  className={`w-full sm:w-auto flex items-center justify-center px-4 sm:px-5 py-3 sm:py-2.5 rounded-full text-[13.5px] sm:text-xs font-bold sm:font-semibold min-h-[50px] sm:min-h-[40px] transition cursor-pointer shadow-sm ${
                     mode === "1_single"
-                      ? "bg-zinc-900 text-[#C4963E] border border-[#C4963E]/60 shadow-md scale-105"
+                      ? "bg-zinc-900 text-[#C4963E] border border-[#C4963E]/60 shadow-md scale-[1.02] sm:scale-105"
                       : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 border border-zinc-200 hover:text-zinc-900"
                   }`}
                   title="Kính Thiên, Kính Địa, Kính Nhân (1 Lá - Đơn Quẻ)"
@@ -1415,9 +1435,9 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
                   id="mode-2"
                   active={mode === "1_to_2"}
                   onClick={() => handleSwitchMode("1_to_2")}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer shadow-sm ${
+                  className={`w-full sm:w-auto flex items-center justify-center px-4 sm:px-5 py-3 sm:py-2.5 rounded-full text-[13.5px] sm:text-xs font-bold sm:font-semibold min-h-[50px] sm:min-h-[40px] transition cursor-pointer shadow-sm ${
                     mode === "1_to_2"
-                      ? "bg-zinc-900 text-[#C4963E] border border-[#C4963E]/60 shadow-md scale-105"
+                      ? "bg-zinc-900 text-[#C4963E] border border-[#C4963E]/60 shadow-md scale-[1.02] sm:scale-105"
                       : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 border border-zinc-200 hover:text-zinc-900"
                   }`}
                   title="Kính Thiên, Kính Địa, Kính Nhân (2 Lá - Âm Dương)"
@@ -1429,9 +1449,9 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
                   id="mode-3"
                   active={mode === "1_to_3"}
                   onClick={() => handleSwitchMode("1_to_3")}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer shadow-sm ${
+                  className={`w-full sm:w-auto flex items-center justify-center px-4 sm:px-5 py-3 sm:py-2.5 rounded-full text-[13.5px] sm:text-xs font-bold sm:font-semibold min-h-[50px] sm:min-h-[40px] transition cursor-pointer shadow-sm ${
                     mode === "1_to_3"
-                      ? "bg-zinc-900 text-[#C4963E] border border-[#C4963E]/60 shadow-md scale-105"
+                      ? "bg-zinc-900 text-[#C4963E] border border-[#C4963E]/60 shadow-md scale-[1.02] sm:scale-105"
                       : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 border border-zinc-200 hover:text-zinc-900"
                   }`}
                   title="Kính Thiên, Kính Địa, Kính Nhân (3 Lá - Tam Tài)"
@@ -1443,9 +1463,9 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
                   id="mode-5"
                   active={mode === "3_to_5"}
                   onClick={() => handleSwitchMode("3_to_5")}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer shadow-sm ${
+                  className={`w-full sm:w-auto flex items-center justify-center px-4 sm:px-5 py-3 sm:py-2.5 rounded-full text-[13.5px] sm:text-xs font-bold sm:font-semibold min-h-[50px] sm:min-h-[40px] transition cursor-pointer shadow-sm ${
                     mode === "3_to_5"
-                      ? "bg-zinc-900 text-[#C4963E] border border-[#C4963E]/60 shadow-md scale-105"
+                      ? "bg-zinc-900 text-[#C4963E] border border-[#C4963E]/60 shadow-md scale-[1.02] sm:scale-105"
                       : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 border border-zinc-200 hover:text-zinc-900"
                   }`}
                   title="Kính Thiên, Kính Địa, Kính Nhân (5 Lá - Ngũ Hành)"
@@ -1457,24 +1477,25 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
                   id="action-shuffle"
                   active={false}
                   onClick={handleShuffleCards}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-900 hover:bg-amber-100 border border-amber-300 transition cursor-pointer shadow-sm"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-3 sm:py-2.5 rounded-full text-[13.5px] sm:text-xs font-bold sm:font-semibold min-h-[50px] sm:min-h-[40px] bg-amber-50 text-amber-900 hover:bg-amber-100 border border-amber-300 transition cursor-pointer shadow-sm"
                   title="Kính Thiên, Kính Địa, Kính Nhân (Rút lại quẻ khác)"
                 >
-                  <span>🎲</span>
+                  <span className="text-lg sm:text-sm">🎲</span>
                   <span>Rút lại</span>
                 </RitualHoldButton>
+
                 <button
                   type="button"
                   onClick={handleCopyCardsForAI}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer shadow-sm active:scale-95 ${
+                  className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-3 sm:py-2.5 rounded-full text-[13.5px] sm:text-xs font-bold sm:font-semibold min-h-[50px] sm:min-h-[40px] transition cursor-pointer shadow-sm active:scale-95 select-none touch-manipulation ${
                     copiedAI
-                      ? "bg-emerald-600 text-white border border-emerald-600 shadow-md scale-105"
+                      ? "bg-emerald-600 text-white border border-emerald-600 shadow-md scale-[1.02] sm:scale-105"
                       : "bg-[#C4963E]/15 hover:bg-[#C4963E]/25 text-[#7C5516] hover:text-[#5E400F] border border-[#C4963E]/50 shadow-sm"
                   }`}
                   title="Sao chép toàn bộ thông tin các lá bài theo thứ tự (trái qua phải, trên xuống dưới) để gửi cho AI phân tích"
                 >
-                  <span>{copiedAI ? "✓" : "📋"}</span>
-                  <span>{copiedAI ? "Đã chép cho AI!" : "Chép cho AI"}</span>
+                  <span className="text-lg sm:text-sm">{copiedAI ? "✓" : "📋"}</span>
+                  <span className="truncate">{copiedAI ? "Đã chép cho AI!" : "Chép cho AI"}</span>
                 </button>
               </div>
             </div>
