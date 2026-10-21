@@ -1096,7 +1096,10 @@ export default function App() {
       <>
         <LandingPage
           currentUser={currentUser}
-          onEnterApp={(tab) => {
+          onEnterApp={(tab, method) => {
+            if (method) {
+              setDivinationMethod(method as DivinationMethodId);
+            }
             setCurrentTab(tab || "divination");
           }}
           onOpenAuthModal={(mode) => {

@@ -16,7 +16,7 @@ import { AppUser } from "../services/authService";
 
 export interface LandingPageProps {
   currentUser?: AppUser | null;
-  onEnterApp: (tab?: NavTab) => void;
+  onEnterApp: (tab?: NavTab, method?: string) => void;
   onOpenAuthModal?: (mode?: "login" | "register" | "upgrade") => void;
   onLogout?: () => void;
 }
@@ -49,7 +49,7 @@ const getHexDetailUrl = (hexNumber: number, yaoNumber?: number) => {
   return `/vi/hexagram/${slug}`;
 };
 
-export type SpreadMode = "1_single" | "1_to_2" | "1_to_3" | "3_to_5";
+export type SpreadMode = "1_single" | "1_to_2" | "1_to_3" | "3_to_5" | "thap_la";
 
 export interface DynamicCardItem {
   id: string;
@@ -118,6 +118,90 @@ function drawRandomCard(): DynamicCardItem {
 
 /* ─── Helper: Rút danh sách bài cho từng cấu hình ─── */
 function drawCardsForMode(mode: SpreadMode): DynamicCardItem[] {
+  if (mode === "thap_la") {
+    // 1. Quẻ Chủ (Bản Quái): Rút ngẫu nhiên từ 64 quẻ
+    const priHex = HEXAGRAMS[Math.floor(Math.random() * HEXAGRAMS.length)];
+
+    // 2. Quẻ Biến (Biến Quái): Rút ngẫu nhiên từ cỗ bài 64 quẻ độc lập
+    let transHex = HEXAGRAMS[Math.floor(Math.random() * HEXAGRAMS.length)];
+    let retries = 0;
+    while (transHex.number === priHex.number && retries < 15) {
+      transHex = HEXAGRAMS[Math.floor(Math.random() * HEXAGRAMS.length)];
+      retries++;
+    }
+
+    const primaryCard: DynamicCardItem = {
+      id: `thapla-primary-${priHex.number}`,
+      type: "hexagram",
+      hexNumber: priHex.number,
+      symbol: priHex.symbol,
+      hanzi: priHex.hanzi || priHex.name,
+      name: `Quẻ Chủ: ${priHex.name}`,
+      sub: `Bản Quái • Nhìn nhận cục diện (#${priHex.number})`,
+      desc: `【Bản Quái: Nhìn Nhận Cục Diện】Thoán từ: "${priHex.judgment}" — ${priHex.overview || priHex.advice}`,
+      img: `/assets/oss/${priHex.number}/${priHex.number}a.webp`,
+      backImg: `/assets/oss/${priHex.number}/${priHex.number}b.webp`,
+    };
+
+    const transformedCard: DynamicCardItem = {
+      id: `thapla-transformed-${transHex.number}`,
+      type: "hexagram",
+      hexNumber: transHex.number,
+      symbol: transHex.symbol,
+      hanzi: transHex.hanzi || transHex.name,
+      name: `Quẻ Biến: ${transHex.name}`,
+      sub: `Biến Quái • Thấu suốt tương lai (#${transHex.number})`,
+      desc: `【Biến Quái: Thấu Suốt Tương Lai】Thoán từ: "${transHex.judgment}" — ${transHex.overview || transHex.advice}`,
+      img: `/assets/oss/${transHex.number}/${transHex.number}a.webp`,
+      backImg: `/assets/oss/${transHex.number}/${transHex.number}b.webp`,
+    };
+
+    // 3. Các lá hào từ (ở 384 lá bài hào từ) thay đổi để thành quẻ biến theo thứ tự từ thấp Sơ tới hào Lục
+    const changingYaoCards: DynamicCardItem[] = [];
+    for (let i = 0; i < 6; i++) {
+      const lineNum = i + 1;
+      if (priHex.lines[i] !== transHex.lines[i]) {
+        const isYangToYin = priHex.lines[i] === 1;
+        const lineMeaning = priHex.lineMeanings?.find((m) => m.line === lineNum);
+        const yaoName = lineMeaning?.name || `Hào ${lineNum}`;
+        changingYaoCards.push({
+          id: `thapla-yao-${priHex.number}-${lineNum}`,
+          type: "yao",
+          hexNumber: priHex.number,
+          yaoNumber: lineNum,
+          symbol: priHex.symbol,
+          hanzi: yaoName,
+          name: `Hào ${lineNum}: ${priHex.name} · ${yaoName}`,
+          sub: `Hào Động • Nhận diện bước ngoặt (${isYangToYin ? "⚊ Dương ➔ ⚏ Âm" : "⚏ Âm ➔ ⚊ Dương"})`,
+          desc: `【Hào Động: Nhận Diện Bước Ngoặt】${lineMeaning?.text || ""} — ${lineMeaning?.meaning || ""}`,
+          img: `/assets/oss/${priHex.number}/${priHex.number}-${lineNum}a.webp`,
+          backImg: `/assets/oss/${priHex.number}/${priHex.number}-${lineNum}b.webp`,
+        });
+      }
+    }
+
+    if (changingYaoCards.length === 0) {
+      const defaultLine = 1;
+      const lineMeaning = priHex.lineMeanings?.find((m) => m.line === defaultLine);
+      changingYaoCards.push({
+        id: `thapla-yao-${priHex.number}-${defaultLine}`,
+        type: "yao",
+        hexNumber: priHex.number,
+        yaoNumber: defaultLine,
+        symbol: priHex.symbol,
+        hanzi: lineMeaning?.name || "Hào Sơ",
+        name: `${priHex.name} · ${lineMeaning?.name || "Hào Sơ"}`,
+        sub: "Quẻ Tĩnh • Kiên định không biến",
+        desc: `${lineMeaning?.text || ""} — ${lineMeaning?.meaning || ""}`,
+        img: `/assets/oss/${priHex.number}/${priHex.number}-${defaultLine}a.webp`,
+        backImg: `/assets/oss/${priHex.number}/${priHex.number}-${defaultLine}b.webp`,
+      });
+    }
+
+    // Thứ tự trả về: [Quẻ Chủ, Quẻ Biến, các lá hào từ thay đổi từ Sơ tới Lục]
+    return [primaryCard, transformedCard, ...changingYaoCards];
+  }
+
   const count = mode === "1_single" ? 1 : mode === "1_to_2" ? 2 : mode === "1_to_3" ? 3 : 5;
   const list: DynamicCardItem[] = [];
   const seen = new Set<string>();
@@ -134,7 +218,7 @@ function drawCardsForMode(mode: SpreadMode): DynamicCardItem[] {
   return list;
 }
 
-const SPREAD_MODES: SpreadMode[] = ["3_to_5", "1_to_3", "1_to_2", "1_single"];
+const SPREAD_MODES: SpreadMode[] = ["thap_la", "3_to_5", "1_to_3", "1_to_2", "1_single"];
 
 /* ─── Helper: Sao chép nội dung văn bản vào clipboard an toàn ─── */
 async function copyToClipboard(text: string): Promise<boolean> {
@@ -168,12 +252,63 @@ async function copyToClipboard(text: string): Promise<boolean> {
 /* ─── Helper: Định dạng thông tin các lá bài để dán cho AI phân tích ─── */
 /* Thứ tự: Trái trước phải sau (theo danh sách card), Trên trước dưới sau (Quẻ tượng -> Tên -> Ý nghĩa -> Lời giải) */
 function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: SpreadMode): string {
+  if (currentMode === "thap_la") {
+    const pri = cardsList[0];
+    const trans = cardsList[1];
+    const yaos = cardsList.slice(2);
+
+    const lines: string[] = [];
+    lines.push(`=== THÔNG TIN TRẢI BÀI THÁP LA KINH DỊCH (周易塔羅) ===`);
+    lines.push(`Khẩu quyết: Bản Quái nhìn nhận cục diện • Hào Động nhận diện bước ngoặt • Biến Quái thấu suốt tương lai`);
+    lines.push(`Cấu trúc: Quẻ Chủ & Quẻ Biến song song Trên - Dưới, kế bên Quẻ Chủ là các lá bài Hào Từ thay đổi (từ Sơ tới Lục) trích từ bộ 384 lá bài hào từ.\n`);
+
+    if (pri) {
+      lines.push(`----------------------------------------`);
+      lines.push(`【1. BẢN QUÁI (QUẺ CHỦ) — NHÌN NHẬN CỤC DIỆN】(Lá Trên - Song Song Trên Dưới)`);
+      lines.push(`• Quẻ tượng: ${pri.symbol}`);
+      lines.push(`• Tên quẻ: ${pri.name}`);
+      lines.push(`• Vị trí: ${pri.sub}`);
+      lines.push(`• Lời giải & Thoán từ: ${pri.desc}`);
+      lines.push("");
+    }
+
+    if (yaos.length > 0) {
+      lines.push(`----------------------------------------`);
+      lines.push(`【2. HÀO ĐỘNG (384 LÁ BÀI HÀO TỪ) — NHẬN DIỆN BƯỚC NGOẶT】(Kế Bên Quẻ Chủ, Thứ Tự Từ Hào Sơ ➔ Hào Lục)`);
+      yaos.forEach((y, i) => {
+        lines.push(`• Lá Hào ${i + 1}: ${y.name}`);
+        lines.push(`  Biến dịch: ${y.sub}`);
+        lines.push(`  Lời hào & Bước ngoặt: ${y.desc}`);
+      });
+      lines.push("");
+    }
+
+    if (trans) {
+      lines.push(`----------------------------------------`);
+      lines.push(`【3. BIẾN QUÁI (QUẺ BIẾN) — THẤU SUỐT TƯƠNG LAI】(Lá Dưới - Song Song Trên Dưới)`);
+      lines.push(`• Quẻ tượng: ${trans.symbol}`);
+      lines.push(`• Tên quẻ: ${trans.name}`);
+      lines.push(`• Vị trí: ${trans.sub}`);
+      lines.push(`• Lời giải & Thoán từ: ${trans.desc}`);
+      lines.push("");
+    }
+
+    lines.push(`========================================`);
+    lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI]:`);
+    lines.push(`Xin hãy phân tích trải bài Tháp La Kinh Dịch theo đúng triết lý 3 ngôi:`);
+    lines.push(`1. BẢN QUÁI: Nhìn nhận cục diện thực tế hiện tại, thế lực xung quanh, khó khăn và thuận lợi.`);
+    lines.push(`2. HÀO ĐỘNG: Phân tích từng bước ngoặt theo thứ tự từ Hào Sơ lên Hào Lục từ các lá bài 384 hào từ Chu Dịch. Đâu là điểm mấu chốt quyết định sự biến chuyển?`);
+    lines.push(`3. BIẾN QUÁI: Thấu suốt xu thế tương lai sau khi các hào động chuyển hóa hoàn tất. Đưa ra phương châm hành động sáng suốt nhất.`);
+    return lines.join("\n");
+  }
+
   const getSpreadName = (m: SpreadMode) => {
     switch (m) {
       case "1_single": return "1 Lá (Đơn Quẻ Chí Tôn)";
       case "1_to_2": return "2 Lá (Âm Dương Đối Đãi)";
       case "1_to_3": return "3 Lá (Tam Tài: Quá Khứ - Hiện Tại - Tương Lai)";
       case "3_to_5": return "5 Lá (Ngũ Hành Tương Sinh Tương Khắc)";
+      case "thap_la": return "Tháp La Kinh Dịch (Bản Quái • Hào Động • Biến Quái)";
       default: return `${cardsList.length} Lá`;
     }
   };
@@ -882,6 +1017,91 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           slots[1].style.pointerEvents = "auto";
           slots[1].style.zIndex = "14";
         }
+      } else if (mode === "thap_la") {
+        // ── CHẾ ĐỘ: THÁP LA KINH DỊCH ──
+        // 2 lá Quẻ Chủ & Quẻ Biến song song trên - dưới (bên trái)
+        // Kế bên Quẻ Chủ là dải các lá bài Hào Từ (ở 384 lá bài hào từ) từ Hào Sơ đến Hào Lục
+        const isSmallScreen = w < 860;
+        const mobFactor = w < 380 ? 0.76 : w < 440 ? 0.88 : 1.0;
+        const yaoCount = cardCount - 2;
+
+        if (isSmallScreen) {
+          // Mobile / màn hình nhỏ:
+          // Quẻ Chủ (Slot 0) ở trên trái
+          if (slots[0]) {
+            const x0 = (-85 * f) * mobFactor;
+            const y0 = -130 * f;
+            slots[0].style.transform = `perspective(1200px) translate3d(${x0.toFixed(1)}px, ${y0.toFixed(1)}px, 20px) rotate(-1.5deg) scale(0.82)`;
+            slots[0].style.opacity = "1";
+            slots[0].style.pointerEvents = "auto";
+            slots[0].style.zIndex = "16";
+          }
+          // Quẻ Biến (Slot 1) ở dưới trái (song song Trên - Dưới)
+          if (slots[1]) {
+            const x1 = (-85 * f) * mobFactor;
+            const y1 = 130 * f;
+            slots[1].style.transform = `perspective(1200px) translate3d(${x1.toFixed(1)}px, ${y1.toFixed(1)}px, 15px) rotate(1.5deg) scale(0.82)`;
+            slots[1].style.opacity = f.toFixed(3);
+            slots[1].style.pointerEvents = f > 0.20 ? "auto" : "none";
+            slots[1].style.zIndex = "15";
+          }
+          // Các lá hào từ (Slot 2+) ở bên phải Quẻ Chủ
+          for (let i = 0; i < yaoCount; i++) {
+            const sIdx = i + 2;
+            if (slots[sIdx]) {
+              const xYao = (85 * f) * mobFactor;
+              const stepY = yaoCount > 1 ? Math.min(65, 240 / (yaoCount - 1)) : 0;
+              const yYao = (-120 + i * stepY) * f;
+              slots[sIdx].style.transform = `perspective(1200px) translate3d(${xYao.toFixed(1)}px, ${yYao.toFixed(1)}px, 10px) rotate(${(i % 2 === 0 ? -1.5 : 1.5) * f}deg) scale(0.78)`;
+              slots[sIdx].style.opacity = f.toFixed(3);
+              slots[sIdx].style.pointerEvents = f > 0.20 ? "auto" : "none";
+              slots[sIdx].style.zIndex = (10 + i).toString();
+            }
+          }
+        } else {
+          // Desktop / màn hình lớn:
+          // Quẻ Chủ (Slot 0) ở trên trái
+          if (slots[0]) {
+            const x0 = (-280 * f) * factor;
+            const y0 = -135 * f;
+            slots[0].style.transform = `perspective(1200px) translate3d(${x0.toFixed(1)}px, ${y0.toFixed(1)}px, 25px) rotate(-1.5deg) scale(0.92)`;
+            slots[0].style.opacity = "1";
+            slots[0].style.pointerEvents = "auto";
+            slots[0].style.zIndex = "18";
+          }
+          // Quẻ Biến (Slot 1) ở dưới trái (song song Trên - Dưới)
+          if (slots[1]) {
+            const x1 = (-280 * f) * factor;
+            const y1 = 135 * f;
+            slots[1].style.transform = `perspective(1200px) translate3d(${x1.toFixed(1)}px, ${y1.toFixed(1)}px, 20px) rotate(1.5deg) scale(0.92)`;
+            slots[1].style.opacity = f.toFixed(3);
+            slots[1].style.pointerEvents = f > 0.20 ? "auto" : "none";
+            slots[1].style.zIndex = "17";
+          }
+          // Các lá hào từ (Slot 2+) ở bên phải Quẻ Chủ
+          for (let i = 0; i < yaoCount; i++) {
+            const sIdx = i + 2;
+            if (slots[sIdx]) {
+              let xYao = 0;
+              let yYao = 0;
+              let rotYao = (-2 + i * 1.5) * f;
+              if (yaoCount <= 3) {
+                xYao = (-70 + i * 165) * f * factor;
+                yYao = 0;
+              } else {
+                const col = Math.floor(i / 2);
+                const row = i % 2;
+                xYao = (-85 + col * 160) * f * factor;
+                yYao = (row === 0 ? -120 : 120) * f;
+                rotYao = (row === 0 ? -2 : 2) * f;
+              }
+              slots[sIdx].style.transform = `perspective(1200px) translate3d(${xYao.toFixed(1)}px, ${yYao.toFixed(1)}px, 12px) rotate(${rotYao.toFixed(1)}deg) scale(0.88)`;
+              slots[sIdx].style.opacity = f.toFixed(3);
+              slots[sIdx].style.pointerEvents = f > 0.20 ? "auto" : "none";
+              slots[sIdx].style.zIndex = (10 + i).toString();
+            }
+          }
+        }
       } else {
         // ── CHẾ ĐỘ: 1 LÁ DUY NHẤT (ĐƠN QUẺ CHÍ TÔN) ──
         if (slots[0]) {
@@ -1493,6 +1713,21 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
                 </RitualHoldButton>
 
                 <RitualHoldButton
+                  id="mode-thap-la"
+                  active={mode === "thap_la"}
+                  onClick={() => handleSwitchMode("thap_la")}
+                  className={`w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 sm:px-5 py-3 sm:py-2.5 rounded-full text-[13.5px] sm:text-xs font-bold sm:font-semibold min-h-[50px] sm:min-h-[40px] transition cursor-pointer shadow-sm ${
+                    mode === "thap_la"
+                      ? "bg-zinc-900 text-[#C4963E] border border-[#C4963E]/60 shadow-md scale-[1.02] sm:scale-105"
+                      : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 border border-zinc-200 hover:text-zinc-900"
+                  }`}
+                  title="Tháp La Kinh Dịch: Quẻ Chủ & Quẻ Biến Song Song Trên - Dưới & Dải Hào Từ Biến Dịch (384 Hào)"
+                >
+                  <span className="text-amber-500 font-serif">☯</span>
+                  <span>Tháp La Kinh Dịch</span>
+                </RitualHoldButton>
+
+                <RitualHoldButton
                   id="action-shuffle"
                   active={false}
                   onClick={handleShuffleCards}
@@ -1531,11 +1766,85 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
           </div>
 
           {/* Chú thích gợi ý tương tác đặt riêng biệt phía dưới xa, hoàn toàn không chạm hay che vào đáy lá bài */}
-          <div className="mt-6 mb-10 text-center pointer-events-auto">
+          <div className="mt-6 mb-4 text-center pointer-events-auto">
             <p className="text-xs sm:text-sm text-zinc-400 font-sans tracking-wide">
               ✦ Nhấp vào từng lá bài để tra cứu quẻ tượng, hào từ & lời giải AI ✦
             </p>
           </div>
+
+          {/* Khối triết lý 3 ngôi đặc trưng cho Tháp La Kinh Dịch */}
+          {mode === "thap_la" && cards.length >= 2 && (
+            <div className="relative z-30 max-w-4xl mx-auto my-6 pointer-events-auto px-4 w-full">
+              <div className="rounded-2xl p-5 sm:p-6 bg-gradient-to-b from-[#1C1813] via-[#14100C] to-[#0D0A08] border border-[#C4963E]/40 text-[#F5EAD4] shadow-2xl space-y-4">
+                {/* Header bar */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#3E2E1B] pb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[#C4963E] text-base font-serif">☯</span>
+                    <h3 className="font-bold text-sm sm:text-base text-[#FAF5EB] font-serif uppercase tracking-wide">
+                      Tháp La Kinh Dịch — Triết Lý 3 Ngôi
+                    </h3>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => onEnterApp("divination", "thapla")}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#C4963E] hover:bg-[#D4A64E] text-zinc-950 transition cursor-pointer shadow-md active:scale-95"
+                    title="Mở Bàn Bốc Quẻ Tháp La Chuyên Sâu với chuông thiền Zen & xuất ảnh PNG"
+                  >
+                    <span>Vào Bàn Bốc Quẻ Tháp La Chuyên Sâu</span>
+                    <span>→</span>
+                  </button>
+                </div>
+
+                {/* 3 Cột: Bản Quái - Hào Động - Biến Quái */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
+                  {/* 1. Bản Quái */}
+                  <div className="p-3.5 rounded-xl bg-black/40 border border-[#C4963E]/30 space-y-1.5">
+                    <div className="flex items-center gap-1.5 text-[#C4963E] font-bold uppercase tracking-wider text-[11px]">
+                      <span>Lá Trên</span>
+                      <span>•</span>
+                      <span>Bản Quái</span>
+                    </div>
+                    <div className="font-semibold text-white text-sm">
+                      {cards[0]?.name.replace("Quẻ Chủ: ", "")}
+                    </div>
+                    <p className="text-[#D1C2A5] text-[11px] leading-relaxed">
+                      <strong className="text-[#F3D99B]">Nhìn nhận cục diện:</strong> Định vị toàn bộ bối cảnh thực tại, thế lực xung quanh, khó khăn và cơ hội tiềm ẩn.
+                    </p>
+                  </div>
+
+                  {/* 2. Hào Động */}
+                  <div className="p-3.5 rounded-xl bg-black/40 border border-amber-500/30 space-y-1.5">
+                    <div className="flex items-center gap-1.5 text-amber-400 font-bold uppercase tracking-wider text-[11px]">
+                      <span>Kế Bên</span>
+                      <span>•</span>
+                      <span>Hào Động ({cards.length - 2} Hào)</span>
+                    </div>
+                    <div className="font-semibold text-white text-sm truncate">
+                      {cards.slice(2).map((c) => c.hanzi).join(", ") || "Hào Sơ"}
+                    </div>
+                    <p className="text-[#D1C2A5] text-[11px] leading-relaxed">
+                      <strong className="text-amber-300">Nhận diện bước ngoặt:</strong> Trích từ bộ 384 lá bài hào từ Chu Dịch, chỉ ra mấu chốt chuyển dịch theo thứ tự từ hào Sơ đến hào Lục.
+                    </p>
+                  </div>
+
+                  {/* 3. Biến Quái */}
+                  <div className="p-3.5 rounded-xl bg-black/40 border border-emerald-500/30 space-y-1.5">
+                    <div className="flex items-center gap-1.5 text-emerald-400 font-bold uppercase tracking-wider text-[11px]">
+                      <span>Lá Dưới</span>
+                      <span>•</span>
+                      <span>Biến Quái</span>
+                    </div>
+                    <div className="font-semibold text-white text-sm">
+                      {cards[1]?.name.replace("Quẻ Biến: ", "")}
+                    </div>
+                    <p className="text-[#D1C2A5] text-[11px] leading-relaxed">
+                      <strong className="text-emerald-300">Thấu suốt tương lai:</strong> Xu thế phát triển tất yếu khi sự chuyển hóa hoàn tất, gợi mở phương châm hành động sáng suốt.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </section>
       </div>
 
@@ -1618,6 +1927,49 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
                     className="absolute inset-0 pointer-events-none rounded-2xl z-20"
                     style={{ border: "1px solid rgba(196,150,62,0.32)" }}
                   />
+
+                  {/* Nhãn thẻ bài trực quan cho Tháp La Kinh Dịch */}
+                  {mode === "thap_la" && (
+                    <>
+                      {/* Huy hiệu đỉnh thẻ bài */}
+                      <div className="absolute top-2.5 left-2 right-2 z-30 pointer-events-none flex justify-center">
+                        {idx === 0 && (
+                          <span className="px-2.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold tracking-wider uppercase bg-[#C4963E] text-stone-950 shadow-md border border-[#F3D99B]">
+                            Bản Quái • Trên
+                          </span>
+                        )}
+                        {idx === 1 && (
+                          <span className="px-2.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold tracking-wider uppercase bg-emerald-600 text-white shadow-md border border-emerald-400">
+                            Biến Quái • Dưới
+                          </span>
+                        )}
+                        {idx >= 2 && (
+                          <span className="px-2.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold tracking-wider uppercase bg-amber-600 text-white shadow-md border border-amber-300">
+                            Hào {card.yaoNumber || (idx - 1)} • Động
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Khẩu quyết chân thẻ bài */}
+                      <div className="absolute bottom-2.5 left-2 right-2 z-30 pointer-events-none flex justify-center">
+                        {idx === 0 && (
+                          <span className="px-2 py-0.5 rounded text-[8.5px] sm:text-[9.5px] font-medium bg-black/85 text-[#F3D99B] backdrop-blur-xs border border-[#C4963E]/40 truncate max-w-[92%] shadow-sm">
+                            Nhìn nhận cục diện
+                          </span>
+                        )}
+                        {idx === 1 && (
+                          <span className="px-2 py-0.5 rounded text-[8.5px] sm:text-[9.5px] font-medium bg-black/85 text-emerald-300 backdrop-blur-xs border border-emerald-500/40 truncate max-w-[92%] shadow-sm">
+                            Thấu suốt tương lai
+                          </span>
+                        )}
+                        {idx >= 2 && (
+                          <span className="px-2 py-0.5 rounded text-[8.5px] sm:text-[9.5px] font-medium bg-black/85 text-amber-200 backdrop-blur-xs border border-amber-500/40 truncate max-w-[92%] shadow-sm">
+                            Nhận diện bước ngoặt
+                          </span>
+                        )}
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
