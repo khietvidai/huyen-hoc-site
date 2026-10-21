@@ -55,6 +55,8 @@ export type DivinationMethod =
   | "cards_twelve"
   | "cards_custom"
   | "cards_nguche"
+  | "cards_thapla"
+  | "thapla"
   | "numbers";
 export type DoubleCardMode = "present_future" | "choice_ab";
 export type ThreeCardMode = "past_present_future" | "choice_abc" | "tam_tai" | "ngu_che";
@@ -73,6 +75,7 @@ export type SpreadType =
   | "khongminh"
   | "maihoa"
   | "nguche"
+  | "thapla"
   | "lucnham"
   | "kymon"
   | "thaiat";
