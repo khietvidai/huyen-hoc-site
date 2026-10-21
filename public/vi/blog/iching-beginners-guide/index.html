@@ -19,24 +19,25 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Noto+Serif+TC:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="/assets/0-ih3fdqarqx3.css"/>
   <link rel="stylesheet" href="/assets/17oi8.piueyjj.css"/>
 
   <style>
-    body { font-family: 'Noto Serif TC', 'IM Fell English', serif; overflow-x: hidden; }
-    .prose p { margin-bottom: 0.75rem; line-height: 1.75; }
-    .prose strong { color: #1c1917; font-weight: 600; }
-    .prose h2 { font-size: 1.4rem; font-weight: 700; color: #1c1917; margin-top: 1.5rem; margin-bottom: 0.75rem; }
-    .prose h3 { font-size: 1.15rem; font-weight: 600; color: #1c1917; margin-top: 1.25rem; margin-bottom: 0.5rem; }
-    .prose blockquote { border-left: 3px solid #C4963E; padding-left: 1rem; color: #57534e; font-style: italic; background: #fafaf9; padding-top: 0.5rem; padding-bottom: 0.5rem; border-radius: 0 0.5rem 0.5rem 0; }
-    .prose ul { list-style-type: disc; padding-left: 1.25rem; margin-bottom: 0.75rem; }
-    .prose ol { list-style-type: decimal; padding-left: 1.25rem; margin-bottom: 0.75rem; }
-    .prose li { margin-bottom: 0.35rem; line-height: 1.7; }
-    .prose table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.875rem; }
-    .prose th, .prose td { border: 1px solid #e7e5e4; padding: 0.5rem 0.75rem; text-align: left; }
-    .prose th { background-color: #f5f5f4; font-weight: 600; }
+    body { font-family: 'Lora', 'Playfair Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, serif; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; overflow-x: hidden; }
+    .prose p { margin-bottom: 1.25rem; line-height: 1.85; font-size: 1.0625rem; color: #374151; }
+    .prose strong { color: #111827; font-weight: 700; }
+    .prose h2 { font-family: 'Playfair Display', 'Lora', serif; font-size: 1.5rem; font-weight: 700; color: #111827; margin-top: 2.25rem; margin-bottom: 1rem; line-height: 1.35; }
+    .prose h3 { font-family: 'Playfair Display', 'Lora', serif; font-size: 1.25rem; font-weight: 600; color: #1f2937; margin-top: 1.75rem; margin-bottom: 0.75rem; line-height: 1.4; }
+    .prose blockquote { border-left: 4px solid #f59e0b; padding: 1rem 1.25rem; color: #4b5563; font-style: italic; background-color: #fefce8; border-radius: 0 0.75rem 0.75rem 0; margin: 1.5rem 0; }
+    .prose ul, .prose ol { padding-left: 1.5rem; margin-bottom: 1.25rem; }
+    .prose li { margin-bottom: 0.5rem; line-height: 1.8; font-size: 1.0625rem; }
+    .prose table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 1.5rem 0; font-size: 0.95rem; }
+    .prose th { background-color: #fef3c7; color: #78350f; font-weight: 700; padding: 0.75rem 1rem; border-bottom: 2px solid #fde68a; }
+    .prose td { padding: 0.75rem 1rem; border-bottom: 1px solid #f3f4f6; }
+    .prose tr:last-child td { border-bottom: none; }
+    .prose tr:hover td { background-color: #fefce8; }
     .sidebar-scroll::-webkit-scrollbar { width: 5px; }
     .sidebar-scroll::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
 
@@ -1761,11 +1762,60 @@
 <li class="leading-8 text-stone-700"><strong>8 điểm (2 Dương, 1 Âm: 3+3+2): Thiếu Âm</strong>, hào âm tĩnh (không biến), xác suất là <strong>3/8 (37.5%)</strong>.</li>
 <li class="leading-8 text-stone-700"><strong>9 điểm (3 Dương: 3+3+3): Lão Dương</strong>, hào dương cực thịnh sẽ biến đổi thành âm, xác suất xuất hiện là <strong>1/8 (12.5%)</strong>.</li>
 </ul>
+
+<div class="my-6 w-full overflow-x-auto rounded-xl border border-stone-200 shadow-sm">
+  <table class="w-full min-w-[36rem] border-collapse text-left text-[15px] text-stone-700">
+    <thead class="bg-amber-50">
+      <tr>
+        <th class="border-b border-amber-200 px-4 py-3 font-semibold text-stone-900">Tổng Điểm</th>
+        <th class="border-b border-amber-200 px-4 py-3 font-semibold text-stone-900">Tổ Hợp Mặt Đồng Xu</th>
+        <th class="border-b border-amber-200 px-4 py-3 font-semibold text-stone-900">Tên Hào</th>
+        <th class="border-b border-amber-200 px-4 py-3 font-semibold text-stone-900">Quy Luật Biến Động</th>
+        <th class="border-b border-amber-200 px-4 py-3 font-semibold text-stone-900">Xác Suất</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-stone-100 bg-white">
+      <tr>
+        <td class="px-4 py-3 font-bold text-amber-900">6 điểm</td>
+        <td class="px-4 py-3">3 Âm (2 + 2 + 2)</td>
+        <td class="px-4 py-3 font-semibold text-red-700">Lão Âm (⚏)</td>
+        <td class="px-4 py-3">Hào Động: Biến đổi thành Dương (⚊)</td>
+        <td class="px-4 py-3 font-bold text-amber-800">1/8 (12.5%)</td>
+      </tr>
+      <tr>
+        <td class="px-4 py-3 font-bold text-stone-900">7 điểm</td>
+        <td class="px-4 py-3">1 Dương, 2 Âm (3 + 2 + 2)</td>
+        <td class="px-4 py-3 font-semibold text-stone-800">Thiếu Dương (⚊)</td>
+        <td class="px-4 py-3">Hào Tĩnh: Giữ nguyên Dương (⚊)</td>
+        <td class="px-4 py-3 font-bold text-stone-700">3/8 (37.5%)</td>
+      </tr>
+      <tr>
+        <td class="px-4 py-3 font-bold text-stone-900">8 điểm</td>
+        <td class="px-4 py-3">2 Dương, 1 Âm (3 + 3 + 2)</td>
+        <td class="px-4 py-3 font-semibold text-stone-800">Thiếu Âm (⚏)</td>
+        <td class="px-4 py-3">Hào Tĩnh: Giữ nguyên Âm (⚏)</td>
+        <td class="px-4 py-3 font-bold text-stone-700">3/8 (37.5%)</td>
+      </tr>
+      <tr>
+        <td class="px-4 py-3 font-bold text-amber-900">9 điểm</td>
+        <td class="px-4 py-3">3 Dương (3 + 3 + 3)</td>
+        <td class="px-4 py-3 font-semibold text-red-700">Lão Dương (⚊)</td>
+        <td class="px-4 py-3">Hào Động: Biến đổi thành Âm (⚏)</td>
+        <td class="px-4 py-3 font-bold text-amber-800">1/8 (12.5%)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 <p class="my-5 text-[17px] leading-8 text-stone-700">Lão Âm và Lão Dương chính là <strong>Hào Động</strong> — thể hiện đạo lý "vật cực tất phản", nơi mà tình thế đạt đến điểm tột cùng và bắt đầu chuyển hóa sang mặt đối lập.</p>
 <blockquote class="my-6 border-l-4 border-amber-400 bg-amber-50/70 px-4 py-3 text-stone-700 italic">
 <p class="my-5 text-[17px] leading-8 text-stone-700"><strong>Lưu ý quan trọng về xác suất:</strong> Nếu một hệ thống gieo quẻ ngẫu nhiên chia đều 50% âm và 50% dương cho mỗi hào, đó là cách hiểu hoàn toàn sai lệch với Dịch học cổ truyền. Thuật toán mô phỏng chuẩn xác bắt buộc phải tái hiện tỉ lệ <strong>1/8 (Lão Âm, Lão Dương)</strong> và <strong>3/8 (Thiếu Dương, Thiếu Âm)</strong>, để đảm bảo xác suất xuất hiện hào động biến tương đồng hoàn toàn với phép gieo đồng xu thực tế ngoài đời.</p>
 </blockquote>
-<p class="my-5 text-[17px] leading-8 text-stone-700"><span class="relative my-8 block aspect-video w-full overflow-hidden rounded-xl shadow-lg"><img alt="Sơ đồ xác suất Kim Tiền Quái: Ba đồng xu lập quẻ Lục Hào, Lão Âm và Lão Dương chiếm 1/8, Thiếu Dương và Thiếu Âm chiếm 3/8" loading="lazy" decoding="async" data-nimg="fill" class="object-cover" style="position:absolute;height:100%;width:100%;left:0;top:0;right:0;bottom:0;color:transparent" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" src="/assets/iching-coin-probabilities.webp"/></span></p>
+<p class="my-5 text-[17px] leading-8 text-stone-700"><figure class="my-8 block w-full overflow-hidden rounded-2xl border border-stone-200/80 shadow-md bg-stone-50">
+  <img src="/assets/iching-coin-probabilities.webp" alt="Sơ đồ xác suất Kim Tiền Quái: Ba đồng xu lập quẻ Lục Hào" loading="lazy" class="w-full h-auto block object-cover"/>
+  <figcaption class="px-4 py-2.5 text-center text-xs text-stone-500 italic border-t border-stone-100">
+    Sơ đồ xác suất Kim Tiền Quái: Cơ cấu 1/8 (Lão Âm, Lão Dương) và 3/8 (Thiếu Dương, Thiếu Âm)
+  </figcaption>
+</figure></p>
 <h2 class="mt-10 mb-4 border-l-4 border-amber-400 pl-4 text-2xl font-semibold text-stone-900 md:text-3xl">3. Luận Giải Quẻ: Bản Quái, Hào Động và Biến Quái nên đọc phần nào trước?</h2>
 <p class="my-5 text-[17px] leading-8 text-stone-700">Người mới học thường lúng túng nhất ở khâu: <strong>Sau khi lập quẻ xong, đọc phần nào trước để không bị rối loạn?</strong></p>
 <p class="my-5 text-[17px] leading-8 text-stone-700">Quy tắc cốt lõi gói gọn trong một câu: <strong>Có hào động, hãy tập trung soi xét hào động trước tiên.</strong></p>
@@ -1773,7 +1823,35 @@
 <li class="leading-8 text-stone-700"><strong>Bản Quái:</strong> Là quẻ ban đầu khi hoàn thành 6 lần gieo — đại diện cho <strong>cục diện thực tại của bạn</strong>.</li>
 <li class="leading-8 text-stone-700"><strong>Biến Quái:</strong> Là quẻ mới được hình thành sau khi đổi các hào động (Lão Âm đổi thành Dương, Lão Dương đổi thành Âm) — đại diện cho <strong>xu thế phát triển tương lai nếu bạn hành động theo quỹ đạo ấy</strong>.</li>
 </ul>
-<div class="my-6 w-full overflow-x-auto rounded-xl border border-stone-200"><table class="w-full min-w-[36rem] border-collapse text-left text-[15px] text-stone-700"><thead class="bg-amber-50/90"><tr><th class="border-b border-amber-200 px-3 py-2.5 font-semibold text-stone-900">Các Bước</th><th class="border-b border-amber-200 px-3 py-2.5 font-semibold text-stone-900">Trọng Tâm Đọc</th><th class="border-b border-amber-200 px-3 py-2.5 font-semibold text-stone-900">Ý Nghĩa Thực Tiễn</th></tr></thead><tbody><tr><td class="border-b border-stone-100 px-3 py-2.5 align-top leading-7 font-bold">1. Bản Quái</td><td class="border-b border-stone-100 px-3 py-2.5 align-top leading-7">Quái Từ (Thoán Từ), Đại Tượng Truyện</td><td class="border-b border-stone-100 px-3 py-2.5 align-top leading-7">Định vị bối cảnh: Nhận biết bạn đang rơi vào loại hoàn cảnh thế nào</td></tr><tr><td class="border-b border-stone-100 px-3 py-2.5 align-top leading-7 font-bold">2. Hào Động</td><td class="border-b border-stone-100 px-3 py-2.5 align-top leading-7">Hào Từ của chính hào biến động đó</td><td class="border-b border-stone-100 px-3 py-2.5 align-top leading-7">Lời giải cốt tử: Điểm mấu chốt nhất bạn cần lưu tâm hoặc nắm bắt ngay lúc này</td></tr><tr><td class="border-b border-stone-100 px-3 py-2.5 align-top leading-7 font-bold">3. Biến Quái</td><td class="border-b border-stone-100 px-3 py-2.5 align-top leading-7">Quái Từ của quẻ Biến</td><td class="border-b border-stone-100 px-3 py-2.5 align-top leading-7">Định hướng tương lai: Bức tranh toàn cảnh sau khi sự chuyển hóa hoàn tất</td></tr></tbody></table></div>
+
+<div class="my-6 w-full overflow-x-auto rounded-xl border border-stone-200 shadow-sm">
+  <table class="w-full min-w-[36rem] border-collapse text-left text-[15px] text-stone-700">
+    <thead class="bg-amber-50">
+      <tr>
+        <th class="border-b border-amber-200 px-4 py-3 font-semibold text-stone-900">Thứ Tự Đọc</th>
+        <th class="border-b border-amber-200 px-4 py-3 font-semibold text-stone-900">Văn Bản Trọng Tâm</th>
+        <th class="border-b border-amber-200 px-4 py-3 font-semibold text-stone-900">Ý Nghĩa Thực Tiễn Trong Đời Sống</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-stone-100 bg-white">
+      <tr>
+        <td class="px-4 py-3 font-bold text-stone-900">1. Bản Quái</td>
+        <td class="px-4 py-3">Thoán Từ (Quái Từ), Đại Tượng Truyện</td>
+        <td class="px-4 py-3">Định vị bối cảnh: Nhận diện bản chất loại hoàn cảnh thực tại bạn đang đối mặt</td>
+      </tr>
+      <tr>
+        <td class="px-4 py-3 font-bold text-amber-900">2. Hào Động</td>
+        <td class="px-4 py-3 font-semibold text-amber-900">Hào Từ của chính hào biến động</td>
+        <td class="px-4 py-3">Lời khuyên then chốt: Trọng tâm hành động và biến số mấu chốt bạn cần lưu tâm</td>
+      </tr>
+      <tr>
+        <td class="px-4 py-3 font-bold text-stone-900">3. Biến Quái</td>
+        <td class="px-4 py-3">Quái Từ của Quẻ Biến</td>
+        <td class="px-4 py-3">Định hướng tương lai: Xu thế phát triển tiếp theo sau khi sự chuyển hóa hoàn tất</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 <h3 class="mt-8 mb-3 text-xl font-semibold text-stone-900 md:text-2xl">Ví dụ minh họa thực tế</h3>
 <p class="my-5 text-[17px] leading-8 text-stone-700">Giả sử cơ quan bạn đang có đợt biến động nhân sự lớn, bạn gieo được quẻ <a class="font-medium text-amber-700 underline decoration-amber-400/80 underline-offset-4 transition hover:text-amber-800" href="/vi/hexagram/xugua5">Thủy Thiên Nhu</a>, lần gieo thứ sáu xuất hiện <strong>3 mặt Âm (Lão Âm)</strong>, tức Hào Thượng Lục động.</p>
 <ol class="my-4 list-decimal space-y-2 pl-6">
@@ -1781,16 +1859,8 @@
 <li class="leading-8 text-stone-700"><strong>Xem Hào Từ Thượng Lục:</strong> <em>"Nhập vu huyệt, hữu bất tốc chi khách tam nhân lai, kính chi chung cát"</em> (Lui về hang kín, có ba người khách không mời mà đến, cung kính tiếp đón ắt được tốt lành) — Biến số bất ngờ sắp xuất hiện, chớ hoảng loạn, hãy giữ thái độ khiêm cung đón nhận.</li>
 <li class="leading-8 text-stone-700"><strong>Biến thành quẻ Hỏa Thiên Đại Hữu:</strong> Nếu ứng xử đúng đắn, tình thế bế tắc sau đó sẽ mở ra cơ hội hanh thông rực rỡ và phát triển lớn lao.</li>
 </ol>
-<h2 class="mt-10 mb-4 border-l-4 border-amber-400 pl-4 text-2xl font-semibold text-stone-900 md:text-3xl">Câu Hỏi Thường Gặp (FAQ)</h2>
-<p class="my-5 text-[17px] leading-8 text-stone-700"><strong>Hỏi: Trong cùng một ngày, có nên gieo quẻ nhiều lần cho cùng một sự việc?</strong></p>
-<p class="my-5 text-[17px] leading-8 text-stone-700">Tuyệt đối không nên. Quẻ Mông đã dạy: <em>“Sơ phệ cáo, tái tam độc, độc tắc bất cáo”</em> (Lần đầu hỏi thì thần minh chỉ dẫn rõ ràng; hỏi đi hỏi lại hai ba lần là khinh nhờn, khinh nhờn thì không còn linh ứng). Lần gieo đầu tiên luôn là tín hiệu thuần khiết và chân thực nhất. Gieo lại chỉ vì không ưng ý kết quả biến công cụ ra quyết định nghiêm cẩn thành trò đùa, khiến tâm trí bạn thêm rối loạn.</p>
-<p class="my-5 text-[17px] leading-8 text-stone-700"><strong>Hỏi: Trước khi gieo quẻ nhất thiết phải thắp hương, rửa tay không?</strong></p>
-<p class="my-5 text-[17px] leading-8 text-stone-700">Cổ nhân tắm gội thắp hương cốt là để tâm hồn lắng đọng, tập trung toàn bộ ý niệm vào câu hỏi. Nếu bạn có thể lập tức tĩnh tâm, chân thành đối diện với vấn đề của mình thì hình thức bên ngoài không cần quá câu nệ. Chữ "Thành" trong Dịch học là sự tôn trọng đối với quy luật tự nhiên, chứ không nằm ở nghi lễ rườm rà.</p>
-<p class="my-5 text-[17px] leading-8 text-stone-700"><strong>Hỏi: Làm thế nào để đặt câu hỏi nhận được câu trả lời chuẩn xác nhất?</strong></p>
-<p class="my-5 text-[17px] leading-8 text-stone-700">Hãy tránh những câu hỏi chung chung mang tính định mệnh (ví dụ: “Đời tôi sau này có giàu không?”). Kinh Dịch không phải để xem bói phán định mệnh. Hãy hỏi về <strong>lựa chọn và hành động trong một bối cảnh cụ thể</strong>: Ví dụ: “Nếu tháng tới tôi đồng ý chuyển sang vị trí công việc mới, diễn biến trong 6 tháng tới sẽ ra sao?”. Câu hỏi càng rõ ràng, lời chỉ dẫn từ hào quẻ càng thiết thực và giá trị.</p>
 <h2 class="mt-10 mb-4 border-l-4 border-amber-400 pl-4 text-2xl font-semibold text-stone-900 md:text-3xl">Lời Kết</h2>
 <p class="my-5 text-[17px] leading-8 text-stone-700">Từ ba đồng xu giản dị đến sáu hào quẻ biến hóa, Kinh Dịch đã cô đọng mọi quy luật phức tạp của vũ trụ vào 64 khuôn khổ trí tuệ. Người mới nhập môn không cần phải thuộc làu toàn bộ hào từ, chỉ cần khắc ghi khẩu quyết: <strong>Bản quái nhìn nhận cục diện, Hào động nhận diện bước ngoặt, Biến quái thấu suốt tương lai</strong>. Nắm được chìa khóa ấy, những băn khoăn và bế tắc thường ngày sẽ chỉ còn là một nốt thăng trầm tự nhiên trong dòng chảy trường tồn của thời vận.</p></div>
-        </div>
         </div>
       </article>
 
@@ -1847,7 +1917,7 @@
         <h2 class="text-xl font-bold text-stone-900 mb-4">Bài Viết Liên Quan</h2>
         <div class="yilore-grid-2">
         
-    <a href="/vi/blog/dream-teeth-falling-iching" class="group flex items-start gap-3 rounded-2xl border border-stone-200 bg-stone-50/70 p-4 transition hover:border-amber-400 hover:bg-amber-50/40">
+    <a href="/vi/blog/dream-teeth-falling-iching/" class="group flex items-start gap-3 rounded-2xl border border-stone-200 bg-stone-50/70 p-4 transition hover:border-amber-400 hover:bg-amber-50/40">
       <img src="/assets/dream-teeth-falling-cover.webp" alt="Mơ thấy rụng răng là điềm báo gì? — Cuộc đối thoại với tiềm thức về sự mất mát, trật tự lung lay và lúc cần dừng lại tĩnh dưỡng" class="w-20 h-14 object-cover rounded-lg shrink-0 border border-stone-200"/>
       <div class="min-w-0">
         <h3 class="text-sm font-bold text-stone-900 group-hover:text-amber-900 line-clamp-2 leading-snug">Mơ thấy rụng răng là điềm báo gì? — Cuộc đối thoại với tiềm thức về sự mất mát, trật tự lung lay và lúc cần dừng lại tĩnh dưỡng</h3>
@@ -1855,7 +1925,7 @@
       </div>
     </a>
   
-    <a href="/vi/blog/iching-history-guide" class="group flex items-start gap-3 rounded-2xl border border-stone-200 bg-stone-50/70 p-4 transition hover:border-amber-400 hover:bg-amber-50/40">
+    <a href="/vi/blog/iching-history-guide/" class="group flex items-start gap-3 rounded-2xl border border-stone-200 bg-stone-50/70 p-4 transition hover:border-amber-400 hover:bg-amber-50/40">
       <img src="/assets/iching-history-guide-cover.webp" alt="Ba ngàn năm Kinh Dịch: Từ biểu tượng âm dương, quẻ hào đến tâm lý học và thuật toán hiện đại" class="w-20 h-14 object-cover rounded-lg shrink-0 border border-stone-200"/>
       <div class="min-w-0">
         <h3 class="text-sm font-bold text-stone-900 group-hover:text-amber-900 line-clamp-2 leading-snug">Ba ngàn năm Kinh Dịch: Từ biểu tượng âm dương, quẻ hào đến tâm lý học và thuật toán hiện đại</h3>
@@ -1863,7 +1933,7 @@
       </div>
     </a>
   
-    <a href="/vi/blog/iching-workplace-anxiety" class="group flex items-start gap-3 rounded-2xl border border-stone-200 bg-stone-50/70 p-4 transition hover:border-amber-400 hover:bg-amber-50/40">
+    <a href="/vi/blog/iching-workplace-anxiety/" class="group flex items-start gap-3 rounded-2xl border border-stone-200 bg-stone-50/70 p-4 transition hover:border-amber-400 hover:bg-amber-50/40">
       <img src="/assets/iching-workplace-anxiety-cover.webp" alt="Kinh Dịch giúp gì khi lo âu nơi công sở? Ba bài học tiến thoái từ Quẻ Khốn, Quẻ Nhu và Quẻ Minh Di" class="w-20 h-14 object-cover rounded-lg shrink-0 border border-stone-200"/>
       <div class="min-w-0">
         <h3 class="text-sm font-bold text-stone-900 group-hover:text-amber-900 line-clamp-2 leading-snug">Kinh Dịch giúp gì khi lo âu nơi công sở? Ba bài học tiến thoái từ Quẻ Khốn, Quẻ Nhu và Quẻ Minh Di</h3>
@@ -1871,7 +1941,7 @@
       </div>
     </a>
   
-    <a href="/vi/blog/shuini-yijing" class="group flex items-start gap-3 rounded-2xl border border-stone-200 bg-stone-50/70 p-4 transition hover:border-amber-400 hover:bg-amber-50/40">
+    <a href="/vi/blog/shuini-yijing/" class="group flex items-start gap-3 rounded-2xl border border-stone-200 bg-stone-50/70 p-4 transition hover:border-amber-400 hover:bg-amber-50/40">
       <img src="/assets/shuini-yijing-cover.webp" alt="Điện thoại vỡ màn hình, tin nhắn người cũ 'đã xem không trả lời': Ngoài đổ lỗi cho Sao Thủy nghịch hành, Kinh Dịch nhìn nhận chuỗi ngày 'mọi việc bất thuận' như thế nào?" class="w-20 h-14 object-cover rounded-lg shrink-0 border border-stone-200"/>
       <div class="min-w-0">
         <h3 class="text-sm font-bold text-stone-900 group-hover:text-amber-900 line-clamp-2 leading-snug">Điện thoại vỡ màn hình, tin nhắn người cũ 'đã xem không trả lời': Ngoài đổ lỗi cho Sao Thủy nghịch hành, Kinh Dịch nhìn nhận chuỗi ngày 'mọi việc bất thuận' như thế nào?</h3>

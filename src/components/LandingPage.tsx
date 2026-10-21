@@ -22,7 +22,7 @@ export interface LandingPageProps {
 }
 
 const getHexagramsUrl = () => "/vi/hexagram";
-const getBlogUrl = () => "/vi/blog";
+const getBlogUrl = () => "/vi/blog/";
 
 
 const HEX_SLUGS: Record<number, string> = {
