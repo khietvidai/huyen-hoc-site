@@ -62,7 +62,9 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
   const [activeSpreadTab, setActiveSpreadTab] = useState<SpreadCategory>("summary");
   const [highlight123, setHighlight123] = useState(false);
   const [highlightRitual, setHighlightRitual] = useState(false);
-  const [exampleFilter, setExampleFilter] = useState<"all" | "1_card" | "2_card" | "3_card">("all");
+  const [exampleFilter, setExampleFilter] = useState<
+    "all" | "1_card" | "2_card" | "3_card" | "that_tinh" | "thap_tinh"
+  >("all");
   const [copiedPhone, setCopiedPhone] = useState(false);
 
   const handleScrollToRitual = () => {
@@ -590,14 +592,16 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
             {/* Filter */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gold-800 pb-3">
               <span className="text-xs font-serif text-ivory-400">
-                5 Ví dụ thực tế có hình ảnh lá bài minh họa sinh động:
+                {SPREAD_EXAMPLES.length} Ví dụ thực tế có hình ảnh lá bài minh họa sinh động:
               </span>
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 flex-wrap">
                 {[
-                  { id: "all", label: "Tất cả (5)" },
+                  { id: "all", label: `Tất cả (${SPREAD_EXAMPLES.length})` },
                   { id: "1_card", label: "Trải 1 Lá" },
                   { id: "2_card", label: "Trải 2 Lá" },
                   { id: "3_card", label: "Trải 3 Lá" },
+                  { id: "that_tinh", label: "Thất Tinh (7 Lá)" },
+                  { id: "thap_tinh", label: "Thập Tinh (10 Lá)" },
                 ].map((f) => (
                   <button
                     key={f.id}

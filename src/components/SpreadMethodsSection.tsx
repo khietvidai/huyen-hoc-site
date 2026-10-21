@@ -24,7 +24,7 @@ interface SpreadMethodsSectionProps {
   onNavigateToLookup?: (hexNumber: number) => void;
 }
 
-type FilterType = "all" | "1_card" | "2_card" | "3_card";
+type FilterType = "all" | "1_card" | "2_card" | "3_card" | "that_tinh" | "thap_tinh";
 
 export const SpreadMethodsSection: React.FC<SpreadMethodsSectionProps> = ({
   cardImages = {},
@@ -127,7 +127,7 @@ export const SpreadMethodsSection: React.FC<SpreadMethodsSectionProps> = ({
                   : "text-[#A89882] hover:text-[#FFF]"
               }`}
             >
-              Tất cả (5 ví dụ)
+              Tất cả ({SPREAD_EXAMPLES.length} ví dụ)
             </button>
             <button
               type="button"
@@ -161,6 +161,28 @@ export const SpreadMethodsSection: React.FC<SpreadMethodsSectionProps> = ({
               }`}
             >
               Trải 3 Lá (E)
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveFilter("that_tinh")}
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-serif font-semibold transition-all cursor-pointer ${
+                activeFilter === "that_tinh"
+                  ? "bg-[#C9A55A] text-[#120F0C] shadow font-bold"
+                  : "text-[#A89882] hover:text-[#FFF]"
+              }`}
+            >
+              Thất Tinh (F)
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveFilter("thap_tinh")}
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-serif font-semibold transition-all cursor-pointer ${
+                activeFilter === "thap_tinh"
+                  ? "bg-[#C9A55A] text-[#120F0C] shadow font-bold"
+                  : "text-[#A89882] hover:text-[#FFF]"
+              }`}
+            >
+              Thập Tinh (G)
             </button>
           </div>
         </div>

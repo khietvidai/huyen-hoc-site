@@ -8,7 +8,7 @@ export interface SpreadExampleCard {
 export interface SpreadExample {
   id: string;
   code: string;
-  spreadType: "1_card" | "2_card" | "3_card";
+  spreadType: "1_card" | "2_card" | "3_card" | "that_tinh" | "thap_tinh";
   spreadTypeName: string;
   spreadTypeShort: string;
   title: string;
@@ -211,5 +211,147 @@ export const SPREAD_EXAMPLES: SpreadExample[] = [
       "Lịch sử kinh tế vĩ mô Việt Nam đã diễn biến đúng từng bước như 3 quẻ bài chỉ điểm: Thăng hoa bùng nổ (Thăng) ➔ Thắt lưng buộc bụng sinh tồn (Di) ➔ Đào thải thanh lọc nợ xấu khốc liệt (Bác) ➔ và Tái cơ cấu hồi sinh mạnh mẽ (Phục) từ năm 2014 trở đi.",
     takeaway:
       "Quy luật Kinh Dịch chứng minh: Bất kỳ chu kỳ kinh tế nào cũng có Mùa Xuân đâm chồi (Thăng), Mùa Hè dưỡng sức (Di), Mùa Thu trút lá mục ruỗng (Bác) và Mùa Đông ươm mầm tái sinh (Phục). Người lãnh đạo nắm được luật Dịch sẽ không tham lam khi Thăng, không hoảng loạn khi Bác, mà kiên nhẫn tích lũy đón đầu ngày Phục sinh.",
+  },
+  {
+    id: "example_f",
+    code: "Ví Dụ F",
+    spreadType: "that_tinh",
+    spreadTypeName: "Trận Pháp Thất Tinh (7 Lá)",
+    spreadTypeShort: "Thất Tinh (7 Lá)",
+    title: "Khảo sát toàn diện sự nghiệp & bước ngoặt khởi nghiệp",
+    category: "Sự Nghiệp & Doanh Nghiệp",
+    categoryColor: "text-amber-400 border-amber-800/60 bg-amber-950/40",
+    context:
+      "Một sáng lập viên chuẩn bị đưa dự án công nghệ mới ra thị trường sau chuỗi ngày chịu áp lực tài chính và biến động nhân sự. Anh bốc Trận Pháp Thất Tinh (7 lá) để soi chiếu 7 phương diện: Quá khứ, Tâm thế bản thân, Diễn biến kế tiếp, Lời khuyên, Kết quả, Ngoại cảnh và Điểm mù nội tại.",
+    cards: [
+      {
+        hexNumber: 28,
+        label: "Lá 1: Quá Khứ",
+        role: "Căn Nguyên & Nền Tảng",
+        keyMeaning: "Trạch Phong Đại Quá: Kèo cột gánh nặng oằn mình, áp lực vượt quá sức chịu đựng ban đầu",
+      },
+      {
+        hexNumber: 8,
+        label: "Lá 2: Bản Thân Hiện Tại",
+        role: "Tâm Thế & Thực Lực",
+        keyMeaning: "Thủy Địa Tỷ: Thân ái, gắn kết đồng hành, cởi mở hợp tác tìm kiếm đồng minh",
+      },
+      {
+        hexNumber: 47,
+        label: "Lá 3: Diễn Biến Tiếp Theo",
+        role: "Xu Thế Chuyển Dịch",
+        keyMeaning: "Trạch Thủy Khốn: Thử thách ngặt nghèo, cây cối thiếu nước, cần giữ đức nhẫn nại",
+      },
+      {
+        hexNumber: 50,
+        label: "Lá 4: Lá Bài Gợi Ý",
+        role: "Minh Triết & Sách Lược",
+        keyMeaning: "Hỏa Phong Đỉnh: Tượng cái vạc luyện đan, cải cách đổi mới triệt để, tôi luyện nhân tài",
+      },
+      {
+        hexNumber: 64,
+        label: "Lá 5: Kết Quả",
+        role: "Thành Tựu & Triển Vọng",
+        keyMeaning: "Hỏa Thủy Vị Tế: Chưa xong nhưng sắp xong, mở ra một chu kỳ phát triển mới đầy hứa hẹn",
+      },
+      {
+        hexNumber: 29,
+        label: "Lá 6: Môi Trường Bên Ngoài",
+        role: "Ngoại Duyên & Khách Quan",
+        keyMeaning: "Khảm Vi Thủy: Vực sâu trùng điệp, thị trường đầy sóng gió cạnh tranh khốc liệt",
+      },
+      {
+        hexNumber: 46,
+        label: "Lá 7: Thiếu Sót Của Bản Thân",
+        role: "Điểm Mù Cần Tu Sửa",
+        keyMeaning: "Địa Phong Thăng: Tham vọng leo cao quá nhanh, dục tốc bất đạt khi móng chưa thật chắc",
+      },
+    ],
+    analysis:
+      "Trận Pháp Thất Tinh cho thấy bức tranh hoàn chỉnh: Quá khứ chịu gánh nặng quá tải (Đại Quá) nhưng hiện tại đã biết liên kết tạo đồng minh (Tỷ). Diễn biến trước mắt còn phải trải qua thử thách cam go (Khốn) vì môi trường bên ngoài hiểm trở như vực sâu (Khảm). Tuy nhiên điểm mù lớn nhất là bản thân quá nôn nóng thăng tiến (Thăng). Lời giải mấu chốt nằm ở Lá Gợi Ý: Quẻ Đỉnh (Đỉnh Tân Cách Cố) — phải thay đổi toàn diện mô hình, tinh chỉnh sản phẩm và rèn luyện đội ngũ như tôi kim loại trong vạc lửa, từ đó chuyển hóa tình thế sang Vị Tế (bình minh trước vận hội mới).",
+    outcome:
+      "Nhờ thấu hiểu lời chỉ dẫn của Thất Tinh Trận, nhà sáng lập đã hoãn chiến lược mở rộng ồ ạt, tập trung tinh gọn bộ máy và cải tiến sản phẩm cốt lõi. Sau 6 tháng, doanh nghiệp đã vượt qua cửa ải khó khăn và đạt mức tăng trưởng ấn tượng.",
+    takeaway:
+      "Thất Tinh Trận chỉ ra: Thành bại lớn của đời người không nằm ở việc gặp khó khăn (Khốn, Khảm), mà nằm ở việc nhìn thấy điểm mù của chính mình (Thăng) và can đảm tôi luyện đổi mới (Đỉnh) để bước vào chu kỳ thành công mới.",
+  },
+  {
+    id: "example_g",
+    code: "Ví Dụ G",
+    spreadType: "thap_tinh",
+    spreadTypeName: "Trận Pháp Thập Tinh (10 Lá Celtic Cross)",
+    spreadTypeShort: "Thập Tinh (10 Lá)",
+    title: "Định vị đại sự & Hóa giải trở ngại - trợ lực tâm điểm",
+    category: "Vận Hạn & Đại Cục",
+    categoryColor: "text-purple-400 border-purple-800/60 bg-purple-950/40",
+    context:
+      "Một nhà đầu tư đứng trước thương vụ M&A quy mô lớn có tính chất bước ngoặt. Ông trải Trận Pháp Thập Tinh 10 lá. Đặc biệt ở vị trí Lá thứ 2 — nếu ở chiều xuôi là Hỗ Trợ, ở chiều ngược là Trở Ngại trực diện chắn ngang tâm điểm hiện tại.",
+    cards: [
+      {
+        hexNumber: 48,
+        label: "Lá 1: Tình Huống Hiện Tại",
+        role: "Tâm Điểm Vấn Đề",
+        keyMeaning: "Thủy Phong Tỉnh: Tượng cái giếng làng, nguồn lực sẵn có nhưng sâu, cần nỗ lực múc lên",
+      },
+      {
+        hexNumber: 14,
+        label: "Lá 2: Xuôi Hỗ Trợ / Ngược Trở Ngại",
+        role: "Lực Chắn Ngang Tâm Điểm",
+        keyMeaning: "Hỏa Thiên Đại Hữu (Xuôi: Hỗ Trợ tài chính dồi dào; Ngược: Trở Ngại từ lòng tham và kiêu ngạo)",
+      },
+      {
+        hexNumber: 61,
+        label: "Lá 3: Yếu Tố Bên Ngoài",
+        role: "Nền Tảng Khách Quan",
+        keyMeaning: "Phong Trạch Trung Phu: Sự chân thành tín nghĩa, lòng tin giữa các bên tham gia",
+      },
+      {
+        hexNumber: 11,
+        label: "Lá 4: Điều Bạn Không Biết",
+        role: "Góc Khuất Tiềm Thức",
+        keyMeaning: "Địa Thiên Thái: Vận khí hanh thông ngầm đang ủng hộ, thiên thời địa lợi hòa hợp",
+      },
+      {
+        hexNumber: 10,
+        label: "Lá 5: Tình Huống Trước Đây",
+        role: "Gốc Rễ Quá Khứ",
+        keyMeaning: "Thiên Trạch Lý: Dẫm đuôi cọp mà cọp không cắn, từng vượt qua nhiều tình huống hiểm nguy",
+      },
+      {
+        hexNumber: 1,
+        label: "Lá 6: Tương Lai Tiếp Theo",
+        role: "Diễn Biến Ngắn Hạn",
+        keyMeaning: "Thuần Càn: Sức sáng tạo dũng mãnh, thời cơ hành động quyết đoán đang tới",
+      },
+      {
+        hexNumber: 44,
+        label: "Lá 7: Vận Hạn Năm Nay",
+        role: "Chu Kỳ Vận Khí",
+        keyMeaning: "Thiên Phong Cấu: Gặp gỡ bất ngờ, phòng ngừa sự lôi kéo và cám dỗ từ bên ngoài",
+      },
+      {
+        hexNumber: 33,
+        label: "Lá 8: Cách Nhìn Của Người Ngoài",
+        role: "Nhãn Quan Xã Hội",
+        keyMeaning: "Thiên Sơn Độn: Người ngoài đánh giá bạn nên lùi một bước, cẩn trọng tránh va chạm",
+      },
+      {
+        hexNumber: 29,
+        label: "Lá 9: Kết Quả Cuối Cùng",
+        role: "Hồi Kết Đại Định",
+        keyMeaning: "Khảm Vi Thủy: Thử thách lớn nhưng giữ được lòng chí thành thì vẫn hanh thông",
+      },
+      {
+        hexNumber: 14,
+        label: "Lá 10: Lá Bài Khuyên Bảo",
+        role: "Minh Triết Tối Hậu",
+        keyMeaning: "Hỏa Thiên Đại Hữu: Khiêm tốn hưởng phúc lớn, chia sẻ lợi ích, giữ lòng công minh",
+      },
+    ],
+    analysis:
+      "Tâm điểm của Thập Tinh Trận nằm ở sự tương tác giữa Lá 1 (Tỉnh - khai thác nguồn tài nguyên sâu) và Lá 2 (Đại Hữu). Ở chiều xuôi, Đại Hữu là Trợ lực cực mạnh về vốn và đối tác danh tiếng; ở chiều ngược, nó cảnh báo Trở ngại phát sinh nếu để lòng tham hoặc tính tự kiêu lấn át. Các vị trí ngoại cảnh (Trung Phu - chữ Tín) và tiềm thức (Thái - vận hanh thông) khẳng định nền tảng vững vàng. Lá Khuyên Bảo (Lá 10) nhấn mạnh: Muốn hưởng phúc lộc Đại Hữu thì người đứng đầu phải biết 'ngăn ngừa điều ác, biểu dương điều thiện, thuận theo mệnh trời'.",
+    outcome:
+      "Nhờ nắm chắc quy luật Lá thứ 2 và lời khuyên Lá 10, nhà đầu tư đã chủ động nhượng bộ một phần lợi ích để đạt được sự đồng thuận tuyệt đối của các cổ đông, giúp thương vụ hoàn tất thắng lợi vẻ vang.",
+    takeaway:
+      "Thập Tinh Trận đem lại cái nhìn toàn cảnh như la bàn phong thủy: Lá 2 chính là chìa khóa then chốt — biết chuyển hóa trở ngại thành hỗ trợ bằng đức khiêm nhu thì mọi việc nan giải đều hóa thành đại cát hanh thông.",
   },
 ];
