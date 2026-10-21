@@ -21,7 +21,7 @@ export interface LandingPageProps {
   onLogout?: () => void;
 }
 
-const getYiloreHexUrl = () => "/vi/hexagram";
+const getHexagramsUrl = () => "/vi/hexagram";
 
 const HEX_SLUGS: Record<number, string> = {
   1: "qiangua1", 2: "kungua2", 3: "zhungua3", 4: "menggua4", 5: "xugua5",
@@ -1297,7 +1297,7 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
 
                   <button
                     type="button"
-                    onClick={() => window.open(getYiloreHexUrl(), "_blank", "noopener,noreferrer")}
+                    onClick={() => window.open(getHexagramsUrl(), "_blank", "noopener,noreferrer")}
                     className="flex min-w-0 flex-1 items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-base md:px-8 md:py-4 md:text-lg lg:flex-none lg:w-auto text-white font-semibold cursor-pointer transition hover:scale-[1.02] hover:bg-white/15 active:scale-[0.98]"
                     style={{
                       background: "rgba(255,255,255,0.1)",
@@ -1365,7 +1365,7 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
                 </button>
                 <button
                   type="button"
-                  onClick={() => window.open(getYiloreHexUrl(), "_blank", "noopener,noreferrer")}
+                  onClick={() => window.open(getHexagramsUrl(), "_blank", "noopener,noreferrer")}
                   className="flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-2xl px-3 py-3 text-sm font-semibold sm:gap-2 sm:px-6 sm:py-3.5 sm:text-base text-white cursor-pointer transition active:scale-[0.98]"
                   style={{
                     background: "rgba(255,255,255,0.1)",
@@ -1724,8 +1724,8 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
           <button type="button" onClick={() => onEnterApp("divination")} className="hover:text-white transition cursor-pointer">
             ☯ Bốc Quẻ
           </button>
-          <button type="button" onClick={() => window.open(getYiloreHexUrl(), "_blank", "noopener,noreferrer")} className="text-[#C4963E] hover:underline font-semibold cursor-pointer">
-            📖 64 Quẻ Kinh Dịch (Yilore) ↗
+          <button type="button" onClick={() => window.open(getHexagramsUrl(), "_blank", "noopener,noreferrer")} className="text-[#C4963E] hover:underline font-semibold cursor-pointer">
+            📖 Bách Khoa 64 Quẻ Kinh Dịch ↗
           </button>
           <button type="button" onClick={() => setIsOracleOpen(true)} className="hover:text-white transition cursor-pointer">
             🪙 Tung 3 Đồng Xu

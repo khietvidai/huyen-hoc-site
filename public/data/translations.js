@@ -1,15 +1,15 @@
-// Từ điển đa ngôn ngữ cho Yilore (Tiếng Việt, English, 繁體中文)
+// Từ điển đa ngôn ngữ cho Cửu Nhị (I Ching Tarot)
 const i18n = {
   en: {
-    pageTitle: "Yilore — AI I Ching readings, hexagrams & Eastern wisdom",
-    pageDesc: "Yilore: Your personal AI I Ching and Eastern wisdom advisor. Explore 64 hexagrams, cast Liu Yao divination, analyze life factory configuration, and find clarity.",
-    brandName: "Yilore",
+    pageTitle: "Cửu Nhị — AI I Ching readings, hexagrams & Eastern wisdom",
+    pageDesc: "Cửu Nhị: Your personal AI I Ching and Eastern wisdom advisor. Explore 64 hexagrams, cast Liu Yao divination, analyze life factory configuration, and find clarity.",
+    brandName: "Cửu Nhị",
     brandSubtitle: "AI I Ching readings, hexagrams & Eastern wisdom",
     webSignIn: "Web sign in",
     langName: "English",
     
     // Hero
-    heroTitle: "Yilore",
+    heroTitle: "Cửu Nhị",
     heroHeading: "AI I-Ching Tarot, Ancient Eastern wisdom",
     heroSub: "I Ching Hexagrams · Heluo Numerology · Ziwei · Bazi",
     heroCtaStart: "Start Divination",
@@ -17,7 +17,7 @@ const i18n = {
     ratingText: "Trusted by 10,000+ seekers worldwide",
     
     // Cards Section
-    cardsTag: "Yilore Cards",
+    cardsTag: "Cửu Nhị Cards",
     cardsTitle: "Chinese-style I Ching Cards",
     cardsDesc: "A thousand years of I Ching wisdom, reimagined with modern AI<br/>Reveal your destiny path and navigate life with clarity",
     
@@ -26,7 +26,7 @@ const i18n = {
     featuresHeading1: "Bring ancient Eastern wisdom",
     featuresHeading2: "into your",
     featuresHeadingGold: "daily life",
-    featuresDesc: "When you feel stuck in career, relationships, or life choices, Yilore combines AI and I Ching methods to turn complexity into clear, actionable guidance.",
+    featuresDesc: "When you feel stuck in career, relationships, or life choices, Cửu Nhị combines AI and I Ching methods to turn complexity into clear, actionable guidance.",
     feature1: "AI Interpretation: focused guidance for your specific question",
     feature2: "Image Divination: capture a moment and get a fast reading for small decisions",
     feature3: "Follow-up Chat + Privacy: multi-turn conversation with strict confidentiality",
@@ -44,7 +44,7 @@ const i18n = {
     footerTerms: "Terms of Service",
     footerDelete: "Account & Data Deletion",
     footerBlog: "Blog",
-    footerCopyright: "© 2025 Yilore. All rights reserved.",
+    footerCopyright: "© 2025 Cửu Nhị. All rights reserved.",
     footerCookies: "Cookie Settings",
     
     // Interactive Modals
@@ -75,15 +75,15 @@ const i18n = {
   },
 
   vi: {
-    pageTitle: "Yilore (Dịch La) — Cố Vấn Bói Dịch AI, 64 Quẻ & Trí Tuệ Phương Đông",
-    pageDesc: "Yilore (Dịch La): Trợ lý Kinh Dịch và Mệnh lý Phương Đông thông minh. Giải mã 64 quẻ Dịch, gieo quẻ Lục Hào, cấu hình xuất xưởng cuộc đời và định hướng quyết định chuẩn xác.",
-    brandName: "Yilore",
+    pageTitle: "Cửu Nhị (I Ching Tarot) — Chiêm Bốc Kinh Dịch, 64 Quẻ & Trí Tuệ Phương Đông",
+    pageDesc: "Cửu Nhị: Trợ lý Kinh Dịch và Mệnh lý Phương Đông thông minh. Giải mã 64 quẻ Dịch, gieo quẻ Lục Hào, cấu hình xuất xưởng cuộc đời và định hướng quyết định chuẩn xác.",
+    brandName: "Cửu Nhị",
     brandSubtitle: "Dịch La · Kinh Dịch AI & Trí Tuệ Phương Đông",
     webSignIn: "Trải nghiệm Web",
     langName: "Tiếng Việt",
     
     // Hero
-    heroTitle: "Yilore",
+    heroTitle: "Cửu Nhị",
     heroHeading: "AI Bói Dịch & Thẻ Bài Mệnh Lý Phương Đông",
     heroSub: "Kinh Dịch Lục Hào · Hà Lạc Lý Số · Tử Vi Đẩu Số · Bát Tự Mệnh Lý",
     heroCtaStart: "Bắt đầu Gieo Quẻ",
@@ -91,7 +91,7 @@ const i18n = {
     ratingText: "Hơn 10.000+ người tin cậy sử dụng",
     
     // Cards Section
-    cardsTag: "Thẻ Bài Yilore",
+    cardsTag: "Thẻ Bài Cửu Nhị",
     cardsTitle: "Bộ Thẻ Kinh Dịch Phong Cách Á Đông",
     cardsDesc: "Hợp nhất 3.000 năm tinh hoa triết học phương Đông cùng AI hiện đại<br/>Hé lộ mạch nguồn vận mệnh, khai mở tầm nhìn và dẫn lối đường hướng tương lai",
     
@@ -100,7 +100,7 @@ const i18n = {
     featuresHeading1: "Đưa trí tuệ cổ xưa",
     featuresHeading2: "vào",
     featuresHeadingGold: "đời sống hàng ngày",
-    featuresDesc: "Khi bạn do dự trong sự nghiệp, tình cảm hay các ngã rẽ cuộc đời, Yilore ứng dụng mô hình AI chuyên biệt kết hợp cùng Kinh Dịch, biến các mật mã quẻ tượng nghìn năm thành những lời khuyên rõ ràng, thực tế, giúp bạn nhanh chóng nhìn thấu lựa chọn và giảm thiểu nội hao tinh thần.",
+    featuresDesc: "Khi bạn do dự trong sự nghiệp, tình cảm hay các ngã rẽ cuộc đời, Cửu Nhị ứng dụng mô hình AI chuyên biệt kết hợp cùng Kinh Dịch, biến các mật mã quẻ tượng nghìn năm thành những lời khuyên rõ ràng, thực tế, giúp bạn nhanh chóng nhìn thấu lựa chọn và giảm thiểu nội hao tinh thần.",
     feature1: "AI Giải Quẻ Cá Nhân Hóa: tập trung vào bối cảnh cụ thể và câu hỏi của bạn",
     feature2: "Quan Vật Chụp Ảnh Khởi Quẻ: chụp nhanh một khoảnh khắc để gieo quẻ cho quyết định nhỏ",
     feature3: "Đối Thoại Sâu & Bảo Mật Tuyệt Đối: trò chuyện nhiều vòng với tính bảo mật nghiêm ngặt",
@@ -118,7 +118,7 @@ const i18n = {
     footerTerms: "Điều khoản dịch vụ",
     footerDelete: "Xóa tài khoản & Dữ liệu",
     footerBlog: "Blog Dịch Học",
-    footerCopyright: "© 2025 Yilore (Dịch La). Bảo lưu mọi quyền.",
+    footerCopyright: "© 2025 Cửu Nhị. Bảo lưu mọi quyền.",
     footerCookies: "Cài đặt Cookie",
     
     // Interactive Modals
@@ -149,10 +149,10 @@ const i18n = {
   },
 
   "zh-TW": {
-    pageTitle: "易羅 Yilore — AI 易經占卜、六十四卦解讀與東方命理智慧",
-    pageDesc: "易羅 Yilore：AI 占卜顧問、東方命理陪伴。易經六爻、六十四卦解讀、人生出廠配置，助你看清選擇，減少內耗。",
+    pageTitle: "易羅 Cửu Nhị — AI 易經占卜、六十四卦解讀與東方命理智慧",
+    pageDesc: "易羅 Cửu Nhị：AI 占卜顧問、東方命理陪伴。易經六爻、六十四卦解讀、人生出廠配置，助你看清選擇，減少內耗。",
     brandName: "易羅",
-    brandSubtitle: "Yilore · AI 易經占卜與東方命理",
+    brandSubtitle: "Cửu Nhị · AI 易經占卜與東方命理",
     webSignIn: "網頁登錄",
     langName: "繁體中文",
     
@@ -192,7 +192,7 @@ const i18n = {
     footerTerms: "服務條款",
     footerDelete: "帳號與數據註銷",
     footerBlog: "心靈部落格",
-    footerCopyright: "© 2025 易羅 (Yilore). 保留所有權利。",
+    footerCopyright: "© 2025 易羅 (Cửu Nhị). 保留所有權利。",
     footerCookies: "Cookie 設定",
     
     // Interactive Modals
