@@ -1853,49 +1853,6 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
                     className="absolute inset-0 pointer-events-none rounded-2xl z-20"
                     style={{ border: "1px solid rgba(196,150,62,0.32)" }}
                   />
-
-                  {/* Nhãn thẻ bài trực quan cho Tháp La Kinh Dịch */}
-                  {mode === "thap_la" && (
-                    <>
-                      {/* Huy hiệu đỉnh thẻ bài */}
-                      <div className="absolute top-2.5 left-2 right-2 z-30 pointer-events-none flex justify-center">
-                        {idx === 0 && (
-                          <span className="px-2.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold tracking-wider uppercase bg-[#C4963E] text-stone-950 shadow-md border border-[#F3D99B]">
-                            Bản Quái • Trên
-                          </span>
-                        )}
-                        {idx === 1 && (
-                          <span className="px-2.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold tracking-wider uppercase bg-emerald-600 text-white shadow-md border border-emerald-400">
-                            Biến Quái • Dưới
-                          </span>
-                        )}
-                        {idx >= 2 && (
-                          <span className="px-2.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold tracking-wider uppercase bg-amber-600 text-white shadow-md border border-amber-300">
-                            Hào {card.yaoNumber || (idx - 1)} • Động
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Khẩu quyết chân thẻ bài */}
-                      <div className="absolute bottom-2.5 left-2 right-2 z-30 pointer-events-none flex justify-center">
-                        {idx === 0 && (
-                          <span className="px-2 py-0.5 rounded text-[8.5px] sm:text-[9.5px] font-medium bg-black/85 text-[#F3D99B] backdrop-blur-xs border border-[#C4963E]/40 truncate max-w-[92%] shadow-sm">
-                            Nhìn nhận cục diện
-                          </span>
-                        )}
-                        {idx === 1 && (
-                          <span className="px-2 py-0.5 rounded text-[8.5px] sm:text-[9.5px] font-medium bg-black/85 text-emerald-300 backdrop-blur-xs border border-emerald-500/40 truncate max-w-[92%] shadow-sm">
-                            Thấu suốt tương lai
-                          </span>
-                        )}
-                        {idx >= 2 && (
-                          <span className="px-2 py-0.5 rounded text-[8.5px] sm:text-[9.5px] font-medium bg-black/85 text-amber-200 backdrop-blur-xs border border-amber-500/40 truncate max-w-[92%] shadow-sm">
-                            Nhận diện bước ngoặt
-                          </span>
-                        )}
-                      </div>
-                    </>
-                  )}
                 </div>
               </div>
             </div>
