@@ -157,11 +157,13 @@ function drawCardsForMode(mode: SpreadMode): DynamicCardItem[] {
     };
 
     // 3. Các lá hào từ (ở 384 lá bài hào từ) thay đổi để thành quẻ biến theo thứ tự từ thấp Sơ tới hào Lục
+    const priLines = Array.isArray(priHex?.lines) && priHex.lines.length === 6 ? priHex.lines : [1, 1, 1, 1, 1, 1];
+    const transLines = Array.isArray(transHex?.lines) && transHex.lines.length === 6 ? transHex.lines : [1, 1, 1, 1, 1, 1];
     const changingYaoCards: DynamicCardItem[] = [];
     for (let i = 0; i < 6; i++) {
       const lineNum = i + 1;
-      if (priHex.lines[i] !== transHex.lines[i]) {
-        const isYangToYin = priHex.lines[i] === 1;
+      if (priLines[i] !== transLines[i]) {
+        const isYangToYin = priLines[i] === 1;
         const lineMeaning = priHex.lineMeanings?.find((m) => m.line === lineNum);
         const yaoName = lineMeaning?.name || `Hào ${lineNum}`;
         changingYaoCards.push({
@@ -827,11 +829,194 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       if (stage) stage.style.transform = `translate3d(${sX.toFixed(2)}px, ${sY.toFixed(2)}px, 0)`;
 
       const w = window.innerWidth;
+      const vh = window.innerHeight;
       const factor = w < 380 ? 0.52 : w < 480 ? 0.60 : w < 640 ? 0.72 : w < 900 ? 0.85 : w < 1200 ? 0.95 : 1.05;
       const slots = slotRefs.current;
       const cardCount = cards.length;
 
-      if (cardCount === 5 || mode === "3_to_5") {
+      // 0. Đảm bảo an toàn: Ẩn mọi slot thừa vượt quá số lượng lá bài hiện hành
+      for (let i = cardCount; i < slots.length; i++) {
+        const sl = slots[i];
+        if (sl) {
+          sl.style.opacity = "0";
+          sl.style.pointerEvents = "none";
+        }
+      }
+
+      if (mode === "thap_la") {
+
+        // ── CHẾ ĐỘ: THÁP LA KINH DỊCH ──
+        // Quẻ Biến LUÔN ở DƯỚI song song tuyệt đối (rotate 0deg, trùng tọa độ X, opacity 1) với Quẻ Chủ (Quẻ Chính ở trên).
+        // Kế bên Quẻ Chủ là dải các lá bài Hào Từ (ở 384 lá bài hào từ) thay đổi từ Hào Sơ đến Hào Lục.
+        // TỰ ĐỘNG THU NHỎ KHI XUẤT HIỆN NHIỀU LÁ BÀI (tối đa 8 lá bài) để vừa vặn khung hình cả máy tính và điện thoại.
+        const isSmallScreen = w < 860;
+        const mobFactor = w < 380 ? 0.76 : w < 440 ? 0.88 : 1.0;
+        const yaoCount = cardCount - 2;
+
+        if (isSmallScreen) {
+          // ── MOBILE / MÀN HÌNH NHỎ (ĐIỆN THOẠI) ──
+          // Tự động thu nhỏ linh hoạt theo số lượng lá bài
+          let baseScaleMob = 0.74;
+          if (yaoCount >= 5) {
+            baseScaleMob = 0.54; // 7-8 lá bài (nhiều lá): thu nhỏ 0.54 để trọn vẹn màn hình
+          } else if (yaoCount >= 3) {
+            baseScaleMob = 0.62; // 5-6 lá bài: thu nhỏ vừa vặn 0.62
+          } else {
+            baseScaleMob = 0.72; // 3-4 lá bài: hiển thị thoải mái 0.72
+          }
+
+          // Điều chỉnh theo độ phân giải màn hình điện thoại
+          if (w < 380) baseScaleMob *= 0.88;
+          else if (w < 440) baseScaleMob *= 0.94;
+          if (vh < 700) baseScaleMob *= 0.90;
+
+          const scaleHexMob = Math.max(0.46, Math.min(0.75, baseScaleMob));
+          const scaleYaoMob = scaleHexMob * 0.92;
+
+          const cardHMob = 224 * scaleHexMob;
+          const cardWMob = 144 * scaleHexMob;
+          const xOffsetMob = Math.min(95, cardWMob * 0.62 + 14) * mobFactor;
+          const xCol0 = -xOffsetMob * f;
+          const xYaoMob = xOffsetMob * f;
+
+          // Khoảng cách trục dọc giữa Quẻ Chủ và Quẻ Biến (tự co giãn vừa vặn chiều cao)
+          const distYMob = Math.max(130, cardHMob + 22);
+          const y0 = (-distYMob / 2) * f;
+          const y1 = (distYMob / 2) * f;
+
+          // 1. Quẻ Chủ (Quẻ Chính) ở trên
+          if (slots[0]) {
+            slots[0].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${y0.toFixed(1)}px, 20px) rotate(0deg) scale(${scaleHexMob.toFixed(3)})`;
+            slots[0].style.opacity = "1";
+            slots[0].style.pointerEvents = "auto";
+            slots[0].style.zIndex = "18";
+          }
+
+          // 2. Quẻ Biến LUÔN ở dưới song song với Quẻ Chính (Cùng toạ độ X, rotate 0deg, opacity 1)
+          if (slots[1]) {
+            slots[1].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${y1.toFixed(1)}px, 20px) rotate(0deg) scale(${scaleHexMob.toFixed(3)})`;
+            slots[1].style.opacity = "1";
+            slots[1].style.pointerEvents = "auto";
+            slots[1].style.zIndex = "17";
+          }
+
+          // 3. Các lá hào từ (ở 384 lá bài hào từ) ở cột bên phải theo thứ tự từ Sơ đến Lục
+          if (yaoCount === 1) {
+            // Chỉ 1 lá: đặt ngang hàng Quẻ Chủ
+            if (slots[2]) {
+              slots[2].style.transform = `perspective(1200px) translate3d(${xYaoMob.toFixed(1)}px, ${y0.toFixed(1)}px, 12px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
+              slots[2].style.opacity = "1";
+              slots[2].style.pointerEvents = "auto";
+              slots[2].style.zIndex = "12";
+            }
+          } else if (yaoCount === 2) {
+            // 2 lá: lá 1 ngang hàng Quẻ Chủ, lá 2 ngang hàng Quẻ Biến
+            if (slots[2]) {
+              slots[2].style.transform = `perspective(1200px) translate3d(${xYaoMob.toFixed(1)}px, ${y0.toFixed(1)}px, 12px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
+              slots[2].style.opacity = "1";
+              slots[2].style.pointerEvents = "auto";
+              slots[2].style.zIndex = "12";
+            }
+            if (slots[3]) {
+              slots[3].style.transform = `perspective(1200px) translate3d(${xYaoMob.toFixed(1)}px, ${y1.toFixed(1)}px, 12px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
+              slots[3].style.opacity = "1";
+              slots[3].style.pointerEvents = "auto";
+              slots[3].style.zIndex = "13";
+            }
+          } else {
+            // 3 lá trở lên: trải đều theo chiều dọc từ y0 đến y1
+            const stepY = distYMob / (yaoCount - 1);
+            for (let i = 0; i < yaoCount; i++) {
+              const sIdx = i + 2;
+              if (slots[sIdx]) {
+                const yYao = (y0 + i * stepY);
+                slots[sIdx].style.transform = `perspective(1200px) translate3d(${xYaoMob.toFixed(1)}px, ${yYao.toFixed(1)}px, 12px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
+                slots[sIdx].style.opacity = "1";
+                slots[sIdx].style.pointerEvents = "auto";
+                slots[sIdx].style.zIndex = (10 + i).toString();
+              }
+            }
+          }
+        } else {
+          // ── DESKTOP / MÀN HÌNH LỚN (MÁY TÍNH / LAPTOP) ──
+          // Tự động thu nhỏ linh hoạt theo số lượng lá bài
+          let baseScaleDesk = 0.82;
+          if (yaoCount >= 5) {
+            baseScaleDesk = 0.63; // 7-8 lá bài (nhiều lá): tự động thu nhỏ 0.63 để vừa vặn khung màn hình
+          } else if (yaoCount >= 3) {
+            baseScaleDesk = 0.72; // 5-6 lá bài: thu nhỏ vừa vặn 0.72
+          } else {
+            baseScaleDesk = 0.82; // 3-4 lá bài: kích thước 0.82 rộng rãi
+          }
+
+          // Điều chỉnh theo độ phân giải màn hình máy tính (chiều ngang & chiều dọc)
+          if (w < 1050) baseScaleDesk *= 0.88;
+          else if (w < 1250) baseScaleDesk *= 0.94;
+          if (vh < 780) baseScaleDesk *= 0.88;
+
+          const scaleHexDesk = Math.max(0.50, Math.min(0.85, baseScaleDesk));
+          const scaleYaoDesk = scaleHexDesk * 0.95;
+
+          const topYaoLimit = yaoCount <= 3 ? yaoCount : Math.ceil(yaoCount / 2);
+          const totalCols = 1 + topYaoLimit;
+          const cardWDesk = 192 * scaleHexDesk;
+          const cardHDesk = 288 * scaleHexDesk;
+          const colStep = (cardWDesk + 22) * factor;
+          const startX = -((totalCols - 1) * colStep) / 2;
+
+          const xCol0 = startX * f;
+          const distYDesk = Math.max(160, cardHDesk + 26);
+          const yTop = (-distYDesk / 2) * f;
+          const yBottom = (distYDesk / 2) * f;
+
+          // 1. Quẻ Chủ (Quẻ Chính) ở trên
+          if (slots[0]) {
+            slots[0].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${yTop.toFixed(1)}px, 25px) rotate(0deg) scale(${scaleHexDesk.toFixed(3)})`;
+            slots[0].style.opacity = "1";
+            slots[0].style.pointerEvents = "auto";
+            slots[0].style.zIndex = "18";
+          }
+
+          // 2. Quẻ Biến LUÔN ở dưới song song với Quẻ Chính (Cùng toạ độ X, rotate 0deg, opacity 1)
+          if (slots[1]) {
+            slots[1].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${yBottom.toFixed(1)}px, 25px) rotate(0deg) scale(${scaleHexDesk.toFixed(3)})`;
+            slots[1].style.opacity = "1";
+            slots[1].style.pointerEvents = "auto";
+            slots[1].style.zIndex = "17";
+          }
+
+          // 3. Các lá hào từ (ở 384 lá bài hào từ) xếp kế bên Quẻ Chủ theo thứ tự từ Sơ đến Lục
+          for (let i = 0; i < yaoCount; i++) {
+            const sIdx = i + 2;
+            if (slots[sIdx]) {
+              let xYao = 0;
+              let yYao = 0;
+              if (yaoCount <= 3) {
+                // Toàn bộ các lá hào từ xếp thẳng 1 hàng trên, kế bên Quẻ Chủ
+                const col = i + 1;
+                xYao = (startX + col * colStep) * f;
+                yYao = yTop;
+              } else {
+                // Dàn 2 hàng: nửa đầu ở hàng trên (kế bên Quẻ Chủ), nửa sau ở hàng dưới (kế bên Quẻ Biến)
+                if (i < topYaoLimit) {
+                  const col = i + 1;
+                  xYao = (startX + col * colStep) * f;
+                  yYao = yTop;
+                } else {
+                  const col = (i - topYaoLimit) + 1;
+                  xYao = (startX + col * colStep) * f;
+                  yYao = yBottom;
+                }
+              }
+
+              slots[sIdx].style.transform = `perspective(1200px) translate3d(${xYao.toFixed(1)}px, ${yYao.toFixed(1)}px, 15px) rotate(0deg) scale(${scaleYaoDesk.toFixed(3)})`;
+              slots[sIdx].style.opacity = "1";
+              slots[sIdx].style.pointerEvents = "auto";
+              slots[sIdx].style.zIndex = (10 + i).toString();
+            }
+          }
+        }
+      } else if (cardCount === 5 || mode === "3_to_5") {
         // ── CHẾ ĐỘ: 5 LÁ (NGŨ HÀNH) ──
         // Tùy thuộc vào kích thước màn hình mà các lá bài sắp xếp linh hoạt:
         // - Trên màn hình nhỏ/điện thoại (w < 860): Không đủ chỗ bày ngang 5 lá,
@@ -1020,178 +1205,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           slots[1].style.opacity = "1";
           slots[1].style.pointerEvents = "auto";
           slots[1].style.zIndex = "14";
-        }
-      } else if (mode === "thap_la") {
-        // ── CHẾ ĐỘ: THÁP LA KINH DỊCH ──
-        // Quẻ Biến LUÔN ở DƯỚI song song tuyệt đối (rotate 0deg, trùng tọa độ X, opacity 1) với Quẻ Chủ (Quẻ Chính ở trên).
-        // Kế bên Quẻ Chủ là dải các lá bài Hào Từ (ở 384 lá bài hào từ) thay đổi từ Hào Sơ đến Hào Lục.
-        // TỰ ĐỘNG THU NHỎ KHI XUẤT HIỆN NHIỀU LÁ BÀI (tối đa 8 lá bài) để vừa vặn khung hình cả máy tính và điện thoại.
-        const isSmallScreen = w < 860;
-        const mobFactor = w < 380 ? 0.76 : w < 440 ? 0.88 : 1.0;
-        const yaoCount = cardCount - 2;
-
-        if (isSmallScreen) {
-          // ── MOBILE / MÀN HÌNH NHỎ (ĐIỆN THOẠI) ──
-          // Tự động thu nhỏ linh hoạt theo số lượng lá bài
-          let baseScaleMob = 0.74;
-          if (yaoCount >= 5) {
-            baseScaleMob = 0.54; // 7-8 lá bài (nhiều lá): thu nhỏ 0.54 để trọn vẹn màn hình
-          } else if (yaoCount >= 3) {
-            baseScaleMob = 0.62; // 5-6 lá bài: thu nhỏ vừa vặn 0.62
-          } else {
-            baseScaleMob = 0.72; // 3-4 lá bài: hiển thị thoải mái 0.72
-          }
-
-          // Điều chỉnh theo độ phân giải màn hình điện thoại
-          if (w < 380) baseScaleMob *= 0.88;
-          else if (w < 440) baseScaleMob *= 0.94;
-          if (vh < 700) baseScaleMob *= 0.90;
-
-          const scaleHexMob = Math.max(0.46, Math.min(0.75, baseScaleMob));
-          const scaleYaoMob = scaleHexMob * 0.92;
-
-          const cardHMob = 224 * scaleHexMob;
-          const cardWMob = 144 * scaleHexMob;
-          const xOffsetMob = Math.min(95, cardWMob * 0.62 + 14) * mobFactor;
-          const xCol0 = -xOffsetMob * f;
-          const xYaoMob = xOffsetMob * f;
-
-          // Khoảng cách trục dọc giữa Quẻ Chủ và Quẻ Biến (tự co giãn vừa vặn chiều cao)
-          const distYMob = Math.max(130, cardHMob + 22);
-          const y0 = (-distYMob / 2) * f;
-          const y1 = (distYMob / 2) * f;
-
-          // 1. Quẻ Chủ (Quẻ Chính) ở trên
-          if (slots[0]) {
-            slots[0].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${y0.toFixed(1)}px, 20px) rotate(0deg) scale(${scaleHexMob.toFixed(3)})`;
-            slots[0].style.opacity = "1";
-            slots[0].style.pointerEvents = "auto";
-            slots[0].style.zIndex = "18";
-          }
-
-          // 2. Quẻ Biến LUÔN ở dưới song song với Quẻ Chính (Cùng toạ độ X, rotate 0deg, opacity 1)
-          if (slots[1]) {
-            slots[1].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${y1.toFixed(1)}px, 20px) rotate(0deg) scale(${scaleHexMob.toFixed(3)})`;
-            slots[1].style.opacity = "1";
-            slots[1].style.pointerEvents = "auto";
-            slots[1].style.zIndex = "17";
-          }
-
-          // 3. Các lá hào từ (ở 384 lá bài hào từ) ở cột bên phải theo thứ tự từ Sơ đến Lục
-          if (yaoCount === 1) {
-            // Chỉ 1 lá: đặt ngang hàng Quẻ Chủ
-            if (slots[2]) {
-              slots[2].style.transform = `perspective(1200px) translate3d(${xYaoMob.toFixed(1)}px, ${y0.toFixed(1)}px, 12px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
-              slots[2].style.opacity = "1";
-              slots[2].style.pointerEvents = "auto";
-              slots[2].style.zIndex = "12";
-            }
-          } else if (yaoCount === 2) {
-            // 2 lá: lá 1 ngang hàng Quẻ Chủ, lá 2 ngang hàng Quẻ Biến
-            if (slots[2]) {
-              slots[2].style.transform = `perspective(1200px) translate3d(${xYaoMob.toFixed(1)}px, ${y0.toFixed(1)}px, 12px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
-              slots[2].style.opacity = "1";
-              slots[2].style.pointerEvents = "auto";
-              slots[2].style.zIndex = "12";
-            }
-            if (slots[3]) {
-              slots[3].style.transform = `perspective(1200px) translate3d(${xYaoMob.toFixed(1)}px, ${y1.toFixed(1)}px, 12px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
-              slots[3].style.opacity = "1";
-              slots[3].style.pointerEvents = "auto";
-              slots[3].style.zIndex = "13";
-            }
-          } else {
-            // 3 lá trở lên: trải đều theo chiều dọc từ y0 đến y1
-            const stepY = distYMob / (yaoCount - 1);
-            for (let i = 0; i < yaoCount; i++) {
-              const sIdx = i + 2;
-              if (slots[sIdx]) {
-                const yYao = (y0 + i * stepY);
-                slots[sIdx].style.transform = `perspective(1200px) translate3d(${xYaoMob.toFixed(1)}px, ${yYao.toFixed(1)}px, 12px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
-                slots[sIdx].style.opacity = "1";
-                slots[sIdx].style.pointerEvents = "auto";
-                slots[sIdx].style.zIndex = (10 + i).toString();
-              }
-            }
-          }
-        } else {
-          // ── DESKTOP / MÀN HÌNH LỚN (MÁY TÍNH / LAPTOP) ──
-          // Tự động thu nhỏ linh hoạt theo số lượng lá bài
-          let baseScaleDesk = 0.82;
-          if (yaoCount >= 5) {
-            baseScaleDesk = 0.63; // 7-8 lá bài (nhiều lá): tự động thu nhỏ 0.63 để vừa vặn khung màn hình
-          } else if (yaoCount >= 3) {
-            baseScaleDesk = 0.72; // 5-6 lá bài: thu nhỏ vừa vặn 0.72
-          } else {
-            baseScaleDesk = 0.82; // 3-4 lá bài: kích thước 0.82 rộng rãi
-          }
-
-          // Điều chỉnh theo độ phân giải màn hình máy tính (chiều ngang & chiều dọc)
-          if (w < 1050) baseScaleDesk *= 0.88;
-          else if (w < 1250) baseScaleDesk *= 0.94;
-          if (vh < 780) baseScaleDesk *= 0.88;
-
-          const scaleHexDesk = Math.max(0.50, Math.min(0.85, baseScaleDesk));
-          const scaleYaoDesk = scaleHexDesk * 0.95;
-
-          const topYaoLimit = yaoCount <= 3 ? yaoCount : Math.ceil(yaoCount / 2);
-          const totalCols = 1 + topYaoLimit;
-          const cardWDesk = 192 * scaleHexDesk;
-          const cardHDesk = 288 * scaleHexDesk;
-          const colStep = (cardWDesk + 22) * factor;
-          const startX = -((totalCols - 1) * colStep) / 2;
-
-          const xCol0 = startX * f;
-          const distYDesk = Math.max(160, cardHDesk + 26);
-          const yTop = (-distYDesk / 2) * f;
-          const yBottom = (distYDesk / 2) * f;
-
-          // 1. Quẻ Chủ (Quẻ Chính) ở trên
-          if (slots[0]) {
-            slots[0].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${yTop.toFixed(1)}px, 25px) rotate(0deg) scale(${scaleHexDesk.toFixed(3)})`;
-            slots[0].style.opacity = "1";
-            slots[0].style.pointerEvents = "auto";
-            slots[0].style.zIndex = "18";
-          }
-
-          // 2. Quẻ Biến LUÔN ở dưới song song với Quẻ Chính (Cùng toạ độ X, rotate 0deg, opacity 1)
-          if (slots[1]) {
-            slots[1].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${yBottom.toFixed(1)}px, 25px) rotate(0deg) scale(${scaleHexDesk.toFixed(3)})`;
-            slots[1].style.opacity = "1";
-            slots[1].style.pointerEvents = "auto";
-            slots[1].style.zIndex = "17";
-          }
-
-          // 3. Các lá hào từ (ở 384 lá bài hào từ) xếp kế bên Quẻ Chủ theo thứ tự từ Sơ đến Lục
-          for (let i = 0; i < yaoCount; i++) {
-            const sIdx = i + 2;
-            if (slots[sIdx]) {
-              let xYao = 0;
-              let yYao = 0;
-              if (yaoCount <= 3) {
-                // Toàn bộ các lá hào từ xếp thẳng 1 hàng trên, kế bên Quẻ Chủ
-                const col = i + 1;
-                xYao = (startX + col * colStep) * f;
-                yYao = yTop;
-              } else {
-                // Dàn 2 hàng: nửa đầu ở hàng trên (kế bên Quẻ Chủ), nửa sau ở hàng dưới (kế bên Quẻ Biến)
-                if (i < topYaoLimit) {
-                  const col = i + 1;
-                  xYao = (startX + col * colStep) * f;
-                  yYao = yTop;
-                } else {
-                  const col = (i - topYaoLimit) + 1;
-                  xYao = (startX + col * colStep) * f;
-                  yYao = yBottom;
-                }
-              }
-
-              slots[sIdx].style.transform = `perspective(1200px) translate3d(${xYao.toFixed(1)}px, ${yYao.toFixed(1)}px, 15px) rotate(0deg) scale(${scaleYaoDesk.toFixed(3)})`;
-              slots[sIdx].style.opacity = "1";
-              slots[sIdx].style.pointerEvents = "auto";
-              slots[sIdx].style.zIndex = (10 + i).toString();
-            }
-          }
         }
       } else {
         // ── CHẾ ĐỘ: 1 LÁ DUY NHẤT (ĐƠN QUẺ CHÍ TÔN) ──
@@ -2055,10 +2068,12 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
                     src={card.img}
                     onError={(e) => {
                       const target = e.currentTarget;
-                      if (card.type === "yao") {
-                        target.src = `/assets/oss/${card.hexNumber}/${card.hexNumber}-${card.yaoNumber}a.webp`;
-                      } else {
-                        target.src = `/assets/oss/${card.hexNumber}/${card.hexNumber}a.webp`;
+                      target.onerror = null;
+                      const fallback = card.type === "yao"
+                        ? `/assets/oss/${card.hexNumber}/${card.hexNumber}-${card.yaoNumber}a.webp`
+                        : `/assets/oss/${card.hexNumber}/${card.hexNumber}a.webp`;
+                      if (target.src !== fallback && !target.src.endsWith(fallback)) {
+                        target.src = fallback;
                       }
                     }}
                   />
@@ -2296,10 +2311,12 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
                       className="w-full h-full object-contain rounded-xl drop-shadow-md transition-transform duration-300 group-hover:scale-105"
                       onError={(e) => {
                         const target = e.currentTarget;
-                        if (selectedCard.type === "yao") {
-                          target.src = `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}-${selectedCard.yaoNumber}a.webp`;
-                        } else {
-                          target.src = `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}a.webp`;
+                        target.onerror = null;
+                        const fallback = selectedCard.type === "yao"
+                          ? `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}-${selectedCard.yaoNumber}a.webp`
+                          : `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}a.webp`;
+                        if (target.src !== fallback && !target.src.endsWith(fallback)) {
+                          target.src = fallback;
                         }
                       }}
                     />
@@ -2331,10 +2348,12 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
                       className="w-full h-full object-contain rounded-xl drop-shadow-md transition-transform duration-300 group-hover:scale-105"
                       onError={(e) => {
                         const target = e.currentTarget;
-                        if (selectedCard.type === "yao") {
-                          target.src = `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}-${selectedCard.yaoNumber}b.webp`;
-                        } else {
-                          target.src = `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}b.webp`;
+                        target.onerror = null;
+                        const fallback = selectedCard.type === "yao"
+                          ? `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}-${selectedCard.yaoNumber}b.webp`
+                          : `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}b.webp`;
+                        if (target.src !== fallback && !target.src.endsWith(fallback)) {
+                          target.src = fallback;
                         }
                       }}
                     />
@@ -2368,12 +2387,14 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
                     className="w-full h-full object-contain rounded-xl drop-shadow-md transition-transform duration-300 group-hover:scale-105"
                     onError={(e) => {
                       const target = e.currentTarget;
+                      target.onerror = null;
                       const isBack = modalCardView === "back";
                       const suffix = isBack ? "b.webp" : "a.webp";
-                      if (selectedCard.type === "yao") {
-                        target.src = `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}-${selectedCard.yaoNumber}${suffix}`;
-                      } else {
-                        target.src = `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}${suffix}`;
+                      const fallback = selectedCard.type === "yao"
+                        ? `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}-${selectedCard.yaoNumber}${suffix}`
+                        : `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}${suffix}`;
+                      if (target.src !== fallback && !target.src.endsWith(fallback)) {
+                        target.src = fallback;
                       }
                     }}
                   />

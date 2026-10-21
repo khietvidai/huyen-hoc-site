@@ -712,8 +712,8 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
         <ExportImageModal
           isOpen={isExportModalOpen}
           onClose={() => setIsExportModalOpen(false)}
-          dataUrl={exportDataUrl}
-          fileName={`ThapLaKinhDich_${primaryHex?.number || 0}_${transformedHex?.number || 0}.png`}
+          imageUrl={exportDataUrl}
+          filename={`ThapLaKinhDich_${primaryHex?.number || 0}_${transformedHex?.number || 0}.png`}
         />
       )}
     </div>
