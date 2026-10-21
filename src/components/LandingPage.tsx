@@ -1019,85 +1019,106 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         }
       } else if (mode === "thap_la") {
         // ── CHẾ ĐỘ: THÁP LA KINH DỊCH ──
-        // 2 lá Quẻ Chủ & Quẻ Biến song song trên - dưới (bên trái)
-        // Kế bên Quẻ Chủ là dải các lá bài Hào Từ (ở 384 lá bài hào từ) từ Hào Sơ đến Hào Lục
+        // Quẻ Biến LUÔN ở DƯỚI song song tuyệt đối (rotate 0deg, trùng tọa độ X, opacity 1) với Quẻ Chủ (Quẻ Chính ở trên).
+        // Kế bên Quẻ Chủ là dải các lá bài Hào Từ (ở 384 lá bài hào từ) thay đổi từ Hào Sơ đến Hào Lục.
         const isSmallScreen = w < 860;
         const mobFactor = w < 380 ? 0.76 : w < 440 ? 0.88 : 1.0;
         const yaoCount = cardCount - 2;
 
         if (isSmallScreen) {
-          // Mobile / màn hình nhỏ:
-          // Quẻ Chủ (Slot 0) ở trên trái
+          // ── MOBILE / MÀN HÌNH NHỎ ──
+          // Cột trái: Quẻ Chủ (trên) & Quẻ Biến (dưới) luôn song song tuyệt đối
+          const xCol0 = (-88 * f) * mobFactor;
+          const scaleHexMob = 0.78;
+
+          // 1. Quẻ Chủ (Quẻ Chính) ở trên
           if (slots[0]) {
-            const x0 = (-85 * f) * mobFactor;
-            const y0 = -130 * f;
-            slots[0].style.transform = `perspective(1200px) translate3d(${x0.toFixed(1)}px, ${y0.toFixed(1)}px, 20px) rotate(-1.5deg) scale(0.82)`;
-            slots[0].style.opacity = "1";
-            slots[0].style.pointerEvents = "auto";
-            slots[0].style.zIndex = "16";
-          }
-          // Quẻ Biến (Slot 1) ở dưới trái (song song Trên - Dưới)
-          if (slots[1]) {
-            const x1 = (-85 * f) * mobFactor;
-            const y1 = 130 * f;
-            slots[1].style.transform = `perspective(1200px) translate3d(${x1.toFixed(1)}px, ${y1.toFixed(1)}px, 15px) rotate(1.5deg) scale(0.82)`;
-            slots[1].style.opacity = f.toFixed(3);
-            slots[1].style.pointerEvents = f > 0.20 ? "auto" : "none";
-            slots[1].style.zIndex = "15";
-          }
-          // Các lá hào từ (Slot 2+) ở bên phải Quẻ Chủ
-          for (let i = 0; i < yaoCount; i++) {
-            const sIdx = i + 2;
-            if (slots[sIdx]) {
-              const xYao = (85 * f) * mobFactor;
-              const stepY = yaoCount > 1 ? Math.min(65, 240 / (yaoCount - 1)) : 0;
-              const yYao = (-120 + i * stepY) * f;
-              slots[sIdx].style.transform = `perspective(1200px) translate3d(${xYao.toFixed(1)}px, ${yYao.toFixed(1)}px, 10px) rotate(${(i % 2 === 0 ? -1.5 : 1.5) * f}deg) scale(0.78)`;
-              slots[sIdx].style.opacity = f.toFixed(3);
-              slots[sIdx].style.pointerEvents = f > 0.20 ? "auto" : "none";
-              slots[sIdx].style.zIndex = (10 + i).toString();
-            }
-          }
-        } else {
-          // Desktop / màn hình lớn:
-          // Quẻ Chủ (Slot 0) ở trên trái
-          if (slots[0]) {
-            const x0 = (-280 * f) * factor;
             const y0 = -135 * f;
-            slots[0].style.transform = `perspective(1200px) translate3d(${x0.toFixed(1)}px, ${y0.toFixed(1)}px, 25px) rotate(-1.5deg) scale(0.92)`;
+            slots[0].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${y0.toFixed(1)}px, 20px) rotate(0deg) scale(${scaleHexMob})`;
             slots[0].style.opacity = "1";
             slots[0].style.pointerEvents = "auto";
             slots[0].style.zIndex = "18";
           }
-          // Quẻ Biến (Slot 1) ở dưới trái (song song Trên - Dưới)
+
+          // 2. Quẻ Biến LUÔN ở dưới song song với Quẻ Chính (Cùng toạ độ X, rotate 0deg, opacity 1)
           if (slots[1]) {
-            const x1 = (-280 * f) * factor;
             const y1 = 135 * f;
-            slots[1].style.transform = `perspective(1200px) translate3d(${x1.toFixed(1)}px, ${y1.toFixed(1)}px, 20px) rotate(1.5deg) scale(0.92)`;
-            slots[1].style.opacity = f.toFixed(3);
-            slots[1].style.pointerEvents = f > 0.20 ? "auto" : "none";
+            slots[1].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${y1.toFixed(1)}px, 20px) rotate(0deg) scale(${scaleHexMob})`;
+            slots[1].style.opacity = "1";
+            slots[1].style.pointerEvents = "auto";
             slots[1].style.zIndex = "17";
           }
-          // Các lá hào từ (Slot 2+) ở bên phải Quẻ Chủ
+
+          // 3. Các lá hào từ (ở 384 lá bài hào từ) ở cột bên phải theo thứ tự từ Sơ đến Lục
+          const xYaoMob = (88 * f) * mobFactor;
+          const stepY = yaoCount > 1 ? Math.min(54, 270 / (yaoCount - 1)) : 0;
+          for (let i = 0; i < yaoCount; i++) {
+            const sIdx = i + 2;
+            if (slots[sIdx]) {
+              const yYao = (-135 + i * stepY) * f;
+              slots[sIdx].style.transform = `perspective(1200px) translate3d(${xYaoMob.toFixed(1)}px, ${yYao.toFixed(1)}px, 12px) rotate(0deg) scale(0.74)`;
+              slots[sIdx].style.opacity = "1";
+              slots[sIdx].style.pointerEvents = "auto";
+              slots[sIdx].style.zIndex = (10 + i).toString();
+            }
+          }
+        } else {
+          // ── DESKTOP / MÀN HÌNH LỚN ──
+          // Tính toán số cột và căn giữa toàn bộ trải bài
+          const topYaoLimit = yaoCount <= 3 ? yaoCount : Math.ceil(yaoCount / 2);
+          const totalCols = 1 + topYaoLimit;
+          const colStep = 175 * factor;
+          const startX = -((totalCols - 1) * colStep) / 2;
+
+          const xCol0 = startX * f;
+          const yTop = -140 * f;
+          const yBottom = 140 * f;
+          const scaleHexDesk = 0.83;
+          const scaleYaoDesk = 0.80;
+
+          // 1. Quẻ Chủ (Quẻ Chính) ở trên
+          if (slots[0]) {
+            slots[0].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${yTop.toFixed(1)}px, 25px) rotate(0deg) scale(${scaleHexDesk})`;
+            slots[0].style.opacity = "1";
+            slots[0].style.pointerEvents = "auto";
+            slots[0].style.zIndex = "18";
+          }
+
+          // 2. Quẻ Biến LUÔN ở dưới song song với Quẻ Chính (Cùng toạ độ X, rotate 0deg, opacity 1)
+          if (slots[1]) {
+            slots[1].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${yBottom.toFixed(1)}px, 25px) rotate(0deg) scale(${scaleHexDesk})`;
+            slots[1].style.opacity = "1";
+            slots[1].style.pointerEvents = "auto";
+            slots[1].style.zIndex = "17";
+          }
+
+          // 3. Các lá hào từ (ở 384 lá bài hào từ) xếp kế bên Quẻ Chủ theo thứ tự từ Sơ đến Lục
           for (let i = 0; i < yaoCount; i++) {
             const sIdx = i + 2;
             if (slots[sIdx]) {
               let xYao = 0;
               let yYao = 0;
-              let rotYao = (-2 + i * 1.5) * f;
               if (yaoCount <= 3) {
-                xYao = (-70 + i * 165) * f * factor;
-                yYao = 0;
+                // Toàn bộ các lá hào từ xếp thẳng 1 hàng trên, kế bên Quẻ Chủ
+                const col = i + 1;
+                xYao = (startX + col * colStep) * f;
+                yYao = yTop;
               } else {
-                const col = Math.floor(i / 2);
-                const row = i % 2;
-                xYao = (-85 + col * 160) * f * factor;
-                yYao = (row === 0 ? -120 : 120) * f;
-                rotYao = (row === 0 ? -2 : 2) * f;
+                // Dàn 2 hàng: nửa đầu ở hàng trên (kế bên Quẻ Chủ), nửa sau ở hàng dưới (kế bên Quẻ Biến)
+                if (i < topYaoLimit) {
+                  const col = i + 1;
+                  xYao = (startX + col * colStep) * f;
+                  yYao = yTop;
+                } else {
+                  const col = (i - topYaoLimit) + 1;
+                  xYao = (startX + col * colStep) * f;
+                  yYao = yBottom;
+                }
               }
-              slots[sIdx].style.transform = `perspective(1200px) translate3d(${xYao.toFixed(1)}px, ${yYao.toFixed(1)}px, 12px) rotate(${rotYao.toFixed(1)}deg) scale(0.88)`;
-              slots[sIdx].style.opacity = f.toFixed(3);
-              slots[sIdx].style.pointerEvents = f > 0.20 ? "auto" : "none";
+
+              slots[sIdx].style.transform = `perspective(1200px) translate3d(${xYao.toFixed(1)}px, ${yYao.toFixed(1)}px, 15px) rotate(0deg) scale(${scaleYaoDesk})`;
+              slots[sIdx].style.opacity = "1";
+              slots[sIdx].style.pointerEvents = "auto";
               slots[sIdx].style.zIndex = (10 + i).toString();
             }
           }
