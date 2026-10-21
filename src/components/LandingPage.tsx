@@ -22,6 +22,8 @@ export interface LandingPageProps {
 }
 
 const getHexagramsUrl = () => "/vi/hexagram";
+const getBlogUrl = () => "/vi/blog";
+
 
 const HEX_SLUGS: Record<number, string> = {
   1: "qiangua1", 2: "kungua2", 3: "zhungua3", 4: "menggua4", 5: "xugua5",
@@ -1115,6 +1117,23 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
         </div>
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <button
+            type="button"
+            onClick={() => window.open(getBlogUrl(), "_blank", "noopener,noreferrer")}
+            className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-stone-700 hover:text-amber-900 transition px-3 py-1.5 rounded-full hover:bg-stone-100 border border-stone-200/80 cursor-pointer shadow-xs"
+          >
+            <span>📝</span>
+            <span>Blog</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => window.open(getHexagramsUrl(), "_blank", "noopener,noreferrer")}
+            className="hidden md:inline-flex items-center gap-1.5 text-xs font-semibold text-[#9E7326] hover:text-amber-900 transition px-3 py-1.5 rounded-full hover:bg-amber-50/80 border border-amber-200/80 cursor-pointer shadow-xs"
+          >
+            <span>📖</span>
+            <span>64 Quẻ</span>
+          </button>
+
           {/* Ngôn ngữ & Đăng nhập / Tài khoản Cửu Nhị */}
           <div className="flex items-center gap-1 rounded-full border border-stone-200/90 bg-stone-50/95 px-1 py-1 shadow-sm backdrop-blur-sm sm:gap-1.5 sm:px-1.5">
             <div className="relative">
@@ -1726,6 +1745,9 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
           </button>
           <button type="button" onClick={() => window.open(getHexagramsUrl(), "_blank", "noopener,noreferrer")} className="text-[#C4963E] hover:underline font-semibold cursor-pointer">
             📖 Bách Khoa 64 Quẻ Kinh Dịch ↗
+          </button>
+          <button type="button" onClick={() => window.open(getBlogUrl(), "_blank", "noopener,noreferrer")} className="text-[#C4963E] hover:underline font-semibold cursor-pointer">
+            📝 Blog Dịch Học ↗
           </button>
           <button type="button" onClick={() => setIsOracleOpen(true)} className="hover:text-white transition cursor-pointer">
             🪙 Tung 3 Đồng Xu

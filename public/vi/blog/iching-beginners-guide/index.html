@@ -2027,15 +2027,15 @@
   </footer>
 
   <!-- Cửu Nhị Image Lightbox Modal -->
-  <div id="yilore-lightbox" class="yilore-lightbox" onclick="closeCửu NhịLightbox(event)">
+  <div id="yilore-lightbox" class="yilore-lightbox" onclick="closeCuuNhiLightbox(event)">
     <div class="yilore-lightbox-content">
-      <button type="button" class="yilore-lightbox-close" onclick="closeCửu NhịLightbox()" title="Đóng (Esc)">✕</button>
+      <button type="button" class="yilore-lightbox-close" onclick="closeCuuNhiLightbox()" title="Đóng (Esc)">✕</button>
       <img id="yilore-lightbox-img" class="yilore-lightbox-img" src="" alt="Thẻ Bài Cửu Nhị"/>
     </div>
   </div>
 
   <script>
-    function openCửu NhịLightbox(src, alt) {
+    function openCuuNhiLightbox(src, alt) {
       var lb = document.getElementById('yilore-lightbox');
       var img = document.getElementById('yilore-lightbox-img');
       if (!lb || !img) return;
@@ -2044,7 +2044,7 @@
       lb.classList.add('is-open');
       document.body.style.overflow = 'hidden';
     }
-    function closeCửu NhịLightbox(e) {
+    function closeCuuNhiLightbox(e) {
       if (e && e.target && e.target.id === 'yilore-lightbox-img') return;
       var lb = document.getElementById('yilore-lightbox');
       if (!lb) return;
@@ -2052,7 +2052,7 @@
       document.body.style.overflow = '';
     }
     document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') closeCửu NhịLightbox();
+      if (e.key === 'Escape') closeCuuNhiLightbox();
     });
     // Click delegation for any card inside #yilore-reading or #opening
     document.addEventListener('click', function(e) {
@@ -2060,7 +2060,7 @@
       if (card) {
         var img = card.querySelector('img');
         if (img && img.src) {
-          openCửu NhịLightbox(img.src, img.alt);
+          openCuuNhiLightbox(img.src, img.alt);
         }
       }
     });

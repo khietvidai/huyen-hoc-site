@@ -1432,10 +1432,13 @@ ${contextDescription}`;
   }
 });
 
-// Static assets serving for Decks and Jiazi images
+// Static assets serving for Decks, Jiazi images, Blog and Hexagrams
 const publicDir = path.join(process.cwd(), "public");
 app.use("/decks", express.static(path.join(publicDir, "decks"), { maxAge: "7d" }));
 app.use("/images/jiazi", express.static(path.join(publicDir, "images", "jiazi"), { maxAge: "7d" }));
+app.use("/assets", express.static(path.join(publicDir, "assets"), { maxAge: "7d" }));
+app.use("/vi/blog", express.static(path.join(publicDir, "vi", "blog")));
+app.use("/vi/hexagram", express.static(path.join(publicDir, "vi", "hexagram")));
 
 // Vite or Static file serving
 async function startServer() {

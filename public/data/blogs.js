@@ -323,6 +323,12 @@ const blogsData = [
 ];
 const blogArticles = blogsData;
 
-if (typeof module !== 'undefined') {
+if (typeof window !== 'undefined') {
+  window.blogsData = blogsData;
+  window.blogArticles = blogsData;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
   module.exports = blogsData;
 }
+

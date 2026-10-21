@@ -22,7 +22,6 @@ export default defineConfig(() => {
         '/zh-TW/hexagram': 'http://localhost:3000',
         '/en/hexagram': 'http://localhost:3000',
         '/hexagram': 'http://localhost:3000',
-        '/vi/blog': 'http://localhost:3000',
         '/cards': 'http://localhost:3000',
         '/cards_zh': 'http://localhost:3000',
       },
