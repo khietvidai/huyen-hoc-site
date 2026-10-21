@@ -172,6 +172,18 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
     diceRollResult || menhBranchNumber || 3
   );
 
+  const [isMobileScreen, setIsMobileScreen] = useState<boolean>(() =>
+    typeof window !== "undefined" ? window.innerWidth < 768 : false
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileScreen(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const [internalAllFlipped, setInternalAllFlipped] = useState<boolean>(() => {
     if (typeof allFlipped === "boolean") return allFlipped;
     try {
@@ -2503,7 +2515,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                         onVideoUpdated={onVideoUpdated}
                         interactive={interactive}
                         hideTitle={true}
-                        size={cardCount > 8 ? getCardSize("xs") : getCardSize("sm")}
+                        size={cardCount === 5 ? (isMobileScreen ? "tiny" : getCardSize("sm")) : cardCount > 8 ? getCardSize("xs") : getCardSize("sm")}
                       />
                     </div>
 

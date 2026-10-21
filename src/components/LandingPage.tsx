@@ -683,17 +683,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         // Khi kéo xuống Features (f=0): toàn bộ gôm lại thành 1 lá duy nhất tại Slot 2!
 
         const isSmallScreen = w < 860;
-        const mobFactor = w < 380 ? 0.82 : w < 440 ? 0.92 : 1.0;
+        const mobFactor = w < 380 ? 0.76 : w < 440 ? 0.88 : 1.0;
+        const mobScale = w < 380 ? 0.82 : w < 440 ? 0.88 : 0.92;
 
         if (isSmallScreen) {
           // ── BỐ CỤC MOBILE / MÀN HÌNH NHỎ (Hàng trên 3 lá, Hàng dưới 2 lá) ──
           // Hàng 1 (Trên): Slot 0 (trái), Slot 1 (giữa), Slot 2 (phải)
           // Slot 0 (Trái trên)
           if (slots[0]) {
-            const x0 = (-122 * f) * mobFactor;
+            const x0 = (-120 * f) * mobFactor;
             const y0 = -82 * f;
             const rot0 = -4.5 * f;
-            slots[0].style.transform = `perspective(1200px) translate3d(${x0.toFixed(1)}px, ${y0.toFixed(1)}px, 0) rotate(${rot0.toFixed(1)}deg) scale(0.92)`;
+            slots[0].style.transform = `perspective(1200px) translate3d(${x0.toFixed(1)}px, ${y0.toFixed(1)}px, 0) rotate(${rot0.toFixed(1)}deg) scale(${mobScale})`;
             slots[0].style.opacity = f.toFixed(3);
             slots[0].style.pointerEvents = f > 0.25 ? "auto" : "none";
             slots[0].style.zIndex = "8";
@@ -704,19 +705,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             const x1 = heroX1;
             const y1 = -88 * f;
             const rot1 = 0;
-            const sc1 = 0.95 + 0.05 * (1 - f);
+            const sc1 = mobScale + (1.10 - mobScale) * (1 - f);
             slots[1].style.transform = `perspective(1200px) translate3d(${x1.toFixed(1)}px, ${y1.toFixed(1)}px, 0) rotate(${rot1}deg) scale(${sc1.toFixed(3)})`;
-            const op1 = g < 0.5 ? 1 : Math.max(f, 0.4);
+            const op1 = g < 0.5 ? 1 : f;
             slots[1].style.opacity = op1.toFixed(3);
             slots[1].style.pointerEvents = f > 0.25 ? "auto" : "none";
             slots[1].style.zIndex = "10";
           }
           // Slot 2 (Phải trên): ở Hero là lá trung tâm, khi xuống Destiny dạt sang phải trên
           if (slots[2]) {
-            const destX2 = 122 * f * mobFactor;
+            const destX2 = 120 * f * mobFactor;
             const y2 = -82 * f;
             const rot2 = 4.5 * f;
-            const sc2 = 0.92 + 0.18 * (1 - f); // Khi về Features phóng lên 1.10
+            const sc2 = mobScale + (1.10 - mobScale) * (1 - f); // Khi về Features phóng lên 1.10
             slots[2].style.transform = `perspective(1200px) translate3d(${destX2.toFixed(1)}px, ${y2.toFixed(1)}px, 26px) rotate(${rot2.toFixed(1)}deg) scale(${sc2.toFixed(3)})`;
             slots[2].style.opacity = "1";
             slots[2].style.pointerEvents = "auto";
@@ -727,11 +728,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           // Slot 3 (Trái dưới)
           if (slots[3]) {
             const heroX3 = 120 * (1 - g) * mobFactor;
-            const destX3 = -70 * f * mobFactor;
+            const destX3 = -68 * f * mobFactor;
             const x3 = heroX3 + destX3;
             const y3 = 108 * f;
             const rot3 = -3 * f;
-            const sc3 = 0.92;
+            const sc3 = mobScale;
             slots[3].style.transform = `perspective(1200px) translate3d(${x3.toFixed(1)}px, ${y3.toFixed(1)}px, 0) rotate(${rot3.toFixed(1)}deg) scale(${sc3.toFixed(3)})`;
             const op3 = g < 0.5 ? 1 : f;
             slots[3].style.opacity = op3.toFixed(3);
@@ -740,10 +741,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           }
           // Slot 4 (Phải dưới)
           if (slots[4]) {
-            const x4 = (70 * f) * mobFactor;
+            const x4 = (68 * f) * mobFactor;
             const y4 = 108 * f;
             const rot4 = 3 * f;
-            slots[4].style.transform = `perspective(1200px) translate3d(${x4.toFixed(1)}px, ${y4.toFixed(1)}px, 0) rotate(${rot4.toFixed(1)}deg) scale(0.92)`;
+            slots[4].style.transform = `perspective(1200px) translate3d(${x4.toFixed(1)}px, ${y4.toFixed(1)}px, 0) rotate(${rot4.toFixed(1)}deg) scale(${mobScale})`;
             slots[4].style.opacity = f.toFixed(3);
             slots[4].style.pointerEvents = f > 0.25 ? "auto" : "none";
             slots[4].style.zIndex = "9";
