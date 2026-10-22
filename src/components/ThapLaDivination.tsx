@@ -212,10 +212,16 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
     lines.push(`• Văn Bản Trọng Tâm: Thoán Từ (Quái Từ), Đại Tượng Truyện`);
     lines.push(`• Ý Nghĩa Thực Tiễn Trong Đời Sống: Định vị bối cảnh: Nhận diện bản chất loại hoàn cảnh thực tại bạn đang đối mặt`);
     lines.push(`• Quẻ số: #${primaryHex.number} - ${primaryHex.name} (${primaryHex.hanzi || primaryHex.name}) [${primaryHex.symbol}]`);
-    lines.push(`• Cấu tạo: ${primaryHex.upperTrigram} vi Thượng • ${primaryHex.lowerTrigram} vi Hạ | Khí số: ${primaryHex.omen}`);
+    if (primaryHex.vietnameseName) lines.push(`• Tên thuần Việt: ${primaryHex.vietnameseName}`);
+    lines.push(`• Cấu tạo: Thượng [${primaryHex.upperTrigram}] vi Thượng • Hạ [${primaryHex.lowerTrigram}] vi Hạ | Ngũ hành: ${primaryHex.element} | Khí số: ${primaryHex.omen}`);
+    lines.push(`• Cấu trúc 6 hào (từ hào 1 lên hào 6): ${primaryHex.lines.map((v, i) => `Hào ${i + 1}: ${v === 1 ? "⚊ Dương" : "⚏ Âm"}`).join(" | ")}`);
     lines.push(`• Thoán Từ (Quái Từ): "${primaryHex.judgment}"`);
     lines.push(`• Đại Tượng Truyện: "${primaryHex.image}"`);
-    if (primaryHex.overview) lines.push(`• Bối cảnh thực tại: ${primaryHex.overview}`);
+    if (primaryHex.overview) lines.push(`• Bối cảnh thực tại & Thời vận: ${primaryHex.overview}`);
+    if (primaryHex.career) lines.push(`• Vận trình sự nghiệp: ${primaryHex.career}`);
+    if (primaryHex.wealth) lines.push(`• Vận trình tài lộc: ${primaryHex.wealth}`);
+    if (primaryHex.love) lines.push(`• Tình cảm nhân duyên: ${primaryHex.love}`);
+    if (primaryHex.health) lines.push(`• Sức khỏe thể chất: ${primaryHex.health}`);
     if (primaryHex.advice) lines.push(`• Lời khuyên nền tảng: ${primaryHex.advice}`);
     lines.push("");
 
@@ -248,10 +254,16 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
     lines.push(`• Văn Bản Trọng Tâm: Quái Từ của Quẻ Biến (Thoán Từ, Đại Tượng Truyện)`);
     lines.push(`• Ý Nghĩa Thực Tiễn Trong Đời Sống: Định hướng tương lai: Xu thế phát triển tiếp theo sau khi sự chuyển hóa hoàn tất`);
     lines.push(`• Quẻ số: #${transformedHex.number} - ${transformedHex.name} (${transformedHex.hanzi || transformedHex.name}) [${transformedHex.symbol}]`);
-    lines.push(`• Cấu tạo: ${transformedHex.upperTrigram} vi Thượng • ${transformedHex.lowerTrigram} vi Hạ | Khí số: ${transformedHex.omen}`);
+    if (transformedHex.vietnameseName) lines.push(`• Tên thuần Việt: ${transformedHex.vietnameseName}`);
+    lines.push(`• Cấu tạo: Thượng [${transformedHex.upperTrigram}] vi Thượng • Hạ [${transformedHex.lowerTrigram}] vi Hạ | Ngũ hành: ${transformedHex.element} | Khí số: ${transformedHex.omen}`);
+    lines.push(`• Cấu trúc 6 hào (từ hào 1 lên hào 6): ${transformedHex.lines.map((v, i) => `Hào ${i + 1}: ${v === 1 ? "⚊ Dương" : "⚏ Âm"}`).join(" | ")}`);
     lines.push(`• Quái Từ (Thoán Từ Quẻ Biến): "${transformedHex.judgment}"`);
     lines.push(`• Đại Tượng Truyện: "${transformedHex.image}"`);
-    if (transformedHex.overview) lines.push(`• Định hướng xu thế tương lai: ${transformedHex.overview}`);
+    if (transformedHex.overview) lines.push(`• Định hướng xu thế tương lai & Thời vận: ${transformedHex.overview}`);
+    if (transformedHex.career) lines.push(`• Vận trình sự nghiệp: ${transformedHex.career}`);
+    if (transformedHex.wealth) lines.push(`• Vận trình tài lộc: ${transformedHex.wealth}`);
+    if (transformedHex.love) lines.push(`• Tình cảm nhân duyên: ${transformedHex.love}`);
+    if (transformedHex.health) lines.push(`• Sức khỏe thể chất: ${transformedHex.health}`);
     if (transformedHex.advice) lines.push(`• Phương châm hành động sáng suốt: ${transformedHex.advice}`);
     lines.push("");
 

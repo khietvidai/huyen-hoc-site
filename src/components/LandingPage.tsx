@@ -376,23 +376,94 @@ async function copyToClipboard(text: string): Promise<boolean> {
   }
 }
 
+/* ─── Helper: Lấy toàn bộ thông tin chi tiết đầy đủ từ Hexagram cho lá bài (Quẻ hoặc Hào) ─── */
+function formatCardFullInfoFromHexagram(c: DynamicCardItem, posHeader?: string, extraBadge?: string): string[] {
+  const lines: string[] = [];
+  const hex = HEXAGRAMS.find((h) => h.number === c.hexNumber);
+
+  if (posHeader) {
+    lines.push(`▶ 【${posHeader}】${extraBadge ? ` ${extraBadge}` : ""}`);
+  }
+
+  if (!hex) {
+    lines.push(`• Quẻ tượng: ${c.symbol} - ${c.name}`);
+    lines.push(`• Ý nghĩa: ${c.sub}`);
+    lines.push(`• Lời giải: ${c.desc}`);
+    return lines;
+  }
+
+  // 1. Nếu là Lá Bài Hào (thuộc bộ 384 Hào Từ)
+  if (c.type === "yao" && c.yaoNumber) {
+    const lineNum = c.yaoNumber;
+    const lineMeaning = hex.lineMeanings?.find((m) => m.line === lineNum);
+    const isYang = hex.lines?.[lineNum - 1] === 1;
+    const lineTypeStr = isYang ? "⚊ Hào Dương" : "⚏ Hào Âm";
+
+    lines.push(`• Lá bài hào: ${c.name}`);
+    lines.push(`• Vị trí: Hào thứ ${lineNum}/6 (${lineMeaning?.name || `Hào ${lineNum}`}) • Khí chất: ${lineTypeStr}`);
+    if (lineMeaning?.text) {
+      lines.push(`• Hào Từ (Lời Kinh): "${lineMeaning.text}"`);
+    }
+    if (lineMeaning?.meaning) {
+      lines.push(`• Ý nghĩa cốt lõi: ${lineMeaning.meaning}`);
+    }
+    if (lineMeaning?.detailedExplanation) {
+      lines.push(`• Luận giải chuyên sâu & Trọng tâm hành động: ${lineMeaning.detailedExplanation}`);
+    }
+
+    lines.push(`• Thuộc Quẻ gốc: #${hex.number} ${hex.name} (${hex.hanzi || hex.name}) [${hex.symbol}] - ${hex.vietnameseName || ""}`);
+    lines.push(`• Cấu tạo quẻ gốc: Thượng quái [${hex.upperTrigram}] vi Thượng • Hạ quái [${hex.lowerTrigram}] vi Hạ | Ngũ hành: ${hex.element} | Khí số: ${hex.omen}`);
+    lines.push(`• Cấu trúc 6 hào quẻ gốc (từ Hào 1 lên Hào 6): ${hex.lines.map((v, i) => `Hào ${i + 1}: ${v === 1 ? "⚊ Dương" : "⚏ Âm"}`).join(" | ")}`);
+    lines.push(`• Thoán Từ (Quái Từ) quẻ gốc: "${hex.judgment}"`);
+    lines.push(`• Đại Tượng Truyện quẻ gốc: "${hex.image}"`);
+    if (hex.overview) lines.push(`• Tổng quan thời vận quẻ: ${hex.overview}`);
+    if (hex.career) lines.push(`• Vận trình sự nghiệp: ${hex.career}`);
+    if (hex.wealth) lines.push(`• Vận trình tài lộc: ${hex.wealth}`);
+    if (hex.love) lines.push(`• Tình cảm nhân duyên: ${hex.love}`);
+    if (hex.health) lines.push(`• Sức khỏe thể chất: ${hex.health}`);
+    if (hex.advice) lines.push(`• Lời khuyên hành đạo: ${hex.advice}`);
+  } else {
+    // 2. Nếu là Lá Bài Quẻ (thuộc bộ 64 Quẻ)
+    lines.push(`• Lá bài quẻ: #${hex.number} - ${hex.name} (${hex.hanzi || hex.name}) [${hex.symbol}]`);
+    if (hex.vietnameseName) lines.push(`• Tên thuần Việt: ${hex.vietnameseName}`);
+    lines.push(`• Cấu tạo: Thượng quái [${hex.upperTrigram}] vi Thượng • Hạ quái [${hex.lowerTrigram}] vi Hạ | Ngũ hành: ${hex.element} | Khí số cát hung: ${hex.omen}`);
+    lines.push(`• Cấu trúc 6 vạch âm dương (từ Hào 1 dưới lên Hào 6 trên): ${hex.lines.map((v, i) => `Hào ${i + 1}: ${v === 1 ? "⚊ Dương" : "⚏ Âm"}`).join(" | ")}`);
+    lines.push(`• Thoán Từ (Quái Từ): "${hex.judgment}"`);
+    lines.push(`• Đại Tượng Truyện: "${hex.image}"`);
+    if (hex.overview) lines.push(`• Tổng quan thời vận: ${hex.overview}`);
+    if (hex.career) lines.push(`• Vận trình sự nghiệp: ${hex.career}`);
+    if (hex.wealth) lines.push(`• Vận trình tài lộc: ${hex.wealth}`);
+    if (hex.love) lines.push(`• Tình cảm nhân duyên: ${hex.love}`);
+    if (hex.health) lines.push(`• Sức khỏe thể chất: ${hex.health}`);
+    if (hex.advice) lines.push(`• Lời khuyên hành vi cốt lõi: ${hex.advice}`);
+    if (hex.lineMeanings && hex.lineMeanings.length > 0) {
+      lines.push(`• Diễn biến 6 Hào của quẻ:`);
+      hex.lineMeanings.forEach((lm) => {
+        lines.push(`  + ${lm.name} (Hào ${lm.line}): "${lm.text}" ➔ ${lm.meaning}`);
+      });
+    }
+  }
+
+  return lines;
+}
+
 /* ─── Helper: Định dạng thông tin các lá bài để dán cho AI phân tích ─── */
-/* Thứ tự: Trái trước phải sau (theo danh sách card), Trên trước dưới sau (Quẻ tượng -> Tên -> Ý nghĩa -> Lời giải) */
+/* Thứ tự: Trái trước phải sau (theo danh sách card), Lấy đầy đủ 100% dữ liệu từ Hexagram */
 function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: SpreadMode, isCard2ReversedState: boolean = false): string {
   if (currentMode === "that_tinh") {
     const lines: string[] = [];
-    lines.push(`=== THÔNG TIN TRẢI BÀI TRẬN PHÁP THẤT TINH (7 LÁ CHU DỊCH) ===`);
+    lines.push(`=== THÔNG TIN TRẢI BÀI TRẬN PHÁP THẤT TINH (7 LÁ CHU DỊCH - ĐẦY ĐỦ DỮ LIỆU HEXAGRAM) ===`);
     lines.push(`Khẩu quyết: Thất Tinh Bắc Đẩu soi chiếu 7 phương diện cuộc đời: Quá khứ, Bản thân hiện tại, Diễn biến tiếp theo, Lá gợi ý, Kết quả, Môi trường khách quan và Điểm mù thiếu sót.\n`);
     cardsList.forEach((c, idx) => {
       const pos = THAT_TINH_POSITIONS[idx] || { label: `Lá ${idx + 1}`, sub: "", desc: "" };
       lines.push(`----------------------------------------`);
-      lines.push(`▶ Vị trí ${pos.label} [${pos.sub}]:`);
-      lines.push(`• Quẻ tượng: ${c.symbol} - ${c.name}`);
-      lines.push(`• Ý nghĩa chi tiết: ${c.desc}`);
+      const cardLines = formatCardFullInfoFromHexagram(c, `Vị trí ${pos.label} [${pos.sub}]: ${pos.desc}`);
+      lines.push(...cardLines);
+      lines.push("");
     });
-    lines.push(`\n========================================`);
+    lines.push(`========================================`);
     lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI]:`);
-    lines.push(`Xin hãy phân tích trải bài Trận Pháp Thất Tinh theo quan hệ nhân quả tương sinh tương khắc giữa 7 vị trí:`);
+    lines.push(`Xin hãy phân tích trải bài Trận Pháp Thất Tinh theo quan hệ nhân quả tương sinh tương khắc giữa 7 vị trí (sử dụng đầy đủ dữ liệu Thoán Từ, Đại Tượng, Hào Từ, Ngũ Hành, Thời vận của từng quẻ):`);
     lines.push(`1. Nền tảng quá khứ (Lá 1) và thực trạng tâm thế bản thân hiện tại (Lá 2).`);
     lines.push(`2. Chiều hướng diễn biến sắp tới (Lá 3) và tác động từ môi trường bên ngoài (Lá 6).`);
     lines.push(`3. Nhận diện điểm mù / thiếu sót cốt lõi của bản thân (Lá 7) để khắc phục.`);
@@ -402,21 +473,21 @@ function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: SpreadMode
 
   if (currentMode === "thap_tinh") {
     const lines: string[] = [];
-    lines.push(`=== THÔNG TIN TRẢI BÀI TRẬN PHÁP THẬP TINH (10 LÁ CELTIC CROSS CHU DỊCH) ===`);
+    lines.push(`=== THÔNG TIN TRẢI BÀI TRẬN PHÁP THẬP TINH (10 LÁ CELTIC CROSS CHU DỊCH - ĐẦY ĐỦ DỮ LIỆU HEXAGRAM) ===`);
     lines.push(`Khẩu quyết: Tâm điểm thập tự kết hợp chuỗi thời vận 10 vị thế nhân duyên.`);
     lines.push(`* QUY CHUẨN ĐẶC BIỆT LÁ THỨ 2: Chiều Xuôi là HỖ TRỢ (Trợ lực tương sinh), Chiều Ngược là TRỞ NGẠI (Thử thách, rào cản chắn ngang).`);
     lines.push(`* Trạng thái Lá 2 hiện thời: [${isCard2ReversedState ? "CHIỀU NGƯỢC: TRỞ NGẠI / RÀO CẢN" : "CHIỀU XUÔI: HỖ TRỢ / TRỢ LỰC TƯƠNG SINH"}]\n`);
     cardsList.forEach((c, idx) => {
       const pos = THAP_TINH_POSITIONS[idx] || { label: `Lá ${idx + 1}`, sub: "", desc: "" };
-      const extraState = idx === 1 ? (isCard2ReversedState ? " [ĐANG Ở THẾ NGƯỢC: TRỞ NGẠI]" : " [ĐANG Ở THẾ XUÔI: HỖ TRỢ]") : "";
+      const extraState = idx === 1 ? (isCard2ReversedState ? "[ĐANG Ở THẾ NGƯỢC: TRỞ NGẠI / RÀO CẢN]" : "[ĐANG Ở THẾ XUÔI: HỖ TRỢ / TRỢ LỰC]") : undefined;
       lines.push(`----------------------------------------`);
-      lines.push(`▶ Vị trí ${pos.label} [${pos.sub}]${extraState}:`);
-      lines.push(`• Quẻ tượng: ${c.symbol} - ${c.name}`);
-      lines.push(`• Ý nghĩa chi tiết: ${c.desc}`);
+      const cardLines = formatCardFullInfoFromHexagram(c, `Vị trí ${pos.label} [${pos.sub}]: ${pos.desc}`, extraState);
+      lines.push(...cardLines);
+      lines.push("");
     });
-    lines.push(`\n========================================`);
+    lines.push(`========================================`);
     lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI]:`);
-    lines.push(`Xin hãy phân tích trải bài Trận Pháp Thập Tinh một cách sâu sắc và toàn diện:`);
+    lines.push(`Xin hãy phân tích trải bài Trận Pháp Thập Tinh một cách sâu sắc và toàn diện (sử dụng đầy đủ dữ liệu Thoán Từ, Đại Tượng, Hào Từ, Ngũ Hành, Thời vận của từng quẻ):`);
     lines.push(`1. Phân tích cốt lõi tâm điểm: Tình huống hiện tại (Lá 1) và lực tác động trực diện của Lá 2 (${isCard2ReversedState ? "TRỞ NGẠI: thử thách, chướng ngại vật cần vượt qua" : "HỖ TRỢ: trợ lực thuận lợi, yếu tố tương sinh thúc đẩy"}).`);
     lines.push(`2. Mối liên hệ đa chiều: Yếu tố bên ngoài (Lá 3), Góc khuất chưa biết (Lá 4), Nguồn gốc trước đây (Lá 5), Tương lai tiếp theo (Lá 6).`);
     lines.push(`3. Đại cục vận trình: Vận hạn năm nay (Lá 7), Góc nhìn xã hội / người ngoài (Lá 8) và Kết quả cuối cùng (Lá 9).`);
@@ -433,7 +504,7 @@ function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: SpreadMode
     const transHex = HEXAGRAMS.find((h) => h.number === trans?.hexNumber) || HEXAGRAMS[1];
 
     const lines: string[] = [];
-    lines.push(`=== BẢNG LUẬN GIẢI THÁP LA KINH DỊCH (周易塔羅) ===`);
+    lines.push(`=== BẢNG LUẬN GIẢI THÁP LA KINH DỊCH (周易塔羅 - ĐẦY ĐỦ DỮ LIỆU HEXAGRAM) ===`);
     lines.push(`Cấu trúc: Quẻ Chủ & Quẻ Biến song song Trên - Dưới • Dải Hào Động (Bộ 384 Lá) kế bên Quẻ Chủ`);
     lines.push(`Thứ tự đọc chiêm bốc: 1. Bản Quái (Quẻ Chủ) ➔ 2. Hào Động (Bước Ngoặt) ➔ 3. Biến Quái (Quẻ Biến)\n`);
 
@@ -443,15 +514,17 @@ function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: SpreadMode
       lines.push(`• Văn Bản Trọng Tâm: Thoán Từ (Quái Từ), Đại Tượng Truyện`);
       lines.push(`• Ý Nghĩa Thực Tiễn Trong Đời Sống: Định vị bối cảnh: Nhận diện bản chất loại hoàn cảnh thực tại bạn đang đối mặt`);
       lines.push(`• Quẻ số: #${priHex.number} - ${priHex.name} (${priHex.hanzi || priHex.name}) [${priHex.symbol}]`);
-      lines.push(`• Cấu tạo: ${priHex.upperTrigram} vi Thượng • ${priHex.lowerTrigram} vi Hạ | Khí số: ${priHex.omen}`);
+      if (priHex.vietnameseName) lines.push(`• Tên thuần Việt: ${priHex.vietnameseName}`);
+      lines.push(`• Cấu tạo: Thượng [${priHex.upperTrigram}] vi Thượng • Hạ [${priHex.lowerTrigram}] vi Hạ | Ngũ hành: ${priHex.element} | Khí số: ${priHex.omen}`);
+      lines.push(`• Cấu trúc 6 hào (từ hào 1 lên hào 6): ${priHex.lines.map((v, i) => `Hào ${i + 1}: ${v === 1 ? "⚊ Dương" : "⚏ Âm"}`).join(" | ")}`);
       lines.push(`• Thoán Từ (Quái Từ): "${priHex.judgment}"`);
       lines.push(`• Đại Tượng Truyện: "${priHex.image}"`);
-      if (priHex.overview) {
-        lines.push(`• Bối cảnh thực tại: ${priHex.overview}`);
-      }
-      if (priHex.advice) {
-        lines.push(`• Lời khuyên nền tảng: ${priHex.advice}`);
-      }
+      if (priHex.overview) lines.push(`• Bối cảnh thực tại & Thời vận: ${priHex.overview}`);
+      if (priHex.career) lines.push(`• Vận trình sự nghiệp: ${priHex.career}`);
+      if (priHex.wealth) lines.push(`• Vận trình tài lộc: ${priHex.wealth}`);
+      if (priHex.love) lines.push(`• Tình cảm nhân duyên: ${priHex.love}`);
+      if (priHex.health) lines.push(`• Sức khỏe thể chất: ${priHex.health}`);
+      if (priHex.advice) lines.push(`• Lời khuyên nền tảng: ${priHex.advice}`);
       lines.push("");
     }
 
@@ -486,15 +559,17 @@ function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: SpreadMode
       lines.push(`• Văn Bản Trọng Tâm: Quái Từ của Quẻ Biến (Thoán Từ, Đại Tượng Truyện)`);
       lines.push(`• Ý Nghĩa Thực Tiễn Trong Đời Sống: Định hướng tương lai: Xu thế phát triển tiếp theo sau khi sự chuyển hóa hoàn tất`);
       lines.push(`• Quẻ số: #${transHex.number} - ${transHex.name} (${transHex.hanzi || transHex.name}) [${transHex.symbol}]`);
-      lines.push(`• Cấu tạo: ${transHex.upperTrigram} vi Thượng • ${transHex.lowerTrigram} vi Hạ | Khí số: ${transHex.omen}`);
+      if (transHex.vietnameseName) lines.push(`• Tên thuần Việt: ${transHex.vietnameseName}`);
+      lines.push(`• Cấu tạo: Thượng [${transHex.upperTrigram}] vi Thượng • Hạ [${transHex.lowerTrigram}] vi Hạ | Ngũ hành: ${transHex.element} | Khí số: ${transHex.omen}`);
+      lines.push(`• Cấu trúc 6 hào (từ hào 1 lên hào 6): ${transHex.lines.map((v, i) => `Hào ${i + 1}: ${v === 1 ? "⚊ Dương" : "⚏ Âm"}`).join(" | ")}`);
       lines.push(`• Quái Từ (Thoán Từ Quẻ Biến): "${transHex.judgment}"`);
       lines.push(`• Đại Tượng Truyện: "${transHex.image}"`);
-      if (transHex.overview) {
-        lines.push(`• Định hướng xu thế tương lai: ${transHex.overview}`);
-      }
-      if (transHex.advice) {
-        lines.push(`• Phương châm hành động sáng suốt: ${transHex.advice}`);
-      }
+      if (transHex.overview) lines.push(`• Định hướng xu thế tương lai & Thời vận: ${transHex.overview}`);
+      if (transHex.career) lines.push(`• Vận trình sự nghiệp: ${transHex.career}`);
+      if (transHex.wealth) lines.push(`• Vận trình tài lộc: ${transHex.wealth}`);
+      if (transHex.love) lines.push(`• Tình cảm nhân duyên: ${transHex.love}`);
+      if (transHex.health) lines.push(`• Sức khỏe thể chất: ${transHex.health}`);
+      if (transHex.advice) lines.push(`• Phương châm hành động sáng suốt: ${transHex.advice}`);
       lines.push("");
     }
 
@@ -545,24 +620,20 @@ function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: SpreadMode
   };
 
   const lines: string[] = [];
-  lines.push(`=== THÔNG TIN TRẢI BÀI KINH DỊCH (THỨ TỰ TỪ TRÁI SANG PHẢI) ===`);
+  lines.push(`=== THÔNG TIN TRẢI BÀI KINH DỊCH (THỨ TỰ TỪ TRÁI SANG PHẢI - ĐẦY ĐỦ DỮ LIỆU HEXAGRAM) ===`);
   lines.push(`Trải bài: ${getSpreadName(currentMode)} | Số lượng: ${cardsList.length} lá\n`);
 
   cardsList.forEach((c, idx) => {
     const pos = getPositionLabel(idx, cardsList.length);
     lines.push(`----------------------------------------`);
-    lines.push(`【${pos}】`);
-    // Thứ tự thông tin: trên trước dưới sau (Quẻ tượng -> Tên -> Ý nghĩa -> Lời giải)
-    lines.push(`• Quẻ tượng: ${c.symbol}`);
-    lines.push(`• Tên: ${c.name}`);
-    lines.push(`• Ý nghĩa: ${c.sub}`);
-    lines.push(`• Lời giải: ${c.desc}`);
+    const cardLines = formatCardFullInfoFromHexagram(c, pos);
+    lines.push(...cardLines);
     lines.push("");
   });
 
   lines.push(`========================================`);
   lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI]:`);
-  lines.push(`Xin hãy phân tích trải bài Kinh Dịch trên theo đúng thứ tự từ trái sang phải:`);
+  lines.push(`Xin hãy phân tích trải bài Kinh Dịch trên theo đúng thứ tự từ trái sang phải (dựa trên đầy đủ dữ liệu quẻ tượng, Thoán Từ, Đại Tượng, Hào Từ, Ngũ hành và các phương diện vận thế):`);
   lines.push(`1. Luận giải ý nghĩa chi tiết từng lá bài theo vị trí tương ứng.`);
   lines.push(`2. Phân tích mối liên kết và dòng chảy chuyển dịch năng lượng từ lá bài bên trái sang lá bài bên phải.`);
   lines.push(`3. Đánh giá hoàn cảnh hiện tại, nguy cơ tiềm ẩn và cơ hội phát triển.`);
@@ -1618,24 +1689,23 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     }
   }, [cards, mode, isCard2Reversed]);
 
-  /* ── Sao chép 1 lá bài đơn lẻ cho AI (Quẻ tượng -> Tên -> Ý nghĩa -> Lời giải) ── */
+  /* ── Sao chép 1 lá bài đơn lẻ cho AI (Lấy đầy đủ 100% dữ liệu từ Hexagram) ── */
   const handleCopySingleCardForAI = useCallback(async (card: DynamicCardItem) => {
-    const text = `【THÔNG TIN LÁ BÀI KINH DỊCH】
-• Quẻ tượng: ${card.symbol}
-• Tên: ${card.name}
-• Ý nghĩa: ${card.sub}
-• Lời giải: ${card.desc}
+    const cardInfoLines = formatCardFullInfoFromHexagram(card, `LÁ BÀI KINH DỊCH: ${card.name}`);
+    const text = `=== THÔNG TIN ĐẦY ĐỦ LÁ BÀI KINH DỊCH (TỪ HEXAGRAM) ===
+${cardInfoLines.join("\n")}
 
+========================================
 [YÊU CẦU LUẬN GIẢI CHO AI]:
-Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
-1. Ý nghĩa biểu tượng quẻ tượng và tên quẻ/hào.
-2. Hoàn cảnh thực tế mà quẻ/hào này đang phản ánh.
-3. Lời khuyên định hướng và hành động thấu đáo nhất.`;
+Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
+1. Ý nghĩa biểu tượng quẻ tượng, tên quẻ/hào, cấu tạo Thượng Hạ quái và Ngũ hành khí số.
+2. Hoàn cảnh thực tế, thuận lợi tiềm tàng và thách thức mà quẻ/hào này đang phản ánh (dựa trên Thoán Từ, Đại Tượng, các phương diện sự nghiệp, tài lộc, tình cảm, sức khỏe).
+3. Trọng tâm hành động và lời khuyên định hướng thấu đáo nhất theo đạo Dịch để đón cát tránh hung.`;
 
     const ok = await copyToClipboard(text);
     if (ok) {
       setCopiedSingle(true);
-      setCopiedToast(`Đã sao chép lá bài ${card.name} cho AI!`);
+      setCopiedToast(`Đã sao chép đầy đủ thông tin lá bài ${card.name} cho AI!`);
       setTimeout(() => setCopiedSingle(false), 2200);
       setTimeout(() => setCopiedToast(null), 2800);
     }
