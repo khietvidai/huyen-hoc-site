@@ -1582,8 +1582,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           const topCols = 1 + (yaoCount <= 3 ? yaoCount : Math.min(3, Math.ceil(yaoCount / 2)));
           const startXTab = -((topCols - 1) * colStepTab) / 2;
 
-          const yTopTab = -90 * f;
-          const yBottomTab = 90 * f;
+          const cardHTab = (w >= 768 ? 288 : 272) * scaleTab;
+          const distYTab = cardHTab + 52;
+          const yTopTab = (-distYTab / 2) * f;
+          const yBottomTab = (distYTab / 2) * f;
           const xCol0Tab = startXTab * f;
 
           // 1. Quẻ Chủ ở trên bên trái
@@ -1658,7 +1660,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           const startX = -((totalCols - 1) * colStep) / 2;
 
           const xCol0 = startX * f;
-          const distYDesk = Math.max(160, cardHDesk + 26);
+          const distYDesk = cardHDesk + 60;
           const yTop = (-distYDesk / 2) * f;
           const yBottom = (distYDesk / 2) * f;
 
@@ -3073,20 +3075,6 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 </div>
               )}
 
-              {/* Nhãn chân thẻ bài (Bottom Badge): Đảm bảo hiển thị rõ tên quẻ và hào động ngay cả trên mobile/tablet */}
-              {mode === "thap_la" && (
-                <div className="absolute -bottom-6 sm:-bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap text-center z-30 pointer-events-none select-none">
-                  <span className="inline-block px-2 py-0.5 rounded-md text-[8.5px] sm:text-[10px] font-sans font-semibold bg-black/90 text-amber-100/90 border border-amber-500/40 shadow-sm backdrop-blur-xs">
-                    {idx === 0
-                      ? `[Bản Quái] ${card.hanzi || card.symbol || ""}`
-                      : idx === 1
-                      ? `[Biến Quái] ${card.hanzi || card.symbol || ""}`
-                      : card.yaoNumber && card.yaoNumber > 0
-                      ? `[Hào Động ${card.yaoNumber}] ${card.name.split("·")[0]?.replace("Hào", "").trim() || ""}`
-                      : "Toàn Tĩnh"}
-                  </span>
-                </div>
-              )}
               <div
                 className={`destiny-card-inner relative w-full h-full rounded-2xl overflow-hidden cursor-pointer bg-zinc-950/90 shadow-2xl transition-transform duration-500 ${
                   mode === "thap_tinh" && idx === 1 && isCard2Reversed ? "rotate-180" : ""
@@ -3136,6 +3124,21 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     className="absolute inset-0 pointer-events-none rounded-2xl z-20"
                     style={{ border: "1px solid rgba(196,150,62,0.32)" }}
                   />
+
+                  {/* Nhãn chân thẻ bài (Bottom Badge): Đặt gọn gàng BÊN TRONG thẻ bài (bottom-2 sm:bottom-2.5) để không đè lên nhãn Quẻ Biến hoặc các lá bài phía dưới */}
+                  {mode === "thap_la" && (
+                    <div className="absolute bottom-2 sm:bottom-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap text-center z-30 pointer-events-none select-none">
+                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[8.5px] sm:text-[10px] font-sans font-semibold bg-black/85 text-amber-100/95 border border-amber-500/50 shadow-md backdrop-blur-xs">
+                        {idx === 0
+                          ? `[Bản Quái] ${card.hanzi || card.symbol || ""}`
+                          : idx === 1
+                          ? `[Biến Quái] ${card.hanzi || card.symbol || ""}`
+                          : card.yaoNumber && card.yaoNumber > 0
+                          ? `[Hào Động ${card.yaoNumber}] ${card.hanzi || card.name.split("·")[0]?.replace(/^Hào\s*\d+:\s*/, "").trim() || ""}`
+                          : "Toàn Tĩnh"}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
