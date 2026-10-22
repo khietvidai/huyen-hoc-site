@@ -23,7 +23,7 @@ import {
   Copy,
 } from "lucide-react";
 import { Hexagram } from "../types";
-import { HEXAGRAMS } from "../data/hexagrams";
+import { HEXAGRAMS, getTransformedHexagram } from "../data/hexagrams";
 import { CardVisual } from "./CardVisual";
 import { captureElementToPng } from "../utils/captureHelper";
 import { ExportImageModal } from "./ExportImageModal";
@@ -111,34 +111,57 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
     },
   };
 
-  // Tính toán hào biến khi có 2 quẻ
-  const calculateChangingLines = (pri: Hexagram, trans: Hexagram) => {
-    const changes: number[] = [];
-    for (let i = 0; i < 6; i++) {
-      if (pri.lines[i] !== trans.lines[i]) {
-        changes.push(i + 1); // 1-indexed từ Hào Sơ (1) tới Hào Lục (6)
+  /**
+   * Cơ chế bốc quẻ trận Tháp La Kinh Dịch:
+   * 1. Đầu tiên là bốc lá Quẻ Chủ (Bản Quái) từ 64 quẻ.
+   * 2. Sau đó AI lựa chọn random động từ 0 đến 6 hào:
+   *    - Động 0 hào: Quẻ Biến vẫn là Quẻ Chủ (Quẻ Tĩnh).
+   *    - Động 1 hào: Random chọn 1 hào từ Hào 1 đến Hào 6 (Hào Sơ ➔ Hào Lục).
+   *    - Các động hào khác (2..6 hào): Random tương tự (chọn ngẫu nhiên các hào không trùng nhau từ 1 đến 6).
+   * 3. Tính toán Quẻ Biến tương ứng từ Quẻ Chủ và các hào động.
+   */
+  const drawThapLaHexagrams = () => {
+    // Bước 1: Bốc ngẫu nhiên lá Quẻ Chủ từ 64 quẻ
+    const randIdx = Math.floor(Math.random() * HEXAGRAMS.length);
+    const pri = HEXAGRAMS[randIdx];
+
+    // Bước 2: AI ngẫu nhiên chọn số lượng hào động từ 0 đến 6 hào
+    const numChanging = Math.floor(Math.random() * 7); // 0, 1, 2, 3, 4, 5, 6
+
+    let changes: number[] = [];
+    let trans: Hexagram = pri;
+
+    if (numChanging === 0) {
+      // Động 0 hào thì Quẻ Biến vẫn là Quẻ Chủ
+      changes = [];
+      trans = pri;
+    } else if (numChanging === 1) {
+      // Động 1 hào thì sẽ chọn random từ hào 1 đến hào 6
+      const randomLine = Math.floor(Math.random() * 6) + 1; // 1..6
+      changes = [randomLine];
+      trans = getTransformedHexagram(pri, changes) || pri;
+    } else {
+      // Các động hào khác (2..6 hào) cũng random tương tự từ hào 1 đến hào 6
+      const allLines = [1, 2, 3, 4, 5, 6];
+      for (let i = allLines.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [allLines[i], allLines[j]] = [allLines[j], allLines[i]];
       }
+      changes = allLines.slice(0, numChanging).sort((a, b) => a - b);
+      trans = getTransformedHexagram(pri, changes) || pri;
     }
-    return changes; // Tự động sắp xếp từ thấp lên cao (Sơ -> Lục)
+
+    return { pri, trans, changes, numChanging };
   };
 
-  // Bốc ngẫu nhiên 2 quẻ từ 2 bộ 64 quẻ độc lập
+  // Khởi quẻ Tháp La Kinh Dịch
   const handleDrawThapLa = () => {
     if (step === "shuffling") return;
     setStep("shuffling");
     zenAudio.playCardShuffleSound();
 
     setTimeout(() => {
-      // Rút ngẫu nhiên lá 1 (Quẻ Chủ) từ Bộ Bài 1
-      const randIdx1 = Math.floor(Math.random() * HEXAGRAMS.length);
-      const pri = HEXAGRAMS[randIdx1];
-
-      // Rút ngẫu nhiên lá 2 (Quẻ Biến) từ Bộ Bài 2 độc lập
-      const randIdx2 = Math.floor(Math.random() * HEXAGRAMS.length);
-      const trans = HEXAGRAMS[randIdx2];
-
-      // Tính các hào thay đổi theo thứ tự từ Sơ tới Lục
-      const changes = calculateChangingLines(pri, trans);
+      const { pri, trans, changes, numChanging } = drawThapLaHexagrams();
 
       setPrimaryHex(pri);
       setTransformedHex(trans);
@@ -148,11 +171,11 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
       setStep("drawn");
       zenAudio.playCardDrawSound();
 
-      const summaryText = `Tháp La Kinh Dịch: Quẻ Chủ #${pri.number} ${pri.name} → Quẻ Biến #${trans.number} ${trans.name} (${
-        changes.length > 0
-          ? `Biến ${changes.length} hào: ${changes.map((c) => `Hào ${c}`).join(", ")}`
-          : "Quẻ Tĩnh không biến"
-      })`;
+      const summaryText = `Tháp La Kinh Dịch: Quẻ Chủ #${pri.number} ${pri.name} → ${
+        changes.length === 0
+          ? `Động 0 hào (Quẻ Tĩnh) ➔ Quẻ Biến đồng Quẻ Chủ #${trans.number} ${trans.name}`
+          : `AI phân định động ${changes.length} hào (${changes.map((c) => `Hào ${c}`).join(", ")}) ➔ Quẻ Biến #${trans.number} ${trans.name}`
+      }`;
 
       // Gọi onComplete lưu lịch sử
       onComplete(
@@ -164,11 +187,16 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
         {
           spreadType: "thapla",
           doubleMode: "present_future",
+          numChangingLines: numChanging,
         }
       );
 
       if (onShowToast) {
-        onShowToast(`Khởi quẻ Tháp La thành công! ${changes.length > 0 ? `Nhận diện ${changes.length} hào bước ngoặt.` : "Thuần quái kiên định."}`);
+        if (changes.length === 0) {
+          onShowToast(`Khởi quẻ Tháp La thành công! Động 0 hào: Quẻ Biến đồng Quẻ Chủ #${pri.number} ${pri.name} (Quẻ Tĩnh).`);
+        } else {
+          onShowToast(`Khởi quẻ Tháp La thành công! AI chọn động ${changes.length} hào (${changes.map((c) => `Hào ${c}`).join(", ")}).`);
+        }
       }
     }, 1100);
   };
@@ -229,11 +257,12 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
     lines.push(`【2. HÀO ĐỘNG (BỘ 384 LÁ BÀI HÀO TỪ) — KẾ BÊN QUẺ CHỦ】`);
     lines.push(`• Văn Bản Trọng Tâm: Hào Từ của chính hào biến động`);
     lines.push(`• Ý Nghĩa Thực Tiễn Trong Đời Sống: Lời khuyên then chốt: Trọng tâm hành động và biến số mấu chốt bạn cần lưu tâm`);
-    lines.push(`• Số lượng hào biến động: ${changingLines.length} hào (Sắp xếp theo thứ tự từ Hào Sơ ➔ Hào Lục)`);
+    lines.push(`• Cơ chế phân định: Đầu tiên bốc ngẫu nhiên lá Quẻ Chủ; sau đó AI lựa chọn ngẫu nhiên từ 0 đến 6 hào động (động 0 hào thì Quẻ Biến vẫn là Quẻ Chủ; động 1 hào chọn random từ Hào 1 đến Hào 6; các động hào khác cũng random tương tự).`);
+    lines.push(`• Số lượng hào biến động: ${changingLines.length} hào ${changingLines.length > 0 ? `(${changingLines.map((c) => `Hào ${c}`).join(", ")})` : "(Động 0 hào • Quẻ Tĩnh)"}`);
     lines.push("");
 
     if (changingLines.length === 0) {
-      lines.push(`• Tình trạng: Quẻ Tĩnh (Không có hào biến). Cục diện kiên định bất biến, dĩ bất biến ứng vạn biến, bám sát Thoán Từ của Bản Quái.`);
+      lines.push(`• Tình trạng: Quẻ Tĩnh (Động 0 hào). Quẻ Biến vẫn giữ nguyên là Quẻ Chủ (#${primaryHex.number} ${primaryHex.name}). Cục diện kiên định bất biến, dĩ bất biến ứng vạn biến, bám sát Thoán Từ của Bản Quái.`);
     } else {
       changingLines.forEach((lineNum, idx) => {
         const lineMeaning = primaryHex.lineMeanings?.find((m) => m.line === lineNum);
@@ -251,6 +280,9 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
 
     lines.push(`----------------------------------------`);
     lines.push(`【3. BIẾN QUÁI (QUẺ BIẾN) — LÁ DƯỚI SONG SONG】`);
+    if (changingLines.length === 0) {
+      lines.push(`• Ghi chú: Động 0 hào nên Quẻ Biến đồng Quẻ Chủ (#${transformedHex.number} - ${transformedHex.name}).`);
+    }
     lines.push(`• Văn Bản Trọng Tâm: Quái Từ của Quẻ Biến (Thoán Từ, Đại Tượng Truyện)`);
     lines.push(`• Ý Nghĩa Thực Tiễn Trong Đời Sống: Định hướng tương lai: Xu thế phát triển tiếp theo sau khi sự chuyển hóa hoàn tất`);
     lines.push(`• Quẻ số: #${transformedHex.number} - ${transformedHex.name} (${transformedHex.hanzi || transformedHex.name}) [${transformedHex.symbol}]`);
@@ -320,7 +352,7 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
               Tháp La Kinh Dịch
             </h2>
             <p className="text-xs sm:text-sm text-[#D1C2A5] font-serif max-w-2xl leading-relaxed">
-              Bốc ngẫu nhiên 2 lá từ 2 cỗ bài 64 quẻ độc lập: <strong className="text-[#F3D99B]">Quẻ Chủ</strong> và <strong className="text-[#F3D99B]">Quẻ Biến</strong> đặt song song trên - dưới. Kế bên là dải các lá bài <strong className="text-[#F3D99B]">Hào Từ thay đổi</strong> từ hào Sơ đến hào Lục.
+              Đầu tiên bốc ngẫu nhiên lá <strong className="text-[#F3D99B]">Quẻ Chủ (Bản Quái)</strong>, sau đó AI lựa chọn ngẫu nhiên <strong className="text-[#F3D99B]">từ 0 đến 6 hào động</strong> để xác lập <strong className="text-[#F3D99B]">Quẻ Biến</strong> (động 0 hào thì Quẻ Biến vẫn là Quẻ Chủ; động 1..6 hào ngẫu nhiên chọn các hào 1..6) đặt song song trên - dưới, kèm dải bài Hào Từ biến dịch.
             </p>
           </div>
 
@@ -398,41 +430,41 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
             />
           </div>
 
-          {/* Mô phỏng 2 cỗ bài Tarot 64 lá độc lập */}
+          {/* Mô phỏng 2 bước: Bốc Quẻ Chủ & AI Khởi Hào Động */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-lg mx-auto">
-            {/* Bộ 1: Quẻ Chủ */}
+            {/* Bước 1: Quẻ Chủ */}
             <div className="p-5 rounded-2xl bg-[#19130D] border border-[#3B2C1B] flex flex-col items-center text-center space-y-3 shadow-lg hover:border-[#C4963E]/60 transition-colors">
               <span className="text-[11px] font-mono font-bold text-[#C4963E] uppercase tracking-wider">
-                Bộ Bài I • 64 Quẻ
+                Bước 1 • Bốc Quẻ Chủ
               </span>
               <div className="w-28 h-40 sm:w-32 sm:h-44 rounded-xl border border-[#C4963E]/50 bg-gradient-to-b from-[#251B10] via-[#1A130B] to-[#100C06] p-2 flex items-center justify-center shadow-xl relative overflow-hidden group cursor-pointer"
                 onClick={handleDrawThapLa}>
                 <div className="absolute inset-1 border border-dashed border-[#C4963E]/30 rounded-lg flex flex-col items-center justify-center">
                   <span className="text-3xl text-[#C4963E]/60 select-none">☯</span>
-                  <span className="text-[10px] text-[#A69780] font-serif mt-1">Quẻ Chủ</span>
+                  <span className="text-[10px] text-[#A69780] font-serif mt-1">Bản Quái</span>
                 </div>
               </div>
               <div>
-                <h4 className="text-sm font-bold text-[#FAF5EB]">Bộ Quẻ Chủ</h4>
-                <p className="text-[11px] text-[#A89882]">Định vị bối cảnh thực tại</p>
+                <h4 className="text-sm font-bold text-[#FAF5EB]">Bốc Lá Quẻ Chủ</h4>
+                <p className="text-[11px] text-[#A89882]">Định vị bối cảnh thực tại (64 quẻ)</p>
               </div>
             </div>
 
-            {/* Bộ 2: Quẻ Biến */}
+            {/* Bước 2: AI Khởi Hào Động */}
             <div className="p-5 rounded-2xl bg-[#19130D] border border-[#3B2C1B] flex flex-col items-center text-center space-y-3 shadow-lg hover:border-[#C4963E]/60 transition-colors">
               <span className="text-[11px] font-mono font-bold text-emerald-400 uppercase tracking-wider">
-                Bộ Bài II • 64 Quẻ
+                Bước 2 • AI Khởi Hào Động
               </span>
               <div className="w-28 h-40 sm:w-32 sm:h-44 rounded-xl border border-emerald-500/40 bg-gradient-to-b from-[#132219] via-[#0E1812] to-[#080E0A] p-2 flex items-center justify-center shadow-xl relative overflow-hidden group cursor-pointer"
                 onClick={handleDrawThapLa}>
                 <div className="absolute inset-1 border border-dashed border-emerald-500/30 rounded-lg flex flex-col items-center justify-center">
                   <span className="text-3xl text-emerald-500/60 select-none">☵</span>
-                  <span className="text-[10px] text-emerald-300/80 font-serif mt-1">Quẻ Biến</span>
+                  <span className="text-[10px] text-emerald-300/80 font-serif mt-1">0..6 Hào Động</span>
                 </div>
               </div>
               <div>
-                <h4 className="text-sm font-bold text-[#FAF5EB]">Bộ Quẻ Biến</h4>
-                <p className="text-[11px] text-[#A89882]">Thấu suốt tương lai phía trước</p>
+                <h4 className="text-sm font-bold text-[#FAF5EB]">AI Phân Định Hào Biến</h4>
+                <p className="text-[11px] text-[#A89882]">Random 0-6 hào để sinh Quẻ Biến</p>
               </div>
             </div>
           </div>
@@ -448,17 +480,17 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
               {step === "shuffling" ? (
                 <>
                   <Shuffle className="w-5 h-5 animate-spin text-[#14120F]" />
-                  <span>Đang xáo 2 bộ bài 64 quẻ...</span>
+                  <span>Đang bốc Quẻ Chủ & AI tính toán hào biến (0 - 6 hào)...</span>
                 </>
               ) : (
                 <>
                   <Sparkles className="w-5 h-5 text-[#14120F]" />
-                  <span>Khởi Quẻ Tháp La (Rút Cả 2 Bộ Bài)</span>
+                  <span>Khởi Quẻ Tháp La (Bốc Quẻ Chủ & AI Khởi Hào Động)</span>
                 </>
               )}
             </button>
             <p className="text-[11px] text-[#8C7D6A] mt-2 font-serif">
-              Hệ thống sẽ bốc ngẫu nhiên 1 lá Quẻ Chủ từ Bộ I, 1 lá Quẻ Biến từ Bộ II và tự động định vị các lá hào từ thay đổi.
+              Đầu tiên bốc lá Quẻ Chủ, sau đó AI ngẫu nhiên chọn từ 0 đến 6 hào động (động 0 hào thì Quẻ Biến vẫn là Quẻ Chủ; động 1..6 hào chọn ngẫu nhiên từ Hào 1 đến Hào 6).
             </p>
           </div>
         </div>
@@ -477,7 +509,9 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
                 </h3>
               </div>
               <span className="text-xs font-mono text-[#C4963E] bg-[#22180F] px-2.5 py-0.5 rounded-full border border-[#44321D]">
-                {changingLines.length > 0 ? `${changingLines.length} Hào Biến Động` : "Quẻ Tĩnh Không Biến"}
+                {changingLines.length === 0
+                  ? "AI Động 0 Hào • Quẻ Tĩnh (Quẻ Biến = Quẻ Chủ)"
+                  : `AI Động ${changingLines.length} Hào (${changingLines.map((c) => `Hào ${c}`).join(", ")})`}
               </span>
             </div>
 
@@ -540,11 +574,11 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
                       Lá Dưới
                     </span>
                     <span className="text-xs font-bold text-emerald-300 uppercase font-serif">
-                      Quẻ Biến • Biến Quái
+                      {changingLines.length === 0 ? "Quẻ Biến (Đồng Quẻ Chủ)" : "Quẻ Biến • Biến Quái"}
                     </span>
                   </div>
                   <span className="text-[11px] text-[#A69780] font-serif italic">
-                    "Thấu suốt xu thế tương lai"
+                    {changingLines.length === 0 ? '"Động 0 hào — Quẻ biến vẫn là quẻ chủ"' : '"Thấu suốt xu thế tương lai"'}
                   </span>
 
                   <div className="pt-1">
@@ -596,10 +630,10 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
                   <div className="p-6 rounded-2xl bg-[#1C1610] border border-[#3E2F1E] text-center space-y-3">
                     <span className="text-2xl text-[#C4963E]">☯</span>
                     <h5 className="font-bold text-[#F5EAD4] text-sm">
-                      Quẻ Tĩnh — Cục Diện Kiên Định Bất Biến
+                      AI Phân Định: Động 0 Hào — Quẻ Tĩnh Kiên Định
                     </h5>
                     <p className="text-xs text-[#A89882] max-w-md mx-auto leading-relaxed">
-                      Cả 2 cỗ bài đều bốc được cùng Quẻ #{primaryHex.number} {primaryHex.name}. Không có hào nào thay đổi. Điều này ứng với đạo lý "Tâm tĩnh tắc an, dĩ bất biến ứng vạn biến". Bạn cần bám sát Thoán Từ và Đại Tượng của Quẻ Chủ, kiên trì đường lối hiện tại mà không cần vội vã cải biến.
+                      AI đã ngẫu nhiên lựa chọn <strong className="text-[#F3D99B]">0 hào động</strong>. Theo quy tắc trận Tháp La Kinh Dịch, khi động 0 hào thì <strong className="text-[#F3D99B]">Quẻ Biến vẫn là Quẻ Chủ</strong> (#{primaryHex.number} {primaryHex.name}). Điều này ứng với đạo lý "Tâm tĩnh tắc an, dĩ bất biến ứng vạn biến". Bạn cần bám sát Thoán Từ và Đại Tượng của Quẻ Chủ, kiên trì đường lối hiện tại mà không cần vội vã cải biến.
                     </p>
                   </div>
                 ) : (
@@ -766,11 +800,12 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
                     3
                   </span>
                   <h4 className="font-bold text-sm text-[#F5EAD4] uppercase font-serif">
-                    Biến Quái: Thấu Suốt Tương Lai
+                    {changingLines.length === 0 ? "Biến Quái: Đồng Quẻ Chủ (Tĩnh)" : "Biến Quái: Thấu Suốt Tương Lai"}
                   </h4>
                 </div>
                 <div className="text-xs text-emerald-400 font-serif font-semibold">
                   Quẻ #{transformedHex.number} {transformedHex.name} ({transformedHex.hanzi})
+                  {changingLines.length === 0 && " • Động 0 Hào"}
                 </div>
                 <div className="text-xs text-[#BFAFA0] font-serif italic">
                   Thoán từ: "{transformedHex.judgment}"

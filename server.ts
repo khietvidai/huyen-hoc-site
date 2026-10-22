@@ -456,41 +456,61 @@ function getServerUsers(): Record<string, { user: any; passwordHash: string }> {
     if (changed) saveServerUsers(users);
   }
 
-  // Đảm bảo tài khoản VIP mặc định: isabella.thanhtrang@gmail.com
-  const vipKey = "isabella.thanhtrang@gmail.com";
-  const defaultVipHash = Buffer.from("123456").toString("base64");
-  if (!users[vipKey]) {
-    users[vipKey] = {
-      user: {
-        id: "usr_vip_isabella_thanhtrang",
-        email: "isabella.thanhtrang@gmail.com",
-        username: "isabella.thanhtrang",
-        name: "Isabella Thanh Trang",
-        isMember: true,
-        isAdmin: false,
-        memberTier: "vip",
-        memberExpiryDate: "2099-12-31",
-        registeredAt: Date.now(),
-        incenseSticks: 999,
-      },
-      passwordHash: defaultVipHash,
-    };
-    saveServerUsers(users);
-  } else {
-    let changed = false;
-    if (!users[vipKey].user.isMember) {
-      users[vipKey].user.isMember = true;
-      changed = true;
+  // Đảm bảo các tài khoản VIP mặc định
+  const defaultVips = [
+    {
+      key: "isabella.thanhtrang@gmail.com",
+      id: "usr_vip_isabella_thanhtrang",
+      email: "isabella.thanhtrang@gmail.com",
+      username: "isabella.thanhtrang",
+      name: "Isabella Thanh Trang",
+      password: "123456",
+    },
+    {
+      key: "mythunt@gmail.com",
+      id: "usr_vip_mythunt",
+      email: "mythunt@gmail.com",
+      username: "mythunt",
+      name: "Mythunt",
+      password: "123456",
+    },
+  ];
+
+  for (const vip of defaultVips) {
+    const defaultVipHash = Buffer.from(vip.password).toString("base64");
+    if (!users[vip.key]) {
+      users[vip.key] = {
+        user: {
+          id: vip.id,
+          email: vip.email,
+          username: vip.username,
+          name: vip.name,
+          isMember: true,
+          isAdmin: false,
+          memberTier: "vip",
+          memberExpiryDate: "2099-12-31",
+          registeredAt: Date.now(),
+          incenseSticks: 999,
+        },
+        passwordHash: defaultVipHash,
+      };
+      saveServerUsers(users);
+    } else {
+      let changed = false;
+      if (!users[vip.key].user.isMember) {
+        users[vip.key].user.isMember = true;
+        changed = true;
+      }
+      if (users[vip.key].user.memberTier !== "vip") {
+        users[vip.key].user.memberTier = "vip";
+        changed = true;
+      }
+      if (!users[vip.key].user.memberExpiryDate) {
+        users[vip.key].user.memberExpiryDate = "2099-12-31";
+        changed = true;
+      }
+      if (changed) saveServerUsers(users);
     }
-    if (users[vipKey].user.memberTier !== "vip") {
-      users[vipKey].user.memberTier = "vip";
-      changed = true;
-    }
-    if (!users[vipKey].user.memberExpiryDate) {
-      users[vipKey].user.memberExpiryDate = "2099-12-31";
-      changed = true;
-    }
-    if (changed) saveServerUsers(users);
   }
 
   return users;

@@ -15,7 +15,7 @@ import { downloadDataUrlAsPng } from "../utils/captureHelper";
 import { ExportImageModal } from "./ExportImageModal";
 import { BrandMark } from "./BrandMark";
 import { NavTab } from "./Header";
-import { HEXAGRAMS } from "../data/hexagrams";
+import { HEXAGRAMS, getTransformedHexagram } from "../data/hexagrams";
 import { AppUser } from "../services/authService";
 
 export interface LandingPageProps {
@@ -172,15 +172,32 @@ function drawRandomCard(): DynamicCardItem {
 /* ─── Helper: Rút danh sách bài cho từng cấu hình ─── */
 function drawCardsForMode(mode: SpreadMode): DynamicCardItem[] {
   if (mode === "thap_la") {
-    // 1. Quẻ Chủ (Bản Quái): Rút ngẫu nhiên từ 64 quẻ
+    // 1. Quẻ Chủ (Bản Quái): Đầu tiên là bốc lá Quẻ Chủ từ 64 quẻ
     const priHex = HEXAGRAMS[Math.floor(Math.random() * HEXAGRAMS.length)];
 
-    // 2. Quẻ Biến (Biến Quái): Rút ngẫu nhiên từ cỗ bài 64 quẻ độc lập
-    let transHex = HEXAGRAMS[Math.floor(Math.random() * HEXAGRAMS.length)];
-    let retries = 0;
-    while (transHex.number === priHex.number && retries < 15) {
-      transHex = HEXAGRAMS[Math.floor(Math.random() * HEXAGRAMS.length)];
-      retries++;
+    // 2. AI lựa chọn random động từ 0 đến 6 hào
+    const numChanging = Math.floor(Math.random() * 7); // 0, 1, 2, 3, 4, 5, 6
+    let changingLines: number[] = [];
+    let transHex = priHex;
+
+    if (numChanging === 0) {
+      // Động 0 hào thì quẻ biến vẫn là quẻ chủ (Quẻ Tĩnh)
+      changingLines = [];
+      transHex = priHex;
+    } else if (numChanging === 1) {
+      // Động 1 hào thì sẽ chọn random từ hào 1 đến hào 6
+      const randomLine = Math.floor(Math.random() * 6) + 1;
+      changingLines = [randomLine];
+      transHex = getTransformedHexagram(priHex, changingLines) || priHex;
+    } else {
+      // Các động hào khác (2..6 hào) cũng random tương tự từ hào 1 đến hào 6
+      const allLines = [1, 2, 3, 4, 5, 6];
+      for (let i = allLines.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [allLines[i], allLines[j]] = [allLines[j], allLines[i]];
+      }
+      changingLines = allLines.slice(0, numChanging).sort((a, b) => a - b);
+      transHex = getTransformedHexagram(priHex, changingLines) || priHex;
     }
 
     const primaryCard: DynamicCardItem = {
@@ -204,60 +221,55 @@ function drawCardsForMode(mode: SpreadMode): DynamicCardItem[] {
       hexNumber: transHex.number,
       symbol: transHex.symbol,
       hanzi: transHex.hanzi || transHex.name,
-      name: `Quẻ Biến: ${transHex.name}`,
-      sub: `Biến Quái • Định hướng tương lai (#${transHex.number})`,
+      name: changingLines.length === 0 ? `Quẻ Biến (Đồng Quẻ Chủ): ${transHex.name}` : `Quẻ Biến: ${transHex.name}`,
+      sub: changingLines.length === 0 ? `Biến Quái • Động 0 hào đồng Bản Quái (#${transHex.number})` : `Biến Quái • Định hướng tương lai (#${transHex.number})`,
       desc: `【Biến Quái: Định Hướng Tương Lai】Quái từ: "${transHex.judgment}" | Đại Tượng: "${transHex.image}" — ${transHex.overview || transHex.advice}`,
       img: `/assets/oss/${transHex.number}/${transHex.number}a.webp`,
       backImg: `/assets/oss/${transHex.number}/${transHex.number}b.webp`,
-      positionLabel: "Quẻ Biến (Biến Quái)",
-      positionDesc: "Định hướng xu thế phát triển và kết quả chuyển dịch",
+      positionLabel: changingLines.length === 0 ? "Quẻ Biến (Đồng Quẻ Chủ)" : "Quẻ Biến (Biến Quái)",
+      positionDesc: changingLines.length === 0 ? "Động 0 hào: Quẻ biến giữ nguyên quẻ chủ, lấy tĩnh chế động" : "Định hướng xu thế phát triển và kết quả chuyển dịch",
     };
 
-    // 3. Các lá hào từ (ở 384 lá bài hào từ) thay đổi để thành quẻ biến theo thứ tự từ thấp Sơ tới hào Lục
-    const priLines = Array.isArray(priHex?.lines) && priHex.lines.length === 6 ? priHex.lines : [1, 1, 1, 1, 1, 1];
-    const transLines = Array.isArray(transHex?.lines) && transHex.lines.length === 6 ? transHex.lines : [1, 1, 1, 1, 1, 1];
+    // 3. Các lá hào từ (ở 384 lá bài hào từ) thay đổi theo các hào động AI đã chọn
     const changingYaoCards: DynamicCardItem[] = [];
-    for (let i = 0; i < 6; i++) {
-      const lineNum = i + 1;
-      if (priLines[i] !== transLines[i]) {
-        const isYangToYin = priLines[i] === 1;
-        const lineMeaning = priHex.lineMeanings?.find((m) => m.line === lineNum);
-        const yaoName = lineMeaning?.name || `Hào ${lineNum}`;
-        changingYaoCards.push({
-          id: `thapla-yao-${priHex.number}-${lineNum}`,
-          type: "yao",
-          hexNumber: priHex.number,
-          yaoNumber: lineNum,
-          symbol: priHex.symbol,
-          hanzi: yaoName,
-          name: `Hào ${lineNum}: ${priHex.name} · ${yaoName}`,
-          sub: `Hào Động • Lời khuyên then chốt (${isYangToYin ? "⚊ Dương ➔ ⚏ Âm" : "⚏ Âm ➔ ⚊ Dương"})`,
-          desc: `【Hào Động: Lời Khuyên Then Chốt】Hào từ: "${lineMeaning?.text || ""}" — ${lineMeaning?.meaning || ""}${lineMeaning?.detailedExplanation ? ` | Biến số mấu chốt: ${lineMeaning.detailedExplanation}` : ""}`,
-          img: `/assets/oss/${priHex.number}/${priHex.number}-${lineNum}a.webp`,
-          backImg: `/assets/oss/${priHex.number}/${priHex.number}-${lineNum}b.webp`,
-          positionLabel: `Hào Động: Hào ${lineNum}`,
-          positionDesc: `Bước ngoặt biến dịch then chốt tại vị trí Hào ${lineNum}`,
-        });
-      }
-    }
+    changingLines.forEach((lineNum) => {
+      const isYangToYin = priHex.lines?.[lineNum - 1] === 1;
+      const lineMeaning = priHex.lineMeanings?.find((m) => m.line === lineNum);
+      const yaoName = lineMeaning?.name || `Hào ${lineNum}`;
+      changingYaoCards.push({
+        id: `thapla-yao-${priHex.number}-${lineNum}`,
+        type: "yao",
+        hexNumber: priHex.number,
+        yaoNumber: lineNum,
+        symbol: priHex.symbol,
+        hanzi: yaoName,
+        name: `Hào ${lineNum}: ${priHex.name} · ${yaoName}`,
+        sub: `Hào Động • Lời khuyên then chốt (${isYangToYin ? "⚊ Dương ➔ ⚏ Âm" : "⚏ Âm ➔ ⚊ Dương"})`,
+        desc: `【Hào Động: Lời Khuyên Then Chốt】Hào từ: "${lineMeaning?.text || ""}" — ${lineMeaning?.meaning || ""}${lineMeaning?.detailedExplanation ? ` | Biến số mấu chốt: ${lineMeaning.detailedExplanation}` : ""}`,
+        img: `/assets/oss/${priHex.number}/${priHex.number}-${lineNum}a.webp`,
+        backImg: `/assets/oss/${priHex.number}/${priHex.number}-${lineNum}b.webp`,
+        positionLabel: `Hào Động: Hào ${lineNum}`,
+        positionDesc: `Bước ngoặt biến dịch then chốt do AI phân định tại vị trí Hào ${lineNum}`,
+      });
+    });
 
     if (changingYaoCards.length === 0) {
       const defaultLine = 1;
       const lineMeaning = priHex.lineMeanings?.find((m) => m.line === defaultLine);
       changingYaoCards.push({
-        id: `thapla-yao-${priHex.number}-${defaultLine}`,
+        id: `thapla-yao-${priHex.number}-tinh`,
         type: "yao",
         hexNumber: priHex.number,
         yaoNumber: defaultLine,
         symbol: priHex.symbol,
-        hanzi: lineMeaning?.name || "Hào Sơ",
-        name: `${priHex.name} · ${lineMeaning?.name || "Hào Sơ"}`,
-        sub: "Quẻ Tĩnh • Kiên định không biến",
-        desc: `${lineMeaning?.text || ""} — ${lineMeaning?.meaning || ""}`,
+        hanzi: "Quẻ Tĩnh",
+        name: `${priHex.name} · Lục Hào Toàn Tĩnh`,
+        sub: "AI Động 0 Hào • Quẻ Biến vẫn là Quẻ Chủ",
+        desc: `Toàn quẻ không có hào động. Giữ vững tâm tĩnh, dĩ bất biến ứng vạn biến, bám sát Thoán Từ: "${priHex.judgment}" — ${lineMeaning?.meaning || priHex.overview || ""}`,
         img: `/assets/oss/${priHex.number}/${priHex.number}-${defaultLine}a.webp`,
         backImg: `/assets/oss/${priHex.number}/${priHex.number}-${defaultLine}b.webp`,
-        positionLabel: "Hào Tĩnh: Hào 1",
-        positionDesc: "Điểm khởi đầu vững vàng, thuận theo đạo tĩnh",
+        positionLabel: "Hào Tĩnh: 0 Hào Động",
+        positionDesc: "Không có biến động, cục diện vững vàng, lấy tĩnh chế động",
       });
     }
 
@@ -564,8 +576,10 @@ async function formatSpreadForAI(
   cardsList: DynamicCardItem[],
   currentMode: SpreadMode,
   isCard2ReversedState: boolean = false,
-  includeFullBakhKhoa: boolean = false
+  includeFullBakhKhoa: boolean = false,
+  userQuestion?: string
 ): Promise<string> {
+  const cleanedQuestion = userQuestion?.trim();
   // Chỉ tải bài viết bách khoa chuyên sâu khi đã đắc pháp nghi thức (Kính Thiên, Kính Địa, Kính Nhân)
   const articles: (CardArticleData | null)[] = includeFullBakhKhoa
     ? await Promise.all(cardsList.map((c) => fetchCardArticleSections(c)))
@@ -576,6 +590,10 @@ async function formatSpreadForAI(
   if (currentMode === "that_tinh") {
     const lines: string[] = [];
     lines.push(`=== THÔNG TIN TRẢI BÀI TRẬN PHÁP THẤT TINH (7 LÁ CHU DỊCH${bakhKhoaNotice}) ===`);
+    if (cleanedQuestion) {
+      lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
+      lines.push(`"${cleanedQuestion}"\n`);
+    }
     lines.push(`Khẩu quyết: Thất Tinh Bắc Đẩu soi chiếu 7 phương diện cuộc đời: Quá khứ, Bản thân hiện tại, Diễn biến tiếp theo, Lá gợi ý, Kết quả, Môi trường khách quan và Điểm mù thiếu sót.\n`);
     cardsList.forEach((c, idx) => {
       const pos = THAT_TINH_POSITIONS[idx] || { label: `Lá ${idx + 1}`, sub: "", desc: "" };
@@ -594,17 +612,27 @@ async function formatSpreadForAI(
     });
     lines.push(`========================================`);
     lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI]:`);
+    if (cleanedQuestion) {
+      lines.push(`▶ Trọng tâm giải đáp: Tập trung luận giải và tháo gỡ trực diện câu hỏi/tâm niệm: "${cleanedQuestion}"`);
+    }
     lines.push(`Xin hãy phân tích trải bài Trận Pháp Thất Tinh theo quan hệ nhân quả tương sinh tương khắc giữa 7 vị trí (sử dụng đầy đủ dữ liệu Thoán Từ, Đại Tượng, Hào Từ, Ngũ Hành, Thời vận${includeFullBakhKhoa ? ", Cửu Nhị Luận Giải và Chiêm đoán 4 phương diện" : ""}):`);
     lines.push(`1. Nền tảng quá khứ (Lá 1) và thực trạng tâm thế bản thân hiện tại (Lá 2).`);
     lines.push(`2. Chiều hướng diễn biến sắp tới (Lá 3) và tác động từ môi trường bên ngoài (Lá 6).`);
     lines.push(`3. Nhận diện điểm mù / thiếu sót cốt lõi của bản thân (Lá 7) để khắc phục.`);
     lines.push(`4. Triển khai phương châm hành động mấu chốt theo Lá Bài Gợi Ý (Lá 4) nhằm đạt được thành tựu kết quả viên mãn (Lá 5).`);
+    if (cleanedQuestion) {
+      lines.push(`5. Đúc kết lời khuyên và câu trả lời cụ thể, sáng rõ cho câu hỏi tâm niệm trên.`);
+    }
     return lines.join("\n");
   }
 
   if (currentMode === "thap_tinh") {
     const lines: string[] = [];
     lines.push(`=== THÔNG TIN TRẢI BÀI TRẬN PHÁP THẬP TINH (10 LÁ CELTIC CROSS CHU DỊCH${bakhKhoaNotice}) ===`);
+    if (cleanedQuestion) {
+      lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
+      lines.push(`"${cleanedQuestion}"\n`);
+    }
     lines.push(`Khẩu quyết: Tâm điểm thập tự kết hợp chuỗi thời vận 10 vị thế nhân duyên.`);
     lines.push(`* QUY CHUẨN ĐẶC BIỆT LÁ THỨ 2: Chiều Xuôi là HỖ TRỢ (Trợ lực tương sinh), Chiều Ngược là TRỞ NGẠI (Thử thách, rào cản chắn ngang).`);
     lines.push(`* Trạng thái Lá 2 hiện thời: [${isCard2ReversedState ? "CHIỀU NGƯỢC: TRỞ NGẠI / RÀO CẢN" : "CHIỀU XUÔI: HỖ TRỢ / TRỢ LỰC TƯƠNG SINH"}]\n`);
@@ -627,11 +655,17 @@ async function formatSpreadForAI(
     });
     lines.push(`========================================`);
     lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI]:`);
+    if (cleanedQuestion) {
+      lines.push(`▶ Trọng tâm giải đáp: Tập trung luận giải và tháo gỡ trực diện câu hỏi/tâm niệm: "${cleanedQuestion}"`);
+    }
     lines.push(`Xin hãy phân tích trải bài Trận Pháp Thập Tinh một cách sâu sắc và toàn diện (sử dụng đầy đủ dữ liệu Thoán Từ, Đại Tượng, Hào Từ, Ngũ Hành, Thời vận${includeFullBakhKhoa ? ", Cửu Nhị Luận Giải và Chiêm đoán 4 phương diện" : ""}):`);
     lines.push(`1. Phân tích cốt lõi tâm điểm: Tình huống hiện tại (Lá 1) và lực tác động trực diện của Lá 2 (${isCard2ReversedState ? "TRỞ NGẠI: thử thách, chướng ngại vật cần vượt qua" : "HỖ TRỢ: trợ lực thuận lợi, yếu tố tương sinh thúc đẩy"}).`);
     lines.push(`2. Mối liên hệ đa chiều: Yếu tố bên ngoài (Lá 3), Góc khuất chưa biết (Lá 4), Nguồn gốc trước đây (Lá 5), Tương lai tiếp theo (Lá 6).`);
     lines.push(`3. Đại cục vận trình: Vận hạn năm nay (Lá 7), Góc nhìn xã hội / người ngoài (Lá 8) và Kết quả cuối cùng (Lá 9).`);
     lines.push(`4. Đúc kết minh triết từ Lá Bài Khuyên Bảo (Lá 10) để đưa ra chiến lược hành động tối ưu nhất.`);
+    if (cleanedQuestion) {
+      lines.push(`5. Đưa ra câu trả lời dứt khoát và kết luận sáng suốt nhất cho câu hỏi/tâm niệm của đương số.`);
+    }
     return lines.join("\n");
   }
 
@@ -645,7 +679,12 @@ async function formatSpreadForAI(
 
     const lines: string[] = [];
     lines.push(`=== BẢNG LUẬN GIẢI THÁP LA KINH DỊCH (周易塔羅${bakhKhoaNotice}) ===`);
+    if (cleanedQuestion) {
+      lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
+      lines.push(`"${cleanedQuestion}"\n`);
+    }
     lines.push(`Cấu trúc: Quẻ Chủ & Quẻ Biến song song Trên - Dưới • Dải Hào Động (Bộ 384 Lá) kế bên Quẻ Chủ`);
+    lines.push(`Thứ tự đọc chiêm bốc: 1. Bản Quái (Quẻ Chủ) ➔ 2. Hào Động (Bước Ngoặt) ➔ 3. Biến Quái (Quẻ Biến)\n`);
     lines.push(`Thứ tự đọc chiêm bốc: 1. Bản Quái (Quẻ Chủ) ➔ 2. Hào Động (Bước Ngoặt) ➔ 3. Biến Quái (Quẻ Biến)\n`);
 
     if (!includeFullBakhKhoa) {
@@ -789,10 +828,16 @@ async function formatSpreadForAI(
 
     lines.push(`========================================`);
     lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI (THEO PHƯƠNG PHÁP THÁP LA KINH DỊCH)]:`);
+    if (cleanedQuestion) {
+      lines.push(`▶ Trọng tâm giải đáp: Tập trung luận giải và tháo gỡ dứt khoát câu hỏi/tâm niệm: "${cleanedQuestion}"`);
+    }
     lines.push(`Xin hãy phân tích trải bài Tháp La Kinh Dịch theo đúng 3 tầng thứ tự và ý nghĩa thực tiễn trong đời sống:`);
     lines.push(`1. BẢN QUÁI (Định vị bối cảnh): Dựa vào Thoán Từ (Quái Từ), Đại Tượng Truyện và Luận giải chuyên sâu, nhận diện bản chất loại hoàn cảnh thực tại đương số đang đối mặt. Cục diện đang ở đâu? Cơ hội và trở lực tiềm ẩn xung quanh là gì?`);
     lines.push(`2. HÀO ĐỘNG (Lời khuyên then chốt): Dựa vào Hào Từ của chính các hào biến động (phân tích tuần tự từ Hào Sơ lên Hào Lục). Đâu là trọng tâm hành động và biến số mấu chốt đương số cần lưu tâm? Chỉ rõ việc nên làm, việc cần tránh và thời điểm chuyển hóa quyết định.`);
     lines.push(`3. BIẾN QUÁI (Định hướng tương lai): Dựa vào Quái Từ của Quẻ Biến, dự báo xu thế phát triển tiếp theo sau khi sự chuyển hóa hoàn tất. Đưa ra chiến lược tổng thể và tâm thế sáng suốt nhất để đương số chủ động kiến tạo cát tường.`);
+    if (cleanedQuestion) {
+      lines.push(`4. Đúc kết lời đáp trực tiếp cho việc đương số đang tâm niệm hỏi.`);
+    }
 
     return lines.join("\n");
   }
@@ -835,7 +880,13 @@ async function formatSpreadForAI(
 
   const lines: string[] = [];
   lines.push(`=== THÔNG TIN TRẢI BÀI KINH DỊCH (THỨ TỰ TỪ TRÁI SANG PHẢI${bakhKhoaNotice}) ===`);
-  lines.push(`Trải bài: ${getSpreadName(currentMode)} | Số lượng: ${cardsList.length} lá\n`);
+  lines.push(`Trải bài: ${getSpreadName(currentMode)} | Số lượng: ${cardsList.length} lá`);
+  if (cleanedQuestion) {
+    lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
+    lines.push(`"${cleanedQuestion}"\n`);
+  } else {
+    lines.push("");
+  }
 
   cardsList.forEach((c, idx) => {
     const pos = getPositionLabel(idx, cardsList.length);
@@ -855,11 +906,17 @@ async function formatSpreadForAI(
 
   lines.push(`========================================`);
   lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI]:`);
+  if (cleanedQuestion) {
+    lines.push(`▶ Trọng tâm giải đáp: Tập trung luận giải và tháo gỡ trực diện câu hỏi/tâm niệm: "${cleanedQuestion}"`);
+  }
   lines.push(`Xin hãy phân tích trải bài Kinh Dịch trên theo đúng thứ tự từ trái sang phải (dựa trên đầy đủ dữ liệu quẻ tượng, Thoán Từ, Đại Tượng, Hào Từ, Ngũ hành${includeFullBakhKhoa ? ", Cửu Nhị Luận Giải và Chiêm đoán 4 phương diện" : ""}):`);
   lines.push(`1. Luận giải ý nghĩa chi tiết từng lá bài theo vị trí tương ứng.`);
   lines.push(`2. Phân tích mối liên kết và dòng chảy chuyển dịch năng lượng từ lá bài bên trái sang lá bài bên phải.`);
   lines.push(`3. Đánh giá hoàn cảnh hiện tại, nguy cơ tiềm ẩn và cơ hội phát triển.`);
   lines.push(`4. Đưa ra lời khuyên hành động thực tế, thấu đáo và sáng suốt nhất theo triết lý Kinh Dịch.`);
+  if (cleanedQuestion) {
+    lines.push(`5. Đưa ra lời khuyên và câu trả lời cụ thể, sáng rõ cho câu hỏi tâm niệm trên.`);
+  }
 
   return lines.join("\n");
 }
@@ -1232,6 +1289,22 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const [copiedSingle, setCopiedSingle] = useState(false);
   const [copiedToast, setCopiedToast] = useState<string | null>(null);
 
+  /* Nội dung tâm niệm / Câu hỏi cho AI */
+  const [userIntentQuestion, setUserIntentQuestion] = useState(() => {
+    try {
+      return localStorage.getItem("cuunhi_user_intent_question") || "";
+    } catch {
+      return "";
+    }
+  });
+
+  const handleQuestionChange = useCallback((val: string) => {
+    setUserIntentQuestion(val);
+    try {
+      localStorage.setItem("cuunhi_user_intent_question", val);
+    } catch {}
+  }, []);
+
   /* Trigger tick ref for recalculating physics */
   const requestTickRef = useRef<() => void>(() => {});
   const renderFullSpreadRef = useRef<() => void>(() => {});
@@ -1360,101 +1433,202 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       }
 
       if (mode === "thap_la") {
-
         // ── CHẾ ĐỘ: THÁP LA KINH DỊCH ──
-        // Quẻ Biến LUÔN ở DƯỚI song song tuyệt đối (rotate 0deg, trùng tọa độ X, opacity 1) với Quẻ Chủ (Quẻ Chính ở trên).
-        // Kế bên Quẻ Chủ là dải các lá bài Hào Từ (ở 384 lá bài hào từ) thay đổi từ Hào Sơ đến Hào Lục.
-        // TỰ ĐỘNG THU NHỎ KHI XUẤT HIỆN NHIỀU LÁ BÀI (tối đa 8 lá bài) để vừa vặn khung hình cả máy tính và điện thoại.
-        const isSmallScreen = w < 860;
-        const mobFactor = w < 380 ? 0.76 : w < 440 ? 0.88 : 1.0;
+        // Tối ưu hóa đặc biệt cho Điện thoại (Mobile) và Máy tính bảng (Tablet):
+        // Sắp xếp các lá bài có toạ độ độc lập, không chồng lấn, thấy rõ 100% TÊN QUẺ VÀ HÀO ĐỘNG từng lá!
         const yaoCount = cardCount - 2;
 
-        if (isSmallScreen) {
-          // ── MOBILE / MÀN HÌNH NHỎ (ĐIỆN THOẠI) ──
-          // Tự động thu nhỏ linh hoạt theo số lượng lá bài
-          let baseScaleMob = 0.74;
-          if (yaoCount >= 5) {
-            baseScaleMob = 0.54; // 7-8 lá bài (nhiều lá): thu nhỏ 0.54 để trọn vẹn màn hình
-          } else if (yaoCount >= 3) {
-            baseScaleMob = 0.62; // 5-6 lá bài: thu nhỏ vừa vặn 0.62
-          } else {
-            baseScaleMob = 0.72; // 3-4 lá bài: hiển thị thoải mái 0.72
-          }
+        if (w < 640) {
+          // ── 1. ĐIỆN THOẠI THÔNG MINH (MOBILE: w < 640px) ──
+          // Bố cục ma trận phân tầng rõ nét:
+          // Hàng 1 (trên cùng): Quẻ Chủ (Bản Quái) & Quẻ Biến (Biến Quái) song song cạnh nhau, to rõ tên quẻ.
+          // Hàng 2 & 3: Các lá Hào Động được dàn đều theo lưới 2 hoặc 3 cột, tuyệt đối không bị đè che khuất nhau.
+          const scaleMob = yaoCount >= 5 ? 0.44 : yaoCount >= 3 ? 0.48 : 0.54;
+          const scaleYaoMob = scaleMob * 0.96;
 
-          // Điều chỉnh theo độ phân giải màn hình điện thoại
-          if (w < 380) baseScaleMob *= 0.88;
-          else if (w < 440) baseScaleMob *= 0.94;
-          if (vh < 700) baseScaleMob *= 0.90;
+          // Hàng 1: Quẻ Chủ & Quẻ Biến
+          const yTopMob = (yaoCount === 0 ? 0 : yaoCount <= 2 ? -75 : -110) * f;
+          const xPriMob = -70 * f;
+          const xTransMob = 70 * f;
 
-          const scaleHexMob = Math.max(0.46, Math.min(0.75, baseScaleMob));
-          const scaleYaoMob = scaleHexMob * 0.92;
-
-          const cardHMob = 224 * scaleHexMob;
-          const cardWMob = 144 * scaleHexMob;
-          const xOffsetMob = Math.min(95, cardWMob * 0.62 + 14) * mobFactor;
-          const xCol0 = -xOffsetMob * f;
-          const xYaoMob = xOffsetMob * f;
-
-          // Khoảng cách trục dọc giữa Quẻ Chủ và Quẻ Biến (tự co giãn vừa vặn chiều cao)
-          const distYMob = Math.max(130, cardHMob + 22);
-          const y0 = (-distYMob / 2) * f;
-          const y1 = (distYMob / 2) * f;
-
-          // 1. Quẻ Chủ (Quẻ Chính) ở trên
           if (slots[0]) {
-            slots[0].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${y0.toFixed(1)}px, 20px) rotate(0deg) scale(${scaleHexMob.toFixed(3)})`;
+            slots[0].style.transform = `perspective(1200px) translate3d(${xPriMob.toFixed(1)}px, ${yTopMob.toFixed(1)}px, 20px) rotate(0deg) scale(${scaleMob.toFixed(3)})`;
             slots[0].style.opacity = "1";
             slots[0].style.pointerEvents = "auto";
-            slots[0].style.zIndex = "18";
+            slots[0].style.zIndex = "22";
           }
-
-          // 2. Quẻ Biến LUÔN ở dưới song song với Quẻ Chính (Cùng toạ độ X, rotate 0deg, opacity 1)
           if (slots[1]) {
-            slots[1].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${y1.toFixed(1)}px, 20px) rotate(0deg) scale(${scaleHexMob.toFixed(3)})`;
+            slots[1].style.transform = `perspective(1200px) translate3d(${xTransMob.toFixed(1)}px, ${yTopMob.toFixed(1)}px, 20px) rotate(0deg) scale(${scaleMob.toFixed(3)})`;
             slots[1].style.opacity = (f > 0.05 ? 1 : 0.85 + f * 0.15).toFixed(3);
             slots[1].style.pointerEvents = "auto";
-            slots[1].style.zIndex = "17";
+            slots[1].style.zIndex = "21";
           }
 
-          // 3. Các lá hào từ (ở 384 lá bài hào từ) ở cột bên phải theo thứ tự từ Sơ đến Lục
+          // Dải Hào Động bên dưới:
           if (yaoCount === 1) {
-            // Chỉ 1 lá: đặt ngang hàng Quẻ Chủ
+            // Động 1 hào: Lá hào đặt ngay chính giữa hàng 2
             if (slots[2]) {
-              slots[2].style.transform = `perspective(1200px) translate3d(${xYaoMob.toFixed(1)}px, ${y0.toFixed(1)}px, 12px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
+              const yYao = 75 * f;
+              slots[2].style.transform = `perspective(1200px) translate3d(0px, ${yYao.toFixed(1)}px, 15px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
               slots[2].style.opacity = (f > 0.1 ? 1 : f * 10).toFixed(3);
               slots[2].style.pointerEvents = f > 0.25 ? "auto" : "none";
-              slots[2].style.zIndex = "12";
+              slots[2].style.zIndex = "18";
             }
           } else if (yaoCount === 2) {
-            // 2 lá: lá 1 ngang hàng Quẻ Chủ, lá 2 ngang hàng Quẻ Biến
+            // Động 2 hào: Hàng 2 gồm 2 lá cân xứng 2 bên
+            const yYao = 75 * f;
             if (slots[2]) {
-              slots[2].style.transform = `perspective(1200px) translate3d(${xYaoMob.toFixed(1)}px, ${y0.toFixed(1)}px, 12px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
+              slots[2].style.transform = `perspective(1200px) translate3d(${(-70 * f).toFixed(1)}px, ${yYao.toFixed(1)}px, 15px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
               slots[2].style.opacity = (f > 0.1 ? 1 : f * 10).toFixed(3);
               slots[2].style.pointerEvents = f > 0.25 ? "auto" : "none";
-              slots[2].style.zIndex = "12";
+              slots[2].style.zIndex = "17";
             }
             if (slots[3]) {
-              slots[3].style.transform = `perspective(1200px) translate3d(${xYaoMob.toFixed(1)}px, ${y1.toFixed(1)}px, 12px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
+              slots[3].style.transform = `perspective(1200px) translate3d(${(70 * f).toFixed(1)}px, ${yYao.toFixed(1)}px, 15px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
               slots[3].style.opacity = (f > 0.1 ? 1 : f * 10).toFixed(3);
               slots[3].style.pointerEvents = f > 0.25 ? "auto" : "none";
-              slots[3].style.zIndex = "13";
+              slots[3].style.zIndex = "18";
             }
-          } else {
-            // 3 lá trở lên: trải đều theo chiều dọc từ y0 đến y1
-            const stepY = ((distYMob) / Math.max(1, yaoCount - 1)) * f;
-            for (let i = 0; i < yaoCount; i++) {
+          } else if (yaoCount === 3) {
+            // Động 3 hào: Hàng 2 gồm 3 lá xếp ngang 3 cột
+            const yYao = 65 * f;
+            const xStep3 = 96 * f;
+            for (let i = 0; i < 3; i++) {
               const sIdx = i + 2;
               if (slots[sIdx]) {
-                const yYao = (y0 + i * stepY);
-                slots[sIdx].style.transform = `perspective(1200px) translate3d(${xYaoMob.toFixed(1)}px, ${yYao.toFixed(1)}px, 12px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
+                const xPos = (-xStep3 + i * xStep3);
+                slots[sIdx].style.transform = `perspective(1200px) translate3d(${xPos.toFixed(1)}px, ${yYao.toFixed(1)}px, 15px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
                 slots[sIdx].style.opacity = (f > 0.1 ? 1 : f * 10).toFixed(3);
                 slots[sIdx].style.pointerEvents = f > 0.25 ? "auto" : "none";
-                slots[sIdx].style.zIndex = (10 + i).toString();
+                slots[sIdx].style.zIndex = (15 + i).toString();
               }
+            }
+          } else if (yaoCount === 4) {
+            // Động 4 hào: 2 hàng hào (mỗi hàng 2 lá)
+            const yRow1 = 15 * f;
+            const yRow2 = 135 * f;
+            const xDist = 70 * f;
+            const coords = [
+              { x: -xDist, y: yRow1 },
+              { x: xDist, y: yRow1 },
+              { x: -xDist, y: yRow2 },
+              { x: xDist, y: yRow2 }
+            ];
+            coords.forEach((pt, i) => {
+              const sIdx = i + 2;
+              if (slots[sIdx]) {
+                slots[sIdx].style.transform = `perspective(1200px) translate3d(${pt.x.toFixed(1)}px, ${pt.y.toFixed(1)}px, 15px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
+                slots[sIdx].style.opacity = (f > 0.1 ? 1 : f * 10).toFixed(3);
+                slots[sIdx].style.pointerEvents = f > 0.25 ? "auto" : "none";
+                slots[sIdx].style.zIndex = (15 + i).toString();
+              }
+            });
+          } else if (yaoCount === 5) {
+            // Động 5 hào: Hàng 2 (3 lá: Hào 1, 2, 3) & Hàng 3 (2 lá: Hào 4, 5)
+            const yRow1 = 10 * f;
+            const yRow2 = 125 * f;
+            const xStep3 = 96 * f;
+            const coords = [
+              { x: -xStep3, y: yRow1 },
+              { x: 0, y: yRow1 },
+              { x: xStep3, y: yRow1 },
+              { x: -55 * f, y: yRow2 },
+              { x: 55 * f, y: yRow2 }
+            ];
+            coords.forEach((pt, i) => {
+              const sIdx = i + 2;
+              if (slots[sIdx]) {
+                slots[sIdx].style.transform = `perspective(1200px) translate3d(${pt.x.toFixed(1)}px, ${pt.y.toFixed(1)}px, 15px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
+                slots[sIdx].style.opacity = (f > 0.1 ? 1 : f * 10).toFixed(3);
+                slots[sIdx].style.pointerEvents = f > 0.25 ? "auto" : "none";
+                slots[sIdx].style.zIndex = (14 + i).toString();
+              }
+            });
+          } else if (yaoCount === 6) {
+            // Động 6 hào: Hàng 2 (3 lá: Hào 1, 2, 3) & Hàng 3 (3 lá: Hào 4, 5, 6)
+            const yRow1 = 5 * f;
+            const yRow2 = 120 * f;
+            const xStep3 = 98 * f;
+            const coords = [
+              { x: -xStep3, y: yRow1 },
+              { x: 0, y: yRow1 },
+              { x: xStep3, y: yRow1 },
+              { x: -xStep3, y: yRow2 },
+              { x: 0, y: yRow2 },
+              { x: xStep3, y: yRow2 }
+            ];
+            coords.forEach((pt, i) => {
+              const sIdx = i + 2;
+              if (slots[sIdx]) {
+                slots[sIdx].style.transform = `perspective(1200px) translate3d(${pt.x.toFixed(1)}px, ${pt.y.toFixed(1)}px, 15px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
+                slots[sIdx].style.opacity = (f > 0.1 ? 1 : f * 10).toFixed(3);
+                slots[sIdx].style.pointerEvents = f > 0.25 ? "auto" : "none";
+                slots[sIdx].style.zIndex = (14 + i).toString();
+              }
+            });
+          }
+        } else if (w < 1024) {
+          // ── 2. MÁY TÍNH BẢNG (TABLET: 640px <= w < 1024px) ──
+          // Bố cục ma trận 4 cột x 2 hàng:
+          // Cột 0: Quẻ Chủ (trên) & Quẻ Biến (dưới)
+          // Các cột 1, 2, 3: Dải hào từ xếp song song tương ứng ở hàng trên và hàng dưới!
+          const scaleTab = yaoCount >= 5 ? 0.58 : 0.65;
+          const scaleYaoTab = scaleTab * 0.95;
+          const cardWTab = 180 * scaleTab;
+          const colStepTab = (cardWTab + 18);
+          const topCols = 1 + (yaoCount <= 3 ? yaoCount : Math.min(3, Math.ceil(yaoCount / 2)));
+          const startXTab = -((topCols - 1) * colStepTab) / 2;
+
+          const yTopTab = -90 * f;
+          const yBottomTab = 90 * f;
+          const xCol0Tab = startXTab * f;
+
+          // 1. Quẻ Chủ ở trên bên trái
+          if (slots[0]) {
+            slots[0].style.transform = `perspective(1200px) translate3d(${xCol0Tab.toFixed(1)}px, ${yTopTab.toFixed(1)}px, 20px) rotate(0deg) scale(${scaleTab.toFixed(3)})`;
+            slots[0].style.opacity = "1";
+            slots[0].style.pointerEvents = "auto";
+            slots[0].style.zIndex = "22";
+          }
+          // 2. Quẻ Biến ở dưới bên trái song song
+          if (slots[1]) {
+            slots[1].style.transform = `perspective(1200px) translate3d(${xCol0Tab.toFixed(1)}px, ${yBottomTab.toFixed(1)}px, 20px) rotate(0deg) scale(${scaleTab.toFixed(3)})`;
+            slots[1].style.opacity = (f > 0.05 ? 1 : 0.85 + f * 0.15).toFixed(3);
+            slots[1].style.pointerEvents = "auto";
+            slots[1].style.zIndex = "21";
+          }
+
+          // 3. Các lá hào xếp thành các cột bên phải
+          for (let i = 0; i < yaoCount; i++) {
+            const sIdx = i + 2;
+            if (slots[sIdx]) {
+              let xYao = 0;
+              let yYao = 0;
+              if (yaoCount <= 3) {
+                // Xếp ngang hàng Quẻ Chủ
+                const col = i + 1;
+                xYao = (startXTab + col * colStepTab) * f;
+                yYao = yTopTab;
+              } else {
+                // Dàn 2 hàng: nửa đầu hàng trên (Hào 1..3), nửa sau hàng dưới (Hào 4..6)
+                if (i < 3) {
+                  const col = i + 1;
+                  xYao = (startXTab + col * colStepTab) * f;
+                  yYao = yTopTab;
+                } else {
+                  const col = (i - 3) + 1;
+                  xYao = (startXTab + col * colStepTab) * f;
+                  yYao = yBottomTab;
+                }
+              }
+              slots[sIdx].style.transform = `perspective(1200px) translate3d(${xYao.toFixed(1)}px, ${yYao.toFixed(1)}px, 15px) rotate(0deg) scale(${scaleYaoTab.toFixed(3)})`;
+              slots[sIdx].style.opacity = (f > 0.1 ? 1 : f * 10).toFixed(3);
+              slots[sIdx].style.pointerEvents = f > 0.25 ? "auto" : "none";
+              slots[sIdx].style.zIndex = (12 + i).toString();
             }
           }
         } else {
-          // ── DESKTOP / MÀN HÌNH LỚN (MÁY TÍNH / LAPTOP) ──
+          // ── 3. MÁY TÍNH ĐỂ BÀN (DESKTOP: w >= 1024px) ──
           // Tự động thu nhỏ linh hoạt theo số lượng lá bài
           let baseScaleDesk = 0.82;
           if (yaoCount >= 5) {
@@ -1490,7 +1664,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             slots[0].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${yTop.toFixed(1)}px, 25px) rotate(0deg) scale(${scaleHexDesk.toFixed(3)})`;
             slots[0].style.opacity = "1";
             slots[0].style.pointerEvents = "auto";
-            slots[0].style.zIndex = "18";
+            slots[0].style.zIndex = "22";
           }
 
           // 2. Quẻ Biến LUÔN ở dưới song song với Quẻ Chính (Cùng toạ độ X, rotate 0deg, opacity 1)
@@ -1498,7 +1672,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             slots[1].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${yBottom.toFixed(1)}px, 25px) rotate(0deg) scale(${scaleHexDesk.toFixed(3)})`;
             slots[1].style.opacity = (f > 0.05 ? 1 : 0.85 + f * 0.15).toFixed(3);
             slots[1].style.pointerEvents = "auto";
-            slots[1].style.zIndex = "17";
+            slots[1].style.zIndex = "21";
           }
 
           // 3. Các lá hào từ (ở 384 lá bài hào từ) xếp kế bên Quẻ Chủ theo thứ tự từ Sơ đến Lục
@@ -2703,7 +2877,7 @@ Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
           </div>
 
           {/* Điểm neo cho các lá bài xòe ra ở giữa phần trắng – Khoảng trắng kéo dài rộng rãi */}
-          <div className={`flex items-center justify-center pt-4 pb-4 ${mode === "that_tinh" || mode === "thap_tinh" ? "min-h-[660px] sm:min-h-[740px] md:min-h-[780px]" : "min-h-[540px] sm:min-h-[580px]"}`}>
+          <div className={`flex items-center justify-center pt-4 pb-4 ${mode === "that_tinh" || mode === "thap_tinh" || mode === "thap_la" ? "min-h-[680px] sm:min-h-[760px] md:min-h-[820px]" : "min-h-[540px] sm:min-h-[580px]"}`}>
             <div
               ref={destinyAnchorRef}
               id="destiny-card-anchor"
@@ -2734,8 +2908,8 @@ Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
           ref={stageRef}
           id="cards-stage"
           className={`relative w-full max-w-[min(1240px,96vw)] overflow-visible will-change-transform ${
-            mode === "that_tinh" || mode === "thap_tinh"
-              ? "h-[min(74vh,740px)]"
+            mode === "that_tinh" || mode === "thap_tinh" || mode === "thap_la"
+              ? "h-[min(76vh,780px)]"
               : "h-[min(56vh,500px)]"
           }`}
           style={{ pointerEvents: "none" }}
@@ -2759,12 +2933,30 @@ Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
                 setSelectedCard(card);
               }}
             >
-              {/* Nhãn vị trí trận pháp phía trên lá bài */}
+              {/* Nhãn vị trí trận pháp phía trên lá bài: Hiển thị rõ tên quẻ và hào động của từng lá bài */}
               {card.positionLabel && (
                 <div
-                  className="absolute -top-8 sm:-top-9 left-1/2 -translate-x-1/2 whitespace-nowrap text-center z-40 pointer-events-auto select-none"
+                  className="absolute -top-7 sm:-top-8 md:-top-9 left-1/2 -translate-x-1/2 whitespace-nowrap text-center z-40 pointer-events-auto select-none"
                 >
-                  {mode === "thap_tinh" && idx === 1 ? (
+                  {mode === "thap_la" ? (
+                    idx === 0 ? (
+                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-serif font-bold bg-amber-950/95 text-amber-200 border border-amber-500/80 shadow-lg backdrop-blur-sm">
+                        Quẻ Chủ: #{card.hexNumber} {card.name.replace("Quẻ Chủ: ", "")}
+                      </span>
+                    ) : idx === 1 ? (
+                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-serif font-bold bg-emerald-950/95 text-emerald-200 border border-emerald-500/80 shadow-lg backdrop-blur-sm">
+                        {card.name.includes("Đồng Quẻ Chủ")
+                          ? `Quẻ Biến (Đồng Quẻ Chủ): #${card.hexNumber}`
+                          : `Quẻ Biến: #${card.hexNumber} ${card.name.replace("Quẻ Biến: ", "")}`}
+                      </span>
+                    ) : (
+                      <span className="inline-block px-2 py-0.5 rounded-full text-[9.5px] sm:text-[11px] font-serif font-bold bg-zinc-900/95 text-amber-300 border border-[#C4963E]/80 shadow-lg backdrop-blur-sm">
+                        {card.yaoNumber && card.yaoNumber > 0
+                          ? `Hào ${card.yaoNumber}: ${card.hanzi || card.name.split("·")[1]?.trim() || `Hào ${card.yaoNumber}`}`
+                          : "Quẻ Tĩnh (0 Hào Động)"}
+                      </span>
+                    )
+                  ) : mode === "thap_tinh" && idx === 1 ? (
                     <button
                       type="button"
                       onClick={(e) => {
@@ -2794,6 +2986,21 @@ Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
                       {card.positionLabel}
                     </span>
                   )}
+                </div>
+              )}
+
+              {/* Nhãn chân thẻ bài (Bottom Badge): Đảm bảo hiển thị rõ tên quẻ và hào động ngay cả trên mobile/tablet */}
+              {mode === "thap_la" && (
+                <div className="absolute -bottom-6 sm:-bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap text-center z-30 pointer-events-none select-none">
+                  <span className="inline-block px-2 py-0.5 rounded-md text-[8.5px] sm:text-[10px] font-sans font-semibold bg-black/90 text-amber-100/90 border border-amber-500/40 shadow-sm backdrop-blur-xs">
+                    {idx === 0
+                      ? `[Bản Quái] ${card.hanzi || card.symbol || ""}`
+                      : idx === 1
+                      ? `[Biến Quái] ${card.hanzi || card.symbol || ""}`
+                      : card.yaoNumber && card.yaoNumber > 0
+                      ? `[Hào Động ${card.yaoNumber}] ${card.name.split("·")[0]?.replace("Hào", "").trim() || ""}`
+                      : "Toàn Tĩnh"}
+                  </span>
                 </div>
               )}
               <div

@@ -95,42 +95,62 @@ export class AuthService {
         }
       }
 
-      // Đảm bảo tài khoản VIP mặc định cho isabella.thanhtrang@gmail.com
-      const vipKey = "isabella.thanhtrang@gmail.com";
-      const expectedVipHash = btoa("123456");
-      if (!users[vipKey]) {
-        users[vipKey] = {
-          user: {
-            id: "usr_vip_isabella_thanhtrang",
-            email: "isabella.thanhtrang@gmail.com",
-            username: "isabella.thanhtrang",
-            name: "Isabella Thanh Trang",
-            isMember: true,
-            isAdmin: false,
-            memberTier: "vip",
-            memberExpiryDate: "2099-12-31",
-            registeredAt: Date.now(),
-            incenseSticks: 999,
-          },
-          passwordHash: expectedVipHash,
-        };
-        localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
-      } else {
-        let modified = false;
-        if (!users[vipKey].user.isMember) {
-          users[vipKey].user.isMember = true;
-          modified = true;
-        }
-        if (users[vipKey].user.memberTier !== "vip") {
-          users[vipKey].user.memberTier = "vip";
-          modified = true;
-        }
-        if (!users[vipKey].user.memberExpiryDate) {
-          users[vipKey].user.memberExpiryDate = "2099-12-31";
-          modified = true;
-        }
-        if (modified) {
+      // Đảm bảo các tài khoản VIP mặc định
+      const defaultVips = [
+        {
+          key: "isabella.thanhtrang@gmail.com",
+          id: "usr_vip_isabella_thanhtrang",
+          email: "isabella.thanhtrang@gmail.com",
+          username: "isabella.thanhtrang",
+          name: "Isabella Thanh Trang",
+          password: "123456",
+        },
+        {
+          key: "mythunt@gmail.com",
+          id: "usr_vip_mythunt",
+          email: "mythunt@gmail.com",
+          username: "mythunt",
+          name: "Mythunt",
+          password: "123456",
+        },
+      ];
+
+      for (const vip of defaultVips) {
+        const expectedVipHash = btoa(vip.password);
+        if (!users[vip.key]) {
+          users[vip.key] = {
+            user: {
+              id: vip.id,
+              email: vip.email,
+              username: vip.username,
+              name: vip.name,
+              isMember: true,
+              isAdmin: false,
+              memberTier: "vip",
+              memberExpiryDate: "2099-12-31",
+              registeredAt: Date.now(),
+              incenseSticks: 999,
+            },
+            passwordHash: expectedVipHash,
+          };
           localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+        } else {
+          let modified = false;
+          if (!users[vip.key].user.isMember) {
+            users[vip.key].user.isMember = true;
+            modified = true;
+          }
+          if (users[vip.key].user.memberTier !== "vip") {
+            users[vip.key].user.memberTier = "vip";
+            modified = true;
+          }
+          if (!users[vip.key].user.memberExpiryDate) {
+            users[vip.key].user.memberExpiryDate = "2099-12-31";
+            modified = true;
+          }
+          if (modified) {
+            localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+          }
         }
       }
     } catch {}

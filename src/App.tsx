@@ -114,7 +114,7 @@ const DIVINATION_METHODS: {
     numeral: "貳",
     title: "Tháp La Kinh Dịch",
     chinese: "塔羅周易",
-    desc: "2 bộ bài 64 quẻ (Quẻ Chủ - Quẻ Biến) song song trên dưới & dải Hào Từ biến dịch từ Sơ tới Lục",
+    desc: "Bốc Quẻ Chủ (Bản Quái) • AI ngẫu nhiên chọn 0-6 hào động • Xác lập Quẻ Biến & dải Hào Từ song song",
     toast: "Đã chọn hình thức: Tháp La Kinh Dịch (Bản Quái • Hào Động • Biến Quái)",
     badge: "Mới",
   },

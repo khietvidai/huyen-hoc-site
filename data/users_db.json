@@ -29,5 +29,20 @@
       "incenseSticks": 999
     },
     "passwordHash": "MTIzNDU2"
+  },
+  "mythunt@gmail.com": {
+    "user": {
+      "id": "usr_vip_mythunt",
+      "email": "mythunt@gmail.com",
+      "username": "mythunt",
+      "name": "Mythunt",
+      "isMember": true,
+      "isAdmin": false,
+      "memberTier": "vip",
+      "memberExpiryDate": "2099-12-31",
+      "registeredAt": 1792312000000,
+      "incenseSticks": 999
+    },
+    "passwordHash": "MTIzNDU2"
   }
 }
