@@ -377,7 +377,17 @@ async function copyToClipboard(text: string): Promise<boolean> {
 }
 
 /* ─── Cache chứa dữ liệu bài viết chuyên sâu của các quẻ & hào đã tải ─── */
-const hexArticleCache = new Map<string, { tongQuan?: string; cuuNhi?: string; chiemDoan?: string; faq?: string }>();
+interface ExtractedArticleSection {
+  title: string;
+  text: string;
+}
+
+interface CardArticleData {
+  url: string;
+  sections: ExtractedArticleSection[];
+}
+
+const hexArticleCache = new Map<string, CardArticleData>();
 
 function cleanHtmlToText(s: string): string {
   if (!s) return "";
@@ -402,7 +412,7 @@ function cleanHtmlToText(s: string): string {
     .trim();
 }
 
-async function fetchCardArticleSections(card: DynamicCardItem): Promise<{ tongQuan?: string; cuuNhi?: string; chiemDoan?: string; faq?: string } | null> {
+async function fetchCardArticleSections(card: DynamicCardItem): Promise<CardArticleData | null> {
   const slug = HEX_SLUGS[card.hexNumber] || `qiangua${card.hexNumber}`;
   const isYao = card.type === "yao" && card.yaoNumber && card.yaoNumber >= 1 && card.yaoNumber <= 6;
   const path = isYao ? `/vi/hexagram/${slug}/yao-${card.yaoNumber}/index.html` : `/vi/hexagram/${slug}/index.html`;
@@ -420,31 +430,35 @@ async function fetchCardArticleSections(card: DynamicCardItem): Promise<{ tongQu
     if (!res.ok) return null;
     const html = await res.text();
 
-    const findSection = (headingRegex: RegExp, endHeadingRegex?: RegExp) => {
-      const m = html.match(headingRegex);
-      if (!m || m.index === undefined) return "";
-      const startIdx = m.index;
-      let endIdx = html.length;
-      if (endHeadingRegex) {
-        const rest = html.substring(startIdx + m[0].length);
-        const mEnd = rest.match(endHeadingRegex);
-        if (mEnd && mEnd.index !== undefined) {
-          endIdx = startIdx + m[0].length + mEnd.index;
-        }
+    const mCol = html.match(/class=\"[^\"]*yilore-main-col[^\"]*\"/i);
+    if (!mCol || mCol.index === undefined) return null;
+    const start = mCol.index;
+    const end = html.indexOf('<footer', start);
+    const mainHtml = html.substring(start, end !== -1 ? end : undefined);
+
+    const rawSections = [...mainHtml.matchAll(/<section[\s\S]*?<\/section>/gi)];
+    const extracted: ExtractedArticleSection[] = [];
+
+    for (const s of rawSections) {
+      const sHtml = s[0];
+      const mHeading = sHtml.match(/<h[1-3][^>]*>([\s\S]*?)<\/h[1-3]>/i);
+      const title = mHeading ? mHeading[1].replace(/<[^>]+>/g, '').trim() : '';
+
+      // Bỏ qua thanh điều hướng mục lục, gợi ý liên quan hay widget gieo quẻ
+      if (!title || title.includes('Khám Phá Quẻ Liên Quan') || title.includes('Gieo Một Quẻ Dịch AI') || title.includes('Sản phẩm') || title.includes('Kho tri thức') || title.includes('Hỗ trợ')) {
+        continue;
       }
-      return cleanHtmlToText(html.substring(startIdx, endIdx));
-    };
 
-    const tongQuan = findSection(/<(?:h2|h3)[^>]*>\s*(?:Tổng Quan Hào Vị|Tổng Quan Quẻ Tượng)[\s\S]*?<\/(?:h2|h3)>/i, /<(?:h2|h3)[^>]*>\s*Cửu Nhị Luận Giải/i);
-    const cuuNhi = findSection(/<(?:h2|h3)[^>]*>\s*Cửu Nhị Luận Giải[\s\S]*?<\/(?:h2|h3)>/i, /<(?:h2|h3)[^>]*>\s*Chiêm Đoán Giải Quẻ/i);
-    const chiemDoan = findSection(/<(?:h2|h3)[^>]*>\s*Chiêm Đoán Giải Quẻ[\s\S]*?<\/(?:h2|h3)>/i, /<(?:h2|h3)[^>]*>\s*(?:Câu Hỏi Thường Gặp|Giải Nghĩa Chi Tiết 6 Hào|Các Hào Khác)/i);
-    const faq = findSection(/<(?:h2|h3)[^>]*>\s*Câu Hỏi Thường Gặp[\s\S]*?<\/(?:h2|h3)>/i, /<(?:h2|h3|footer|section)[^>]*>\s*(?:Các Hào Khác|Khám Phá Quẻ Liên Quan|Sản phẩm|Gieo Một Quẻ)/i);
+      const text = cleanHtmlToText(sHtml);
+      if (text.length > 50) {
+        extracted.push({ title, text });
+      }
+    }
 
-    const result = {
-      tongQuan: tongQuan || undefined,
-      cuuNhi: cuuNhi || undefined,
-      chiemDoan: chiemDoan || undefined,
-      faq: faq || undefined,
+    const canonicalUrl = `https://ichingtarot.com${isYao ? `/vi/hexagram/${slug}/yao-${card.yaoNumber}/` : `/vi/hexagram/${slug}/`}`;
+    const result: CardArticleData = {
+      url: canonicalUrl,
+      sections: extracted,
     };
 
     hexArticleCache.set(path, result);
@@ -460,7 +474,7 @@ function formatCardFullInfoFromHexagram(
   c: DynamicCardItem,
   posHeader?: string,
   extraBadge?: string,
-  articleSections?: { tongQuan?: string; cuuNhi?: string; chiemDoan?: string; faq?: string } | null
+  articleData?: CardArticleData | null
 ): string[] {
   const lines: string[] = [];
   const hex = HEXAGRAMS.find((h) => h.number === c.hexNumber);
@@ -528,32 +542,16 @@ function formatCardFullInfoFromHexagram(
     }
   }
 
-  // 3. Nếu có dữ liệu bài viết chuyên sâu từ bách khoa (Tổng Quan Hào Vị, Cửu Nhị Luận Giải, Chiêm Đoán, FAQ)
-  if (articleSections) {
-    if (articleSections.tongQuan) {
+  // 3. Toàn bộ thông tin bài viết chuyên sâu từ Bách khoa (Tổng quan, Cửu Nhị Luận Giải, Chiêm đoán, FAQ, Các hào)
+  if (articleData && articleData.sections && articleData.sections.length > 0) {
+    lines.push("");
+    lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+    lines.push(`【BÁCH KHOA KINH DỊCH TOÀN THƯ (NGUỒN CHI TIẾT: ${articleData.url})】`);
+    articleData.sections.forEach((sec) => {
       lines.push("");
-      lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-      lines.push(`【TỔNG QUAN HÀO VỊ / QUẢI TƯỢNG (BÁCH KHOA CHUYÊN SÂU)】`);
-      lines.push(articleSections.tongQuan);
-    }
-    if (articleSections.cuuNhi) {
-      lines.push("");
-      lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-      lines.push(`【CỬU NHỊ LUẬN GIẢI (MINH TRIẾT & ĐỊNH HƯỚNG)】`);
-      lines.push(articleSections.cuuNhi);
-    }
-    if (articleSections.chiemDoan) {
-      lines.push("");
-      lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-      lines.push(`【CHIÊM ĐOÁN GIẢI QUẺ (SỰ NGHIỆP • TÌNH CẢM • TÀI VẬN • SỨC KHỎE)】`);
-      lines.push(articleSections.chiemDoan);
-    }
-    if (articleSections.faq) {
-      lines.push("");
-      lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-      lines.push(`【CÂU HỎI THƯỜNG GẶP (FAQ)】`);
-      lines.push(articleSections.faq);
-    }
+      lines.push(`◆ ${sec.title.toUpperCase()}:`);
+      lines.push(sec.text);
+    });
   }
 
   return lines;
@@ -641,31 +639,15 @@ async function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: Spre
       if (priHex.health) lines.push(`• Sức khỏe thể chất: ${priHex.health}`);
       if (priHex.advice) lines.push(`• Lời khuyên nền tảng: ${priHex.advice}`);
 
-      if (articles[0]) {
-        if (articles[0].tongQuan) {
+      if (articles[0] && articles[0].sections && articles[0].sections.length > 0) {
+        lines.push("");
+        lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+        lines.push(`【BẢN QUÁI: TOÀN BỘ BÁCH KHOA CHUYÊN SÂU (${articles[0].url})】`);
+        articles[0].sections.forEach((sec) => {
           lines.push("");
-          lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-          lines.push(`【BẢN QUÁI: TỔNG QUAN BÁCH KHOA CHUYÊN SÂU】`);
-          lines.push(articles[0].tongQuan);
-        }
-        if (articles[0].cuuNhi) {
-          lines.push("");
-          lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-          lines.push(`【BẢN QUÁI: CỬU NHỊ LUẬN GIẢI】`);
-          lines.push(articles[0].cuuNhi);
-        }
-        if (articles[0].chiemDoan) {
-          lines.push("");
-          lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-          lines.push(`【BẢN QUÁI: CHIÊM ĐOÁN 4 PHƯƠNG DIỆN】`);
-          lines.push(articles[0].chiemDoan);
-        }
-        if (articles[0].faq) {
-          lines.push("");
-          lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-          lines.push(`【BẢN QUÁI: CÂU HỎI THƯỜNG GẶP (FAQ)】`);
-          lines.push(articles[0].faq);
-        }
+          lines.push(`◆ ${sec.title.toUpperCase()}:`);
+          lines.push(sec.text);
+        });
       }
       lines.push("");
     }
@@ -694,27 +676,15 @@ async function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: Spre
           lines.push(`  - Trọng tâm hành động & Biến số mấu chốt: ${lineMeaning.detailedExplanation}`);
         }
 
-        if (yaoArticle) {
-          if (yaoArticle.tongQuan) {
+        if (yaoArticle && yaoArticle.sections && yaoArticle.sections.length > 0) {
+          lines.push("");
+          lines.push(`  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+          lines.push(`  【HÀO ĐỘNG: TOÀN BỘ BÁCH KHOA CHUYÊN SÂU (${yaoArticle.url})】`);
+          yaoArticle.sections.forEach((sec) => {
             lines.push("");
-            lines.push(`  【TỔNG QUAN HÀO ĐỘNG BÁCH KHOA】:`);
-            lines.push(yaoArticle.tongQuan);
-          }
-          if (yaoArticle.cuuNhi) {
-            lines.push("");
-            lines.push(`  【CỬU NHỊ LUẬN GIẢI HÀO ĐỘNG】:`);
-            lines.push(yaoArticle.cuuNhi);
-          }
-          if (yaoArticle.chiemDoan) {
-            lines.push("");
-            lines.push(`  【CHIÊM ĐOÁN HÀO ĐỘNG 4 PHƯƠNG DIỆN】:`);
-            lines.push(yaoArticle.chiemDoan);
-          }
-          if (yaoArticle.faq) {
-            lines.push("");
-            lines.push(`  【FAQ HÀO ĐỘNG】:`);
-            lines.push(yaoArticle.faq);
-          }
+            lines.push(`  ◆ ${sec.title.toUpperCase()}:`);
+            lines.push(sec.text);
+          });
         }
       });
     }
@@ -738,31 +708,15 @@ async function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: Spre
       if (transHex.health) lines.push(`• Sức khỏe thể chất: ${transHex.health}`);
       if (transHex.advice) lines.push(`• Phương châm hành động sáng suốt: ${transHex.advice}`);
 
-      if (articles[1]) {
-        if (articles[1].tongQuan) {
+      if (articles[1] && articles[1].sections && articles[1].sections.length > 0) {
+        lines.push("");
+        lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+        lines.push(`【BIẾN QUÁI: TOÀN BỘ BÁCH KHOA CHUYÊN SÂU (${articles[1].url})】`);
+        articles[1].sections.forEach((sec) => {
           lines.push("");
-          lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-          lines.push(`【BIẾN QUÁI: TỔNG QUAN BÁCH KHOA CHUYÊN SÂU】`);
-          lines.push(articles[1].tongQuan);
-        }
-        if (articles[1].cuuNhi) {
-          lines.push("");
-          lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-          lines.push(`【BIẾN QUÁI: CỬU NHỊ LUẬN GIẢI】`);
-          lines.push(articles[1].cuuNhi);
-        }
-        if (articles[1].chiemDoan) {
-          lines.push("");
-          lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-          lines.push(`【BIẾN QUÁI: CHIÊM ĐOÁN 4 PHƯƠNG DIỆN】`);
-          lines.push(articles[1].chiemDoan);
-        }
-        if (articles[1].faq) {
-          lines.push("");
-          lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-          lines.push(`【BIẾN QUÁI: CÂU HỎI THƯỜNG GẶP (FAQ)】`);
-          lines.push(articles[1].faq);
-        }
+          lines.push(`◆ ${sec.title.toUpperCase()}:`);
+          lines.push(sec.text);
+        });
       }
       lines.push("");
     }
