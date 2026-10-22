@@ -12,6 +12,7 @@ import {
 } from "../data/spreads";
 import { CardVisual } from "./CardVisual";
 import { FlippableSpiritualCard } from "./FlippableSpiritualCard";
+import { CardInfoSummary } from "./CardInfoSummary";
 import { zenAudio } from "../utils/zenAudio";
 import { Camera, Check, Loader2, Sparkles, ZoomIn, Compass, Grid3X3, Calendar, RotateCw, Plus, X, Eye, CircleDot, FlipHorizontal, Settings, ChevronDown, ChevronUp } from "lucide-react";
 import { captureElementToPng } from "../utils/captureHelper";
@@ -963,6 +964,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
       const dataUrl = await captureElementToPng(targetCardsRef.current, {
         backgroundColor: "#15120E",
         pixelRatio: 2,
+        minWidth: 1140,
       });
 
       const timestamp = new Date().toISOString().slice(0, 10);
@@ -2794,6 +2796,16 @@ const SpreadCardSlot: React.FC<SpreadCardSlotProps> = ({
               Bộ #{card.deckNumber}
             </div>
           )}
+
+          {/* Thông tin chi tiết quẻ dưới lá bài */}
+          <CardInfoSummary
+            card={card}
+            isReversed={effectiveReversed}
+            deckNumber={card.deckNumber}
+            compact={true}
+            showJudgment={false}
+            className="w-full"
+          />
         </div>
 
         {/* Companion Cards placed next to it ("kế bên") - Supports multiple/recursive */}
@@ -2898,6 +2910,15 @@ const SpreadCardSlot: React.FC<SpreadCardSlotProps> = ({
                   draggable={Boolean(ctx.enableCardDrag)}
                   dragKey={ctx.dragResetKey}
                   enableHoverZoom={ctx.enableHoverZoom !== false}
+                />
+
+                {/* Thông tin chi tiết quẻ lá bổ trợ */}
+                <CardInfoSummary
+                  card={compCard}
+                  isReversed={compCard.isReversed}
+                  compact={true}
+                  showJudgment={false}
+                  className="w-full mt-1"
                 />
 
                 {/* Ở lá bốc thêm cũng thêm được bốc thêm: Nút bốc thêm lá kế tiếp */}

@@ -235,10 +235,16 @@ export const ThaiAtDivination: React.FC<ThaiAtDivinationProps> = ({
           ? `que-thai-at-ban-dau-${result.primaryHex.number}-${dateStr}.png`
           : `ban-thai-at-than-so-${result.cucNum}-cuc-${dateStr}.png`;
 
+      targetEl.setAttribute("data-capturing", "true");
+      await new Promise((r) => setTimeout(r, 100));
+
       const dataUrl = await captureElementToPng(targetEl, {
         backgroundColor: "#16120E",
         pixelRatio: 2,
+        minWidth: target === "primary" ? 720 : 1080,
       });
+
+      targetEl.removeAttribute("data-capturing");
 
       setExportedImageUrl(dataUrl);
       setExportModalTitle(title);

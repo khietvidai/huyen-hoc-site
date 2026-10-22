@@ -228,13 +228,22 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
     if (!spreadAreaRef.current) return;
     setIsCapturing(true);
     try {
-      const dataUrl = await captureElementToPng(spreadAreaRef.current);
+      spreadAreaRef.current.setAttribute("data-capturing", "true");
+      await new Promise((r) => setTimeout(r, 120));
+      const dataUrl = await captureElementToPng(spreadAreaRef.current, {
+        backgroundColor: "#120E0A",
+        pixelRatio: 2,
+        minWidth: 1080,
+      });
       setExportDataUrl(dataUrl);
       setIsExportModalOpen(true);
     } catch (err) {
       console.error(err);
       if (onShowToast) onShowToast("Không thể tạo ảnh, vui lòng thử lại!");
     } finally {
+      if (spreadAreaRef.current) {
+        spreadAreaRef.current.removeAttribute("data-capturing");
+      }
       setIsCapturing(false);
     }
   };

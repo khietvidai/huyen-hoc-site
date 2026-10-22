@@ -49,6 +49,7 @@ import {
 } from "../data/spreads";
 import { CardVisual } from "./CardVisual";
 import { FlippableSpiritualCard } from "./FlippableSpiritualCard";
+import { CardInfoSummary } from "./CardInfoSummary";
 import { SpreadDiagram } from "./SpreadDiagram";
 import { ExportImageModal } from "./ExportImageModal";
 import { Fan360Deck } from "./Fan360Deck";
@@ -459,9 +460,11 @@ export const CardDraw: React.FC<CardDrawProps> = ({
       // Brief tick to ensure UI state is settled and rotated
       await new Promise((resolve) => setTimeout(resolve, 150));
 
+      const targetMinWidth = revealedCards.length >= 2 ? 1080 : 720;
       const dataUrl = await captureElementToPng(cardsGridRef.current, {
         backgroundColor: "#15120E",
         pixelRatio: 2,
+        minWidth: targetMinWidth,
       });
 
       const timestamp = new Date().toISOString().slice(0, 10);
@@ -4004,8 +4007,37 @@ export const CardDraw: React.FC<CardDrawProps> = ({
             ) : (
               <div
                 ref={cardsGridRef}
-                className={`flex flex-wrap items-center justify-center p-2 sm:p-4 bg-[#15120E] rounded-xl max-w-7xl mx-auto gap-4 sm:gap-6`}
+                className={`flex flex-wrap items-center justify-center p-3 sm:p-6 bg-[#15120E] rounded-xl max-w-7xl mx-auto gap-4 sm:gap-6 relative overflow-visible`}
               >
+                {/* Header Banner - Xuất hiện trang trọng khi chụp ảnh hoặc xem toàn cảnh */}
+                <div className="w-full text-center py-2 sm:py-3 mb-1 border-b border-[#3B2C1C]/80 bg-gradient-to-r from-transparent via-[#20170E] to-transparent">
+                  <div className="flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base font-serif font-bold text-[#E6D3A3] tracking-widest uppercase">
+                    <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C9A55A]" />
+                    <span>
+                      CỬU NHỊ DỊCH HỌC • TRẬN PHÁP{" "}
+                      {drawMode === "single"
+                        ? "ĐƠN QUẺ CHỦ"
+                        : drawMode === "double"
+                        ? doubleSpreadMode === "choice_ab"
+                          ? "LỰA CHỌN A & B"
+                          : "HIỆN TẠI & TƯƠNG LAI"
+                        : drawMode === "three"
+                        ? threeSpreadMode === "tam_tai"
+                          ? "TAM TÀI (THIÊN - ĐỊA - NHÂN)"
+                          : threeSpreadMode === "ngu_che"
+                          ? "NGỰ CHẾ TINH TÚY"
+                          : threeSpreadMode === "choice_abc"
+                          ? "TAM PHƯƠNG ÁN (A - B - C)"
+                          : "QUÁ KHỨ - HIỆN TẠI - TƯƠNG LAI"
+                        : `TÙY CHỈNH (${revealedCards.length} LÁ)`}
+                    </span>
+                    <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C9A55A]" />
+                  </div>
+                  <p className="text-[9.5px] sm:text-[10.5px] text-[#8C7A62] font-mono mt-0.5">
+                    ✦ Thời khắc chiêm bốc: {new Date().toLocaleDateString("vi-VN", { weekday: "long", year: "numeric", month: "long", day: "numeric" })} ✦
+                  </p>
+                </div>
+
                 {revealedCards.map((card, i) => {
                   const customImage = cardImages[card.number];
                   const customVideo = cardVideos[card.number];
@@ -4015,7 +4047,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                       initial={{ opacity: 0, scale: 0.85, y: 20 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       transition={{ duration: 0.45, delay: i * 0.15 }}
-                      className="bg-gradient-to-b from-[#221B14] to-[#15120E] border border-[#4D3E2B] rounded-xl sm:rounded-2xl shadow-2xl flex flex-col items-center text-center relative hover:z-30 overflow-visible p-3 sm:p-5 shrink-0"
+                      className="bg-gradient-to-b from-[#221B14] to-[#15120E] border border-[#4D3E2B] rounded-xl sm:rounded-2xl shadow-2xl flex flex-col items-center text-center relative hover:z-30 overflow-visible p-3 sm:p-5 shrink-0 max-w-full"
                     >
                       {/* Deck Badge if multi-deck */}
                       {deckCount >= 2 && (
@@ -4028,9 +4060,9 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                       <div
                         className={`font-mono font-bold text-[#C9A55A] uppercase leading-tight pointer-events-none ${
                           revealedCards.length >= 3
-                            ? "text-[8px] sm:text-[10px] md:text-[11px] mb-1 mt-0.5 line-clamp-2 min-h-[2.2em] flex items-center justify-center"
+                            ? "text-[8px] sm:text-[10px] md:text-[11px] mb-1 mt-0.5 min-h-[2.2em] flex items-center justify-center"
                             : revealedCards.length === 2
-                            ? "text-[9px] sm:text-[10px] md:text-[11px] mb-1.5 mt-0.5 line-clamp-2 min-h-[2em] flex items-center justify-center"
+                            ? "text-[9px] sm:text-[10px] md:text-[11px] mb-1.5 mt-0.5 min-h-[2em] flex items-center justify-center"
                             : "text-[11px] mb-2 mt-1"
                         }`}
                       >
@@ -4094,40 +4126,14 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                         />
                       </div>
 
-                      {/* Card Title & Hanzi */}
-                      <h4
-                        className={`font-serif font-bold text-[#F5EAD4] ${
-                          revealedCards.length >= 3
-                            ? "text-[11px] sm:text-base md:text-lg mt-1 line-clamp-1"
-                            : revealedCards.length === 2
-                            ? "text-xs sm:text-base md:text-lg mt-1.5 line-clamp-1"
-                            : "text-base sm:text-lg mt-2"
-                        }`}
-                      >
-                        Quẻ #{card.number}: {card.name}
-                      </h4>
-                      <p
-                        className={`text-[#BFAFA0] font-serif ${
-                          revealedCards.length >= 3
-                            ? "text-[9px] sm:text-xs line-clamp-1"
-                            : "text-[10px] sm:text-xs"
-                        }`}
-                      >
-                        {card.hanzi} • {card.vietnameseName}
-                      </p>
-
-                      {/* Judgment Snippet */}
-                      <p
-                        className={`text-[#8E806E] italic ${
-                          revealedCards.length >= 3
-                            ? "text-[8px] sm:text-xs mt-1 sm:mt-2.5 line-clamp-2 sm:line-clamp-3 leading-tight"
-                            : revealedCards.length === 2
-                            ? "text-[9px] sm:text-xs mt-1 sm:mt-2.5 line-clamp-2 sm:line-clamp-3 leading-tight"
-                            : "text-xs mt-2.5 line-clamp-3"
-                        }`}
-                      >
-                        "{card.judgment}"
-                      </p>
+                      {/* Thông tin chi tiết trọn vẹn của lá bài: Quẻ danh, Hán tự, Ngũ hành, Cát hung, Chiều lá bài, Thoán từ */}
+                      <CardInfoSummary
+                        card={card}
+                        isReversed={isCardRotated(i)}
+                        deckNumber={card.deckNumber}
+                        showJudgment={true}
+                        showAdvice={revealedCards.length <= 2}
+                      />
                     </motion.div>
                   );
                 })}

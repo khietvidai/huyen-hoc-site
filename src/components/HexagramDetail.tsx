@@ -45,6 +45,7 @@ import {
 import { HexagramVisual } from "./HexagramVisual";
 import { CardVisual } from "./CardVisual";
 import { FlippableSpiritualCard } from "./FlippableSpiritualCard";
+import { CardInfoSummary } from "./CardInfoSummary";
 import { TraditionalHexagramFigure } from "./TraditionalHexagramFigure";
 import { SpreadDiagram } from "./SpreadDiagram";
 import { ExportImageModal } from "./ExportImageModal";
@@ -598,9 +599,11 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
       // Brief tick to ensure UI state is settled and rotated
       await new Promise((resolve) => setTimeout(resolve, 150));
 
+      const minW = (drawnCards && drawnCards.length >= 2) || transformedHexagram ? 1080 : 720;
       const dataUrl = await captureElementToPng(cardsContainerRef.current, {
         backgroundColor: "#15120E",
         pixelRatio: 2,
+        minWidth: minW,
       });
 
       const timestamp = new Date().toISOString().slice(0, 10);
@@ -631,6 +634,7 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
       const dataUrl = await captureElementToPng(el, {
         backgroundColor: "#15120E",
         pixelRatio: 2,
+        minWidth: 720,
       });
 
       setExportedCardsUrl(dataUrl);
@@ -1437,10 +1441,23 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                 return (
                   <div
                     ref={cardsContainerRef}
-                    className={`grid gap-4 sm:gap-6 items-stretch p-3 sm:p-6 bg-lacquer-900 rounded-md max-w-7xl mx-auto ${
+                    className={`grid gap-4 sm:gap-6 items-stretch p-3 sm:p-6 bg-lacquer-900 rounded-md max-w-7xl mx-auto relative overflow-visible ${
                       hasAnyThreeComp ? "grid-cols-1" : "grid-cols-1 md:grid-cols-3"
                     }`}
                   >
+                    {/* Header Banner - Xuất hiện khi xem hoặc chụp ảnh */}
+                    <div className="col-span-full w-full text-center py-2 mb-2 border-b border-gold-800/80 bg-gradient-to-r from-transparent via-lacquer-800 to-transparent">
+                      <div className="flex items-center justify-center gap-2 text-xs sm:text-sm font-serif font-bold text-gold-300 tracking-widest uppercase">
+                        <Sparkles className="w-3.5 h-3.5 text-gold-500" />
+                        <span>
+                          CỬU NHỊ DỊCH HỌC • {threeMode === "tam_tai" ? "TRẬN PHÁP TAM TÀI (THIÊN - ĐỊA - NHÂN)" : threeMode === "ngu_che" ? "TRẬN PHÁP NGỰ CHẾ TINH TÚY" : threeMode === "choice_abc" ? "TRẬN PHÁP TAM PHƯƠNG ÁN" : "TRẬN PHÁP TAM THỜI (QUÁ KHỨ - HIỆN TẠI - TƯƠNG LAI)"}
+                        </span>
+                        <Sparkles className="w-3.5 h-3.5 text-gold-500" />
+                      </div>
+                      <p className="text-[10px] text-ivory-500 font-mono mt-0.5">
+                        ✦ Thời khắc chiêm bốc: {new Date().toLocaleDateString("vi-VN", { weekday: "long", year: "numeric", month: "long", day: "numeric" })} ✦
+                      </p>
+                    </div>
                 {drawnCards.map((card, idx) => {
                   const slotKey = `card_${idx}`;
                   const companionList = getCompanionList(slotKey);
@@ -1709,10 +1726,27 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                                   </button>
                                 )}
                               </div>
+
+                              {/* Thông tin lá bốc thêm */}
+                              <CardInfoSummary
+                                card={cCard}
+                                isReversed={cCard.isReversed ?? false}
+                                compact={true}
+                                roleTitle={`Lá bổ trợ kế bên #${cIdx + 1}`}
+                              />
                             </div>
                           );
                         })}
                       </div>
+
+                      {/* THÔNG TIN CHI TIẾT TRỌN VẸN CỦA LÁ BÀI CHÍNH */}
+                      <CardInfoSummary
+                        card={card}
+                        isReversed={card.isReversed ?? false}
+                        deckNumber={card.deckNumber}
+                        showJudgment={true}
+                        showAdvice={true}
+                      />
                     </div>
                   );
                 })}
@@ -1728,7 +1762,7 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                 return (
                   <div
                     ref={cardsContainerRef}
-                    className={`grid gap-6 sm:gap-10 items-stretch p-3 sm:p-6 bg-lacquer-900 rounded-md max-w-7xl mx-auto ${
+                    className={`grid gap-6 sm:gap-10 items-stretch p-3 sm:p-6 bg-lacquer-900 rounded-md max-w-7xl mx-auto relative overflow-visible ${
                       hasCompanion
                         ? "grid-cols-1"
                         : transformedHexagram
@@ -1736,6 +1770,19 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                         : "grid-cols-1 max-w-3xl"
                     }`}
                   >
+                    {/* Header Banner khi chụp ảnh */}
+                    <div className="col-span-full w-full text-center py-2 mb-2 border-b border-gold-800/80 bg-gradient-to-r from-transparent via-lacquer-800 to-transparent">
+                      <div className="flex items-center justify-center gap-2 text-xs sm:text-sm font-serif font-bold text-gold-300 tracking-widest uppercase">
+                        <Sparkles className="w-3.5 h-3.5 text-gold-500" />
+                        <span>
+                          CỬU NHỊ DỊCH HỌC • {transformedHexagram ? (doubleMode === "choice_ab" ? "TRẬN PHÁP LỰA CHỌN A & B" : "TRẬN PHÁP HIỆN TẠI & TƯƠNG LAI (QUẺ CHỦ & QUẺ BIẾN)") : "CHIÊM BỐC ĐƠN QUẺ (QUẺ CHỦ)"}
+                        </span>
+                        <Sparkles className="w-3.5 h-3.5 text-gold-500" />
+                      </div>
+                      <p className="text-[10px] text-ivory-500 font-mono mt-0.5">
+                        ✦ Thời khắc chiêm bốc: {new Date().toLocaleDateString("vi-VN", { weekday: "long", year: "numeric", month: "long", day: "numeric" })} ✦
+                      </p>
+                    </div>
                     {/* Primary Hexagram Card */}
                     {(() => {
                       const slotKey = "primary";
@@ -1946,10 +1993,27 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                                   </button>
                                 )}
                               </div>
+
+                              {/* Thông tin lá bốc thêm kế bên quẻ chủ */}
+                              <CardInfoSummary
+                                card={pCard}
+                                isReversed={pCard.isReversed ?? false}
+                                compact={true}
+                                roleTitle={`Lá bổ trợ kế bên #${pIdx + 1}`}
+                              />
                             </div>
                           );
                         })}
                       </div>
+
+                      {/* THÔNG TIN CHI TIẾT TRỌN VẸN CỦA QUẺ CHỦ */}
+                      <CardInfoSummary
+                        card={primaryHexagram}
+                        isReversed={primaryHexagram.isReversed ?? false}
+                        deckNumber={primaryHexagram.deckNumber}
+                        showJudgment={true}
+                        showAdvice={true}
+                      />
                     </div>
                   );
                 })()}
@@ -2163,10 +2227,27 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                                   </button>
                                 )}
                               </div>
+
+                              {/* Thông tin lá bốc thêm kế bên quẻ biến */}
+                              <CardInfoSummary
+                                card={tCard}
+                                isReversed={tCard.isReversed ?? false}
+                                compact={true}
+                                roleTitle={`Lá bổ trợ biến #${tIdx + 1}`}
+                              />
                             </div>
                           );
                         })}
                       </div>
+
+                      {/* THÔNG TIN CHI TIẾT TRỌN VẸN CỦA QUẺ BIẾN */}
+                      <CardInfoSummary
+                        card={transformedHexagram}
+                        isReversed={isCard2Reversed ?? transformedHexagram.isReversed ?? false}
+                        deckNumber={transformedHexagram.deckNumber}
+                        showJudgment={true}
+                        showAdvice={true}
+                      />
                     </div>
                   );
                 })()}

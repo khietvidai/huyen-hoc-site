@@ -712,3 +712,72 @@ html {
     flex-shrink: 0;
   }
 }
+
+
+/* ==========================================================================
+   GLOBAL CARD CAPTURE & EXPORT CLARITY SYSTEM (CỬU NHỊ DỊCH HỌC)
+   Đảm bảo dù chụp trên máy tính hay điện thoại, các lá bài luôn rõ ràng,
+   sắc nét, không bao giờ bị cắt xén chữ hay thiếu thông tin quẻ.
+   ========================================================================== */
+
+/* 1. Ép mở toàn bộ mặt ngửa của các lá bài 3D khi chụp */
+[data-capturing="true"] .flip-card-3d-inner,
+.capturing-export .flip-card-3d-inner {
+  transform: rotateY(0deg) !important;
+}
+
+[data-capturing="true"] .flip-card-front-face,
+.capturing-export .flip-card-front-face {
+  backface-visibility: visible !important;
+  -webkit-backface-visibility: visible !important;
+  display: block !important;
+  opacity: 1 !important;
+}
+
+/* 2. Triệt tiêu mọi giới hạn cắt xén văn bản (line-clamp, ellipsis, truncate) */
+[data-capturing="true"] .line-clamp-1,
+[data-capturing="true"] .line-clamp-2,
+[data-capturing="true"] .line-clamp-3,
+[data-capturing="true"] .line-clamp-4,
+[data-capturing="true"] .truncate,
+.capturing-export .line-clamp-1,
+.capturing-export .line-clamp-2,
+.capturing-export .line-clamp-3,
+.capturing-export .line-clamp-4,
+.capturing-export .truncate {
+  overflow: visible !important;
+  white-space: normal !important;
+  display: block !important;
+  -webkit-line-clamp: unset !important;
+  line-clamp: unset !important;
+  text-overflow: clip !important;
+  max-height: none !important;
+}
+
+/* 3. Đảm bảo toàn bộ khung chứa hiển thị đầy đủ, không cuộn tràn */
+[data-capturing="true"],
+.capturing-export {
+  overflow: visible !important;
+  max-height: none !important;
+  height: auto !important;
+}
+
+/* 4. Giữ màu sắc trung thực chuẩn in ấn & canvas */
+[data-capturing="true"] *,
+.capturing-export * {
+  -webkit-print-color-adjust: exact !important;
+  color-adjust: exact !important;
+}
+
+/* 5. Cỡ chữ trong chế độ chụp ảnh luôn giữ độ nét cao, dễ đọc */
+[data-capturing="true"] .card-info-text,
+.capturing-export .card-info-text {
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+}
+
+[data-capturing="true"] .card-title-text,
+.capturing-export .card-title-text {
+  font-size: 16px !important;
+  line-height: 1.3 !important;
+}

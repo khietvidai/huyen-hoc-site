@@ -2255,6 +2255,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       // 3. Tạo khung chứa tạm thời (Offscreen container) với nền trắng kẻ ô tọa độ mờ
       const outerWrapper = document.createElement("div");
       outerWrapper.setAttribute("data-capture-root", "true");
+      outerWrapper.setAttribute("data-capturing", "true");
       outerWrapper.style.position = "fixed";
       outerWrapper.style.left = "-99999px";
       outerWrapper.style.top = "0";
@@ -2264,6 +2265,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       outerWrapper.style.zIndex = "-9999";
 
       const container = document.createElement("div");
+      container.setAttribute("data-capturing", "true");
       container.style.position = "relative";
       container.style.width = `${cropW}px`;
       container.style.height = `${cropH}px`;
@@ -2275,6 +2277,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
       // 4. Clone stage chứa bài sang container và dịch chuyển sao cho khớp khung crop
       const stageClone = stage.cloneNode(true) as HTMLElement;
+      stageClone.setAttribute("data-capturing", "true");
       stageClone.style.position = "absolute";
       stageClone.style.left = `${Math.round(-minX + padX)}px`;
       stageClone.style.top = `${Math.round(-minY + padY)}px`;
@@ -2288,23 +2291,32 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       outerWrapper.appendChild(container);
       document.body.appendChild(outerWrapper);
 
-      // Đảm bảo toàn bộ ảnh webp của các lá bài đã nạp xong
+      // Đảm bảo toàn bộ ảnh webp của các lá bài đã nạp xong và decode sẵn sàng
       const imgs = Array.from(stageClone.querySelectorAll("img"));
       await Promise.all(
-        imgs.map((img) => {
-          if (img.complete && img.naturalWidth > 0) return Promise.resolve(true);
+        imgs.map(async (img) => {
+          if (img.complete && img.naturalWidth > 0) {
+            if (typeof img.decode === "function") await img.decode().catch(() => {});
+            return true;
+          }
           return new Promise((res) => {
-            img.onload = () => res(true);
+            img.onload = async () => {
+              if (typeof img.decode === "function") await img.decode().catch(() => {});
+              res(true);
+            };
             img.onerror = () => res(false);
-            setTimeout(() => res(false), 1200);
+            setTimeout(() => res(false), 2000);
           });
         })
       );
-      await new Promise((resolve) => setTimeout(resolve, 60));
+      await new Promise((resolve) => setTimeout(resolve, 80));
 
-      // 5. Kết xuất ảnh độ phân giải cao (Retina 2x)
+      // Tính tỷ lệ xuất chuẩn sắc nét cao: trên mobile (màn hẹp) tăng ratio tự động để đạt ít nhất 1360px
+      const exportRatio = Math.min(4, Math.max(2, Math.ceil(1360 / cropW)));
+
+      // 5. Kết xuất ảnh độ phân giải cao (Retina sắc nét trên cả điện thoại & máy tính)
       const dataUrl = await toPng(container, {
-        pixelRatio: 2,
+        pixelRatio: exportRatio,
         backgroundColor: "#FFFFFF",
         cacheBust: false,
         skipFonts: true,

@@ -6,6 +6,7 @@ export interface CaptureOptions {
   width?: number;
   height?: number;
   maxDimension?: number;
+  minWidth?: number;
 }
 
 /**
@@ -37,6 +38,108 @@ export async function captureElementToPng(
     throw new Error("Không tìm thấy phần tử cần chụp ảnh");
   }
 
+  // Đảm bảo mọi hình ảnh bên trong phần tử đã nạp và decode hoàn toàn (tránh ảnh trắng/placeholder trên mobile)
+  const waitForImages = async (target: HTMLElement) => {
+    const images = Array.from(target.querySelectorAll("img"));
+    if (images.length === 0) return;
+    await Promise.all(
+      images.map(async (img) => {
+        try {
+          if (!img.complete || img.naturalWidth === 0) {
+            await new Promise((res) => {
+              img.onload = () => res(true);
+              img.onerror = () => res(false);
+              setTimeout(() => res(false), 1800);
+            });
+          }
+          if (typeof img.decode === "function") {
+            await img.decode().catch(() => {});
+          }
+        } catch {}
+      })
+    );
+  };
+
+  await waitForImages(element);
+
+  // Nếu người dùng yêu cầu minWidth và độ rộng thực tế trên điện thoại nhỏ hơn minWidth:
+  // Tự động tạo bản sao Offscreen chuẩn desktop để ảnh xuất ra không bị co rút, chữ không bị tràn vỡ
+  let targetElement = element;
+  let cleanupOffscreen: (() => void) | null = null;
+
+  const currentWidth = Math.max(
+    element.scrollWidth || 0,
+    element.offsetWidth || 0,
+    Math.round(element.getBoundingClientRect().width) || 0
+  );
+
+  if (options?.minWidth && currentWidth < options.minWidth) {
+    try {
+      const outerWrapper = document.createElement("div");
+      outerWrapper.setAttribute("data-capture-root", "true");
+      outerWrapper.setAttribute("data-capturing", "true");
+      outerWrapper.style.position = "fixed";
+      outerWrapper.style.left = "-99999px";
+      outerWrapper.style.top = "0";
+      outerWrapper.style.width = `${options.minWidth}px`;
+      outerWrapper.style.maxWidth = `${options.minWidth}px`;
+      outerWrapper.style.overflow = "visible";
+      outerWrapper.style.zIndex = "-9999";
+      outerWrapper.style.backgroundColor = options.backgroundColor || "#15100A";
+
+      const clone = element.cloneNode(true) as HTMLElement;
+      clone.setAttribute("data-capturing", "true");
+      clone.style.width = "100%";
+      clone.style.maxWidth = "none";
+      clone.style.transform = "none";
+      clone.style.overflow = "visible";
+
+      // Sao chép trạng thái vẽ của các thẻ canvas (nếu có)
+      const origCanvases = element.querySelectorAll("canvas");
+      const cloneCanvases = clone.querySelectorAll("canvas");
+      origCanvases.forEach((orig, idx) => {
+        const cl = cloneCanvases[idx];
+        if (cl && orig.width > 0 && orig.height > 0) {
+          cl.width = orig.width;
+          cl.height = orig.height;
+          const ctx = cl.getContext("2d");
+          if (ctx) ctx.drawImage(orig, 0, 0);
+        }
+      });
+
+      outerWrapper.appendChild(clone);
+      document.body.appendChild(outerWrapper);
+      await waitForImages(clone);
+      await new Promise((resolve) => setTimeout(resolve, 80));
+
+      targetElement = outerWrapper;
+      cleanupOffscreen = () => {
+        if (outerWrapper.parentNode) {
+          outerWrapper.parentNode.removeChild(outerWrapper);
+        }
+      };
+    } catch (cloneErr) {
+      console.warn("Không thể tạo offscreen clone, dùng targetElement gốc:", cloneErr);
+      targetElement = element;
+    }
+  }
+
+  try {
+    return await doCaptureElement(targetElement, options);
+  } finally {
+    if (cleanupOffscreen) {
+      cleanupOffscreen();
+    }
+  }
+}
+
+/**
+ * Hàm thực thi render canvas đa tầng
+ */
+async function doCaptureElement(
+  element: HTMLElement,
+  options?: CaptureOptions
+): Promise<string> {
   // Đo đạc kích thước thực tế của phần tử
   const rect = element.getBoundingClientRect();
   const rawWidth = Math.max(
@@ -53,14 +156,14 @@ export async function captureElementToPng(
   );
 
   // Giới hạn an toàn chiều dài/rộng lớn nhất (tránh tràn RAM/Canvas crash trên Safari & Mobile)
-  const maxSafeDim = options?.maxDimension || 3400;
+  const maxSafeDim = options?.maxDimension || 3600;
   const requestedRatio = options?.pixelRatio || 2;
   const maxRaw = Math.max(rawWidth, rawHeight);
 
   // Tính tỷ lệ an toàn không vượt quá maxSafeDim
   let safeRatio = requestedRatio;
   if (maxRaw * requestedRatio > maxSafeDim) {
-    safeRatio = Math.max(0.4, Math.floor((maxSafeDim / maxRaw) * 100) / 100);
+    safeRatio = Math.max(0.6, Math.floor((maxSafeDim / maxRaw) * 100) / 100);
   }
 
   const transparent1x1 =
@@ -88,6 +191,8 @@ export async function captureElementToPng(
         maxHeight: "none",
         height: "auto",
         overflow: "visible",
+        "-webkit-print-color-adjust": "exact",
+        "color-adjust": "exact",
       },
     };
 
