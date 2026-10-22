@@ -558,14 +558,23 @@ function formatCardFullInfoFromHexagram(
 }
 
 /* ─── Helper: Định dạng thông tin các lá bài để dán cho AI phân tích ─── */
-/* Thứ tự: Trái trước phải sau (theo danh sách card), Lấy đầy đủ 100% dữ liệu từ Hexagram & Bài viết chuyên sâu */
-async function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: SpreadMode, isCard2ReversedState: boolean = false): Promise<string> {
-  // Tải song song bài viết chi tiết của tất cả các lá bài trong trận pháp
-  const articles = await Promise.all(cardsList.map((c) => fetchCardArticleSections(c)));
+/* Thứ tự: Trái trước phải sau. Nếu đắc pháp Kính Thiên, Địa, Nhân -> trích 100% bách khoa; nếu nhấn nhanh -> trích chuẩn như cũ */
+async function formatSpreadForAI(
+  cardsList: DynamicCardItem[],
+  currentMode: SpreadMode,
+  isCard2ReversedState: boolean = false,
+  includeFullBakhKhoa: boolean = false
+): Promise<string> {
+  // Chỉ tải bài viết bách khoa chuyên sâu khi đã đắc pháp nghi thức (Kính Thiên, Kính Địa, Kính Nhân)
+  const articles: (CardArticleData | null)[] = includeFullBakhKhoa
+    ? await Promise.all(cardsList.map((c) => fetchCardArticleSections(c)))
+    : cardsList.map(() => null);
+
+  const bakhKhoaNotice = includeFullBakhKhoa ? " - ĐẮC PHÁP KÍNH THIÊN • ĐỊA • NHÂN (TOÀN THƯ BÁCH KHOA)" : " (TIÊU CHUẨN)";
 
   if (currentMode === "that_tinh") {
     const lines: string[] = [];
-    lines.push(`=== THÔNG TIN TRẢI BÀI TRẬN PHÁP THẤT TINH (7 LÁ CHU DỊCH - ĐẦY ĐỦ DỮ LIỆU HEXAGRAM & BÁCH KHOA) ===`);
+    lines.push(`=== THÔNG TIN TRẢI BÀI TRẬN PHÁP THẤT TINH (7 LÁ CHU DỊCH${bakhKhoaNotice}) ===`);
     lines.push(`Khẩu quyết: Thất Tinh Bắc Đẩu soi chiếu 7 phương diện cuộc đời: Quá khứ, Bản thân hiện tại, Diễn biến tiếp theo, Lá gợi ý, Kết quả, Môi trường khách quan và Điểm mù thiếu sót.\n`);
     cardsList.forEach((c, idx) => {
       const pos = THAT_TINH_POSITIONS[idx] || { label: `Lá ${idx + 1}`, sub: "", desc: "" };
@@ -576,7 +585,7 @@ async function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: Spre
     });
     lines.push(`========================================`);
     lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI]:`);
-    lines.push(`Xin hãy phân tích trải bài Trận Pháp Thất Tinh theo quan hệ nhân quả tương sinh tương khắc giữa 7 vị trí (sử dụng đầy đủ dữ liệu Thoán Từ, Đại Tượng, Hào Từ, Ngũ Hành, Thời vận, Cửu Nhị Luận Giải và Chiêm đoán 4 phương diện của từng quẻ):`);
+    lines.push(`Xin hãy phân tích trải bài Trận Pháp Thất Tinh theo quan hệ nhân quả tương sinh tương khắc giữa 7 vị trí (sử dụng đầy đủ dữ liệu Thoán Từ, Đại Tượng, Hào Từ, Ngũ Hành, Thời vận${includeFullBakhKhoa ? ", Cửu Nhị Luận Giải và Chiêm đoán 4 phương diện" : ""}):`);
     lines.push(`1. Nền tảng quá khứ (Lá 1) và thực trạng tâm thế bản thân hiện tại (Lá 2).`);
     lines.push(`2. Chiều hướng diễn biến sắp tới (Lá 3) và tác động từ môi trường bên ngoài (Lá 6).`);
     lines.push(`3. Nhận diện điểm mù / thiếu sót cốt lõi của bản thân (Lá 7) để khắc phục.`);
@@ -586,7 +595,7 @@ async function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: Spre
 
   if (currentMode === "thap_tinh") {
     const lines: string[] = [];
-    lines.push(`=== THÔNG TIN TRẢI BÀI TRẬN PHÁP THẬP TINH (10 LÁ CELTIC CROSS CHU DỊCH - ĐẦY ĐỦ DỮ LIỆU HEXAGRAM & BÁCH KHOA) ===`);
+    lines.push(`=== THÔNG TIN TRẢI BÀI TRẬN PHÁP THẬP TINH (10 LÁ CELTIC CROSS CHU DỊCH${bakhKhoaNotice}) ===`);
     lines.push(`Khẩu quyết: Tâm điểm thập tự kết hợp chuỗi thời vận 10 vị thế nhân duyên.`);
     lines.push(`* QUY CHUẨN ĐẶC BIỆT LÁ THỨ 2: Chiều Xuôi là HỖ TRỢ (Trợ lực tương sinh), Chiều Ngược là TRỞ NGẠI (Thử thách, rào cản chắn ngang).`);
     lines.push(`* Trạng thái Lá 2 hiện thời: [${isCard2ReversedState ? "CHIỀU NGƯỢC: TRỞ NGẠI / RÀO CẢN" : "CHIỀU XUÔI: HỖ TRỢ / TRỢ LỰC TƯƠNG SINH"}]\n`);
@@ -600,7 +609,7 @@ async function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: Spre
     });
     lines.push(`========================================`);
     lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI]:`);
-    lines.push(`Xin hãy phân tích trải bài Trận Pháp Thập Tinh một cách sâu sắc và toàn diện (sử dụng đầy đủ dữ liệu Thoán Từ, Đại Tượng, Hào Từ, Ngũ Hành, Thời vận, Cửu Nhị Luận Giải và Chiêm đoán 4 phương diện của từng quẻ):`);
+    lines.push(`Xin hãy phân tích trải bài Trận Pháp Thập Tinh một cách sâu sắc và toàn diện (sử dụng đầy đủ dữ liệu Thoán Từ, Đại Tượng, Hào Từ, Ngũ Hành, Thời vận${includeFullBakhKhoa ? ", Cửu Nhị Luận Giải và Chiêm đoán 4 phương diện" : ""}):`);
     lines.push(`1. Phân tích cốt lõi tâm điểm: Tình huống hiện tại (Lá 1) và lực tác động trực diện của Lá 2 (${isCard2ReversedState ? "TRỞ NGẠI: thử thách, chướng ngại vật cần vượt qua" : "HỖ TRỢ: trợ lực thuận lợi, yếu tố tương sinh thúc đẩy"}).`);
     lines.push(`2. Mối liên hệ đa chiều: Yếu tố bên ngoài (Lá 3), Góc khuất chưa biết (Lá 4), Nguồn gốc trước đây (Lá 5), Tương lai tiếp theo (Lá 6).`);
     lines.push(`3. Đại cục vận trình: Vận hạn năm nay (Lá 7), Góc nhìn xã hội / người ngoài (Lá 8) và Kết quả cuối cùng (Lá 9).`);
@@ -617,7 +626,7 @@ async function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: Spre
     const transHex = HEXAGRAMS.find((h) => h.number === trans?.hexNumber) || HEXAGRAMS[1];
 
     const lines: string[] = [];
-    lines.push(`=== BẢNG LUẬN GIẢI THÁP LA KINH DỊCH (周易塔羅 - ĐẦY ĐỦ DỮ LIỆU HEXAGRAM & BÁCH KHOA) ===`);
+    lines.push(`=== BẢNG LUẬN GIẢI THÁP LA KINH DỊCH (周易塔羅${bakhKhoaNotice}) ===`);
     lines.push(`Cấu trúc: Quẻ Chủ & Quẻ Biến song song Trên - Dưới • Dải Hào Động (Bộ 384 Lá) kế bên Quẻ Chủ`);
     lines.push(`Thứ tự đọc chiêm bốc: 1. Bản Quái (Quẻ Chủ) ➔ 2. Hào Động (Bước Ngoặt) ➔ 3. Biến Quái (Quẻ Biến)\n`);
 
@@ -768,7 +777,7 @@ async function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: Spre
   };
 
   const lines: string[] = [];
-  lines.push(`=== THÔNG TIN TRẢI BÀI KINH DỊCH (THỨ TỰ TỪ TRÁI SANG PHẢI - ĐẦY ĐỦ DỮ LIỆU HEXAGRAM & BÁCH KHOA) ===`);
+  lines.push(`=== THÔNG TIN TRẢI BÀI KINH DỊCH (THỨ TỰ TỪ TRÁI SANG PHẢI${bakhKhoaNotice}) ===`);
   lines.push(`Trải bài: ${getSpreadName(currentMode)} | Số lượng: ${cardsList.length} lá\n`);
 
   cardsList.forEach((c, idx) => {
@@ -781,7 +790,7 @@ async function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: Spre
 
   lines.push(`========================================`);
   lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI]:`);
-  lines.push(`Xin hãy phân tích trải bài Kinh Dịch trên theo đúng thứ tự từ trái sang phải (dựa trên đầy đủ dữ liệu quẻ tượng, Thoán Từ, Đại Tượng, Hào Từ, Ngũ hành, Cửu Nhị Luận Giải và Chiêm đoán 4 phương diện):`);
+  lines.push(`Xin hãy phân tích trải bài Kinh Dịch trên theo đúng thứ tự từ trái sang phải (dựa trên đầy đủ dữ liệu quẻ tượng, Thoán Từ, Đại Tượng, Hào Từ, Ngũ hành${includeFullBakhKhoa ? ", Cửu Nhị Luận Giải và Chiêm đoán 4 phương diện" : ""}):`);
   lines.push(`1. Luận giải ý nghĩa chi tiết từng lá bài theo vị trí tương ứng.`);
   lines.push(`2. Phân tích mối liên kết và dòng chảy chuyển dịch năng lượng từ lá bài bên trái sang lá bài bên phải.`);
   lines.push(`3. Đánh giá hoàn cảnh hiện tại, nguy cơ tiềm ẩn và cơ hội phát triển.`);
@@ -822,7 +831,7 @@ function smoothstep(t: number) {
    ══════════════════════════════════════════════════════════════════ */
 interface RitualHoldButtonProps {
   id: string;
-  onClick: () => void;
+  onClick: (isRitual?: boolean) => void;
   active?: boolean;
   className?: string;
   children: React.ReactNode;
@@ -963,7 +972,7 @@ const RitualHoldButton: React.FC<RitualHoldButtonProps> = ({
         if (typeof navigator !== "undefined" && navigator.vibrate) {
           try { navigator.vibrate([60, 40, 100]); } catch (_) {}
         }
-        onClick();
+        onClick(true);
         return;
       }
 
@@ -985,9 +994,9 @@ const RitualHoldButton: React.FC<RitualHoldButtonProps> = ({
   };
 
   const handleClick = (e: React.MouseEvent) => {
-    // Nếu người dùng click chuột bình thường, lập tức gọi onClick để chuyển mode / rút bài mượt mà ngay
+    // Nếu người dùng click chuột bình thường (nhấn nhanh 1 cái), lập tức gọi onClick(false) để ra trận pháp với dữ liệu tiêu chuẩn
     if (!hasFinishedCycleRef.current) {
-      onClick();
+      onClick(false);
     }
   };
 
@@ -1114,6 +1123,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
   /* Trạng thái chiều của Lá thứ 2 trong Thập Tinh Trận: false = Xuôi (Hỗ Trợ), true = Ngược (Trở Ngại) - tỷ lệ xuất hiện 50% */
   const [isCard2Reversed, setIsCard2Reversed] = useState<boolean>(() => Math.random() < 0.5);
+
+  /* Trạng thái đắc pháp nghi thức: false = nhấn nhanh (trích chuẩn như cũ), true = nhấn đủ Kính Thiên - Kính Địa - Kính Nhân (trích 100% bách khoa) */
+  const [isRitualCompleted, setIsRitualCompleted] = useState<boolean>(false);
 
   const handleToggleCard2Reversed = useCallback(() => {
     setIsCard2Reversed((prev) => !prev);
@@ -1803,7 +1815,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   }, [isCard2Reversed]);
 
   /* ── Switch Mode Handler ── */
-  const handleSwitchMode = (newMode: SpreadMode) => {
+  const handleSwitchMode = (newMode: SpreadMode, isRitual: boolean = false) => {
+    setIsRitualCompleted(isRitual);
     setMode(newMode);
     if (newMode === "thap_tinh") {
       setIsCard2Reversed(Math.random() < 0.5);
@@ -1815,7 +1828,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   };
 
   /* ── Shuffle Cards (Rút bài ngẫu nhiên mới từ 384 hào & 64 quẻ) ── */
-  const handleShuffleCards = useCallback(() => {
+  const handleShuffleCards = useCallback((isRitual: boolean = false) => {
+    setIsRitualCompleted(isRitual);
     if (mode === "thap_tinh") {
       setIsCard2Reversed(Math.random() < 0.5);
     }
@@ -1827,40 +1841,58 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
   /* ── Sao chép toàn bộ trải bài cho AI (Đầy đủ thông tin từ Hexagram & Bách khoa) ── */
   const handleCopyCardsForAI = useCallback(async () => {
-    setCopiedToast("Đang chuẩn bị toàn bộ dữ liệu quẻ & luận giải cho AI...");
-    const text = await formatSpreadForAI(cards, mode, isCard2Reversed);
+    if (isRitualCompleted) {
+      setCopiedToast("✨ Đang trích xuất 100% Bách Khoa Toàn Thư Kinh Dịch (Cửu Nhị Luận Giải & FAQ) cho AI...");
+    } else {
+      setCopiedToast("Đang chuẩn bị dữ liệu quẻ & luận giải tiêu chuẩn cho AI...");
+    }
+    const text = await formatSpreadForAI(cards, mode, isCard2Reversed, isRitualCompleted);
     const ok = await copyToClipboard(text);
     if (ok) {
       setCopiedAI(true);
-      setCopiedToast("Đã chép đầy đủ thông tin các lá bài cho AI (kèm Tổng quan, Luận giải, Chiêm đoán & FAQ)!");
+      if (isRitualCompleted) {
+        setCopiedToast("✨ Đã sao chép 100% Bách Khoa Toàn Thư cho AI (kèm Tổng quan, Luận giải, Chiêm đoán & FAQ)!");
+      } else {
+        setCopiedToast("Đã chép thông tin các lá bài tiêu chuẩn cho AI!");
+      }
       setTimeout(() => setCopiedAI(false), 2500);
       setTimeout(() => setCopiedToast(null), 3500);
     }
-  }, [cards, mode, isCard2Reversed]);
+  }, [cards, mode, isCard2Reversed, isRitualCompleted]);
 
-  /* ── Sao chép 1 lá bài đơn lẻ cho AI (Lấy đầy đủ 100% dữ liệu từ Hexagram & Bách khoa) ── */
+  /* ── Sao chép 1 lá bài đơn lẻ cho AI (Lấy đầy đủ 100% dữ liệu từ Hexagram & Bách khoa khi đắc pháp) ── */
   const handleCopySingleCardForAI = useCallback(async (card: DynamicCardItem) => {
-    setCopiedToast(`Đang trích xuất dữ liệu bách khoa cho lá bài ${card.name}...`);
-    const article = await fetchCardArticleSections(card);
+    let article: CardArticleData | null = null;
+    if (isRitualCompleted) {
+      setCopiedToast(`✨ Đang trích xuất 100% bách khoa toàn thư cho lá bài ${card.name}...`);
+      article = await fetchCardArticleSections(card);
+    } else {
+      setCopiedToast(`Đang trích xuất dữ liệu tiêu chuẩn cho lá bài ${card.name}...`);
+    }
+
     const cardInfoLines = formatCardFullInfoFromHexagram(card, `LÁ BÀI KINH DỊCH: ${card.name}`, undefined, article);
-    const text = `=== THÔNG TIN ĐẦY ĐỦ LÁ BÀI KINH DỊCH (TỪ HEXAGRAM & BÁCH KHOA CỬU NHỊ) ===
+    const text = `=== THÔNG TIN ${isRitualCompleted ? "100% BÁCH KHOA TOÀN THƯ (ĐẮC PHÁP KÍNH THIÊN • ĐỊA • NHÂN)" : "TIÊU CHUẨN"} LÁ BÀI KINH DỊCH ===
 ${cardInfoLines.join("\n")}
 
 ========================================
 [YÊU CẦU LUẬN GIẢI CHO AI]:
 Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
 1. Ý nghĩa biểu tượng quẻ tượng, tên quẻ/hào, cấu tạo Thượng Hạ quái và Ngũ hành khí số.
-2. Hoàn cảnh thực tế, thuận lợi tiềm tàng và thách thức mà quẻ/hào này đang phản ánh (kết hợp dữ liệu Tổng Quan Hào Vị, Cửu Nhị Luận Giải, Chiêm Đoán Giải Quẻ 4 phương diện và Câu Hỏi Thường Gặp FAQ).
+2. Hoàn cảnh thực tế, thuận lợi tiềm tàng và thách thức mà quẻ/hào này đang phản ánh${isRitualCompleted ? " (kết hợp dữ liệu Tổng Quan Hào Vị, Cửu Nhị Luận Giải, Chiêm Đoán Giải Quẻ 4 phương diện và Câu Hỏi Thường Gặp FAQ)" : ""}.
 3. Trọng tâm hành động và lời khuyên định hướng thấu đáo nhất theo đạo Dịch để đón cát tránh hung.`;
 
     const ok = await copyToClipboard(text);
     if (ok) {
       setCopiedSingle(true);
-      setCopiedToast(`Đã sao chép đầy đủ thông tin lá bài ${card.name} (kèm Luận giải & FAQ) cho AI!`);
+      if (isRitualCompleted) {
+        setCopiedToast(`✨ Đã sao chép 100% bách khoa toàn thư lá bài ${card.name} cho AI!`);
+      } else {
+        setCopiedToast(`Đã sao chép thông tin lá bài ${card.name} cho AI!`);
+      }
       setTimeout(() => setCopiedSingle(false), 2200);
       setTimeout(() => setCopiedToast(null), 3200);
     }
-  }, []);
+  }, [isRitualCompleted]);
 
   /* ── Chụp hình tự động căn trọn vẹn toàn bộ các lá bài đang trải trận ── */
   const handleCaptureCardsSnapshot = useCallback(async () => {
@@ -2031,7 +2063,8 @@ Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
   }, [cards, mode, isCapturingSnapshot]);
 
   /* ── Chuyển chế độ và cuộn mượt xuống khu vực trải bài ── */
-  const handleSwitchModeAndScroll = useCallback((newMode: SpreadMode) => {
+  const handleSwitchModeAndScroll = useCallback((newMode: SpreadMode, isRitual: boolean = false) => {
+    setIsRitualCompleted(isRitual);
     setMode(newMode);
     if (newMode === "thap_tinh") {
       setIsCard2Reversed(Math.random() < 0.5);
@@ -2047,7 +2080,8 @@ Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
   }, []);
 
   /* ── Rút lại bài cho chế độ hiện tại và cuộn mượt xuống khu vực trải bài ── */
-  const handleShuffleCardsAndScroll = useCallback(() => {
+  const handleShuffleCardsAndScroll = useCallback((isRitual: boolean = false) => {
+    setIsRitualCompleted(isRitual);
     if (mode === "thap_tinh") {
       setIsCard2Reversed(Math.random() < 0.5);
     }
@@ -2063,6 +2097,7 @@ Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
 
   /* ── Nhấn Bắt đầu Bốc Quẻ: Random bốc các trận pháp khác nhau và cuộn mượt xuống khu vực trải bài ── */
   const handleStartDivinationOrShuffle = useCallback(() => {
+    setIsRitualCompleted(false);
     // Luôn chọn ngẫu nhiên một trận pháp khác với trận pháp hiện tại để mỗi lần bấm luôn bốc một trận pháp mới lạ
     const availableModes = SPREAD_MODES.filter((m) => m !== mode);
     const randomMode =
@@ -2830,7 +2865,7 @@ Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
                   <RitualHoldButton
                     id="hero-mode-1"
                     active={mode === "1_single"}
-                    onClick={() => handleSwitchModeAndScroll("1_single")}
+                    onClick={(isRitual) => handleSwitchModeAndScroll("1_single", isRitual)}
                     className={`flex items-center justify-center px-4 py-2 rounded-full text-xs transition cursor-pointer shadow-sm ${
                       mode === "1_single"
                         ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.03]"
@@ -2844,7 +2879,7 @@ Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
                   <RitualHoldButton
                     id="hero-mode-2"
                     active={mode === "1_to_2"}
-                    onClick={() => handleSwitchModeAndScroll("1_to_2")}
+                    onClick={(isRitual) => handleSwitchModeAndScroll("1_to_2", isRitual)}
                     className={`flex items-center justify-center px-4 py-2 rounded-full text-xs transition cursor-pointer shadow-sm ${
                       mode === "1_to_2"
                         ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.03]"
@@ -2858,7 +2893,7 @@ Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
                   <RitualHoldButton
                     id="hero-mode-3"
                     active={mode === "1_to_3"}
-                    onClick={() => handleSwitchModeAndScroll("1_to_3")}
+                    onClick={(isRitual) => handleSwitchModeAndScroll("1_to_3", isRitual)}
                     className={`flex items-center justify-center px-4 py-2 rounded-full text-xs transition cursor-pointer shadow-sm ${
                       mode === "1_to_3"
                         ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.03]"
@@ -2872,7 +2907,7 @@ Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
                   <RitualHoldButton
                     id="hero-mode-5"
                     active={mode === "3_to_5"}
-                    onClick={() => handleSwitchModeAndScroll("3_to_5")}
+                    onClick={(isRitual) => handleSwitchModeAndScroll("3_to_5", isRitual)}
                     className={`flex items-center justify-center px-4 py-2 rounded-full text-xs transition cursor-pointer shadow-sm ${
                       mode === "3_to_5"
                         ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.03]"
@@ -2889,7 +2924,7 @@ Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
                   <RitualHoldButton
                     id="hero-mode-that-tinh"
                     active={mode === "that_tinh"}
-                    onClick={() => handleSwitchModeAndScroll("that_tinh")}
+                    onClick={(isRitual) => handleSwitchModeAndScroll("that_tinh", isRitual)}
                     className={`flex items-center justify-center px-4 py-2 rounded-full text-xs transition cursor-pointer shadow-sm ${
                       mode === "that_tinh"
                         ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.03]"
@@ -2903,7 +2938,7 @@ Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
                   <RitualHoldButton
                     id="hero-mode-thap-tinh"
                     active={mode === "thap_tinh"}
-                    onClick={() => handleSwitchModeAndScroll("thap_tinh")}
+                    onClick={(isRitual) => handleSwitchModeAndScroll("thap_tinh", isRitual)}
                     className={`flex items-center justify-center px-4 py-2 rounded-full text-xs transition cursor-pointer shadow-sm ${
                       mode === "thap_tinh"
                         ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.03]"
@@ -2917,7 +2952,7 @@ Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
                   <RitualHoldButton
                     id="hero-mode-thap-la"
                     active={mode === "thap_la"}
-                    onClick={() => handleSwitchModeAndScroll("thap_la")}
+                    onClick={(isRitual) => handleSwitchModeAndScroll("thap_la", isRitual)}
                     className={`flex items-center justify-center px-4 py-2 rounded-full text-xs transition cursor-pointer shadow-sm ${
                       mode === "thap_la"
                         ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.03]"
@@ -2950,7 +2985,7 @@ Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
                   <RitualHoldButton
                     id="hero-action-shuffle"
                     active={false}
-                    onClick={handleShuffleCardsAndScroll}
+                    onClick={(isRitual) => handleShuffleCardsAndScroll(isRitual)}
                     className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-[#fef8ed] hover:bg-[#fcf1db] text-[#7c5516] border border-amber-300 transition cursor-pointer shadow-sm active:scale-95"
                     title="Kính Thiên, Kính Địa, Kính Nhân (Rút lại quẻ khác)"
                   >
@@ -2958,19 +2993,40 @@ Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
                     <span>Rút lại</span>
                   </RitualHoldButton>
 
-                  <button
-                    type="button"
-                    onClick={handleCopyCardsForAI}
-                    className={`inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition cursor-pointer shadow-sm active:scale-95 select-none ${
-                      copiedAI
-                        ? "bg-emerald-600 text-white border border-emerald-500 shadow-md scale-[1.02]"
-                        : "bg-[#fbf4e6] hover:bg-[#f6ebd1] text-[#7c5516] border border-[#c4963e]/50 shadow-sm"
-                    }`}
-                    title="Sao chép toàn bộ thông tin các lá bài theo thứ tự để gửi cho AI phân tích"
-                  >
-                    <span className="text-sm">{copiedAI ? "✓" : "📋"}</span>
-                    <span>{copiedAI ? "Đã chép cho AI!" : "Chép cho AI"}</span>
-                  </button>
+                  <div className="relative inline-flex items-center">
+                    <button
+                      type="button"
+                      onClick={handleCopyCardsForAI}
+                      className={`inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition cursor-pointer shadow-sm active:scale-95 select-none ${
+                        copiedAI
+                          ? "bg-emerald-600 text-white border border-emerald-500 shadow-md scale-[1.02]"
+                          : isRitualCompleted
+                          ? "bg-gradient-to-r from-amber-500/20 via-yellow-400/25 to-amber-500/20 hover:from-amber-500/30 hover:to-amber-500/30 text-amber-950 dark:text-amber-200 border-2 border-amber-500 shadow-md shadow-amber-500/20 ring-1 ring-amber-400/50"
+                          : "bg-[#fbf4e6] hover:bg-[#f6ebd1] text-[#7c5516] border border-[#c4963e]/50 shadow-sm"
+                      }`}
+                      title={
+                        isRitualCompleted
+                          ? "✨ Đã đắc pháp Kính Thiên, Kính Địa, Kính Nhân: Bấm để sao chép 100% bách khoa toàn thư (Cửu Nhị Luận Giải, Chiêm đoán 4 phương diện & FAQ)"
+                          : "Sao chép thông tin các lá bài tiêu chuẩn cho AI (Nhấn & giữ 3 lần Kính Thiên, Địa, Nhân để mở khóa trích dẫn 100% bách khoa toàn thư)"
+                      }
+                    >
+                      <span className="text-sm">
+                        {copiedAI ? "✓" : isRitualCompleted ? "✨" : "📋"}
+                      </span>
+                      <span>
+                        {copiedAI
+                          ? "Đã chép cho AI!"
+                          : isRitualCompleted
+                          ? "Chép Toàn Thư cho AI"
+                          : "Chép cho AI"}
+                      </span>
+                    </button>
+                    {isRitualCompleted && (
+                      <span className="absolute -top-3 -right-2 bg-gradient-to-r from-amber-600 to-yellow-600 text-[9px] font-bold text-white px-2 py-0.5 rounded-full shadow-md pointer-events-none animate-pulse">
+                        ✦ Đắc Pháp
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -3247,12 +3303,24 @@ Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
                 className={`px-4 py-2.5 rounded-2xl text-xs font-semibold border transition cursor-pointer flex items-center justify-center gap-1.5 shadow-md active:scale-95 ${
                   copiedSingle
                     ? "bg-emerald-600 text-white border-emerald-500"
+                    : isRitualCompleted
+                    ? "bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border-amber-500/60 ring-1 ring-amber-400/40"
                     : "bg-white/10 hover:bg-white/15 text-stone-200 hover:text-white border-white/20"
                 }`}
-                title="Sao chép nội dung lá bài này (quẻ tượng -> tên -> ý nghĩa -> lời giải) để gửi cho AI"
+                title={
+                  isRitualCompleted
+                    ? "✨ Đã đắc pháp: Sao chép 100% bách khoa toàn thư của lá bài này cho AI (bao gồm Cửu Nhị Luận Giải, Chiêm Đoán 4 Phương Diện & FAQ)"
+                    : "Sao chép nội dung tiêu chuẩn của lá bài này (quẻ tượng -> tên -> ý nghĩa -> lời giải) để gửi cho AI"
+                }
               >
-                <span>{copiedSingle ? "✓" : "📋"}</span>
-                <span>{copiedSingle ? "Đã chép cho AI!" : "Chép lá này cho AI"}</span>
+                <span>{copiedSingle ? "✓" : isRitualCompleted ? "✨" : "📋"}</span>
+                <span>
+                  {copiedSingle
+                    ? "Đã chép cho AI!"
+                    : isRitualCompleted
+                    ? "Chép Toàn Thư cho AI"
+                    : "Chép lá này cho AI"}
+                </span>
               </button>
               <button
                 type="button"
