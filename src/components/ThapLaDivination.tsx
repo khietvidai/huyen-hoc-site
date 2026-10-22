@@ -517,13 +517,14 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
 
             {/* BỐ CỤC CHÍNH: 2 LÁ BÀI SONG SONG TRÊN DƯỚI & KẾ BÊN LÀ DẢI HÀO TỪ THAY ĐỔI */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              {/* CỘT TRÁI (Lg: 4/12 hoặc 5/12): 2 LÁ BÀI SONG SONG TRÊN - DƯỚI */}
-              <div className="lg:col-span-4 xl:col-span-4 flex flex-col items-center space-y-4 bg-[#18120B] p-5 rounded-2xl border border-[#362717] shadow-inner">
+              {/* CỘT TRÁI (Lg: 4/12 hoặc 5/12): 2 LÁ BÀI SONG SONG TRÊN - DƯỚI (TRÊN MOBILE & TABLET XẾP CÂN ĐỐI) */}
+              <div className="lg:col-span-4 xl:col-span-4 flex flex-col sm:flex-row lg:flex-col items-center justify-around gap-4 bg-[#18120B] p-4 sm:p-5 rounded-2xl border border-[#362717] shadow-inner">
                 {/* 1. LÁ TRÊN: QUẺ CHỦ (BẢN QUÁI) */}
-                <div className="w-full flex flex-col items-center text-center space-y-2">
+                <div className="w-full flex flex-col items-center text-center space-y-1.5 sm:space-y-2">
                   <div className="flex items-center gap-2">
                     <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[#C4963E] text-stone-950 font-sans">
-                      Lá Trên
+                      <span className="inline sm:hidden lg:inline">Lá Trên</span>
+                      <span className="hidden sm:inline lg:hidden">Lá Trái</span>
                     </span>
                     <span className="text-xs font-bold text-[#F3D99B] uppercase font-serif">
                       Quẻ Chủ • Bản Quái
@@ -557,21 +558,23 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
                   </div>
                 </div>
 
-                {/* DÂY CHUYỀN CHUYỂN HÓA SONG SONG TRÊN DƯỚI */}
-                <div className="flex items-center gap-2 text-xs text-[#A89882] py-1">
-                  <div className="h-px w-10 bg-[#3D2C1B]" />
+                {/* DÂY CHUYỀN CHUYỂN HÓA SONG SONG TRÊN DƯỚI (HOẶC TRÁI PHẢI TRÊN TABLET) */}
+                <div className="flex flex-col sm:flex-row lg:flex-col items-center gap-1.5 text-xs text-[#A89882] py-1 shrink-0">
+                  <div className="h-px w-10 sm:h-10 sm:w-px lg:h-px lg:w-10 bg-[#3D2C1B]" />
                   <div className="flex items-center gap-1 font-mono text-[11px] text-[#C4963E]">
-                    <ArrowDown className="w-3.5 h-3.5 animate-bounce" />
+                    <ArrowDown className="sm:hidden lg:inline w-3.5 h-3.5 animate-bounce" />
+                    <ArrowRight className="hidden sm:inline lg:hidden w-3.5 h-3.5" />
                     <span>Dịch Chuyển</span>
                   </div>
-                  <div className="h-px w-10 bg-[#3D2C1B]" />
+                  <div className="h-px w-10 sm:h-10 sm:w-px lg:h-px lg:w-10 bg-[#3D2C1B]" />
                 </div>
 
                 {/* 2. LÁ DƯỚI: QUẺ BIẾN (BIẾN QUÁI) */}
-                <div className="w-full flex flex-col items-center text-center space-y-2">
+                <div className="w-full flex flex-col items-center text-center space-y-1.5 sm:space-y-2">
                   <div className="flex items-center gap-2">
                     <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-600 text-stone-950 font-sans">
-                      Lá Dưới
+                      <span className="inline sm:hidden lg:inline">Lá Dưới</span>
+                      <span className="hidden sm:inline lg:hidden">Lá Phải</span>
                     </span>
                     <span className="text-xs font-bold text-emerald-300 uppercase font-serif">
                       {changingLines.length === 0 ? "Quẻ Biến (Đồng Quẻ Chủ)" : "Quẻ Biến • Biến Quái"}
@@ -638,7 +641,7 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
                   </div>
                 ) : (
                   /* Danh sách các Thẻ Bài Hào Từ Biến Động */
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                     {changingLines.map((lineNum) => {
                       const isYangToYin = primaryHex.lines[lineNum - 1] === 1;
                       const yaoMeta = YAO_POSITION_NAMES[lineNum];
@@ -649,18 +652,23 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
                         <div
                           key={lineNum}
                           onClick={() => setSelectedYaoLine(lineNum)}
-                          className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
+                          className={`p-3.5 sm:p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
                             isSelected
                               ? "bg-[#251B11] border-[#C4963E] shadow-[0_0_15px_rgba(196,150,62,0.25)] ring-1 ring-[#C4963E]/60"
                               : "bg-[#18130D] border-[#302315] hover:border-[#523B23] hover:bg-[#1E1710]"
                           }`}
                         >
                           <div>
-                            {/* Header của thẻ hào */}
-                            <div className="flex items-center justify-between gap-2 mb-2">
-                              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#2C1F12] text-[#E0B861] border border-[#483420]">
-                                {yaoMeta?.title}
-                              </span>
+                            {/* Header của thẻ hào: Tên Quẻ & Vị Trí Hào */}
+                            <div className="flex items-center justify-between gap-2 mb-2.5 flex-wrap">
+                              <div className="flex items-center gap-1.5">
+                                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#2C1F12] text-[#E0B861] border border-[#483420]">
+                                  {yaoMeta?.title}
+                                </span>
+                                <span className="text-[10px] font-serif text-[#C4963E] font-medium hidden sm:inline">
+                                  #{primaryHex.number} {primaryHex.name}
+                                </span>
+                              </div>
                               <span
                                 className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
                                   isYangToYin
@@ -672,28 +680,52 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
                               </span>
                             </div>
 
-                            {/* Tên Hào & Hào Từ */}
-                            <h5 className="text-sm font-bold text-[#F5EAD4] font-serif mb-1">
-                              {meaningObj?.name || `Hào ${lineNum}`}: {meaningObj?.text || "Chuyển hóa"}
-                            </h5>
+                            {/* Khối Nội Dung Thẻ Bài: Lá Bài Ảnh Bên Trái + Chi Tiết Bên Phải */}
+                            <div className="flex gap-3 sm:gap-3.5 items-start">
+                              {/* Hình lá bài Hào Từ Chu Dịch chuẩn 384 hào */}
+                              <div className="w-16 sm:w-20 md:w-22 shrink-0 rounded-xl overflow-hidden border border-[#C4963E]/40 shadow-md bg-stone-950 aspect-[5/8] relative group">
+                                <img
+                                  src={`/assets/oss/${primaryHex.number}/${primaryHex.number}-${lineNum}a.webp`}
+                                  alt={`Quẻ ${primaryHex.name} Hào ${lineNum}`}
+                                  className="w-full h-full object-cover select-none"
+                                  loading="lazy"
+                                  onError={(e) => {
+                                    const target = e.currentTarget;
+                                    target.onerror = null;
+                                    target.src = `/assets/oss/${primaryHex.number}/${primaryHex.number}a.webp`;
+                                  }}
+                                />
+                                <div className="absolute inset-0 border border-[#C4963E]/20 pointer-events-none rounded-xl" />
+                                <div className="absolute bottom-0 inset-x-0 bg-black/85 px-1 py-0.5 text-center">
+                                  <span className="text-[9px] font-serif font-bold text-amber-200">
+                                    Hào {lineNum}
+                                  </span>
+                                </div>
+                              </div>
 
-                            {/* Vị trí triết lý */}
-                            <p className="text-[11px] text-[#C4963E] font-medium mb-2 font-serif">
-                              {yaoMeta?.subtitle}
-                            </p>
+                              {/* Thông tin Hào & Hào Từ */}
+                              <div className="flex-1 min-w-0 space-y-1">
+                                <h5 className="text-xs sm:text-sm font-bold text-[#F5EAD4] font-serif leading-snug">
+                                  {meaningObj?.name || `Hào ${lineNum}`}: {meaningObj?.text || "Chuyển hóa"}
+                                </h5>
 
-                            {/* Ý nghĩa bước ngoặt */}
-                            <p className="text-xs text-[#C2B299] font-serif leading-relaxed line-clamp-3">
-                              {meaningObj?.meaning || yaoMeta?.essence}
-                            </p>
+                                <p className="text-[10.5px] sm:text-[11px] text-[#C4963E] font-medium font-serif">
+                                  {yaoMeta?.subtitle}
+                                </p>
+
+                                <p className="text-[11px] sm:text-xs text-[#C2B299] font-serif leading-relaxed line-clamp-3">
+                                  {meaningObj?.meaning || yaoMeta?.essence}
+                                </p>
+                              </div>
+                            </div>
                           </div>
 
                           {/* Footer thẻ */}
-                          <div className="mt-3 pt-2.5 border-t border-[#2A1E12] flex items-center justify-between text-[11px]">
-                            <span className="text-[#8C7D6A] font-sans">
+                          <div className="mt-3 pt-2 border-t border-[#2A1E12] flex items-center justify-between text-[10.5px] sm:text-[11px]">
+                            <span className="text-[#8C7D6A] font-sans truncate mr-2">
                               {isYangToYin ? "Lão Dương Động Hóa Âm" : "Lão Âm Động Hóa Dương"}
                             </span>
-                            <span className="text-[#C4963E] font-semibold flex items-center gap-1">
+                            <span className="text-[#C4963E] font-semibold flex items-center gap-1 shrink-0">
                               <span>Xem chi tiết</span>
                               <ChevronRight className="w-3 h-3" />
                             </span>

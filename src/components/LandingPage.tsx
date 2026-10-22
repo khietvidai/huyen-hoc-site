@@ -2080,45 +2080,66 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
   /* ── Sao chép toàn bộ trải bài cho AI (Đầy đủ thông tin từ Hexagram & Bách khoa) ── */
   const handleCopyCardsForAI = useCallback(async () => {
+    const hasQuestion = !!userIntentQuestion.trim();
     if (isRitualCompleted) {
       setCopiedToast("✨ Đang trích xuất 100% Bách Khoa Toàn Thư Kinh Dịch (Cửu Nhị Luận Giải & FAQ) cho AI...");
     } else {
       setCopiedToast("Đang chuẩn bị dữ liệu quẻ & luận giải tiêu chuẩn cho AI...");
     }
-    const text = await formatSpreadForAI(cards, mode, isCard2Reversed, isRitualCompleted);
+    const text = await formatSpreadForAI(cards, mode, isCard2Reversed, isRitualCompleted, userIntentQuestion);
     const ok = await copyToClipboard(text);
     if (ok) {
       setCopiedAI(true);
       if (isRitualCompleted) {
-        setCopiedToast("✨ Đã sao chép 100% Bách Khoa Toàn Thư cho AI (kèm Tổng quan, Luận giải, Chiêm đoán & FAQ)!");
+        setCopiedToast(
+          hasQuestion
+            ? "✨ Đã sao chép 100% Bách Khoa Toàn Thư (kèm Câu hỏi tâm niệm) cho AI!"
+            : "✨ Đã sao chép 100% Bách Khoa Toàn Thư cho AI (kèm Tổng quan, Luận giải, Chiêm đoán & FAQ)!"
+        );
       } else {
-        setCopiedToast("Đã chép thông tin các lá bài tiêu chuẩn cho AI!");
+        setCopiedToast(
+          hasQuestion
+            ? "Đã chép thông tin các lá bài (kèm Câu hỏi tâm niệm) cho AI!"
+            : "Đã chép thông tin các lá bài tiêu chuẩn cho AI!"
+        );
       }
       setTimeout(() => setCopiedAI(false), 2500);
       setTimeout(() => setCopiedToast(null), 3500);
     }
-  }, [cards, mode, isCard2Reversed, isRitualCompleted]);
+  }, [cards, mode, isCard2Reversed, isRitualCompleted, userIntentQuestion]);
 
   /* ── Sao chép 1 lá bài đơn lẻ cho AI (Thông tin cơ bản hoặc 100% bách khoa khi đắc pháp) ── */
   const handleCopySingleCardForAI = useCallback(async (card: DynamicCardItem) => {
+    const cleanedQuestion = userIntentQuestion.trim();
+    const questionHeader = cleanedQuestion
+      ? `【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:\n"${cleanedQuestion}"\n\n`
+      : "";
+    const questionInstruction = cleanedQuestion
+      ? `▶ Trọng tâm giải đáp: Soi chiếu và trả lời trực diện câu hỏi/tâm niệm: "${cleanedQuestion}"\n`
+      : "";
+
     if (!isRitualCompleted) {
       const text = `【THÔNG TIN LÁ BÀI KINH DỊCH】
-• Quẻ tượng: ${card.symbol}
+${questionHeader}• Quẻ tượng: ${card.symbol}
 • Tên: ${card.name}
 • Ý nghĩa: ${card.sub}
 • Lời giải: ${card.desc}
 
 ========================================
 [YÊU CẦU LUẬN GIẢI CHO AI]:
-Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
+${questionInstruction}Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
 1. Ý nghĩa biểu tượng quẻ tượng và tên quẻ/hào.
 2. Hoàn cảnh thực tế mà quẻ/hào này đang phản ánh.
-3. Lời khuyên định hướng và hành động thấu đáo nhất.`;
+3. Lời khuyên định hướng và hành động thấu đáo nhất.${cleanedQuestion ? `\n4. Đưa ra câu trả lời trực tiếp cho câu hỏi tâm niệm trên.` : ""}`;
 
       const ok = await copyToClipboard(text);
       if (ok) {
         setCopiedSingle(true);
-        setCopiedToast(`Đã sao chép thông tin lá bài ${card.name} cho AI!`);
+        setCopiedToast(
+          cleanedQuestion
+            ? `Đã sao chép lá bài ${card.name} (kèm Câu hỏi tâm niệm) cho AI!`
+            : `Đã sao chép thông tin lá bài ${card.name} cho AI!`
+        );
         setTimeout(() => setCopiedSingle(false), 2200);
         setTimeout(() => setCopiedToast(null), 3200);
       }
@@ -2129,23 +2150,27 @@ Xin hãy phân tích chi tiết lá bài Kinh Dịch trên:
     const article = await fetchCardArticleSections(card);
     const cardInfoLines = formatCardFullInfoFromHexagram(card, `LÁ BÀI KINH DỊCH: ${card.name}`, undefined, article);
     const text = `=== THÔNG TIN 100% BÁCH KHOA TOÀN THƯ (ĐẮC PHÁP KÍNH THIÊN • ĐỊA • NHÂN) LÁ BÀI KINH DỊCH ===
-${cardInfoLines.join("\n")}
+${questionHeader}${cardInfoLines.join("\n")}
 
 ========================================
 [YÊU CẦU LUẬN GIẢI CHO AI]:
-Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
+${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
 1. Ý nghĩa biểu tượng quẻ tượng, tên quẻ/hào, cấu tạo Thượng Hạ quái và Ngũ hành khí số.
 2. Hoàn cảnh thực tế, thuận lợi tiềm tàng và thách thức mà quẻ/hào này đang phản ánh (kết hợp dữ liệu Tổng Quan Hào Vị, Cửu Nhị Luận Giải, Chiêm Đoán Giải Quẻ 4 phương diện và Câu Hỏi Thường Gặp FAQ).
-3. Trọng tâm hành động và lời khuyên định hướng thấu đáo nhất theo đạo Dịch để đón cát tránh hung.`;
+3. Trọng tâm hành động và lời khuyên định hướng thấu đáo nhất theo đạo Dịch để đón cát tránh hung.${cleanedQuestion ? `\n4. Đúc kết lời giải đáp sáng suốt nhất cho câu hỏi tâm niệm trên.` : ""}`;
 
     const ok = await copyToClipboard(text);
     if (ok) {
       setCopiedSingle(true);
-      setCopiedToast(`✨ Đã sao chép 100% bách khoa toàn thư lá bài ${card.name} cho AI!`);
+      setCopiedToast(
+        cleanedQuestion
+          ? `✨ Đã sao chép 100% Bách Khoa lá ${card.name} (kèm Câu hỏi tâm niệm) cho AI!`
+          : `✨ Đã sao chép 100% bách khoa toàn thư lá bài ${card.name} cho AI!`
+      );
       setTimeout(() => setCopiedSingle(false), 2200);
       setTimeout(() => setCopiedToast(null), 3200);
     }
-  }, [isRitualCompleted]);
+  }, [isRitualCompleted, userIntentQuestion]);
 
   /* ── Chụp hình tự động căn trọn vẹn toàn bộ các lá bài đang trải trận ── */
   const handleCaptureCardsSnapshot = useCallback(async () => {
@@ -3144,8 +3169,56 @@ Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
                 </svg>
               </button>
 
+              {/* Khung nhập: Nội dung tâm niệm / Câu hỏi (ngay sau Bắt đầu ngay) */}
+              <div className="mt-5 max-w-xl">
+                <div className="rounded-2xl border border-amber-200/80 bg-gradient-to-b from-[#FAF8F5] to-[#F5EFE6]/70 p-3.5 sm:p-4 shadow-sm backdrop-blur-xs transition focus-within:border-[#C4963E] focus-within:ring-2 focus-within:ring-[#C4963E]/20">
+                  <div className="flex items-center justify-between mb-2">
+                    <label
+                      htmlFor="user-intent-question-input"
+                      className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#7C5516]"
+                    >
+                      <span className="text-sm">🕊️</span>
+                      <span>Nội dung tâm niệm / Câu hỏi</span>
+                    </label>
+                    {userIntentQuestion.trim() && (
+                      <button
+                        type="button"
+                        onClick={() => handleQuestionChange("")}
+                        className="text-[11px] text-stone-400 hover:text-rose-600 font-medium transition cursor-pointer flex items-center gap-1"
+                        title="Xóa nội dung câu hỏi"
+                      >
+                        ✕ Xóa
+                      </button>
+                    )}
+                  </div>
+
+                  <textarea
+                    id="user-intent-question-input"
+                    rows={2}
+                    value={userIntentQuestion}
+                    onChange={(e) => handleQuestionChange(e.target.value)}
+                    placeholder="Nhập câu hỏi, việc đang trăn trở hoặc tâm niệm chiêm bốc của bạn (Ví dụ: Sự nghiệp tháng tới diễn biến ra sao? Có nên đổi việc không?...)"
+                    className="w-full resize-none rounded-xl bg-white border border-stone-200/90 px-3.5 py-2 text-xs sm:text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:border-[#C4963E] transition leading-relaxed shadow-2xs"
+                  />
+
+                  <div className="mt-2 flex flex-wrap items-center justify-between gap-1.5 text-[11px] text-stone-500">
+                    <span className="flex items-center gap-1">
+                      <span className="text-[#C4963E] font-bold">💡</span>
+                      {userIntentQuestion.trim()
+                        ? "Câu hỏi này sẽ được tự động đính kèm khi bấm 'Chép cho AI'."
+                        : "Nhập câu hỏi để khi 'Chép cho AI', AI sẽ giải đáp đúng trọng tâm của bạn."}
+                    </span>
+                    {userIntentQuestion.trim() && (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-800 bg-emerald-50 border border-emerald-300/80 px-2 py-0.5 rounded-full">
+                        ✓ Đã ghim vào bản chép AI
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
               {/* Cụm nút chọn hình thức gieo quẻ & thao tác (Chuyển xuống dưới Bắt đầu ngay) */}
-              <div className="mt-8 pt-6 border-t border-zinc-200/80 flex flex-col gap-2.5 max-w-xl">
+              <div className="mt-6 pt-6 border-t border-zinc-200/80 flex flex-col gap-2.5 max-w-xl">
                 {/* Hàng 1: 1 Lá, 2 Lá, 3 Lá, 5 Lá */}
                 <div className="flex flex-wrap items-center gap-2">
                   <RitualHoldButton
