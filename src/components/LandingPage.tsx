@@ -3364,7 +3364,9 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                           : "bg-[#fbf4e6] hover:bg-[#f6ebd1] text-[#7c5516] border border-[#c4963e]/50 shadow-sm"
                       }`}
                       title={
-                        isRitualCompleted
+                        userIntentQuestion.trim()
+                          ? `Đã đính kèm câu hỏi tâm niệm: "${userIntentQuestion.trim().slice(0, 60)}..." • Bấm để chép cho AI`
+                          : isRitualCompleted
                           ? "✨ Đã đắc pháp Kính Thiên, Kính Địa, Kính Nhân: Bấm để sao chép 100% bách khoa toàn thư (Cửu Nhị Luận Giải, Chiêm đoán 4 phương diện & FAQ)"
                           : "Sao chép thông tin các lá bài tiêu chuẩn cho AI (Nhấn & giữ 3 lần Kính Thiên, Địa, Nhân để mở khóa trích dẫn 100% bách khoa toàn thư)"
                       }
@@ -3379,6 +3381,11 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                           ? "Chép Toàn Thư cho AI"
                           : "Chép cho AI"}
                       </span>
+                      {userIntentQuestion.trim() && !copiedAI && (
+                        <span className="text-[10px] font-medium text-amber-800 bg-amber-100/80 px-1.5 py-0.2 rounded-full border border-amber-300/60 ml-0.5">
+                          +Câu hỏi
+                        </span>
+                      )}
                     </button>
                     {isRitualCompleted && (
                       <span className="absolute -top-3 -right-2 bg-gradient-to-r from-amber-600 to-yellow-600 text-[9px] font-bold text-white px-2 py-0.5 rounded-full shadow-md pointer-events-none animate-pulse">
