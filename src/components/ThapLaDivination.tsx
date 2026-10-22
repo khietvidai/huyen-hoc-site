@@ -57,8 +57,21 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
   const [step, setStep] = useState<"ready" | "shuffling" | "drawn">("ready");
 
   // Input câu hỏi & chuyên mục
-  const [question, setQuestion] = useState("");
+  const [question, setQuestion] = useState(() => {
+    try {
+      return localStorage.getItem("cuunhi_user_intent_question") || "";
+    } catch {
+      return "";
+    }
+  });
   const [category, setCategory] = useState("Tổng quát");
+
+  const handleQuestionChange = (val: string) => {
+    setQuestion(val);
+    try {
+      localStorage.setItem("cuunhi_user_intent_question", val);
+    } catch {}
+  };
 
   // Kết quả bốc bài
   const [primaryHex, setPrimaryHex] = useState<Hexagram | null>(null);
@@ -230,8 +243,13 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
   const handleCopyForAI = async () => {
     if (!primaryHex || !transformedHex) return;
 
+    const cleanedQuestion = question.trim();
     const lines: string[] = [];
     lines.push(`=== BẢNG LUẬN GIẢI THÁP LA KINH DỊCH (周易塔羅) ===`);
+    if (cleanedQuestion) {
+      lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
+      lines.push(`"${cleanedQuestion}"\n`);
+    }
     lines.push(`Cấu trúc: Quẻ Chủ & Quẻ Biến song song Trên - Dưới • Dải Hào Động (Bộ 384 Lá) kế bên Quẻ Chủ`);
     lines.push(`Thứ tự đọc chiêm bốc: 1. Bản Quái (Quẻ Chủ) ➔ 2. Hào Động (Bước Ngoặt) ➔ 3. Biến Quái (Quẻ Biến)\n`);
 
@@ -301,10 +319,16 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
 
     lines.push(`========================================`);
     lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI (THEO PHƯƠNG PHÁP THÁP LA KINH DỊCH)]:`);
+    if (cleanedQuestion) {
+      lines.push(`▶ Trọng tâm giải đáp: Tập trung luận giải và tháo gỡ dứt khoát câu hỏi/tâm niệm: "${cleanedQuestion}"`);
+    }
     lines.push(`Xin hãy phân tích trải bài Tháp La Kinh Dịch theo đúng 3 tầng thứ tự và ý nghĩa thực tiễn trong đời sống:`);
     lines.push(`1. BẢN QUÁI (Định vị bối cảnh): Dựa vào Thoán Từ (Quái Từ) và Đại Tượng Truyện, nhận diện bản chất loại hoàn cảnh thực tại đương số đang đối mặt. Cục diện đang ở đâu? Cơ hội và trở lực tiềm ẩn xung quanh là gì?`);
     lines.push(`2. HÀO ĐỘNG (Lời khuyên then chốt): Dựa vào Hào Từ của chính các hào biến động (phân tích tuần tự từ Hào Sơ lên Hào Lục). Đâu là trọng tâm hành động và biến số mấu chốt đương số cần lưu tâm? Chỉ rõ việc nên làm, việc cần tránh và thời điểm chuyển hóa quyết định.`);
     lines.push(`3. BIẾN QUÁI (Định hướng tương lai): Dựa vào Quái Từ của Quẻ Biến, dự báo xu thế phát triển tiếp theo sau khi sự chuyển hóa hoàn tất. Đưa ra chiến lược tổng thể và tâm thế sáng suốt nhất để đương số chủ động kiến tạo cát tường.`);
+    if (cleanedQuestion) {
+      lines.push(`4. Đúc kết lời đáp trực tiếp cho câu hỏi/tâm niệm của đương số.`);
+    }
 
     const text = lines.join("\n");
     try {
@@ -321,7 +345,13 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
         document.body.removeChild(ta);
       }
       setCopiedAI(true);
-      if (onShowToast) onShowToast("Đã sao chép nội dung trải bài Tháp La chuẩn 3 ngôi cho AI!");
+      if (onShowToast) {
+        onShowToast(
+          cleanedQuestion
+            ? "Đã sao chép trải bài Tháp La (kèm câu hỏi tâm niệm) cho AI!"
+            : "Đã sao chép nội dung trải bài Tháp La chuẩn 3 ngôi cho AI!"
+        );
+      }
       setTimeout(() => setCopiedAI(false), 2500);
     } catch (err) {
       console.error(err);
@@ -424,7 +454,7 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
             <input
               type="text"
               value={question}
-              onChange={(e) => setQuestion(e.target.value)}
+              onChange={(e) => handleQuestionChange(e.target.value)}
               placeholder="Ví dụ: Kế hoạch kinh doanh mới trong 3 tháng tới sẽ phát triển ra sao?..."
               className="w-full px-4 py-2.5 rounded-xl bg-[#17120C] border border-[#3E2F1D] text-sm text-[#F5EAD4] placeholder-[#73634E] focus:outline-none focus:border-[#C4963E]"
             />

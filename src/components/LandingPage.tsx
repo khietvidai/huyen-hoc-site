@@ -1249,6 +1249,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   /* Trạng thái đắc pháp nghi thức: false = nhấn nhanh (trích chuẩn như cũ), true = nhấn đủ Kính Thiên - Kính Địa - Kính Nhân (trích 100% bách khoa) */
   const [isRitualCompleted, setIsRitualCompleted] = useState<boolean>(false);
 
+  /* Trạng thái giữ nguyên các lá bài hiện tại (khóa quẻ không bị rút lại khi thực hiện Tam Kính) */
+  const [isKeepCards, setIsKeepCards] = useState<boolean>(false);
+
   const handleToggleCard2Reversed = useCallback(() => {
     setIsCard2Reversed((prev) => !prev);
   }, []);
@@ -2055,6 +2058,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
   /* ── Switch Mode Handler ── */
   const handleSwitchMode = (newMode: SpreadMode, isRitual: boolean = false) => {
+    if (isKeepCards && newMode === mode) {
+      setIsRitualCompleted(isRitual);
+      return;
+    }
     setIsRitualCompleted(isRitual);
     setMode(newMode);
     if (newMode === "thap_tinh") {
@@ -2077,6 +2084,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       requestTickRef.current();
     }, 50);
   }, [mode]);
+
+  const handleShuffleCardsAndScroll = useCallback((isRitual: boolean = false) => {
+    handleShuffleCards(isRitual);
+  }, [handleShuffleCards]);
 
   /* ── Sao chép toàn bộ trải bài cho AI (Đầy đủ thông tin từ Hexagram & Bách khoa) ── */
   const handleCopyCardsForAI = useCallback(async () => {
@@ -2341,41 +2352,79 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
   }, [cards, mode, isCapturingSnapshot]);
 
   /* ── Chuyển chế độ và cuộn mượt xuống khu vực trải bài ── */
-  const handleSwitchModeAndScroll = useCallback((newMode: SpreadMode, isRitual: boolean = false) => {
-    setIsRitualCompleted(isRitual);
-    setMode(newMode);
-    if (newMode === "thap_tinh") {
-      setIsCard2Reversed(Math.random() < 0.5);
-    }
-    setCards(drawCardsForMode(newMode));
-    setTimeout(() => {
-      requestTickRef.current();
-    }, 50);
-    const sec = document.getElementById("destiny-cards");
-    if (sec) {
-      sec.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, []);
+  const handleSwitchModeAndScroll = useCallback(
+    (newMode: SpreadMode, isRitual: boolean = false) => {
+      // Nếu đang bật giữ nguyên và thao tác trên cùng một chế độ quẻ (ví dụ 3 lá lỡ bấm nhanh mà muốn tam kính):
+      // Giữ nguyên 100% các lá bài hiện tại, chỉ cập nhật trạng thái tâm linh (Tam Kính / Đắc Pháp) và cuộn xuống!
+      if (isKeepCards && newMode === mode) {
+        setIsRitualCompleted(isRitual);
+        if (isRitual) {
+          setCopiedToast("✨ Tam Kính thành công! Đã đắc pháp & giữ nguyên các lá bài hiện tại.");
+          setTimeout(() => setCopiedToast(null), 3500);
+        }
+        setTimeout(() => {
+          if (requestTickRef.current) requestTickRef.current();
+        }, 50);
+        const sec = document.getElementById("destiny-cards");
+        if (sec) {
+          sec.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        return;
+      }
 
-  /* ── Rút lại bài cho chế độ hiện tại và cuộn mượt xuống khu vực trải bài ── */
-  const handleShuffleCardsAndScroll = useCallback((isRitual: boolean = false) => {
-    setIsRitualCompleted(isRitual);
-    if (mode === "thap_tinh") {
-      setIsCard2Reversed(Math.random() < 0.5);
+      setIsRitualCompleted(isRitual);
+      setMode(newMode);
+      if (newMode === "thap_tinh") {
+        setIsCard2Reversed(Math.random() < 0.5);
+      }
+      setCards(drawCardsForMode(newMode));
+      setTimeout(() => {
+        if (requestTickRef.current) requestTickRef.current();
+      }, 50);
+      const sec = document.getElementById("destiny-cards");
+      if (sec) {
+        sec.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    },
+    [isKeepCards, mode]
+  );
+
+  /* ── Bật/Tắt giữ nguyên các lá bài hiện tại (Khóa quẻ khi Tam Kính) ── */
+  const handleToggleKeepCards = useCallback((isRitual: boolean = false) => {
+    if (isRitual) {
+      // Nếu hoàn thành Tam Kính (Kính Thiên -> Kính Địa -> Kính Nhân) ngay trên nút Giữ nguyên:
+      // Tự động bật giữ nguyên và kích hoạt Đắc Pháp trực tiếp cho bộ quẻ hiện tại
+      setIsKeepCards(true);
+      setIsRitualCompleted(true);
+      setCopiedToast("✨ Tam Kính thành công! Đã đắc pháp & giữ nguyên các lá bài hiện tại.");
+      setTimeout(() => setCopiedToast(null), 3500);
+      setTimeout(() => {
+        if (requestTickRef.current) requestTickRef.current();
+      }, 50);
+      const sec = document.getElementById("destiny-cards");
+      if (sec) {
+        sec.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      return;
     }
-    setCards(drawCardsForMode(mode));
-    setTimeout(() => {
-      requestTickRef.current();
-    }, 50);
-    const sec = document.getElementById("destiny-cards");
-    if (sec) {
-      sec.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, [mode]);
+
+    // Nhấn nhanh: Chuyển đổi trạng thái giữ nguyên (Bật/Tắt)
+    setIsKeepCards((prev) => {
+      const next = !prev;
+      if (next) {
+        setCopiedToast("🔒 Đã bật giữ nguyên: Bạn có thể Tam Kính mà không bị đổi các lá bài!");
+      } else {
+        setCopiedToast("🔓 Đã tắt giữ nguyên: Khi bốc quẻ sẽ rút lá bài mới.");
+      }
+      setTimeout(() => setCopiedToast(null), 3000);
+      return next;
+    });
+  }, []);
 
   /* ── Nhấn Bắt đầu Bốc Quẻ: Random bốc các trận pháp khác nhau và cuộn mượt xuống khu vực trải bài ── */
   const handleStartDivinationOrShuffle = useCallback(() => {
     setIsRitualCompleted(false);
+    setIsKeepCards(false);
     // Luôn chọn ngẫu nhiên một trận pháp khác với trận pháp hiện tại để mỗi lần bấm luôn bốc một trận pháp mới lạ
     const availableModes = SPREAD_MODES.filter((m) => m !== mode);
     const randomMode =
@@ -2842,6 +2891,16 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     ? "Trận Pháp Ngũ Hành (5 Lá - Kim Mộc Thủy Hỏa Thổ)"
                     : "Hệ Thống 64 Quẻ & 384 Hào Chu Dịch"}
                 </span>
+                {isRitualCompleted && (
+                  <span className="ml-1 px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-800 text-[10px] font-bold border border-amber-400">
+                    ✦ Đắc Pháp Tam Kính
+                  </span>
+                )}
+                {isKeepCards && (
+                  <span className="ml-1 px-2 py-0.5 rounded-full bg-amber-100 text-[#7c5516] text-[10px] font-bold border border-[#C4963E]/60 shadow-xs">
+                    🔒 Giữ nguyên
+                  </span>
+                )}
                 <span>✦</span>
               </div>
               <h2 className="mb-3 text-3xl font-bold text-zinc-900 sm:text-5xl lg:text-6xl tracking-tight font-serif">
@@ -3323,7 +3382,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   </RitualHoldButton>
                 </div>
 
-                {/* Hàng 3: Thao tác (Rút lại, Chép cho AI & Nút đổi chiều Lá 2 khi ở Thập Tinh Trận) */}
+                {/* Hàng 3: Thao tác (Giữ nguyên, Chép cho AI & Nút đổi chiều Lá 2 khi ở Thập Tinh Trận) */}
                 <div className="flex flex-wrap items-center gap-2">
                   {mode === "thap_tinh" && (
                     <button
@@ -3341,15 +3400,33 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     </button>
                   )}
 
+                  {/* Ô Giữ nguyên (Thay thế nút Rút lại) */}
                   <RitualHoldButton
-                    id="hero-action-shuffle"
-                    active={false}
-                    onClick={(isRitual) => handleShuffleCardsAndScroll(isRitual)}
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-[#fef8ed] hover:bg-[#fcf1db] text-[#7c5516] border border-amber-300 transition cursor-pointer shadow-sm active:scale-95"
-                    title="Kính Thiên, Kính Địa, Kính Nhân (Rút lại quẻ khác)"
+                    id="hero-action-keep-cards"
+                    active={isKeepCards}
+                    onClick={(isRitual) => handleToggleKeepCards(isRitual)}
+                    className={`inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition cursor-pointer shadow-sm active:scale-95 select-none ${
+                      isKeepCards
+                        ? "bg-[#fbf4e6] text-[#7c5516] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.02]"
+                        : "bg-white hover:bg-stone-50 text-zinc-700 hover:text-zinc-950 border border-stone-300 font-medium shadow-xs hover:scale-[1.01]"
+                    }`}
+                    title="Ô giữ nguyên: Bấm để Bật/Tắt giữ nguyên các lá bài hiện tại (khi Tam Kính vẫn giữ nguyên bài), hoặc Nhấn & giữ 3 lần Tam Kính để đắc pháp trực tiếp cho quẻ này"
                   >
-                    <span className="text-sm">🎲</span>
-                    <span>Rút lại</span>
+                    <span
+                      className={`w-3.5 h-3.5 rounded flex items-center justify-center text-[10px] font-bold transition-all ${
+                        isKeepCards
+                          ? "bg-[#C4963E] text-zinc-950 shadow-xs"
+                          : "border border-stone-400 bg-stone-50 text-transparent"
+                      }`}
+                    >
+                      ✓
+                    </span>
+                    <span>Giữ nguyên</span>
+                    {isKeepCards && (
+                      <span className="text-[10px] text-amber-800 font-bold ml-0.5">
+                        (Đã khóa)
+                      </span>
+                    )}
                   </RitualHoldButton>
 
                   <div className="relative inline-flex items-center">
