@@ -376,8 +376,92 @@ async function copyToClipboard(text: string): Promise<boolean> {
   }
 }
 
+/* ─── Cache chứa dữ liệu bài viết chuyên sâu của các quẻ & hào đã tải ─── */
+const hexArticleCache = new Map<string, { tongQuan?: string; cuuNhi?: string; chiemDoan?: string; faq?: string }>();
+
+function cleanHtmlToText(s: string): string {
+  if (!s) return "";
+  return s
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+    .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "")
+    .replace(/<br\s*[\/]?>/gi, "\n")
+    .replace(/<\/p>/gi, "\n\n")
+    .replace(/<\/h[1-6]>/gi, "\n\n")
+    .replace(/<\/li>/gi, "\n")
+    .replace(/<li[^>]*>/gi, "• ")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/[ \t]+/g, " ")
+    .replace(/\n\s+\n/g, "\n\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+async function fetchCardArticleSections(card: DynamicCardItem): Promise<{ tongQuan?: string; cuuNhi?: string; chiemDoan?: string; faq?: string } | null> {
+  const slug = HEX_SLUGS[card.hexNumber] || `qiangua${card.hexNumber}`;
+  const isYao = card.type === "yao" && card.yaoNumber && card.yaoNumber >= 1 && card.yaoNumber <= 6;
+  const path = isYao ? `/vi/hexagram/${slug}/yao-${card.yaoNumber}/index.html` : `/vi/hexagram/${slug}/index.html`;
+
+  if (hexArticleCache.has(path)) {
+    return hexArticleCache.get(path)!;
+  }
+
+  try {
+    let res = await fetch(path);
+    if (!res.ok) {
+      const altPath = isYao ? `/vi/hexagram/${slug}/yao-${card.yaoNumber}/` : `/vi/hexagram/${slug}/`;
+      res = await fetch(altPath);
+    }
+    if (!res.ok) return null;
+    const html = await res.text();
+
+    const findSection = (headingRegex: RegExp, endHeadingRegex?: RegExp) => {
+      const m = html.match(headingRegex);
+      if (!m || m.index === undefined) return "";
+      const startIdx = m.index;
+      let endIdx = html.length;
+      if (endHeadingRegex) {
+        const rest = html.substring(startIdx + m[0].length);
+        const mEnd = rest.match(endHeadingRegex);
+        if (mEnd && mEnd.index !== undefined) {
+          endIdx = startIdx + m[0].length + mEnd.index;
+        }
+      }
+      return cleanHtmlToText(html.substring(startIdx, endIdx));
+    };
+
+    const tongQuan = findSection(/<(?:h2|h3)[^>]*>\s*(?:Tổng Quan Hào Vị|Tổng Quan Quẻ Tượng)[\s\S]*?<\/(?:h2|h3)>/i, /<(?:h2|h3)[^>]*>\s*Cửu Nhị Luận Giải/i);
+    const cuuNhi = findSection(/<(?:h2|h3)[^>]*>\s*Cửu Nhị Luận Giải[\s\S]*?<\/(?:h2|h3)>/i, /<(?:h2|h3)[^>]*>\s*Chiêm Đoán Giải Quẻ/i);
+    const chiemDoan = findSection(/<(?:h2|h3)[^>]*>\s*Chiêm Đoán Giải Quẻ[\s\S]*?<\/(?:h2|h3)>/i, /<(?:h2|h3)[^>]*>\s*(?:Câu Hỏi Thường Gặp|Giải Nghĩa Chi Tiết 6 Hào|Các Hào Khác)/i);
+    const faq = findSection(/<(?:h2|h3)[^>]*>\s*Câu Hỏi Thường Gặp[\s\S]*?<\/(?:h2|h3)>/i, /<(?:h2|h3|footer|section)[^>]*>\s*(?:Các Hào Khác|Khám Phá Quẻ Liên Quan|Sản phẩm|Gieo Một Quẻ)/i);
+
+    const result = {
+      tongQuan: tongQuan || undefined,
+      cuuNhi: cuuNhi || undefined,
+      chiemDoan: chiemDoan || undefined,
+      faq: faq || undefined,
+    };
+
+    hexArticleCache.set(path, result);
+    return result;
+  } catch (err) {
+    console.warn("Could not fetch article sections for card:", path, err);
+    return null;
+  }
+}
+
 /* ─── Helper: Lấy toàn bộ thông tin chi tiết đầy đủ từ Hexagram cho lá bài (Quẻ hoặc Hào) ─── */
-function formatCardFullInfoFromHexagram(c: DynamicCardItem, posHeader?: string, extraBadge?: string): string[] {
+function formatCardFullInfoFromHexagram(
+  c: DynamicCardItem,
+  posHeader?: string,
+  extraBadge?: string,
+  articleSections?: { tongQuan?: string; cuuNhi?: string; chiemDoan?: string; faq?: string } | null
+): string[] {
   const lines: string[] = [];
   const hex = HEXAGRAMS.find((h) => h.number === c.hexNumber);
 
@@ -444,26 +528,57 @@ function formatCardFullInfoFromHexagram(c: DynamicCardItem, posHeader?: string, 
     }
   }
 
+  // 3. Nếu có dữ liệu bài viết chuyên sâu từ bách khoa (Tổng Quan Hào Vị, Cửu Nhị Luận Giải, Chiêm Đoán, FAQ)
+  if (articleSections) {
+    if (articleSections.tongQuan) {
+      lines.push("");
+      lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+      lines.push(`【TỔNG QUAN HÀO VỊ / QUẢI TƯỢNG (BÁCH KHOA CHUYÊN SÂU)】`);
+      lines.push(articleSections.tongQuan);
+    }
+    if (articleSections.cuuNhi) {
+      lines.push("");
+      lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+      lines.push(`【CỬU NHỊ LUẬN GIẢI (MINH TRIẾT & ĐỊNH HƯỚNG)】`);
+      lines.push(articleSections.cuuNhi);
+    }
+    if (articleSections.chiemDoan) {
+      lines.push("");
+      lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+      lines.push(`【CHIÊM ĐOÁN GIẢI QUẺ (SỰ NGHIỆP • TÌNH CẢM • TÀI VẬN • SỨC KHỎE)】`);
+      lines.push(articleSections.chiemDoan);
+    }
+    if (articleSections.faq) {
+      lines.push("");
+      lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+      lines.push(`【CÂU HỎI THƯỜNG GẶP (FAQ)】`);
+      lines.push(articleSections.faq);
+    }
+  }
+
   return lines;
 }
 
 /* ─── Helper: Định dạng thông tin các lá bài để dán cho AI phân tích ─── */
-/* Thứ tự: Trái trước phải sau (theo danh sách card), Lấy đầy đủ 100% dữ liệu từ Hexagram */
-function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: SpreadMode, isCard2ReversedState: boolean = false): string {
+/* Thứ tự: Trái trước phải sau (theo danh sách card), Lấy đầy đủ 100% dữ liệu từ Hexagram & Bài viết chuyên sâu */
+async function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: SpreadMode, isCard2ReversedState: boolean = false): Promise<string> {
+  // Tải song song bài viết chi tiết của tất cả các lá bài trong trận pháp
+  const articles = await Promise.all(cardsList.map((c) => fetchCardArticleSections(c)));
+
   if (currentMode === "that_tinh") {
     const lines: string[] = [];
-    lines.push(`=== THÔNG TIN TRẢI BÀI TRẬN PHÁP THẤT TINH (7 LÁ CHU DỊCH - ĐẦY ĐỦ DỮ LIỆU HEXAGRAM) ===`);
+    lines.push(`=== THÔNG TIN TRẢI BÀI TRẬN PHÁP THẤT TINH (7 LÁ CHU DỊCH - ĐẦY ĐỦ DỮ LIỆU HEXAGRAM & BÁCH KHOA) ===`);
     lines.push(`Khẩu quyết: Thất Tinh Bắc Đẩu soi chiếu 7 phương diện cuộc đời: Quá khứ, Bản thân hiện tại, Diễn biến tiếp theo, Lá gợi ý, Kết quả, Môi trường khách quan và Điểm mù thiếu sót.\n`);
     cardsList.forEach((c, idx) => {
       const pos = THAT_TINH_POSITIONS[idx] || { label: `Lá ${idx + 1}`, sub: "", desc: "" };
       lines.push(`----------------------------------------`);
-      const cardLines = formatCardFullInfoFromHexagram(c, `Vị trí ${pos.label} [${pos.sub}]: ${pos.desc}`);
+      const cardLines = formatCardFullInfoFromHexagram(c, `Vị trí ${pos.label} [${pos.sub}]: ${pos.desc}`, undefined, articles[idx]);
       lines.push(...cardLines);
       lines.push("");
     });
     lines.push(`========================================`);
     lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI]:`);
-    lines.push(`Xin hãy phân tích trải bài Trận Pháp Thất Tinh theo quan hệ nhân quả tương sinh tương khắc giữa 7 vị trí (sử dụng đầy đủ dữ liệu Thoán Từ, Đại Tượng, Hào Từ, Ngũ Hành, Thời vận của từng quẻ):`);
+    lines.push(`Xin hãy phân tích trải bài Trận Pháp Thất Tinh theo quan hệ nhân quả tương sinh tương khắc giữa 7 vị trí (sử dụng đầy đủ dữ liệu Thoán Từ, Đại Tượng, Hào Từ, Ngũ Hành, Thời vận, Cửu Nhị Luận Giải và Chiêm đoán 4 phương diện của từng quẻ):`);
     lines.push(`1. Nền tảng quá khứ (Lá 1) và thực trạng tâm thế bản thân hiện tại (Lá 2).`);
     lines.push(`2. Chiều hướng diễn biến sắp tới (Lá 3) và tác động từ môi trường bên ngoài (Lá 6).`);
     lines.push(`3. Nhận diện điểm mù / thiếu sót cốt lõi của bản thân (Lá 7) để khắc phục.`);
@@ -473,7 +588,7 @@ function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: SpreadMode
 
   if (currentMode === "thap_tinh") {
     const lines: string[] = [];
-    lines.push(`=== THÔNG TIN TRẢI BÀI TRẬN PHÁP THẬP TINH (10 LÁ CELTIC CROSS CHU DỊCH - ĐẦY ĐỦ DỮ LIỆU HEXAGRAM) ===`);
+    lines.push(`=== THÔNG TIN TRẢI BÀI TRẬN PHÁP THẬP TINH (10 LÁ CELTIC CROSS CHU DỊCH - ĐẦY ĐỦ DỮ LIỆU HEXAGRAM & BÁCH KHOA) ===`);
     lines.push(`Khẩu quyết: Tâm điểm thập tự kết hợp chuỗi thời vận 10 vị thế nhân duyên.`);
     lines.push(`* QUY CHUẨN ĐẶC BIỆT LÁ THỨ 2: Chiều Xuôi là HỖ TRỢ (Trợ lực tương sinh), Chiều Ngược là TRỞ NGẠI (Thử thách, rào cản chắn ngang).`);
     lines.push(`* Trạng thái Lá 2 hiện thời: [${isCard2ReversedState ? "CHIỀU NGƯỢC: TRỞ NGẠI / RÀO CẢN" : "CHIỀU XUÔI: HỖ TRỢ / TRỢ LỰC TƯƠNG SINH"}]\n`);
@@ -481,13 +596,13 @@ function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: SpreadMode
       const pos = THAP_TINH_POSITIONS[idx] || { label: `Lá ${idx + 1}`, sub: "", desc: "" };
       const extraState = idx === 1 ? (isCard2ReversedState ? "[ĐANG Ở THẾ NGƯỢC: TRỞ NGẠI / RÀO CẢN]" : "[ĐANG Ở THẾ XUÔI: HỖ TRỢ / TRỢ LỰC]") : undefined;
       lines.push(`----------------------------------------`);
-      const cardLines = formatCardFullInfoFromHexagram(c, `Vị trí ${pos.label} [${pos.sub}]: ${pos.desc}`, extraState);
+      const cardLines = formatCardFullInfoFromHexagram(c, `Vị trí ${pos.label} [${pos.sub}]: ${pos.desc}`, extraState, articles[idx]);
       lines.push(...cardLines);
       lines.push("");
     });
     lines.push(`========================================`);
     lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI]:`);
-    lines.push(`Xin hãy phân tích trải bài Trận Pháp Thập Tinh một cách sâu sắc và toàn diện (sử dụng đầy đủ dữ liệu Thoán Từ, Đại Tượng, Hào Từ, Ngũ Hành, Thời vận của từng quẻ):`);
+    lines.push(`Xin hãy phân tích trải bài Trận Pháp Thập Tinh một cách sâu sắc và toàn diện (sử dụng đầy đủ dữ liệu Thoán Từ, Đại Tượng, Hào Từ, Ngũ Hành, Thời vận, Cửu Nhị Luận Giải và Chiêm đoán 4 phương diện của từng quẻ):`);
     lines.push(`1. Phân tích cốt lõi tâm điểm: Tình huống hiện tại (Lá 1) và lực tác động trực diện của Lá 2 (${isCard2ReversedState ? "TRỞ NGẠI: thử thách, chướng ngại vật cần vượt qua" : "HỖ TRỢ: trợ lực thuận lợi, yếu tố tương sinh thúc đẩy"}).`);
     lines.push(`2. Mối liên hệ đa chiều: Yếu tố bên ngoài (Lá 3), Góc khuất chưa biết (Lá 4), Nguồn gốc trước đây (Lá 5), Tương lai tiếp theo (Lá 6).`);
     lines.push(`3. Đại cục vận trình: Vận hạn năm nay (Lá 7), Góc nhìn xã hội / người ngoài (Lá 8) và Kết quả cuối cùng (Lá 9).`);
@@ -504,7 +619,7 @@ function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: SpreadMode
     const transHex = HEXAGRAMS.find((h) => h.number === trans?.hexNumber) || HEXAGRAMS[1];
 
     const lines: string[] = [];
-    lines.push(`=== BẢNG LUẬN GIẢI THÁP LA KINH DỊCH (周易塔羅 - ĐẦY ĐỦ DỮ LIỆU HEXAGRAM) ===`);
+    lines.push(`=== BẢNG LUẬN GIẢI THÁP LA KINH DỊCH (周易塔羅 - ĐẦY ĐỦ DỮ LIỆU HEXAGRAM & BÁCH KHOA) ===`);
     lines.push(`Cấu trúc: Quẻ Chủ & Quẻ Biến song song Trên - Dưới • Dải Hào Động (Bộ 384 Lá) kế bên Quẻ Chủ`);
     lines.push(`Thứ tự đọc chiêm bốc: 1. Bản Quái (Quẻ Chủ) ➔ 2. Hào Động (Bước Ngoặt) ➔ 3. Biến Quái (Quẻ Biến)\n`);
 
@@ -525,6 +640,33 @@ function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: SpreadMode
       if (priHex.love) lines.push(`• Tình cảm nhân duyên: ${priHex.love}`);
       if (priHex.health) lines.push(`• Sức khỏe thể chất: ${priHex.health}`);
       if (priHex.advice) lines.push(`• Lời khuyên nền tảng: ${priHex.advice}`);
+
+      if (articles[0]) {
+        if (articles[0].tongQuan) {
+          lines.push("");
+          lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+          lines.push(`【BẢN QUÁI: TỔNG QUAN BÁCH KHOA CHUYÊN SÂU】`);
+          lines.push(articles[0].tongQuan);
+        }
+        if (articles[0].cuuNhi) {
+          lines.push("");
+          lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+          lines.push(`【BẢN QUÁI: CỬU NHỊ LUẬN GIẢI】`);
+          lines.push(articles[0].cuuNhi);
+        }
+        if (articles[0].chiemDoan) {
+          lines.push("");
+          lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+          lines.push(`【BẢN QUÁI: CHIÊM ĐOÁN 4 PHƯƠNG DIỆN】`);
+          lines.push(articles[0].chiemDoan);
+        }
+        if (articles[0].faq) {
+          lines.push("");
+          lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+          lines.push(`【BẢN QUÁI: CÂU HỎI THƯỜNG GẶP (FAQ)】`);
+          lines.push(articles[0].faq);
+        }
+      }
       lines.push("");
     }
 
@@ -542,12 +684,37 @@ function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: SpreadMode
         const lineNum = y.yaoNumber || (idx + 1);
         const lineMeaning = priHex.lineMeanings?.find((m) => m.line === lineNum);
         const isYangToYin = (priHex.lines?.[lineNum - 1] === 1);
+        const yaoArticle = articles[idx + 2];
+
         lines.push(`▶ Hào Động thứ ${idx + 1}: ${y.name}`);
         lines.push(`  - Biến chuyển: ${isYangToYin ? "⚊ Dương biến sang ⚏ Âm" : "⚏ Âm biến sang ⚊ Dương"}`);
         lines.push(`  - Hào Từ: "${lineMeaning?.text || y.desc}"`);
         lines.push(`  - Lời khuyên then chốt: ${lineMeaning?.meaning || y.sub}`);
         if (lineMeaning?.detailedExplanation) {
           lines.push(`  - Trọng tâm hành động & Biến số mấu chốt: ${lineMeaning.detailedExplanation}`);
+        }
+
+        if (yaoArticle) {
+          if (yaoArticle.tongQuan) {
+            lines.push("");
+            lines.push(`  【TỔNG QUAN HÀO ĐỘNG BÁCH KHOA】:`);
+            lines.push(yaoArticle.tongQuan);
+          }
+          if (yaoArticle.cuuNhi) {
+            lines.push("");
+            lines.push(`  【CỬU NHỊ LUẬN GIẢI HÀO ĐỘNG】:`);
+            lines.push(yaoArticle.cuuNhi);
+          }
+          if (yaoArticle.chiemDoan) {
+            lines.push("");
+            lines.push(`  【CHIÊM ĐOÁN HÀO ĐỘNG 4 PHƯƠNG DIỆN】:`);
+            lines.push(yaoArticle.chiemDoan);
+          }
+          if (yaoArticle.faq) {
+            lines.push("");
+            lines.push(`  【FAQ HÀO ĐỘNG】:`);
+            lines.push(yaoArticle.faq);
+          }
         }
       });
     }
@@ -570,13 +737,40 @@ function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: SpreadMode
       if (transHex.love) lines.push(`• Tình cảm nhân duyên: ${transHex.love}`);
       if (transHex.health) lines.push(`• Sức khỏe thể chất: ${transHex.health}`);
       if (transHex.advice) lines.push(`• Phương châm hành động sáng suốt: ${transHex.advice}`);
+
+      if (articles[1]) {
+        if (articles[1].tongQuan) {
+          lines.push("");
+          lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+          lines.push(`【BIẾN QUÁI: TỔNG QUAN BÁCH KHOA CHUYÊN SÂU】`);
+          lines.push(articles[1].tongQuan);
+        }
+        if (articles[1].cuuNhi) {
+          lines.push("");
+          lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+          lines.push(`【BIẾN QUÁI: CỬU NHỊ LUẬN GIẢI】`);
+          lines.push(articles[1].cuuNhi);
+        }
+        if (articles[1].chiemDoan) {
+          lines.push("");
+          lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+          lines.push(`【BIẾN QUÁI: CHIÊM ĐOÁN 4 PHƯƠNG DIỆN】`);
+          lines.push(articles[1].chiemDoan);
+        }
+        if (articles[1].faq) {
+          lines.push("");
+          lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+          lines.push(`【BIẾN QUÁI: CÂU HỎI THƯỜNG GẶP (FAQ)】`);
+          lines.push(articles[1].faq);
+        }
+      }
       lines.push("");
     }
 
     lines.push(`========================================`);
     lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI (THEO PHƯƠNG PHÁP THÁP LA KINH DỊCH)]:`);
     lines.push(`Xin hãy phân tích trải bài Tháp La Kinh Dịch theo đúng 3 tầng thứ tự và ý nghĩa thực tiễn trong đời sống:`);
-    lines.push(`1. BẢN QUÁI (Định vị bối cảnh): Dựa vào Thoán Từ (Quái Từ) và Đại Tượng Truyện, nhận diện bản chất loại hoàn cảnh thực tại đương số đang đối mặt. Cục diện đang ở đâu? Cơ hội và trở lực tiềm ẩn xung quanh là gì?`);
+    lines.push(`1. BẢN QUÁI (Định vị bối cảnh): Dựa vào Thoán Từ (Quái Từ), Đại Tượng Truyện và Luận giải chuyên sâu, nhận diện bản chất loại hoàn cảnh thực tại đương số đang đối mặt. Cục diện đang ở đâu? Cơ hội và trở lực tiềm ẩn xung quanh là gì?`);
     lines.push(`2. HÀO ĐỘNG (Lời khuyên then chốt): Dựa vào Hào Từ của chính các hào biến động (phân tích tuần tự từ Hào Sơ lên Hào Lục). Đâu là trọng tâm hành động và biến số mấu chốt đương số cần lưu tâm? Chỉ rõ việc nên làm, việc cần tránh và thời điểm chuyển hóa quyết định.`);
     lines.push(`3. BIẾN QUÁI (Định hướng tương lai): Dựa vào Quái Từ của Quẻ Biến, dự báo xu thế phát triển tiếp theo sau khi sự chuyển hóa hoàn tất. Đưa ra chiến lược tổng thể và tâm thế sáng suốt nhất để đương số chủ động kiến tạo cát tường.`);
 
@@ -620,20 +814,20 @@ function formatSpreadForAI(cardsList: DynamicCardItem[], currentMode: SpreadMode
   };
 
   const lines: string[] = [];
-  lines.push(`=== THÔNG TIN TRẢI BÀI KINH DỊCH (THỨ TỰ TỪ TRÁI SANG PHẢI - ĐẦY ĐỦ DỮ LIỆU HEXAGRAM) ===`);
+  lines.push(`=== THÔNG TIN TRẢI BÀI KINH DỊCH (THỨ TỰ TỪ TRÁI SANG PHẢI - ĐẦY ĐỦ DỮ LIỆU HEXAGRAM & BÁCH KHOA) ===`);
   lines.push(`Trải bài: ${getSpreadName(currentMode)} | Số lượng: ${cardsList.length} lá\n`);
 
   cardsList.forEach((c, idx) => {
     const pos = getPositionLabel(idx, cardsList.length);
     lines.push(`----------------------------------------`);
-    const cardLines = formatCardFullInfoFromHexagram(c, pos);
+    const cardLines = formatCardFullInfoFromHexagram(c, pos, undefined, articles[idx]);
     lines.push(...cardLines);
     lines.push("");
   });
 
   lines.push(`========================================`);
   lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI]:`);
-  lines.push(`Xin hãy phân tích trải bài Kinh Dịch trên theo đúng thứ tự từ trái sang phải (dựa trên đầy đủ dữ liệu quẻ tượng, Thoán Từ, Đại Tượng, Hào Từ, Ngũ hành và các phương diện vận thế):`);
+  lines.push(`Xin hãy phân tích trải bài Kinh Dịch trên theo đúng thứ tự từ trái sang phải (dựa trên đầy đủ dữ liệu quẻ tượng, Thoán Từ, Đại Tượng, Hào Từ, Ngũ hành, Cửu Nhị Luận Giải và Chiêm đoán 4 phương diện):`);
   lines.push(`1. Luận giải ý nghĩa chi tiết từng lá bài theo vị trí tương ứng.`);
   lines.push(`2. Phân tích mối liên kết và dòng chảy chuyển dịch năng lượng từ lá bài bên trái sang lá bài bên phải.`);
   lines.push(`3. Đánh giá hoàn cảnh hiện tại, nguy cơ tiềm ẩn và cơ hội phát triển.`);
@@ -1677,37 +1871,40 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     }, 50);
   }, [mode]);
 
-  /* ── Sao chép toàn bộ trải bài cho AI (Thứ tự: Trái trước phải sau, Trên trước dưới sau) ── */
+  /* ── Sao chép toàn bộ trải bài cho AI (Đầy đủ thông tin từ Hexagram & Bách khoa) ── */
   const handleCopyCardsForAI = useCallback(async () => {
-    const text = formatSpreadForAI(cards, mode, isCard2Reversed);
+    setCopiedToast("Đang chuẩn bị toàn bộ dữ liệu quẻ & luận giải cho AI...");
+    const text = await formatSpreadForAI(cards, mode, isCard2Reversed);
     const ok = await copyToClipboard(text);
     if (ok) {
       setCopiedAI(true);
-      setCopiedToast("Đã chép thông tin các lá bài cho AI (trái sang phải, trên xuống dưới)!");
+      setCopiedToast("Đã chép đầy đủ thông tin các lá bài cho AI (kèm Tổng quan, Luận giải, Chiêm đoán & FAQ)!");
       setTimeout(() => setCopiedAI(false), 2500);
-      setTimeout(() => setCopiedToast(null), 3200);
+      setTimeout(() => setCopiedToast(null), 3500);
     }
   }, [cards, mode, isCard2Reversed]);
 
-  /* ── Sao chép 1 lá bài đơn lẻ cho AI (Lấy đầy đủ 100% dữ liệu từ Hexagram) ── */
+  /* ── Sao chép 1 lá bài đơn lẻ cho AI (Lấy đầy đủ 100% dữ liệu từ Hexagram & Bách khoa) ── */
   const handleCopySingleCardForAI = useCallback(async (card: DynamicCardItem) => {
-    const cardInfoLines = formatCardFullInfoFromHexagram(card, `LÁ BÀI KINH DỊCH: ${card.name}`);
-    const text = `=== THÔNG TIN ĐẦY ĐỦ LÁ BÀI KINH DỊCH (TỪ HEXAGRAM) ===
+    setCopiedToast(`Đang trích xuất dữ liệu bách khoa cho lá bài ${card.name}...`);
+    const article = await fetchCardArticleSections(card);
+    const cardInfoLines = formatCardFullInfoFromHexagram(card, `LÁ BÀI KINH DỊCH: ${card.name}`, undefined, article);
+    const text = `=== THÔNG TIN ĐẦY ĐỦ LÁ BÀI KINH DỊCH (TỪ HEXAGRAM & BÁCH KHOA CỬU NHỊ) ===
 ${cardInfoLines.join("\n")}
 
 ========================================
 [YÊU CẦU LUẬN GIẢI CHO AI]:
 Xin hãy phân tích chi tiết và sâu sắc lá bài Kinh Dịch trên:
 1. Ý nghĩa biểu tượng quẻ tượng, tên quẻ/hào, cấu tạo Thượng Hạ quái và Ngũ hành khí số.
-2. Hoàn cảnh thực tế, thuận lợi tiềm tàng và thách thức mà quẻ/hào này đang phản ánh (dựa trên Thoán Từ, Đại Tượng, các phương diện sự nghiệp, tài lộc, tình cảm, sức khỏe).
+2. Hoàn cảnh thực tế, thuận lợi tiềm tàng và thách thức mà quẻ/hào này đang phản ánh (kết hợp dữ liệu Tổng Quan Hào Vị, Cửu Nhị Luận Giải, Chiêm Đoán Giải Quẻ 4 phương diện và Câu Hỏi Thường Gặp FAQ).
 3. Trọng tâm hành động và lời khuyên định hướng thấu đáo nhất theo đạo Dịch để đón cát tránh hung.`;
 
     const ok = await copyToClipboard(text);
     if (ok) {
       setCopiedSingle(true);
-      setCopiedToast(`Đã sao chép đầy đủ thông tin lá bài ${card.name} cho AI!`);
+      setCopiedToast(`Đã sao chép đầy đủ thông tin lá bài ${card.name} (kèm Luận giải & FAQ) cho AI!`);
       setTimeout(() => setCopiedSingle(false), 2200);
-      setTimeout(() => setCopiedToast(null), 2800);
+      setTimeout(() => setCopiedToast(null), 3200);
     }
   }, []);
 
