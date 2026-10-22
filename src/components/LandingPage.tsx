@@ -981,6 +981,7 @@ const RitualHoldButton: React.FC<RitualHoldButtonProps> = ({
   const [isFlashing, setIsFlashing] = useState(false);
 
   const holdStartRef = useRef<number | null>(null);
+  const touchStartPosRef = useRef<{ x: number; y: number } | null>(null);
   const animFrameRef = useRef<number | null>(null);
   const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
   const currentCountRef = useRef(0);
@@ -1018,9 +1019,14 @@ const RitualHoldButton: React.FC<RitualHoldButtonProps> = ({
   const startHold = (e: React.PointerEvent<HTMLButtonElement>) => {
     if (e.button !== 0 && e.pointerType === "mouse") return;
 
-    try {
-      e.currentTarget.setPointerCapture(e.pointerId);
-    } catch (_) {}
+    touchStartPosRef.current = { x: e.clientX, y: e.clientY };
+
+    // Chỉ gọi setPointerCapture với chuột để không chặn cử chỉ cuộn dọc trên màn hình cảm ứng:
+    if (e.pointerType === "mouse") {
+      try {
+        e.currentTarget.setPointerCapture(e.pointerId);
+      } catch (_) {}
+    }
 
     if (idleTimerRef.current) {
       clearTimeout(idleTimerRef.current);
@@ -1066,7 +1072,19 @@ const RitualHoldButton: React.FC<RitualHoldButtonProps> = ({
     animFrameRef.current = requestAnimationFrame(loop);
   };
 
+  const handlePointerMove = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (!isHolding || !touchStartPosRef.current) return;
+    const dx = e.clientX - touchStartPosRef.current.x;
+    const dy = e.clientY - touchStartPosRef.current.y;
+    // Nếu ngón tay di chuyển quá 10px (người dùng đang vuốt để kéo cuộn màn hình trên điện thoại):
+    if (Math.hypot(dx, dy) > 10) {
+      clearHold();
+      touchStartPosRef.current = null;
+    }
+  };
+
   const endHold = (e?: React.PointerEvent<HTMLButtonElement>) => {
+    touchStartPosRef.current = null;
     if (e && e.currentTarget && e.pointerId !== undefined) {
       try {
         if (e.currentTarget.hasPointerCapture(e.pointerId)) {
@@ -1129,7 +1147,7 @@ const RitualHoldButton: React.FC<RitualHoldButtonProps> = ({
   const strokeOffset = perimeter * (1 - holdProgress);
 
   return (
-    <div className="relative flex sm:inline-flex items-center justify-center w-full sm:w-auto">
+    <div className="relative inline-flex items-center justify-center w-full sm:w-auto">
       {/* Chỉ hiện chữ khi ĐÃ CHẠY XONG 1 VÒNG */}
       {revealedStep && (
         <div className="absolute -top-10 left-1/2 -translate-x-1/2 z-50 pointer-events-none whitespace-nowrap px-3.5 py-1.5 rounded-full bg-zinc-950/95 border border-[#C4963E] shadow-2xl text-xs sm:text-[11px] font-serif font-bold text-amber-300 flex items-center gap-1.5 animate-bounce">
@@ -1152,11 +1170,12 @@ const RitualHoldButton: React.FC<RitualHoldButtonProps> = ({
         title={title || "Kính Thiên, Kính Địa, Kính Nhân"}
         onClick={handleClick}
         onPointerDown={startHold}
+        onPointerMove={handlePointerMove}
         onPointerUp={endHold}
         onPointerLeave={endHold}
         onPointerCancel={endHold}
         onContextMenu={(e) => e.preventDefault()}
-        className={`relative w-full sm:w-auto select-none touch-none overflow-visible transition-all duration-200 ${className} ${
+        className={`relative w-full sm:w-auto select-none touch-pan-y overflow-visible transition-all duration-200 ${className} ${
           isHolding ? "scale-[0.97] brightness-110 shadow-lg ring-2 ring-amber-400/60" : ""
         } ${isFlashing ? "ring-4 ring-amber-400/80 shadow-[0_0_24px_rgba(245,158,11,0.6)]" : ""} ${
           showHint ? "animate-ritual-wiggle" : ""
@@ -1377,7 +1396,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         tgtY = curHeroY * (1 - t1) + curDestinyY * t1;
         tgtG = smoothstep(Math.min(1, p1 / 0.50));
         tgtF = smoothstep(Math.min(1, p1 / 0.35)); // Đạt 100% tách biệt cực sớm
-        if (layer) layer.style.opacity = "1";
+        if (layer) {
+          layer.style.opacity = "1";
+          layer.style.visibility = "visible";
+        }
       } else if (scrollY <= s1_hold) {
         // GIAI ĐOẠN 2: Giữ yên vị hoàn toàn tại trung tâm phần trắng (Destiny Cards)
         // Không di chuyển lệch sang phải, không co cụm, giữ 100% tách biệt rộng rãi
@@ -1385,9 +1407,28 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         tgtY = curDestinyY;
         tgtG = 1;
         tgtF = 1;
-        if (layer) layer.style.opacity = "1";
+        if (layer) {
+          layer.style.opacity = "1";
+          layer.style.visibility = "visible";
+        }
+      } else if (!isDesktop) {
+        // ── ĐIỆN THOẠI / MÀN HÌNH NHỎ (MOBILE: < 1024px) ──
+        // Sau khi xem xong các lá bài ở Section 2 (Destiny Cards), các lá bài tự nhiên cuộn lên theo trang
+        // (tgtY = curDestinyY) và mờ dần biến mất, TUYỆT ĐỐI KHÔNG bám dính theo màn hình hay trôi xuống
+        // che khuất chữ, ô câu hỏi và các nút bấm ở Section 3!
+        tgtX = destinyStageX;
+        tgtY = curDestinyY;
+        tgtG = 1;
+        tgtF = 1;
+
+        const fadeOut = Math.max(0, Math.min(1, 1 - (scrollY - s1_hold) / 200));
+        if (layer) {
+          layer.style.opacity = fadeOut.toFixed(3);
+          layer.style.visibility = fadeOut <= 0.01 ? "hidden" : "visible";
+          layer.style.pointerEvents = "none";
+        }
       } else if (scrollY <= s2) {
-        // GIAI ĐOẠN 3: Destiny Cards -> Features
+        // GIAI ĐOẠN 3: Destiny Cards -> Features (DESKTOP: 2 cột rộng rãi)
         const p2 = Math.min(1, Math.max(0, (scrollY - s1_hold) / (s2 - s1_hold)));
         const t2 = smoothstep(p2);
 
@@ -1397,9 +1438,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
         // Khi kéo xuống Section Features: các lá bài gom mượt mà lại thành 1 lá duy nhất (f giảm dần từ 1 về 0)
         tgtF = 1 - smoothstep(p2);
-        if (layer) layer.style.opacity = "1";
+        if (layer) {
+          layer.style.opacity = "1";
+          layer.style.visibility = "visible";
+        }
       } else {
-        // GIAI ĐOẠN 4: Đã yên vị tại Features
+        // GIAI ĐOẠN 4: Đã yên vị tại Features (DESKTOP)
         tgtX = featuresStageX;
         tgtY = curFeaturesY;
         tgtG = 1;
@@ -1410,8 +1454,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           if (fRect.bottom < window.innerHeight * 0.55) {
             const fadeOut = Math.max(0, Math.min(1, (fRect.bottom - 40) / (window.innerHeight * 0.45)));
             layer.style.opacity = fadeOut.toFixed(3);
+            layer.style.visibility = fadeOut <= 0.01 ? "hidden" : "visible";
           } else {
             layer.style.opacity = "1";
+            layer.style.visibility = "visible";
           }
         }
       }
@@ -3291,119 +3337,145 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 </div>
               </div>
 
-              {/* Cụm nút chọn hình thức gieo quẻ & thao tác (Chuyển xuống dưới Bắt đầu ngay) */}
-              <div className="mt-6 pt-6 border-t border-zinc-200/80 flex flex-col gap-2.5 max-w-xl">
-                {/* Hàng 1: 1 Lá, 2 Lá, 3 Lá, 5 Lá */}
-                <div className="flex flex-wrap items-center gap-2">
+              {/* Cụm nút chọn hình thức gieo quẻ & thao tác (Tối ưu hóa gọn gàng cho điện thoại) */}
+              <div className="mt-5 pt-5 border-t border-zinc-200/80 flex flex-col gap-2.5 max-w-xl">
+                {/* Tiêu đề nhóm nhỏ */}
+                <div className="flex items-center justify-between mb-0.5">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#7C5516] flex items-center gap-1.5">
+                    <span>✦</span>
+                    <span>Chọn trận pháp gieo quẻ</span>
+                  </span>
+                  {isKeepCards && (
+                    <span className="text-[10px] font-semibold text-amber-800 bg-amber-100/90 border border-amber-300 px-2 py-0.5 rounded-full">
+                      🔒 Đang giữ bài
+                    </span>
+                  )}
+                </div>
+
+                {/* Hàng 1: Trận pháp cơ bản (1 Lá, 2 Lá, 3 Lá, 5 Lá) -> Grid 4 cột gọn gàng trên mobile */}
+                <div className="grid grid-cols-4 gap-1.5 sm:flex sm:flex-wrap sm:gap-2">
                   <RitualHoldButton
                     id="hero-mode-1"
                     active={mode === "1_single"}
                     onClick={(isRitual) => handleSwitchModeAndScroll("1_single", isRitual)}
-                    className={`flex items-center justify-center px-4 py-2 rounded-full text-xs transition cursor-pointer shadow-sm ${
+                    className={`flex items-center justify-center px-1.5 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-[11px] sm:text-xs transition cursor-pointer shadow-xs ${
                       mode === "1_single"
-                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.03]"
-                        : "bg-white hover:bg-stone-50 text-zinc-800 hover:text-zinc-950 border border-stone-300 font-medium shadow-xs hover:scale-[1.02]"
+                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.02]"
+                        : "bg-white hover:bg-stone-50 text-zinc-800 hover:text-zinc-950 border border-stone-300 font-medium hover:scale-[1.01]"
                     }`}
                     title="Kính Thiên, Kính Địa, Kính Nhân (1 Lá - Đơn Quẻ)"
                   >
-                    1 Lá (Đơn Quẻ)
+                    <span className="sm:hidden">1 Lá</span>
+                    <span className="hidden sm:inline">1 Lá (Đơn Quẻ)</span>
                   </RitualHoldButton>
 
                   <RitualHoldButton
                     id="hero-mode-2"
                     active={mode === "1_to_2"}
                     onClick={(isRitual) => handleSwitchModeAndScroll("1_to_2", isRitual)}
-                    className={`flex items-center justify-center px-4 py-2 rounded-full text-xs transition cursor-pointer shadow-sm ${
+                    className={`flex items-center justify-center px-1.5 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-[11px] sm:text-xs transition cursor-pointer shadow-xs ${
                       mode === "1_to_2"
-                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.03]"
-                        : "bg-white hover:bg-stone-50 text-zinc-800 hover:text-zinc-950 border border-stone-300 font-medium shadow-xs hover:scale-[1.02]"
+                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.02]"
+                        : "bg-white hover:bg-stone-50 text-zinc-800 hover:text-zinc-950 border border-stone-300 font-medium hover:scale-[1.01]"
                     }`}
                     title="Kính Thiên, Kính Địa, Kính Nhân (2 Lá - Âm Dương)"
                   >
-                    2 Lá (Âm Dương)
+                    <span className="sm:hidden">2 Lá</span>
+                    <span className="hidden sm:inline">2 Lá (Âm Dương)</span>
                   </RitualHoldButton>
 
                   <RitualHoldButton
                     id="hero-mode-3"
                     active={mode === "1_to_3"}
                     onClick={(isRitual) => handleSwitchModeAndScroll("1_to_3", isRitual)}
-                    className={`flex items-center justify-center px-4 py-2 rounded-full text-xs transition cursor-pointer shadow-sm ${
+                    className={`flex items-center justify-center px-1.5 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-[11px] sm:text-xs transition cursor-pointer shadow-xs ${
                       mode === "1_to_3"
-                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.03]"
-                        : "bg-white hover:bg-stone-50 text-zinc-800 hover:text-zinc-950 border border-stone-300 font-medium shadow-xs hover:scale-[1.02]"
+                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.02]"
+                        : "bg-white hover:bg-stone-50 text-zinc-800 hover:text-zinc-950 border border-stone-300 font-medium hover:scale-[1.01]"
                     }`}
                     title="Kính Thiên, Kính Địa, Kính Nhân (3 Lá - Tam Tài)"
                   >
-                    3 Lá (Tam Tài)
+                    <span className="sm:hidden">3 Lá</span>
+                    <span className="hidden sm:inline">3 Lá (Tam Tài)</span>
                   </RitualHoldButton>
 
                   <RitualHoldButton
                     id="hero-mode-5"
                     active={mode === "3_to_5"}
                     onClick={(isRitual) => handleSwitchModeAndScroll("3_to_5", isRitual)}
-                    className={`flex items-center justify-center px-4 py-2 rounded-full text-xs transition cursor-pointer shadow-sm ${
+                    className={`flex items-center justify-center px-1.5 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-[11px] sm:text-xs transition cursor-pointer shadow-xs ${
                       mode === "3_to_5"
-                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.03]"
-                        : "bg-white hover:bg-stone-50 text-zinc-800 hover:text-zinc-950 border border-stone-300 font-medium shadow-xs hover:scale-[1.02]"
+                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.02]"
+                        : "bg-white hover:bg-stone-50 text-zinc-800 hover:text-zinc-950 border border-stone-300 font-medium hover:scale-[1.01]"
                     }`}
                     title="Kính Thiên, Kính Địa, Kính Nhân (5 Lá - Ngũ Hành)"
                   >
-                    5 Lá (Ngũ Hành)
+                    <span className="sm:hidden">5 Lá</span>
+                    <span className="hidden sm:inline">5 Lá (Ngũ Hành)</span>
                   </RitualHoldButton>
                 </div>
 
-                {/* Hàng 2: Thất Tinh (7 Lá), Thập Tinh (10 Lá), Tháp La Kinh Dịch */}
-                <div className="flex flex-wrap items-center gap-2">
+                {/* Hàng 2: Trận pháp mở rộng (Thất Tinh & Thập Tinh) -> Grid 2 cột trên mobile */}
+                <div className="grid grid-cols-2 gap-1.5 sm:flex sm:flex-wrap sm:gap-2">
                   <RitualHoldButton
                     id="hero-mode-that-tinh"
                     active={mode === "that_tinh"}
                     onClick={(isRitual) => handleSwitchModeAndScroll("that_tinh", isRitual)}
-                    className={`flex items-center justify-center px-4 py-2 rounded-full text-xs transition cursor-pointer shadow-sm ${
+                    className={`flex items-center justify-center px-2 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-[11px] sm:text-xs transition cursor-pointer shadow-xs ${
                       mode === "that_tinh"
-                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.03]"
-                        : "bg-white hover:bg-stone-50 text-zinc-800 hover:text-zinc-950 border border-stone-300 font-medium shadow-xs hover:scale-[1.02]"
+                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.02]"
+                        : "bg-white hover:bg-stone-50 text-zinc-800 hover:text-zinc-950 border border-stone-300 font-medium hover:scale-[1.01]"
                     }`}
                     title="Trận Pháp Thất Tinh (7 Lá): Khảo sát 7 góc độ toàn diện cuộc sống"
                   >
-                    Thất Tinh Trận (7 Lá)
+                    <span className="sm:hidden">7 Lá (Thất Tinh)</span>
+                    <span className="hidden sm:inline">Thất Tinh Trận (7 Lá)</span>
                   </RitualHoldButton>
 
                   <RitualHoldButton
                     id="hero-mode-thap-tinh"
                     active={mode === "thap_tinh"}
                     onClick={(isRitual) => handleSwitchModeAndScroll("thap_tinh", isRitual)}
-                    className={`flex items-center justify-center px-4 py-2 rounded-full text-xs transition cursor-pointer shadow-sm ${
+                    className={`flex items-center justify-center px-2 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-[11px] sm:text-xs transition cursor-pointer shadow-xs ${
                       mode === "thap_tinh"
-                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.03]"
-                        : "bg-white hover:bg-stone-50 text-zinc-800 hover:text-zinc-950 border border-stone-300 font-medium shadow-xs hover:scale-[1.02]"
+                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.02]"
+                        : "bg-white hover:bg-stone-50 text-zinc-800 hover:text-zinc-950 border border-stone-300 font-medium hover:scale-[1.01]"
                     }`}
                     title="Trận Pháp Thập Tinh (10 Lá): Đỉnh cao Celtic Cross - Lá 2: Xuôi Hỗ Trợ / Ngược Trở Ngại"
                   >
-                    Thập Tinh Trận (10 Lá)
+                    <span className="sm:hidden">10 Lá (Thập Tinh)</span>
+                    <span className="hidden sm:inline">Thập Tinh Trận (10 Lá)</span>
                   </RitualHoldButton>
+                </div>
 
+                {/* Hàng 2.5: Tháp La Kinh Dịch (Trận pháp độc quyền nổi bật) */}
+                <div className="w-full">
                   <RitualHoldButton
                     id="hero-mode-thap-la"
                     active={mode === "thap_la"}
                     onClick={(isRitual) => handleSwitchModeAndScroll("thap_la", isRitual)}
-                    className={`flex items-center justify-center px-4 py-2 rounded-full text-xs transition cursor-pointer shadow-sm ${
+                    className={`flex items-center justify-center gap-1.5 w-full px-3 py-2 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-xs transition cursor-pointer shadow-xs ${
                       mode === "thap_la"
-                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.03]"
-                        : "bg-white hover:bg-stone-50 text-zinc-800 hover:text-zinc-950 border border-stone-300 font-medium shadow-xs hover:scale-[1.02]"
+                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.01]"
+                        : "bg-white hover:bg-stone-50 text-zinc-800 hover:text-zinc-950 border border-stone-300 font-medium hover:scale-[1.01]"
                     }`}
                     title="Tháp La Kinh Dịch: Quẻ Chủ & Quẻ Biến Song Song Trên - Dưới & Dải Hào Từ Biến Dịch (384 Hào)"
                   >
-                    Tháp La Kinh Dịch
+                    <span>☯</span>
+                    <span className="font-semibold">Tháp La Kinh Dịch</span>
+                    <span className="text-[10px] text-amber-700/80 font-normal hidden xs:inline sm:inline">
+                      (Bản Quái • Hào Động • Biến Quái)
+                    </span>
                   </RitualHoldButton>
                 </div>
 
                 {/* Hàng 3: Thao tác (Giữ nguyên, Chép cho AI & Nút đổi chiều Lá 2 khi ở Thập Tinh Trận) */}
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-col gap-2 pt-1">
                   {mode === "thap_tinh" && (
                     <button
                       type="button"
                       onClick={handleToggleCard2Reversed}
-                      className={`inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold transition cursor-pointer shadow-sm active:scale-95 ${
+                      className={`inline-flex items-center justify-center gap-1.5 w-full px-3.5 py-1.5 rounded-xl sm:rounded-full text-xs font-bold transition cursor-pointer shadow-xs active:scale-95 ${
                         isCard2Reversed
                           ? "bg-rose-950 text-rose-200 border-2 border-rose-500 shadow-rose-950/40"
                           : "bg-emerald-950 text-emerald-200 border-2 border-emerald-500 shadow-emerald-950/40"
@@ -3415,82 +3487,85 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     </button>
                   )}
 
-                  {/* Ô Giữ nguyên (Thay thế nút Rút lại) */}
-                  <RitualHoldButton
-                    id="hero-action-keep-cards"
-                    active={isKeepCards}
-                    onClick={(isRitual) => handleToggleKeepCards(isRitual)}
-                    className={`inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition cursor-pointer shadow-sm active:scale-95 select-none ${
-                      isKeepCards
-                        ? "bg-[#fbf4e6] text-[#7c5516] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.02]"
-                        : "bg-white hover:bg-stone-50 text-zinc-700 hover:text-zinc-950 border border-stone-300 font-medium shadow-xs hover:scale-[1.01]"
-                    }`}
-                    title="Ô giữ nguyên: Bấm để Bật/Tắt giữ nguyên các lá bài hiện tại (khi Tam Kính vẫn giữ nguyên bài), hoặc Nhấn & giữ 3 lần Tam Kính để đắc pháp trực tiếp cho quẻ này"
-                  >
-                    <span
-                      className={`w-3.5 h-3.5 rounded flex items-center justify-center text-[10px] font-bold transition-all ${
+                  <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-2">
+                    {/* Ô Giữ nguyên */}
+                    <RitualHoldButton
+                      id="hero-action-keep-cards"
+                      active={isKeepCards}
+                      onClick={(isRitual) => handleToggleKeepCards(isRitual)}
+                      className={`inline-flex items-center justify-center gap-1.5 w-full sm:w-auto px-3 py-2 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-xs font-semibold transition cursor-pointer shadow-xs active:scale-95 select-none ${
                         isKeepCards
-                          ? "bg-[#C4963E] text-zinc-950 shadow-xs"
-                          : "border border-stone-400 bg-stone-50 text-transparent"
+                          ? "bg-[#fbf4e6] text-[#7c5516] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.01]"
+                          : "bg-white hover:bg-stone-50 text-zinc-700 hover:text-zinc-950 border border-stone-300 font-medium hover:scale-[1.01]"
                       }`}
+                      title="Ô giữ nguyên: Bấm để Bật/Tắt giữ nguyên các lá bài hiện tại (khi Tam Kính vẫn giữ nguyên bài), hoặc Nhấn & giữ 3 lần Tam Kính để đắc pháp trực tiếp cho quẻ này"
                     >
-                      ✓
-                    </span>
-                    <span>Giữ nguyên</span>
-                    {isKeepCards && (
-                      <span className="text-[10px] text-amber-800 font-bold ml-0.5">
-                        (Đã khóa)
+                      <span
+                        className={`w-3.5 h-3.5 rounded flex items-center justify-center text-[10px] font-bold shrink-0 transition-all ${
+                          isKeepCards
+                            ? "bg-[#C4963E] text-zinc-950 shadow-xs"
+                            : "border border-stone-400 bg-stone-50 text-transparent"
+                        }`}
+                      >
+                        ✓
                       </span>
-                    )}
-                  </RitualHoldButton>
-
-                  <div className="relative inline-flex items-center">
-                    <button
-                      type="button"
-                      onClick={handleCopyCardsForAI}
-                      className={`inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition cursor-pointer shadow-sm active:scale-95 select-none ${
-                        copiedAI
-                          ? "bg-emerald-600 text-white border border-emerald-500 shadow-md scale-[1.02]"
-                          : isRitualCompleted
-                          ? "bg-gradient-to-r from-amber-500/20 via-yellow-400/25 to-amber-500/20 hover:from-amber-500/30 hover:to-amber-500/30 text-amber-950 dark:text-amber-200 border-2 border-amber-500 shadow-md shadow-amber-500/20 ring-1 ring-amber-400/50"
-                          : "bg-[#fbf4e6] hover:bg-[#f6ebd1] text-[#7c5516] border border-[#c4963e]/50 shadow-sm"
-                      }`}
-                      title={
-                        userIntentQuestion.trim()
-                          ? `Đã đính kèm câu hỏi tâm niệm: "${userIntentQuestion.trim().slice(0, 60)}..." • Bấm để chép cho AI`
-                          : isRitualCompleted
-                          ? "✨ Đã đắc pháp Kính Thiên, Kính Địa, Kính Nhân: Bấm để sao chép 100% bách khoa toàn thư (Cửu Nhị Luận Giải, Chiêm đoán 4 phương diện & FAQ)"
-                          : "Sao chép thông tin các lá bài tiêu chuẩn cho AI (Nhấn & giữ 3 lần Kính Thiên, Địa, Nhân để mở khóa trích dẫn 100% bách khoa toàn thư)"
-                      }
-                    >
-                      <span className="text-sm">
-                        {copiedAI ? "✓" : isRitualCompleted ? "✨" : "📋"}
-                      </span>
-                      <span>
-                        {copiedAI
-                          ? "Đã chép cho AI!"
-                          : isRitualCompleted
-                          ? "Chép Toàn Thư cho AI"
-                          : "Chép cho AI"}
-                      </span>
-                      {userIntentQuestion.trim() && !copiedAI && (
-                        <span className="text-[10px] font-medium text-amber-800 bg-amber-100/80 px-1.5 py-0.2 rounded-full border border-amber-300/60 ml-0.5">
-                          +Câu hỏi
+                      <span className="truncate">Giữ nguyên</span>
+                      {isKeepCards && (
+                        <span className="text-[10px] text-amber-800 font-bold hidden sm:inline ml-0.5">
+                          (Đã khóa)
                         </span>
                       )}
-                    </button>
-                    {isRitualCompleted && (
-                      <span className="absolute -top-3 -right-2 bg-gradient-to-r from-amber-600 to-yellow-600 text-[9px] font-bold text-white px-2 py-0.5 rounded-full shadow-md pointer-events-none animate-pulse">
-                        ✦ Đắc Pháp
-                      </span>
-                    )}
+                    </RitualHoldButton>
+
+                    {/* Nút Chép cho AI */}
+                    <div className="relative inline-flex items-center w-full sm:w-auto">
+                      <button
+                        type="button"
+                        onClick={handleCopyCardsForAI}
+                        className={`inline-flex items-center justify-center gap-1.5 w-full px-3 py-2 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-xs font-semibold transition cursor-pointer shadow-xs active:scale-95 select-none ${
+                          copiedAI
+                            ? "bg-emerald-600 text-white border border-emerald-500 shadow-md scale-[1.01]"
+                            : isRitualCompleted
+                            ? "bg-gradient-to-r from-amber-500/20 via-yellow-400/25 to-amber-500/20 hover:from-amber-500/30 hover:to-amber-500/30 text-amber-950 dark:text-amber-200 border-2 border-amber-500 shadow-md shadow-amber-500/20 ring-1 ring-amber-400/50"
+                            : "bg-[#fbf4e6] hover:bg-[#f6ebd1] text-[#7c5516] border border-[#c4963e]/50 shadow-xs"
+                        }`}
+                        title={
+                          userIntentQuestion.trim()
+                            ? `Đã đính kèm câu hỏi tâm niệm: "${userIntentQuestion.trim().slice(0, 60)}..." • Bấm để chép cho AI`
+                            : isRitualCompleted
+                            ? "✨ Đã đắc pháp Kính Thiên, Kính Địa, Kính Nhân: Bấm để sao chép 100% bách khoa toàn thư (Cửu Nhị Luận Giải, Chiêm đoán 4 phương diện & FAQ)"
+                            : "Sao chép thông tin các lá bài tiêu chuẩn cho AI (Nhấn & giữ 3 lần Kính Thiên, Địa, Nhân để mở khóa trích dẫn 100% bách khoa toàn thư)"
+                        }
+                      >
+                        <span className="text-sm shrink-0">
+                          {copiedAI ? "✓" : isRitualCompleted ? "✨" : "📋"}
+                        </span>
+                        <span className="truncate">
+                          {copiedAI
+                            ? "Đã chép!"
+                            : isRitualCompleted
+                            ? "Chép Toàn Thư"
+                            : "Chép cho AI"}
+                        </span>
+                        {userIntentQuestion.trim() && !copiedAI && (
+                          <span className="text-[9px] font-medium text-amber-800 bg-amber-100/90 px-1 py-0.2 rounded-full border border-amber-300/60 hidden sm:inline ml-0.5">
+                            +Câu hỏi
+                          </span>
+                        )}
+                      </button>
+                      {isRitualCompleted && (
+                        <span className="absolute -top-2.5 -right-1 bg-gradient-to-r from-amber-600 to-yellow-600 text-[8.5px] font-bold text-white px-1.5 py-0.2 rounded-full shadow-md pointer-events-none animate-pulse">
+                          ✦ Đắc Pháp
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Cột phải: ĐIỂM NEO LÁ BÀI (Xấp bài sẽ gom lại và trượt xuống yên vị tại đây) */}
-            <div className="flex justify-center lg:justify-end items-center">
+            {/* Cột phải: ĐIỂM NEO LÁ BÀI (Xấp bài sẽ gom lại và trượt xuống yên vị tại đây trên Desktop) */}
+            <div className="hidden lg:flex justify-end items-center">
               <div className="relative flex items-center justify-center w-full min-h-[380px] sm:min-h-[460px] lg:min-h-[520px] max-w-[540px]">
                 <div
                   ref={featuresAnchorRef}

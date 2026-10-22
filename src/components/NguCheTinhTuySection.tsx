@@ -1267,6 +1267,7 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
                                     })
                                   }
                                   className="w-full h-[320px] object-contain rounded-lg cursor-zoom-in transition-transform group-hover:scale-[1.02]"
+                                  style={{ imageRendering: "-webkit-optimize-contrast" }}
                                 />
                               ) : (
                                 <div className="text-xs font-serif text-[#5C4938] p-4 text-center">
@@ -1310,6 +1311,7 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
                                 })
                               }
                               className="w-full max-h-[300px] object-contain mx-auto cursor-zoom-in transition-transform duration-300 group-hover:scale-[1.02]"
+                              style={{ imageRendering: "-webkit-optimize-contrast" }}
                             />
                             <button
                               type="button"
@@ -1510,6 +1512,7 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
                                     })
                                   }
                                   className="w-full h-[320px] object-contain rounded-lg cursor-zoom-in transition-transform group-hover:scale-[1.02]"
+                                  style={{ imageRendering: "-webkit-optimize-contrast" }}
                                 />
                               ) : (
                                 <div className="text-xs font-serif text-[#5C4938] p-4 text-center">
@@ -1551,6 +1554,7 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
                                 })
                               }
                               className="w-full max-h-[300px] object-contain mx-auto cursor-zoom-in transition-transform duration-300 group-hover:scale-[1.02]"
+                              style={{ imageRendering: "-webkit-optimize-contrast" }}
                             />
                             <button
                               type="button"
@@ -2018,6 +2022,7 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
                   src={lightboxImg.src}
                   alt={lightboxImg.title}
                   className="w-full max-h-[60vh] object-contain mx-auto rounded-lg"
+                  style={{ imageRendering: "-webkit-optimize-contrast" }}
                 />
               </div>
               <div className="md:col-span-5 space-y-4">
@@ -2106,12 +2111,14 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
                             src={curPg.painting}
                             alt={curPg.title}
                             className="w-full max-h-[300px] object-contain mx-auto rounded-xl"
+                            style={{ imageRendering: "-webkit-optimize-contrast" }}
                           />
                           {curPg.paintingLeft ? (
                             <img
                               src={curPg.paintingLeft}
                               alt={curPg.title}
                               className="w-full max-h-[300px] object-contain mx-auto rounded-xl"
+                              style={{ imageRendering: "-webkit-optimize-contrast" }}
                             />
                           ) : (
                             curPg.moTaTranh && (
