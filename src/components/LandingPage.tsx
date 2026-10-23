@@ -572,6 +572,71 @@ function formatCardFullInfoFromHexagram(
   return lines;
 }
 
+/* ─── Helper: Sinh lời dự đoán tự động từ các lá bài trong trải trận ─── */
+function generateHexagramPrediction(
+  cardsList: DynamicCardItem[],
+  currentMode: SpreadMode,
+  isCard2ReversedState: boolean = false
+): string {
+  if (!cardsList || cardsList.length === 0) return "";
+
+  if (currentMode === "1_single") {
+    const c = cardsList[0];
+    if (!c) return "";
+    const hex = HEXAGRAMS.find((h) => h.number === c.hexNumber);
+    const omen = hex?.omen ? `[${hex.omen}] ` : "";
+    return `${c.symbol} ${c.name} ${omen}- ${c.sub}. Điềm báo: ${hex?.overview || c.desc}. Lời khuyên: ${hex?.advice || "Hành động thuận theo đạo Dịch để đón cát tránh hung."}`;
+  }
+
+  if (currentMode === "1_to_2") {
+    const c0 = cardsList[0];
+    const c1 = cardsList[1];
+    return `Bản Thể: ${c0?.name} (${c0?.sub}) ➔ Ứng Dụng: ${c1?.name} (${c1?.sub}). Dự đoán: Cần lấy nội lực vững vàng từ ${c0?.name} để linh hoạt ứng biến thích hợp với ngoại cảnh ${c1?.name}.`;
+  }
+
+  if (currentMode === "1_to_3") {
+    const c0 = cardsList[0];
+    const c1 = cardsList[1];
+    const c2 = cardsList[2];
+    return `Thiên thời: ${c0?.name} | Hiện tại: ${c1?.name} ➔ Tương lai: ${c2?.name} (${c2?.sub}). Dự đoán: ${c2?.desc || "Cần chủ động nắm bắt cơ hội để kiến tạo thành tựu."}`;
+  }
+
+  if (currentMode === "3_to_5") {
+    const cPri = cardsList[2] || cardsList[0];
+    const cRes = cardsList[4] || cardsList[cardsList.length - 1];
+    return `Quẻ Chủ: ${cPri?.name} (${cPri?.sub}) ➔ Kết quả: ${cRes?.name} (${cRes?.sub}). Dự đoán: Vượt qua thử thách chuyển dịch để đạt lối thoát hanh thông.`;
+  }
+
+  if (currentMode === "that_tinh") {
+    const cur = cardsList[1];
+    const adv = cardsList[3];
+    const res = cardsList[4];
+    return `Hiện tại: ${cur?.name} (${cur?.sub}). Lời khuyên gợi ý: ${adv?.name}. Dự đoán kết quả: ${res?.name} (${res?.sub}). Hành động theo minh triết ${adv?.name} để đón cát tránh hung.`;
+  }
+
+  if (currentMode === "thap_tinh") {
+    const s0 = cardsList[0];
+    const s1 = cardsList[1];
+    const s8 = cardsList[8] || cardsList[cardsList.length - 2];
+    const s9 = cardsList[9] || cardsList[cardsList.length - 1];
+    const card2Effect = isCard2ReversedState ? "Trở ngại rào cản" : "Trợ lực tương sinh";
+    return `Tâm điểm: ${s0?.name}. Lực tác động: ${s1?.name} (${card2Effect}). Dự đoán kết quả: ${s8?.name} (${s8?.sub}). Chỉ dẫn then chốt: ${s9?.name} (${s9?.sub}).`;
+  }
+
+  if (currentMode === "thap_la") {
+    const pri = cardsList[0];
+    const trans = cardsList[1];
+    const yaos = cardsList.slice(2);
+    const transHex = HEXAGRAMS.find((h) => h.number === trans?.hexNumber);
+    const yaoText = yaos.length > 0 ? yaos.map((y) => y.name).join(", ") : "Quẻ Tĩnh (Không đổi)";
+    return `Bản Quái: ${pri?.name} ➔ Hào Động: ${yaoText} ➔ Biến Quái: ${trans?.name}. Dự đoán: Khởi đầu từ bối cảnh ${pri?.name}, sau khi chuyển biến tại các hào động, tương lai chuyển hóa viên mãn về ${trans?.name} (${transHex?.overview || trans?.sub}).`;
+  }
+
+  const cFirst = cardsList[0];
+  const cLast = cardsList[cardsList.length - 1];
+  return `Khởi đầu: ${cFirst?.name} (${cFirst?.sub}) ➔ Kết quả: ${cLast?.name} (${cLast?.sub}). Lời khuyên: Giữ vững chính đạo để thành tựu như ý.`;
+}
+
 /* ─── Helper: Định dạng thông tin các lá bài để dán cho AI phân tích ─── */
 /* Nếu nhấn nhẹ / bốc quẻ thông thường -> trích thông tin cơ bản (Quẻ tượng, Tên, Ý nghĩa, Lời giải)
    Nếu đắc pháp Kính Thiên, Kính Địa, Kính Nhân -> trích toàn bộ 100% bách khoa toàn thư */
@@ -581,9 +646,11 @@ async function formatSpreadForAI(
   isCard2ReversedState: boolean = false,
   includeFullBakhKhoa: boolean = false,
   userQuestion?: string,
+  userPrediction?: string,
   userAnswer?: string
 ): Promise<string> {
   const cleanedQuestion = userQuestion?.trim();
+  const cleanedPrediction = userPrediction?.trim();
   const cleanedAnswer = userAnswer?.trim();
   // Chỉ tải bài viết bách khoa chuyên sâu khi đã đắc pháp nghi thức (Kính Thiên, Kính Địa, Kính Nhân)
   const articles: (CardArticleData | null)[] = includeFullBakhKhoa
@@ -598,6 +665,10 @@ async function formatSpreadForAI(
     if (cleanedQuestion) {
       lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
       lines.push(`"${cleanedQuestion}"\n`);
+    }
+    if (cleanedPrediction) {
+      lines.push(`【DỰ ĐOÁN CỦA QUẺ / ĐIỀM BÁO DỊCH LÝ】:`);
+      lines.push(`"${cleanedPrediction}"\n`);
     }
     if (cleanedAnswer) {
       lines.push(`【ĐÁP ÁN / CHIÊM NGHIỆM TỰ ĐIỀN】:`);
@@ -641,6 +712,10 @@ async function formatSpreadForAI(
     if (cleanedQuestion) {
       lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
       lines.push(`"${cleanedQuestion}"\n`);
+    }
+    if (cleanedPrediction) {
+      lines.push(`【DỰ ĐOÁN CỦA QUẺ / ĐIỀM BÁO DỊCH LÝ】:`);
+      lines.push(`"${cleanedPrediction}"\n`);
     }
     if (cleanedAnswer) {
       lines.push(`【ĐÁP ÁN / CHIÊM NGHIỆM TỰ ĐIỀN】:`);
@@ -695,6 +770,10 @@ async function formatSpreadForAI(
     if (cleanedQuestion) {
       lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
       lines.push(`"${cleanedQuestion}"\n`);
+    }
+    if (cleanedPrediction) {
+      lines.push(`【DỰ ĐOÁN CỦA QUẺ / ĐIỀM BÁO DỊCH LÝ】:`);
+      lines.push(`"${cleanedPrediction}"\n`);
     }
     if (cleanedAnswer) {
       lines.push(`【ĐÁP ÁN / CHIÊM NGHIỆM TỰ ĐIỀN】:`);
@@ -1349,6 +1428,37 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     } catch {}
   }, []);
 
+  /* Dự đoán của quẻ / Điềm báo dịch lý (Nằm ở giữa câu hỏi và đáp án) */
+  const [hexagramPrediction, setHexagramPrediction] = useState<string>(() => {
+    try {
+      const saved = localStorage.getItem("cuunhi_hexagram_prediction");
+      if (saved) return saved;
+    } catch {}
+    return "";
+  });
+
+  const handleHexagramPredictionChange = useCallback((val: string) => {
+    setHexagramPrediction(val);
+    try {
+      localStorage.setItem("cuunhi_hexagram_prediction", val);
+    } catch {}
+  }, []);
+
+  const handleRefreshPredictionFromCards = useCallback(() => {
+    const pred = generateHexagramPrediction(cards, mode, isCard2Reversed);
+    handleHexagramPredictionChange(pred);
+    setCopiedToast("🔮 Đã cập nhật Dự đoán của quẻ từ các lá bài hiện tại!");
+    setTimeout(() => setCopiedToast(null), 3000);
+  }, [cards, mode, isCard2Reversed, handleHexagramPredictionChange]);
+
+  // Khởi tạo dự đoán tự động lần đầu nếu chưa có
+  useEffect(() => {
+    if (!hexagramPrediction && cards && cards.length > 0) {
+      const pred = generateHexagramPrediction(cards, mode, isCard2Reversed);
+      setHexagramPrediction(pred);
+    }
+  }, [cards, mode, isCard2Reversed, hexagramPrediction]);
+
   /* Đáp án tự điền / Chiêm nghiệm thực tế của người dùng */
   const [userCustomAnswer, setUserCustomAnswer] = useState(() => {
     try {
@@ -1376,9 +1486,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     setSavedSpreads(getSavedSpreads());
   }, []);
 
-  const handleConfirmSaveSpread = useCallback((data: { question: string; answer: string }) => {
+  const handleConfirmSaveSpread = useCallback((data: { question: string; prediction: string; answer: string }) => {
     if (data.question !== userIntentQuestion) {
       handleQuestionChange(data.question);
+    }
+    if (data.prediction !== hexagramPrediction) {
+      handleHexagramPredictionChange(data.prediction);
     }
     if (data.answer !== userCustomAnswer) {
       handleCustomAnswerChange(data.answer);
@@ -1391,15 +1504,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       cards,
       isCard2Reversed: mode === "thap_tinh" ? isCard2Reversed : undefined,
       question: data.question,
+      hexagramPrediction: data.prediction,
       userAnswer: data.answer,
       isRitualCompleted,
     });
 
     reloadSavedSpreads();
     setIsSaveDialogOpen(false);
-    setCopiedToast("💾 Đã lưu quẻ (kèm câu hỏi & đáp án) thành công!");
+    setCopiedToast("💾 Đã lưu quẻ (kèm câu hỏi, dự đoán & đáp án) thành công!");
     setTimeout(() => setCopiedToast(null), 3000);
-  }, [mode, cards, isCard2Reversed, isRitualCompleted, userIntentQuestion, userCustomAnswer, handleQuestionChange, handleCustomAnswerChange, reloadSavedSpreads]);
+  }, [mode, cards, isCard2Reversed, isRitualCompleted, userIntentQuestion, hexagramPrediction, userCustomAnswer, handleQuestionChange, handleHexagramPredictionChange, handleCustomAnswerChange, reloadSavedSpreads]);
 
   const handleLoadSavedSpread = useCallback((item: SavedSpreadItem) => {
     if (item.mode && SPREAD_MODES.includes(item.mode as SpreadMode)) {
@@ -1416,6 +1530,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     }
     if (typeof item.question === "string") {
       handleQuestionChange(item.question);
+    }
+    if (typeof item.hexagramPrediction === "string") {
+      handleHexagramPredictionChange(item.hexagramPrediction);
     }
     if (typeof item.userAnswer === "string") {
       handleCustomAnswerChange(item.userAnswer);
@@ -1442,6 +1559,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       item.isCard2Reversed,
       item.isRitualCompleted,
       item.question,
+      item.hexagramPrediction,
       item.userAnswer
     );
     const ok = await copyToClipboard(text);
@@ -2264,13 +2382,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   /* ── Sao chép toàn bộ trải bài cho AI (Đầy đủ thông tin từ Hexagram & Bách khoa) ── */
   const handleCopyCardsForAI = useCallback(async () => {
     const hasQuestion = !!userIntentQuestion.trim();
+    const hasPrediction = !!hexagramPrediction.trim();
     const hasAnswer = !!userCustomAnswer.trim();
     if (isRitualCompleted) {
       setCopiedToast("✨ Đang trích xuất 100% Bách Khoa Toàn Thư Kinh Dịch (Cửu Nhị Luận Giải & FAQ) cho AI...");
     } else {
       setCopiedToast("Đang chuẩn bị dữ liệu quẻ & luận giải tiêu chuẩn cho AI...");
     }
-    const text = await formatSpreadForAI(cards, mode, isCard2Reversed, isRitualCompleted, userIntentQuestion, userCustomAnswer);
+    const text = await formatSpreadForAI(cards, mode, isCard2Reversed, isRitualCompleted, userIntentQuestion, hexagramPrediction, userCustomAnswer);
     const ok = await copyToClipboard(text);
     if (ok) {
       setCopiedAI(true);
@@ -2640,7 +2759,13 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     if (randomMode === "thap_tinh") {
       setIsCard2Reversed(Math.random() < 0.5);
     }
-    setCards(drawCardsForMode(randomMode));
+    const newDrawnCards = drawCardsForMode(randomMode);
+    setCards(newDrawnCards);
+    const newPred = generateHexagramPrediction(newDrawnCards, randomMode, randomMode === "thap_tinh" ? Math.random() < 0.5 : undefined);
+    setHexagramPrediction(newPred);
+    try {
+      localStorage.setItem("cuunhi_hexagram_prediction", newPred);
+    } catch {}
     setTimeout(() => {
       if (requestTickRef.current) requestTickRef.current();
     }, 50);
@@ -2990,6 +3115,47 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     className="w-full resize-none rounded-xl bg-black/40 border border-[#C4963E]/30 px-3.5 py-2 text-xs sm:text-sm text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-[#C4963E] transition leading-relaxed shadow-inner"
                   />
 
+                  {/* Mục 2: Dự đoán của quẻ (Nằm ở GIỮA theo yêu cầu) */}
+                  <div className="mt-2.5 pt-2.5 border-t border-[#C4963E]/20">
+                    <div className="flex items-center justify-between mb-1">
+                      <label
+                        htmlFor="hero-desktop-hexagram-prediction"
+                        className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-300 font-serif"
+                      >
+                        <span className="text-sm">🔮</span>
+                        <span>Dự đoán của quẻ / Điềm báo</span>
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={handleRefreshPredictionFromCards}
+                          className="text-[11px] text-amber-400/90 hover:text-amber-200 font-medium transition cursor-pointer flex items-center gap-1"
+                          title="Lấy lại dự đoán tự động từ các lá bài hiện tại"
+                        >
+                          <span>🔄 Lấy từ quẻ</span>
+                        </button>
+                        {hexagramPrediction.trim() && (
+                          <button
+                            type="button"
+                            onClick={() => handleHexagramPredictionChange("")}
+                            className="text-[11px] text-stone-400 hover:text-rose-400 font-medium transition cursor-pointer flex items-center gap-1"
+                            title="Xóa nội dung dự đoán"
+                          >
+                            ✕ Xóa
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    <textarea
+                      id="hero-desktop-hexagram-prediction"
+                      rows={2}
+                      value={hexagramPrediction}
+                      onChange={(e) => handleHexagramPredictionChange(e.target.value)}
+                      placeholder="Dự đoán, lời giải và điềm báo cát hung của quẻ (tự động cập nhật theo các lá bài vừa bốc)..."
+                      className="w-full resize-none rounded-xl bg-black/40 border border-amber-500/35 px-3.5 py-2 text-xs sm:text-sm text-amber-100 placeholder:text-stone-500 focus:outline-none focus:border-amber-400 transition leading-relaxed shadow-inner"
+                    />
+                  </div>
+
                   {/* Mục đáp án tự điền / Chiêm nghiệm thực tế */}
                   <div className="mt-2.5 pt-2.5 border-t border-[#C4963E]/20">
                     <div className="flex items-center justify-between mb-1">
@@ -3264,6 +3430,46 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     placeholder="Nhập câu hỏi, việc đang trăn trở hoặc tâm niệm chiêm bốc của bạn..."
                     className="w-full resize-none rounded-xl bg-black/40 border border-[#C4963E]/30 px-3 py-1.5 text-xs text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-[#C4963E] transition leading-relaxed shadow-inner"
                   />
+
+                  {/* Mục 2: Dự đoán của quẻ trên mobile (Nằm ở GIỮA theo yêu cầu) */}
+                  <div className="mt-2 pt-2 border-t border-[#C4963E]/20">
+                    <div className="flex items-center justify-between mb-1">
+                      <label
+                        htmlFor="hero-mobile-hexagram-prediction"
+                        className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-amber-300 font-serif"
+                      >
+                        <span className="text-xs">🔮</span>
+                        <span>Dự đoán của quẻ / Điềm báo</span>
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={handleRefreshPredictionFromCards}
+                          className="text-[10px] text-amber-400 hover:text-amber-200 font-medium transition cursor-pointer"
+                          title="Lấy lại dự đoán tự động"
+                        >
+                          🔄 Lấy từ quẻ
+                        </button>
+                        {hexagramPrediction.trim() && (
+                          <button
+                            type="button"
+                            onClick={() => handleHexagramPredictionChange("")}
+                            className="text-[10.5px] text-stone-400 hover:text-rose-400 font-medium transition cursor-pointer"
+                          >
+                            ✕ Xóa
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    <textarea
+                      id="hero-mobile-hexagram-prediction"
+                      rows={2}
+                      value={hexagramPrediction}
+                      onChange={(e) => handleHexagramPredictionChange(e.target.value)}
+                      placeholder="Dự đoán và điềm báo của quẻ..."
+                      className="w-full resize-none rounded-xl bg-black/40 border border-amber-500/35 px-3 py-1.5 text-xs text-amber-100 placeholder:text-stone-500 focus:outline-none focus:border-amber-400 transition leading-relaxed shadow-inner"
+                    />
+                  </div>
 
                   {/* Đáp án tự điền trên mobile */}
                   <div className="mt-2 pt-2 border-t border-[#C4963E]/20">
@@ -4702,6 +4908,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         spreadTitle={SPREAD_MODE_NAMES[mode] || "Trận Pháp Kinh Dịch"}
         cardsCount={cards.length}
         question={userIntentQuestion}
+        prediction={hexagramPrediction}
         initialAnswer={userCustomAnswer}
         onConfirmSave={handleConfirmSaveSpread}
       />

@@ -7,6 +7,7 @@ export interface SavedSpreadItem {
   cards: any[];
   isCard2Reversed?: boolean;
   question: string; // Câu hỏi gửi AI
+  hexagramPrediction?: string; // Dự đoán của quẻ / Điềm báo ở giữa
   userAnswer?: string; // Đáp án tự điền / Chiêm nghiệm thực tế
   isRitualCompleted?: boolean;
 }
@@ -31,6 +32,7 @@ export function saveSpreadItem(data: {
   cards: any[];
   isCard2Reversed?: boolean;
   question: string;
+  hexagramPrediction?: string;
   userAnswer?: string;
   isRitualCompleted?: boolean;
 }): SavedSpreadItem {
@@ -53,6 +55,7 @@ export function saveSpreadItem(data: {
     cards: data.cards,
     isCard2Reversed: data.isCard2Reversed,
     question: data.question || "",
+    hexagramPrediction: data.hexagramPrediction || "",
     userAnswer: data.userAnswer || "",
     isRitualCompleted: data.isRitualCompleted,
   };

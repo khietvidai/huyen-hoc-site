@@ -7,8 +7,9 @@ interface SaveSpreadDialogProps {
   spreadTitle: string;
   cardsCount: number;
   question: string;
+  prediction: string;
   initialAnswer: string;
-  onConfirmSave: (data: { question: string; answer: string }) => void;
+  onConfirmSave: (data: { question: string; prediction: string; answer: string }) => void;
 }
 
 export const SaveSpreadDialog: React.FC<SaveSpreadDialogProps> = ({
@@ -17,18 +18,21 @@ export const SaveSpreadDialog: React.FC<SaveSpreadDialogProps> = ({
   spreadTitle,
   cardsCount,
   question,
+  prediction,
   initialAnswer,
   onConfirmSave,
 }) => {
   const [questionText, setQuestionText] = useState(question);
+  const [predictionText, setPredictionText] = useState(prediction);
   const [answerText, setAnswerText] = useState(initialAnswer);
 
   useEffect(() => {
     if (isOpen) {
       setQuestionText(question);
+      setPredictionText(prediction);
       setAnswerText(initialAnswer);
     }
-  }, [isOpen, question, initialAnswer]);
+  }, [isOpen, question, prediction, initialAnswer]);
 
   if (!isOpen) return null;
 
@@ -36,6 +40,7 @@ export const SaveSpreadDialog: React.FC<SaveSpreadDialogProps> = ({
     e.preventDefault();
     onConfirmSave({
       question: questionText.trim(),
+      prediction: predictionText.trim(),
       answer: answerText.trim(),
     });
   };
@@ -47,7 +52,7 @@ export const SaveSpreadDialog: React.FC<SaveSpreadDialogProps> = ({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-lg bg-[#15110D] border border-[#524128] rounded-2xl shadow-2xl p-4 sm:p-6 text-[#EFE7D8] space-y-4"
+        className="relative w-full max-w-lg bg-[#15110D] border border-[#524128] rounded-2xl shadow-2xl p-4 sm:p-6 text-[#EFE7D8] space-y-4 max-h-[92vh] overflow-y-auto"
       >
         <div className="flex items-center justify-between border-b border-[#34271A] pb-3">
           <div className="flex items-center gap-2">
@@ -73,11 +78,11 @@ export const SaveSpreadDialog: React.FC<SaveSpreadDialogProps> = ({
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-3.5">
-          {/* Câu hỏi đã gửi AI */}
+          {/* 1. Câu hỏi đã gửi AI */}
           <div className="space-y-1">
             <label className="text-xs font-serif font-bold text-amber-300 flex items-center gap-1.5">
               <span>🕊️</span>
-              <span>Nội dung tâm niệm / Câu hỏi AI:</span>
+              <span>1. Nội dung tâm niệm / Câu hỏi:</span>
             </label>
             <textarea
               rows={2}
@@ -88,14 +93,29 @@ export const SaveSpreadDialog: React.FC<SaveSpreadDialogProps> = ({
             />
           </div>
 
-          {/* Đáp án tự điền */}
+          {/* 2. Dự đoán của quẻ ở giữa */}
+          <div className="space-y-1">
+            <label className="text-xs font-serif font-bold text-amber-400 flex items-center gap-1.5">
+              <span>🔮</span>
+              <span>2. Dự đoán của quẻ / Điềm báo:</span>
+            </label>
+            <textarea
+              rows={2}
+              value={predictionText}
+              onChange={(e) => setPredictionText(e.target.value)}
+              placeholder="Dự đoán, lời giải và điềm báo cát hung của quẻ..."
+              className="w-full p-2.5 rounded-xl bg-[#0D0A08] border border-amber-600/40 text-xs text-amber-100 placeholder:text-stone-500 focus:outline-none focus:border-amber-400 leading-relaxed shadow-inner"
+            />
+          </div>
+
+          {/* 3. Đáp án tự điền */}
           <div className="space-y-1">
             <label className="text-xs font-serif font-bold text-emerald-400 flex items-center gap-1.5">
               <span>✍️</span>
-              <span>Đáp án tự điền / Chiêm nghiệm thực tế:</span>
+              <span>3. Đáp án tự điền / Chiêm nghiệm thực tế:</span>
             </label>
             <textarea
-              rows={3}
+              rows={2}
               value={answerText}
               onChange={(e) => setAnswerText(e.target.value)}
               placeholder="Nhập đáp án, lời giải của bạn hoặc kết quả thực tế ứng nghiệm sau này..."

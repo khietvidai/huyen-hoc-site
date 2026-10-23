@@ -47,6 +47,7 @@ export const SavedSpreadsModal: React.FC<SavedSpreadsModalProps> = ({
     return (
       item.spreadTitle.toLowerCase().includes(q) ||
       item.question.toLowerCase().includes(q) ||
+      (item.hexagramPrediction && item.hexagramPrediction.toLowerCase().includes(q)) ||
       (item.userAnswer && item.userAnswer.toLowerCase().includes(q)) ||
       item.cards.some((c) => c.name?.toLowerCase().includes(q))
     );
@@ -96,7 +97,7 @@ export const SavedSpreadsModal: React.FC<SavedSpreadsModalProps> = ({
                 Danh Sách Quẻ Đã Lưu ({savedSpreads.length})
               </h3>
               <p className="text-[11px] text-stone-400">
-                Lưu giữ quẻ tượng, câu hỏi AI &amp; đáp án chiêm nghiệm thực tế
+                Lưu giữ quẻ tượng, câu hỏi AI, dự đoán của quẻ &amp; đáp án chiêm nghiệm thực tế
               </p>
             </div>
           </div>
@@ -118,7 +119,7 @@ export const SavedSpreadsModal: React.FC<SavedSpreadsModalProps> = ({
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Tìm kiếm theo câu hỏi, tên quẻ, trận pháp hoặc đáp án tự điền..."
+              placeholder="Tìm kiếm theo câu hỏi, dự đoán, tên quẻ hoặc đáp án..."
               className="w-full pl-9 pr-3.5 py-1.5 rounded-xl bg-[#0F0C09] border border-[#3A2B1C] text-xs text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-amber-400 transition"
             />
           </div>
@@ -195,21 +196,34 @@ export const SavedSpreadsModal: React.FC<SavedSpreadsModalProps> = ({
                   ))}
                 </div>
 
-                {/* Câu hỏi tâm niệm đã gửi AI */}
+                {/* 1. Câu hỏi tâm niệm đã gửi AI */}
                 <div className="p-2.5 rounded-xl bg-[#140F0A] border border-[#332517] space-y-1">
                   <span className="text-[10px] font-mono text-amber-400 uppercase tracking-wider block font-bold">
-                    🕊️ Câu Hỏi / Tâm Niệm Đã Hỏi AI:
+                    🕊️ 1. Câu Hỏi / Tâm Niệm:
                   </span>
                   <p className="text-xs text-stone-200 italic font-serif">
-                    "{item.question || "Không ghi nội dung tâm niệm"}"
+                    &quot;{item.question || "Không ghi nội dung tâm niệm"}&quot;
                   </p>
                 </div>
 
-                {/* Mục Đáp Án Tự Điền / Chiêm Nghiệm Thực Tế */}
+                {/* 2. Dự đoán của quẻ ở giữa */}
+                {item.hexagramPrediction && (
+                  <div className="p-2.5 rounded-xl bg-[#16100B] border border-amber-600/30 space-y-1">
+                    <span className="text-[10px] font-mono text-amber-300 uppercase tracking-wider block font-bold flex items-center gap-1">
+                      <span>🔮</span>
+                      <span>2. Dự Đoán Của Quẻ / Điềm Báo:</span>
+                    </span>
+                    <p className="text-xs text-amber-100/90 leading-relaxed font-sans pl-2 border-l-2 border-amber-500/50">
+                      {item.hexagramPrediction}
+                    </p>
+                  </div>
+                )}
+
+                {/* 3. Mục Đáp Án Tự Điền / Chiêm Nghiệm Thực Tế */}
                 <div className="p-2.5 rounded-xl bg-[#120E09] border border-[#382818] space-y-1.5">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-wider block font-bold flex items-center gap-1">
-                      <span>✍️ Đáp Án / Chiêm Nghiệm Thực Tế Tự Điền:</span>
+                      <span>✍️ 3. Đáp Án / Chiêm Nghiệm Thực Tế Tự Điền:</span>
                     </span>
                     {editingId !== item.id && (
                       <button
@@ -258,45 +272,48 @@ export const SavedSpreadsModal: React.FC<SavedSpreadsModalProps> = ({
                   )}
                 </div>
 
-                {/* Hàng nút hành động trên mỗi quẻ */}
-                <div className="flex items-center justify-end gap-2 pt-1">
+                {/* Các nút thao tác với quẻ đã lưu */}
+                <div className="flex items-center justify-between gap-2 pt-1 flex-wrap">
                   <button
                     type="button"
                     onClick={() => handleDelete(item.id)}
-                    className="p-1.5 rounded-lg text-stone-400 hover:text-rose-400 hover:bg-rose-950/40 transition cursor-pointer"
+                    className="px-2.5 py-1.5 rounded-xl bg-[#241B14] hover:bg-rose-950 text-stone-400 hover:text-rose-200 border border-[#3E2B1E] hover:border-rose-800 text-xs flex items-center gap-1 transition cursor-pointer"
                     title="Xóa quẻ này"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Xóa</span>
                   </button>
 
-                  <button
-                    type="button"
-                    onClick={() => handleCopy(item)}
-                    className="px-3 py-1.5 rounded-xl bg-[#251D16] hover:bg-[#34271A] text-amber-200 border border-amber-600/40 text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition active:scale-95"
-                    title="Sao chép toàn bộ quẻ, câu hỏi và đáp án cho AI"
-                  >
-                    {copiedId === item.id ? (
-                      <>
-                        <Check className="w-3.5 h-3.5 text-emerald-400" />
-                        <span className="text-emerald-300">Đã chép!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-3.5 h-3.5 text-amber-400" />
-                        <span>Chép cho AI</span>
-                      </>
-                    )}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(item)}
+                      className="px-3.5 py-1.5 rounded-xl bg-[#221A12] hover:bg-[#2C2117] text-amber-300 border border-amber-600/40 text-xs flex items-center gap-1.5 transition cursor-pointer"
+                      title="Sao chép toàn bộ quẻ (kèm câu hỏi, dự đoán và đáp án) cho AI"
+                    >
+                      {copiedId === item.id ? (
+                        <>
+                          <Check className="w-3.5 h-3.5 text-emerald-400" />
+                          <span className="text-emerald-400 font-bold">Đã chép!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3.5 h-3.5 text-amber-400" />
+                          <span>Chép cho AI</span>
+                        </>
+                      )}
+                    </button>
 
-                  <button
-                    type="button"
-                    onClick={() => onLoadSpread(item)}
-                    className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-stone-950 font-bold text-xs flex items-center gap-1.5 shadow-md cursor-pointer transition active:scale-95"
-                    title="Nạp lại toàn bộ trận bài, câu hỏi và đáp án này lên màn hình chính"
-                  >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>Mở / Nạp Quẻ Này</span>
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => onLoadSpread(item)}
+                      className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 hover:from-amber-500 hover:to-yellow-400 text-stone-950 font-bold text-xs flex items-center gap-1.5 shadow-md transition cursor-pointer active:scale-95"
+                      title="Nạp quẻ này vào bàn trải bài chính"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Mở / Nạp Quẻ Này</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             ))
