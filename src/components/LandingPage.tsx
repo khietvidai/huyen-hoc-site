@@ -1979,7 +1979,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       const originY = window.innerHeight / 2;
       const isDesktop = window.innerWidth >= 1024;
 
-      let heroDocY = window.innerHeight * 0.45;
+      let heroDocY = isDesktop ? window.innerHeight * 0.35 : window.innerHeight * 0.40;
       let destinyDocY = window.innerHeight * 1.45;
       let featuresDocY = window.innerHeight * 2.50;
 
@@ -1994,6 +1994,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         // Chệch bên góc phải trên desktop để các lá bài xòe quạt gọn gàng thông thoáng, hoàn toàn không che các nút bấm bên trái
         if (isDesktop) {
           heroStageX += Math.max(28, window.innerWidth * 0.03);
+          // Nâng vị trí các lá bài ở Hero lên cao hơn để nhìn rõ trọn vẹn toàn bộ thân bài, không bị chìm hay cắt ở đáy màn hình
+          const heroUpwardOffset = Math.min(150, Math.max(90, window.innerHeight * 0.16));
+          heroDocY = Math.max(270, heroDocY - heroUpwardOffset);
+        } else {
+          // Trên mobile cũng nâng nhẹ lên cao hơn một chút để thấy rõ bài
+          const mobileUpwardOffset = Math.min(65, Math.max(30, window.innerHeight * 0.08));
+          heroDocY = Math.max(200, heroDocY - mobileUpwardOffset);
         }
       }
       if (destinyAnchorRef.current) {
