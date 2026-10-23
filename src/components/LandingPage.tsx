@@ -3035,15 +3035,16 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               {/* Dải nút hành động Desktop (Bắt Đầu Bốc Quẻ + Tam Kính + 64 Quẻ) */}
               <div className="hidden lg:flex w-full lg:w-auto flex-col items-start relative z-[55] mt-2">
                 <div className="flex w-full max-w-xl flex-row items-stretch gap-2.5 lg:w-auto">
-                  {/* Nút Bắt Đầu Bốc Quẻ (Để hình nguyên bản sạch đẹp như cũ, tích hợp Tam Kính khi giữ 3 lần) */}
+                  {/* Nút Bắt Đầu Bốc Quẻ (Chữ làm sáng như 64 Quẻ Kinh Dịch) */}
                   <RitualHoldButton
                     id="btn-hero-start-divination"
                     active={false}
                     onClick={(isRitual) => handleStartDivinationOrShuffle(!!isRitual)}
-                    className="flex min-w-0 flex-1 items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-base md:px-7 md:py-4 md:text-lg lg:flex-none lg:w-auto text-zinc-950 font-bold cursor-pointer transition hover:scale-[1.02] active:scale-[0.98] shadow-xl"
+                    className="flex min-w-0 flex-1 items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-base md:px-7 md:py-4 md:text-lg lg:flex-none lg:w-auto text-white font-semibold cursor-pointer transition hover:scale-[1.02] hover:bg-white/15 active:scale-[0.98] shadow-xl"
                     style={{
-                      background: "linear-gradient(135deg,rgba(255,255,255,0.98) 0%,rgba(242,242,242,0.95) 100%)",
-                      border: "1px solid rgba(255,255,255,0.9)",
+                      background: "rgba(255,255,255,0.1)",
+                      border: "1px solid rgba(255,255,255,0.38)",
+                      backdropFilter: "blur(8px)",
                     }}
                     title="Bấm để bốc quẻ • Nhấn & giữ 3 lần Kính Thiên, Kính Địa, Kính Nhân để Bốc Tam Kính"
                   >
@@ -3291,16 +3292,17 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 </div>
               </div>
 
-              {/* Hàng 1: Bắt Đầu Bốc Quẻ (Để hình như cũ) + 64 Quẻ */}
+              {/* Hàng 1: Bắt Đầu Bốc Quẻ (Chữ làm sáng như 64 Quẻ) + 64 Quẻ */}
               <div className="flex w-full max-w-xl flex-row items-stretch gap-2">
                 <RitualHoldButton
                   id="btn-hero-mobile-start-divination"
                   active={false}
                   onClick={(isRitual) => handleStartDivinationOrShuffle(!!isRitual)}
-                  className="flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-2xl px-3 py-3 text-sm font-semibold sm:gap-2 sm:px-6 sm:py-3.5 sm:text-base text-zinc-950 shadow-lg cursor-pointer transition active:scale-[0.98]"
+                  className="flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-2xl px-3 py-3 text-sm font-semibold sm:gap-2 sm:px-6 sm:py-3.5 sm:text-base text-white shadow-lg cursor-pointer transition hover:bg-white/15 active:scale-[0.98]"
                   style={{
-                    background: "linear-gradient(135deg,rgba(255,255,255,0.98) 0%,rgba(242,242,242,0.95) 100%)",
-                    border: "1px solid rgba(255,255,255,0.9)",
+                    background: "rgba(255,255,255,0.1)",
+                    border: "1px solid rgba(255,255,255,0.38)",
+                    backdropFilter: "blur(8px)",
                   }}
                   title="Nhấn để bốc quẻ • Nhấn & giữ 3 lần để bốc Tam Kính"
                 >
