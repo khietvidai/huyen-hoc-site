@@ -3014,15 +3014,15 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           </div>
 
           {/* Grid Hero: Cột trái nội dung, Cột phải điểm neo lá bài */}
-          <div className="relative z-[50] mx-auto flex min-h-[calc(100dvh-4.5rem)] w-full max-w-7xl flex-col items-stretch px-5 sm:px-8 max-lg:items-center max-lg:justify-between max-lg:gap-2 max-lg:pt-0 max-lg:pb-[max(1rem,env(safe-area-inset-bottom))] lg:grid lg:min-h-[calc(100dvh-4.5rem)] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center lg:gap-10 lg:px-10 xl:gap-14 xl:px-14">
+          <div className="relative z-[50] mx-auto flex min-h-[calc(100dvh-4.5rem)] w-full max-w-7xl flex-col items-stretch px-4 sm:px-8 max-lg:items-center max-lg:justify-start max-lg:gap-3 max-lg:pt-1 max-lg:pb-12 lg:grid lg:min-h-[calc(100dvh-4.5rem)] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center lg:gap-10 lg:px-10 xl:gap-14 xl:px-14">
             {/* ── CỘT TRÁI: GIỮ NGUYÊN NỘI DUNG ẢNH TRÊN + THAY LOGO CỬU NHỊ ── */}
             <div className="order-1 flex w-full min-w-0 flex-col items-center text-center pointer-events-auto max-lg:max-w-xl max-lg:shrink-0 max-lg:pt-0 lg:items-start lg:text-left lg:justify-center">
               {/* Tiêu đề Logo Cửu Nhị + "I Ching Tarot" */}
-              <h1 className="mb-2 text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-5xl lg:mb-5 lg:text-6xl xl:text-7xl">
-                <span className="mb-2 flex items-end justify-center gap-3 lg:mb-4 lg:justify-start">
+              <h1 className="mb-1 text-2xl font-bold leading-[1.08] tracking-tight text-white sm:mb-2 sm:text-5xl lg:mb-5 lg:text-6xl xl:text-7xl">
+                <span className="mb-1 flex items-end justify-center gap-2.5 sm:mb-2 sm:gap-3 lg:mb-4 lg:justify-start">
                   {/* Container bo góc đậm chất skeuomorphic chứa Logo Cửu Nhị */}
                   <span
-                    className="relative flex items-center justify-center h-14 w-14 shrink-0 overflow-hidden rounded-2xl sm:h-20 sm:w-20 shadow-2xl"
+                    className="relative flex items-center justify-center h-11 w-11 shrink-0 overflow-hidden rounded-xl sm:h-20 sm:w-20 sm:rounded-2xl shadow-2xl"
                     style={{
                       background: "linear-gradient(145deg, #1c1a22 0%, #0d0c11 100%)",
                       border: "1px solid rgba(196,150,62,0.45)",
@@ -3031,18 +3031,18 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   >
                     <BrandMark size={56} className="shrink-0" title="Cửu Nhị · Kinh Dịch" />
                   </span>
-                  <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight">
+                  <span className="text-2xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight">
                     I Ching Tarot
                   </span>
                 </span>
               </h1>
 
               {/* Dòng chữ phụ 1 & 2 đúng nguyên bản ảnh */}
-              <p className="mb-0 max-w-xl text-sm leading-relaxed sm:text-lg lg:mb-8 lg:text-xl" style={{ color: "rgba(255,255,255,0.7)" }}>
-                <span className="text-lg sm:text-2xl lg:text-3xl text-white/90 font-medium block mb-1">
+              <p className="mb-1 max-w-xl text-xs leading-relaxed sm:text-lg lg:mb-8 lg:text-xl" style={{ color: "rgba(255,255,255,0.7)" }}>
+                <span className="text-sm sm:text-2xl lg:text-3xl text-white/90 font-medium block mb-0.5">
                   Bốc bài Kinh Dịch, Tinh hoa Phương Đông
                 </span>
-                <span className="text-xs sm:text-sm lg:text-base text-white/50 block">
+                <span className="text-[11px] sm:text-sm lg:text-base text-white/50 block">
                   64 Quẻ Chu Dịch · 12 Trận Pháp · Lục Nhâm · Kỳ Môn · Thái Ất
                 </span>
               </p>
@@ -3329,7 +3329,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
               {/* Dải số liệu thống kê (Stats: 64 Quẻ, 384 Hào, 12 Trận Pháp, 9+ Phương Pháp) */}
               <div
-                className="mt-6 flex flex-wrap gap-8 border-t border-white/15 pt-5 text-left w-full justify-center lg:justify-start"
+                className="mt-6 hidden lg:flex flex-wrap gap-8 border-t border-white/15 pt-5 text-left w-full justify-start"
               >
                 <div>
                   <div className="text-2xl font-bold tracking-tight text-[#C4963E] sm:text-3xl font-serif">64</div>
@@ -3350,20 +3350,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               </div>
             </div>
 
-            {/* ── CỘT PHẢI: HERO CARD ANCHOR (Điểm neo cho xấp bài ở Hero) ── */}
-            <div className="order-2 pointer-events-none relative flex w-full min-h-0 min-w-0 flex-1 items-center justify-center max-lg:min-h-[22vh] max-lg:max-h-[28vh] lg:min-h-0 lg:max-h-none lg:flex-none lg:px-2 xl:px-4">
-              <div className="flex items-center justify-center">
-                <div
-                  ref={heroAnchorRef}
-                  id="hero-card-anchor"
-                  className="pointer-events-none h-48 w-32 shrink-0 rounded-2xl sm:h-[272px] sm:w-44 md:h-72 md:w-48 opacity-0"
-                  aria-hidden="true"
-                />
-              </div>
-            </div>
-
             {/* Dải nút hành động Mobile (Khung tâm niệm ở trên + Bắt Đầu Bốc Quẻ Tam Kính + Giữ nguyên & Chép cho AI ở dưới) */}
-            <div id="hero-mobile-actions" className="order-3 flex w-full max-w-xl shrink-0 flex-col items-center gap-2 pointer-events-auto max-lg:pt-2 lg:hidden relative z-[55]">
+            <div id="hero-mobile-actions" className="flex w-full max-w-xl shrink-0 flex-col items-center gap-2 pointer-events-auto max-lg:pt-1 lg:hidden relative z-[55]">
               {/* Khung nhập: Nội dung tâm niệm / Câu hỏi (Nằm ngay TRÊN Bắt Đầu Bốc Quẻ) */}
               <div className="w-full max-w-xl text-left mb-1">
                 <div
@@ -3617,6 +3605,18 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     </span>
                   )}
                 </button>
+              </div>
+            </div>
+
+            {/* ── CỘT PHẢI: HERO CARD ANCHOR (Điểm neo cho xấp bài ở Hero - Sắp ở dưới trên mobile) ── */}
+            <div className="pointer-events-none relative flex w-full min-h-0 min-w-0 flex-1 items-center justify-center max-lg:min-h-[240px] max-lg:py-2 lg:min-h-0 lg:max-h-none lg:flex-none lg:px-2 xl:px-4">
+              <div className="flex items-center justify-center">
+                <div
+                  ref={heroAnchorRef}
+                  id="hero-card-anchor"
+                  className="pointer-events-none h-48 w-32 shrink-0 rounded-2xl sm:h-[272px] sm:w-44 md:h-72 md:w-48 opacity-0"
+                  aria-hidden="true"
+                />
               </div>
             </div>
           </div>
