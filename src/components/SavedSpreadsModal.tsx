@@ -11,6 +11,7 @@ import {
   Bookmark,
   Sparkles,
   ExternalLink,
+  Clock,
 } from "lucide-react";
 import {
   SavedSpreadItem,
@@ -25,6 +26,8 @@ interface SavedSpreadsModalProps {
   onReloadList: () => void;
   onLoadSpread: (spread: SavedSpreadItem) => void;
   onCopySpreadForAI: (spread: SavedSpreadItem) => void;
+  onOpenTempSpreadsModal?: () => void;
+  tempSpreadsCount?: number;
 }
 
 export const SavedSpreadsModal: React.FC<SavedSpreadsModalProps> = ({
@@ -34,6 +37,8 @@ export const SavedSpreadsModal: React.FC<SavedSpreadsModalProps> = ({
   onReloadList,
   onLoadSpread,
   onCopySpreadForAI,
+  onOpenTempSpreadsModal,
+  tempSpreadsCount = 0,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -102,13 +107,30 @@ export const SavedSpreadsModal: React.FC<SavedSpreadsModalProps> = ({
             </div>
           </div>
 
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg bg-[#271E17] hover:bg-rose-950/80 text-stone-400 hover:text-rose-200 border border-[#3E3120] transition cursor-pointer"
-            title="Đóng (Esc)"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            {onOpenTempSpreadsModal && (
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenTempSpreadsModal();
+                }}
+                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#221A13] hover:bg-[#2D2218] text-amber-300 text-xs border border-amber-600/30 transition cursor-pointer"
+                title="Chuyển sang xem danh sách quẻ tạm thời trong ngày chưa lưu"
+              >
+                <Clock className="w-3.5 h-3.5" />
+                <span>Quẻ Tạm Hôm Nay ({tempSpreadsCount})</span>
+              </button>
+            )}
+
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded-lg bg-[#271E17] hover:bg-rose-950/80 text-stone-400 hover:text-rose-200 border border-[#3E3120] transition cursor-pointer"
+              title="Đóng (Esc)"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Thanh tìm kiếm */}

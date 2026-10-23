@@ -9,10 +9,22 @@
  * - Interactive modals: Card Detail Inspector, Coin Toss Divination Studio, Life Config Thermal Receipt
  */
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { Camera, Bookmark, FolderOpen } from "lucide-react";
+import { Camera, Bookmark, FolderOpen, Clock } from "lucide-react";
 import { SaveSpreadDialog } from "./SaveSpreadDialog";
 import { SavedSpreadsModal } from "./SavedSpreadsModal";
-import { getSavedSpreads, saveSpreadItem, SavedSpreadItem } from "../services/savedSpreadsService";
+import { TempSpreadsModal } from "./TempSpreadsModal";
+import {
+  getSavedSpreads,
+  saveSpreadItem,
+  SavedSpreadItem,
+  getTodayTempSpreads,
+  addTempSpreadItem,
+  updateTempSpreadItem,
+  markTempSpreadAsSaved,
+  deleteTempSpreadItem,
+  clearTodayTempSpreads,
+  TempSpreadItem,
+} from "../services/savedSpreadsService";
 import { toPng } from "html-to-image";
 import { downloadDataUrlAsPng } from "../utils/captureHelper";
 import { ExportImageModal } from "./ExportImageModal";
@@ -572,46 +584,239 @@ function formatCardFullInfoFromHexagram(
   return lines;
 }
 
+/* ─── Helper: Phân tích tâm niệm & câu hỏi của người dùng theo Dịch lý ─── */
+type QuestionDomain = "career" | "wealth" | "love" | "health" | "general";
+
+interface QuestionAnalysisResult {
+  domain: QuestionDomain;
+  domainLabel: string;
+  cleanedQuestion: string;
+  isQuestionEmpty: boolean;
+}
+
+function analyzeQuestionIntent(questionText?: string): QuestionAnalysisResult {
+  const cleaned = (questionText || "").trim();
+  if (!cleaned) {
+    return {
+      domain: "general",
+      domainLabel: "Chiêm nghiệm tổng quan",
+      cleanedQuestion: "",
+      isQuestionEmpty: true,
+    };
+  }
+
+  const qLower = cleaned.toLowerCase();
+
+  const careerKeywords = [
+    "việc", "công việc", "sự nghiệp", "công danh", "xin việc", "chuyển việc", "đổi việc", "nhảy việc",
+    "phỏng vấn", "thăng chức", "thăng tiến", "sếp", "đồng nghiệp", "hợp tác", "dự án", "kinh doanh",
+    "mở quán", "khởi nghiệp", "làm ăn", "công ty", "hợp đồng", "học", "thi", "thi cử", "đỗ", "trúng tuyển",
+    "du học", "bằng cấp", "nghề", "nghỉ việc", "deal lương", "vị trí", "bổ nhiệm", "thăng quan", "tiến chức",
+    "buôn bán", "đối tác", "khách hàng", "dự án mới", "thương vụ", "nghề nghiệp"
+  ];
+
+  const wealthKeywords = [
+    "tiền", "tài chính", "tài lộc", "đầu tư", "chứng khoán", "cổ phiếu", "crypto", "coin", "bất động sản",
+    "đất", "nhà đất", "mua nhà", "bán nhà", "mua đất", "bán đất", "nợ", "đòi nợ", "vay", "mượn", "lỗ", "lãi",
+    "lợi nhuận", "thu nhập", "giàu", "tiết kiệm", "vốn", "kinh phí", "tiền bạc", "lương", "tài sản", "mua xe",
+    "bán xe", "tiền nong", "phát tài", "chi tiêu", "doanh thu", "tiền về"
+  ];
+
+  const loveKeywords = [
+    "tình", "yêu", "tình cảm", "tình duyên", "người yêu", "bạn gái", "bạn trai", "crush", "người ấy",
+    "hôn nhân", "kết hôn", "cưới", "ly hôn", "chia tay", "quay lại", "tỏ tình", "thích", "gia đình", "vợ",
+    "chồng", "con cái", "bố mẹ", "mẹ chồng", "nàng dâu", "mối quan hệ", "người thứ 3", "người thứ ba",
+    "hẹn hò", "độc thân", "bồ", "bén duyên", "duyên số", "lấy vợ", "lấy chồng", "tình ái"
+  ];
+
+  const healthKeywords = [
+    "sức khỏe", "bệnh", "khám", "mổ", "phẫu thuật", "thuốc", "tai nạn", "bình an", "thân thể", "ốm",
+    "mệt mỏi", "stress", "tâm lý", "chữa bệnh", "hồi phục", "sống thọ", "tinh thần", "mất ngủ", "đau",
+    "viện", "khỏe mạnh", "tai ương", "bệnh tật", "nguy kịch", "sinh con", "mang thai"
+  ];
+
+  let careerScore = 0;
+  for (const kw of careerKeywords) {
+    if (qLower.includes(kw)) careerScore += kw.length > 5 ? 2 : 1;
+  }
+
+  let wealthScore = 0;
+  for (const kw of wealthKeywords) {
+    if (qLower.includes(kw)) wealthScore += kw.length > 5 ? 2 : 1;
+  }
+
+  let loveScore = 0;
+  for (const kw of loveKeywords) {
+    if (qLower.includes(kw)) loveScore += kw.length > 5 ? 2 : 1;
+  }
+
+  let healthScore = 0;
+  for (const kw of healthKeywords) {
+    if (qLower.includes(kw)) healthScore += kw.length > 5 ? 2 : 1;
+  }
+
+  const maxScore = Math.max(careerScore, wealthScore, loveScore, healthScore);
+
+  if (maxScore > 0) {
+    if (maxScore === careerScore) return { domain: "career", domainLabel: "Sự nghiệp & Công việc", cleanedQuestion: cleaned, isQuestionEmpty: false };
+    if (maxScore === wealthScore) return { domain: "wealth", domainLabel: "Tài chính & Tiền bạc", cleanedQuestion: cleaned, isQuestionEmpty: false };
+    if (maxScore === loveScore) return { domain: "love", domainLabel: "Tình duyên & Gia đạo", cleanedQuestion: cleaned, isQuestionEmpty: false };
+    if (maxScore === healthScore) return { domain: "health", domainLabel: "Sức khỏe & Thân tâm", cleanedQuestion: cleaned, isQuestionEmpty: false };
+  }
+
+  return { domain: "general", domainLabel: "Chiêm nghiệm tổng quan", cleanedQuestion: cleaned, isQuestionEmpty: false };
+}
+
+function getHexDomainInsight(hex: typeof HEXAGRAMS[0] | undefined, domain: QuestionDomain): string {
+  if (!hex) return "";
+  if (domain === "career" && hex.career) return hex.career;
+  if (domain === "wealth" && hex.wealth) return hex.wealth;
+  if (domain === "love" && hex.love) return hex.love;
+  if (domain === "health" && hex.health) return hex.health;
+  return hex.overview || "";
+}
+
+function getOmenOutlookText(omen?: string): string {
+  if (!omen) return "Cục diện đang trong tiến trình biến dịch, cần tùy thời ứng biến.";
+  if (omen.includes("Đại Cát")) return "Khí vận đại cát, thế sự hanh thông đón nhận cát lợi và thành quả lớn.";
+  if (omen.includes("Cát") || omen.includes("Thứ Cát")) return "Khí vận cát tường, thuận buồm xuôi gió nếu hành sự đúng đạo.";
+  if (omen.includes("Bình Hòa")) return "Khí vận bình hòa, cần giữ tâm định tĩnh, tích lũy nội lực chờ thời cơ chín muồi.";
+  if (omen.includes("Đại Hung")) return "Khí vận gặp trở ngại lớn, hiểm nguy rình rập, tuyệt đối chớ nóng vội mạo hiểm.";
+  if (omen.includes("Hung") || omen.includes("Thứ Hung")) return "Khí vận có phần trắc trở, cần cẩn trọng từng bước để hóa giải hung hại.";
+  return "Cục diện đang biến dịch, cần tĩnh tâm quan sát thời cuộc.";
+}
+
+const EMPTY_QUESTION_REMINDER = "\n💡 Lời dặn: Hãy nhập câu hỏi/việc cần xem vào ô 'Nội dung tâm niệm / Câu hỏi' ở trên rồi nhấn lại '✨ Gợi ý từ quẻ' để nhận dự đoán luận giải trực diện cho việc cụ thể của bạn.";
+
 /* ─── Helper: Sinh lời dự đoán tự động từ các lá bài trong trải trận (Tham khảo tâm niệm & câu hỏi) ─── */
 function generateHexagramPrediction(
   cardsList: DynamicCardItem[],
   currentMode: SpreadMode,
-  isCard2ReversedState: boolean = false
+  isCard2ReversedState: boolean = false,
+  questionText?: string
 ): string {
   if (!cardsList || cardsList.length === 0) return "";
+
+  const analysis = analyzeQuestionIntent(questionText);
+  const { domain, domainLabel, cleanedQuestion, isQuestionEmpty } = analysis;
 
   if (currentMode === "1_single") {
     const c = cardsList[0];
     if (!c) return "";
     const hex = HEXAGRAMS.find((h) => h.number === c.hexNumber);
     const omen = hex?.omen ? `[${hex.omen}] ` : "";
-    return `${c.symbol} ${c.name} ${omen}- ${c.sub}. Điềm báo: ${hex?.overview || c.desc}. Lời khuyên: ${hex?.advice || "Hành động thuận theo đạo Dịch để đón cát tránh hung."}`;
+
+    if (isQuestionEmpty) {
+      return `${c.symbol} ${c.name} ${omen}- ${c.sub}. Điềm báo: ${hex?.overview || c.desc}. Lời khuyên: ${hex?.advice || "Hành động thuận theo đạo Dịch để đón cát tránh hung."}${EMPTY_QUESTION_REMINDER}`;
+    }
+
+    const domainInsight = getHexDomainInsight(hex, domain);
+    const omenOutlook = getOmenOutlookText(hex?.omen);
+
+    return `🕊️ Tâm niệm / Câu hỏi: "${cleanedQuestion}"
+• Tượng quẻ: ${c.symbol} ${c.name} ${omen}- ${c.sub}.
+• Chiêm đoán theo ${domainLabel}: ${domainInsight || hex?.overview || c.desc}
+• Dự đoán viễn cảnh: Đối với việc bạn đang tâm niệm: ${omenOutlook}
+• Phương châm hành động: ${hex?.advice || "Hành động thuận theo đạo Dịch, giữ vững chính đạo để đón cát tránh hung."}`;
   }
 
   if (currentMode === "1_to_2") {
     const c0 = cardsList[0];
     const c1 = cardsList[1];
-    return `Bản Thể: ${c0?.name} (${c0?.sub}) ➔ Ứng Dụng: ${c1?.name} (${c1?.sub}). Dự đoán: Cần lấy nội lực vững vàng từ ${c0?.name} để linh hoạt ứng biến thích hợp với ngoại cảnh ${c1?.name}.`;
+    const hex0 = HEXAGRAMS.find((h) => h.number === c0?.hexNumber);
+    const hex1 = HEXAGRAMS.find((h) => h.number === c1?.hexNumber);
+    const omen0 = hex0?.omen ? `[${hex0.omen}] ` : "";
+    const omen1 = hex1?.omen ? `[${hex1.omen}] ` : "";
+
+    if (isQuestionEmpty) {
+      return `Bản Thể: ${c0?.name} (${c0?.sub}) ➔ Ứng Dụng: ${c1?.name} (${c1?.sub}). Dự đoán: Cần lấy nội lực vững vàng từ ${c0?.name} để linh hoạt ứng biến thích hợp với ngoại cảnh ${c1?.name}. Lời khuyên: ${hex1?.advice || "Tùy thời tiến thoái."}${EMPTY_QUESTION_REMINDER}`;
+    }
+
+    const insight0 = getHexDomainInsight(hex0, domain);
+    const insight1 = getHexDomainInsight(hex1, domain);
+    const omenOutlook = getOmenOutlookText(hex1?.omen);
+
+    return `🕊️ Tâm niệm / Câu hỏi: "${cleanedQuestion}"
+• Chuyển biến Dịch lý: Bản Thể: ${c0?.name} ${omen0}(${c0?.sub}) ➔ Ứng Dụng: ${c1?.name} ${omen1}(${c1?.sub}).
+• Chiêm đoán theo ${domainLabel}:
+  - Khởi điểm (${c0?.name}): ${insight0 || c0?.desc}
+  - Chuyển biến (${c1?.name}): ${insight1 || c1?.desc}
+• Dự đoán kết quả: Về việc bạn đang hỏi, cục diện chuyển dịch từ ${c0?.name} sang ${c1?.name}. ${omenOutlook} Cần lấy nội lực vững vàng từ ${c0?.name} để linh hoạt thích ứng với bối cảnh mới ${c1?.name}.
+• Phương châm hành động: ${hex1?.advice || hex0?.advice || "Thuận theo lẽ biến dịch, tùy thời tiến thoái hợp lý."}`;
   }
 
   if (currentMode === "1_to_3") {
     const c0 = cardsList[0];
     const c1 = cardsList[1];
     const c2 = cardsList[2];
-    return `Thiên thời: ${c0?.name} | Hiện tại: ${c1?.name} ➔ Tương lai: ${c2?.name} (${c2?.sub}). Dự đoán: ${c2?.desc || "Cần chủ động nắm bắt cơ hội để kiến tạo thành tựu."}`;
+    const hex0 = HEXAGRAMS.find((h) => h.number === c0?.hexNumber);
+    const hex1 = HEXAGRAMS.find((h) => h.number === c1?.hexNumber);
+    const hex2 = HEXAGRAMS.find((h) => h.number === c2?.hexNumber);
+    const omen2 = hex2?.omen ? `[${hex2.omen}] ` : "";
+
+    if (isQuestionEmpty) {
+      return `Thiên thời: ${c0?.name} | Hiện tại: ${c1?.name} ➔ Tương lai: ${c2?.name} (${c2?.sub}). Dự đoán: ${c2?.desc || "Cần chủ động nắm bắt cơ hội để kiến tạo thành tựu."}${EMPTY_QUESTION_REMINDER}`;
+    }
+
+    const insight1 = getHexDomainInsight(hex1, domain);
+    const insight2 = getHexDomainInsight(hex2, domain);
+    const omenOutlook = getOmenOutlookText(hex2?.omen);
+
+    return `🕊️ Tâm niệm / Câu hỏi: "${cleanedQuestion}"
+• Tiến trình thời gian: Quá khứ / Thiên thời: ${c0?.name} ➔ Hiện tại: ${c1?.name} ➔ Tương lai: ${c2?.name} ${omen2}(${c2?.sub}).
+• Chiêm đoán theo ${domainLabel}:
+  - Hiện trạng (${c1?.name}): ${insight1 || c1?.desc}
+  - Tương lai (${c2?.name}): ${insight2 || c2?.desc}
+• Dự đoán viễn cảnh: Chiêm nghiệm việc "${cleanedQuestion}", diễn biến sắp tới định hình theo thế ${c2?.name}. ${omenOutlook}
+• Phương châm hành động: ${hex2?.advice || hex1?.advice || "Chủ động nắm bắt thời cơ để kiến tạo thành tựu như ý."}`;
   }
 
   if (currentMode === "3_to_5") {
     const cPri = cardsList[2] || cardsList[0];
     const cRes = cardsList[4] || cardsList[cardsList.length - 1];
-    return `Quẻ Chủ: ${cPri?.name} (${cPri?.sub}) ➔ Kết quả: ${cRes?.name} (${cRes?.sub}). Dự đoán: Vượt qua thử thách chuyển dịch để đạt lối thoát hanh thông.`;
+    const hexPri = HEXAGRAMS.find((h) => h.number === cPri?.hexNumber);
+    const hexRes = HEXAGRAMS.find((h) => h.number === cRes?.hexNumber);
+    const omenRes = hexRes?.omen ? `[${hexRes.omen}] ` : "";
+
+    if (isQuestionEmpty) {
+      return `Quẻ Chủ: ${cPri?.name} (${cPri?.sub}) ➔ Kết quả: ${cRes?.name} (${cRes?.sub}). Dự đoán: Vượt qua thử thách chuyển dịch để đạt lối thoát hanh thông.${EMPTY_QUESTION_REMINDER}`;
+    }
+
+    const insightPri = getHexDomainInsight(hexPri, domain);
+    const insightRes = getHexDomainInsight(hexRes, domain);
+    const omenOutlook = getOmenOutlookText(hexRes?.omen);
+
+    return `🕊️ Tâm niệm / Câu hỏi: "${cleanedQuestion}"
+• Ngũ Hành chuyển hóa: Quẻ Chủ: ${cPri?.name} (${cPri?.sub}) ➔ Kết quả: ${cRes?.name} ${omenRes}(${cRes?.sub}).
+• Chiêm đoán theo ${domainLabel}: Trọng tâm nằm ở ${cPri?.name} (${insightPri || cPri?.desc}), sau chuỗi chuyển hóa sẽ đúc kết tại ${cRes?.name} (${insightRes || cRes?.desc}).
+• Dự đoán kết quả: Về sự việc này: ${omenOutlook} Bạn sẽ vượt qua các chặng biến động để đạt lối thoát và thành quả hanh thông.
+• Phương châm hành động: ${hexRes?.advice || "Giữ vững sơ tâm, biến chuyển linh hoạt theo thời cuộc."}`;
   }
 
   if (currentMode === "that_tinh") {
     const cur = cardsList[1];
     const adv = cardsList[3];
     const res = cardsList[4];
-    return `Hiện tại: ${cur?.name} (${cur?.sub}). Lời khuyên gợi ý: ${adv?.name}. Dự đoán kết quả: ${res?.name} (${res?.sub}). Hành động theo minh triết ${adv?.name} để đón cát tránh hung.`;
+    const blind = cardsList[6];
+    const hexCur = HEXAGRAMS.find((h) => h.number === cur?.hexNumber);
+    const hexAdv = HEXAGRAMS.find((h) => h.number === adv?.hexNumber);
+    const hexRes = HEXAGRAMS.find((h) => h.number === res?.hexNumber);
+    const omenRes = hexRes?.omen ? `[${hexRes.omen}] ` : "";
+
+    if (isQuestionEmpty) {
+      return `Hiện tại: ${cur?.name} (${cur?.sub}). Lời khuyên gợi ý: ${adv?.name}. Dự đoán kết quả: ${res?.name} (${res?.sub}). Hành động theo minh triết ${adv?.name} để đón cát tránh hung.${EMPTY_QUESTION_REMINDER}`;
+    }
+
+    const insightCur = getHexDomainInsight(hexCur, domain);
+    const omenOutlook = getOmenOutlookText(hexRes?.omen);
+
+    return `🕊️ Tâm niệm / Câu hỏi: "${cleanedQuestion}"
+• Thất Tinh Bắc Đẩu: Hiện tại: ${cur?.name} ➔ Lá Sách Lược: ${adv?.name} ➔ Kết quả: ${res?.name} ${omenRes}(${res?.sub}).
+• Chiêm đoán theo ${domainLabel}:
+  - Thực trạng bản thân (${cur?.name}): ${insightCur || cur?.desc}
+  - Điểm mù cần khắc phục: ${blind?.name || "Chớ chủ quan nóng vội"}
+• Dự đoán & Sách lược: Về tâm niệm "${cleanedQuestion}": Chìa khóa hóa giải và bứt phá nằm ở Lá Gợi Ý ${adv?.name}. Nếu hành động chuẩn xác theo minh triết "${hexAdv?.advice || adv?.sub}" thì kết quả ${res?.name} sẽ: ${omenOutlook}
+• Phương châm hành động: Hành động theo minh triết ${adv?.name} để đón cát tránh hung, đạt được kết quả như ý.`;
   }
 
   if (currentMode === "thap_tinh") {
@@ -620,7 +825,22 @@ function generateHexagramPrediction(
     const s8 = cardsList[8] || cardsList[cardsList.length - 2];
     const s9 = cardsList[9] || cardsList[cardsList.length - 1];
     const card2Effect = isCard2ReversedState ? "Trở ngại rào cản" : "Trợ lực tương sinh";
-    return `Tâm điểm: ${s0?.name}. Lực tác động: ${s1?.name} (${card2Effect}). Dự đoán kết quả: ${s8?.name} (${s8?.sub}). Chỉ dẫn then chốt: ${s9?.name} (${s9?.sub}).`;
+    const hexS8 = HEXAGRAMS.find((h) => h.number === s8?.hexNumber);
+    const hexS9 = HEXAGRAMS.find((h) => h.number === s9?.hexNumber);
+    const omenS8 = hexS8?.omen ? `[${hexS8.omen}] ` : "";
+
+    if (isQuestionEmpty) {
+      return `Tâm điểm: ${s0?.name}. Lực tác động: ${s1?.name} (${card2Effect}). Dự đoán kết quả: ${s8?.name} (${s8?.sub}). Chỉ dẫn then chốt: ${s9?.name} (${s9?.sub}).${EMPTY_QUESTION_REMINDER}`;
+    }
+
+    const insightS8 = getHexDomainInsight(hexS8, domain);
+    const omenOutlook = getOmenOutlookText(hexS8?.omen);
+
+    return `🕊️ Tâm niệm / Câu hỏi: "${cleanedQuestion}"
+• Cục diện Thập Tinh: Tâm điểm: ${s0?.name} | Lực tác động: ${s1?.name} (${card2Effect}) ➔ Kết quả: ${s8?.name} ${omenS8}(${s8?.sub}) | Chỉ dẫn: ${s9?.name}.
+• Chiêm đoán theo ${domainLabel}: Sự việc xoay quanh tâm điểm ${s0?.name}, chịu sức ép/trợ lực từ ${s1?.name}. Đích đến sau cùng quy tụ tại ${s8?.name} (${insightS8 || s8?.desc}).
+• Dự đoán viễn cảnh: Đối với vấn đề "${cleanedQuestion}": ${omenOutlook}
+• Chỉ dẫn then chốt: ${hexS9?.advice || s9?.desc || "Thấu suốt bản chất biến dịch, hành xử cẩn trọng vững vàng."}`;
   }
 
   if (currentMode === "thap_la") {
@@ -628,14 +848,43 @@ function generateHexagramPrediction(
     const trans = cardsList[1];
     const yaos = cardsList.slice(2);
     const transHex = HEXAGRAMS.find((h) => h.number === trans?.hexNumber);
+    const priHex = HEXAGRAMS.find((h) => h.number === pri?.hexNumber);
+    const omenTrans = transHex?.omen ? `[${transHex.omen}] ` : "";
     const yaoText = yaos.length > 0 ? yaos.map((y) => y.name).join(", ") : "Quẻ Tĩnh (Không đổi)";
-    return `Bản Quái: ${pri?.name} ➔ Hào Động: ${yaoText} ➔ Biến Quái: ${trans?.name}. Dự đoán: Khởi đầu từ bối cảnh ${pri?.name}, sau khi chuyển biến tại các hào động, tương lai chuyển hóa viên mãn về ${trans?.name} (${transHex?.overview || trans?.sub}).`;
+
+    if (isQuestionEmpty) {
+      return `Bản Quái: ${pri?.name} ➔ Hào Động: ${yaoText} ➔ Biến Quái: ${trans?.name}. Dự đoán: Khởi đầu từ bối cảnh ${pri?.name}, sau khi chuyển biến tại các hào động, tương lai chuyển hóa viên mãn về ${trans?.name} (${transHex?.overview || trans?.sub}).${EMPTY_QUESTION_REMINDER}`;
+    }
+
+    const insightTrans = getHexDomainInsight(transHex, domain);
+    const omenOutlook = getOmenOutlookText(transHex?.omen);
+
+    return `🕊️ Tâm niệm / Câu hỏi: "${cleanedQuestion}"
+• Mai Hoa Dịch Số: Bản Quái: ${pri?.name} ➔ Hào Động: ${yaoText} ➔ Biến Quái: ${trans?.name} ${omenTrans}.
+• Chiêm đoán theo ${domainLabel}: Khởi phát từ bối cảnh ${pri?.name}. Điểm mấu chốt nằm ở sự chuyển động của các hào [${yaoText}], định hình chuyển hóa về ${trans?.name} (${insightTrans || trans?.sub}).
+• Dự đoán viễn cảnh: Về việc bạn đang tâm niệm: ${omenOutlook}
+• Phương châm hành động: ${transHex?.advice || priHex?.advice || "Thuận theo hào động, tùy thời ứng biến để đón nhận thành quả viên mãn."}`;
   }
 
   const cFirst = cardsList[0];
   const cLast = cardsList[cardsList.length - 1];
-  return `Khởi đầu: ${cFirst?.name} (${cFirst?.sub}) ➔ Kết quả: ${cLast?.name} (${cLast?.sub}). Lời khuyên: Giữ vững chính đạo để thành tựu như ý.`;
+  const hexLast = HEXAGRAMS.find((h) => h.number === cLast?.hexNumber);
+  const omenLast = hexLast?.omen ? `[${hexLast.omen}] ` : "";
+
+  if (isQuestionEmpty) {
+    return `Khởi đầu: ${cFirst?.name} (${cFirst?.sub}) ➔ Kết quả: ${cLast?.name} (${cLast?.sub}). Lời khuyên: Giữ vững chính đạo để thành tựu như ý.${EMPTY_QUESTION_REMINDER}`;
+  }
+
+  const insightLast = getHexDomainInsight(hexLast, domain);
+  const omenOutlook = getOmenOutlookText(hexLast?.omen);
+
+  return `🕊️ Tâm niệm / Câu hỏi: "${cleanedQuestion}"
+• Diễn biến trải bài: Khởi đầu: ${cFirst?.name} (${cFirst?.sub}) ➔ Kết quả: ${cLast?.name} ${omenLast}(${cLast?.sub}).
+• Chiêm đoán theo ${domainLabel}: Đích đến của tiến trình thể hiện tại ${cLast?.name} (${insightLast || cLast?.desc}).
+• Dự đoán kết quả: Đối với việc "${cleanedQuestion}": ${omenOutlook}
+• Phương châm hành động: ${hexLast?.advice || "Giữ vững chính đạo, kiên tâm hành sự để vạn sự hanh thông."}`;
 }
+
 
 /* ─── Helper: Định dạng thông tin các lá bài để dán cho AI phân tích ─── */
 /* Nếu nhấn nhẹ / bốc quẻ thông thường -> trích thông tin cơ bản (Quẻ tượng, Tên, Ý nghĩa, Lời giải)
@@ -1412,20 +1661,23 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const [copiedSingle, setCopiedSingle] = useState(false);
   const [copiedToast, setCopiedToast] = useState<string | null>(null);
 
-  /* Nội dung tâm niệm / Câu hỏi cho AI */
-  const [userIntentQuestion, setUserIntentQuestion] = useState(() => {
+  /* Ref lưu ID quẻ tạm hiện tại đang mở trên màn hình */
+  const currentTempSpreadIdRef = useRef<string | null>(null);
+
+  /* Nội dung tâm niệm / Câu hỏi cho AI (Mặc định mỗi lần vào web sẽ luôn reset về chưa điền chữ) */
+  const [userIntentQuestion, setUserIntentQuestion] = useState<string>("");
+
+  useEffect(() => {
     try {
-      return localStorage.getItem("cuunhi_user_intent_question") || "";
-    } catch {
-      return "";
-    }
-  });
+      localStorage.removeItem("cuunhi_user_intent_question");
+    } catch {}
+  }, []);
 
   const handleQuestionChange = useCallback((val: string) => {
     setUserIntentQuestion(val);
-    try {
-      localStorage.setItem("cuunhi_user_intent_question", val);
-    } catch {}
+    if (currentTempSpreadIdRef.current) {
+      updateTempSpreadItem(currentTempSpreadIdRef.current, { question: val });
+    }
   }, []);
 
   /* Dự đoán của quẻ / Điềm báo dịch lý (Nằm ở giữa câu hỏi và đáp án) */
@@ -1442,14 +1694,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     try {
       localStorage.setItem("cuunhi_hexagram_prediction", val);
     } catch {}
+    if (currentTempSpreadIdRef.current) {
+      updateTempSpreadItem(currentTempSpreadIdRef.current, { hexagramPrediction: val });
+    }
   }, []);
 
   const handleRefreshPredictionFromCards = useCallback(() => {
-    const pred = generateHexagramPrediction(cards, mode, isCard2Reversed);
+    const pred = generateHexagramPrediction(cards, mode, isCard2Reversed, userIntentQuestion);
     handleHexagramPredictionChange(pred);
-    setCopiedToast("✨ Đã điền gợi ý dự đoán từ quẻ hiện tại!");
+    if (userIntentQuestion && userIntentQuestion.trim()) {
+      setCopiedToast("✨ Đã tham khảo tâm niệm & điền gợi ý dự đoán từ quẻ!");
+    } else {
+      setCopiedToast("💡 Đã điền dự đoán từ quẻ. Nhập tâm niệm ở trên để dự đoán sát việc hơn!");
+    }
     setTimeout(() => setCopiedToast(null), 3000);
-  }, [cards, mode, isCard2Reversed, handleHexagramPredictionChange]);
+  }, [cards, mode, isCard2Reversed, userIntentQuestion, handleHexagramPredictionChange]);
 
 
 
@@ -1467,6 +1726,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     try {
       localStorage.setItem("cuunhi_user_custom_answer", val);
     } catch {}
+    if (currentTempSpreadIdRef.current) {
+      updateTempSpreadItem(currentTempSpreadIdRef.current, { userAnswer: val });
+    }
   }, []);
 
   /* Quản lý danh sách quẻ đã lưu & Popups */
@@ -1476,8 +1738,53 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const [isSaveDialogOpen, setIsSaveDialogOpen] = useState<boolean>(false);
   const [isSavedSpreadsModalOpen, setIsSavedSpreadsModalOpen] = useState<boolean>(false);
 
+  /* Quản lý danh sách quẻ tạm thời trong ngày (chưa nhấn lưu) */
+  const [tempSpreads, setTempSpreads] = useState<TempSpreadItem[]>(() => {
+    return typeof window !== "undefined" ? getTodayTempSpreads() : [];
+  });
+  const [isTempSpreadsModalOpen, setIsTempSpreadsModalOpen] = useState<boolean>(false);
+
   const reloadSavedSpreads = useCallback(() => {
     setSavedSpreads(getSavedSpreads());
+  }, []);
+
+  const reloadTempSpreads = useCallback(() => {
+    setTempSpreads(getTodayTempSpreads());
+  }, []);
+
+  /* Hàm ghi nhận một quẻ vừa mở vào danh sách quẻ tạm thời trong ngày */
+  const recordDrawnSpreadToTemp = useCallback((
+    targetMode: SpreadMode,
+    targetCards: DynamicCardItem[],
+    targetReversed?: boolean,
+    targetRitual?: boolean,
+    customQuestion?: string,
+    customPrediction?: string
+  ) => {
+    if (!Array.isArray(targetCards) || targetCards.length === 0) return;
+    const spreadTitle = SPREAD_MODE_NAMES[targetMode] || "Trận Pháp Kinh Dịch";
+    const item = addTempSpreadItem({
+      mode: targetMode,
+      spreadTitle,
+      cards: targetCards,
+      isCard2Reversed: targetMode === "thap_tinh" ? targetReversed : undefined,
+      question: typeof customQuestion === "string" ? customQuestion : userIntentQuestion,
+      hexagramPrediction: typeof customPrediction === "string" ? customPrediction : hexagramPrediction,
+      isRitualCompleted: targetRitual,
+    });
+    if (item) {
+      currentTempSpreadIdRef.current = item.id;
+      setTempSpreads(getTodayTempSpreads());
+    }
+  }, [userIntentQuestion, hexagramPrediction]);
+
+  /* Tự động lưu quẻ đầu tiên mở trong ngày khi vào ứng dụng */
+  const initialTempRecordedRef = useRef<boolean>(false);
+  useEffect(() => {
+    if (!initialTempRecordedRef.current && cards.length > 0) {
+      initialTempRecordedRef.current = true;
+      recordDrawnSpreadToTemp(mode, cards, isCard2Reversed, isRitualCompleted, userIntentQuestion, hexagramPrediction);
+    }
   }, []);
 
   const handleConfirmSaveSpread = useCallback((data: { question: string; prediction: string; answer: string }) => {
@@ -1503,11 +1810,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       isRitualCompleted,
     });
 
+    // Quẻ này đã được nhấn lưu chính thức, gỡ khỏi danh sách quẻ tạm chưa lưu
+    if (currentTempSpreadIdRef.current) {
+      markTempSpreadAsSaved(currentTempSpreadIdRef.current);
+    } else {
+      markTempSpreadAsSaved(cards);
+    }
+
     reloadSavedSpreads();
+    reloadTempSpreads();
     setIsSaveDialogOpen(false);
     setCopiedToast("💾 Đã lưu quẻ (kèm câu hỏi, dự đoán & đáp án) thành công!");
     setTimeout(() => setCopiedToast(null), 3000);
-  }, [mode, cards, isCard2Reversed, isRitualCompleted, userIntentQuestion, hexagramPrediction, userCustomAnswer, handleQuestionChange, handleHexagramPredictionChange, handleCustomAnswerChange, reloadSavedSpreads]);
+  }, [mode, cards, isCard2Reversed, isRitualCompleted, userIntentQuestion, hexagramPrediction, userCustomAnswer, handleQuestionChange, handleHexagramPredictionChange, handleCustomAnswerChange, reloadSavedSpreads, reloadTempSpreads]);
 
   const handleLoadSavedSpread = useCallback((item: SavedSpreadItem) => {
     if (item.mode && SPREAD_MODES.includes(item.mode as SpreadMode)) {
@@ -1544,7 +1859,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         sec.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     }, 100);
-  }, [handleQuestionChange, handleCustomAnswerChange]);
+  }, [handleQuestionChange, handleHexagramPredictionChange, handleCustomAnswerChange]);
 
   const handleCopySavedSpreadForAI = useCallback(async (item: SavedSpreadItem) => {
     const text = await formatSpreadForAI(
@@ -1559,6 +1874,79 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     const ok = await copyToClipboard(text);
     if (ok) {
       setCopiedToast(`📋 Đã chép quẻ "${item.spreadTitle}" (kèm câu hỏi & đáp án) cho AI!`);
+      setTimeout(() => setCopiedToast(null), 3000);
+    }
+  }, []);
+
+  const handleLoadTempSpread = useCallback((item: TempSpreadItem) => {
+    if (item.mode && SPREAD_MODES.includes(item.mode as SpreadMode)) {
+      setMode(item.mode as SpreadMode);
+    }
+    if (Array.isArray(item.cards) && item.cards.length > 0) {
+      setCards(item.cards);
+    }
+    if (typeof item.isCard2Reversed === "boolean") {
+      setIsCard2Reversed(item.isCard2Reversed);
+    }
+    if (typeof item.isRitualCompleted === "boolean") {
+      setIsRitualCompleted(item.isRitualCompleted);
+    }
+    if (typeof item.question === "string") {
+      handleQuestionChange(item.question);
+    }
+    if (typeof item.hexagramPrediction === "string") {
+      handleHexagramPredictionChange(item.hexagramPrediction);
+    }
+    if (typeof item.userAnswer === "string") {
+      handleCustomAnswerChange(item.userAnswer);
+    }
+
+    currentTempSpreadIdRef.current = item.id;
+    setIsKeepCards(true);
+    setIsTempSpreadsModalOpen(false);
+    setCopiedToast(`📂 Đã nạp quẻ tạm: ${item.spreadTitle} (Đã giữ nguyên quẻ)`);
+    setTimeout(() => setCopiedToast(null), 3500);
+
+    setTimeout(() => {
+      if (requestTickRef.current) requestTickRef.current();
+      const sec = document.getElementById("destiny-cards");
+      if (sec) {
+        sec.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 100);
+  }, [handleQuestionChange, handleHexagramPredictionChange, handleCustomAnswerChange]);
+
+  const handleSaveTempSpreadPermanently = useCallback((item: TempSpreadItem) => {
+    saveSpreadItem({
+      mode: item.mode,
+      spreadTitle: item.spreadTitle,
+      cards: item.cards,
+      isCard2Reversed: item.isCard2Reversed,
+      question: item.question,
+      hexagramPrediction: item.hexagramPrediction,
+      userAnswer: item.userAnswer,
+      isRitualCompleted: item.isRitualCompleted,
+    });
+    markTempSpreadAsSaved(item.id);
+    reloadSavedSpreads();
+    reloadTempSpreads();
+    setCopiedToast(`💾 Đã chuyển quẻ "${item.spreadTitle}" vào danh sách quẻ đã lưu chính thức!`);
+    setTimeout(() => setCopiedToast(null), 3500);
+  }, [reloadSavedSpreads, reloadTempSpreads]);
+
+  const handleCopyTempSpreadForAI = useCallback(async (item: TempSpreadItem) => {
+    const text = await formatSpreadForAI(
+      item.cards,
+      item.mode as SpreadMode,
+      item.isCard2Reversed,
+      item.isRitualCompleted,
+      item.question,
+      item.hexagramPrediction,
+      item.userAnswer
+    );
+    const ok = await copyToClipboard(text);
+    if (ok) {
+      setCopiedToast(`📋 Đã chép quẻ tạm "${item.spreadTitle}" cho AI!`);
       setTimeout(() => setCopiedToast(null), 3000);
     }
   }, []);
@@ -2330,10 +2718,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     }
     setIsRitualCompleted(isRitual);
     setMode(newMode);
+    let rev: boolean | undefined = undefined;
     if (newMode === "thap_tinh") {
-      setIsCard2Reversed(Math.random() < 0.5);
+      rev = Math.random() < 0.5;
+      setIsCard2Reversed(rev);
     }
-    setCards(drawCardsForMode(newMode));
+    const newCards = drawCardsForMode(newMode);
+    setCards(newCards);
+    recordDrawnSpreadToTemp(newMode, newCards, rev, isRitual);
     setTimeout(() => {
       requestTickRef.current();
     }, 50);
@@ -2342,14 +2734,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   /* ── Shuffle Cards (Rút bài ngẫu nhiên mới từ 384 hào & 64 quẻ) ── */
   const handleShuffleCards = useCallback((isRitual: boolean = false) => {
     setIsRitualCompleted(isRitual);
+    let rev: boolean | undefined = isCard2Reversed;
     if (mode === "thap_tinh") {
-      setIsCard2Reversed(Math.random() < 0.5);
+      rev = Math.random() < 0.5;
+      setIsCard2Reversed(rev);
     }
-    setCards(drawCardsForMode(mode));
+    const newCards = drawCardsForMode(mode);
+    setCards(newCards);
+    recordDrawnSpreadToTemp(mode, newCards, rev, isRitual);
     setTimeout(() => {
       requestTickRef.current();
     }, 50);
-  }, [mode]);
+  }, [mode, isCard2Reversed, recordDrawnSpreadToTemp]);
 
   const handleShuffleCardsAndScroll = useCallback((isRitual: boolean = false) => {
     handleShuffleCards(isRitual);
@@ -2657,10 +3053,14 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
       setIsRitualCompleted(isRitual);
       setMode(newMode);
+      let rev: boolean | undefined = undefined;
       if (newMode === "thap_tinh") {
-        setIsCard2Reversed(Math.random() < 0.5);
+        rev = Math.random() < 0.5;
+        setIsCard2Reversed(rev);
       }
-      setCards(drawCardsForMode(newMode));
+      const newCards = drawCardsForMode(newMode);
+      setCards(newCards);
+      recordDrawnSpreadToTemp(newMode, newCards, rev, isRitual);
       setTimeout(() => {
         if (requestTickRef.current) requestTickRef.current();
       }, 50);
@@ -2669,7 +3069,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         sec.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     },
-    [isKeepCards, mode]
+    [isKeepCards, mode, recordDrawnSpreadToTemp]
   );
 
   /* ── Bật/Tắt giữ nguyên các lá bài hiện tại (Khóa quẻ khi Tam Kính) ── */
@@ -2732,11 +3132,14 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         : SPREAD_MODES[Math.floor(Math.random() * SPREAD_MODES.length)];
 
     setMode(randomMode);
+    let rev: boolean | undefined = undefined;
     if (randomMode === "thap_tinh") {
-      setIsCard2Reversed(Math.random() < 0.5);
+      rev = Math.random() < 0.5;
+      setIsCard2Reversed(rev);
     }
     const newDrawnCards = drawCardsForMode(randomMode);
     setCards(newDrawnCards);
+    recordDrawnSpreadToTemp(randomMode, newDrawnCards, rev, isRitual);
     setTimeout(() => {
       if (requestTickRef.current) requestTickRef.current();
     }, 50);
@@ -2753,7 +3156,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       setCopiedToast(`🔮 Đã bốc ngẫu nhiên: ${spreadName}`);
     }
     setTimeout(() => setCopiedToast(null), 3500);
-  }, [isKeepCards, mode]);
+  }, [isKeepCards, mode, recordDrawnSpreadToTemp]);
 
   /* ── Coin Toss Handler ── */
   const handleTossCoin = () => {
@@ -3324,6 +3727,30 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                       </span>
                     )}
                   </button>
+
+                  {/* Nút Mở Quẻ Tạm Thời */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      reloadTempSpreads();
+                      setIsTempSpreadsModalOpen(true);
+                    }}
+                    className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-white transition cursor-pointer shadow-md hover:bg-white/15 hover:scale-[1.02] active:scale-95 select-none"
+                    style={{
+                      background: "rgba(255,255,255,0.1)",
+                      border: "1px solid rgba(255,255,255,0.38)",
+                      backdropFilter: "blur(8px)",
+                    }}
+                    title="Mở các quẻ tạm thời mới mở hôm nay chưa nhấn lưu"
+                  >
+                    <Clock className="w-3.5 h-3.5 text-white" />
+                    <span>Quẻ Tạm Thời</span>
+                    {tempSpreads.length > 0 && (
+                      <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-400/30 text-amber-200 border border-amber-300/40">
+                        {tempSpreads.length}
+                      </span>
+                    )}
+                  </button>
                 </div>
               </div>
 
@@ -3510,8 +3937,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 </button>
               </div>
 
-              {/* Hàng 2 ngay bên dưới: 4 nút (Giữ nguyên, Chép cho AI, Lưu Quẻ, Mở Quẻ) cùng chung phong cách */}
-              <div className="grid grid-cols-2 gap-2 w-full max-w-xl">
+              {/* Hàng 2 ngay bên dưới: 5 nút (Giữ nguyên, Chép cho AI, Lưu Quẻ, Mở Quẻ, Quẻ Tạm Thời) cùng chung phong cách */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 w-full max-w-xl">
                 {/* Nút Giữ nguyên trên mobile */}
                 <RitualHoldButton
                   id="hero-mobile-keep-cards"
@@ -3602,6 +4029,30 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   {savedSpreads.length > 0 && (
                     <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-white/20 text-white border border-white/30">
                       {savedSpreads.length}
+                    </span>
+                  )}
+                </button>
+
+                {/* Nút Quẻ Tạm Thời trên mobile */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    reloadTempSpreads();
+                    setIsTempSpreadsModalOpen(true);
+                  }}
+                  className="col-span-2 sm:col-span-1 flex min-w-0 items-center justify-center gap-1.5 rounded-2xl px-2.5 py-2.5 text-xs font-semibold text-white transition cursor-pointer shadow-md hover:bg-white/15 active:scale-95 select-none"
+                  style={{
+                    background: "rgba(255,255,255,0.1)",
+                    border: "1px solid rgba(255,255,255,0.38)",
+                    backdropFilter: "blur(8px)",
+                  }}
+                  title="Mở danh sách các quẻ tạm thời mới mở hôm nay chưa nhấn lưu"
+                >
+                  <Clock className="w-3.5 h-3.5 text-white" />
+                  <span>Quẻ Tạm Thời</span>
+                  {tempSpreads.length > 0 && (
+                    <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-400/30 text-amber-200 border border-amber-300/40">
+                      {tempSpreads.length}
                     </span>
                   )}
                 </button>
@@ -4294,6 +4745,25 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                         </span>
                       )}
                     </button>
+
+                    {/* Nút Quẻ Tạm Thời trong Destiny Cards */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        reloadTempSpreads();
+                        setIsTempSpreadsModalOpen(true);
+                      }}
+                      className="inline-flex items-center justify-center gap-1.5 w-full sm:w-auto px-3 py-2 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-xs font-semibold bg-[#fef8ed] hover:bg-[#fcf1db] text-[#7c5516] border border-amber-300 transition cursor-pointer shadow-xs active:scale-95 select-none"
+                      title="Mở danh sách các quẻ tạm thời mới mở hôm nay chưa nhấn lưu"
+                    >
+                      <Clock className="w-3.5 h-3.5 text-amber-600" />
+                      <span>Quẻ Tạm Thời</span>
+                      {tempSpreads.length > 0 && (
+                        <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-200 text-amber-900 border border-amber-400">
+                          {tempSpreads.length}
+                        </span>
+                      )}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -4882,6 +5352,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         prediction={hexagramPrediction}
         initialAnswer={userCustomAnswer}
         onConfirmSave={handleConfirmSaveSpread}
+        onGeneratePrediction={(q) => generateHexagramPrediction(cards, mode, isCard2Reversed, q)}
       />
 
       {/* Modal danh sách quẻ đã lưu */}
@@ -4892,6 +5363,27 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         onReloadList={reloadSavedSpreads}
         onLoadSpread={handleLoadSavedSpread}
         onCopySpreadForAI={handleCopySavedSpreadForAI}
+        onOpenTempSpreadsModal={() => {
+          reloadTempSpreads();
+          setIsTempSpreadsModalOpen(true);
+        }}
+        tempSpreadsCount={tempSpreads.length}
+      />
+
+      {/* Modal danh sách quẻ tạm thời trong ngày */}
+      <TempSpreadsModal
+        isOpen={isTempSpreadsModalOpen}
+        onClose={() => setIsTempSpreadsModalOpen(false)}
+        tempSpreads={tempSpreads}
+        onReloadList={reloadTempSpreads}
+        onLoadSpread={handleLoadTempSpread}
+        onSaveSpreadPermanently={handleSaveTempSpreadPermanently}
+        onCopySpreadForAI={handleCopyTempSpreadForAI}
+        onOpenSavedSpreadsModal={() => {
+          reloadSavedSpreads();
+          setIsSavedSpreadsModalOpen(true);
+        }}
+        savedSpreadsCount={savedSpreads.length}
       />
 
       {/* Modal xem trước & tải ảnh chụp toàn bộ thẻ bài */}

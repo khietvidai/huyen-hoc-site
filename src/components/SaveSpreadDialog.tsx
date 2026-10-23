@@ -10,6 +10,7 @@ interface SaveSpreadDialogProps {
   prediction: string;
   initialAnswer: string;
   onConfirmSave: (data: { question: string; prediction: string; answer: string }) => void;
+  onGeneratePrediction?: (questionText: string) => string;
 }
 
 export const SaveSpreadDialog: React.FC<SaveSpreadDialogProps> = ({
@@ -21,6 +22,7 @@ export const SaveSpreadDialog: React.FC<SaveSpreadDialogProps> = ({
   prediction,
   initialAnswer,
   onConfirmSave,
+  onGeneratePrediction,
 }) => {
   const [questionText, setQuestionText] = useState(question);
   const [predictionText, setPredictionText] = useState(prediction);
@@ -95,10 +97,25 @@ export const SaveSpreadDialog: React.FC<SaveSpreadDialogProps> = ({
 
           {/* 2. Dự đoán của quẻ ở giữa (Tự điền) */}
           <div className="space-y-1">
-            <label className="text-xs font-serif font-bold text-amber-400 flex items-center gap-1.5">
-              <span>🔮</span>
-              <span>2. Dự đoán / Điềm báo của quẻ (Tự điền):</span>
-            </label>
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-serif font-bold text-amber-400 flex items-center gap-1.5">
+                <span>🔮</span>
+                <span>2. Dự đoán / Điềm báo của quẻ (Tự điền):</span>
+              </label>
+              {onGeneratePrediction && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const newPred = onGeneratePrediction(questionText);
+                    setPredictionText(newPred);
+                  }}
+                  className="text-[10px] sm:text-[11px] text-amber-400 hover:text-amber-200 font-medium transition cursor-pointer flex items-center gap-1"
+                  title="Gợi ý từ quẻ dựa theo câu hỏi/tâm niệm ở trên"
+                >
+                  <span>✨ Gợi ý từ quẻ</span>
+                </button>
+              )}
+            </div>
             <textarea
               rows={2}
               value={predictionText}

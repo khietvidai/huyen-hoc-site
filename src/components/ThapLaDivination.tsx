@@ -56,21 +56,12 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
   // Step: 'ready' (chưa rút), 'shuffling' (đang xáo bài), 'drawn' (đã có kết quả)
   const [step, setStep] = useState<"ready" | "shuffling" | "drawn">("ready");
 
-  // Input câu hỏi & chuyên mục
-  const [question, setQuestion] = useState(() => {
-    try {
-      return localStorage.getItem("cuunhi_user_intent_question") || "";
-    } catch {
-      return "";
-    }
-  });
+  // Input câu hỏi & chuyên mục (Mặc định mỗi lần vào web sẽ luôn reset về chưa điền chữ)
+  const [question, setQuestion] = useState<string>("");
   const [category, setCategory] = useState("Tổng quát");
 
   const handleQuestionChange = (val: string) => {
     setQuestion(val);
-    try {
-      localStorage.setItem("cuunhi_user_intent_question", val);
-    } catch {}
   };
 
   // Kết quả bốc bài
