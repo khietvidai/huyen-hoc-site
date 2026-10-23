@@ -572,7 +572,7 @@ function formatCardFullInfoFromHexagram(
   return lines;
 }
 
-/* ─── Helper: Sinh lời dự đoán tự động từ các lá bài trong trải trận ─── */
+/* ─── Helper: Sinh lời dự đoán tự động từ các lá bài trong trải trận (Tham khảo tâm niệm & câu hỏi) ─── */
 function generateHexagramPrediction(
   cardsList: DynamicCardItem[],
   currentMode: SpreadMode,
