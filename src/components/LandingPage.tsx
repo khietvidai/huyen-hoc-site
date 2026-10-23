@@ -9,7 +9,10 @@
  * - Interactive modals: Card Detail Inspector, Coin Toss Divination Studio, Life Config Thermal Receipt
  */
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { Camera } from "lucide-react";
+import { Camera, Bookmark, FolderOpen } from "lucide-react";
+import { SaveSpreadDialog } from "./SaveSpreadDialog";
+import { SavedSpreadsModal } from "./SavedSpreadsModal";
+import { getSavedSpreads, saveSpreadItem, SavedSpreadItem } from "../services/savedSpreadsService";
 import { toPng } from "html-to-image";
 import { downloadDataUrlAsPng } from "../utils/captureHelper";
 import { ExportImageModal } from "./ExportImageModal";
@@ -577,9 +580,11 @@ async function formatSpreadForAI(
   currentMode: SpreadMode,
   isCard2ReversedState: boolean = false,
   includeFullBakhKhoa: boolean = false,
-  userQuestion?: string
+  userQuestion?: string,
+  userAnswer?: string
 ): Promise<string> {
   const cleanedQuestion = userQuestion?.trim();
+  const cleanedAnswer = userAnswer?.trim();
   // Chỉ tải bài viết bách khoa chuyên sâu khi đã đắc pháp nghi thức (Kính Thiên, Kính Địa, Kính Nhân)
   const articles: (CardArticleData | null)[] = includeFullBakhKhoa
     ? await Promise.all(cardsList.map((c) => fetchCardArticleSections(c)))
@@ -593,6 +598,10 @@ async function formatSpreadForAI(
     if (cleanedQuestion) {
       lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
       lines.push(`"${cleanedQuestion}"\n`);
+    }
+    if (cleanedAnswer) {
+      lines.push(`【ĐÁP ÁN / CHIÊM NGHIỆM TỰ ĐIỀN】:`);
+      lines.push(`"${cleanedAnswer}"\n`);
     }
     lines.push(`Khẩu quyết: Thất Tinh Bắc Đẩu soi chiếu 7 phương diện cuộc đời: Quá khứ, Bản thân hiện tại, Diễn biến tiếp theo, Lá gợi ý, Kết quả, Môi trường khách quan và Điểm mù thiếu sót.\n`);
     cardsList.forEach((c, idx) => {
@@ -632,6 +641,10 @@ async function formatSpreadForAI(
     if (cleanedQuestion) {
       lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
       lines.push(`"${cleanedQuestion}"\n`);
+    }
+    if (cleanedAnswer) {
+      lines.push(`【ĐÁP ÁN / CHIÊM NGHIỆM TỰ ĐIỀN】:`);
+      lines.push(`"${cleanedAnswer}"\n`);
     }
     lines.push(`Khẩu quyết: Tâm điểm thập tự kết hợp chuỗi thời vận 10 vị thế nhân duyên.`);
     lines.push(`* QUY CHUẨN ĐẶC BIỆT LÁ THỨ 2: Chiều Xuôi là HỖ TRỢ (Trợ lực tương sinh), Chiều Ngược là TRỞ NGẠI (Thử thách, rào cản chắn ngang).`);
@@ -682,6 +695,10 @@ async function formatSpreadForAI(
     if (cleanedQuestion) {
       lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
       lines.push(`"${cleanedQuestion}"\n`);
+    }
+    if (cleanedAnswer) {
+      lines.push(`【ĐÁP ÁN / CHIÊM NGHIỆM TỰ ĐIỀN】:`);
+      lines.push(`"${cleanedAnswer}"\n`);
     }
     lines.push(`Cấu trúc: Quẻ Chủ & Quẻ Biến song song Trên - Dưới • Dải Hào Động (Bộ 384 Lá) kế bên Quẻ Chủ`);
     lines.push(`Thứ tự đọc chiêm bốc: 1. Bản Quái (Quẻ Chủ) ➔ 2. Hào Động (Bước Ngoặt) ➔ 3. Biến Quái (Quẻ Biến)\n`);
@@ -1269,7 +1286,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const [isRitualCompleted, setIsRitualCompleted] = useState<boolean>(false);
 
   /* Trạng thái giữ nguyên các lá bài hiện tại (khóa quẻ không bị rút lại khi thực hiện Tam Kính) */
-  const [isKeepCards, setIsKeepCards] = useState<boolean>(false);
+  const [isKeepCards, setIsKeepCards] = useState<boolean>(true);
 
   const handleToggleCard2Reversed = useCallback(() => {
     setIsCard2Reversed((prev) => !prev);
@@ -1325,6 +1342,108 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     try {
       localStorage.setItem("cuunhi_user_intent_question", val);
     } catch {}
+  }, []);
+
+  /* Đáp án tự điền / Chiêm nghiệm thực tế của người dùng */
+  const [userCustomAnswer, setUserCustomAnswer] = useState(() => {
+    try {
+      return localStorage.getItem("cuunhi_user_custom_answer") || "";
+    } catch {
+      return "";
+    }
+  });
+
+  const handleCustomAnswerChange = useCallback((val: string) => {
+    setUserCustomAnswer(val);
+    try {
+      localStorage.setItem("cuunhi_user_custom_answer", val);
+    } catch {}
+  }, []);
+
+  /* Quản lý danh sách quẻ đã lưu & Popups */
+  const [savedSpreads, setSavedSpreads] = useState<SavedSpreadItem[]>(() => {
+    return typeof window !== "undefined" ? getSavedSpreads() : [];
+  });
+  const [isSaveDialogOpen, setIsSaveDialogOpen] = useState<boolean>(false);
+  const [isSavedSpreadsModalOpen, setIsSavedSpreadsModalOpen] = useState<boolean>(false);
+
+  const reloadSavedSpreads = useCallback(() => {
+    setSavedSpreads(getSavedSpreads());
+  }, []);
+
+  const handleConfirmSaveSpread = useCallback((data: { question: string; answer: string }) => {
+    if (data.question !== userIntentQuestion) {
+      handleQuestionChange(data.question);
+    }
+    if (data.answer !== userCustomAnswer) {
+      handleCustomAnswerChange(data.answer);
+    }
+
+    const spreadTitle = SPREAD_MODE_NAMES[mode] || "Trận Pháp Kinh Dịch";
+    saveSpreadItem({
+      mode,
+      spreadTitle,
+      cards,
+      isCard2Reversed: mode === "thap_tinh" ? isCard2Reversed : undefined,
+      question: data.question,
+      userAnswer: data.answer,
+      isRitualCompleted,
+    });
+
+    reloadSavedSpreads();
+    setIsSaveDialogOpen(false);
+    setCopiedToast("💾 Đã lưu quẻ (kèm câu hỏi & đáp án) thành công!");
+    setTimeout(() => setCopiedToast(null), 3000);
+  }, [mode, cards, isCard2Reversed, isRitualCompleted, userIntentQuestion, userCustomAnswer, handleQuestionChange, handleCustomAnswerChange, reloadSavedSpreads]);
+
+  const handleLoadSavedSpread = useCallback((item: SavedSpreadItem) => {
+    if (item.mode && SPREAD_MODES.includes(item.mode as SpreadMode)) {
+      setMode(item.mode as SpreadMode);
+    }
+    if (Array.isArray(item.cards) && item.cards.length > 0) {
+      setCards(item.cards);
+    }
+    if (typeof item.isCard2Reversed === "boolean") {
+      setIsCard2Reversed(item.isCard2Reversed);
+    }
+    if (typeof item.isRitualCompleted === "boolean") {
+      setIsRitualCompleted(item.isRitualCompleted);
+    }
+    if (typeof item.question === "string") {
+      handleQuestionChange(item.question);
+    }
+    if (typeof item.userAnswer === "string") {
+      handleCustomAnswerChange(item.userAnswer);
+    }
+
+    setIsKeepCards(true);
+    setIsSavedSpreadsModalOpen(false);
+    setCopiedToast(`📂 Đã mở quẻ: ${item.spreadTitle} (Đã giữ nguyên quẻ)`);
+    setTimeout(() => setCopiedToast(null), 3500);
+
+    setTimeout(() => {
+      if (requestTickRef.current) requestTickRef.current();
+      const sec = document.getElementById("destiny-cards");
+      if (sec) {
+        sec.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 100);
+  }, [handleQuestionChange, handleCustomAnswerChange]);
+
+  const handleCopySavedSpreadForAI = useCallback(async (item: SavedSpreadItem) => {
+    const text = await formatSpreadForAI(
+      item.cards,
+      item.mode as SpreadMode,
+      item.isCard2Reversed,
+      item.isRitualCompleted,
+      item.question,
+      item.userAnswer
+    );
+    const ok = await copyToClipboard(text);
+    if (ok) {
+      setCopiedToast(`📋 Đã chép quẻ "${item.spreadTitle}" (kèm câu hỏi & đáp án) cho AI!`);
+      setTimeout(() => setCopiedToast(null), 3000);
+    }
   }, []);
 
   /* Trigger tick ref for recalculating physics */
@@ -2140,32 +2259,36 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   /* ── Sao chép toàn bộ trải bài cho AI (Đầy đủ thông tin từ Hexagram & Bách khoa) ── */
   const handleCopyCardsForAI = useCallback(async () => {
     const hasQuestion = !!userIntentQuestion.trim();
+    const hasAnswer = !!userCustomAnswer.trim();
     if (isRitualCompleted) {
       setCopiedToast("✨ Đang trích xuất 100% Bách Khoa Toàn Thư Kinh Dịch (Cửu Nhị Luận Giải & FAQ) cho AI...");
     } else {
       setCopiedToast("Đang chuẩn bị dữ liệu quẻ & luận giải tiêu chuẩn cho AI...");
     }
-    const text = await formatSpreadForAI(cards, mode, isCard2Reversed, isRitualCompleted, userIntentQuestion);
+    const text = await formatSpreadForAI(cards, mode, isCard2Reversed, isRitualCompleted, userIntentQuestion, userCustomAnswer);
     const ok = await copyToClipboard(text);
     if (ok) {
       setCopiedAI(true);
+      const suffix = (hasQuestion && hasAnswer)
+        ? " (kèm Câu hỏi & Đáp án)"
+        : hasQuestion
+        ? " (kèm Câu hỏi)"
+        : hasAnswer
+        ? " (kèm Đáp án)"
+        : "";
       if (isRitualCompleted) {
         setCopiedToast(
-          hasQuestion
-            ? "✨ Đã sao chép 100% Bách Khoa Toàn Thư (kèm Câu hỏi tâm niệm) cho AI!"
-            : "✨ Đã sao chép 100% Bách Khoa Toàn Thư cho AI (kèm Tổng quan, Luận giải, Chiêm đoán & FAQ)!"
+          `✨ Đã sao chép 100% Bách Khoa Toàn Thư${suffix} cho AI!`
         );
       } else {
         setCopiedToast(
-          hasQuestion
-            ? "Đã chép thông tin các lá bài (kèm Câu hỏi tâm niệm) cho AI!"
-            : "Đã chép thông tin các lá bài tiêu chuẩn cho AI!"
+          `Đã chép thông tin các lá bài${suffix} cho AI!`
         );
       }
       setTimeout(() => setCopiedAI(false), 2500);
       setTimeout(() => setCopiedToast(null), 3500);
     }
-  }, [cards, mode, isCard2Reversed, isRitualCompleted, userIntentQuestion]);
+  }, [cards, mode, isCard2Reversed, isRitualCompleted, userIntentQuestion, userCustomAnswer]);
 
   /* ── Sao chép 1 lá bài đơn lẻ cho AI (Thông tin cơ bản hoặc 100% bách khoa khi đắc pháp) ── */
   const handleCopySingleCardForAI = useCallback(async (card: DynamicCardItem) => {
@@ -2862,16 +2985,47 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     className="w-full resize-none rounded-xl bg-black/40 border border-[#C4963E]/30 px-3.5 py-2 text-xs sm:text-sm text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-[#C4963E] transition leading-relaxed shadow-inner"
                   />
 
+                  {/* Mục đáp án tự điền / Chiêm nghiệm thực tế */}
+                  <div className="mt-2.5 pt-2.5 border-t border-[#C4963E]/20">
+                    <div className="flex items-center justify-between mb-1">
+                      <label
+                        htmlFor="hero-desktop-custom-answer"
+                        className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-emerald-300 font-serif"
+                      >
+                        <span className="text-sm">✍️</span>
+                        <span>Đáp án tự điền / Chiêm nghiệm thực tế</span>
+                      </label>
+                      {userCustomAnswer.trim() && (
+                        <button
+                          type="button"
+                          onClick={() => handleCustomAnswerChange("")}
+                          className="text-[11px] text-stone-400 hover:text-rose-400 font-medium transition cursor-pointer flex items-center gap-1"
+                          title="Xóa nội dung đáp án"
+                        >
+                          ✕ Xóa
+                        </button>
+                      )}
+                    </div>
+                    <textarea
+                      id="hero-desktop-custom-answer"
+                      rows={2}
+                      value={userCustomAnswer}
+                      onChange={(e) => handleCustomAnswerChange(e.target.value)}
+                      placeholder="Nhập đáp án, dự cảm hoặc kết quả thực tế để chiêm nghiệm đối chiếu cùng AI..."
+                      className="w-full resize-none rounded-xl bg-black/40 border border-emerald-600/35 px-3.5 py-2 text-xs sm:text-sm text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-emerald-400 transition leading-relaxed shadow-inner"
+                    />
+                  </div>
+
                   <div className="mt-2 flex flex-wrap items-center justify-between gap-1.5 text-[11px] text-stone-400">
                     <span className="flex items-center gap-1">
                       <span className="text-amber-400 font-bold">💡</span>
-                      {userIntentQuestion.trim()
-                        ? "Câu hỏi này sẽ được tự động đính kèm khi bấm 'Chép cho AI'."
-                        : "Nhập câu hỏi để khi 'Chép cho AI', AI sẽ giải đáp đúng trọng tâm của bạn."}
+                      {userIntentQuestion.trim() || userCustomAnswer.trim()
+                        ? "Câu hỏi & Đáp án tự điền sẽ được tự động đính kèm khi 'Chép cho AI' và 'Lưu Quẻ'."
+                        : "Nhập câu hỏi và đáp án tự điền để đối chiếu chiêm nghiệm chuẩn xác."}
                     </span>
-                    {userIntentQuestion.trim() && (
+                    {(userIntentQuestion.trim() || userCustomAnswer.trim()) && (
                       <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-300 bg-emerald-950/80 border border-emerald-500/60 px-2 py-0.5 rounded-full">
-                        ✓ Đã ghim vào bản chép AI
+                        ✓ Đã sẵn sàng lưu &amp; chép cho AI
                       </span>
                     )}
                   </div>
@@ -2881,27 +3035,20 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               {/* Dải nút hành động Desktop (Bắt Đầu Bốc Quẻ + Tam Kính + 64 Quẻ) */}
               <div className="hidden lg:flex w-full lg:w-auto flex-col items-start relative z-[55] mt-2">
                 <div className="flex w-full max-w-xl flex-row items-stretch gap-2.5 lg:w-auto">
-                  {/* Nút Bắt Đầu Bốc Quẻ (Tích hợp chế độ Tam Kính: Nhấn nhanh bốc thường, đè 3 lần Tam Kính) */}
+                  {/* Nút Bắt Đầu Bốc Quẻ (Để hình nguyên bản sạch đẹp như cũ, tích hợp Tam Kính khi giữ 3 lần) */}
                   <RitualHoldButton
                     id="btn-hero-start-divination"
-                    active={isRitualCompleted}
+                    active={false}
                     onClick={(isRitual) => handleStartDivinationOrShuffle(!!isRitual)}
                     className="flex min-w-0 flex-1 items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-base md:px-7 md:py-4 md:text-lg lg:flex-none lg:w-auto text-zinc-950 font-bold cursor-pointer transition hover:scale-[1.02] active:scale-[0.98] shadow-xl"
                     style={{
-                      background: isRitualCompleted
-                        ? "linear-gradient(135deg, #ffd700 0%, #ffae00 100%)"
-                        : "linear-gradient(135deg,rgba(255,255,255,0.98) 0%,rgba(242,242,242,0.95) 100%)",
-                      border: isRitualCompleted
-                        ? "2px solid #ffae00"
-                        : "1px solid rgba(255,255,255,0.9)",
+                      background: "linear-gradient(135deg,rgba(255,255,255,0.98) 0%,rgba(242,242,242,0.95) 100%)",
+                      border: "1px solid rgba(255,255,255,0.9)",
                     }}
-                    title="Bấm nhanh để bốc quẻ ngẫu nhiên • Nhấn & giữ 3 lần Kính Thiên, Kính Địa, Kính Nhân để Bốc Tam Kính đắc pháp"
+                    title="Bấm để bốc quẻ • Nhấn & giữ 3 lần Kính Thiên, Kính Địa, Kính Nhân để Bốc Tam Kính"
                   >
                     <span className="text-xl">☯</span>
                     <span className="truncate">Bắt Đầu Bốc Quẻ</span>
-                    <span className="text-[10px] font-sans font-semibold px-2 py-0.5 rounded-full bg-amber-900/15 text-amber-900 border border-amber-600/30 ml-0.5">
-                      {isRitualCompleted ? "✦ Đắc Pháp Tam Kính" : "Giữ 3 lần: Tam Kính"}
-                    </span>
                   </RitualHoldButton>
 
                   <button
@@ -2919,19 +3066,19 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   </button>
                 </div>
 
-                {/* Hàng nút ngay bên DƯỚI Bắt Đầu Bốc Quẻ: Giữ nguyên & Chép cho AI */}
-                <div className="flex items-center gap-2.5 mt-3 w-full max-w-xl">
+                {/* Hàng nút ngay bên DƯỚI Bắt Đầu Bốc Quẻ: Giữ nguyên, Chép cho AI, Lưu Quẻ, Mở Quẻ */}
+                <div className="flex flex-wrap items-center gap-2 mt-3 w-full max-w-xl">
                   {/* Ô Giữ nguyên */}
                   <RitualHoldButton
                     id="hero-desktop-keep-cards"
                     active={isKeepCards}
                     onClick={(isRitual) => handleToggleKeepCards(isRitual)}
-                    className={`inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition cursor-pointer shadow-md active:scale-95 select-none ${
+                    className={`inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition cursor-pointer shadow-md active:scale-95 select-none ${
                       isKeepCards
                         ? "bg-[#fbf4e6] text-[#7c5516] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.01]"
                         : "bg-white/95 hover:bg-white text-zinc-800 border border-stone-200 font-medium hover:scale-[1.01]"
                     }`}
-                    title="Ô giữ nguyên: Bấm để Bật/Tắt giữ nguyên các lá bài hiện tại (khi Tam Kính vẫn giữ nguyên bài), hoặc Nhấn & giữ 3 lần Tam Kính để đắc pháp trực tiếp cho quẻ này"
+                    title="Ô giữ nguyên: Bật/Tắt giữ nguyên các lá bài hiện tại"
                   >
                     <span
                       className={`w-3.5 h-3.5 rounded flex items-center justify-center text-[10px] font-bold transition-all ${
@@ -2951,24 +3098,18 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   </RitualHoldButton>
 
                   {/* Nút Chép cho AI */}
-                  <div className="relative inline-flex items-center flex-1 sm:flex-none">
+                  <div className="relative inline-flex items-center">
                     <button
                       type="button"
                       onClick={handleCopyCardsForAI}
-                      className={`inline-flex items-center justify-center gap-1.5 w-full px-4 py-2.5 rounded-xl text-xs font-semibold transition cursor-pointer shadow-md active:scale-95 select-none ${
+                      className={`inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition cursor-pointer shadow-md active:scale-95 select-none ${
                         copiedAI
                           ? "bg-emerald-600 text-white border border-emerald-500 shadow-md scale-[1.01]"
                           : isRitualCompleted
                           ? "bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-zinc-950 font-bold border-2 border-amber-300 shadow-lg shadow-amber-500/25 ring-1 ring-amber-400/50"
                           : "bg-[#251D16] hover:bg-[#34271A] text-amber-200 border border-amber-600/50 shadow-sm"
                       }`}
-                      title={
-                        userIntentQuestion.trim()
-                          ? `Đã đính kèm câu hỏi tâm niệm: "${userIntentQuestion.trim().slice(0, 60)}..." • Bấm để chép cho AI`
-                          : isRitualCompleted
-                          ? "✨ Đã đắc pháp Kính Thiên, Kính Địa, Kính Nhân: Bấm để sao chép 100% bách khoa toàn thư (Cửu Nhị Luận Giải, Chiêm đoán 4 phương diện & FAQ)"
-                          : "Sao chép thông tin các lá bài tiêu chuẩn cho AI (Nhấn & giữ 3 lần Kính Thiên, Địa, Nhân để mở khóa trích dẫn 100% bách khoa toàn thư)"
-                      }
+                      title="Sao chép toàn bộ thông tin các lá bài (kèm câu hỏi & đáp án) để gửi cho AI"
                     >
                       <span className="text-sm shrink-0">
                         {copiedAI ? "✓" : isRitualCompleted ? "✨" : "📋"}
@@ -2977,12 +3118,16 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                         {copiedAI
                           ? "Đã chép!"
                           : isRitualCompleted
-                          ? "Chép Toàn Thư cho AI"
+                          ? "Chép Toàn Thư"
                           : "Chép cho AI"}
                       </span>
-                      {userIntentQuestion.trim() && !copiedAI && (
+                      {(userIntentQuestion.trim() || userCustomAnswer.trim()) && !copiedAI && (
                         <span className="text-[10px] font-medium text-amber-900 bg-amber-100/90 px-1.5 py-0.2 rounded-full border border-amber-300/60 ml-0.5">
-                          +Câu hỏi
+                          {userIntentQuestion.trim() && userCustomAnswer.trim()
+                            ? "+Hỏi&Đáp"
+                            : userIntentQuestion.trim()
+                            ? "+Hỏi"
+                            : "+Đáp"}
                         </span>
                       )}
                     </button>
@@ -2992,6 +3137,36 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                       </span>
                     )}
                   </div>
+
+                  {/* Nút Lưu Quẻ */}
+                  <button
+                    type="button"
+                    onClick={() => setIsSaveDialogOpen(true)}
+                    className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-[#1C1712] hover:bg-[#282018] text-amber-200 border border-amber-600/50 transition cursor-pointer shadow-md active:scale-95 select-none"
+                    title="Lưu trải bài hiện tại kèm Câu hỏi AI và Đáp án tự điền"
+                  >
+                    <Bookmark className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Lưu Quẻ</span>
+                  </button>
+
+                  {/* Nút Mở Quẻ */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      reloadSavedSpreads();
+                      setIsSavedSpreadsModalOpen(true);
+                    }}
+                    className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-[#1C1712] hover:bg-[#282018] text-amber-200 border border-amber-600/50 transition cursor-pointer shadow-md active:scale-95 select-none"
+                    title="Mở danh sách các quẻ đã lưu"
+                  >
+                    <FolderOpen className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Mở Quẻ</span>
+                    {savedSpreads.length > 0 && (
+                      <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-500 text-zinc-950">
+                        {savedSpreads.length}
+                      </span>
+                    )}
+                  </button>
                 </div>
               </div>
 
@@ -3070,44 +3245,67 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     className="w-full resize-none rounded-xl bg-black/40 border border-[#C4963E]/30 px-3 py-1.5 text-xs text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-[#C4963E] transition leading-relaxed shadow-inner"
                   />
 
+                  {/* Đáp án tự điền trên mobile */}
+                  <div className="mt-2 pt-2 border-t border-[#C4963E]/20">
+                    <div className="flex items-center justify-between mb-1">
+                      <label
+                        htmlFor="hero-mobile-custom-answer"
+                        className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-emerald-300 font-serif"
+                      >
+                        <span className="text-xs">✍️</span>
+                        <span>Đáp án tự điền / Chiêm nghiệm</span>
+                      </label>
+                      {userCustomAnswer.trim() && (
+                        <button
+                          type="button"
+                          onClick={() => handleCustomAnswerChange("")}
+                          className="text-[10.5px] text-stone-400 hover:text-rose-400 font-medium transition cursor-pointer"
+                        >
+                          ✕ Xóa
+                        </button>
+                      )}
+                    </div>
+                    <textarea
+                      id="hero-mobile-custom-answer"
+                      rows={2}
+                      value={userCustomAnswer}
+                      onChange={(e) => handleCustomAnswerChange(e.target.value)}
+                      placeholder="Nhập đáp án hoặc kết quả thực tế để đối chiếu chiêm nghiệm..."
+                      className="w-full resize-none rounded-xl bg-black/40 border border-emerald-600/35 px-3 py-1.5 text-xs text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-emerald-400 transition leading-relaxed shadow-inner"
+                    />
+                  </div>
+
                   <div className="mt-1.5 flex flex-wrap items-center justify-between gap-1 text-[10.5px] text-stone-400">
                     <span className="flex items-center gap-1 truncate">
                       <span className="text-amber-400 font-bold">💡</span>
-                      {userIntentQuestion.trim()
-                        ? "Tự động đính kèm khi bấm 'Chép cho AI'."
-                        : "Nhập câu hỏi để AI giải đáp đúng trọng tâm."}
+                      {userIntentQuestion.trim() || userCustomAnswer.trim()
+                        ? "Tự động lưu & đính kèm khi 'Chép cho AI'."
+                        : "Nhập câu hỏi & đáp án để AI đối chiếu."}
                     </span>
-                    {userIntentQuestion.trim() && (
+                    {(userIntentQuestion.trim() || userCustomAnswer.trim()) && (
                       <span className="inline-flex items-center gap-1 text-[9.5px] font-semibold text-emerald-300 bg-emerald-950/80 border border-emerald-500/60 px-1.5 py-0.2 rounded-full">
-                        ✓ Đã ghim
+                        ✓ Sẵn sàng
                       </span>
                     )}
                   </div>
                 </div>
               </div>
 
-              {/* Hàng 1: Bắt Đầu Bốc Quẻ (Tam Kính) + 64 Quẻ */}
+              {/* Hàng 1: Bắt Đầu Bốc Quẻ (Để hình như cũ) + 64 Quẻ */}
               <div className="flex w-full max-w-xl flex-row items-stretch gap-2">
                 <RitualHoldButton
                   id="btn-hero-mobile-start-divination"
-                  active={isRitualCompleted}
+                  active={false}
                   onClick={(isRitual) => handleStartDivinationOrShuffle(!!isRitual)}
                   className="flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-2xl px-3 py-3 text-sm font-semibold sm:gap-2 sm:px-6 sm:py-3.5 sm:text-base text-zinc-950 shadow-lg cursor-pointer transition active:scale-[0.98]"
                   style={{
-                    background: isRitualCompleted
-                      ? "linear-gradient(135deg, #ffd700 0%, #ffae00 100%)"
-                      : "linear-gradient(135deg,rgba(255,255,255,0.98) 0%,rgba(242,242,242,0.95) 100%)",
-                    border: isRitualCompleted
-                      ? "2px solid #ffae00"
-                      : "1px solid rgba(255,255,255,0.9)",
+                    background: "linear-gradient(135deg,rgba(255,255,255,0.98) 0%,rgba(242,242,242,0.95) 100%)",
+                    border: "1px solid rgba(255,255,255,0.9)",
                   }}
-                  title="Nhấn nhanh để bốc quẻ • Nhấn & giữ 3 lần Kính Thiên, Địa, Nhân để Bốc Tam Kính"
+                  title="Nhấn để bốc quẻ • Nhấn & giữ 3 lần để bốc Tam Kính"
                 >
                   <span className="text-base sm:text-lg">☯</span>
                   <span className="truncate">Bắt Đầu Bốc Quẻ</span>
-                  <span className="text-[9px] font-sans font-semibold px-1.5 py-0.2 rounded-full bg-amber-900/15 text-amber-900 border border-amber-600/30">
-                    {isRitualCompleted ? "✦ Tam Kính" : "Giữ: Tam Kính"}
-                  </span>
                 </RitualHoldButton>
 
                 <button
@@ -3125,19 +3323,19 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 </button>
               </div>
 
-              {/* Hàng 2 ngay bên dưới: Nút Giữ nguyên & Chép cho AI trên mobile */}
-              <div className="flex w-full max-w-xl flex-row items-stretch gap-2">
+              {/* Hàng 2 ngay bên dưới: 4 nút (Giữ nguyên, Chép cho AI, Lưu Quẻ, Mở Quẻ) trên mobile */}
+              <div className="grid grid-cols-2 gap-2 w-full max-w-xl">
                 {/* Nút Giữ nguyên trên mobile */}
                 <RitualHoldButton
                   id="hero-mobile-keep-cards"
                   active={isKeepCards}
                   onClick={(isRitual) => handleToggleKeepCards(isRitual)}
-                  className={`flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-2xl px-3 py-2.5 text-xs font-semibold transition cursor-pointer shadow-md active:scale-95 select-none ${
+                  className={`flex min-w-0 items-center justify-center gap-1.5 rounded-xl px-2.5 py-2.5 text-xs font-semibold transition cursor-pointer shadow-md active:scale-95 select-none ${
                     isKeepCards
                       ? "bg-[#fbf4e6] text-[#7c5516] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25"
                       : "bg-white/95 text-zinc-800 border border-stone-200 font-medium"
                   }`}
-                  title="Bấm để Giữ nguyên lá bài • Nhấn giữ 3 lần để Tam Kính trực tiếp"
+                  title="Bấm để Giữ nguyên lá bài"
                 >
                   <span
                     className={`w-3.5 h-3.5 rounded flex items-center justify-center text-[10px] font-bold transition-all ${
@@ -3149,27 +3347,22 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     ✓
                   </span>
                   <span>Giữ nguyên</span>
-                  {isKeepCards && (
-                    <span className="text-[10px] text-amber-800 font-bold ml-0.5">
-                      (Khóa)
-                    </span>
-                  )}
                 </RitualHoldButton>
 
                 {/* Nút Chép cho AI trên mobile */}
-                <div className="relative flex min-w-0 flex-1 items-center">
+                <div className="relative flex min-w-0 items-center">
                   <button
                     type="button"
                     onClick={handleCopyCardsForAI}
-                    className={`flex w-full min-w-0 items-center justify-center gap-1.5 rounded-2xl px-3 py-2.5 text-xs font-semibold transition cursor-pointer shadow-md active:scale-95 select-none ${
+                    className={`flex w-full min-w-0 items-center justify-center gap-1 rounded-xl px-2.5 py-2.5 text-xs font-semibold transition cursor-pointer shadow-md active:scale-95 select-none ${
                       copiedAI
                         ? "bg-emerald-600 text-white border border-emerald-500 shadow-md"
                         : isRitualCompleted
-                        ? "bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-zinc-950 font-bold border-2 border-amber-300 shadow-lg shadow-amber-500/25 ring-1 ring-amber-400/50"
+                        ? "bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-zinc-950 font-bold border-2 border-amber-300 shadow-lg"
                         : "bg-[#251D16] text-amber-200 border border-amber-600/50 shadow-sm"
                     }`}
                   >
-                    <span className="text-sm shrink-0">
+                    <span className="text-xs shrink-0">
                       {copiedAI ? "✓" : isRitualCompleted ? "✨" : "📋"}
                     </span>
                     <span className="truncate">
@@ -3179,18 +3372,41 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                         ? "Chép Toàn Thư"
                         : "Chép cho AI"}
                     </span>
-                    {userIntentQuestion.trim() && !copiedAI && (
-                      <span className="text-[9px] font-medium text-amber-900 bg-amber-100/90 px-1 py-0.2 rounded-full border border-amber-300/60 ml-0.5">
-                        +Hỏi
-                      </span>
-                    )}
                   </button>
                   {isRitualCompleted && (
                     <span className="absolute -top-2.5 -right-1 bg-gradient-to-r from-amber-600 to-yellow-600 text-[8px] font-bold text-white px-1.5 py-0.2 rounded-full shadow-md pointer-events-none animate-pulse">
-                      ✦ Đắc Pháp
+                      ✦
                     </span>
                   )}
                 </div>
+
+                {/* Nút Lưu Quẻ trên mobile */}
+                <button
+                  type="button"
+                  onClick={() => setIsSaveDialogOpen(true)}
+                  className="flex min-w-0 items-center justify-center gap-1.5 rounded-xl px-2.5 py-2.5 text-xs font-semibold bg-[#1C1712] text-amber-200 border border-amber-600/50 transition cursor-pointer shadow-md active:scale-95 select-none"
+                >
+                  <Bookmark className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Lưu Quẻ</span>
+                </button>
+
+                {/* Nút Mở Quẻ trên mobile */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    reloadSavedSpreads();
+                    setIsSavedSpreadsModalOpen(true);
+                  }}
+                  className="flex min-w-0 items-center justify-center gap-1.5 rounded-xl px-2.5 py-2.5 text-xs font-semibold bg-[#1C1712] text-amber-200 border border-amber-600/50 transition cursor-pointer shadow-md active:scale-95 select-none"
+                >
+                  <FolderOpen className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Mở Quẻ</span>
+                  {savedSpreads.length > 0 && (
+                    <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-500 text-zinc-950">
+                      {savedSpreads.length}
+                    </span>
+                  )}
+                </button>
               </div>
             </div>
           </div>
@@ -3772,7 +3988,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     </button>
                   )}
 
-                  <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-2">
+                  <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-2">
                     {/* Ô Giữ nguyên */}
                     <RitualHoldButton
                       id="hero-action-keep-cards"
@@ -3783,7 +3999,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                           ? "bg-[#fbf4e6] text-[#7c5516] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.01]"
                           : "bg-white hover:bg-stone-50 text-zinc-700 hover:text-zinc-950 border border-stone-300 font-medium hover:scale-[1.01]"
                       }`}
-                      title="Ô giữ nguyên: Bấm để Bật/Tắt giữ nguyên các lá bài hiện tại (khi Tam Kính vẫn giữ nguyên bài), hoặc Nhấn & giữ 3 lần Tam Kính để đắc pháp trực tiếp cho quẻ này"
+                      title="Ô giữ nguyên: Bật/Tắt giữ nguyên các lá bài hiện tại"
                     >
                       <span
                         className={`w-3.5 h-3.5 rounded flex items-center justify-center text-[10px] font-bold shrink-0 transition-all ${
@@ -3814,13 +4030,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                             ? "bg-gradient-to-r from-amber-500/20 via-yellow-400/25 to-amber-500/20 hover:from-amber-500/30 hover:to-amber-500/30 text-amber-950 dark:text-amber-200 border-2 border-amber-500 shadow-md shadow-amber-500/20 ring-1 ring-amber-400/50"
                             : "bg-[#fbf4e6] hover:bg-[#f6ebd1] text-[#7c5516] border border-[#c4963e]/50 shadow-xs"
                         }`}
-                        title={
-                          userIntentQuestion.trim()
-                            ? `Đã đính kèm câu hỏi tâm niệm: "${userIntentQuestion.trim().slice(0, 60)}..." • Bấm để chép cho AI`
-                            : isRitualCompleted
-                            ? "✨ Đã đắc pháp Kính Thiên, Kính Địa, Kính Nhân: Bấm để sao chép 100% bách khoa toàn thư (Cửu Nhị Luận Giải, Chiêm đoán 4 phương diện & FAQ)"
-                            : "Sao chép thông tin các lá bài tiêu chuẩn cho AI (Nhấn & giữ 3 lần Kính Thiên, Địa, Nhân để mở khóa trích dẫn 100% bách khoa toàn thư)"
-                        }
+                        title="Sao chép toàn bộ thông tin các lá bài (kèm câu hỏi & đáp án) để gửi cho AI"
                       >
                         <span className="text-sm shrink-0">
                           {copiedAI ? "✓" : isRitualCompleted ? "✨" : "📋"}
@@ -3832,9 +4042,9 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                             ? "Chép Toàn Thư"
                             : "Chép cho AI"}
                         </span>
-                        {userIntentQuestion.trim() && !copiedAI && (
+                        {(userIntentQuestion.trim() || userCustomAnswer.trim()) && !copiedAI && (
                           <span className="text-[9px] font-medium text-amber-800 bg-amber-100/90 px-1 py-0.2 rounded-full border border-amber-300/60 hidden sm:inline ml-0.5">
-                            +Câu hỏi
+                            +Hỏi&amp;Đáp
                           </span>
                         )}
                       </button>
@@ -3844,6 +4054,36 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                         </span>
                       )}
                     </div>
+
+                    {/* Nút Lưu Quẻ trong Destiny Cards */}
+                    <button
+                      type="button"
+                      onClick={() => setIsSaveDialogOpen(true)}
+                      className="inline-flex items-center justify-center gap-1.5 w-full sm:w-auto px-3 py-2 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-xs font-semibold bg-[#fef8ed] hover:bg-[#fcf1db] text-[#7c5516] border border-amber-300 transition cursor-pointer shadow-xs active:scale-95 select-none"
+                      title="Lưu trải bài hiện tại kèm Câu hỏi AI và Đáp án tự điền"
+                    >
+                      <Bookmark className="w-3.5 h-3.5 text-amber-600" />
+                      <span>Lưu Quẻ</span>
+                    </button>
+
+                    {/* Nút Mở Quẻ trong Destiny Cards */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        reloadSavedSpreads();
+                        setIsSavedSpreadsModalOpen(true);
+                      }}
+                      className="inline-flex items-center justify-center gap-1.5 w-full sm:w-auto px-3 py-2 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-xs font-semibold bg-[#fef8ed] hover:bg-[#fcf1db] text-[#7c5516] border border-amber-300 transition cursor-pointer shadow-xs active:scale-95 select-none"
+                      title="Mở danh sách các quẻ đã lưu"
+                    >
+                      <FolderOpen className="w-3.5 h-3.5 text-amber-600" />
+                      <span>Mở Quẻ</span>
+                      {savedSpreads.length > 0 && (
+                        <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-500 text-zinc-950">
+                          {savedSpreads.length}
+                        </span>
+                      )}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -4421,6 +4661,27 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           </div>
         </div>
       )}
+
+      {/* Dialog xác nhận lưu quẻ */}
+      <SaveSpreadDialog
+        isOpen={isSaveDialogOpen}
+        onClose={() => setIsSaveDialogOpen(false)}
+        spreadTitle={SPREAD_MODE_NAMES[mode] || "Trận Pháp Kinh Dịch"}
+        cardsCount={cards.length}
+        question={userIntentQuestion}
+        initialAnswer={userCustomAnswer}
+        onConfirmSave={handleConfirmSaveSpread}
+      />
+
+      {/* Modal danh sách quẻ đã lưu */}
+      <SavedSpreadsModal
+        isOpen={isSavedSpreadsModalOpen}
+        onClose={() => setIsSavedSpreadsModalOpen(false)}
+        savedSpreads={savedSpreads}
+        onReloadList={reloadSavedSpreads}
+        onLoadSpread={handleLoadSavedSpread}
+        onCopySpreadForAI={handleCopySavedSpreadForAI}
+      />
 
       {/* Modal xem trước & tải ảnh chụp toàn bộ thẻ bài */}
       <ExportImageModal
