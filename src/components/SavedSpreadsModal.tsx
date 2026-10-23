@@ -211,7 +211,7 @@ export const SavedSpreadsModal: React.FC<SavedSpreadsModalProps> = ({
                   <div className="p-2.5 rounded-xl bg-[#16100B] border border-amber-600/30 space-y-1">
                     <span className="text-[10px] font-mono text-amber-300 uppercase tracking-wider block font-bold flex items-center gap-1">
                       <span>🔮</span>
-                      <span>2. Dự Đoán Của Quẻ / Điềm Báo:</span>
+                      <span>2. Dự Đoán / Điềm Báo Của Quẻ (Tự Điền):</span>
                     </span>
                     <p className="text-xs text-amber-100/90 leading-relaxed font-sans pl-2 border-l-2 border-amber-500/50">
                       {item.hexagramPrediction}

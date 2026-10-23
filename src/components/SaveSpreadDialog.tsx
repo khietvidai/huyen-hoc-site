@@ -93,17 +93,17 @@ export const SaveSpreadDialog: React.FC<SaveSpreadDialogProps> = ({
             />
           </div>
 
-          {/* 2. Dự đoán của quẻ ở giữa */}
+          {/* 2. Dự đoán của quẻ ở giữa (Tự điền) */}
           <div className="space-y-1">
             <label className="text-xs font-serif font-bold text-amber-400 flex items-center gap-1.5">
               <span>🔮</span>
-              <span>2. Dự đoán của quẻ / Điềm báo:</span>
+              <span>2. Dự đoán / Điềm báo của quẻ (Tự điền):</span>
             </label>
             <textarea
               rows={2}
               value={predictionText}
               onChange={(e) => setPredictionText(e.target.value)}
-              placeholder="Dự đoán, lời giải và điềm báo cát hung của quẻ..."
+              placeholder="Nhập dự đoán, cảm nhận hoặc điềm báo của quẻ theo nhận định của bạn..."
               className="w-full p-2.5 rounded-xl bg-[#0D0A08] border border-amber-600/40 text-xs text-amber-100 placeholder:text-stone-500 focus:outline-none focus:border-amber-400 leading-relaxed shadow-inner"
             />
           </div>

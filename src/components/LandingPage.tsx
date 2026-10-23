@@ -1447,17 +1447,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const handleRefreshPredictionFromCards = useCallback(() => {
     const pred = generateHexagramPrediction(cards, mode, isCard2Reversed);
     handleHexagramPredictionChange(pred);
-    setCopiedToast("🔮 Đã cập nhật Dự đoán của quẻ từ các lá bài hiện tại!");
+    setCopiedToast("✨ Đã điền gợi ý dự đoán từ quẻ hiện tại!");
     setTimeout(() => setCopiedToast(null), 3000);
   }, [cards, mode, isCard2Reversed, handleHexagramPredictionChange]);
 
-  // Khởi tạo dự đoán tự động lần đầu nếu chưa có
-  useEffect(() => {
-    if (!hexagramPrediction && cards && cards.length > 0) {
-      const pred = generateHexagramPrediction(cards, mode, isCard2Reversed);
-      setHexagramPrediction(pred);
-    }
-  }, [cards, mode, isCard2Reversed, hexagramPrediction]);
+
 
   /* Đáp án tự điền / Chiêm nghiệm thực tế của người dùng */
   const [userCustomAnswer, setUserCustomAnswer] = useState(() => {
@@ -1586,8 +1580,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     const stage = stageRef.current;
     if (!layer || !stage) return;
 
-    let curX = 0, curY = 0, curG = 0, curF = 0;
-    let tgtX = 0, tgtY = 0, tgtG = 0, tgtF = 0;
+    let curX = 0, curY = 0, curG = 0, curF = 0, curHero = 0;
+    let tgtX = 0, tgtY = 0, tgtG = 0, tgtF = 0, tgtHero = 0;
     let isAnimating = false;
     let isInitialized = false;
 
@@ -1601,7 +1595,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       let destinyDocY = window.innerHeight * 1.45;
       let featuresDocY = window.innerHeight * 2.50;
 
-      let heroStageX = isDesktop ? window.innerWidth * 0.22 : 0;
+      let heroStageX = isDesktop ? window.innerWidth * 0.25 : 0;
       let destinyStageX = 0;
       let featuresStageX = isDesktop ? window.innerWidth * 0.23 : 0;
 
@@ -1609,6 +1603,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         const hr = heroAnchorRef.current.getBoundingClientRect();
         heroDocY = hr.top + scrollY + hr.height / 2;
         heroStageX = (hr.left + hr.width / 2) - originX;
+        // Chệch bên góc phải trên desktop để các lá bài xòe quạt gọn gàng thông thoáng, hoàn toàn không che các nút bấm bên trái
+        if (isDesktop) {
+          heroStageX += Math.max(28, window.innerWidth * 0.03);
+        }
       }
       if (destinyAnchorRef.current) {
         const dr = destinyAnchorRef.current.getBoundingClientRect();
@@ -1630,38 +1628,42 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       const curFeaturesY = (featuresDocY - scrollY) - originY;
 
       if (scrollY <= s1) {
-        // GIAI ĐOẠN 1: Hero -> Destiny Cards (Xòe bài sớm 100% ngay từ 35% hành trình để khi vào phần trắng là đã tách hoàn toàn)
+        // GIAI ĐOẠN 1: Hero -> Destiny Cards
         const p1 = Math.min(1, Math.max(0, scrollY / s1));
         const t1 = smoothstep(p1);
 
         tgtX = heroStageX * (1 - t1) + destinyStageX * t1;
         tgtY = curHeroY * (1 - t1) + curDestinyY * t1;
         tgtG = smoothstep(Math.min(1, p1 / 0.50));
-        tgtF = smoothstep(Math.min(1, p1 / 0.35)); // Đạt 100% tách biệt cực sớm
+
+        // Trong khu vực Hero phần màu đen (p1 <= 0.22): giữ nguyên 100% dáng quạt gọn gàng bên phải, không che nút bên trái
+        // Khi cuộn xuống phần trắng (Destiny Cards, p1 > 0.22): các lá bài từ từ mở rộng thành trận pháp trải rộng
+        const spreadProgress = smoothstep(Math.max(0, Math.min(1, (p1 - 0.22) / 0.78)));
+        tgtF = spreadProgress;
+        tgtHero = 1 - spreadProgress;
+
         if (layer) {
           layer.style.opacity = "1";
           layer.style.visibility = "visible";
         }
       } else if (scrollY <= s1_hold) {
         // GIAI ĐOẠN 2: Giữ yên vị hoàn toàn tại trung tâm phần trắng (Destiny Cards)
-        // Không di chuyển lệch sang phải, không co cụm, giữ 100% tách biệt rộng rãi
         tgtX = destinyStageX;
         tgtY = curDestinyY;
         tgtG = 1;
         tgtF = 1;
+        tgtHero = 0;
         if (layer) {
           layer.style.opacity = "1";
           layer.style.visibility = "visible";
         }
       } else if (!isDesktop) {
-        // ── ĐIỆN THOẠI / MÀN HÌNH NHỎ (MOBILE: < 1024px) ──
-        // Sau khi xem xong các lá bài ở Section 2 (Destiny Cards), các lá bài tự nhiên cuộn lên theo trang
-        // (tgtY = curDestinyY) và mờ dần biến mất, TUYỆT ĐỐI KHÔNG bám dính theo màn hình hay trôi xuống
-        // che khuất chữ, ô câu hỏi và các nút bấm ở Section 3!
+        // MOBILE: sau Section 2 mờ dần
         tgtX = destinyStageX;
         tgtY = curDestinyY;
         tgtG = 1;
         tgtF = 1;
+        tgtHero = 0;
 
         const fadeOut = Math.max(0, Math.min(1, 1 - (scrollY - s1_hold) / 200));
         if (layer) {
@@ -1670,7 +1672,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           layer.style.pointerEvents = "none";
         }
       } else if (scrollY <= s2) {
-        // GIAI ĐOẠN 3: Destiny Cards -> Features (DESKTOP: 2 cột rộng rãi)
+        // GIAI ĐOẠN 3: Destiny Cards -> Features (DESKTOP)
         const p2 = Math.min(1, Math.max(0, (scrollY - s1_hold) / (s2 - s1_hold)));
         const t2 = smoothstep(p2);
 
@@ -1678,8 +1680,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         tgtY = curDestinyY * (1 - t2) + curFeaturesY * t2;
         tgtG = 1;
 
-        // Khi kéo xuống Section Features: các lá bài gom mượt mà lại thành 1 lá duy nhất (f giảm dần từ 1 về 0)
+        // Khi kéo xuống Section Features: các lá bài gom mượt mà lại thành 1 lá duy nhất
         tgtF = 1 - smoothstep(p2);
+        tgtHero = 0;
         if (layer) {
           layer.style.opacity = "1";
           layer.style.visibility = "visible";
@@ -1689,7 +1692,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         tgtX = featuresStageX;
         tgtY = curFeaturesY;
         tgtG = 1;
-        tgtF = 0; // Gom lại hoàn toàn thành 1 lá duy nhất tại Features!
+        tgtF = 0;
+        tgtHero = 0;
 
         if (featuresSecRef.current && layer) {
           const fRect = featuresSecRef.current.getBoundingClientRect();
@@ -1705,7 +1709,119 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       }
     }
 
-    function renderCards(sX: number, sY: number, g: number, f: number) {
+    // Hàm tính tọa độ Dáng Quạt Bài (Fan) ở phần màu đen Hero
+    function getFanCardTransform(idx: number, total: number, isMobile: boolean, factor: number) {
+      if (total <= 1) {
+        return { x: 0, y: 0, rot: 0, scale: isMobile ? 0.85 : 1.05, zIndex: 14 };
+      }
+
+      const m = (total - 1) / 2;
+      const delta = idx - m;
+
+      if (total === 2) {
+        const stepX = (isMobile ? 24 : 36) * factor;
+        return {
+          x: delta * stepX,
+          y: 4,
+          rot: delta * 6,
+          scale: isMobile ? 0.72 : 0.98,
+          zIndex: 10 + idx,
+        };
+      }
+
+      if (total === 3) {
+        // 3 lá (Tam Tài: Thiên Thời, Địa Lợi, Nhân Hòa)
+        // Dáng quạt thanh thoát, góc mở vừa vặn, lá giữa nhô cao trang nhã
+        const stepX = (isMobile ? 32 : 46) * factor;
+        const rotStep = 8.5; // -8.5° cho lá trái, 0° cho lá giữa, +8.5° cho lá phải
+        const yArc = Math.abs(delta) * 8;
+        const zIdx = idx === 1 ? 12 : idx === 2 ? 11 : 10;
+        return {
+          x: delta * stepX,
+          y: yArc,
+          rot: delta * rotStep,
+          scale: isMobile ? 0.68 : 0.96,
+          zIndex: zIdx,
+        };
+      }
+
+      if (total <= 5) {
+        // 4 hoặc 5 lá (Ngũ Hành)
+        const stepX = (isMobile ? 24 : 34) * factor;
+        const rotStep = 5.5;
+        const yArc = Math.abs(delta) ** 1.5 * 3;
+        const zIdx = 10 + Math.round(m - Math.abs(delta));
+        return {
+          x: delta * stepX,
+          y: yArc,
+          rot: delta * rotStep,
+          scale: isMobile ? 0.58 : 0.90,
+          zIndex: zIdx,
+        };
+      }
+
+      // 6 lá trở lên (Thất Tinh, Thập Tinh, Tháp La)
+      const maxHalfWidth = (isMobile ? 80 : 130) * factor;
+      const stepX = maxHalfWidth / m;
+      const maxHalfRot = 14;
+      const rotStep = maxHalfRot / m;
+      const yArc = (Math.abs(delta) / m) ** 1.8 * 14;
+      const zIdx = 10 + idx;
+
+      const baseScale = isMobile
+        ? Math.max(0.44, 0.60 - total * 0.015)
+        : Math.max(0.66, 0.88 - total * 0.018);
+
+      return {
+        x: delta * stepX,
+        y: yArc,
+        rot: delta * rotStep,
+        scale: baseScale,
+        zIndex: zIdx,
+      };
+    }
+
+    // Hàm áp dụng transform kết hợp giữa Dáng Quạt (Hero) và Trận Pháp Trải Rộng (Destiny)
+    function applySlotTransform(
+      slot: HTMLDivElement | null,
+      fan: { x: number; y: number; rot: number; scale: number; zIndex: number },
+      dest: { x: number; y: number; rot: number; scale: number; zIndex: number },
+      f: number,
+      heroF: number,
+      isPrimary: boolean
+    ) {
+      if (!slot) return;
+
+      let x: number, y: number, rot: number, sc: number, z: number, op: number;
+
+      if (heroF > 0.001) {
+        // Giai đoạn Hero hoặc đang cuộn từ Hero -> Destiny:
+        // Nội suy mượt mà giữa Dáng Quạt (Fan) và Thế Bài Trải Rộng (Destiny)
+        x = fan.x * (1 - f) + dest.x * f;
+        y = fan.y * (1 - f) + dest.y * f;
+        rot = fan.rot * (1 - f) + dest.rot * f;
+        sc = fan.scale * (1 - f) + dest.scale * f;
+        z = f > 0.5 ? dest.zIndex : fan.zIndex;
+        op = 1; // Luôn hiển thị 100% rõ nét tại Hero và trong lúc chuyển cảnh!
+        slot.style.pointerEvents = "auto";
+      } else {
+        // Giai đoạn từ Destiny -> Features (hoặc đã ở Features):
+        // Các lá bài gom lại thành 1 lá duy nhất tại Features
+        x = dest.x * f;
+        y = dest.y * f;
+        rot = dest.rot * f;
+        sc = isPrimary ? (dest.scale + (1.10 - dest.scale) * (1 - f)) : dest.scale;
+        z = dest.zIndex;
+        op = isPrimary ? 1 : Math.max(0, Math.min(1, f));
+        slot.style.pointerEvents = (f > 0.25 || isPrimary) ? "auto" : "none";
+      }
+
+      slot.style.transform = `perspective(1200px) translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, ${z}px) rotate(${rot.toFixed(1)}deg) scale(${sc.toFixed(3)})`;
+      slot.style.opacity = op.toFixed(3);
+      slot.style.zIndex = z.toString();
+    }
+
+    function renderCards(sX: number, sY: number, g: number, f: number, heroF: number = 0) {
       if (stage) stage.style.transform = `translate3d(${sX.toFixed(2)}px, ${sY.toFixed(2)}px, 0)`;
 
       const w = window.innerWidth;
@@ -1725,144 +1841,118 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
       if (mode === "thap_la") {
         // ── CHẾ ĐỘ: THÁP LA KINH DỊCH ──
-        // Tối ưu hóa đặc biệt cho Điện thoại (Mobile) và Máy tính bảng (Tablet):
-        // Sắp xếp các lá bài có toạ độ độc lập, không chồng lấn, thấy rõ 100% TÊN QUẺ VÀ HÀO ĐỘNG từng lá!
         const yaoCount = cardCount - 2;
 
         if (w < 640) {
           // ── 1. ĐIỆN THOẠI THÔNG MINH (MOBILE: w < 640px) ──
-          // Bố cục ma trận phân tầng rõ nét:
-          // Hàng 1 (trên cùng): Quẻ Chủ (Bản Quái) & Quẻ Biến (Biến Quái) song song cạnh nhau, to rõ tên quẻ.
-          // Hàng 2 & 3: Các lá Hào Động được dàn đều theo lưới 2 hoặc 3 cột, tuyệt đối không bị đè che khuất nhau.
           const scaleMob = yaoCount >= 5 ? 0.44 : yaoCount >= 3 ? 0.48 : 0.54;
           const scaleYaoMob = scaleMob * 0.96;
 
           // Hàng 1: Quẻ Chủ & Quẻ Biến
-          const yTopMob = (yaoCount === 0 ? 0 : yaoCount <= 2 ? -75 : -110) * f;
-          const xPriMob = -70 * f;
-          const xTransMob = 70 * f;
-
-          if (slots[0]) {
-            slots[0].style.transform = `perspective(1200px) translate3d(${xPriMob.toFixed(1)}px, ${yTopMob.toFixed(1)}px, 20px) rotate(0deg) scale(${scaleMob.toFixed(3)})`;
-            slots[0].style.opacity = "1";
-            slots[0].style.pointerEvents = "auto";
-            slots[0].style.zIndex = "22";
-          }
-          if (slots[1]) {
-            slots[1].style.transform = `perspective(1200px) translate3d(${xTransMob.toFixed(1)}px, ${yTopMob.toFixed(1)}px, 20px) rotate(0deg) scale(${scaleMob.toFixed(3)})`;
-            slots[1].style.opacity = (f > 0.05 ? 1 : 0.85 + f * 0.15).toFixed(3);
-            slots[1].style.pointerEvents = "auto";
-            slots[1].style.zIndex = "21";
-          }
+          const yTopMob = yaoCount === 0 ? 0 : yaoCount <= 2 ? -75 : -110;
+          applySlotTransform(
+            slots[0],
+            getFanCardTransform(0, cardCount, true, factor),
+            { x: -70, y: yTopMob, rot: 0, scale: scaleMob, zIndex: 22 },
+            f, heroF, true
+          );
+          applySlotTransform(
+            slots[1],
+            getFanCardTransform(1, cardCount, true, factor),
+            { x: 70, y: yTopMob, rot: 0, scale: scaleMob, zIndex: 21 },
+            f, heroF, false
+          );
 
           // Dải Hào Động bên dưới:
           if (yaoCount === 1) {
-            // Động 1 hào: Lá hào đặt ngay chính giữa hàng 2
-            if (slots[2]) {
-              const yYao = 75 * f;
-              slots[2].style.transform = `perspective(1200px) translate3d(0px, ${yYao.toFixed(1)}px, 15px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
-              slots[2].style.opacity = (f > 0.1 ? 1 : f * 10).toFixed(3);
-              slots[2].style.pointerEvents = f > 0.25 ? "auto" : "none";
-              slots[2].style.zIndex = "18";
-            }
+            applySlotTransform(
+              slots[2],
+              getFanCardTransform(2, cardCount, true, factor),
+              { x: 0, y: 75, rot: 0, scale: scaleYaoMob, zIndex: 18 },
+              f, heroF, false
+            );
           } else if (yaoCount === 2) {
-            // Động 2 hào: Hàng 2 gồm 2 lá cân xứng 2 bên
-            const yYao = 75 * f;
-            if (slots[2]) {
-              slots[2].style.transform = `perspective(1200px) translate3d(${(-70 * f).toFixed(1)}px, ${yYao.toFixed(1)}px, 15px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
-              slots[2].style.opacity = (f > 0.1 ? 1 : f * 10).toFixed(3);
-              slots[2].style.pointerEvents = f > 0.25 ? "auto" : "none";
-              slots[2].style.zIndex = "17";
-            }
-            if (slots[3]) {
-              slots[3].style.transform = `perspective(1200px) translate3d(${(70 * f).toFixed(1)}px, ${yYao.toFixed(1)}px, 15px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
-              slots[3].style.opacity = (f > 0.1 ? 1 : f * 10).toFixed(3);
-              slots[3].style.pointerEvents = f > 0.25 ? "auto" : "none";
-              slots[3].style.zIndex = "18";
-            }
+            applySlotTransform(
+              slots[2],
+              getFanCardTransform(2, cardCount, true, factor),
+              { x: -70, y: 75, rot: 0, scale: scaleYaoMob, zIndex: 17 },
+              f, heroF, false
+            );
+            applySlotTransform(
+              slots[3],
+              getFanCardTransform(3, cardCount, true, factor),
+              { x: 70, y: 75, rot: 0, scale: scaleYaoMob, zIndex: 18 },
+              f, heroF, false
+            );
           } else if (yaoCount === 3) {
-            // Động 3 hào: Hàng 2 gồm 3 lá xếp ngang 3 cột
-            const yYao = 65 * f;
-            const xStep3 = 96 * f;
+            const yYao = 65;
+            const xStep3 = 96;
             for (let i = 0; i < 3; i++) {
               const sIdx = i + 2;
-              if (slots[sIdx]) {
-                const xPos = (-xStep3 + i * xStep3);
-                slots[sIdx].style.transform = `perspective(1200px) translate3d(${xPos.toFixed(1)}px, ${yYao.toFixed(1)}px, 15px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
-                slots[sIdx].style.opacity = (f > 0.1 ? 1 : f * 10).toFixed(3);
-                slots[sIdx].style.pointerEvents = f > 0.25 ? "auto" : "none";
-                slots[sIdx].style.zIndex = (15 + i).toString();
-              }
+              const xPos = -xStep3 + i * xStep3;
+              applySlotTransform(
+                slots[sIdx],
+                getFanCardTransform(sIdx, cardCount, true, factor),
+                { x: xPos, y: yYao, rot: 0, scale: scaleYaoMob, zIndex: 15 + i },
+                f, heroF, false
+              );
             }
           } else if (yaoCount === 4) {
-            // Động 4 hào: 2 hàng hào (mỗi hàng 2 lá)
-            const yRow1 = 15 * f;
-            const yRow2 = 135 * f;
-            const xDist = 70 * f;
             const coords = [
-              { x: -xDist, y: yRow1 },
-              { x: xDist, y: yRow1 },
-              { x: -xDist, y: yRow2 },
-              { x: xDist, y: yRow2 }
+              { x: -70, y: 15 },
+              { x: 70, y: 15 },
+              { x: -70, y: 135 },
+              { x: 70, y: 135 }
             ];
             coords.forEach((pt, i) => {
               const sIdx = i + 2;
-              if (slots[sIdx]) {
-                slots[sIdx].style.transform = `perspective(1200px) translate3d(${pt.x.toFixed(1)}px, ${pt.y.toFixed(1)}px, 15px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
-                slots[sIdx].style.opacity = (f > 0.1 ? 1 : f * 10).toFixed(3);
-                slots[sIdx].style.pointerEvents = f > 0.25 ? "auto" : "none";
-                slots[sIdx].style.zIndex = (15 + i).toString();
-              }
+              applySlotTransform(
+                slots[sIdx],
+                getFanCardTransform(sIdx, cardCount, true, factor),
+                { x: pt.x, y: pt.y, rot: 0, scale: scaleYaoMob, zIndex: 15 + i },
+                f, heroF, false
+              );
             });
           } else if (yaoCount === 5) {
-            // Động 5 hào: Hàng 2 (3 lá: Hào 1, 2, 3) & Hàng 3 (2 lá: Hào 4, 5)
-            const yRow1 = 10 * f;
-            const yRow2 = 125 * f;
-            const xStep3 = 96 * f;
+            const xStep3 = 96;
             const coords = [
-              { x: -xStep3, y: yRow1 },
-              { x: 0, y: yRow1 },
-              { x: xStep3, y: yRow1 },
-              { x: -55 * f, y: yRow2 },
-              { x: 55 * f, y: yRow2 }
+              { x: -xStep3, y: 10 },
+              { x: 0, y: 10 },
+              { x: xStep3, y: 10 },
+              { x: -55, y: 125 },
+              { x: 55, y: 125 }
             ];
             coords.forEach((pt, i) => {
               const sIdx = i + 2;
-              if (slots[sIdx]) {
-                slots[sIdx].style.transform = `perspective(1200px) translate3d(${pt.x.toFixed(1)}px, ${pt.y.toFixed(1)}px, 15px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
-                slots[sIdx].style.opacity = (f > 0.1 ? 1 : f * 10).toFixed(3);
-                slots[sIdx].style.pointerEvents = f > 0.25 ? "auto" : "none";
-                slots[sIdx].style.zIndex = (14 + i).toString();
-              }
+              applySlotTransform(
+                slots[sIdx],
+                getFanCardTransform(sIdx, cardCount, true, factor),
+                { x: pt.x, y: pt.y, rot: 0, scale: scaleYaoMob, zIndex: 14 + i },
+                f, heroF, false
+              );
             });
           } else if (yaoCount === 6) {
-            // Động 6 hào: Hàng 2 (3 lá: Hào 1, 2, 3) & Hàng 3 (3 lá: Hào 4, 5, 6)
-            const yRow1 = 5 * f;
-            const yRow2 = 120 * f;
-            const xStep3 = 98 * f;
+            const xStep3 = 98;
             const coords = [
-              { x: -xStep3, y: yRow1 },
-              { x: 0, y: yRow1 },
-              { x: xStep3, y: yRow1 },
-              { x: -xStep3, y: yRow2 },
-              { x: 0, y: yRow2 },
-              { x: xStep3, y: yRow2 }
+              { x: -xStep3, y: 5 },
+              { x: 0, y: 5 },
+              { x: xStep3, y: 5 },
+              { x: -xStep3, y: 120 },
+              { x: 0, y: 120 },
+              { x: xStep3, y: 120 }
             ];
             coords.forEach((pt, i) => {
               const sIdx = i + 2;
-              if (slots[sIdx]) {
-                slots[sIdx].style.transform = `perspective(1200px) translate3d(${pt.x.toFixed(1)}px, ${pt.y.toFixed(1)}px, 15px) rotate(0deg) scale(${scaleYaoMob.toFixed(3)})`;
-                slots[sIdx].style.opacity = (f > 0.1 ? 1 : f * 10).toFixed(3);
-                slots[sIdx].style.pointerEvents = f > 0.25 ? "auto" : "none";
-                slots[sIdx].style.zIndex = (14 + i).toString();
-              }
+              applySlotTransform(
+                slots[sIdx],
+                getFanCardTransform(sIdx, cardCount, true, factor),
+                { x: pt.x, y: pt.y, rot: 0, scale: scaleYaoMob, zIndex: 14 + i },
+                f, heroF, false
+              );
             });
           }
         } else if (w < 1024) {
           // ── 2. MÁY TÍNH BẢNG (TABLET: 640px <= w < 1024px) ──
-          // Bố cục ma trận 4 cột x 2 hàng:
-          // Cột 0: Quẻ Chủ (trên) & Quẻ Biến (dưới)
-          // Các cột 1, 2, 3: Dải hào từ xếp song song tương ứng ở hàng trên và hàng dưới!
           const scaleTab = yaoCount >= 5 ? 0.58 : 0.65;
           const scaleYaoTab = scaleTab * 0.95;
           const cardWTab = 180 * scaleTab;
@@ -1872,67 +1962,62 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
           const cardHTab = (w >= 768 ? 288 : 272) * scaleTab;
           const distYTab = cardHTab + 52;
-          const yTopTab = (-distYTab / 2) * f;
-          const yBottomTab = (distYTab / 2) * f;
-          const xCol0Tab = startXTab * f;
+          const yTopTab = -distYTab / 2;
+          const yBottomTab = distYTab / 2;
+          const xCol0Tab = startXTab;
 
           // 1. Quẻ Chủ ở trên bên trái
-          if (slots[0]) {
-            slots[0].style.transform = `perspective(1200px) translate3d(${xCol0Tab.toFixed(1)}px, ${yTopTab.toFixed(1)}px, 20px) rotate(0deg) scale(${scaleTab.toFixed(3)})`;
-            slots[0].style.opacity = "1";
-            slots[0].style.pointerEvents = "auto";
-            slots[0].style.zIndex = "22";
-          }
+          applySlotTransform(
+            slots[0],
+            getFanCardTransform(0, cardCount, false, factor),
+            { x: xCol0Tab, y: yTopTab, rot: 0, scale: scaleTab, zIndex: 22 },
+            f, heroF, true
+          );
           // 2. Quẻ Biến ở dưới bên trái song song
-          if (slots[1]) {
-            slots[1].style.transform = `perspective(1200px) translate3d(${xCol0Tab.toFixed(1)}px, ${yBottomTab.toFixed(1)}px, 20px) rotate(0deg) scale(${scaleTab.toFixed(3)})`;
-            slots[1].style.opacity = (f > 0.05 ? 1 : 0.85 + f * 0.15).toFixed(3);
-            slots[1].style.pointerEvents = "auto";
-            slots[1].style.zIndex = "21";
-          }
-
-          // 3. Các lá hào xếp thành các cột bên phải
+          applySlotTransform(
+            slots[1],
+            getFanCardTransform(1, cardCount, false, factor),
+            { x: xCol0Tab, y: yBottomTab, rot: 0, scale: scaleTab, zIndex: 21 },
+            f, heroF, false
+          );
+          // 3. Các lá hào
           for (let i = 0; i < yaoCount; i++) {
             const sIdx = i + 2;
-            if (slots[sIdx]) {
-              let xYao = 0;
-              let yYao = 0;
-              if (yaoCount <= 3) {
-                // Xếp ngang hàng Quẻ Chủ
+            let xYao = 0;
+            let yYao = 0;
+            if (yaoCount <= 3) {
+              const col = i + 1;
+              xYao = startXTab + col * colStepTab;
+              yYao = yTopTab;
+            } else {
+              if (i < 3) {
                 const col = i + 1;
-                xYao = (startXTab + col * colStepTab) * f;
+                xYao = startXTab + col * colStepTab;
                 yYao = yTopTab;
               } else {
-                // Dàn 2 hàng: nửa đầu hàng trên (Hào 1..3), nửa sau hàng dưới (Hào 4..6)
-                if (i < 3) {
-                  const col = i + 1;
-                  xYao = (startXTab + col * colStepTab) * f;
-                  yYao = yTopTab;
-                } else {
-                  const col = (i - 3) + 1;
-                  xYao = (startXTab + col * colStepTab) * f;
-                  yYao = yBottomTab;
-                }
+                const col = (i - 3) + 1;
+                xYao = startXTab + col * colStepTab;
+                yYao = yBottomTab;
               }
-              slots[sIdx].style.transform = `perspective(1200px) translate3d(${xYao.toFixed(1)}px, ${yYao.toFixed(1)}px, 15px) rotate(0deg) scale(${scaleYaoTab.toFixed(3)})`;
-              slots[sIdx].style.opacity = (f > 0.1 ? 1 : f * 10).toFixed(3);
-              slots[sIdx].style.pointerEvents = f > 0.25 ? "auto" : "none";
-              slots[sIdx].style.zIndex = (12 + i).toString();
             }
+            applySlotTransform(
+              slots[sIdx],
+              getFanCardTransform(sIdx, cardCount, false, factor),
+              { x: xYao, y: yYao, rot: 0, scale: scaleYaoTab, zIndex: 12 + i },
+              f, heroF, false
+            );
           }
         } else {
           // ── 3. MÁY TÍNH ĐỂ BÀN (DESKTOP: w >= 1024px) ──
-          // Tự động thu nhỏ linh hoạt theo số lượng lá bài
           let baseScaleDesk = 0.82;
           if (yaoCount >= 5) {
-            baseScaleDesk = 0.63; // 7-8 lá bài (nhiều lá): tự động thu nhỏ 0.63 để vừa vặn khung màn hình
+            baseScaleDesk = 0.63;
           } else if (yaoCount >= 3) {
-            baseScaleDesk = 0.72; // 5-6 lá bài: thu nhỏ vừa vặn 0.72
+            baseScaleDesk = 0.72;
           } else {
-            baseScaleDesk = 0.82; // 3-4 lá bài: kích thước 0.82 rộng rãi
+            baseScaleDesk = 0.82;
           }
 
-          // Điều chỉnh theo độ phân giải màn hình máy tính (chiều ngang & chiều dọc)
           if (w < 1050) baseScaleDesk *= 0.88;
           else if (w < 1250) baseScaleDesk *= 0.94;
           if (vh < 780) baseScaleDesk *= 0.88;
@@ -1947,64 +2032,55 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           const colStep = (cardWDesk + 22) * factor;
           const startX = -((totalCols - 1) * colStep) / 2;
 
-          const xCol0 = startX * f;
+          const xCol0 = startX;
           const distYDesk = cardHDesk + 60;
-          const yTop = (-distYDesk / 2) * f;
-          const yBottom = (distYDesk / 2) * f;
+          const yTop = -distYDesk / 2;
+          const yBottom = distYDesk / 2;
 
-          // 1. Quẻ Chủ (Quẻ Chính) ở trên
-          if (slots[0]) {
-            slots[0].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${yTop.toFixed(1)}px, 25px) rotate(0deg) scale(${scaleHexDesk.toFixed(3)})`;
-            slots[0].style.opacity = "1";
-            slots[0].style.pointerEvents = "auto";
-            slots[0].style.zIndex = "22";
-          }
-
-          // 2. Quẻ Biến LUÔN ở dưới song song với Quẻ Chính (Cùng toạ độ X, rotate 0deg, opacity 1)
-          if (slots[1]) {
-            slots[1].style.transform = `perspective(1200px) translate3d(${xCol0.toFixed(1)}px, ${yBottom.toFixed(1)}px, 25px) rotate(0deg) scale(${scaleHexDesk.toFixed(3)})`;
-            slots[1].style.opacity = (f > 0.05 ? 1 : 0.85 + f * 0.15).toFixed(3);
-            slots[1].style.pointerEvents = "auto";
-            slots[1].style.zIndex = "21";
-          }
-
-          // 3. Các lá hào từ (ở 384 lá bài hào từ) xếp kế bên Quẻ Chủ theo thứ tự từ Sơ đến Lục
+          // 1. Quẻ Chủ ở trên
+          applySlotTransform(
+            slots[0],
+            getFanCardTransform(0, cardCount, false, factor),
+            { x: xCol0, y: yTop, rot: 0, scale: scaleHexDesk, zIndex: 22 },
+            f, heroF, true
+          );
+          // 2. Quẻ Biến ở dưới song song
+          applySlotTransform(
+            slots[1],
+            getFanCardTransform(1, cardCount, false, factor),
+            { x: xCol0, y: yBottom, rot: 0, scale: scaleHexDesk, zIndex: 21 },
+            f, heroF, false
+          );
+          // 3. Các lá hào
           for (let i = 0; i < yaoCount; i++) {
             const sIdx = i + 2;
-            if (slots[sIdx]) {
-              let xYao = 0;
-              let yYao = 0;
-              if (yaoCount <= 3) {
-                // Toàn bộ các lá hào từ xếp thẳng 1 hàng trên, kế bên Quẻ Chủ
+            let xYao = 0;
+            let yYao = 0;
+            if (yaoCount <= 3) {
+              const col = i + 1;
+              xYao = startX + col * colStep;
+              yYao = yTop;
+            } else {
+              if (i < topYaoLimit) {
                 const col = i + 1;
-                xYao = (startX + col * colStep) * f;
+                xYao = startX + col * colStep;
                 yYao = yTop;
               } else {
-                // Dàn 2 hàng: nửa đầu ở hàng trên (kế bên Quẻ Chủ), nửa sau ở hàng dưới (kế bên Quẻ Biến)
-                if (i < topYaoLimit) {
-                  const col = i + 1;
-                  xYao = (startX + col * colStep) * f;
-                  yYao = yTop;
-                } else {
-                  const col = (i - topYaoLimit) + 1;
-                  xYao = (startX + col * colStep) * f;
-                  yYao = yBottom;
-                }
+                const col = (i - topYaoLimit) + 1;
+                xYao = startX + col * colStep;
+                yYao = yBottom;
               }
-
-              slots[sIdx].style.transform = `perspective(1200px) translate3d(${xYao.toFixed(1)}px, ${yYao.toFixed(1)}px, 15px) rotate(0deg) scale(${scaleYaoDesk.toFixed(3)})`;
-              slots[sIdx].style.opacity = (f > 0.1 ? 1 : f * 10).toFixed(3);
-              slots[sIdx].style.pointerEvents = f > 0.25 ? "auto" : "none";
-              slots[sIdx].style.zIndex = (10 + i).toString();
             }
+            applySlotTransform(
+              slots[sIdx],
+              getFanCardTransform(sIdx, cardCount, false, factor),
+              { x: xYao, y: yYao, rot: 0, scale: scaleYaoDesk, zIndex: 10 + i },
+              f, heroF, false
+            );
           }
         }
       } else if (mode === "that_tinh") {
         // ── CHẾ ĐỘ: TRẬN PHÁP THẤT TINH (7 LÁ CHU DỊCH BẮC ĐẨU) ──
-        // Bố cục 3 hàng x 3 cột chuẩn xác theo ảnh mẫu:
-        // Hàng 1 (Trên): Lá 4 (Lá Bài Gợi Ý) ở chính giữa
-        // Hàng 2 (Giữa): Lá 2 (Bản Thân Hiện Tại) [Trái] | Lá 3 (Diễn Biến Tiếp Theo) [Giữa] | Lá 5 (Kết Quả) [Phải]
-        // Hàng 3 (Dưới): Lá 7 (Thiếu Sót Của Bản Thân) [Trái] | Lá 1 (Quá Khứ) [Giữa] | Lá 6 (Môi Trường Bên Ngoài) [Phải]
         const isSmallScreen = w < 860;
         const mobScale7 = w < 380 ? 0.44 : w < 440 ? 0.48 : 0.54;
         const deskScale7 = w < 1000 ? 0.60 : w < 1200 ? 0.68 : w < 1440 ? 0.74 : 0.80;
@@ -2024,269 +2100,167 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         ];
 
         posMap7.forEach((p, idx) => {
-          if (slots[idx]) {
-            const x = p.x * f;
-            const y = p.y * f;
-            slots[idx].style.transform = `perspective(1200px) translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, ${p.z}px) rotate(0deg) scale(${scale7.toFixed(3)})`;
-            slots[idx].style.opacity = f > 0.15 ? "1" : f.toFixed(3);
-            slots[idx].style.pointerEvents = f > 0.25 ? "auto" : "none";
-            slots[idx].style.zIndex = p.z.toString();
-          }
+          applySlotTransform(
+            slots[idx],
+            getFanCardTransform(idx, cardCount, isSmallScreen, factor),
+            { x: p.x, y: p.y, rot: 0, scale: scale7, zIndex: p.z },
+            f, heroF, idx === 2
+          );
         });
       } else if (mode === "thap_tinh") {
         // ── CHẾ ĐỘ: TRẬN PHÁP THẬP TINH (10 LÁ DỊCH LÝ) ──
-        // Bố cục 5 cột phân tách rõ ràng, Lá 1 & Lá 2 nằm cạnh nhau không bị trùng:
-        // Cột 1 (Ngoài cùng bên trái): Lá 10 (Lá Bài Khuyên Bảo) - độc lập, không khung ngoài
-        // Cột 2 (Bên trái): Lá 7 (Vận Hạn Năm Nay) [Trên] | Lá 8 (Cách Nhìn Người Ngoài) [Giữa] | Lá 9 (Kết Quả Cuối Cùng) [Dưới]
-        // Cột 3 (Tâm điểm bên trái): Lá 2 (Xuôi: Hỗ Trợ / Ngược: Trở Ngại) [Giữa]
-        // Cột 4 (Tâm điểm bên phải & trục dọc):
-        //   - Lá 4 (Điều Bạn Không Biết) [Trên]
-        //   - Lá 1 (Tình Huống Hiện Tại) [Giữa]
-        //   - Lá 3 (Yếu Tố Bên Ngoài) [Dưới]
-        // Cột 5 (Bên phải): Lá 5 (Tình Huống Trước Đây) [Trên] | Lá 6 (Tương Lai Tiếp Theo) [Dưới]
         const isSmallScreen = w < 860;
         const mobScale10 = w < 380 ? 0.35 : w < 440 ? 0.39 : 0.43;
         const deskScale10 = w < 1000 ? 0.52 : w < 1200 ? 0.58 : w < 1440 ? 0.63 : 0.68;
         const scale10 = isSmallScreen ? mobScale10 : deskScale10;
 
         const stepX = isSmallScreen
-          ? (w < 380 ? 56 : w < 440 ? 62 : 68)
-          : (w < 1000 ? 132 : w < 1200 ? 146 : w < 1440 ? 160 : 172) * factor;
+          ? (w < 380 ? 56 : w < 440 ? 62 : 68) : (w < 1000 ? 132 : w < 1200 ? 146 : w < 1440 ? 160 : 172) * factor;
         const stepY = isSmallScreen
-          ? (w < 380 ? 112 : w < 440 ? 122 : 134)
-          : (w < 1000 ? 190 : w < 1200 ? 212 : w < 1440 ? 228 : 242) * factor;
+          ? (w < 380 ? 112 : w < 440 ? 122 : 134) : (w < 1000 ? 190 : w < 1200 ? 212 : w < 1440 ? 228 : 242) * factor;
 
-        // Tọa độ các cột ngang cân bằng (Lá 1 và Lá 2 tách rời nhau):
         const midAnchor = isSmallScreen ? 14 : 26;
         const col1X = midAnchor - stepX * 2.22;  // Lá 10
         const col2X = midAnchor - stepX * 1.15;  // Lá 7, 8, 9
-        const card2X = midAnchor - stepX * 0.12; // Lá 2 (Tách rời về bên trái tâm)
-        const card1X = midAnchor + stepX * 0.88; // Lá 1 (Tách rời về bên phải tâm, thẳng hàng với Lá 4 & 3)
+        const card2X = midAnchor - stepX * 0.12; // Lá 2
+        const card1X = midAnchor + stepX * 0.88; // Lá 1
         const col5X = midAnchor + stepX * 1.88;  // Lá 5, 6
 
         const posMap10: { x: number; y: number; z: number; rot?: number }[] = [
-          { x: card1X, y: 0, z: 15, rot: 0 },                       // 0: Lá 1 (Tình Huống Hiện Tại)
-          { x: card2X, y: 0, z: 16, rot: 0 },                       // 1: Lá 2 (Xuôi: Hỗ Trợ / Ngược: Trở Ngại) - đứng riêng độc lập
-          { x: card1X, y: stepY, z: 14, rot: 0 },                   // 2: Lá 3 (Yếu Tố Bên Ngoài)
-          { x: card1X, y: -stepY, z: 14, rot: 0 },                  // 3: Lá 4 (Điều Bạn Không Biết)
-          { x: col5X, y: -stepY * 0.58, z: 13, rot: 0 },            // 4: Lá 5 (Tình Huống Trước Đây)
-          { x: col5X, y: stepY * 0.58, z: 13, rot: 0 },             // 5: Lá 6 (Tương Lai Tiếp Theo)
-          { x: col2X, y: -stepY, z: 13, rot: 0 },                    // 6: Lá 7 (Vận Hạn Năm Nay)
-          { x: col2X, y: 0, z: 13, rot: 0 },                         // 7: Lá 8 (Cách Nhìn Của Người Ngoài)
-          { x: col2X, y: stepY, z: 13, rot: 0 },                     // 8: Lá 9 (Kết Quả Cuối Cùng)
-          { x: col1X, y: 0, z: 14, rot: 0 },                        // 9: Lá 10 (Lá Bài Khuyên Bảo)
+          { x: card1X, y: 0, z: 15, rot: 0 },                       // 0: Lá 1
+          { x: card2X, y: 0, z: 16, rot: 0 },                       // 1: Lá 2
+          { x: card1X, y: stepY, z: 14, rot: 0 },                   // 2: Lá 3
+          { x: card1X, y: -stepY, z: 14, rot: 0 },                  // 3: Lá 4
+          { x: col5X, y: -stepY * 0.58, z: 13, rot: 0 },            // 4: Lá 5
+          { x: col5X, y: stepY * 0.58, z: 13, rot: 0 },             // 5: Lá 6
+          { x: col2X, y: -stepY, z: 13, rot: 0 },                    // 6: Lá 7
+          { x: col2X, y: 0, z: 13, rot: 0 },                         // 7: Lá 8
+          { x: col2X, y: stepY, z: 13, rot: 0 },                     // 8: Lá 9
+          { x: col1X, y: 0, z: 14, rot: 0 },                        // 9: Lá 10
         ];
 
         posMap10.forEach((p, idx) => {
-          if (slots[idx]) {
-            const x = p.x * f;
-            const y = p.y * f;
-            const rot = (p.rot || 0) * f;
-            slots[idx].style.transform = `perspective(1200px) translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, ${p.z}px) rotate(${rot.toFixed(1)}deg) scale(${scale10.toFixed(3)})`;
-            slots[idx].style.opacity = f > 0.15 ? "1" : f.toFixed(3);
-            slots[idx].style.pointerEvents = f > 0.25 ? "auto" : "none";
-            slots[idx].style.zIndex = p.z.toString();
-          }
+          applySlotTransform(
+            slots[idx],
+            getFanCardTransform(idx, cardCount, isSmallScreen, factor),
+            { x: p.x, y: p.y, rot: p.rot || 0, scale: scale10, zIndex: p.z },
+            f, heroF, idx === 0
+          );
         });
       } else if (cardCount === 5 || mode === "3_to_5") {
         // ── CHẾ ĐỘ: 5 LÁ (NGŨ HÀNH) ──
-        // Tùy thuộc vào kích thước màn hình mà các lá bài sắp xếp linh hoạt:
-        // - Trên màn hình nhỏ/điện thoại (w < 860): Không đủ chỗ bày ngang 5 lá,
-        //   nên 3 lá đầu ở hàng trên, 2 lá cuối cùng bên phải (Slot 3 & 4) nhảy xuống hàng dưới và căn giữa.
-        // - Trên màn hình lớn (w >= 860): xòe đủ 5 lá thành 1 hàng ngang rộng rãi.
-        // Khi kéo xuống Features (f=0): toàn bộ gôm lại thành 1 lá duy nhất tại Slot 2!
-
         const isSmallScreen = w < 860;
         const mobFactor = w < 380 ? 0.76 : w < 440 ? 0.88 : 1.0;
         const mobScale = w < 380 ? 0.70 : w < 440 ? 0.76 : 0.82;
 
         if (isSmallScreen) {
-          // ── BỐ CỤC MOBILE / MÀN HÌNH NHỎ (Hàng trên 3 lá, Hàng dưới 2 lá) ──
-          // Hàng 1 (Trên): Slot 0 (trái), Slot 1 (giữa), Slot 2 (phải)
-          // Slot 0 (Trái trên)
-          if (slots[0]) {
-            const x0 = (-115 * f) * mobFactor;
-            const y0 = -82 * f;
-            const rot0 = -4.5 * f;
-            slots[0].style.transform = `perspective(1200px) translate3d(${x0.toFixed(1)}px, ${y0.toFixed(1)}px, 0) rotate(${rot0.toFixed(1)}deg) scale(${mobScale})`;
-            slots[0].style.opacity = f.toFixed(3);
-            slots[0].style.pointerEvents = f > 0.25 ? "auto" : "none";
-            slots[0].style.zIndex = "8";
-          }
-          // Slot 1 (Giữa trên): ở Hero nằm cận trái (-120px), khi xuống Destiny tiến vào giữa trên (x=0, y=-88px)
-          if (slots[1]) {
-            const heroX1 = -115 * (1 - g) * mobFactor;
-            const x1 = heroX1;
-            const y1 = -88 * f;
-            const rot1 = 0;
-            const sc1 = mobScale + (1.10 - mobScale) * (1 - f);
-            slots[1].style.transform = `perspective(1200px) translate3d(${x1.toFixed(1)}px, ${y1.toFixed(1)}px, 0) rotate(${rot1}deg) scale(${sc1.toFixed(3)})`;
-            const op1 = g < 0.5 ? 1 : f;
-            slots[1].style.opacity = op1.toFixed(3);
-            slots[1].style.pointerEvents = f > 0.25 ? "auto" : "none";
-            slots[1].style.zIndex = "10";
-          }
-          // Slot 2 (Phải trên): ở Hero là lá trung tâm, khi xuống Destiny dạt sang phải trên
-          if (slots[2]) {
-            const destX2 = 115 * f * mobFactor;
-            const y2 = -82 * f;
-            const rot2 = 4.5 * f;
-            const sc2 = mobScale + (1.10 - mobScale) * (1 - f); // Khi về Features phóng lên 1.10
-            slots[2].style.transform = `perspective(1200px) translate3d(${destX2.toFixed(1)}px, ${y2.toFixed(1)}px, 26px) rotate(${rot2.toFixed(1)}deg) scale(${sc2.toFixed(3)})`;
-            slots[2].style.opacity = "1";
-            slots[2].style.pointerEvents = "auto";
-            slots[2].style.zIndex = "14";
-          }
-
-          // Hàng 2 (Dưới): 2 lá cuối cùng bên phải nhảy xuống (Slot 3 & Slot 4 căn giữa bên dưới)
-          // Slot 3 (Trái dưới)
-          if (slots[3]) {
-            const heroX3 = 115 * (1 - g) * mobFactor;
-            const destX3 = -65 * f * mobFactor;
-            const x3 = heroX3 + destX3;
-            const y3 = 105 * f;
-            const rot3 = -3 * f;
-            const sc3 = mobScale;
-            slots[3].style.transform = `perspective(1200px) translate3d(${x3.toFixed(1)}px, ${y3.toFixed(1)}px, 0) rotate(${rot3.toFixed(1)}deg) scale(${sc3.toFixed(3)})`;
-            const op3 = g < 0.5 ? 1 : f;
-            slots[3].style.opacity = op3.toFixed(3);
-            slots[3].style.pointerEvents = f > 0.25 ? "auto" : "none";
-            slots[3].style.zIndex = "9";
-          }
-          // Slot 4 (Phải dưới)
-          if (slots[4]) {
-            const x4 = (65 * f) * mobFactor;
-            const y4 = 105 * f;
-            const rot4 = 3 * f;
-            slots[4].style.transform = `perspective(1200px) translate3d(${x4.toFixed(1)}px, ${y4.toFixed(1)}px, 0) rotate(${rot4.toFixed(1)}deg) scale(${mobScale})`;
-            slots[4].style.opacity = f.toFixed(3);
-            slots[4].style.pointerEvents = f > 0.25 ? "auto" : "none";
-            slots[4].style.zIndex = "9";
-          }
+          applySlotTransform(
+            slots[0],
+            getFanCardTransform(0, cardCount, true, factor),
+            { x: -115 * mobFactor, y: -82, rot: -4.5, scale: mobScale, zIndex: 8 },
+            f, heroF, false
+          );
+          applySlotTransform(
+            slots[1],
+            getFanCardTransform(1, cardCount, true, factor),
+            { x: 0, y: -88, rot: 0, scale: mobScale, zIndex: 10 },
+            f, heroF, false
+          );
+          applySlotTransform(
+            slots[2],
+            getFanCardTransform(2, cardCount, true, factor),
+            { x: 115 * mobFactor, y: -82, rot: 4.5, scale: mobScale, zIndex: 14 },
+            f, heroF, true
+          );
+          applySlotTransform(
+            slots[3],
+            getFanCardTransform(3, cardCount, true, factor),
+            { x: -65 * mobFactor, y: 105, rot: -3, scale: mobScale, zIndex: 9 },
+            f, heroF, false
+          );
+          applySlotTransform(
+            slots[4],
+            getFanCardTransform(4, cardCount, true, factor),
+            { x: 65 * mobFactor, y: 105, rot: 3, scale: mobScale, zIndex: 9 },
+            f, heroF, false
+          );
         } else {
-          // ── BỐ CỤC DESKTOP (1 hàng ngang rộng rãi cả 5 lá, tự co giãn theo độ rộng màn hình) ──
           const scale5Desk = w < 1000 ? 0.74 : w < 1200 ? 0.82 : w < 1440 ? 0.90 : 0.98;
           const col5Step = 220 * (scale5Desk / 0.98) * factor;
 
-          // Slot 0 (Cực Trái)
-          if (slots[0]) {
-            const x0 = (-col5Step * 2 * f);
-            const y0 = 8 * f;
-            const rot0 = -7 * f;
-            slots[0].style.transform = `perspective(1200px) translate3d(${x0.toFixed(1)}px, ${y0.toFixed(1)}px, 0) rotate(${rot0.toFixed(1)}deg) scale(${scale5Desk.toFixed(3)})`;
-            slots[0].style.opacity = f.toFixed(3);
-            slots[0].style.pointerEvents = f > 0.25 ? "auto" : "none";
-            slots[0].style.zIndex = "8";
-          }
-          // Slot 1 (Cận Trái): ở Hero x=-140, ở Destiny x=-col5Step, ở Features gôm về 0
-          if (slots[1]) {
-            const heroX1 = -140 * (1 - g);
-            const spreadX1 = -col5Step * f;
-            const x1 = (heroX1 + spreadX1);
-            const y1 = 3 * f;
-            const rot1 = -3.5 * f;
-            const sc1 = scale5Desk + (1.10 - scale5Desk) * (1 - f);
-            slots[1].style.transform = `perspective(1200px) translate3d(${x1.toFixed(1)}px, ${y1.toFixed(1)}px, 0) rotate(${rot1.toFixed(1)}deg) scale(${sc1.toFixed(3)})`;
-            const op1 = g < 0.5 ? 1 : f;
-            slots[1].style.opacity = op1.toFixed(3);
-            slots[1].style.pointerEvents = f > 0.25 ? "auto" : "none";
-            slots[1].style.zIndex = "10";
-          }
-          // Slot 2 (Trung Tâm): là lá trụ cột luôn hiển thị 1 lá uy nghi tại Features
-          if (slots[2]) {
-            const sc2 = scale5Desk + (1.10 - scale5Desk) * (1 - f);
-            slots[2].style.transform = `perspective(1200px) translate3d(0, 0, 26px) scale(${sc2.toFixed(3)})`;
-            slots[2].style.opacity = "1";
-            slots[2].style.pointerEvents = "auto";
-            slots[2].style.zIndex = "14";
-          }
-          // Slot 3 (Cận Phải): ở Hero x=140, ở Destiny x=col5Step, ở Features gôm về 0
-          if (slots[3]) {
-            const heroX3 = 140 * (1 - g);
-            const spreadX3 = col5Step * f;
-            const x3 = (heroX3 + spreadX3);
-            const y3 = 3 * f;
-            const rot3 = 3.5 * f;
-            const sc3 = scale5Desk + (1.10 - scale5Desk) * (1 - f);
-            slots[3].style.transform = `perspective(1200px) translate3d(${x3.toFixed(1)}px, ${y3.toFixed(1)}px, 0) rotate(${rot3.toFixed(1)}deg) scale(${sc3.toFixed(3)})`;
-            const op3 = g < 0.5 ? 1 : f;
-            slots[3].style.opacity = op3.toFixed(3);
-            slots[3].style.pointerEvents = f > 0.25 ? "auto" : "none";
-            slots[3].style.zIndex = "10";
-          }
-          // Slot 4 (Cực Phải)
-          if (slots[4]) {
-            const x4 = (col5Step * 2 * f);
-            const y4 = 8 * f;
-            const rot4 = 7 * f;
-            slots[4].style.transform = `perspective(1200px) translate3d(${x4.toFixed(1)}px, ${y4.toFixed(1)}px, 0) rotate(${rot4.toFixed(1)}deg) scale(${scale5Desk.toFixed(3)})`;
-            slots[4].style.opacity = f.toFixed(3);
-            slots[4].style.pointerEvents = f > 0.25 ? "auto" : "none";
-            slots[4].style.zIndex = "8";
-          }
+          applySlotTransform(
+            slots[0],
+            getFanCardTransform(0, cardCount, false, factor),
+            { x: -col5Step * 2, y: 8, rot: -7, scale: scale5Desk, zIndex: 8 },
+            f, heroF, false
+          );
+          applySlotTransform(
+            slots[1],
+            getFanCardTransform(1, cardCount, false, factor),
+            { x: -col5Step, y: 3, rot: -3.5, scale: scale5Desk, zIndex: 10 },
+            f, heroF, false
+          );
+          applySlotTransform(
+            slots[2],
+            getFanCardTransform(2, cardCount, false, factor),
+            { x: 0, y: 0, rot: 0, scale: scale5Desk, zIndex: 14 },
+            f, heroF, true
+          );
+          applySlotTransform(
+            slots[3],
+            getFanCardTransform(3, cardCount, false, factor),
+            { x: col5Step, y: 3, rot: 3.5, scale: scale5Desk, zIndex: 10 },
+            f, heroF, false
+          );
+          applySlotTransform(
+            slots[4],
+            getFanCardTransform(4, cardCount, false, factor),
+            { x: col5Step * 2, y: 8, rot: 7, scale: scale5Desk, zIndex: 8 },
+            f, heroF, false
+          );
         }
       } else if (cardCount === 3 || mode === "1_to_3") {
         // ── CHẾ ĐỘ: 3 LÁ (TAM TÀI) ──
-        // Ở Destiny (f=1): xòe 3 lá rộng rãi (-340, 0, +340)
-        // Khi kéo xuống Features (f=0): gôm lại thành 1 lá duy nhất tại Slot 1!
-        if (slots[0]) {
-          const x0 = (-340 * f) * factor;
-          const y0 = 3 * f;
-          const rot0 = -4.5 * f;
-          const sc0 = 1.02;
-          slots[0].style.transform = `perspective(1200px) translate3d(${x0.toFixed(1)}px, ${y0.toFixed(1)}px, 0) rotate(${rot0.toFixed(1)}deg) scale(${sc0.toFixed(3)})`;
-          slots[0].style.opacity = f.toFixed(3);
-          slots[0].style.pointerEvents = f > 0.20 ? "auto" : "none";
-          slots[0].style.zIndex = "10";
-        }
-        if (slots[1]) {
-          slots[1].style.transform = `perspective(1200px) translate3d(0, 0, 26px) scale(1.08)`;
-          slots[1].style.opacity = "1";
-          slots[1].style.pointerEvents = "auto";
-          slots[1].style.zIndex = "14";
-        }
-        if (slots[2]) {
-          const x2 = (340 * f) * factor;
-          const y2 = 3 * f;
-          const rot2 = 4.5 * f;
-          const sc2 = 1.02;
-          slots[2].style.transform = `perspective(1200px) translate3d(${x2.toFixed(1)}px, ${y2.toFixed(1)}px, 0) rotate(${rot2.toFixed(1)}deg) scale(${sc2.toFixed(3)})`;
-          slots[2].style.opacity = f.toFixed(3);
-          slots[2].style.pointerEvents = f > 0.20 ? "auto" : "none";
-          slots[2].style.zIndex = "10";
-        }
+        applySlotTransform(
+          slots[0],
+          getFanCardTransform(0, 3, w < 640, factor),
+          { x: -340 * factor, y: 3, rot: -4.5, scale: 1.02, zIndex: 10 },
+          f, heroF, false
+        );
+        applySlotTransform(
+          slots[1],
+          getFanCardTransform(1, 3, w < 640, factor),
+          { x: 0, y: 0, rot: 0, scale: 1.08, zIndex: 14 },
+          f, heroF, true
+        );
+        applySlotTransform(
+          slots[2],
+          getFanCardTransform(2, 3, w < 640, factor),
+          { x: 340 * factor, y: 3, rot: 4.5, scale: 1.02, zIndex: 10 },
+          f, heroF, false
+        );
       } else if (cardCount === 2 || mode === "1_to_2") {
         // ── CHẾ ĐỘ: 2 LÁ (ÂM DƯƠNG) ──
-        // Ở Destiny (f=1): xòe đôi rộng rãi (-220 và +220)
-        // Khi kéo xuống Features (f=0): gôm lại thành 1 lá duy nhất tại Slot 1!
-        if (slots[0]) {
-          const x0 = (-220 * f) * factor;
-          const rot0 = -3 * f;
-          const sc0 = 1.05;
-          slots[0].style.transform = `perspective(1200px) translate3d(${x0.toFixed(1)}px, 0, 0) rotate(${rot0.toFixed(1)}deg) scale(${sc0.toFixed(3)})`;
-          slots[0].style.opacity = f.toFixed(3);
-          slots[0].style.pointerEvents = f > 0.20 ? "auto" : "none";
-          slots[0].style.zIndex = "10";
-        }
-        if (slots[1]) {
-          // Slot 1: khi f=1 ở +220px, khi kéo xuống Features f=0 gôm về chính giữa x=0 thành 1 lá duy nhất!
-          const x1 = (220 * f) * factor;
-          const rot1 = 3 * f;
-          const sc1 = 1.05;
-          slots[1].style.transform = `perspective(1200px) translate3d(${x1.toFixed(1)}px, 0, 0) rotate(${rot1.toFixed(1)}deg) scale(${sc1.toFixed(3)})`;
-          slots[1].style.opacity = "1";
-          slots[1].style.pointerEvents = "auto";
-          slots[1].style.zIndex = "14";
-        }
+        applySlotTransform(
+          slots[0],
+          getFanCardTransform(0, 2, w < 640, factor),
+          { x: -220 * factor, y: 0, rot: -3, scale: 1.05, zIndex: 10 },
+          f, heroF, false
+        );
+        applySlotTransform(
+          slots[1],
+          getFanCardTransform(1, 2, w < 640, factor),
+          { x: 220 * factor, y: 0, rot: 3, scale: 1.05, zIndex: 14 },
+          f, heroF, true
+        );
       } else {
         // ── CHẾ ĐỘ: 1 LÁ DUY NHẤT (ĐƠN QUẺ CHÍ TÔN) ──
-        if (slots[0]) {
-          const sc0 = 1.15;
-          slots[0].style.transform = `perspective(1200px) translate3d(0, 0, 26px) scale(${sc0.toFixed(3)})`;
-          slots[0].style.opacity = "1";
-          slots[0].style.pointerEvents = "auto";
-          slots[0].style.zIndex = "14";
-        }
+        applySlotTransform(
+          slots[0],
+          getFanCardTransform(0, 1, w < 640, factor),
+          { x: 0, y: 0, rot: 0, scale: 1.15, zIndex: 14 },
+          f, heroF, true
+        );
       }
     }
 
@@ -2295,19 +2269,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       const dy = tgtY - curY;
       const dg = tgtG - curG;
       const df = tgtF - curF;
+      const dh = tgtHero - curHero;
 
       curX += dx * 0.20;
       curY += dy * 0.20;
       curG += dg * 0.18;
       curF += df * 0.16;
+      curHero += dh * 0.16;
 
-      renderCards(curX, curY, curG, curF);
+      renderCards(curX, curY, curG, curF, curHero);
 
-      if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1 || Math.abs(dg) > 0.005 || Math.abs(df) > 0.005) {
+      if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1 || Math.abs(dg) > 0.005 || Math.abs(df) > 0.005 || Math.abs(dh) > 0.005) {
         requestAnimationFrame(tick);
       } else {
-        curX = tgtX; curY = tgtY; curG = tgtG; curF = tgtF;
-        renderCards(curX, curY, curG, curF);
+        curX = tgtX; curY = tgtY; curG = tgtG; curF = tgtF; curHero = tgtHero;
+        renderCards(curX, curY, curG, curF, curHero);
         isAnimating = false;
       }
     }
@@ -2316,8 +2292,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       calcTargets();
       if (!isInitialized) {
         isInitialized = true;
-        curX = tgtX; curY = tgtY; curG = tgtG; curF = tgtF;
-        renderCards(curX, curY, curG, curF);
+        curX = tgtX; curY = tgtY; curG = tgtG; curF = tgtF; curHero = tgtHero;
+        renderCards(curX, curY, curG, curF, curHero);
         return;
       }
       if (!isAnimating) {
@@ -2328,7 +2304,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
     requestTickRef.current = requestTick;
     renderFullSpreadRef.current = () => {
-      renderCards(0, 0, 0, 1);
+      renderCards(0, 0, 0, 1, 0);
     };
     window.addEventListener("scroll", requestTick, { passive: true });
     window.addEventListener("resize", requestTick, { passive: true });
@@ -2761,11 +2737,6 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     }
     const newDrawnCards = drawCardsForMode(randomMode);
     setCards(newDrawnCards);
-    const newPred = generateHexagramPrediction(newDrawnCards, randomMode, randomMode === "thap_tinh" ? Math.random() < 0.5 : undefined);
-    setHexagramPrediction(newPred);
-    try {
-      localStorage.setItem("cuunhi_hexagram_prediction", newPred);
-    } catch {}
     setTimeout(() => {
       if (requestTickRef.current) requestTickRef.current();
     }, 50);
@@ -3115,7 +3086,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     className="w-full resize-none rounded-xl bg-black/40 border border-[#C4963E]/30 px-3.5 py-2 text-xs sm:text-sm text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-[#C4963E] transition leading-relaxed shadow-inner"
                   />
 
-                  {/* Mục 2: Dự đoán của quẻ (Nằm ở GIỮA theo yêu cầu) */}
+                  {/* Mục 2: Dự đoán / Điềm báo của quẻ (Tự điền ở GIỮA theo yêu cầu) */}
                   <div className="mt-2.5 pt-2.5 border-t border-[#C4963E]/20">
                     <div className="flex items-center justify-between mb-1">
                       <label
@@ -3123,16 +3094,16 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                         className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-300 font-serif"
                       >
                         <span className="text-sm">🔮</span>
-                        <span>Dự đoán của quẻ / Điềm báo</span>
+                        <span>Dự đoán / Điềm báo của quẻ (Tự điền)</span>
                       </label>
                       <div className="flex items-center gap-2">
                         <button
                           type="button"
                           onClick={handleRefreshPredictionFromCards}
                           className="text-[11px] text-amber-400/90 hover:text-amber-200 font-medium transition cursor-pointer flex items-center gap-1"
-                          title="Lấy lại dự đoán tự động từ các lá bài hiện tại"
+                          title="Bấm để lấy gợi ý điềm báo tự động từ các lá bài hiện tại nếu cần"
                         >
-                          <span>🔄 Lấy từ quẻ</span>
+                          <span>✨ Gợi ý từ quẻ</span>
                         </button>
                         {hexagramPrediction.trim() && (
                           <button
@@ -3151,7 +3122,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                       rows={2}
                       value={hexagramPrediction}
                       onChange={(e) => handleHexagramPredictionChange(e.target.value)}
-                      placeholder="Dự đoán, lời giải và điềm báo cát hung của quẻ (tự động cập nhật theo các lá bài vừa bốc)..."
+                      placeholder="Nhập dự đoán, cảm nhận hoặc điềm báo của quẻ theo nhận định của bạn..."
                       className="w-full resize-none rounded-xl bg-black/40 border border-amber-500/35 px-3.5 py-2 text-xs sm:text-sm text-amber-100 placeholder:text-stone-500 focus:outline-none focus:border-amber-400 transition leading-relaxed shadow-inner"
                     />
                   </div>
@@ -3431,7 +3402,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     className="w-full resize-none rounded-xl bg-black/40 border border-[#C4963E]/30 px-3 py-1.5 text-xs text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-[#C4963E] transition leading-relaxed shadow-inner"
                   />
 
-                  {/* Mục 2: Dự đoán của quẻ trên mobile (Nằm ở GIỮA theo yêu cầu) */}
+                  {/* Mục 2: Dự đoán / Điềm báo của quẻ trên mobile (Tự điền ở GIỮA) */}
                   <div className="mt-2 pt-2 border-t border-[#C4963E]/20">
                     <div className="flex items-center justify-between mb-1">
                       <label
@@ -3439,16 +3410,16 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                         className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-amber-300 font-serif"
                       >
                         <span className="text-xs">🔮</span>
-                        <span>Dự đoán của quẻ / Điềm báo</span>
+                        <span>Dự đoán / Điềm báo (Tự điền)</span>
                       </label>
                       <div className="flex items-center gap-2">
                         <button
                           type="button"
                           onClick={handleRefreshPredictionFromCards}
                           className="text-[10px] text-amber-400 hover:text-amber-200 font-medium transition cursor-pointer"
-                          title="Lấy lại dự đoán tự động"
+                          title="Gợi ý từ quẻ nếu cần"
                         >
-                          🔄 Lấy từ quẻ
+                          ✨ Gợi ý
                         </button>
                         {hexagramPrediction.trim() && (
                           <button
@@ -3466,7 +3437,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                       rows={2}
                       value={hexagramPrediction}
                       onChange={(e) => handleHexagramPredictionChange(e.target.value)}
-                      placeholder="Dự đoán và điềm báo của quẻ..."
+                      placeholder="Nhập dự đoán, cảm nhận hoặc điềm báo của quẻ..."
                       className="w-full resize-none rounded-xl bg-black/40 border border-amber-500/35 px-3 py-1.5 text-xs text-amber-100 placeholder:text-stone-500 focus:outline-none focus:border-amber-400 transition leading-relaxed shadow-inner"
                     />
                   </div>
