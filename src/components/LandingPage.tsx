@@ -973,6 +973,8 @@ interface RitualHoldButtonProps {
   onClick: (isRitual?: boolean) => void;
   active?: boolean;
   className?: string;
+  wrapperClassName?: string;
+  style?: React.CSSProperties;
   children: React.ReactNode;
   title?: string;
   holdDuration?: number; // 3000ms
@@ -984,6 +986,8 @@ const RitualHoldButton: React.FC<RitualHoldButtonProps> = ({
   onClick,
   active = false,
   className = "",
+  wrapperClassName = "",
+  style,
   children,
   title,
   holdDuration = 3000,
@@ -1164,7 +1168,7 @@ const RitualHoldButton: React.FC<RitualHoldButtonProps> = ({
   const strokeOffset = perimeter * (1 - holdProgress);
 
   return (
-    <div className="relative inline-flex items-center justify-center w-full sm:w-auto">
+    <div className={`relative inline-flex items-center justify-center ${wrapperClassName || "w-full sm:w-auto"}`}>
       {/* Chỉ hiện chữ khi ĐÃ CHẠY XONG 1 VÒNG */}
       {revealedStep && (
         <div className="absolute -top-10 left-1/2 -translate-x-1/2 z-50 pointer-events-none whitespace-nowrap px-3.5 py-1.5 rounded-full bg-zinc-950/95 border border-[#C4963E] shadow-2xl text-xs sm:text-[11px] font-serif font-bold text-amber-300 flex items-center gap-1.5 animate-bounce">
@@ -1200,6 +1204,7 @@ const RitualHoldButton: React.FC<RitualHoldButtonProps> = ({
         style={{
           WebkitTouchCallout: "none",
           WebkitUserSelect: "none",
+          ...style,
         }}
       >
         {/* SVG viền sáng lan tỏa 1 vòng xung quanh viền ngoài nút */}
@@ -3032,15 +3037,17 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 </div>
               </div>
 
-              {/* Dải nút hành động Desktop (Bắt Đầu Bốc Quẻ + Tam Kính + 64 Quẻ) */}
+              {/* Dải nút hành động Desktop: Đồng bộ 100% chung 1 phong cách Glassmorphism sang trọng */}
               <div className="hidden lg:flex w-full lg:w-auto flex-col items-start relative z-[55] mt-2">
-                <div className="flex w-full max-w-xl flex-row items-stretch gap-2.5 lg:w-auto">
-                  {/* Nút Bắt Đầu Bốc Quẻ (Chữ làm sáng như 64 Quẻ Kinh Dịch) */}
+                {/* Hàng 1: Bắt Đầu Bốc Quẻ + 64 Quẻ Kinh Dịch (Kính mờ cao cấp, chữ trắng sáng đồng bộ) */}
+                <div className="flex w-full max-w-xl flex-row items-stretch gap-3 lg:w-auto">
+                  {/* Nút Bắt Đầu Bốc Quẻ */}
                   <RitualHoldButton
                     id="btn-hero-start-divination"
                     active={false}
                     onClick={(isRitual) => handleStartDivinationOrShuffle(!!isRitual)}
-                    className="flex min-w-0 flex-1 items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-base md:px-7 md:py-4 md:text-lg lg:flex-none lg:w-auto text-white font-semibold cursor-pointer transition hover:scale-[1.02] hover:bg-white/15 active:scale-[0.98] shadow-xl"
+                    wrapperClassName="flex min-w-0 flex-1 lg:flex-none lg:w-auto"
+                    className="flex min-w-0 w-full items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-base md:px-7 md:py-4 md:text-lg text-white font-semibold cursor-pointer transition hover:scale-[1.02] hover:bg-white/15 active:scale-[0.98] shadow-xl"
                     style={{
                       background: "rgba(255,255,255,0.1)",
                       border: "1px solid rgba(255,255,255,0.38)",
@@ -3052,10 +3059,11 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     <span className="truncate">Bắt Đầu Bốc Quẻ</span>
                   </RitualHoldButton>
 
+                  {/* Nút 64 Quẻ Kinh Dịch */}
                   <button
                     type="button"
                     onClick={() => window.open(getHexagramsUrl(), "_blank", "noopener,noreferrer")}
-                    className="flex min-w-0 flex-1 items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-base md:px-7 md:py-4 md:text-lg lg:flex-none lg:w-auto text-white font-semibold cursor-pointer transition hover:scale-[1.02] hover:bg-white/15 active:scale-[0.98]"
+                    className="flex min-w-0 flex-1 items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-base md:px-7 md:py-4 md:text-lg lg:flex-none lg:w-auto text-white font-semibold cursor-pointer transition hover:scale-[1.02] hover:bg-white/15 active:scale-[0.98] shadow-xl"
                     style={{
                       background: "rgba(255,255,255,0.1)",
                       border: "1px solid rgba(255,255,255,0.38)",
@@ -3067,32 +3075,34 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   </button>
                 </div>
 
-                {/* Hàng nút ngay bên DƯỚI Bắt Đầu Bốc Quẻ: Giữ nguyên, Chép cho AI, Lưu Quẻ, Mở Quẻ */}
-                <div className="flex flex-wrap items-center gap-2 mt-3 w-full max-w-xl">
+                {/* Hàng 2: Giữ nguyên, Chép cho AI, Lưu Quẻ, Mở Quẻ (Cùng chung 1 phong cách Glassmorphism) */}
+                <div className="flex flex-wrap items-center gap-2.5 mt-3 w-full max-w-xl">
                   {/* Ô Giữ nguyên */}
                   <RitualHoldButton
                     id="hero-desktop-keep-cards"
                     active={isKeepCards}
                     onClick={(isRitual) => handleToggleKeepCards(isRitual)}
-                    className={`inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition cursor-pointer shadow-md active:scale-95 select-none ${
-                      isKeepCards
-                        ? "bg-[#fbf4e6] text-[#7c5516] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.01]"
-                        : "bg-white/95 hover:bg-white text-zinc-800 border border-stone-200 font-medium hover:scale-[1.01]"
-                    }`}
+                    wrapperClassName="inline-flex"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-semibold text-white transition cursor-pointer shadow-md hover:bg-white/15 hover:scale-[1.02] active:scale-95 select-none"
+                    style={{
+                      background: isKeepCards ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.1)",
+                      border: isKeepCards ? "1px solid rgba(255,255,255,0.55)" : "1px solid rgba(255,255,255,0.38)",
+                      backdropFilter: "blur(8px)",
+                    }}
                     title="Ô giữ nguyên: Bật/Tắt giữ nguyên các lá bài hiện tại"
                   >
                     <span
                       className={`w-3.5 h-3.5 rounded flex items-center justify-center text-[10px] font-bold transition-all ${
                         isKeepCards
-                          ? "bg-[#C4963E] text-zinc-950 shadow-xs"
-                          : "border border-stone-400 bg-stone-50 text-transparent"
+                          ? "bg-white text-zinc-950 shadow-xs"
+                          : "border border-white/50 bg-white/5 text-transparent"
                       }`}
                     >
                       ✓
                     </span>
                     <span>Giữ nguyên</span>
                     {isKeepCards && (
-                      <span className="text-[10px] text-amber-800 font-bold ml-0.5">
+                      <span className="text-[10px] text-white/80 font-normal ml-0.5">
                         (Đã khóa)
                       </span>
                     )}
@@ -3103,13 +3113,12 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     <button
                       type="button"
                       onClick={handleCopyCardsForAI}
-                      className={`inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition cursor-pointer shadow-md active:scale-95 select-none ${
-                        copiedAI
-                          ? "bg-emerald-600 text-white border border-emerald-500 shadow-md scale-[1.01]"
-                          : isRitualCompleted
-                          ? "bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-zinc-950 font-bold border-2 border-amber-300 shadow-lg shadow-amber-500/25 ring-1 ring-amber-400/50"
-                          : "bg-[#251D16] hover:bg-[#34271A] text-amber-200 border border-amber-600/50 shadow-sm"
-                      }`}
+                      className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-2xl text-xs font-semibold text-white transition cursor-pointer shadow-md hover:bg-white/15 hover:scale-[1.02] active:scale-95 select-none"
+                      style={{
+                        background: copiedAI ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.1)",
+                        border: copiedAI ? "1px solid rgba(16,185,129,0.7)" : "1px solid rgba(255,255,255,0.38)",
+                        backdropFilter: "blur(8px)",
+                      }}
                       title="Sao chép toàn bộ thông tin các lá bài (kèm câu hỏi & đáp án) để gửi cho AI"
                     >
                       <span className="text-sm shrink-0">
@@ -3123,7 +3132,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                           : "Chép cho AI"}
                       </span>
                       {(userIntentQuestion.trim() || userCustomAnswer.trim()) && !copiedAI && (
-                        <span className="text-[10px] font-medium text-amber-900 bg-amber-100/90 px-1.5 py-0.2 rounded-full border border-amber-300/60 ml-0.5">
+                        <span className="text-[10px] font-medium text-white/90 bg-white/20 px-1.5 py-0.2 rounded-full border border-white/30 ml-0.5">
                           {userIntentQuestion.trim() && userCustomAnswer.trim()
                             ? "+Hỏi&Đáp"
                             : userIntentQuestion.trim()
@@ -3143,10 +3152,15 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   <button
                     type="button"
                     onClick={() => setIsSaveDialogOpen(true)}
-                    className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-[#1C1712] hover:bg-[#282018] text-amber-200 border border-amber-600/50 transition cursor-pointer shadow-md active:scale-95 select-none"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-2xl text-xs font-semibold text-white transition cursor-pointer shadow-md hover:bg-white/15 hover:scale-[1.02] active:scale-95 select-none"
+                    style={{
+                      background: "rgba(255,255,255,0.1)",
+                      border: "1px solid rgba(255,255,255,0.38)",
+                      backdropFilter: "blur(8px)",
+                    }}
                     title="Lưu trải bài hiện tại kèm Câu hỏi AI và Đáp án tự điền"
                   >
-                    <Bookmark className="w-3.5 h-3.5 text-amber-400" />
+                    <Bookmark className="w-3.5 h-3.5 text-white" />
                     <span>Lưu Quẻ</span>
                   </button>
 
@@ -3157,13 +3171,18 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                       reloadSavedSpreads();
                       setIsSavedSpreadsModalOpen(true);
                     }}
-                    className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-[#1C1712] hover:bg-[#282018] text-amber-200 border border-amber-600/50 transition cursor-pointer shadow-md active:scale-95 select-none"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-2xl text-xs font-semibold text-white transition cursor-pointer shadow-md hover:bg-white/15 hover:scale-[1.02] active:scale-95 select-none"
+                    style={{
+                      background: "rgba(255,255,255,0.1)",
+                      border: "1px solid rgba(255,255,255,0.38)",
+                      backdropFilter: "blur(8px)",
+                    }}
                     title="Mở danh sách các quẻ đã lưu"
                   >
-                    <FolderOpen className="w-3.5 h-3.5 text-amber-400" />
+                    <FolderOpen className="w-3.5 h-3.5 text-white" />
                     <span>Mở Quẻ</span>
                     {savedSpreads.length > 0 && (
-                      <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-500 text-zinc-950">
+                      <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-white/20 text-white border border-white/30">
                         {savedSpreads.length}
                       </span>
                     )}
@@ -3292,13 +3311,14 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 </div>
               </div>
 
-              {/* Hàng 1: Bắt Đầu Bốc Quẻ (Chữ làm sáng như 64 Quẻ) + 64 Quẻ */}
+              {/* Hàng 1: Bắt Đầu Bốc Quẻ + 64 Quẻ (Đồng bộ Glassmorphism trên mobile) */}
               <div className="flex w-full max-w-xl flex-row items-stretch gap-2">
                 <RitualHoldButton
                   id="btn-hero-mobile-start-divination"
                   active={false}
                   onClick={(isRitual) => handleStartDivinationOrShuffle(!!isRitual)}
-                  className="flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-2xl px-3 py-3 text-sm font-semibold sm:gap-2 sm:px-6 sm:py-3.5 sm:text-base text-white shadow-lg cursor-pointer transition hover:bg-white/15 active:scale-[0.98]"
+                  wrapperClassName="flex min-w-0 flex-1"
+                  className="flex min-w-0 w-full items-center justify-center gap-1.5 rounded-2xl px-3 py-3 text-sm font-semibold sm:gap-2 sm:px-6 sm:py-3.5 sm:text-base text-white shadow-lg cursor-pointer transition hover:bg-white/15 active:scale-[0.98]"
                   style={{
                     background: "rgba(255,255,255,0.1)",
                     border: "1px solid rgba(255,255,255,0.38)",
@@ -3313,7 +3333,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 <button
                   type="button"
                   onClick={() => window.open(getHexagramsUrl(), "_blank", "noopener,noreferrer")}
-                  className="flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-2xl px-3 py-3 text-sm font-semibold sm:gap-2 sm:px-6 sm:py-3.5 sm:text-base text-white cursor-pointer transition active:scale-[0.98]"
+                  className="flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-2xl px-3 py-3 text-sm font-semibold sm:gap-2 sm:px-6 sm:py-3.5 sm:text-base text-white cursor-pointer transition hover:bg-white/15 active:scale-[0.98]"
                   style={{
                     background: "rgba(255,255,255,0.1)",
                     border: "1px solid rgba(255,255,255,0.38)",
@@ -3325,25 +3345,27 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 </button>
               </div>
 
-              {/* Hàng 2 ngay bên dưới: 4 nút (Giữ nguyên, Chép cho AI, Lưu Quẻ, Mở Quẻ) trên mobile */}
+              {/* Hàng 2 ngay bên dưới: 4 nút (Giữ nguyên, Chép cho AI, Lưu Quẻ, Mở Quẻ) cùng chung phong cách */}
               <div className="grid grid-cols-2 gap-2 w-full max-w-xl">
                 {/* Nút Giữ nguyên trên mobile */}
                 <RitualHoldButton
                   id="hero-mobile-keep-cards"
                   active={isKeepCards}
                   onClick={(isRitual) => handleToggleKeepCards(isRitual)}
-                  className={`flex min-w-0 items-center justify-center gap-1.5 rounded-xl px-2.5 py-2.5 text-xs font-semibold transition cursor-pointer shadow-md active:scale-95 select-none ${
-                    isKeepCards
-                      ? "bg-[#fbf4e6] text-[#7c5516] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25"
-                      : "bg-white/95 text-zinc-800 border border-stone-200 font-medium"
-                  }`}
+                  wrapperClassName="flex min-w-0"
+                  className="flex min-w-0 w-full items-center justify-center gap-1.5 rounded-2xl px-2.5 py-2.5 text-xs font-semibold text-white transition cursor-pointer shadow-md hover:bg-white/15 active:scale-95 select-none"
+                  style={{
+                    background: isKeepCards ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.1)",
+                    border: isKeepCards ? "1px solid rgba(255,255,255,0.55)" : "1px solid rgba(255,255,255,0.38)",
+                    backdropFilter: "blur(8px)",
+                  }}
                   title="Bấm để Giữ nguyên lá bài"
                 >
                   <span
                     className={`w-3.5 h-3.5 rounded flex items-center justify-center text-[10px] font-bold transition-all ${
                       isKeepCards
-                        ? "bg-[#C4963E] text-zinc-950 shadow-xs"
-                        : "border border-stone-400 bg-stone-50 text-transparent"
+                        ? "bg-white text-zinc-950 shadow-xs"
+                        : "border border-white/50 bg-white/5 text-transparent"
                     }`}
                   >
                     ✓
@@ -3356,13 +3378,12 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   <button
                     type="button"
                     onClick={handleCopyCardsForAI}
-                    className={`flex w-full min-w-0 items-center justify-center gap-1 rounded-xl px-2.5 py-2.5 text-xs font-semibold transition cursor-pointer shadow-md active:scale-95 select-none ${
-                      copiedAI
-                        ? "bg-emerald-600 text-white border border-emerald-500 shadow-md"
-                        : isRitualCompleted
-                        ? "bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-zinc-950 font-bold border-2 border-amber-300 shadow-lg"
-                        : "bg-[#251D16] text-amber-200 border border-amber-600/50 shadow-sm"
-                    }`}
+                    className="flex w-full min-w-0 items-center justify-center gap-1 rounded-2xl px-2.5 py-2.5 text-xs font-semibold text-white transition cursor-pointer shadow-md hover:bg-white/15 active:scale-95 select-none"
+                    style={{
+                      background: copiedAI ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.1)",
+                      border: copiedAI ? "1px solid rgba(16,185,129,0.7)" : "1px solid rgba(255,255,255,0.38)",
+                      backdropFilter: "blur(8px)",
+                    }}
                   >
                     <span className="text-xs shrink-0">
                       {copiedAI ? "✓" : isRitualCompleted ? "✨" : "📋"}
@@ -3386,9 +3407,14 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 <button
                   type="button"
                   onClick={() => setIsSaveDialogOpen(true)}
-                  className="flex min-w-0 items-center justify-center gap-1.5 rounded-xl px-2.5 py-2.5 text-xs font-semibold bg-[#1C1712] text-amber-200 border border-amber-600/50 transition cursor-pointer shadow-md active:scale-95 select-none"
+                  className="flex min-w-0 items-center justify-center gap-1.5 rounded-2xl px-2.5 py-2.5 text-xs font-semibold text-white transition cursor-pointer shadow-md hover:bg-white/15 active:scale-95 select-none"
+                  style={{
+                    background: "rgba(255,255,255,0.1)",
+                    border: "1px solid rgba(255,255,255,0.38)",
+                    backdropFilter: "blur(8px)",
+                  }}
                 >
-                  <Bookmark className="w-3.5 h-3.5 text-amber-400" />
+                  <Bookmark className="w-3.5 h-3.5 text-white" />
                   <span>Lưu Quẻ</span>
                 </button>
 
@@ -3399,12 +3425,17 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     reloadSavedSpreads();
                     setIsSavedSpreadsModalOpen(true);
                   }}
-                  className="flex min-w-0 items-center justify-center gap-1.5 rounded-xl px-2.5 py-2.5 text-xs font-semibold bg-[#1C1712] text-amber-200 border border-amber-600/50 transition cursor-pointer shadow-md active:scale-95 select-none"
+                  className="flex min-w-0 items-center justify-center gap-1.5 rounded-2xl px-2.5 py-2.5 text-xs font-semibold text-white transition cursor-pointer shadow-md hover:bg-white/15 active:scale-95 select-none"
+                  style={{
+                    background: "rgba(255,255,255,0.1)",
+                    border: "1px solid rgba(255,255,255,0.38)",
+                    backdropFilter: "blur(8px)",
+                  }}
                 >
-                  <FolderOpen className="w-3.5 h-3.5 text-amber-400" />
+                  <FolderOpen className="w-3.5 h-3.5 text-white" />
                   <span>Mở Quẻ</span>
                   {savedSpreads.length > 0 && (
-                    <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-500 text-zinc-950">
+                    <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-white/20 text-white border border-white/30">
                       {savedSpreads.length}
                     </span>
                   )}
