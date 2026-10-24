@@ -32,7 +32,6 @@ import { BrandMark } from "./BrandMark";
 import { NavTab } from "./Header";
 import { HEXAGRAMS, getTransformedHexagram } from "../data/hexagrams";
 import { AppUser } from "../services/authService";
-import { PRESET_DECK_VERSION } from "../services/cardImageStore";
 
 export interface LandingPageProps {
   currentUser?: AppUser | null;
@@ -86,8 +85,6 @@ export interface DynamicCardItem {
   positionLabel?: string;
   positionDesc?: string;
   isReversed?: boolean;
-  deckId?: string;
-  deckName?: string;
 }
 
 export const SINGLE_POSITIONS = [
@@ -136,143 +133,11 @@ export const THAP_TINH_POSITIONS = [
   { index: 9, label: "10. Lá Bài Khuyên Bảo", sub: "Minh triết tối hậu", desc: "Lời chỉ dẫn thấu đáo nhất từ Kinh Dịch giúp bạn định hình vận mệnh và làm chủ tương lai." },
 ];
 
-/* ══════════════════════════════════════════════════════════════════
-    HỆ THỐNG BỘ BÀI TRANG CHỦ (TÙY MỖI LẦN RANDOM TẤT CẢ BỘ BÀI)
-   ══════════════════════════════════════════════════════════════════ */
-export interface LandingDeckConfig {
-  id: string;
-  name: string;
-  shortName: string;
-  description: string;
-  back: string;
-  ext?: string;
-  hasYaoCards?: boolean;
-}
-
-export const LANDING_PRESET_DECKS: LandingDeckConfig[] = [
-  {
-    id: "deck_quan_tu",
-    name: "Bộ Quân Tử (64 Quẻ)",
-    shortName: "Quân Tử",
-    description: "Bộ bài Quân Tử phong cách chiêm tinh huyền bí, hàm súc đạo lý người quân tử",
-    back: "/decks/deck_quan_tu/back.svg",
-    ext: "jpg",
-  },
-  {
-    id: "deck_bo_khong_chu",
-    name: "Bộ Không Chữ (Nguyên Bản)",
-    shortName: "Không Chữ",
-    description: "Bộ bài Kinh Dịch 64 quẻ không in chữ, tranh thủy mặc thuần khiết",
-    back: "/decks/deck_bo_khong_chu/back.jpg",
-    ext: "png",
-  },
-  {
-    id: "deck_bo_1",
-    name: "Bộ 1 (Nguyên Bản Có Chữ)",
-    shortName: "Bộ 1 Có Chữ",
-    description: "Bộ bài Kinh Dịch 64 quẻ nguyên bản có chữ giải nghĩa và quẻ hào chi tiết",
-    back: "/decks/deck_bo_1/back.jpg",
-    ext: "png",
-  },
-  {
-    id: "deck_bo_2",
-    name: "Bộ 2 (Có Chữ)",
-    shortName: "Bộ 2 Có Chữ",
-    description: "Bộ bài Kinh Dịch 64 quẻ hoa văn cổ thư đồ họa có chữ sắc nét",
-    back: "/decks/deck_bo_2/back.svg",
-    ext: "png",
-  },
-  {
-    id: "deck_ngu_che",
-    name: "Bộ Ngự Chế Tinh Túy (Có Chữ)",
-    shortName: "Ngự Chế Có Chữ",
-    description: "Bộ bài 64 quẻ Ngự Chế Tân Tập Đoán Dịch Tinh Túy (Cố Cung Bản)",
-    back: `/decks/deck_ngu_che/back.jpg?v=${PRESET_DECK_VERSION}`,
-    ext: "png",
-  },
-  {
-    id: "deck_oss",
-    name: "Bộ Thần Bách Dịch Họa (OSS 384 Hào)",
-    shortName: "Thần Bách Dịch Họa",
-    description: "Bộ bài chiêm tinh Thần Bách Dịch Họa 64 quẻ toàn giác & 384 hào từ sinh động",
-    back: "/assets/oss/1/1b.webp",
-    ext: "webp",
-    hasYaoCards: true,
-  },
-  {
-    id: "deck_oss_zh",
-    name: "Bộ Hán Bản Thần Bách Dịch Họa (OSS Hán)",
-    shortName: "Hán Bản OSS",
-    description: "Bộ bài Thần Bách Dịch Họa nguyên tác chữ Hán cổ truyền cung đình",
-    back: "/assets/oss_zh/1/1b.webp",
-    ext: "webp",
-    hasYaoCards: true,
-  },
-];
-
-export function getRandomLandingDeckId(excludeId?: string): string {
-  const pool = excludeId
-    ? LANDING_PRESET_DECKS.filter((d) => d.id !== excludeId)
-    : LANDING_PRESET_DECKS;
-  const picked = pool[Math.floor(Math.random() * pool.length)];
-  return picked.id;
-}
-
-export function getLandingDeckConfig(deckId: string): LandingDeckConfig {
-  const found = LANDING_PRESET_DECKS.find((d) => d.id === deckId);
-  return found || LANDING_PRESET_DECKS[0];
-}
-
-export function getLandingCardFrontUrl(deckId: string, hexNumber: number, yaoNumber?: number): string {
-  if (deckId === "deck_oss_zh") {
-    if (yaoNumber && yaoNumber >= 1 && yaoNumber <= 6) {
-      return `/assets/oss_zh/${hexNumber}/${hexNumber}-${yaoNumber}a.webp`;
-    }
-    return `/assets/oss_zh/${hexNumber}/${hexNumber}a.webp`;
-  }
-  // Mọi thẻ bài Hào Động (1..6) đều lấy hình chuẩn thẻ bài Hào Từ từ kho Bách Khoa Hexagram (/assets/oss/)
-  if (yaoNumber && yaoNumber >= 1 && yaoNumber <= 6) {
-    return `/assets/oss/${hexNumber}/${hexNumber}-${yaoNumber}a.webp`;
-  }
-  if (deckId === "deck_oss") {
-    return `/assets/oss/${hexNumber}/${hexNumber}a.webp`;
-  }
-  const cfg = getLandingDeckConfig(deckId);
-  const vQuery = deckId === "deck_ngu_che" ? `?v=${PRESET_DECK_VERSION}` : "";
-  return `/decks/${deckId}/${hexNumber}.${cfg.ext || "png"}${vQuery}`;
-}
-
-export function getLandingCardBackUrl(deckId: string, hexNumber?: number, yaoNumber?: number): string {
-  if (deckId === "deck_oss_zh") {
-    if (hexNumber) {
-      if (yaoNumber && yaoNumber >= 1 && yaoNumber <= 6) {
-        return `/assets/oss_zh/${hexNumber}/${hexNumber}-${yaoNumber}b.webp`;
-      }
-      return `/assets/oss_zh/${hexNumber}/${hexNumber}b.webp`;
-    }
-    return `/assets/oss_zh/1/1b.webp`;
-  }
-  // Thẻ bài Hào Động lấy mặt sau tương ứng chuẩn từ kho Bách Khoa Hexagram
-  if (hexNumber && yaoNumber && yaoNumber >= 1 && yaoNumber <= 6) {
-    return `/assets/oss/${hexNumber}/${hexNumber}-${yaoNumber}b.webp`;
-  }
-  if (deckId === "deck_oss") {
-    if (hexNumber) {
-      return `/assets/oss/${hexNumber}/${hexNumber}b.webp`;
-    }
-    return `/assets/oss/1/1b.webp`;
-  }
-  const cfg = getLandingDeckConfig(deckId);
-  return cfg.back;
-}
-
-/* ─── Helper: Rút 1 lá ngẫu nhiên theo bộ bài đã chọn (hoặc ngẫu nhiên từng bộ) ─── */
-function drawRandomCard(deckId?: string): DynamicCardItem {
+/* ─── Helper: Rút 1 lá ngẫu nhiên từ 64 quẻ và 384 hào ─── */
+function drawRandomCard(): DynamicCardItem {
   if (!HEXAGRAMS || HEXAGRAMS.length === 0) {
-    const defaultDeckId = deckId === "random_mix" ? getRandomLandingDeckId() : (deckId || "deck_quan_tu");
-    const cfg = getLandingDeckConfig(defaultDeckId);
     return {
-      id: `${defaultDeckId}-1`,
+      id: "1",
       type: "hexagram",
       hexNumber: 1,
       symbol: "䷀",
@@ -280,24 +145,18 @@ function drawRandomCard(deckId?: string): DynamicCardItem {
       name: "Thuần Càn",
       sub: "Càn Vi Thiên (Trời cương kiện)",
       desc: "Khởi đầu lớn lao, hanh thông suôn sẻ, thu được lợi ích chính đáng.",
-      img: getLandingCardFrontUrl(defaultDeckId, 1),
-      backImg: getLandingCardBackUrl(defaultDeckId, 1),
-      deckId: defaultDeckId,
-      deckName: cfg.name,
+      img: "/assets/oss/1/1a.webp",
+      backImg: "/assets/oss/1/1b.webp",
     };
   }
 
-  const actualDeckId = (deckId === "random_mix")
-    ? getRandomLandingDeckId()
-    : (deckId || getRandomLandingDeckId());
-  const cfg = getLandingDeckConfig(actualDeckId);
   const hex = HEXAGRAMS[Math.floor(Math.random() * HEXAGRAMS.length)];
-  const isYao = !!cfg.hasYaoCards && Math.random() > 0.45;
+  const isYao = Math.random() > 0.45; // ~55% rút Hào (384 hào), ~45% rút Quẻ chính (64 quẻ)
 
   if (isYao && hex.lineMeanings && hex.lineMeanings.length > 0) {
     const line = hex.lineMeanings[Math.floor(Math.random() * hex.lineMeanings.length)];
     return {
-      id: `${actualDeckId}-${hex.number}-${line.line}`,
+      id: `${hex.number}-${line.line}`,
       type: "yao",
       hexNumber: hex.number,
       yaoNumber: line.line,
@@ -306,15 +165,13 @@ function drawRandomCard(deckId?: string): DynamicCardItem {
       name: `${hex.name} · ${line.name}`,
       sub: `${hex.vietnameseName || hex.name} · Hào ${line.line}/6`,
       desc: `${line.text} — ${line.meaning}`,
-      img: getLandingCardFrontUrl(actualDeckId, hex.number, line.line),
-      backImg: getLandingCardBackUrl(actualDeckId, hex.number, line.line),
-      deckId: actualDeckId,
-      deckName: cfg.name,
+      img: `/assets/oss/${hex.number}/${hex.number}-${line.line}a.webp`,
+      backImg: `/assets/oss/${hex.number}/${hex.number}-${line.line}b.webp`,
     };
   }
 
   return {
-    id: `${actualDeckId}-${hex.number}`,
+    id: `${hex.number}`,
     type: "hexagram",
     hexNumber: hex.number,
     symbol: hex.symbol,
@@ -322,23 +179,14 @@ function drawRandomCard(deckId?: string): DynamicCardItem {
     name: hex.name,
     sub: hex.vietnameseName || `${hex.upperTrigram} trên ${hex.lowerTrigram}`,
     desc: hex.overview || hex.judgment || hex.image,
-    img: getLandingCardFrontUrl(actualDeckId, hex.number),
-    backImg: getLandingCardBackUrl(actualDeckId, hex.number),
-    deckId: actualDeckId,
-    deckName: cfg.name,
+    img: `/assets/oss/${hex.number}/${hex.number}a.webp`,
+    backImg: `/assets/oss/${hex.number}/${hex.number}b.webp`,
   };
 }
 
-/* ─── Helper: Rút danh sách bài cho từng cấu hình trải trận & bộ bài ─── */
-function drawCardsForMode(mode: SpreadMode, deckId?: string): DynamicCardItem[] {
-  const chosenDeckId = (deckId === "random_mix")
-    ? "random_mix"
-    : (deckId || getRandomLandingDeckId());
-
+/* ─── Helper: Rút danh sách bài cho từng cấu hình ─── */
+function drawCardsForMode(mode: SpreadMode): DynamicCardItem[] {
   if (mode === "thap_la") {
-    // Trận Tháp La Kinh Dịch: CHỈ sử dụng hình trong kho bách khoa Hexagram (Bộ Thần Bách Dịch Họa 64 Quẻ & 384 Hào OSS)
-    const actualDeckId = (chosenDeckId === "deck_oss_zh") ? "deck_oss_zh" : "deck_oss";
-    const cfg = getLandingDeckConfig(actualDeckId);
     // 1. Quẻ Chủ (Bản Quái): Đầu tiên là bốc lá Quẻ Chủ từ 64 quẻ
     const priHex = HEXAGRAMS[Math.floor(Math.random() * HEXAGRAMS.length)];
 
@@ -368,7 +216,7 @@ function drawCardsForMode(mode: SpreadMode, deckId?: string): DynamicCardItem[] 
     }
 
     const primaryCard: DynamicCardItem = {
-      id: `thapla-primary-${actualDeckId}-${priHex.number}`,
+      id: `thapla-primary-${priHex.number}`,
       type: "hexagram",
       hexNumber: priHex.number,
       symbol: priHex.symbol,
@@ -376,16 +224,14 @@ function drawCardsForMode(mode: SpreadMode, deckId?: string): DynamicCardItem[] 
       name: `Quẻ Chủ: ${priHex.name}`,
       sub: `Bản Quái • Định vị bối cảnh (#${priHex.number})`,
       desc: `【Bản Quái: Định Vị Bối Cảnh】Thoán từ: "${priHex.judgment}" | Đại Tượng: "${priHex.image}" — ${priHex.overview || priHex.advice}`,
-      img: getLandingCardFrontUrl(actualDeckId, priHex.number),
-      backImg: getLandingCardBackUrl(actualDeckId, priHex.number),
+      img: `/assets/oss/${priHex.number}/${priHex.number}a.webp`,
+      backImg: `/assets/oss/${priHex.number}/${priHex.number}b.webp`,
       positionLabel: "Quẻ Chủ (Bản Quái)",
       positionDesc: "Định vị hiện trạng và bức tranh nền tảng tổng quan",
-      deckId: actualDeckId,
-      deckName: cfg.name,
     };
 
     const transformedCard: DynamicCardItem = {
-      id: `thapla-transformed-${actualDeckId}-${transHex.number}`,
+      id: `thapla-transformed-${transHex.number}`,
       type: "hexagram",
       hexNumber: transHex.number,
       symbol: transHex.symbol,
@@ -393,24 +239,20 @@ function drawCardsForMode(mode: SpreadMode, deckId?: string): DynamicCardItem[] 
       name: changingLines.length === 0 ? `Quẻ Biến (Đồng Quẻ Chủ): ${transHex.name}` : `Quẻ Biến: ${transHex.name}`,
       sub: changingLines.length === 0 ? `Biến Quái • Động 0 hào đồng Bản Quái (#${transHex.number})` : `Biến Quái • Định hướng tương lai (#${transHex.number})`,
       desc: `【Biến Quái: Định Hướng Tương Lai】Quái từ: "${transHex.judgment}" | Đại Tượng: "${transHex.image}" — ${transHex.overview || transHex.advice}`,
-      img: getLandingCardFrontUrl(actualDeckId, transHex.number),
-      backImg: getLandingCardBackUrl(actualDeckId, transHex.number),
+      img: `/assets/oss/${transHex.number}/${transHex.number}a.webp`,
+      backImg: `/assets/oss/${transHex.number}/${transHex.number}b.webp`,
       positionLabel: changingLines.length === 0 ? "Quẻ Biến (Đồng Quẻ Chủ)" : "Quẻ Biến (Biến Quái)",
       positionDesc: changingLines.length === 0 ? "Động 0 hào: Quẻ biến giữ nguyên quẻ chủ, lấy tĩnh chế động" : "Định hướng xu thế phát triển và kết quả chuyển dịch",
-      deckId: actualDeckId,
-      deckName: cfg.name,
     };
 
-    // 3. Các lá hào từ thay đổi theo các hào động AI đã chọn
+    // 3. Các lá hào từ (ở 384 lá bài hào từ) thay đổi theo các hào động AI đã chọn
     const changingYaoCards: DynamicCardItem[] = [];
     changingLines.forEach((lineNum) => {
       const isYangToYin = priHex.lines?.[lineNum - 1] === 1;
       const lineMeaning = priHex.lineMeanings?.find((m) => m.line === lineNum);
       const yaoName = lineMeaning?.name || `Hào ${lineNum}`;
-      const yaoDeckId = actualDeckId === "deck_oss_zh" ? "deck_oss_zh" : "deck_oss";
-      const yaoDeckCfg = getLandingDeckConfig(yaoDeckId);
       changingYaoCards.push({
-        id: `thapla-yao-${yaoDeckId}-${priHex.number}-${lineNum}`,
+        id: `thapla-yao-${priHex.number}-${lineNum}`,
         type: "yao",
         hexNumber: priHex.number,
         yaoNumber: lineNum,
@@ -419,22 +261,18 @@ function drawCardsForMode(mode: SpreadMode, deckId?: string): DynamicCardItem[] 
         name: `Hào ${lineNum}: ${priHex.name} · ${yaoName}`,
         sub: `Hào Động • Lời khuyên then chốt (${isYangToYin ? "⚊ Dương ➔ ⚏ Âm" : "⚏ Âm ➔ ⚊ Dương"})`,
         desc: `【Hào Động: Lời Khuyên Then Chốt】Hào từ: "${lineMeaning?.text || ""}" — ${lineMeaning?.meaning || ""}${lineMeaning?.detailedExplanation ? ` | Biến số mấu chốt: ${lineMeaning.detailedExplanation}` : ""}`,
-        img: getLandingCardFrontUrl(yaoDeckId, priHex.number, lineNum),
-        backImg: getLandingCardBackUrl(yaoDeckId, priHex.number, lineNum),
+        img: `/assets/oss/${priHex.number}/${priHex.number}-${lineNum}a.webp`,
+        backImg: `/assets/oss/${priHex.number}/${priHex.number}-${lineNum}b.webp`,
         positionLabel: `Hào Động: Hào ${lineNum}`,
         positionDesc: `Bước ngoặt biến dịch then chốt do AI phân định tại vị trí Hào ${lineNum}`,
-        deckId: yaoDeckId,
-        deckName: yaoDeckCfg.name,
       });
     });
 
     if (changingYaoCards.length === 0) {
       const defaultLine = 1;
       const lineMeaning = priHex.lineMeanings?.find((m) => m.line === defaultLine);
-      const yaoDeckId = actualDeckId === "deck_oss_zh" ? "deck_oss_zh" : "deck_oss";
-      const yaoDeckCfg = getLandingDeckConfig(yaoDeckId);
       changingYaoCards.push({
-        id: `thapla-yao-${yaoDeckId}-${priHex.number}-tinh`,
+        id: `thapla-yao-${priHex.number}-tinh`,
         type: "yao",
         hexNumber: priHex.number,
         yaoNumber: defaultLine,
@@ -443,12 +281,10 @@ function drawCardsForMode(mode: SpreadMode, deckId?: string): DynamicCardItem[] 
         name: `${priHex.name} · Lục Hào Toàn Tĩnh`,
         sub: "AI Động 0 Hào • Quẻ Biến vẫn là Quẻ Chủ",
         desc: `Toàn quẻ không có hào động. Giữ vững tâm tĩnh, dĩ bất biến ứng vạn biến, bám sát Thoán Từ: "${priHex.judgment}" — ${lineMeaning?.meaning || priHex.overview || ""}`,
-        img: getLandingCardFrontUrl(yaoDeckId, priHex.number, defaultLine),
-        backImg: getLandingCardBackUrl(yaoDeckId, priHex.number, defaultLine),
+        img: `/assets/oss/${priHex.number}/${priHex.number}-${defaultLine}a.webp`,
+        backImg: `/assets/oss/${priHex.number}/${priHex.number}-${defaultLine}b.webp`,
         positionLabel: "Hào Tĩnh: 0 Hào Động",
         positionDesc: "Không có biến động, cục diện vững vàng, lấy tĩnh chế động",
-        deckId: yaoDeckId,
-        deckName: yaoDeckCfg.name,
       });
     }
 
@@ -462,7 +298,7 @@ function drawCardsForMode(mode: SpreadMode, deckId?: string): DynamicCardItem[] 
     let attempts = 0;
     while (list.length < 7 && attempts < 100) {
       attempts++;
-      const c = drawRandomCard(chosenDeckId);
+      const c = drawRandomCard();
       if (!seen.has(c.id)) {
         seen.add(c.id);
         const pos = THAT_TINH_POSITIONS[list.length];
@@ -482,7 +318,7 @@ function drawCardsForMode(mode: SpreadMode, deckId?: string): DynamicCardItem[] 
     let attempts = 0;
     while (list.length < 10 && attempts < 120) {
       attempts++;
-      const c = drawRandomCard(chosenDeckId);
+      const c = drawRandomCard();
       if (!seen.has(c.id)) {
         seen.add(c.id);
         const pos = THAP_TINH_POSITIONS[list.length];
@@ -512,7 +348,7 @@ function drawCardsForMode(mode: SpreadMode, deckId?: string): DynamicCardItem[] 
 
   while (list.length < count && attempts < 50) {
     attempts++;
-    const c = drawRandomCard(chosenDeckId);
+    const c = drawRandomCard();
     if (!seen.has(c.id)) {
       seen.add(c.id);
       const pos = positions[list.length];
@@ -1071,14 +907,10 @@ async function formatSpreadForAI(
     : cardsList.map(() => null);
 
   const bakhKhoaNotice = includeFullBakhKhoa ? " - ĐẮC PHÁP KÍNH THIÊN • ĐỊA • NHÂN (TOÀN THƯ BÁCH KHOA)" : "";
-  const deckTitle = cardsList[0]?.deckName ? `【BỘ BÀI CHIÊM BỐC】: ${cardsList[0].deckName}\n` : "";
 
   if (currentMode === "that_tinh") {
     const lines: string[] = [];
     lines.push(`=== THÔNG TIN TRẢI BÀI TRẬN PHÁP THẤT TINH (7 LÁ CHU DỊCH${bakhKhoaNotice}) ===`);
-    if (deckTitle) {
-      lines.push(deckTitle);
-    }
     if (cleanedQuestion) {
       lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
       lines.push(`"${cleanedQuestion}"\n`);
@@ -1126,9 +958,6 @@ async function formatSpreadForAI(
   if (currentMode === "thap_tinh") {
     const lines: string[] = [];
     lines.push(`=== THÔNG TIN TRẢI BÀI TRẬN PHÁP THẬP TINH (10 LÁ CELTIC CROSS CHU DỊCH${bakhKhoaNotice}) ===`);
-    if (deckTitle) {
-      lines.push(deckTitle);
-    }
     if (cleanedQuestion) {
       lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
       lines.push(`"${cleanedQuestion}"\n`);
@@ -1187,9 +1016,6 @@ async function formatSpreadForAI(
 
     const lines: string[] = [];
     lines.push(`=== BẢNG LUẬN GIẢI THÁP LA KINH DỊCH (周易塔羅${bakhKhoaNotice}) ===`);
-    if (deckTitle) {
-      lines.push(deckTitle);
-    }
     if (cleanedQuestion) {
       lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
       lines.push(`"${cleanedQuestion}"\n`);
@@ -1400,9 +1226,6 @@ async function formatSpreadForAI(
   const lines: string[] = [];
   lines.push(`=== THÔNG TIN TRẢI BÀI KINH DỊCH (THỨ TỰ TỪ TRÁI SANG PHẢI${bakhKhoaNotice}) ===`);
   lines.push(`Trải bài: ${getSpreadName(currentMode)} | Số lượng: ${cardsList.length} lá`);
-  if (deckTitle) {
-    lines.push(deckTitle);
-  }
   if (cleanedQuestion) {
     lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
     lines.push(`"${cleanedQuestion}"\n`);
@@ -1785,13 +1608,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   onOpenAuthModal,
   onLogout,
 }) => {
-  /* Chế độ chọn bộ bài: "random" (mặc định ngẫu nhiên tất cả bộ bài tùy mỗi lần) hoặc ID bộ cụ thể */
-  const [deckSelectionMode, setDeckSelectionMode] = useState<string>("random");
-  const initialLandingDeckRef = useRef<string>(getRandomLandingDeckId());
-  const [activeDeckId, setActiveDeckId] = useState<string>(initialLandingDeckRef.current);
   /* Spread mode state (random initial mode from 1, 1->2, 1->3, 3->5) */
   const [mode, setMode] = useState<SpreadMode>(() => SPREAD_MODES[Math.floor(Math.random() * SPREAD_MODES.length)]);
-  const [cards, setCards] = useState<DynamicCardItem[]>(() => drawCardsForMode(mode, initialLandingDeckRef.current));
+  const [cards, setCards] = useState<DynamicCardItem[]>(() => drawCardsForMode(mode));
 
   /* Trạng thái chiều của Lá thứ 2 trong Thập Tinh Trận: false = Xuôi (Hỗ Trợ), true = Ngược (Trở Ngại) - tỷ lệ xuất hiện 50% */
   const [isCard2Reversed, setIsCard2Reversed] = useState<boolean>(() => Math.random() < 0.5);
@@ -2011,9 +1830,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     }
     if (Array.isArray(item.cards) && item.cards.length > 0) {
       setCards(item.cards);
-      if (item.cards[0]?.deckId) {
-        setActiveDeckId(item.cards[0].deckId);
-      }
     }
     if (typeof item.isCard2Reversed === "boolean") {
       setIsCard2Reversed(item.isCard2Reversed);
@@ -2068,9 +1884,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     }
     if (Array.isArray(item.cards) && item.cards.length > 0) {
       setCards(item.cards);
-      if (item.cards[0]?.deckId) {
-        setActiveDeckId(item.cards[0].deckId);
-      }
     }
     if (typeof item.isCard2Reversed === "boolean") {
       setIsCard2Reversed(item.isCard2Reversed);
@@ -2904,174 +2717,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     }
   }, [isCard2Reversed]);
 
-  /* ── Đổi ngẫu nhiên một bộ bài mới từ tất cả các bộ bài ── */
-  const handleRandomizeDeck = useCallback(() => {
-    if (isKeepCards) return;
-    const nextDeckId = getRandomLandingDeckId(activeDeckId);
-    setActiveDeckId(nextDeckId);
-    setDeckSelectionMode("random");
-    const remappedCards = cards.map((c) => {
-      if (mode === "thap_la") {
-        const yaoDeckId = nextDeckId === "deck_oss_zh" ? "deck_oss_zh" : "deck_oss";
-        const yaoCfg = getLandingDeckConfig(yaoDeckId);
-        return {
-          ...c,
-          deckId: yaoDeckId,
-          deckName: yaoCfg.name,
-          img: getLandingCardFrontUrl(yaoDeckId, c.hexNumber, c.type === "yao" ? c.yaoNumber : undefined),
-          backImg: getLandingCardBackUrl(yaoDeckId, c.hexNumber, c.type === "yao" ? c.yaoNumber : undefined),
-        };
-      }
-      if (c.type === "yao" && c.yaoNumber) {
-        const yaoDeckId = nextDeckId === "deck_oss_zh" ? "deck_oss_zh" : "deck_oss";
-        const yaoCfg = getLandingDeckConfig(yaoDeckId);
-        return {
-          ...c,
-          deckId: yaoDeckId,
-          deckName: yaoCfg.name,
-          img: getLandingCardFrontUrl(yaoDeckId, c.hexNumber, c.yaoNumber),
-          backImg: getLandingCardBackUrl(yaoDeckId, c.hexNumber, c.yaoNumber),
-        };
-      }
-      const cfg = getLandingDeckConfig(nextDeckId);
-      return {
-        ...c,
-        deckId: nextDeckId,
-        deckName: cfg.name,
-        img: getLandingCardFrontUrl(nextDeckId, c.hexNumber),
-        backImg: getLandingCardBackUrl(nextDeckId, c.hexNumber),
-      };
-    });
-    setCards(remappedCards);
-    const deckName = getLandingDeckConfig(nextDeckId).name;
-    setCopiedToast(`🎲 Đã đổi sang: ${deckName}`);
-    setTimeout(() => setCopiedToast(null), 3000);
-  }, [activeDeckId, cards, isKeepCards, mode]);
-
-  /* ── Chọn bộ bài cụ thể hoặc bật chế độ ngẫu nhiên ── */
-  const handleSelectSpecificDeck = useCallback((newDeckId: string) => {
-    if (isKeepCards) return;
-    if (newDeckId === "random") {
-      setDeckSelectionMode("random");
-      const nextDeckId = getRandomLandingDeckId(activeDeckId);
-      setActiveDeckId(nextDeckId);
-      const remappedCards = cards.map((c) => {
-        if (mode === "thap_la") {
-          const yaoDeckId = nextDeckId === "deck_oss_zh" ? "deck_oss_zh" : "deck_oss";
-          const yaoCfg = getLandingDeckConfig(yaoDeckId);
-          return {
-            ...c,
-            deckId: yaoDeckId,
-            deckName: yaoCfg.name,
-            img: getLandingCardFrontUrl(yaoDeckId, c.hexNumber, c.type === "yao" ? c.yaoNumber : undefined),
-            backImg: getLandingCardBackUrl(yaoDeckId, c.hexNumber, c.type === "yao" ? c.yaoNumber : undefined),
-          };
-        }
-        if (c.type === "yao" && c.yaoNumber) {
-          const yaoDeckId = nextDeckId === "deck_oss_zh" ? "deck_oss_zh" : "deck_oss";
-          const yaoCfg = getLandingDeckConfig(yaoDeckId);
-          return {
-            ...c,
-            deckId: yaoDeckId,
-            deckName: yaoCfg.name,
-            img: getLandingCardFrontUrl(yaoDeckId, c.hexNumber, c.yaoNumber),
-            backImg: getLandingCardBackUrl(yaoDeckId, c.hexNumber, c.yaoNumber),
-          };
-        }
-        const cfg = getLandingDeckConfig(nextDeckId);
-        return {
-          ...c,
-          deckId: nextDeckId,
-          deckName: cfg.name,
-          img: getLandingCardFrontUrl(nextDeckId, c.hexNumber),
-          backImg: getLandingCardBackUrl(nextDeckId, c.hexNumber),
-        };
-      });
-      setCards(remappedCards);
-      const deckName = getLandingDeckConfig(nextDeckId).name;
-      setCopiedToast(`🎲 Đã bật Ngẫu Nhiên: ${deckName}`);
-      setTimeout(() => setCopiedToast(null), 3000);
-      return;
-    }
-    setDeckSelectionMode(newDeckId);
-    setActiveDeckId(newDeckId);
-    if (newDeckId === "random_mix") {
-      const mixedCards = cards.map((c) => {
-        if (mode === "thap_la") {
-          const yaoDeckId = "deck_oss";
-          const yaoCfg = getLandingDeckConfig(yaoDeckId);
-          return {
-            ...c,
-            deckId: yaoDeckId,
-            deckName: yaoCfg.name,
-            img: getLandingCardFrontUrl(yaoDeckId, c.hexNumber, c.type === "yao" ? c.yaoNumber : undefined),
-            backImg: getLandingCardBackUrl(yaoDeckId, c.hexNumber, c.type === "yao" ? c.yaoNumber : undefined),
-          };
-        }
-        if (c.type === "yao" && c.yaoNumber) {
-          const yaoDeckId = "deck_oss";
-          const yaoCfg = getLandingDeckConfig(yaoDeckId);
-          return {
-            ...c,
-            deckId: yaoDeckId,
-            deckName: yaoCfg.name,
-            img: getLandingCardFrontUrl(yaoDeckId, c.hexNumber, c.yaoNumber),
-            backImg: getLandingCardBackUrl(yaoDeckId, c.hexNumber, c.yaoNumber),
-          };
-        }
-        const randDeck = getRandomLandingDeckId();
-        const cfg = getLandingDeckConfig(randDeck);
-        return {
-          ...c,
-          deckId: randDeck,
-          deckName: cfg.name,
-          img: getLandingCardFrontUrl(randDeck, c.hexNumber),
-          backImg: getLandingCardBackUrl(randDeck, c.hexNumber),
-        };
-      });
-      setCards(mixedCards);
-      setCopiedToast("🔀 Đã trộn ngẫu nhiên tất cả bộ bài (mỗi lá một bộ)");
-      setTimeout(() => setCopiedToast(null), 3000);
-      return;
-    }
-    const remappedCards = cards.map((c) => {
-      if (mode === "thap_la") {
-        const yaoDeckId = newDeckId === "deck_oss_zh" ? "deck_oss_zh" : "deck_oss";
-        const yaoCfg = getLandingDeckConfig(yaoDeckId);
-        return {
-          ...c,
-          deckId: yaoDeckId,
-          deckName: yaoCfg.name,
-          img: getLandingCardFrontUrl(yaoDeckId, c.hexNumber, c.type === "yao" ? c.yaoNumber : undefined),
-          backImg: getLandingCardBackUrl(yaoDeckId, c.hexNumber, c.type === "yao" ? c.yaoNumber : undefined),
-        };
-      }
-      if (c.type === "yao" && c.yaoNumber) {
-        const yaoDeckId = newDeckId === "deck_oss_zh" ? "deck_oss_zh" : "deck_oss";
-        const yaoCfg = getLandingDeckConfig(yaoDeckId);
-        return {
-          ...c,
-          deckId: yaoDeckId,
-          deckName: yaoCfg.name,
-          img: getLandingCardFrontUrl(yaoDeckId, c.hexNumber, c.yaoNumber),
-          backImg: getLandingCardBackUrl(yaoDeckId, c.hexNumber, c.yaoNumber),
-        };
-      }
-      const cfg = getLandingDeckConfig(newDeckId);
-      return {
-        ...c,
-        deckId: newDeckId,
-        deckName: cfg.name,
-        img: getLandingCardFrontUrl(newDeckId, c.hexNumber),
-        backImg: getLandingCardBackUrl(newDeckId, c.hexNumber),
-      };
-    });
-    setCards(remappedCards);
-    const deckName = getLandingDeckConfig(newDeckId).name;
-    setCopiedToast(`🃏 Đã chọn bộ bài: ${deckName}`);
-    setTimeout(() => setCopiedToast(null), 3000);
-  }, [activeDeckId, cards, isKeepCards, mode]);
-
   /* ── Switch Mode Handler ── */
   const handleSwitchMode = (newMode: SpreadMode, isRitual: boolean = false) => {
     if (isKeepCards && newMode === mode) {
@@ -3085,13 +2730,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       rev = Math.random() < 0.5;
       setIsCard2Reversed(rev);
     }
-    const targetDeck = (newMode === "thap_la")
-      ? (activeDeckId === "deck_oss_zh" ? "deck_oss_zh" : "deck_oss")
-      : (deckSelectionMode === "random" ? getRandomLandingDeckId() : activeDeckId);
-    if (deckSelectionMode === "random") {
-      setActiveDeckId(targetDeck);
-    }
-    const newCards = drawCardsForMode(newMode, targetDeck);
+    const newCards = drawCardsForMode(newMode);
     setCards(newCards);
     recordDrawnSpreadToTemp(newMode, newCards, rev, isRitual);
     setTimeout(() => {
@@ -3099,7 +2738,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     }, 50);
   };
 
-  /* ── Shuffle Cards (Rút bài ngẫu nhiên mới từ các bộ bài tùy mỗi lần) ── */
+  /* ── Shuffle Cards (Rút bài ngẫu nhiên mới từ 384 hào & 64 quẻ) ── */
   const handleShuffleCards = useCallback((isRitual: boolean = false) => {
     setIsRitualCompleted(isRitual);
     let rev: boolean | undefined = isCard2Reversed;
@@ -3107,22 +2746,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       rev = Math.random() < 0.5;
       setIsCard2Reversed(rev);
     }
-    const targetDeck = (mode === "thap_la")
-      ? (activeDeckId === "deck_oss_zh" ? "deck_oss_zh" : "deck_oss")
-      : (deckSelectionMode === "random" ? getRandomLandingDeckId(activeDeckId) : activeDeckId);
-    if (deckSelectionMode === "random") {
-      setActiveDeckId(targetDeck);
-    }
-    const newCards = drawCardsForMode(mode, targetDeck);
+    const newCards = drawCardsForMode(mode);
     setCards(newCards);
     recordDrawnSpreadToTemp(mode, newCards, rev, isRitual);
     setTimeout(() => {
       requestTickRef.current();
     }, 50);
-    const deckName = targetDeck === "random_mix" ? "Trộn Hỗn Hợp Tất Cả Bộ Bài" : getLandingDeckConfig(targetDeck).name;
-    setCopiedToast(`🎲 Đã xáo bài • Bộ bài: ${deckName}`);
-    setTimeout(() => setCopiedToast(null), 3000);
-  }, [mode, isCard2Reversed, deckSelectionMode, activeDeckId, recordDrawnSpreadToTemp]);
+  }, [mode, isCard2Reversed, recordDrawnSpreadToTemp]);
 
   const handleShuffleCardsAndScroll = useCallback((isRitual: boolean = false) => {
     handleShuffleCards(isRitual);
@@ -3435,11 +3065,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         rev = Math.random() < 0.5;
         setIsCard2Reversed(rev);
       }
-      const targetDeck = deckSelectionMode === "random" ? getRandomLandingDeckId() : activeDeckId;
-      if (deckSelectionMode === "random") {
-        setActiveDeckId(targetDeck);
-      }
-      const newCards = drawCardsForMode(newMode, targetDeck);
+      const newCards = drawCardsForMode(newMode);
       setCards(newCards);
       recordDrawnSpreadToTemp(newMode, newCards, rev, isRitual);
       setTimeout(() => {
@@ -3450,7 +3076,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         sec.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     },
-    [isKeepCards, mode, deckSelectionMode, activeDeckId, recordDrawnSpreadToTemp]
+    [isKeepCards, mode, recordDrawnSpreadToTemp]
   );
 
   /* ── Bật/Tắt giữ nguyên các lá bài hiện tại (Khóa quẻ khi Tam Kính) ── */
@@ -3518,14 +3144,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       rev = Math.random() < 0.5;
       setIsCard2Reversed(rev);
     }
-    // Ngẫu nhiên một bộ bài trong tất cả các bộ bài tùy mỗi lần
-    const targetDeck = (mode === "thap_la")
-      ? (activeDeckId === "deck_oss_zh" ? "deck_oss_zh" : "deck_oss")
-      : (deckSelectionMode === "random" ? getRandomLandingDeckId(activeDeckId) : activeDeckId);
-    if (deckSelectionMode === "random") {
-      setActiveDeckId(targetDeck);
-    }
-    const newDrawnCards = drawCardsForMode(randomMode, targetDeck);
+    const newDrawnCards = drawCardsForMode(randomMode);
     setCards(newDrawnCards);
     recordDrawnSpreadToTemp(randomMode, newDrawnCards, rev, isRitual);
     setTimeout(() => {
@@ -3538,14 +3157,13 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     }
 
     const spreadName = SPREAD_MODE_NAMES[randomMode] || "Trận Pháp";
-    const deckName = targetDeck === "random_mix" ? "Trộn Hỗn Hợp Tất Cả Bộ Bài" : getLandingDeckConfig(targetDeck).name;
     if (isRitual) {
-      setCopiedToast(`✨ Đắc Pháp Tam Kính: Đã bốc ngẫu nhiên ${spreadName} • ${deckName}!`);
+      setCopiedToast(`✨ Đắc Pháp Tam Kính: Đã bốc ngẫu nhiên ${spreadName} (Mở khóa 100% Bách Khoa cho AI)!`);
     } else {
-      setCopiedToast(`🔮 Đã bốc ngẫu nhiên: ${spreadName} • ${deckName}`);
+      setCopiedToast(`🔮 Đã bốc ngẫu nhiên: ${spreadName}`);
     }
     setTimeout(() => setCopiedToast(null), 3500);
-  }, [isKeepCards, mode, deckSelectionMode, activeDeckId, recordDrawnSpreadToTemp]);
+  }, [isKeepCards, mode, recordDrawnSpreadToTemp]);
 
   /* ── Coin Toss Handler ── */
   const handleTossCoin = () => {
@@ -3839,133 +3457,6 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 </span>
               </p>
 
-              {/* Khung nhập: Nội dung tâm niệm / Câu hỏi (Nằm ngay TRÊN nút Bắt Đầu Bốc Quẻ) */}
-              <div className="hidden lg:block w-full max-w-xl mt-4 mb-2 text-left">
-                <div
-                  className="rounded-2xl p-3.5 sm:p-4 shadow-xl backdrop-blur-md transition focus-within:ring-2 focus-within:ring-[#C4963E]/40"
-                  style={{
-                    background: "linear-gradient(145deg, rgba(28, 25, 36, 0.88) 0%, rgba(16, 14, 22, 0.92) 100%)",
-                    border: "1px solid rgba(196, 150, 62, 0.45)",
-                    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.4), 0 0 16px rgba(196, 150, 62, 0.15)",
-                  }}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <label
-                      htmlFor="hero-desktop-question-input"
-                      className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-300 font-serif"
-                    >
-                      <span className="text-sm">🕊️</span>
-                      <span>Nội dung tâm niệm / Câu hỏi</span>
-                    </label>
-                    {userIntentQuestion.trim() && (
-                      <button
-                        type="button"
-                        onClick={() => handleQuestionChange("")}
-                        className="text-[11px] text-stone-400 hover:text-rose-400 font-medium transition cursor-pointer flex items-center gap-1"
-                        title="Xóa nội dung câu hỏi"
-                      >
-                        ✕ Xóa
-                      </button>
-                    )}
-                  </div>
-
-                  <textarea
-                    id="hero-desktop-question-input"
-                    rows={2}
-                    value={userIntentQuestion}
-                    onChange={(e) => handleQuestionChange(e.target.value)}
-                    placeholder="Nhập câu hỏi, việc đang trăn trở hoặc tâm niệm chiêm bốc của bạn (Ví dụ: Sự nghiệp tháng tới diễn biến ra sao? Có nên đổi việc không?...)"
-                    className="w-full resize-none rounded-xl bg-black/40 border border-[#C4963E]/30 px-3.5 py-2 text-xs sm:text-sm text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-[#C4963E] transition leading-relaxed shadow-inner"
-                  />
-
-                  {/* Mục 2: Dự đoán / Điềm báo của quẻ (Tự điền ở GIỮA theo yêu cầu) */}
-                  <div className="mt-2.5 pt-2.5 border-t border-[#C4963E]/20">
-                    <div className="flex items-center justify-between mb-1">
-                      <label
-                        htmlFor="hero-desktop-hexagram-prediction"
-                        className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-300 font-serif"
-                      >
-                        <span className="text-sm">🔮</span>
-                        <span>Dự đoán / Điềm báo của quẻ (Tự điền)</span>
-                      </label>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={handleRefreshPredictionFromCards}
-                          className="text-[11px] text-amber-400/90 hover:text-amber-200 font-medium transition cursor-pointer flex items-center gap-1"
-                          title="Bấm để lấy gợi ý điềm báo tự động từ các lá bài hiện tại nếu cần"
-                        >
-                          <span>✨ Gợi ý từ quẻ</span>
-                        </button>
-                        {hexagramPrediction.trim() && (
-                          <button
-                            type="button"
-                            onClick={() => handleHexagramPredictionChange("")}
-                            className="text-[11px] text-stone-400 hover:text-rose-400 font-medium transition cursor-pointer flex items-center gap-1"
-                            title="Xóa nội dung dự đoán"
-                          >
-                            ✕ Xóa
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                    <textarea
-                      id="hero-desktop-hexagram-prediction"
-                      rows={2}
-                      value={hexagramPrediction}
-                      onChange={(e) => handleHexagramPredictionChange(e.target.value)}
-                      placeholder="Nhập dự đoán, cảm nhận hoặc điềm báo của quẻ theo nhận định của bạn..."
-                      className="w-full resize-none rounded-xl bg-black/40 border border-amber-500/35 px-3.5 py-2 text-xs sm:text-sm text-amber-100 placeholder:text-stone-500 focus:outline-none focus:border-amber-400 transition leading-relaxed shadow-inner"
-                    />
-                  </div>
-
-                  {/* Mục đáp án tự điền / Chiêm nghiệm thực tế */}
-                  <div className="mt-2.5 pt-2.5 border-t border-[#C4963E]/20">
-                    <div className="flex items-center justify-between mb-1">
-                      <label
-                        htmlFor="hero-desktop-custom-answer"
-                        className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-emerald-300 font-serif"
-                      >
-                        <span className="text-sm">✍️</span>
-                        <span>Đáp án tự điền / Chiêm nghiệm thực tế</span>
-                      </label>
-                      {userCustomAnswer.trim() && (
-                        <button
-                          type="button"
-                          onClick={() => handleCustomAnswerChange("")}
-                          className="text-[11px] text-stone-400 hover:text-rose-400 font-medium transition cursor-pointer flex items-center gap-1"
-                          title="Xóa nội dung đáp án"
-                        >
-                          ✕ Xóa
-                        </button>
-                      )}
-                    </div>
-                    <textarea
-                      id="hero-desktop-custom-answer"
-                      rows={2}
-                      value={userCustomAnswer}
-                      onChange={(e) => handleCustomAnswerChange(e.target.value)}
-                      placeholder="Nhập đáp án, dự cảm hoặc kết quả thực tế để chiêm nghiệm đối chiếu cùng AI..."
-                      className="w-full resize-none rounded-xl bg-black/40 border border-emerald-600/35 px-3.5 py-2 text-xs sm:text-sm text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-emerald-400 transition leading-relaxed shadow-inner"
-                    />
-                  </div>
-
-                  <div className="mt-2 flex flex-wrap items-center justify-between gap-1.5 text-[11px] text-stone-400">
-                    <span className="flex items-center gap-1">
-                      <span className="text-amber-400 font-bold">💡</span>
-                      {userIntentQuestion.trim() || userCustomAnswer.trim()
-                        ? "Câu hỏi & Đáp án tự điền sẽ được tự động đính kèm khi 'Chép cho AI' và 'Lưu Quẻ'."
-                        : "Nhập câu hỏi và đáp án tự điền để đối chiếu chiêm nghiệm chuẩn xác."}
-                    </span>
-                    {(userIntentQuestion.trim() || userCustomAnswer.trim()) && (
-                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-300 bg-emerald-950/80 border border-emerald-500/60 px-2 py-0.5 rounded-full">
-                        ✓ Đã sẵn sàng lưu &amp; chép cho AI
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-
               {/* Dải nút hành động Desktop: Đồng bộ 100% chung 1 phong cách Glassmorphism sang trọng */}
               <div className="hidden lg:flex w-full lg:w-auto flex-col items-start relative z-[55] mt-2">
                 {/* Hàng 1: Bắt Đầu Bốc Quẻ + 64 Quẻ Kinh Dịch (Kính mờ cao cấp, chữ trắng sáng đồng bộ) */}
@@ -4003,144 +3494,6 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     <span className="truncate">64 Quẻ Kinh Dịch</span>
                   </button>
                 </div>
-
-                {/* Hàng 2: Giữ nguyên, Chép cho AI, Lưu Quẻ, Mở Quẻ (Cùng chung 1 phong cách Glassmorphism) */}
-                <div className="flex flex-wrap items-center gap-2.5 mt-3 w-full max-w-xl">
-                  {/* Ô Giữ nguyên */}
-                  <RitualHoldButton
-                    id="hero-desktop-keep-cards"
-                    active={isKeepCards}
-                    onClick={(isRitual) => handleToggleKeepCards(isRitual)}
-                    wrapperClassName="inline-flex"
-                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-semibold text-white transition cursor-pointer shadow-md hover:bg-white/15 hover:scale-[1.02] active:scale-95 select-none"
-                    style={{
-                      background: isKeepCards ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.1)",
-                      border: isKeepCards ? "1px solid rgba(255,255,255,0.55)" : "1px solid rgba(255,255,255,0.38)",
-                      backdropFilter: "blur(8px)",
-                    }}
-                    title="Ô giữ nguyên: Bật/Tắt giữ nguyên các lá bài hiện tại"
-                  >
-                    <span
-                      className={`w-3.5 h-3.5 rounded flex items-center justify-center text-[10px] font-bold transition-all ${
-                        isKeepCards
-                          ? "bg-white text-zinc-950 shadow-xs"
-                          : "border border-white/50 bg-white/5 text-transparent"
-                      }`}
-                    >
-                      ✓
-                    </span>
-                    <span>Giữ nguyên</span>
-                    {isKeepCards && (
-                      <span className="text-[10px] text-white/80 font-normal ml-0.5">
-                        (Đã khóa)
-                      </span>
-                    )}
-                  </RitualHoldButton>
-
-                  {/* Nút Chép cho AI */}
-                  <div className="relative inline-flex items-center">
-                    <button
-                      type="button"
-                      onClick={handleCopyCardsForAI}
-                      className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-2xl text-xs font-semibold text-white transition cursor-pointer shadow-md hover:bg-white/15 hover:scale-[1.02] active:scale-95 select-none"
-                      style={{
-                        background: copiedAI ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.1)",
-                        border: copiedAI ? "1px solid rgba(16,185,129,0.7)" : "1px solid rgba(255,255,255,0.38)",
-                        backdropFilter: "blur(8px)",
-                      }}
-                      title="Sao chép toàn bộ thông tin các lá bài (kèm câu hỏi & đáp án) để gửi cho AI"
-                    >
-                      <span className="text-sm shrink-0">
-                        {copiedAI ? "✓" : isRitualCompleted ? "✨" : "📋"}
-                      </span>
-                      <span className="truncate">
-                        {copiedAI
-                          ? "Đã chép!"
-                          : isRitualCompleted
-                          ? "Chép Toàn Thư"
-                          : "Chép cho AI"}
-                      </span>
-                      {(userIntentQuestion.trim() || userCustomAnswer.trim()) && !copiedAI && (
-                        <span className="text-[10px] font-medium text-white/90 bg-white/20 px-1.5 py-0.2 rounded-full border border-white/30 ml-0.5">
-                          {userIntentQuestion.trim() && userCustomAnswer.trim()
-                            ? "+Hỏi&Đáp"
-                            : userIntentQuestion.trim()
-                            ? "+Hỏi"
-                            : "+Đáp"}
-                        </span>
-                      )}
-                    </button>
-                    {isRitualCompleted && (
-                      <span className="absolute -top-2.5 -right-1 bg-gradient-to-r from-amber-600 to-yellow-600 text-[8.5px] font-bold text-white px-1.5 py-0.2 rounded-full shadow-md pointer-events-none animate-pulse">
-                        ✦ Đắc Pháp
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Nút Lưu Quẻ */}
-                  <button
-                    type="button"
-                    onClick={() => setIsSaveDialogOpen(true)}
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-2xl text-xs font-semibold text-white transition cursor-pointer shadow-md hover:bg-white/15 hover:scale-[1.02] active:scale-95 select-none"
-                    style={{
-                      background: "rgba(255,255,255,0.1)",
-                      border: "1px solid rgba(255,255,255,0.38)",
-                      backdropFilter: "blur(8px)",
-                    }}
-                    title="Lưu trải bài hiện tại kèm Câu hỏi AI và Đáp án tự điền"
-                  >
-                    <Bookmark className="w-3.5 h-3.5 text-white" />
-                    <span>Lưu Quẻ</span>
-                  </button>
-
-                  {/* Nút Mở Quẻ */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      reloadSavedSpreads();
-                      setIsSavedSpreadsModalOpen(true);
-                    }}
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-2xl text-xs font-semibold text-white transition cursor-pointer shadow-md hover:bg-white/15 hover:scale-[1.02] active:scale-95 select-none"
-                    style={{
-                      background: "rgba(255,255,255,0.1)",
-                      border: "1px solid rgba(255,255,255,0.38)",
-                      backdropFilter: "blur(8px)",
-                    }}
-                    title="Mở danh sách các quẻ đã lưu"
-                  >
-                    <FolderOpen className="w-3.5 h-3.5 text-white" />
-                    <span>Mở Quẻ</span>
-                    {savedSpreads.length > 0 && (
-                      <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-white/20 text-white border border-white/30">
-                        {savedSpreads.length}
-                      </span>
-                    )}
-                  </button>
-
-                  {/* Nút Mở Quẻ Tạm Thời */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      reloadTempSpreads();
-                      setIsTempSpreadsModalOpen(true);
-                    }}
-                    className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-white transition cursor-pointer shadow-md hover:bg-white/15 hover:scale-[1.02] active:scale-95 select-none"
-                    style={{
-                      background: "rgba(255,255,255,0.1)",
-                      border: "1px solid rgba(255,255,255,0.38)",
-                      backdropFilter: "blur(8px)",
-                    }}
-                    title="Mở các quẻ tạm thời mới mở hôm nay chưa nhấn lưu"
-                  >
-                    <Clock className="w-3.5 h-3.5 text-white" />
-                    <span>Quẻ Tạm Thời</span>
-                    {tempSpreads.length > 0 && (
-                      <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-400/30 text-amber-200 border border-amber-300/40">
-                        {tempSpreads.length}
-                      </span>
-                    )}
-                  </button>
-                </div>
               </div>
 
               {/* Dải số liệu thống kê (Stats: 64 Quẻ, 384 Hào, 12 Trận Pháp, 9+ Phương Pháp) */}
@@ -4168,130 +3521,6 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
             {/* Dải nút hành động Mobile (Khung tâm niệm ở trên + Bắt Đầu Bốc Quẻ Tam Kính + Giữ nguyên & Chép cho AI ở dưới) */}
             <div id="hero-mobile-actions" className="flex w-full max-w-xl shrink-0 flex-col items-center gap-2 pointer-events-auto max-lg:pt-1 lg:hidden relative z-[55]">
-              {/* Khung nhập: Nội dung tâm niệm / Câu hỏi (Nằm ngay TRÊN Bắt Đầu Bốc Quẻ) */}
-              <div className="w-full max-w-xl text-left mb-1">
-                <div
-                  className="rounded-2xl p-3 shadow-lg backdrop-blur-md transition focus-within:ring-2 focus-within:ring-[#C4963E]/40"
-                  style={{
-                    background: "linear-gradient(145deg, rgba(28, 25, 36, 0.92) 0%, rgba(16, 14, 22, 0.95) 100%)",
-                    border: "1px solid rgba(196, 150, 62, 0.45)",
-                  }}
-                >
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label
-                      htmlFor="hero-mobile-question-input"
-                      className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-300 font-serif"
-                    >
-                      <span className="text-sm">🕊️</span>
-                      <span>Nội dung tâm niệm / Câu hỏi</span>
-                    </label>
-                    {userIntentQuestion.trim() && (
-                      <button
-                        type="button"
-                        onClick={() => handleQuestionChange("")}
-                        className="text-[11px] text-stone-400 hover:text-rose-400 font-medium transition cursor-pointer flex items-center gap-1"
-                        title="Xóa nội dung câu hỏi"
-                      >
-                        ✕ Xóa
-                      </button>
-                    )}
-                  </div>
-
-                  <textarea
-                    id="hero-mobile-question-input"
-                    rows={2}
-                    value={userIntentQuestion}
-                    onChange={(e) => handleQuestionChange(e.target.value)}
-                    placeholder="Nhập câu hỏi, việc đang trăn trở hoặc tâm niệm chiêm bốc của bạn..."
-                    className="w-full resize-none rounded-xl bg-black/40 border border-[#C4963E]/30 px-3 py-1.5 text-xs text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-[#C4963E] transition leading-relaxed shadow-inner"
-                  />
-
-                  {/* Mục 2: Dự đoán / Điềm báo của quẻ trên mobile (Tự điền ở GIỮA) */}
-                  <div className="mt-2 pt-2 border-t border-[#C4963E]/20">
-                    <div className="flex items-center justify-between mb-1">
-                      <label
-                        htmlFor="hero-mobile-hexagram-prediction"
-                        className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-amber-300 font-serif"
-                      >
-                        <span className="text-xs">🔮</span>
-                        <span>Dự đoán / Điềm báo (Tự điền)</span>
-                      </label>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={handleRefreshPredictionFromCards}
-                          className="text-[10px] text-amber-400 hover:text-amber-200 font-medium transition cursor-pointer"
-                          title="Gợi ý từ quẻ nếu cần"
-                        >
-                          ✨ Gợi ý
-                        </button>
-                        {hexagramPrediction.trim() && (
-                          <button
-                            type="button"
-                            onClick={() => handleHexagramPredictionChange("")}
-                            className="text-[10.5px] text-stone-400 hover:text-rose-400 font-medium transition cursor-pointer"
-                          >
-                            ✕ Xóa
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                    <textarea
-                      id="hero-mobile-hexagram-prediction"
-                      rows={2}
-                      value={hexagramPrediction}
-                      onChange={(e) => handleHexagramPredictionChange(e.target.value)}
-                      placeholder="Nhập dự đoán, cảm nhận hoặc điềm báo của quẻ..."
-                      className="w-full resize-none rounded-xl bg-black/40 border border-amber-500/35 px-3 py-1.5 text-xs text-amber-100 placeholder:text-stone-500 focus:outline-none focus:border-amber-400 transition leading-relaxed shadow-inner"
-                    />
-                  </div>
-
-                  {/* Đáp án tự điền trên mobile */}
-                  <div className="mt-2 pt-2 border-t border-[#C4963E]/20">
-                    <div className="flex items-center justify-between mb-1">
-                      <label
-                        htmlFor="hero-mobile-custom-answer"
-                        className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-emerald-300 font-serif"
-                      >
-                        <span className="text-xs">✍️</span>
-                        <span>Đáp án tự điền / Chiêm nghiệm</span>
-                      </label>
-                      {userCustomAnswer.trim() && (
-                        <button
-                          type="button"
-                          onClick={() => handleCustomAnswerChange("")}
-                          className="text-[10.5px] text-stone-400 hover:text-rose-400 font-medium transition cursor-pointer"
-                        >
-                          ✕ Xóa
-                        </button>
-                      )}
-                    </div>
-                    <textarea
-                      id="hero-mobile-custom-answer"
-                      rows={2}
-                      value={userCustomAnswer}
-                      onChange={(e) => handleCustomAnswerChange(e.target.value)}
-                      placeholder="Nhập đáp án hoặc kết quả thực tế để đối chiếu chiêm nghiệm..."
-                      className="w-full resize-none rounded-xl bg-black/40 border border-emerald-600/35 px-3 py-1.5 text-xs text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-emerald-400 transition leading-relaxed shadow-inner"
-                    />
-                  </div>
-
-                  <div className="mt-1.5 flex flex-wrap items-center justify-between gap-1 text-[10.5px] text-stone-400">
-                    <span className="flex items-center gap-1 truncate">
-                      <span className="text-amber-400 font-bold">💡</span>
-                      {userIntentQuestion.trim() || userCustomAnswer.trim()
-                        ? "Tự động lưu & đính kèm khi 'Chép cho AI'."
-                        : "Nhập câu hỏi & đáp án để AI đối chiếu."}
-                    </span>
-                    {(userIntentQuestion.trim() || userCustomAnswer.trim()) && (
-                      <span className="inline-flex items-center gap-1 text-[9.5px] font-semibold text-emerald-300 bg-emerald-950/80 border border-emerald-500/60 px-1.5 py-0.2 rounded-full">
-                        ✓ Sẵn sàng
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-
               {/* Hàng 1: Bắt Đầu Bốc Quẻ + 64 Quẻ (Đồng bộ Glassmorphism trên mobile) */}
               <div className="flex w-full max-w-xl flex-row items-stretch gap-2">
                 <RitualHoldButton
@@ -4323,127 +3552,6 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 >
                   <span className="text-base sm:text-lg">📖</span>
                   <span className="truncate">64 Quẻ</span>
-                </button>
-              </div>
-
-              {/* Hàng 2 ngay bên dưới: 5 nút (Giữ nguyên, Chép cho AI, Lưu Quẻ, Mở Quẻ, Quẻ Tạm Thời) cùng chung phong cách */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 w-full max-w-xl">
-                {/* Nút Giữ nguyên trên mobile */}
-                <RitualHoldButton
-                  id="hero-mobile-keep-cards"
-                  active={isKeepCards}
-                  onClick={(isRitual) => handleToggleKeepCards(isRitual)}
-                  wrapperClassName="flex min-w-0"
-                  className="flex min-w-0 w-full items-center justify-center gap-1.5 rounded-2xl px-2.5 py-2.5 text-xs font-semibold text-white transition cursor-pointer shadow-md hover:bg-white/15 active:scale-95 select-none"
-                  style={{
-                    background: isKeepCards ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.1)",
-                    border: isKeepCards ? "1px solid rgba(255,255,255,0.55)" : "1px solid rgba(255,255,255,0.38)",
-                    backdropFilter: "blur(8px)",
-                  }}
-                  title="Bấm để Giữ nguyên lá bài"
-                >
-                  <span
-                    className={`w-3.5 h-3.5 rounded flex items-center justify-center text-[10px] font-bold transition-all ${
-                      isKeepCards
-                        ? "bg-white text-zinc-950 shadow-xs"
-                        : "border border-white/50 bg-white/5 text-transparent"
-                    }`}
-                  >
-                    ✓
-                  </span>
-                  <span>Giữ nguyên</span>
-                </RitualHoldButton>
-
-                {/* Nút Chép cho AI trên mobile */}
-                <div className="relative flex min-w-0 items-center">
-                  <button
-                    type="button"
-                    onClick={handleCopyCardsForAI}
-                    className="flex w-full min-w-0 items-center justify-center gap-1 rounded-2xl px-2.5 py-2.5 text-xs font-semibold text-white transition cursor-pointer shadow-md hover:bg-white/15 active:scale-95 select-none"
-                    style={{
-                      background: copiedAI ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.1)",
-                      border: copiedAI ? "1px solid rgba(16,185,129,0.7)" : "1px solid rgba(255,255,255,0.38)",
-                      backdropFilter: "blur(8px)",
-                    }}
-                  >
-                    <span className="text-xs shrink-0">
-                      {copiedAI ? "✓" : isRitualCompleted ? "✨" : "📋"}
-                    </span>
-                    <span className="truncate">
-                      {copiedAI
-                        ? "Đã chép!"
-                        : isRitualCompleted
-                        ? "Chép Toàn Thư"
-                        : "Chép cho AI"}
-                    </span>
-                  </button>
-                  {isRitualCompleted && (
-                    <span className="absolute -top-2.5 -right-1 bg-gradient-to-r from-amber-600 to-yellow-600 text-[8px] font-bold text-white px-1.5 py-0.2 rounded-full shadow-md pointer-events-none animate-pulse">
-                      ✦
-                    </span>
-                  )}
-                </div>
-
-                {/* Nút Lưu Quẻ trên mobile */}
-                <button
-                  type="button"
-                  onClick={() => setIsSaveDialogOpen(true)}
-                  className="flex min-w-0 items-center justify-center gap-1.5 rounded-2xl px-2.5 py-2.5 text-xs font-semibold text-white transition cursor-pointer shadow-md hover:bg-white/15 active:scale-95 select-none"
-                  style={{
-                    background: "rgba(255,255,255,0.1)",
-                    border: "1px solid rgba(255,255,255,0.38)",
-                    backdropFilter: "blur(8px)",
-                  }}
-                >
-                  <Bookmark className="w-3.5 h-3.5 text-white" />
-                  <span>Lưu Quẻ</span>
-                </button>
-
-                {/* Nút Mở Quẻ trên mobile */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    reloadSavedSpreads();
-                    setIsSavedSpreadsModalOpen(true);
-                  }}
-                  className="flex min-w-0 items-center justify-center gap-1.5 rounded-2xl px-2.5 py-2.5 text-xs font-semibold text-white transition cursor-pointer shadow-md hover:bg-white/15 active:scale-95 select-none"
-                  style={{
-                    background: "rgba(255,255,255,0.1)",
-                    border: "1px solid rgba(255,255,255,0.38)",
-                    backdropFilter: "blur(8px)",
-                  }}
-                >
-                  <FolderOpen className="w-3.5 h-3.5 text-white" />
-                  <span>Mở Quẻ</span>
-                  {savedSpreads.length > 0 && (
-                    <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-white/20 text-white border border-white/30">
-                      {savedSpreads.length}
-                    </span>
-                  )}
-                </button>
-
-                {/* Nút Quẻ Tạm Thời trên mobile */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    reloadTempSpreads();
-                    setIsTempSpreadsModalOpen(true);
-                  }}
-                  className="col-span-2 sm:col-span-1 flex min-w-0 items-center justify-center gap-1.5 rounded-2xl px-2.5 py-2.5 text-xs font-semibold text-white transition cursor-pointer shadow-md hover:bg-white/15 active:scale-95 select-none"
-                  style={{
-                    background: "rgba(255,255,255,0.1)",
-                    border: "1px solid rgba(255,255,255,0.38)",
-                    backdropFilter: "blur(8px)",
-                  }}
-                  title="Mở danh sách các quẻ tạm thời mới mở hôm nay chưa nhấn lưu"
-                >
-                  <Clock className="w-3.5 h-3.5 text-white" />
-                  <span>Quẻ Tạm Thời</span>
-                  {tempSpreads.length > 0 && (
-                    <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-400/30 text-amber-200 border border-amber-300/40">
-                      {tempSpreads.length}
-                    </span>
-                  )}
                 </button>
               </div>
             </div>
@@ -4707,23 +3815,21 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     </div>
                   </div>
 
-                  {/* Ảnh thẻ bài chuẩn từ bộ bài đã chọn - Full hình 100% */}
+                  {/* Ảnh thẻ bài chuẩn từ assets/oss (quẻ hoặc hào) - Full hình 100% */}
                   <img
                     alt={card.name}
                     loading={idx === Math.floor(cards.length / 2) ? "eager" : "lazy"}
                     decoding="async"
                     className={`relative z-10 w-full h-full pointer-events-none select-none rounded-2xl ${
-                      card.type === "yao"
-                        ? "object-contain bg-zinc-950/90 drop-shadow-md"
-                        : "object-cover"
+                      card.type === "yao" ? "object-contain bg-zinc-950/90 drop-shadow-md" : "object-cover"
                     }`}
                     src={card.img}
                     onError={(e) => {
                       const target = e.currentTarget;
                       target.onerror = null;
-                      const fallback = card.type === "yao" && card.yaoNumber
+                      const fallback = card.type === "yao"
                         ? `/assets/oss/${card.hexNumber}/${card.hexNumber}-${card.yaoNumber}a.webp`
-                        : `/decks/deck_quan_tu/${card.hexNumber}.jpg`;
+                        : `/assets/oss/${card.hexNumber}/${card.hexNumber}a.webp`;
                       if (target.src !== fallback && !target.src.endsWith(fallback)) {
                         target.src = fallback;
                       }
@@ -5298,9 +4404,9 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                       onError={(e) => {
                         const target = e.currentTarget;
                         target.onerror = null;
-                        const fallback = selectedCard.type === "yao" && selectedCard.yaoNumber
+                        const fallback = selectedCard.type === "yao"
                           ? `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}-${selectedCard.yaoNumber}a.webp`
-                          : `/decks/deck_quan_tu/${selectedCard.hexNumber}.jpg`;
+                          : `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}a.webp`;
                         if (target.src !== fallback && !target.src.endsWith(fallback)) {
                           target.src = fallback;
                         }
@@ -5326,16 +4432,18 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     <img
                       src={
                         selectedCard.backImg ||
-                        getLandingCardBackUrl(selectedCard.deckId || activeDeckId, selectedCard.hexNumber, selectedCard.yaoNumber)
+                        (selectedCard.type === "yao"
+                          ? `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}-${selectedCard.yaoNumber}b.webp`
+                          : `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}b.webp`)
                       }
                       alt={`${selectedCard.name} - Mặt sau`}
                       className="w-full h-full object-contain rounded-xl drop-shadow-md transition-transform duration-300 group-hover:scale-105"
                       onError={(e) => {
                         const target = e.currentTarget;
                         target.onerror = null;
-                        const fallback = selectedCard.type === "yao" && selectedCard.yaoNumber
+                        const fallback = selectedCard.type === "yao"
                           ? `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}-${selectedCard.yaoNumber}b.webp`
-                          : `/decks/deck_quan_tu/back.svg`;
+                          : `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}b.webp`;
                         if (target.src !== fallback && !target.src.endsWith(fallback)) {
                           target.src = fallback;
                         }
@@ -5365,7 +4473,9 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                       modalCardView === "front"
                         ? selectedCard.img
                         : selectedCard.backImg ||
-                          getLandingCardBackUrl(selectedCard.deckId || activeDeckId, selectedCard.hexNumber, selectedCard.yaoNumber)
+                          (selectedCard.type === "yao"
+                            ? `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}-${selectedCard.yaoNumber}b.webp`
+                            : `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}b.webp`)
                     }
                     alt={`${selectedCard.name} - ${modalCardView === "front" ? "Mặt trước" : "Mặt sau"}`}
                     className="w-full h-full object-contain rounded-xl drop-shadow-md transition-transform duration-300 group-hover:scale-105"
@@ -5373,11 +4483,10 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                       const target = e.currentTarget;
                       target.onerror = null;
                       const isBack = modalCardView === "back";
-                      const fallback = selectedCard.type === "yao" && selectedCard.yaoNumber
-                        ? `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}-${selectedCard.yaoNumber}${isBack ? "b.webp" : "a.webp"}`
-                        : isBack
-                        ? `/decks/deck_quan_tu/back.svg`
-                        : `/decks/deck_quan_tu/${selectedCard.hexNumber}.jpg`;
+                      const suffix = isBack ? "b.webp" : "a.webp";
+                      const fallback = selectedCard.type === "yao"
+                        ? `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}-${selectedCard.yaoNumber}${suffix}`
+                        : `/assets/oss/${selectedCard.hexNumber}/${selectedCard.hexNumber}${suffix}`;
                       if (target.src !== fallback && !target.src.endsWith(fallback)) {
                         target.src = fallback;
                       }
@@ -5409,15 +4518,10 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               </div>
             )}
 
-            <div className="mb-2 flex items-center justify-center gap-2 flex-wrap">
+            <div className="mb-2">
               <span className="inline-block px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#C4963E]/20 text-[#C4963E] border border-[#C4963E]/30 uppercase tracking-wider">
                 {selectedCard.type === "yao" ? "384 Hào Từ Chu Dịch" : "64 Quẻ Chu Dịch"}
               </span>
-              {selectedCard.deckName && (
-                <span className="inline-block px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-950/80 text-amber-200 border border-amber-600/50">
-                  🃏 {selectedCard.deckName}
-                </span>
-              )}
             </div>
 
             <span className="text-4xl text-[#C4963E] font-bold block mb-1">{selectedCard.symbol}</span>
