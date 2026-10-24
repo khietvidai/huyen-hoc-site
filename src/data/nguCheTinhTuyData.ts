@@ -328,9 +328,13 @@ export function stripNguHanhFromCanChiHan(canChiHan: string): string {
   return canChiHan.replace(/[金木水火土]/g, "").trim();
 }
 
-const NGU_CHE_DATA_VERSION = "20261019v2";
+const NGU_CHE_DATA_VERSION = "20261023_brave_ultra_v7";
 const hexCache = new Map<number, NguCheHexagramData>();
 let introCache: NguCheIntroData | null = null;
+
+export function updateNguCheHexCache(hexNumber: number, data: NguCheHexagramData) {
+  hexCache.set(hexNumber, data);
+}
 
 export async function loadNguCheHexagram(hexNumber: number): Promise<NguCheHexagramData> {
   const num = Math.max(1, Math.min(64, Math.floor(hexNumber) || 1));

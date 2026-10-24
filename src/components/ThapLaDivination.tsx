@@ -567,9 +567,9 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
                   <div className="pt-1">
                     <CardVisual
                       hexagram={primaryHex}
-                      imageUrl={cardImages[primaryHex.number]}
+                      imageUrl={`/assets/oss/${primaryHex.number}/${primaryHex.number}a.webp`}
                       videoUrl={cardVideos[primaryHex.number]}
-                      cardBackUrl={cardBackImage}
+                      cardBackUrl={`/assets/oss/${primaryHex.number}/${primaryHex.number}b.webp`}
                       size="md"
                       enableZoomModal={true}
                     />
@@ -617,9 +617,9 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
                   <div className="pt-1">
                     <CardVisual
                       hexagram={transformedHex}
-                      imageUrl={cardImages[transformedHex.number]}
+                      imageUrl={`/assets/oss/${transformedHex.number}/${transformedHex.number}a.webp`}
                       videoUrl={cardVideos[transformedHex.number]}
-                      cardBackUrl={cardBackImage}
+                      cardBackUrl={`/assets/oss/${transformedHex.number}/${transformedHex.number}b.webp`}
                       size="md"
                       enableZoomModal={true}
                     />
@@ -768,8 +768,8 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
 
                 {/* Chi Tiết Hào Động Được Chọn (Detail Box) */}
                 {selectedYaoLine && (
-                  <div className="p-4 sm:p-5 rounded-2xl bg-[#1F1710] border border-[#C4963E]/50 space-y-2 mt-4 shadow-lg">
-                    <div className="flex items-center justify-between">
+                  <div className="p-4 sm:p-5 rounded-2xl bg-[#1F1710] border border-[#C4963E]/50 space-y-3 mt-4 shadow-lg">
+                    <div className="flex items-center justify-between border-b border-[#302316] pb-2">
                       <div className="flex items-center gap-2">
                         <Flame className="w-4 h-4 text-[#C4963E]" />
                         <span className="text-xs font-bold text-[#F5EAD4] font-serif uppercase tracking-wide">
@@ -781,17 +781,36 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
                       </span>
                     </div>
 
-                    <div className="text-xs sm:text-sm font-bold text-[#F3D99B] font-serif">
-                      "{primaryHex.lineMeanings?.find((m) => m.line === selectedYaoLine)?.text || ""}"
-                    </div>
+                    <div className="flex flex-col sm:flex-row gap-4 items-start pt-1">
+                      {/* Ảnh thẻ bài Hào Từ lớn trong kho Bách Khoa Hexagram */}
+                      <div className="w-20 sm:w-24 shrink-0 rounded-xl overflow-hidden border border-[#C4963E]/50 shadow-lg bg-black aspect-[5/8] mx-auto sm:mx-0">
+                        <img
+                          src={`/assets/oss/${primaryHex.number}/${primaryHex.number}-${selectedYaoLine}a.webp`}
+                          alt={`Hào ${selectedYaoLine} Quẻ ${primaryHex.name}`}
+                          className="w-full h-full object-contain select-none"
+                          loading="lazy"
+                          onError={(e) => {
+                            const target = e.currentTarget;
+                            target.onerror = null;
+                            target.src = `/assets/oss/${primaryHex.number}/${primaryHex.number}a.webp`;
+                          }}
+                        />
+                      </div>
 
-                    <p className="text-xs text-[#D8C9B0] font-serif leading-relaxed">
-                      {primaryHex.lineMeanings?.find((m) => m.line === selectedYaoLine)?.meaning ||
-                        YAO_POSITION_NAMES[selectedYaoLine]?.essence}
-                    </p>
+                      <div className="flex-1 space-y-2">
+                        <div className="text-xs sm:text-sm font-bold text-[#F3D99B] font-serif">
+                          "{primaryHex.lineMeanings?.find((m) => m.line === selectedYaoLine)?.text || ""}"
+                        </div>
 
-                    <div className="pt-2 text-[11px] text-[#A89882] italic font-serif border-t border-[#312316]">
-                      💡 <strong>Bài học bước ngoặt:</strong> Tại vị trí này, hành động của bạn sẽ quyết định việc đưa cục diện từ {primaryHex.name} tiến hóa sang {transformedHex.name}. Hãy hành xử thận trọng đúng tinh thần trung chính của Kinh Dịch.
+                        <p className="text-xs text-[#D8C9B0] font-serif leading-relaxed">
+                          {primaryHex.lineMeanings?.find((m) => m.line === selectedYaoLine)?.meaning ||
+                            YAO_POSITION_NAMES[selectedYaoLine]?.essence}
+                        </p>
+
+                        <div className="pt-2 text-[11px] text-[#A89882] italic font-serif border-t border-[#312316]">
+                          💡 <strong>Bài học bước ngoặt:</strong> Tại vị trí này, hành động của bạn sẽ quyết định việc đưa cục diện từ {primaryHex.name} tiến hóa sang {transformedHex.name}. Hãy hành xử thận trọng đúng tinh thần trung chính của Kinh Dịch.
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}

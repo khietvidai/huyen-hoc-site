@@ -13,6 +13,7 @@ import {
   NguCheIntroData,
   loadNguCheHexagram,
   loadNguCheIntro,
+  updateNguCheHexCache,
 } from "../data/nguCheTinhTuyData";
 import {
   getJulianDay,
@@ -42,7 +43,42 @@ import {
   Copy,
   Check,
   FileText,
+  ChevronLeft,
+  ChevronRight,
+  Palette,
+  Maximize2,
 } from "lucide-react";
+
+// Helper làm nổi bật và định dạng Họa Cảnh Cố Cung rõ ràng, thanh thoát
+const renderFormattedHoaCanh = (text: string) => {
+  if (!text) return null;
+  // Tách các đoạn chữ Hán trong dấu «...» hoặc [...]
+  const parts = text.split(/(«[^»]+»|\[[^\]]+\])/g);
+  return (
+    <>
+      {parts.map((p, idx) => {
+        if (p.startsWith("«") && p.endsWith("»")) {
+          return (
+            <span
+              key={idx}
+              className="inline-block mx-1 px-2 py-0.5 rounded-lg bg-[#2B170E] border border-[#E5C168]/70 text-[#FFF2C2] font-serif font-bold text-xs sm:text-[13px] tracking-wide shadow-sm"
+            >
+              {p}
+            </span>
+          );
+        }
+        if (p.startsWith("[") && p.endsWith("]")) {
+          return (
+            <span key={idx} className="font-semibold text-[#F3D787]">
+              {p}
+            </span>
+          );
+        }
+        return <span key={idx}>{p}</span>;
+      })}
+    </>
+  );
+};
 
 interface NguCheTinhTuySectionProps {
   drawnCards: Hexagram[];
@@ -93,8 +129,12 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
   // Cho phép người dùng bấm chọn nhanh 1 trong 10 Thiên Can ngày (Giáp..Quý) hoặc tự động theo ngày
   const [manualCanIdx, setManualCanIdx] = useState<number | null>(null);
 
-  // Chế độ hiển thị: 'modern' (Thẻ hiện đại rõ chữ + tranh lớn) hoặc 'palace' (Trang đôi Cổ Bản Cố Cung chữ dọc)
-  const [displayStyle, setDisplayStyle] = useState<"modern" | "palace">("modern");
+  // Chế độ hiển thị: 'modern' (Thẻ hiện đại rõ chữ + tranh lớn) | 'palace' (Trang đôi Cổ Bản Cố Cung chữ dọc) | 'gallery' (Bảo tàng duyệt 22 họa cảnh Cố Cung)
+  const [displayStyle, setDisplayStyle] = useState<"modern" | "palace" | "gallery">("modern");
+
+  // Bộ lọc cho Bảo tàng 22 Họa Cảnh: 'all' | 'que' | 'ngay'
+  const [galleryFilter, setGalleryFilter] = useState<"all" | "que" | "ngay">("all");
+  const [selectedGalleryMucIdx, setSelectedGalleryMucIdx] = useState<number>(3);
 
   // Tab phụ lục bên dưới: 'nap_giap' | 'phong_thuy' | 'su_vu_1' | 'su_vu_2'
   const [extraTab, setExtraTab] = useState<"nap_giap" | "phong_thuy" | "su_vu_1" | "su_vu_2">("nap_giap");
@@ -106,6 +146,7 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
     subtitle: string;
     moTa: string;
     poem?: string;
+    mucIdx?: number;
   } | null>(null);
 
   // Modal Lời Tựa Ngự Chế & Văn Khấn (Chúc Hương Văn)
@@ -113,6 +154,102 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
   const [introData, setIntroData] = useState<NguCheIntroData | null>(null);
   const [introLoading, setIntroLoading] = useState<boolean>(false);
   const [activeIntroPageIdx, setActiveIntroPageIdx] = useState<number>(0);
+
+  // State phục chế & AI vẽ lại tranh lụa Công Bút HD
+  const [redrawingMucIdx, setRedrawingMucIdx] = useState<number | null>(null);
+  const [isBatchRedrawing, setIsBatchRedrawing] = useState<boolean>(false);
+
+  const handleRedrawPainting = async (section: NguCheSection, poem?: string) => {
+    if (!hexData || redrawingMucIdx !== null || isBatchRedrawing) return;
+    playCardClick();
+    const targetHexNum = hexData.hexNumber || activeHexagram?.number || 1;
+    setRedrawingMucIdx(section.mucIdx);
+    try {
+      const resp = await fetch("/api/ngu-che/redraw", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          hexNumber: targetHexNum,
+          mucIdx: section.mucIdx,
+          title: section.title,
+          moTaTranh: section.moTaTranh,
+          poem: poem || "",
+        }),
+      });
+      const data = await resp.json();
+      if (data.success && data.painting) {
+        setHexData((prev) => {
+          if (!prev) return prev;
+          const updated: NguCheHexagramData = {
+            ...prev,
+            sections: {
+              ...prev.sections,
+              [section.mucIdx]: {
+                ...prev.sections[section.mucIdx],
+                painting: data.painting,
+              },
+            },
+          };
+          updateNguCheHexCache(targetHexNum, updated);
+          return updated;
+        });
+        setLightboxImg((prev) =>
+          prev && prev.mucIdx === section.mucIdx
+            ? { ...prev, src: data.painting }
+            : prev
+        );
+        playSuccessChime();
+        onShowToast?.(data.message || "Đã phục chế rõ nét Công Bút HD cho đúng bức họa cảnh gốc!");
+      } else {
+        onShowToast?.(data.message || "Không thể phục chế họa cảnh lúc này.");
+      }
+    } catch {
+      onShowToast?.("Lỗi kết nối máy chủ khi phục chế tranh Công Bút HD.");
+    } finally {
+      setRedrawingMucIdx(null);
+    }
+  };
+
+  const handleBatchRedrawHexagram = async () => {
+    if (!hexData || isBatchRedrawing || redrawingMucIdx !== null) return;
+    playCardClick();
+    const targetHexNum = hexData.hexNumber || activeHexagram?.number || 1;
+    setIsBatchRedrawing(true);
+    onShowToast?.(`Đang phục chế rõ nét Công Bút HD cho toàn bộ 22 tranh Quẻ #${targetHexNum} (${hexData.quyen.tenQue})...`);
+    try {
+      const resp = await fetch("/api/ngu-che/redraw-batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ hexNumber: targetHexNum }),
+      });
+      const data = await resp.json();
+      if (data.success && data.paintings) {
+        setHexData((prev) => {
+          if (!prev) return prev;
+          const nextSections = { ...prev.sections };
+          for (const [k, uri] of Object.entries<string>(data.paintings)) {
+            const numK = Number(k);
+            if (nextSections[numK]) {
+              nextSections[numK] = { ...nextSections[numK], painting: uri };
+            }
+          }
+          const updated: NguCheHexagramData = { ...prev, sections: nextSections };
+          updateNguCheHexCache(targetHexNum, updated);
+          return updated;
+        });
+        playSuccessChime();
+        onShowToast?.(
+          data.message || `Đã hoàn tất phục chế 22 bức họa cảnh Công Bút HD của Quẻ #${targetHexNum} (${hexData.quyen.tenQue})!`
+        );
+      } else {
+        onShowToast?.(data.message || "Lỗi khi phục chế 22 họa cảnh.");
+      }
+    } catch {
+      onShowToast?.("Lỗi kết nối máy chủ khi phục chế 22 họa cảnh.");
+    } finally {
+      setIsBatchRedrawing(false);
+    }
+  };
 
   // Load dữ liệu Ngự Chế khi đổi quẻ
   useEffect(() => {
@@ -238,6 +375,70 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
     return hexData.sections[2] || null;
   }, [hexData]);
 
+  // Toàn bộ 22 Họa Cảnh Cố Cung của quẻ (12 mục của quẻ + 10 mục của ngày can)
+  const allHoaCanhItems = useMemo(() => {
+    if (!hexData) return [];
+    const items: Array<{
+      mucIdx: number;
+      category: "que" | "ngay";
+      categoryLabel: string;
+      badgeColor: string;
+      titleVi: string;
+      titleHan: string;
+      shortLabel: string;
+      section: NguCheSection;
+      pageNum: number;
+      diceNumber?: number;
+      canIdx?: number;
+    }> = [];
+
+    // 12 mục của Quẻ: Thoán (3), Tượng (4), Hào 1..6 (5..10), Toàn động (11), Toàn tĩnh (12), Thế động (13), Ứng động (14)
+    for (const dice of NGU_CHE_DICE_ITEMS) {
+      const sec = hexData.sections[dice.mucIdx];
+      if (sec) {
+        items.push({
+          mucIdx: dice.mucIdx,
+          category: "que",
+          categoryLabel: "Họa Cảnh Quẻ",
+          badgeColor: dice.badgeColor,
+          titleVi: dice.titleVi,
+          titleHan: dice.titleHan,
+          shortLabel: dice.shortLabel,
+          section: sec,
+          pageNum: sec.pageNum,
+          diceNumber: dice.diceNumber,
+        });
+      }
+    }
+
+    // 10 mục của Ngày Can: Giáp (15) .. Quý (24)
+    for (const stem of NGU_CHE_DAY_STEMS) {
+      const sec = hexData.sections[stem.mucIdx];
+      if (sec) {
+        items.push({
+          mucIdx: stem.mucIdx,
+          category: "ngay",
+          categoryLabel: `Ngày ${stem.canVi}`,
+          badgeColor: "from-rose-700 to-red-800 text-rose-100 border-rose-400/60",
+          titleVi: stem.titleVi,
+          titleHan: stem.titleHan,
+          shortLabel: `Ngày ${stem.canVi} (${stem.canHan})`,
+          section: sec,
+          pageNum: sec.pageNum,
+          canIdx: stem.canIdx,
+        });
+      }
+    }
+
+    return items;
+  }, [hexData]);
+
+  // Họa cảnh đang chọn xem tiêu điểm trong Bảo tàng 22 Họa Cảnh
+  const selectedGalleryItem = useMemo(() => {
+    if (!allHoaCanhItems.length) return null;
+    return allHoaCanhItems.find((it) => it.mucIdx === selectedGalleryMucIdx) || allHoaCanhItems[0];
+  }, [allHoaCanhItems, selectedGalleryMucIdx]);
+
   // Tách 1 đoạn thơ gộp (nếu có nhiều câu cách nhau bởi dấu câu hoặc xuống dòng) thành từng câu thơ riêng
   const splitPoemSegment = (sg: { han?: string; hv?: string; vi?: string }) => {
     const han = (sg.han || "").replace(/^詩\s*[曰日][：:\s]*/, "").trim();
@@ -313,6 +514,199 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
       blockNotes: chuBlock?.ghiChu || [],
       pageNotes: sec.notes || [],
     };
+  };
+
+  // Điều hướng phím mũi tên Trái / Phải trong Modal Phóng To Họa Cảnh
+  useEffect(() => {
+    if (!lightboxImg || !allHoaCanhItems.length) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setLightboxImg(null);
+      } else if (e.key === "ArrowLeft") {
+        const curIdx = allHoaCanhItems.findIndex((it) => it.mucIdx === lightboxImg.mucIdx);
+        if (curIdx > 0) {
+          const prev = allHoaCanhItems[curIdx - 1];
+          const parsed = extractPoemAndContent(prev.section);
+          setLightboxImg({
+            src: prev.section.painting,
+            title: prev.section.title,
+            subtitle: `${hexData?.quyen.tenQue} • ${prev.titleVi} (${prev.titleHan})`,
+            moTa: prev.section.moTaTranh,
+            poem: parsed.dichTho,
+            mucIdx: prev.mucIdx,
+          });
+        }
+      } else if (e.key === "ArrowRight") {
+        const curIdx = allHoaCanhItems.findIndex((it) => it.mucIdx === lightboxImg.mucIdx);
+        if (curIdx >= 0 && curIdx < allHoaCanhItems.length - 1) {
+          const next = allHoaCanhItems[curIdx + 1];
+          const parsed = extractPoemAndContent(next.section);
+          setLightboxImg({
+            src: next.section.painting,
+            title: next.section.title,
+            subtitle: `${hexData?.quyen.tenQue} • ${next.titleVi} (${next.titleHan})`,
+            moTa: next.section.moTaTranh,
+            poem: parsed.dichTho,
+            mucIdx: next.mucIdx,
+          });
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [lightboxImg, allHoaCanhItems, hexData]);
+
+  // Renderer cho Khối Họa Cảnh Hoàng Cung Cố Cung sắc nét, sang trọng
+  const renderHoaCanhCard = (
+    section: NguCheSection,
+    title: string = "Họa Cảnh Cố Cung Chi Tiết",
+    subtitle: string = "TƯỢNG HÌNH BẢN GỐC TRIỀU MINH (1482)",
+    onViewFullscreen?: () => void
+  ) => {
+    if (!section.moTaTranh) return null;
+    return (
+      <div className="relative rounded-2xl bg-gradient-to-br from-[#1C100B] via-[#140B07] to-[#0D0704] border-2 border-[#C9A55A]/70 p-4 sm:p-5 shadow-[0_10px_30px_rgba(0,0,0,0.6)] space-y-3 overflow-hidden group">
+        {/* 4 Góc Thếp Vàng Hoàng Gia */}
+        <div className="absolute top-1.5 left-1.5 w-3.5 h-3.5 border-t-2 border-l-2 border-[#E5C168] pointer-events-none" />
+        <div className="absolute top-1.5 right-1.5 w-3.5 h-3.5 border-t-2 border-r-2 border-[#E5C168] pointer-events-none" />
+        <div className="absolute bottom-1.5 left-1.5 w-3.5 h-3.5 border-b-2 border-l-2 border-[#E5C168] pointer-events-none" />
+        <div className="absolute bottom-1.5 right-1.5 w-3.5 h-3.5 border-b-2 border-r-2 border-[#E5C168] pointer-events-none" />
+
+        {/* Header Họa Cảnh */}
+        <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-[#3D2517]">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#E5C168] to-[#996515] text-black flex items-center justify-center font-bold text-base shadow">
+              🖼️
+            </div>
+            <div>
+              <div className="text-[10px] font-serif uppercase tracking-widest text-[#E5C168] font-bold">
+                {subtitle}
+              </div>
+              <h5 className="text-sm sm:text-base font-serif font-black text-[#FCE6B4] tracking-wide">
+                {title}
+              </h5>
+            </div>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="px-2.5 py-0.5 rounded-full bg-[#2A160C] border border-[#8C5E28] text-[11px] font-serif font-semibold text-[#F3D787]">
+              Trang {section.pageNum}/1734
+            </span>
+            {onViewFullscreen && (
+              <button
+                type="button"
+                onClick={onViewFullscreen}
+                className="px-2.5 py-1 rounded-lg bg-[#2A170F] hover:bg-[#3D2216] border border-[#C9A55A]/50 text-[#FCE6B4] text-[11px] font-serif flex items-center gap-1 cursor-pointer transition-colors"
+              >
+                <ZoomIn className="w-3.5 h-3.5 text-[#E5C168]" />
+                <span>Phóng to</span>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Nội Dung Miêu Tả Họa Cảnh */}
+        <div className="text-sm sm:text-[15px] font-serif text-[#F2E7D3] leading-relaxed tracking-wide space-y-2">
+          {renderFormattedHoaCanh(section.moTaTranh)}
+        </div>
+
+        {/* Footer chú dẫn xuất xứ */}
+        <div className="pt-2 border-t border-[#2E1A0F] flex items-center justify-between text-[11px] font-serif text-[#B8A58E]">
+          <span className="flex items-center gap-1">
+            <Sparkles className="w-3 h-3 text-[#E5C168]" />
+            <span>Ngự Chế Tân Tập Đoán Dịch Tinh Túy • Bảo Tàng Cố Cung Đài Bắc</span>
+          </span>
+          <span className="text-[#A8947B]">Tranh lụa màu khoáng triều Minh</span>
+        </div>
+      </div>
+    );
+  };
+
+  // Renderer cho Khung Tranh Hoàng Cung Triều Minh khổ lớn sắc nét
+  const renderPalacePaintingFrame = (
+    section: NguCheSection,
+    subtitle: string,
+    dichTho?: string,
+    onOpenLightbox?: () => void
+  ) => {
+    if (!section.painting) {
+      return (
+        <div className="p-6 rounded-2xl bg-[#1A0E08] border border-[#5C3D22] text-center font-serif text-sm text-[#D4C3AA]">
+          {section.moTaTranh}
+        </div>
+      );
+    }
+
+    const triggerZoom =
+      onOpenLightbox ||
+      (() => {
+        setLightboxImg({
+          src: section.painting,
+          title: section.title,
+          subtitle,
+          moTa: section.moTaTranh,
+          poem: dichTho,
+          mucIdx: section.mucIdx,
+        });
+      });
+
+    return (
+      <div className="relative rounded-2xl overflow-hidden border-2 border-[#C9A55A]/80 bg-[#120805] shadow-[0_12px_36px_rgba(0,0,0,0.85)] group">
+        {/* 4 Góc Thếp Vàng */}
+        <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#E5C168] pointer-events-none z-10" />
+        <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-[#E5C168] pointer-events-none z-10" />
+        <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[#E5C168] pointer-events-none z-10" />
+        <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#E5C168] pointer-events-none z-10" />
+
+        {/* Ảnh Tranh Cố Cung */}
+        <div
+          className="relative p-3 sm:p-4 bg-gradient-to-b from-[#1C100B] via-[#120805] to-[#0A0503] flex items-center justify-center cursor-zoom-in"
+          onClick={triggerZoom}
+        >
+          <img
+            src={section.painting}
+            alt={section.title}
+            className="w-full max-h-[460px] sm:max-h-[520px] object-contain mx-auto rounded-lg transition-all duration-300 contrast-[1.06] saturate-[1.04] group-hover:scale-[1.02] shadow-2xl"
+            style={{ imageRendering: "-webkit-optimize-contrast" }}
+          />
+          {redrawingMucIdx === section.mucIdx && (
+            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center gap-2 z-20">
+              <RefreshCw className="w-8 h-8 text-[#E5C168] animate-spin" />
+              <span className="text-xs sm:text-sm font-serif font-bold text-[#FCE6B4]">
+                Đang họa lại nét Công Bút HD...
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Thanh Điều Khiển & Phóng To Ở Chân Tranh */}
+        <div className="p-2.5 sm:p-3 bg-gradient-to-t from-black/95 via-black/85 to-[#160B07] border-t border-[#4A2E1B] flex flex-wrap items-center justify-between gap-2 text-xs font-serif">
+          <span className="text-[#E5C168] font-bold text-xs truncate pr-2 flex items-center gap-1.5">
+            <span>📜</span>
+            <span className="truncate">{section.title}</span>
+          </span>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              type="button"
+              disabled={redrawingMucIdx !== null || isBatchRedrawing}
+              onClick={() => handleRedrawPainting(section, dichTho)}
+              title="Tái tạo nét bút mực & màu khoáng Công Bút Cố Cung HD"
+              className="px-2.5 py-1 rounded-xl bg-gradient-to-r from-[#8B1E14] to-[#B3281B] hover:brightness-110 border border-[#E5C168]/60 text-[#FCE6B4] font-bold text-[11px] flex items-center gap-1 shrink-0 shadow cursor-pointer active:scale-95 transition-all disabled:opacity-50"
+            >
+              <Sparkles className="w-3 h-3 text-[#F3D787]" />
+              <span>{redrawingMucIdx === section.mucIdx ? "Đang vẽ..." : "Vẽ Lại Công Bút HD"}</span>
+            </button>
+            <button
+              type="button"
+              onClick={triggerZoom}
+              className="px-3 py-1 rounded-xl bg-gradient-to-r from-[#C9A55A] via-[#E5C168] to-[#A67C2E] hover:brightness-110 text-black font-extrabold text-[11px] flex items-center gap-1.5 shrink-0 shadow-lg cursor-pointer active:scale-95 transition-all"
+            >
+              <ZoomIn className="w-3.5 h-3.5" />
+              <span>Phóng To</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   // Trích xuất thông tin trang Quẻ tượng (mucIdx = 2) — hỗ trợ cả cấu trúc 2 block và 3 block
@@ -622,6 +1016,304 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
     }
   };
 
+  // Chế độ Bảo Tàng 22 Họa Cảnh Cố Cung Hoàng Gia
+  const renderGalleryView = () => {
+    if (!hexData) return null;
+    const filteredItems = allHoaCanhItems.filter((it) => {
+      if (galleryFilter === "que") return it.category === "que";
+      if (galleryFilter === "ngay") return it.category === "ngay";
+      return true;
+    });
+
+    const featured = selectedGalleryItem || allHoaCanhItems[0];
+    const parsedFeatured = featured ? extractPoemAndContent(featured.section) : null;
+
+    return (
+      <div className="space-y-6">
+        {/* Header Gallery & Bộ Lọc */}
+        <div className="p-4 sm:p-6 rounded-3xl bg-gradient-to-r from-[#382011] via-[#2A170D] to-[#1F1109] border-2 border-[#C9A55A]/80 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="space-y-1.5">
+            <div className="inline-flex items-center gap-2">
+              <span className="px-3 py-0.5 rounded-full bg-gradient-to-r from-[#8B1E14] to-[#63120B] border border-[#E6B86A]/60 text-[#FCE6B4] text-[10px] font-serif font-bold uppercase tracking-wider shadow">
+                🎨 BẢO TÀNG HỌA CẢNH HOÀNG CUNG
+              </span>
+              <span className="text-[11px] font-serif text-[#D4B475]">
+                Quẻ #{hexData.hexNumber} (Quyển {hexData.quyenSo}/64): {hexData.quyen.tenQue} ({hexData.quyen.chuHan})
+              </span>
+            </div>
+            <h3 className="text-lg sm:text-2xl font-serif font-black text-transparent bg-clip-text bg-gradient-to-r from-[#FCE6B4] via-[#F3D787] to-[#C9A55A]">
+              Bộ Sưu Tập Trọn Vẹn 22 Bức Họa Cảnh Cố Cung (1482)
+            </h3>
+            <p className="text-xs sm:text-sm font-serif text-[#C8B69E] max-w-2xl leading-relaxed">
+              Chiêm ngưỡng rõ nét từng bức tranh lụa màu khoáng cung đình triều Minh: 12 tượng hình quẻ (Thoán, Tượng, Lục hào, Toàn động/tĩnh, Thế/Ứng) và 10 ca đoán theo 10 ngày Thiên Can.
+            </p>
+          </div>
+
+          {/* Bộ Lọc Danh Mục & Nút Vẽ Lại 22 Tranh HD */}
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              disabled={isBatchRedrawing || redrawingMucIdx !== null}
+              onClick={handleBatchRedrawHexagram}
+              className="px-3.5 py-2 rounded-2xl bg-gradient-to-r from-[#8B1E14] via-[#B3281B] to-[#6E140D] hover:brightness-110 border border-[#E5C168] text-[#FCE6B4] text-xs font-serif font-extrabold flex items-center gap-1.5 shadow-lg cursor-pointer transition-all disabled:opacity-50"
+            >
+              {isBatchRedrawing ? (
+                <RefreshCw className="w-3.5 h-3.5 text-[#F3D787] animate-spin" />
+              ) : (
+                <Sparkles className="w-3.5 h-3.5 text-[#F3D787]" />
+              )}
+              <span>
+                {isBatchRedrawing
+                  ? "Đang Vẽ Lại 22 Tranh HD..."
+                  : "✨ Vẽ Lại 22 Tranh Công Bút HD"}
+              </span>
+            </button>
+
+            <div className="flex flex-wrap items-center gap-1.5 bg-[#140B07] p-1.5 rounded-2xl border border-[#3E2718]">
+              <button
+                type="button"
+                onClick={() => setGalleryFilter("all")}
+                className={`px-3 py-1.5 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer ${
+                  galleryFilter === "all"
+                    ? "bg-gradient-to-r from-[#C9A55A] to-[#A67C2E] text-black shadow font-extrabold"
+                    : "text-[#A8947B] hover:text-white"
+                }`}
+              >
+                Tất Cả ({allHoaCanhItems.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setGalleryFilter("que")}
+                className={`px-3 py-1.5 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer ${
+                  galleryFilter === "que"
+                    ? "bg-gradient-to-r from-[#8B1E14] to-[#B3281B] text-[#FCE6B4] shadow font-extrabold"
+                    : "text-[#A8947B] hover:text-white"
+                }`}
+              >
+                12 Họa Cảnh Quẻ
+              </button>
+              <button
+                type="button"
+                onClick={() => setGalleryFilter("ngay")}
+                className={`px-3 py-1.5 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer ${
+                  galleryFilter === "ngay"
+                    ? "bg-gradient-to-r from-[#8B1E14] to-[#B3281B] text-[#FCE6B4] shadow font-extrabold"
+                    : "text-[#A8947B] hover:text-white"
+                }`}
+              >
+                10 Họa Cảnh Ngày Can
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* KHU VỰC BỨC HỌA ĐANG XEM TRỰC TIẾP (FEATURED HERO VIEWER) */}
+        {featured && parsedFeatured && (
+          <div className="rounded-3xl border-2 border-[#C9A55A]/90 bg-gradient-to-b from-[#23150E] via-[#1A0F0A] to-[#120906] p-5 sm:p-6 shadow-2xl space-y-5">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#3D2517] pb-3.5">
+              <div className="flex items-center gap-3">
+                <span className={`px-3 py-1 rounded-full text-xs font-serif font-bold border bg-gradient-to-r ${featured.badgeColor}`}>
+                  {featured.categoryLabel}
+                </span>
+                <div>
+                  <h4 className="text-base sm:text-xl font-serif font-black text-[#FCE6B4]">
+                    {featured.titleVi} — {featured.titleHan}
+                  </h4>
+                  <div className="text-[11px] font-serif text-[#C9A55A]">
+                    Trang {featured.pageNum}/1734 • Bản gốc Cố Cung Đài Bắc
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() =>
+                  setLightboxImg({
+                    src: featured.section.painting,
+                    title: featured.section.title,
+                    subtitle: `${hexData.quyen.tenQue} • ${featured.titleVi} (${featured.titleHan})`,
+                    moTa: featured.section.moTaTranh,
+                    poem: parsedFeatured.dichTho,
+                    mucIdx: featured.mucIdx,
+                  })
+                }
+                className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#C9A55A] via-[#F3D787] to-[#A67C2E] hover:brightness-110 text-black font-serif font-extrabold text-xs flex items-center gap-1.5 shadow-lg cursor-pointer transition-all"
+              >
+                <Maximize2 className="w-3.5 h-3.5" />
+                <span>Xem Toàn Màn Hình</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              {/* Cột Trái (5/12): Khung Tranh Hoàng Cung */}
+              <div className="lg:col-span-5">
+                {renderPalacePaintingFrame(
+                  featured.section,
+                  `${hexData.quyen.tenQue} • ${featured.titleVi} (${featured.titleHan})`,
+                  parsedFeatured.dichTho
+                )}
+              </div>
+
+              {/* Cột Phải (7/12): Thơ Đoán & Họa Cảnh Chi Tiết */}
+              <div className="lg:col-span-7 space-y-4">
+                {/* Khung Thơ Đoán */}
+                <div className="p-4 rounded-2xl bg-[#180E09] border border-[#4A2E1B] space-y-3">
+                  {parsedFeatured.headerSeg && (
+                    <div className="pb-2 border-b border-[#362214] flex flex-wrap items-baseline justify-between gap-2">
+                      <span className="text-sm sm:text-base font-serif font-black text-[#F3D787]">
+                        {parsedFeatured.headerSeg.han} — {parsedFeatured.headerSeg.hv}
+                      </span>
+                      <span className="text-xs font-serif text-[#B8A58E]">{parsedFeatured.headerSeg.vi}</span>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {/* Nguyên bản */}
+                    <div className="p-3 rounded-xl bg-[#21140D] border border-[#382315] space-y-1.5">
+                      <div className="text-[10px] font-serif uppercase tracking-wider text-[#C9A55A] font-bold">
+                        📜 Nguyên Bản & Phiên Âm:
+                      </div>
+                      <div className="space-y-1">
+                        {parsedFeatured.poemSegs.map((sg, idx) => (
+                          <div key={idx} className="leading-snug">
+                            <div className="text-sm font-serif font-bold text-[#FCE6B4] tracking-wide">
+                              {sg.han}
+                            </div>
+                            {sg.hv && (
+                              <div className="text-xs font-serif text-[#E5C168] italic">
+                                {sg.hv}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Dịch thơ */}
+                    {parsedFeatured.dichTho && (
+                      <div className="p-3 rounded-xl bg-gradient-to-br from-[#2E1A0F] to-[#1F110A] border border-[#8B6220]/60 shadow-inner flex flex-col justify-center">
+                        <div className="text-[10px] font-serif uppercase tracking-widest text-[#F3D787] font-bold mb-1.5 flex items-center gap-1.5">
+                          <Sparkles className="w-3.5 h-3.5 text-[#F3D787]" />
+                          <span>Dịch Thơ:</span>
+                        </div>
+                        <div className="text-sm font-serif font-bold italic text-[#FFF3D1] whitespace-pre-line leading-relaxed pl-2.5 border-l-2 border-[#E5C168]">
+                          {parsedFeatured.dichTho}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Giải nghĩa thơ */}
+                  {parsedFeatured.poemSegs.some((sg) => sg.vi) && (
+                    <div className="p-3 rounded-xl bg-[#140B07] border border-[#331F12] space-y-1 text-xs font-serif text-[#C8B69E] leading-relaxed">
+                      <div className="text-[10px] uppercase tracking-wider text-[#D4B475] font-bold">
+                        Giải Nghĩa Từng Câu:
+                      </div>
+                      {parsedFeatured.poemSegs.map(
+                        (sg, idx) =>
+                          sg.vi && (
+                            <div key={idx}>
+                              <span className="font-bold text-[#E5C168]">{sg.han}</span>: <span>{sg.vi}</span>
+                            </div>
+                          )
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* KHỐI HỌA CẢNH CỐ CUNG CHI TIẾT SẮC NÉT */}
+                {renderHoaCanhCard(
+                  featured.section,
+                  `Họa Cảnh Chi Tiết: ${featured.titleVi}`,
+                  "TƯỢNG HÌNH BẢN GỐC TRIỀU MINH (1482)",
+                  () =>
+                    setLightboxImg({
+                      src: featured.section.painting,
+                      title: featured.section.title,
+                      subtitle: `${hexData.quyen.tenQue} • ${featured.titleVi} (${featured.titleHan})`,
+                      moTa: featured.section.moTaTranh,
+                      poem: parsedFeatured.dichTho,
+                      mucIdx: featured.mucIdx,
+                    })
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* LƯỚI 22 BỨC HỌA CẢNH MINIATURES GRID */}
+        <div className="rounded-3xl border border-[#5C3D22] bg-gradient-to-b from-[#1E120A] via-[#160D08] to-[#100905] p-5 sm:p-6 shadow-xl space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#362214] pb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-base">🖼️</span>
+              <h4 className="text-sm sm:text-base font-serif font-black text-[#FCE6B4] uppercase tracking-wider">
+                Danh Sách {filteredItems.length} Bức Họa Cảnh Cố Cung (Bấm vào tranh để xem chi tiết)
+              </h4>
+            </div>
+            <span className="text-xs font-serif text-[#C9A55A]">
+              Bấm chọn bất kỳ bức họa nào để xem phóng to
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            {filteredItems.map((item, idx) => {
+              const isSelected = item.mucIdx === (featured?.mucIdx || 3);
+              return (
+                <button
+                  key={item.mucIdx}
+                  type="button"
+                  onClick={() => {
+                    playCardClick();
+                    setSelectedGalleryMucIdx(item.mucIdx);
+                  }}
+                  className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between group relative overflow-hidden ${
+                    isSelected
+                      ? "bg-gradient-to-b from-[#382011] via-[#2A170D] to-[#1C0E07] border-2 border-[#F3D787] shadow-[0_0_20px_rgba(243,215,135,0.4)] scale-[1.02]"
+                      : "bg-[#160D08] border-[#382315] hover:border-[#8C5E28] hover:bg-[#20130B]"
+                  }`}
+                >
+                  {/* Thumbnail tranh */}
+                  <div className="w-full aspect-[4/5] bg-black/60 rounded-xl overflow-hidden mb-2 relative flex items-center justify-center border border-[#3E2718]">
+                    {item.section.painting ? (
+                      <img
+                        src={item.section.painting}
+                        alt={item.titleVi}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="text-[10px] text-center p-2 text-[#8C6520]">Không có tranh</div>
+                    )}
+                    <span className="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded-md bg-black/80 text-[9px] font-mono font-bold text-[#F3D787] border border-[#C9A55A]/50">
+                      #{idx + 1}
+                    </span>
+                    {isSelected && (
+                      <span className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded-md bg-[#8B1E14] text-[9px] font-serif font-bold text-white border border-[#F3D787]">
+                        Đang xem
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Tiêu đề */}
+                  <div className="space-y-0.5">
+                    <div className="text-[10px] font-serif uppercase tracking-wider text-[#C9A55A] font-bold truncate">
+                      {item.shortLabel}
+                    </div>
+                    <div className="text-xs font-serif font-bold text-[#FCE6B4] leading-snug line-clamp-1 group-hover:text-[#F3D787]">
+                      {item.titleVi}
+                    </div>
+                    <div className="text-[10px] font-serif text-[#9E8C75] italic truncate">
+                      {item.titleHan}
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="mt-6 space-y-6">
       {/* BANNER CỐ CUNG NGỰ CHẾ */}
@@ -746,6 +1438,18 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
                 }`}
               >
                 Trang Đôi Lụa Cố Cung
+              </button>
+              <button
+                type="button"
+                onClick={() => setDisplayStyle("gallery")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  displayStyle === "gallery"
+                    ? "bg-gradient-to-r from-[#E5C168] via-[#F3D787] to-[#C9A55A] text-black shadow font-extrabold"
+                    : "text-[#E5C168] hover:text-white"
+                }`}
+              >
+                <Palette className="w-3.5 h-3.5" />
+                <span>Bảo Tàng 22 Họa Cảnh</span>
               </button>
             </div>
           </div>
@@ -1159,7 +1863,10 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
       {/* KẾT QUẢ TRÍCH XUẤT SONG HÀNH: (1) HÌNH & THƠ ĐOÁN CỦA QUẺ ĐÓ + (2) HÌNH & THƠ ĐOÁN CỦA NGÀY ĐÓ CỦA QUẺ ĐÓ */}
       {!loading && hexData && (
         <div className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {displayStyle === "gallery" ? (
+            renderGalleryView()
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* ==================== CỘT 1: HÌNH & THƠ ĐOÁN CỦA QUẺ ĐÓ (THEO XÍ NGẦU 12 MẶT) ==================== */}
             <div className="rounded-3xl border-2 border-[#C9A55A]/70 bg-gradient-to-b from-[#23150E] via-[#190F0A] to-[#120A06] shadow-2xl overflow-hidden flex flex-col">
               {/* Header Cột 1 */}
@@ -1264,6 +1971,7 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
                                       subtitle: `${hexData.quyen.tenQue} • Mặt xí ngầu số ${diceValue}: ${currentDiceItem.titleVi}`,
                                       moTa: diceSection.moTaTranh,
                                       poem: dichTho,
+                                      mucIdx: diceSection.mucIdx,
                                     })
                                   }
                                   className="w-full h-[320px] object-contain rounded-lg cursor-zoom-in transition-transform group-hover:scale-[1.02]"
@@ -1288,6 +1996,25 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
                               </div>
                             </div>
                           )}
+
+                          {/* Họa Cảnh Cố Cung Chi Tiết & Rõ Ràng */}
+                          {diceSection.moTaTranh &&
+                            renderHoaCanhCard(
+                              diceSection,
+                              `Họa Cảnh Mặt Xí Ngầu #${diceValue}: ${currentDiceItem.titleVi}`,
+                              `${hexData.quyen.tenQue} • ${currentDiceItem.titleHan}`,
+                              diceSection.painting
+                                ? () =>
+                                    setLightboxImg({
+                                      src: diceSection.painting,
+                                      title: diceSection.title,
+                                      subtitle: `${hexData.quyen.tenQue} • Mặt xí ngầu số ${diceValue}: ${currentDiceItem.titleVi}`,
+                                      moTa: diceSection.moTaTranh,
+                                      poem: dichTho,
+                                      mucIdx: diceSection.mucIdx,
+                                    })
+                                : undefined
+                            )}
                         </div>
                       );
                     }
@@ -1295,44 +2022,44 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
                     // CHẾ ĐỘ HIỆN ĐẠI GỌN ĐẸP: TRANH CỐ CUNG + KHUNG THƠ ĐỐI XỨNG (NGUYÊN BẢN & DỊCH THƠ) + GIẢI NGHĨA
                     return (
                       <>
-                        {/* 1. Tranh màu cung đình nhà Minh */}
-                        {diceSection.painting && (
-                          <div className="relative rounded-2xl overflow-hidden border-2 border-[#7A542E] bg-[#140B07] group">
-                            <img
-                              src={diceSection.painting}
-                              alt={diceSection.title}
-                              onClick={() =>
+                        {/* 1. Tranh màu cung đình nhà Minh khổ lớn sắc nét */}
+                        {renderPalacePaintingFrame(
+                          diceSection,
+                          `${hexData.quyen.tenQue} • Mặt xí ngầu số ${diceValue}: ${currentDiceItem.titleVi}`,
+                          dichTho,
+                          diceSection.painting
+                            ? () =>
                                 setLightboxImg({
                                   src: diceSection.painting,
                                   title: diceSection.title,
                                   subtitle: `${hexData.quyen.tenQue} • Mặt xí ngầu số ${diceValue}: ${currentDiceItem.titleVi}`,
                                   moTa: diceSection.moTaTranh,
                                   poem: dichTho,
+                                  mucIdx: diceSection.mucIdx,
                                 })
-                              }
-                              className="w-full max-h-[300px] object-contain mx-auto cursor-zoom-in transition-transform duration-300 group-hover:scale-[1.02]"
-                              style={{ imageRendering: "-webkit-optimize-contrast" }}
-                            />
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setLightboxImg({
-                                  src: diceSection.painting,
-                                  title: diceSection.title,
-                                  subtitle: `${hexData.quyen.tenQue} • Mặt xí ngầu số ${diceValue}: ${currentDiceItem.titleVi}`,
-                                  moTa: diceSection.moTaTranh,
-                                  poem: dichTho,
-                                })
-                              }
-                              className="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-xl bg-black/75 hover:bg-black text-[#F3D787] border border-[#C9A55A]/50 text-[11px] font-serif flex items-center gap-1 cursor-pointer backdrop-blur-sm"
-                            >
-                              <ZoomIn className="w-3.5 h-3.5" />
-                              <span>Phóng to</span>
-                            </button>
-                          </div>
+                            : undefined
                         )}
 
-                        {/* 2. Khung Thơ Đoán Gọn (Nguyên Bản Hán-Việt & Dịch Thơ Đối Xứng) */}
+                        {/* 2. Khối Họa Cảnh Cố Cung Chi Tiết với Huy Hiệu Tượng Hình */}
+                        {diceSection.moTaTranh &&
+                          renderHoaCanhCard(
+                            diceSection,
+                            `Họa Cảnh Cố Cung: ${currentDiceItem.titleVi}`,
+                            `${hexData.quyen.tenQue} • ${currentDiceItem.titleHan}`,
+                            diceSection.painting
+                              ? () =>
+                                  setLightboxImg({
+                                    src: diceSection.painting,
+                                    title: diceSection.title,
+                                    subtitle: `${hexData.quyen.tenQue} • Mặt xí ngầu số ${diceValue}: ${currentDiceItem.titleVi}`,
+                                    moTa: diceSection.moTaTranh,
+                                    poem: dichTho,
+                                    mucIdx: diceSection.mucIdx,
+                                  })
+                              : undefined
+                          )}
+
+                        {/* 3. Khung Thơ Đoán Gọn (Nguyên Bản Hán-Việt & Dịch Thơ Đối Xứng) */}
                         <div className="p-3.5 sm:p-4 rounded-2xl bg-[#170E09] border border-[#4A2E1B] space-y-3">
                           {headerSeg && (
                             <div className="pb-2 border-b border-[#362214] flex flex-wrap items-baseline justify-between gap-2">
@@ -1400,28 +2127,18 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
                           )}
                         </div>
 
-                        {/* 3. Mô tả họa cảnh & Chú thích gộp gọn */}
-                        {(diceSection.moTaTranh || allNotes.length > 0) && (
-                          <div className="p-3 rounded-2xl bg-[#150C08] border border-[#382315] space-y-2 text-xs font-serif">
-                            {diceSection.moTaTranh && (
-                              <div className="text-[#D4C3AA] leading-relaxed">
-                                <span className="font-bold text-[#E5C168]">🖼️ Họa cảnh Cố Cung: </span>
-                                {diceSection.moTaTranh}
-                              </div>
-                            )}
-                            {allNotes.length > 0 && (
-                              <div className="pt-1.5 border-t border-[#2B1A10] space-y-1">
-                                <div className="font-bold text-[#D4B475] flex items-center gap-1">
-                                  <Info className="w-3.5 h-3.5 text-[#C9A55A]" />
-                                  <span>Chú Thích:</span>
-                                </div>
-                                <ul className="list-disc list-inside space-y-0.5 text-[#B8A58E] leading-relaxed">
-                                  {allNotes.map((n, i) => (
-                                    <li key={i}>{n}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
+                        {/* 4. Chú thích nếu có */}
+                        {allNotes.length > 0 && (
+                          <div className="p-3 rounded-2xl bg-[#150C08] border border-[#382315] space-y-1 text-xs font-serif">
+                            <div className="font-bold text-[#D4B475] flex items-center gap-1">
+                              <Info className="w-3.5 h-3.5 text-[#C9A55A]" />
+                              <span>Chú Thích:</span>
+                            </div>
+                            <ul className="list-disc list-inside space-y-0.5 text-[#B8A58E] leading-relaxed">
+                              {allNotes.map((n, i) => (
+                                <li key={i}>{n}</li>
+                              ))}
+                            </ul>
                           </div>
                         )}
                       </>
@@ -1509,6 +2226,7 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
                                       subtitle: `${hexData.quyen.tenQue} • ${activeDayStem.titleVi} (${activeDayStem.titleHan})`,
                                       moTa: daySection.moTaTranh,
                                       poem: dichTho,
+                                      mucIdx: daySection.mucIdx,
                                     })
                                   }
                                   className="w-full h-[320px] object-contain rounded-lg cursor-zoom-in transition-transform group-hover:scale-[1.02]"
@@ -1532,50 +2250,69 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
                               </div>
                             </div>
                           )}
+
+                          {/* Họa Cảnh Ngày Can Chi Tiết & Rõ Ràng */}
+                          {daySection.moTaTranh &&
+                            renderHoaCanhCard(
+                              daySection,
+                              `Họa Cảnh Ngày ${activeDayStem.canVi}: ${activeDayStem.titleVi}`,
+                              `${hexData.quyen.tenQue} • ${activeDayStem.titleHan}`,
+                              daySection.painting
+                                ? () =>
+                                    setLightboxImg({
+                                      src: daySection.painting,
+                                      title: daySection.title,
+                                      subtitle: `${hexData.quyen.tenQue} • ${activeDayStem.titleVi} (${activeDayStem.titleHan})`,
+                                      moTa: daySection.moTaTranh,
+                                      poem: dichTho,
+                                      mucIdx: daySection.mucIdx,
+                                    })
+                                : undefined
+                            )}
                         </div>
                       );
                     }
 
                     return (
                       <>
-                        {/* 1. Tranh màu Cố Cung của Ngày đó */}
-                        {daySection.painting && (
-                          <div className="relative rounded-2xl overflow-hidden border-2 border-[#8B3226] bg-[#140907] group">
-                            <img
-                              src={daySection.painting}
-                              alt={daySection.title}
-                              onClick={() =>
+                        {/* 1. Tranh màu Cố Cung của Ngày đó khổ lớn thếp vàng */}
+                        {renderPalacePaintingFrame(
+                          daySection,
+                          `${hexData.quyen.tenQue} • ${activeDayStem.titleVi} (${activeDayStem.titleHan})`,
+                          dichTho,
+                          daySection.painting
+                            ? () =>
                                 setLightboxImg({
                                   src: daySection.painting,
                                   title: daySection.title,
                                   subtitle: `${hexData.quyen.tenQue} • ${activeDayStem.titleVi} (${activeDayStem.titleHan})`,
                                   moTa: daySection.moTaTranh,
                                   poem: dichTho,
+                                  mucIdx: daySection.mucIdx,
                                 })
-                              }
-                              className="w-full max-h-[300px] object-contain mx-auto cursor-zoom-in transition-transform duration-300 group-hover:scale-[1.02]"
-                              style={{ imageRendering: "-webkit-optimize-contrast" }}
-                            />
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setLightboxImg({
-                                  src: daySection.painting,
-                                  title: daySection.title,
-                                  subtitle: `${hexData.quyen.tenQue} • ${activeDayStem.titleVi} (${activeDayStem.titleHan})`,
-                                  moTa: daySection.moTaTranh,
-                                  poem: dichTho,
-                                })
-                              }
-                              className="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-xl bg-black/75 hover:bg-black text-[#F3D787] border border-[#C9A55A]/50 text-[11px] font-serif flex items-center gap-1 cursor-pointer backdrop-blur-sm"
-                            >
-                              <ZoomIn className="w-3.5 h-3.5" />
-                              <span>Phóng to</span>
-                            </button>
-                          </div>
+                            : undefined
                         )}
 
-                        {/* 2. Khung Thơ Đoán Ngày Gọn (Nguyên Bản Hán-Việt & Dịch Thơ Đối Xứng) */}
+                        {/* 2. Khối Họa Cảnh Ngày Can Chi Tiết với Huy Hiệu Tượng Hình */}
+                        {daySection.moTaTranh &&
+                          renderHoaCanhCard(
+                            daySection,
+                            `Họa Cảnh Ngày ${activeDayStem.canVi}: ${activeDayStem.titleVi}`,
+                            `${hexData.quyen.tenQue} • ${activeDayStem.titleHan}`,
+                            daySection.painting
+                              ? () =>
+                                  setLightboxImg({
+                                    src: daySection.painting,
+                                    title: daySection.title,
+                                    subtitle: `${hexData.quyen.tenQue} • ${activeDayStem.titleVi} (${activeDayStem.titleHan})`,
+                                    moTa: daySection.moTaTranh,
+                                    poem: dichTho,
+                                    mucIdx: daySection.mucIdx,
+                                  })
+                              : undefined
+                          )}
+
+                        {/* 3. Khung Thơ Đoán Ngày Gọn (Nguyên Bản Hán-Việt & Dịch Thơ Đối Xứng) */}
                         <div className="p-3.5 sm:p-4 rounded-2xl bg-[#170C09] border border-[#5E2219] space-y-3">
                           {headerSeg && (
                             <div className="pb-2 border-b border-[#421913] flex flex-wrap items-baseline justify-between gap-2">
@@ -1643,28 +2380,18 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
                           )}
                         </div>
 
-                        {/* 3. Mô tả họa cảnh & Chú thích gộp gọn */}
-                        {(daySection.moTaTranh || allNotes.length > 0) && (
-                          <div className="p-3 rounded-2xl bg-[#150A08] border border-[#421913] space-y-2 text-xs font-serif">
-                            {daySection.moTaTranh && (
-                              <div className="text-[#D4C3AA] leading-relaxed">
-                                <span className="font-bold text-[#F3D787]">🖼️ Họa cảnh Ngày {activeDayStem.canVi}: </span>
-                                {daySection.moTaTranh}
-                              </div>
-                            )}
-                            {allNotes.length > 0 && (
-                              <div className="pt-1.5 border-t border-[#33130E] space-y-1">
-                                <div className="font-bold text-[#F3D787] flex items-center gap-1">
-                                  <Info className="w-3.5 h-3.5 text-[#F3D787]" />
-                                  <span>Chú Thích:</span>
-                                </div>
-                                <ul className="list-disc list-inside space-y-0.5 text-[#B8A58E] leading-relaxed">
-                                  {allNotes.map((n, i) => (
-                                    <li key={i}>{n}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
+                        {/* 4. Chú thích nếu có */}
+                        {allNotes.length > 0 && (
+                          <div className="p-3 rounded-2xl bg-[#150A08] border border-[#421913] space-y-1 text-xs font-serif">
+                            <div className="font-bold text-[#F3D787] flex items-center gap-1">
+                              <Info className="w-3.5 h-3.5 text-[#F3D787]" />
+                              <span>Chú Thích:</span>
+                            </div>
+                            <ul className="list-disc list-inside space-y-0.5 text-[#B8A58E] leading-relaxed">
+                              {allNotes.map((n, i) => (
+                                <li key={i}>{n}</li>
+                              ))}
+                            </ul>
                           </div>
                         )}
                       </>
@@ -1674,6 +2401,7 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
               )}
             </div>
           </div>
+        )}
 
           {/* ==================== PHẦN III: TỔNG QUAN BẢN QUẺ (NẠP GIÁP · THI ĐOÁN CHUNG · CHIẾT TỰ) & CHIÊM PHONG THỦY / SỰ VỤ ==================== */}
           <div className="rounded-3xl border border-[#5C3D22] bg-gradient-to-b from-[#1F130C] via-[#160D09] to-[#110A06] p-5 sm:p-6 shadow-xl space-y-5">
@@ -1991,62 +2719,213 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
       )}
 
       {/* LIGHTBOX PHÓNG TO TRANH CỐ CUNG */}
-      {lightboxImg && (
-        <div
-          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
-          onClick={() => setLightboxImg(null)}
-        >
-          <div
-            className="max-w-4xl w-full bg-[#1C110B] border-2 border-[#C9A55A] rounded-3xl overflow-hidden shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-4 bg-[#28180F] border-b border-[#4A2E1B] flex items-center justify-between">
-              <div>
-                <div className="text-xs font-serif text-[#E5C168]">{lightboxImg.subtitle}</div>
-                <h4 className="text-base sm:text-lg font-serif font-bold text-[#FCE6B4]">
-                  {lightboxImg.title}
-                </h4>
-              </div>
-              <button
-                type="button"
-                onClick={() => setLightboxImg(null)}
-                className="w-9 h-9 rounded-xl bg-[#3A2316] hover:bg-[#523220] text-[#FCE6B4] flex items-center justify-center cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+      {lightboxImg && (() => {
+        const curLbIdx = allHoaCanhItems.findIndex((it) => it.mucIdx === lightboxImg.mucIdx);
+        const hasPrev = curLbIdx > 0;
+        const hasNext = curLbIdx >= 0 && curLbIdx < allHoaCanhItems.length - 1;
 
-            <div className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-12 gap-5 items-center max-h-[80vh] overflow-y-auto">
-              <div className="md:col-span-7 bg-[#EADBBE] p-3 rounded-2xl border border-[#C9A55A]">
-                <img
-                  src={lightboxImg.src}
-                  alt={lightboxImg.title}
-                  className="w-full max-h-[60vh] object-contain mx-auto rounded-lg"
-                  style={{ imageRendering: "-webkit-optimize-contrast" }}
-                />
+        const handlePrev = () => {
+          if (!hasPrev) return;
+          const prev = allHoaCanhItems[curLbIdx - 1];
+          const parsed = extractPoemAndContent(prev.section);
+          setLightboxImg({
+            src: prev.section.painting,
+            title: prev.section.title,
+            subtitle: `${hexData?.quyen.tenQue} • ${prev.titleVi} (${prev.titleHan})`,
+            moTa: prev.section.moTaTranh,
+            poem: parsed.dichTho,
+            mucIdx: prev.mucIdx,
+          });
+        };
+
+        const handleNext = () => {
+          if (!hasNext) return;
+          const next = allHoaCanhItems[curLbIdx + 1];
+          const parsed = extractPoemAndContent(next.section);
+          setLightboxImg({
+            src: next.section.painting,
+            title: next.section.title,
+            subtitle: `${hexData?.quyen.tenQue} • ${next.titleVi} (${next.titleHan})`,
+            moTa: next.section.moTaTranh,
+            poem: parsed.dichTho,
+            mucIdx: next.mucIdx,
+          });
+        };
+
+        return (
+          <div
+            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-3 sm:p-5"
+            onClick={() => setLightboxImg(null)}
+          >
+            <div
+              className="max-w-5xl w-full bg-[#1A0E08] border-2 border-[#C9A55A] rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.95)] flex flex-col max-h-[92vh]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header Modal */}
+              <div className="p-4 bg-gradient-to-r from-[#2E180E] via-[#23120A] to-[#160A05] border-b border-[#4A2E1B] flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#E5C168] to-[#996515] text-black font-bold flex items-center justify-center shadow shrink-0">
+                    🖼️
+                  </div>
+                  <div>
+                    <div className="text-xs font-serif text-[#E5C168] flex items-center gap-2">
+                      <span>{lightboxImg.subtitle}</span>
+                      {curLbIdx >= 0 && (
+                        <span className="px-2 py-0.5 rounded-full bg-[#3D2012] border border-[#8C5E28] text-[10px] text-[#F3D787] font-bold">
+                          Bức #{curLbIdx + 1}/22
+                        </span>
+                      )}
+                    </div>
+                    <h4 className="text-base sm:text-lg font-serif font-bold text-[#FCE6B4] truncate">
+                      {lightboxImg.title}
+                    </h4>
+                  </div>
+                </div>
+
+                {/* Điều hướng Trước / Sau, Vẽ Lại HD & Nút Đóng */}
+                <div className="flex items-center gap-1.5 shrink-0">
+                  {lightboxImg.mucIdx !== undefined && hexData?.sections[lightboxImg.mucIdx] && (
+                    <button
+                      type="button"
+                      disabled={redrawingMucIdx !== null || isBatchRedrawing}
+                      onClick={() =>
+                        handleRedrawPainting(
+                          hexData.sections[lightboxImg.mucIdx!],
+                          lightboxImg.poem
+                        )
+                      }
+                      className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#8B1E14] to-[#B3281B] hover:brightness-110 border border-[#E5C168]/70 text-[#FCE6B4] text-xs font-serif font-bold flex items-center gap-1.5 shadow cursor-pointer transition-all disabled:opacity-50 mr-1"
+                    >
+                      {redrawingMucIdx === lightboxImg.mucIdx ? (
+                        <RefreshCw className="w-3.5 h-3.5 text-[#F3D787] animate-spin" />
+                      ) : (
+                        <Sparkles className="w-3.5 h-3.5 text-[#F3D787]" />
+                      )}
+                      <span className="hidden sm:inline">
+                        {redrawingMucIdx === lightboxImg.mucIdx
+                          ? "Đang Vẽ HD..."
+                          : "Vẽ Lại Công Bút HD"}
+                      </span>
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={handlePrev}
+                    disabled={!hasPrev}
+                    title="Bức trước (Mũi tên trái ←)"
+                    className={`p-2 rounded-xl border transition-all cursor-pointer ${
+                      hasPrev
+                        ? "bg-[#28150C] hover:bg-[#3D2012] border-[#C9A55A]/50 text-[#FCE6B4]"
+                        : "bg-[#160D08] border-[#2A180E] text-[#5C4533] cursor-not-allowed opacity-40"
+                    }`}
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    disabled={!hasNext}
+                    title="Bức tiếp theo (Mũi tên phải →)"
+                    className={`p-2 rounded-xl border transition-all cursor-pointer ${
+                      hasNext
+                        ? "bg-[#28150C] hover:bg-[#3D2012] border-[#C9A55A]/50 text-[#FCE6B4]"
+                        : "bg-[#160D08] border-[#2A180E] text-[#5C4533] cursor-not-allowed opacity-40"
+                    }`}
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLightboxImg(null)}
+                    title="Đóng (Esc)"
+                    className="w-9 h-9 rounded-xl bg-[#3A2316] hover:bg-[#523220] text-[#FCE6B4] flex items-center justify-center cursor-pointer ml-1"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
-              <div className="md:col-span-5 space-y-4">
-                {lightboxImg.poem && (
-                  <div className="p-4 rounded-2xl bg-[#26160D] border border-[#6E4726]">
-                    <div className="text-xs font-serif uppercase tracking-wider text-[#F3D787] font-bold mb-1.5">
-                      Thơ Đoán:
+
+              {/* Thân Modal */}
+              <div className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-12 gap-5 items-start overflow-y-auto flex-1">
+                {/* Khung tranh lớn */}
+                <div className="md:col-span-7 bg-[#100704] p-3 rounded-2xl border-2 border-[#C9A55A]/60 relative shadow-2xl group flex items-center justify-center min-h-[360px]">
+                  {/* Nút lướt tranh mờ trên ảnh */}
+                  {hasPrev && (
+                    <button
+                      type="button"
+                      onClick={handlePrev}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/75 hover:bg-black border border-[#C9A55A] text-[#FCE6B4] flex items-center justify-center shadow-2xl cursor-pointer z-10 transition-transform hover:scale-110 active:scale-95"
+                      title="Bức trước (←)"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+                  )}
+                  {hasNext && (
+                    <button
+                      type="button"
+                      onClick={handleNext}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/75 hover:bg-black border border-[#C9A55A] text-[#FCE6B4] flex items-center justify-center shadow-2xl cursor-pointer z-10 transition-transform hover:scale-110 active:scale-95"
+                      title="Bức tiếp theo (→)"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                  )}
+
+                  <img
+                    src={lightboxImg.src}
+                    alt={lightboxImg.title}
+                    className="w-full max-h-[64vh] object-contain mx-auto rounded-lg contrast-[1.06] saturate-[1.04]"
+                    style={{ imageRendering: "-webkit-optimize-contrast" }}
+                  />
+                  {redrawingMucIdx !== null && redrawingMucIdx === lightboxImg.mucIdx && (
+                    <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center gap-2 z-20 rounded-2xl">
+                      <RefreshCw className="w-9 h-9 text-[#E5C168] animate-spin" />
+                      <span className="text-sm font-serif font-bold text-[#FCE6B4]">
+                        Đang họa lại nét Công Bút Cố Cung HD...
+                      </span>
                     </div>
-                    <div className="text-base font-serif italic text-[#FFF3D1] whitespace-pre-line leading-relaxed">
-                      {lightboxImg.poem}
+                  )}
+                </div>
+
+                {/* Khối Thông Tin: Thơ & Miêu Tả Họa Cảnh Định Dạng */}
+                <div className="md:col-span-5 space-y-4">
+                  {lightboxImg.poem && (
+                    <div className="p-4 rounded-2xl bg-[#26160D] border border-[#6E4726] shadow">
+                      <div className="text-xs font-serif uppercase tracking-wider text-[#F3D787] font-bold mb-1.5 flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-[#F3D787]" />
+                        <span>Thơ Đoán:</span>
+                      </div>
+                      <div className="text-sm sm:text-base font-serif italic text-[#FFF3D1] whitespace-pre-line leading-relaxed pl-2.5 border-l-2 border-[#E5C168]">
+                        {lightboxImg.poem}
+                      </div>
                     </div>
+                  )}
+
+                  {lightboxImg.moTa && (
+                    <div className="p-4 rounded-2xl bg-[#140A06] border border-[#422615] space-y-2.5 shadow">
+                      <div className="flex items-center justify-between border-b border-[#2B180D] pb-2">
+                        <span className="font-serif font-black text-xs uppercase tracking-wider text-[#E5C168] flex items-center gap-1.5">
+                          <span>🖼️</span>
+                          <span>Họa Cảnh Cố Cung Chi Tiết:</span>
+                        </span>
+                        <span className="text-[10px] font-serif text-[#A8947B]">Bản triều Minh 1482</span>
+                      </div>
+                      <div className="text-xs sm:text-sm font-serif text-[#F2E7D3] leading-relaxed space-y-2">
+                        {renderFormattedHoaCanh(lightboxImg.moTa)}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="p-3 rounded-xl bg-[#120804] border border-[#2B180D] text-[11px] font-serif text-[#A8947B] flex items-center justify-between">
+                    <span>💡 Phím tắt: <strong>←</strong> / <strong>→</strong> để lướt 22 họa cảnh</span>
+                    <span><strong>Esc</strong> để đóng</span>
                   </div>
-                )}
-                {lightboxImg.moTa && (
-                  <div className="p-4 rounded-2xl bg-[#160D08] border border-[#3E2718] text-xs sm:text-sm font-serif text-[#D4C3AA] leading-relaxed">
-                    <div className="font-bold text-[#E5C168] mb-1">🖼️ Mô tả tranh vẽ Cố Cung:</div>
-                    {lightboxImg.moTa}
-                  </div>
-                )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* MODAL LỜI TỰA NGỰ CHẾ (1482), TƯỢNG QUỶ CỐC TỬ & VĂN KHẤN THẮP HƯƠNG (CHÚC HƯƠNG VĂN) */}
       {showIntroModal && (
@@ -2122,8 +3001,11 @@ export const NguCheTinhTuySection: React.FC<NguCheTinhTuySectionProps> = ({
                             />
                           ) : (
                             curPg.moTaTranh && (
-                              <div className="flex items-center p-3 text-xs font-serif text-[#D4C3AA] leading-relaxed">
-                                🖼️ {curPg.moTaTranh}
+                              <div className="p-3 text-xs sm:text-sm font-serif text-[#F2E7D3] leading-relaxed space-y-1.5 flex flex-col justify-center">
+                                <div className="text-[#E5C168] font-bold text-xs uppercase tracking-wider">
+                                  🖼️ Miêu tả họa cảnh:
+                                </div>
+                                <div>{renderFormattedHoaCanh(curPg.moTaTranh)}</div>
                               </div>
                             )
                           )}

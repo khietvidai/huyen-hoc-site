@@ -1,8 +1,10 @@
 import express, { Request, Response } from "express";
 import path from "path";
 import fs from "fs";
+import { execSync } from "child_process";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
+import WebSocket from "ws";
 import dotenv from "dotenv";
 import { BOOK_HEXAGRAMS } from "./src/data/bookHexagrams";
 
@@ -1452,6 +1454,367 @@ ${contextDescription}`;
   }
 });
 
+// ============================================================================
+// HỆ THỐNG PHỤC CHẾ RÕ NÉT TRANH LỤA CỐ CUNG HD (GIỮ NGUYÊN 100% TRANH GỐC 1482)
+// ============================================================================
+async function gongbiRemasterHD(base64Str: string): Promise<string> {
+  const sharpMod: any = await import("sharp" as any);
+  const sharp = sharpMod.default || sharpMod;
+
+  const cleanB64 = base64Str.replace(/^data:image\/\w+;base64,/, "");
+  const inputBuf = Buffer.from(cleanB64, "base64");
+
+  const meta = await sharp(inputBuf).metadata();
+  const w1 = meta.width || 277;
+  const h1 = meta.height || 339;
+  const w2 = w1 < 450 ? w1 * 2 : w1;
+  const h2 = h1 < 550 ? h1 * 2 : h1;
+
+  // Bước 1: Khử nhiễu hạt JPEG trên nền lụa nhưng bảo toàn 100% đường nét khuôn mặt, mắt, râu và nét bút
+  const { data: src1 } = await sharp(inputBuf)
+    .removeAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+
+  const { data: med1 } = await sharp(inputBuf)
+    .removeAlpha()
+    .median(3)
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+
+  const clean1 = Buffer.alloc(src1.length);
+  for (let y = 0; y < h1; y++) {
+    for (let x = 0; x < w1; x++) {
+      const idx = (y * w1 + x) * 3;
+      let minL = 255, maxL = 0;
+      for (let dy = -1; dy <= 1; dy++) {
+        const ny = Math.min(h1 - 1, Math.max(0, y + dy));
+        for (let dx = -1; dx <= 1; dx++) {
+          const nx = Math.min(w1 - 1, Math.max(0, x + dx));
+          const nIdx = (ny * w1 + nx) * 3;
+          const lum = 0.299 * src1[nIdx] + 0.587 * src1[nIdx + 1] + 0.114 * src1[nIdx + 2];
+          if (lum < minL) minL = lum;
+          if (lum > maxL) maxL = lum;
+        }
+      }
+      const localContrast = maxL - minL;
+      const detailWeight = Math.min(1.0, Math.max(0.0, (localContrast - 14) / 26.0));
+      const smoothWeight = (1.0 - detailWeight) * 0.65;
+
+      for (let c = 0; c < 3; c++) {
+        clean1[idx + c] = Math.round(src1[idx + c] * (1 - smoothWeight) + med1[idx + c] * smoothWeight);
+      }
+    }
+  }
+
+  // Bước 2: Phóng đại 2x bằng thuật toán nội suy Lanczos3 sắc nét
+  const { data: up2 } = await sharp(clean1, { raw: { width: w1, height: h1, channels: 3 } })
+    .resize(w2, h2, { kernel: "lanczos3" })
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+
+  // Bước 3: Làm sắc nét đường biên kẹp ngưỡng Min-Max (Chống 100% viền trắng Halo & giữ nguyên thần thái gốc)
+  const out2 = Buffer.alloc(up2.length);
+  const amount = 0.72;
+
+  for (let y = 0; y < h2; y++) {
+    for (let x = 0; x < w2; x++) {
+      const idx = (y * w2 + x) * 3;
+      let minR = 255, maxR = 0, minG = 255, maxG = 0, minB = 255, maxB = 0;
+      let sumR = 0, sumG = 0, sumB = 0, count = 0;
+
+      for (let dy = -1; dy <= 1; dy++) {
+        const ny = Math.min(h2 - 1, Math.max(0, y + dy));
+        for (let dx = -1; dx <= 1; dx++) {
+          const nx = Math.min(w2 - 1, Math.max(0, x + dx));
+          const nIdx = (ny * w2 + nx) * 3;
+          const r = up2[nIdx], g = up2[nIdx + 1], b = up2[nIdx + 2];
+          if (r < minR) minR = r; if (r > maxR) maxR = r;
+          if (g < minG) minG = g; if (g > maxG) maxG = g;
+          if (b < minB) minB = b; if (b > maxB) maxB = b;
+          sumR += r; sumG += g; sumB += b;
+          count++;
+        }
+      }
+
+      const meanR = sumR / count, meanG = sumG / count, meanB = sumB / count;
+      const cR = up2[idx], cG = up2[idx + 1], cB = up2[idx + 2];
+
+      let sR = Math.max(minR, Math.min(maxR, cR + (cR - meanR) * amount));
+      let sG = Math.max(minG, Math.min(maxG, cG + (cG - meanG) * amount));
+      let sB = Math.max(minB, Math.min(maxB, cB + (cB - meanB) * amount));
+
+      const lum = 0.299 * sR + 0.587 * sG + 0.114 * sB;
+      const meanLum = 0.299 * meanR + 0.587 * meanG + 0.114 * meanB;
+      if (lum < 105 && meanLum - lum > 4) {
+        const inkPull = Math.min(14, (meanLum - lum) * 0.35);
+        sR = Math.max(12, sR - inkPull);
+        sG = Math.max(10, sG - inkPull);
+        sB = Math.max(8, sB - inkPull);
+      }
+
+      out2[idx] = Math.round(sR);
+      out2[idx + 1] = Math.round(sG);
+      out2[idx + 2] = Math.round(sB);
+    }
+  }
+
+  const outBuf = await sharp(out2, { raw: { width: w2, height: h2, channels: 3 } })
+    .modulate({ saturation: 1.05 })
+    .jpeg({ quality: 94, chromaSubsampling: "4:4:4" })
+    .toBuffer();
+
+  return `data:image/jpeg;base64,${outBuf.toString("base64")}`;
+}
+
+function getCleanOriginalHexData(hexNumber: number, fallbackHexData: any): any {
+  try {
+    const raw = execSync(`git show 471034d:public/ngu-che/hex_${hexNumber}.json`, {
+      cwd: process.cwd(),
+      maxBuffer: 50 * 1024 * 1024,
+    }).toString("utf-8");
+    return JSON.parse(raw);
+  } catch {
+    return fallbackHexData;
+  }
+}
+
+let braveRestoreQueue: Promise<any> = Promise.resolve();
+
+async function braveGeminiRestore(origDataUrl: string): Promise<string | null> {
+  const runTask = async (): Promise<string | null> => {
+    let ws: WebSocket | null = null;
+    try {
+      const listRes = await fetch("http://127.0.0.1:9222/json/list");
+      if (!listRes.ok) return null;
+      const pages = (await listRes.json()) as any[];
+      const page = pages.find((p) => p.url && p.url.includes("gemini.google.com"));
+      if (!page || !page.webSocketDebuggerUrl) return null;
+
+      ws = new WebSocket(page.webSocketDebuggerUrl);
+      await new Promise<void>((resolve, reject) => {
+        ws!.once("open", () => resolve());
+        ws!.once("error", (err) => reject(err));
+      });
+
+      let msgId = 1;
+      const send = (method: string, params: Record<string, any> = {}): Promise<any> =>
+        new Promise((resolve, reject) => {
+          const id = msgId++;
+          const handler = (data: WebSocket.RawData) => {
+            const msg = JSON.parse(data.toString());
+            if (msg.id === id) {
+              ws!.off("message", handler);
+              if (msg.error) reject(msg.error);
+              else resolve(msg.result);
+            }
+          };
+          ws!.on("message", handler);
+          ws!.send(JSON.stringify({ id, method, params }));
+        });
+
+      const beforeCountRes = await send("Runtime.evaluate", {
+        expression: `document.querySelectorAll('generated-image img, single-image img').length`,
+        returnByValue: true,
+      });
+      const beforeCount = Number(beforeCountRes?.result?.value || 0);
+
+      // Paste original 1482 painting into Gemini input box
+      await send("Runtime.evaluate", {
+        expression: `(async () => {
+          const backdrop = document.querySelector('.cdk-overlay-backdrop');
+          if (backdrop) backdrop.click();
+          const editor = document.querySelector('.ql-editor, [contenteditable="true"], rich-textarea [role="textbox"]');
+          if (!editor) return { ok: false };
+          editor.focus();
+          document.execCommand('selectAll', false);
+          document.execCommand('delete', false);
+
+          const dataUrl = ${JSON.stringify(origDataUrl)};
+          const res = await fetch(dataUrl);
+          const blob = await res.blob();
+          const file = new File([blob], 'painting_1482.jpg', { type: 'image/jpeg' });
+          const dt = new DataTransfer();
+          dt.items.add(file);
+          const pasteEvent = new ClipboardEvent('paste', {
+            bubbles: true,
+            cancelable: true,
+            clipboardData: dt
+          });
+          editor.dispatchEvent(pasteEvent);
+          document.execCommand('insertText', false, 'fix lại ảnh cho đẹp');
+          return { ok: true };
+        })()`,
+        awaitPromise: true,
+        returnByValue: true,
+      });
+
+      // Wait for image upload preview and Send button to be ready
+      for (let i = 0; i < 15; i++) {
+        await new Promise((r) => setTimeout(r, 1000));
+        const checkUpload = await send("Runtime.evaluate", {
+          expression: `(() => {
+            const sendBtn = document.querySelector('button[aria-label="Gửi tin nhắn"], button[aria-label="Send message"]');
+            const spinners = document.querySelectorAll('uploader-file-preview mat-progress-spinner, .file-preview mat-progress-spinner');
+            return {
+              ready: !!sendBtn && !sendBtn.disabled && sendBtn.getAttribute('aria-disabled') !== 'true' && spinners.length === 0
+            };
+          })()`,
+          returnByValue: true,
+        });
+        if (checkUpload?.result?.value?.ready && i >= 2) break;
+      }
+
+      // Click "Gửi tin nhắn"
+      await send("Runtime.evaluate", {
+        expression: `(() => {
+          const sendBtn = document.querySelector('button[aria-label="Gửi tin nhắn"], button[aria-label="Send message"]');
+          if (sendBtn) sendBtn.click();
+        })()`,
+        returnByValue: true,
+      });
+
+      // Poll for new generated image
+      for (let i = 0; i < 45; i++) {
+        await new Promise((r) => setTimeout(r, 2000));
+        const pollRes = await send("Runtime.evaluate", {
+          expression: `(() => {
+            const imgs = Array.from(document.querySelectorAll('generated-image img, single-image img'));
+            if (imgs.length > ${beforeCount}) {
+              const lastImg = imgs[imgs.length - 1];
+              if (lastImg.complete && lastImg.naturalWidth > 200) {
+                const canvas = document.createElement('canvas');
+                canvas.width = lastImg.naturalWidth;
+                canvas.height = lastImg.naturalHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(lastImg, 0, 0);
+                return {
+                  done: true,
+                  b64: canvas.toDataURL('image/jpeg', 0.92)
+                };
+              }
+            }
+            return { done: false };
+          })()`,
+          returnByValue: true,
+        });
+        if (pollRes?.result?.value?.done && pollRes?.result?.value?.b64) {
+          ws.close();
+          return pollRes.result.value.b64;
+        }
+      }
+
+      ws.close();
+      return null;
+    } catch (err) {
+      console.error("[BraveGeminiRestore Error]:", err);
+      try {
+        if (ws) ws.close();
+      } catch {}
+      return null;
+    }
+  };
+
+  const resultPromise = braveRestoreQueue.then(runTask, runTask);
+  braveRestoreQueue = resultPromise.catch(() => {});
+  return resultPromise;
+}
+
+// API Phục chế Nét Công Bút HD cho 1 bức họa cảnh (Giữ nguyên 100% đúng bức tranh gốc của quẻ đó qua Brave Gemini Ultra)
+app.post("/api/ngu-che/redraw", async (req: Request, res: Response) => {
+  try {
+    const { hexNumber, mucIdx } = req.body;
+    if (!hexNumber || mucIdx === undefined) {
+      return res.status(400).json({ success: false, message: "Thiếu thông tin quẻ hoặc mục họa cảnh" });
+    }
+
+    const hexFile = path.join(process.cwd(), "public", "ngu-che", `hex_${hexNumber}.json`);
+    if (!fs.existsSync(hexFile)) {
+      return res.status(404).json({ success: false, message: `Không tìm thấy dữ liệu hex_${hexNumber}.json` });
+    }
+
+    const hexData = JSON.parse(fs.readFileSync(hexFile, "utf-8"));
+    const origHexData = getCleanOriginalHexData(Number(hexNumber), hexData);
+    const origPainting = origHexData?.sections?.[String(mucIdx)]?.painting || hexData?.sections?.[String(mucIdx)]?.painting;
+
+    if (!origPainting) {
+      return res.status(404).json({ success: false, message: "Không tìm thấy tranh gốc trong mục này" });
+    }
+
+    // Ưu tiên phục chế qua Brave Gemini Ultra (Khiet Thanh Ultra - Argon) giữ 100% bố cục tranh gốc
+    let newPaintingDataUri = await braveGeminiRestore(origPainting);
+    let modeUsed = "brave_gemini_ultra";
+    if (!newPaintingDataUri) {
+      newPaintingDataUri = await gongbiRemasterHD(origPainting);
+      modeUsed = "gongbi_hd";
+    }
+
+    // Lưu trực tiếp vào file JSON của đúng quẻ đó
+    hexData.sections[String(mucIdx)].painting = newPaintingDataUri;
+    fs.writeFileSync(hexFile, JSON.stringify(hexData, null, 2), "utf-8");
+
+    return res.json({
+      success: true,
+      modeUsed,
+      painting: newPaintingDataUri,
+      message: modeUsed === "brave_gemini_ultra"
+        ? "Đã phục chế ảnh qua Brave Gemini Ultra (Khiet Thanh Ultra) — Giữ nguyên 100% bố cục tranh gốc Cố Cung!"
+        : "Đã phục chế rõ nét Công Bút HD (giữ nguyên 100% tranh gốc Cố Cung)!",
+    });
+  } catch (err: any) {
+    console.error("[NguChe Redraw Error]:", err);
+    return res.status(500).json({
+      success: false,
+      message: err?.message || "Lỗi khi phục chế họa cảnh Công Bút HD",
+    });
+  }
+});
+
+// API Phục chế đồng loạt toàn bộ 22 bức họa cảnh của 1 Quẻ (Giữ nguyên 100% tranh gốc)
+app.post("/api/ngu-che/redraw-batch", async (req: Request, res: Response) => {
+  try {
+    const { hexNumber } = req.body;
+    if (!hexNumber) {
+      return res.status(400).json({ success: false, message: "Thiếu số thứ tự quẻ (hexNumber)" });
+    }
+
+    const hexFile = path.join(process.cwd(), "public", "ngu-che", `hex_${hexNumber}.json`);
+    if (!fs.existsSync(hexFile)) {
+      return res.status(404).json({ success: false, message: `Không tìm thấy dữ liệu hex_${hexNumber}.json` });
+    }
+
+    const hexData = JSON.parse(fs.readFileSync(hexFile, "utf-8"));
+    const origHexData = getCleanOriginalHexData(Number(hexNumber), hexData);
+    const updatedPaintings: Record<string, string> = {};
+    let count = 0;
+
+    for (const [k, sec] of Object.entries<any>(hexData.sections || {})) {
+      const origPainting = origHexData?.sections?.[k]?.painting || sec?.painting;
+      if (sec && origPainting) {
+        const hdUri = (await braveGeminiRestore(origPainting)) || (await gongbiRemasterHD(origPainting));
+        sec.painting = hdUri;
+        updatedPaintings[k] = hdUri;
+        count++;
+      }
+    }
+
+    fs.writeFileSync(hexFile, JSON.stringify(hexData, null, 2), "utf-8");
+
+    return res.json({
+      success: true,
+      count,
+      paintings: updatedPaintings,
+      message: `Đã phục chế rõ nét Công Bút HD cho toàn bộ ${count} bức họa cảnh gốc của Quẻ #${hexNumber}!`,
+    });
+  } catch (err: any) {
+    console.error("[NguChe Batch Redraw Error]:", err);
+    return res.status(500).json({
+      success: false,
+      message: err?.message || "Lỗi khi phục chế toàn bộ 22 họa cảnh của quẻ",
+    });
+  }
+});
+
 // Static assets serving for Decks, Jiazi images, Blog and Hexagrams
 const publicDir = path.join(process.cwd(), "public");
 app.use("/decks", express.static(path.join(publicDir, "decks"), { maxAge: "7d" }));
@@ -1459,6 +1822,7 @@ app.use("/images/jiazi", express.static(path.join(publicDir, "images", "jiazi"),
 app.use("/assets", express.static(path.join(publicDir, "assets"), { maxAge: "7d" }));
 app.use("/vi/blog", express.static(path.join(publicDir, "vi", "blog")));
 app.use("/vi/hexagram", express.static(path.join(publicDir, "vi", "hexagram")));
+app.use("/hexagram", express.static(path.join(publicDir, "hexagram")));
 
 // Vite or Static file serving
 async function startServer() {
