@@ -182,7 +182,8 @@ export const PRESET_CARD_BACKS: Record<string, string> = {
 
 export const PRESET_DECK_VERSION = "20261019_11";
 
-export const PRESET_DECK_CONFIG: Record<string, { ext: string; back: string; version?: string }> = {
+export const PRESET_DECK_CONFIG: Record<string, { ext: string; back: string; version?: string; customPath?: (i: number) => string }> = {
+  deck_cuu_nhi_vi: { ext: "webp", back: "/yilore-assets/hero-frame.webp", customPath: (i: number) => `/assets/oss/${i}/${i}a.webp` },
   deck_bo_1: { ext: "png", back: "/decks/deck_bo_1/back.jpg" },
   deck_bo_2: { ext: "png", back: "/decks/deck_bo_2/back.svg" },
   deck_bo_khong_chu: { ext: "png", back: "/decks/deck_bo_khong_chu/back.jpg" },
@@ -190,10 +191,11 @@ export const PRESET_DECK_CONFIG: Record<string, { ext: string; back: string; ver
   deck_ngu_che: { ext: "png", back: `/decks/deck_ngu_che/back.jpg?v=${PRESET_DECK_VERSION}`, version: PRESET_DECK_VERSION },
 };
 
-export const DEFAULT_DECK_ID = "deck_quan_tu";
-export const DEFAULT_VIP_DECK_ID = "deck_bo_khong_chu";
+export const DEFAULT_DECK_ID = "deck_cuu_nhi_vi";
+export const DEFAULT_VIP_DECK_ID = "deck_cuu_nhi_vi";
 
 export const PRESET_DECK_NAMES: Record<string, string> = {
+  deck_cuu_nhi_vi: "Bộ Cửu Nhị Việt Hóa (64 Quẻ)",
   deck_bo_khong_chu: "Bộ Không Chữ (Nguyên Bản)",
   deck_quan_tu: "Bộ Quân Tử (64 Quẻ)",
   deck_bo_1: "Bộ 1 (Nguyên Bản Có Chữ)",
@@ -202,6 +204,16 @@ export const PRESET_DECK_NAMES: Record<string, string> = {
 };
 
 export const INITIAL_PRESET_DECKS: DeckInfo[] = [
+  {
+    id: "deck_cuu_nhi_vi",
+    name: "Bộ Cửu Nhị Việt Hóa (64 Quẻ)",
+    description: "Bộ bài Kinh Dịch 64 quẻ Việt hóa chuẩn Bách Khoa Cửu Nhị (ichingtarot.com/vi/hexagram).",
+    isPreset: true,
+    themeStyle: "golden",
+    cardBackImage: "/yilore-assets/hero-frame.webp",
+    cardCount: 64,
+    createdAt: 1699999999000,
+  },
   {
     id: "deck_bo_khong_chu",
     name: "Bộ Không Chữ (Nguyên Bản)",
@@ -552,7 +564,9 @@ export async function getDeckImages(deckId: string): Promise<Record<number, stri
   if (presetConfig) {
     const vQuery = presetConfig.version ? `?v=${presetConfig.version}` : "";
     for (let i = 1; i <= 64; i++) {
-      results[i] = `/decks/${deckId}/${i}.${presetConfig.ext}${vQuery}`;
+      results[i] = presetConfig.customPath
+        ? `${presetConfig.customPath(i)}${vQuery}`
+        : `/decks/${deckId}/${i}.${presetConfig.ext}${vQuery}`;
     }
   }
 
@@ -798,7 +812,9 @@ export async function getCardImage(cardNumber: number): Promise<string | null> {
   if (PRESET_DECK_CONFIG[activeDeckId]) {
     const cfg = PRESET_DECK_CONFIG[activeDeckId];
     const vQuery = cfg.version ? `?v=${cfg.version}` : "";
-    return `/decks/${activeDeckId}/${cardNumber}.${cfg.ext}${vQuery}`;
+    return cfg.customPath
+      ? `${cfg.customPath(cardNumber)}${vQuery}`
+      : `/decks/${activeDeckId}/${cardNumber}.${cfg.ext}${vQuery}`;
   }
   return null;
 }

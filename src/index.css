@@ -754,9 +754,9 @@ html {
   max-height: none !important;
 }
 
-/* 3. Đảm bảo toàn bộ khung chứa hiển thị đầy đủ, không cuộn tràn */
-[data-capturing="true"],
-.capturing-export {
+/* 3. Đảm bảo toàn bộ khung chứa hiển thị đầy đủ, không cuộn tràn (trừ các khung crop cố định kích thước) */
+[data-capturing="true"]:not([data-capture-fixed-size="true"]):not([data-capture-root="true"]),
+.capturing-export:not([data-capture-fixed-size="true"]):not([data-capture-root="true"]) {
   overflow: visible !important;
   max-height: none !important;
   height: auto !important;
@@ -780,4 +780,47 @@ html {
 .capturing-export .card-title-text {
   font-size: 16px !important;
   line-height: 1.3 !important;
+}
+
+
+/* ============================================================================
+   YILORE 1:1 CLONE SCOPED DESIGN TOKENS (Restores exact Yilore Tailwind v4 tokens)
+   ============================================================================ */
+.yilore-1to1-root {
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  --color-amber-50: #fffbeb;
+  --color-amber-100: #fef3c7;
+  --color-amber-200: #fde68a;
+  --color-amber-300: #fcd34d;
+  --color-amber-400: #fbbf24;
+  --color-amber-500: #f59e0b;
+  --color-amber-600: #d97706;
+  --color-amber-700: #b45309;
+  --color-amber-800: #92400e;
+  --color-amber-900: #78350f;
+  --color-amber-950: #451a03;
+  font-family: 'Lora', 'Be Vietnam Pro', 'Noto Serif TC', 'Noto Serif SC', serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-optical-sizing: auto;
+}
+
+.yilore-1to1-root,
+.yilore-1to1-root button,
+.yilore-1to1-root input,
+.yilore-1to1-root select,
+.yilore-1to1-root textarea,
+.yilore-1to1-root .font-serif {
+  font-family: 'Lora', 'Be Vietnam Pro', 'Noto Serif TC', 'Noto Serif SC', serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-optical-sizing: auto;
+}
+
+.yilore-1to1-root .font-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
 }

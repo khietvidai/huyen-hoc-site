@@ -129,7 +129,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-center p-3 sm:p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[250] flex justify-center p-3 sm:p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="royal-frame my-auto w-full max-w-md px-5 py-7 sm:px-8 sm:py-9 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.95)]">
         <span className="royal-corner tl" />
         <span className="royal-corner tr" />

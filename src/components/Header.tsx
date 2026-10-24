@@ -36,6 +36,7 @@ import { MemberProfileModal } from "./MemberProfileModal";
 
 export type NavTab =
   | "home"
+  | "yilore"
   | "pricing"
   | "divination"
   | "manual"
@@ -198,6 +199,13 @@ export const Header: React.FC<HeaderProps> = ({
       chinese: "首頁",
       desc: "Phương pháp bốc bài I Ching Tarot & thông tin liên lạc Cửu Nhị",
       icon: Home,
+    },
+    {
+      id: "yilore",
+      label: "Ứng Dụng Yilore",
+      chinese: "易羅系統",
+      desc: "Hệ thống Sổ Tay Mệnh Lý, Chỉ Dẫn Hàng Ngày, Trò Chuyện, Lịch Sử Quẻ, Bộ Nhớ, Hồ Sơ & Quan Hệ",
+      icon: Sun,
     },
     {
       id: "pricing",

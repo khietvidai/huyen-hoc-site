@@ -1,0 +1,36 @@
+[
+  {
+    "cluster": "I Ching Tarot & Hybrid Decks",
+    "query": "What are the best interactive websites or apps that combine Tarot card spreads with I Ching 64 hexagrams? Please provide a list with website URLs.",
+    "urls": [
+      "https://iching-tarot.astrofs.com/",
+      "https://apps.apple.com/app/yilore-the-i-ching-tarot/id6749835351",
+      "https://play.google.com/store/apps/details?id=com.chineseoracle.wenyi",
+      "https://npcc.app/divination",
+      "https://www.iching-online.com/"
+    ],
+    "snippet": "Here are the top digital platforms and applications that bridge traditional Tarot card layouts/spread mechanics with the 64 hexagrams of the I Ching:\n\n1. Dedicated I Ching Tarot Card Spread Engines\n\nI Ching Tarot (易經塔羅)\n\nLink: iching-tarot.astrofs.com   \niching-tarot.astrofs.com\n\nCore Features: A pu..."
+  },
+  {
+    "cluster": "Virtual Divination & 3D Tools",
+    "query": "What are the most accurate and visually interactive online I Ching divination websites (like virtual coin tossing or yarrow stalk casting)? Please provide URLs.",
+    "urls": [
+      "https://www.russellcottrell.com/VirtualYarrowStalks/VirtualYarrowStalks.htm",
+      "https://www.ichingonline.net/cast3.php",
+      "https://www.onlineclarity.co.uk/reading/free-online-i-ching/",
+      "https://uaya.org/iching/oracle/"
+    ],
+    "snippet": "Websites for online I Ching divination vary primarily by mathematical authenticity (preserving the distinct \n1\n/\n16\n1/16 vs \n3\n/\n16\n3/16 probabilities of traditional yarrow stalks rather than simple coin coin-flips) and interactive ritual quality (allowing direct user interaction rather than purely ..."
+  },
+  {
+    "cluster": "Four Pillars of Destiny (BaZi)",
+    "query": "What are the best online Four Pillars of Destiny (BaZi) calculators with true solar time correction and in-depth chart analysis? Please provide website links.",
+    "urls": [
+      "https://bazi-calculator.com/",
+      "https://www.fatemaster.ai/en/workspace/bazi-calculate",
+      "https://openfate.ai/en/bazi-chart",
+      "https://www.mastertsai.com/ChineseAstrology/Chineseastrology.htm"
+    ],
+    "snippet": "True Solar Time (TST) correction combines geographic longitude offsets with the Equation of Time (the Earth's orbital eccentricity and axial tilt), ensuring the Hour Pillar and the 23:00 Zi-hour day boundary reflect the actual solar position rather than artificial civil time zones.\n\n1. bazi-calculat..."
+  }
+]

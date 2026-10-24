@@ -51,6 +51,7 @@ import { LichDungSuSection } from "./components/LichDungSuSection";
 import { HanNhietMenhSection } from "./components/HanNhietMenhSection";
 import { HomeSection } from "./components/HomeSection";
 import { LandingPage } from "./components/LandingPage";
+import { YiloreAppSuite } from "./components/YiloreAppSuite";
 import { PricingSection } from "./components/PricingSection";
 import { DailyHexagramModal } from "./components/DailyHexagramModal";
 import { DailyHexagramWidget } from "./components/DailyHexagramWidget";
@@ -189,7 +190,17 @@ const DIVINATION_METHODS: {
 ];
 
 export default function App() {
-  const [currentTab, setCurrentTab] = useState<NavTab>("home");
+  const [currentTab, setCurrentTab] = useState<NavTab>(() => {
+    if (typeof window !== "undefined") {
+      const p = window.location.pathname.toLowerCase();
+      const s = window.location.search.toLowerCase();
+      const h = window.location.hash.toLowerCase();
+      if (p.includes("/app") || p.includes("/yilore") || s.includes("yilore") || h.includes("yilore")) {
+        return "yilore";
+      }
+    }
+    return "home";
+  });
   const [divinationMethod, setDivinationMethod] = useState<DivinationMethodId | null>(null);
   const [suggestedDrawMode, setSuggestedDrawMode] = useState<
     "single" | "double" | "three" | "seven" | "nine" | "ten" | "twelve" | "custom"
@@ -308,11 +319,23 @@ export default function App() {
         loadCustomDeck(targetDeck);
       }
     };
+    const handlePopState = () => {
+      const p = window.location.pathname.toLowerCase();
+      const s = window.location.search.toLowerCase();
+      const h = window.location.hash.toLowerCase();
+      if (p.includes("/app") || p.includes("/yilore") || s.includes("yilore") || h.includes("yilore")) {
+        setCurrentTab("yilore");
+      } else {
+        setCurrentTab("home");
+      }
+    };
     window.addEventListener("iching-auth-change", handleAuthChange);
     window.addEventListener("iching-admin-data-change", handleAdminDataChange);
+    window.addEventListener("popstate", handlePopState);
     return () => {
       window.removeEventListener("iching-auth-change", handleAuthChange);
       window.removeEventListener("iching-admin-data-change", handleAdminDataChange);
+      window.removeEventListener("popstate", handlePopState);
     };
   }, []);
 
@@ -1094,6 +1117,78 @@ export default function App() {
     setCurrentTab("divination");
   };
 
+  if (currentTab === "yilore") {
+    return (
+      <>
+        <div
+          className={
+            !currentUser
+              ? "pointer-events-none select-none blur-[3px] brightness-75 transition-all duration-300 h-dvh overflow-hidden"
+              : ""
+          }
+        >
+          <YiloreAppSuite
+            currentUser={currentUser}
+            onExitToMainApp={() => {
+              AuthService.logout();
+              setCurrentUser(null);
+              if (typeof window !== "undefined") {
+                window.history.pushState({}, "", "/");
+              }
+              setCurrentTab("home");
+              showToast("Đã đăng xuất tài khoản Cửu Nhị.");
+            }}
+            onShowToast={showToast}
+          />
+        </div>
+
+        {/* Yêu cầu đăng nhập bắt buộc khi vào /en/app */}
+        {!currentUser && (
+          <AuthModal
+            isOpen={true}
+            onClose={() => {
+              setIsAuthModalOpen(false);
+              if (!AuthService.getCurrentUser()) {
+                if (typeof window !== "undefined") {
+                  window.history.pushState({}, "", "/");
+                }
+                setCurrentTab("home");
+              }
+            }}
+            defaultMode={authModalMode}
+            onSuccess={(user) => {
+              setCurrentUser(user);
+              setIsAuthModalOpen(false);
+              const isVipUser = Boolean(user.isMember || user.isAdmin);
+              if (isVipUser) {
+                const customDeck = getUserCustomDeckId(user.id, user.preferredDeckId);
+                const targetDeck = customDeck || DEFAULT_VIP_DECK_ID;
+                loadCustomDeck(targetDeck);
+              }
+              if (typeof window !== "undefined" && !window.location.pathname.toLowerCase().includes("/en/app")) {
+                window.history.pushState({}, "", "/en/app");
+              }
+              setCurrentTab("yilore");
+              showToast(
+                user.isAdmin
+                  ? `Chào mừng Quản Trị Viên Cửu Nhị (${user.name})!`
+                  : `Đăng nhập Cửu Nhị thành công! Kính chào ${user.name}.`
+              );
+            }}
+            onShowToast={showToast}
+          />
+        )}
+
+        {toastMessage && (
+          <div className="fixed bottom-6 right-6 z-[300] bg-stone-900 border border-amber-500/60 text-stone-100 px-4 py-2.5 rounded-xl shadow-2xl text-xs sm:text-sm flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            <span>{toastMessage}</span>
+          </div>
+        )}
+      </>
+    );
+  }
+
   if (currentTab === "home") {
     return (
       <>
@@ -1103,7 +1198,19 @@ export default function App() {
             if (method) {
               setDivinationMethod(method as DivinationMethodId);
             }
-            setCurrentTab(tab || "divination");
+            if (!tab || tab === "yilore") {
+              if (typeof window !== "undefined" && !window.location.pathname.toLowerCase().includes("/en/app")) {
+                window.history.pushState({}, "", "/en/app");
+              }
+              setCurrentTab("yilore");
+              if (!currentUser) {
+                setAuthModalMode("login");
+                setIsAuthModalOpen(true);
+                showToast("Vui lòng đăng nhập tài khoản Cửu Nhị để sử dụng ứng dụng!");
+              }
+            } else {
+              setCurrentTab(tab);
+            }
           }}
           onOpenAuthModal={(mode) => {
             setAuthModalMode(mode || "login");
@@ -1138,13 +1245,16 @@ export default function App() {
               const targetDeck = customDeck || DEFAULT_VIP_DECK_ID;
               loadCustomDeck(targetDeck);
             }
+            if (typeof window !== "undefined" && !window.location.pathname.toLowerCase().includes("/en/app")) {
+              window.history.pushState({}, "", "/en/app");
+            }
             showToast(
               user.isAdmin
                 ? `Chào mừng Quản Trị Viên Cửu Nhị (${user.name})!`
                 : `Đăng nhập Cửu Nhị thành công! Kính chào ${user.name}.`
             );
-            // Sau khi bấm đăng nhập thành công nhảy vào trang bốc quẻ của Cửu Nhị
-            setCurrentTab("divination");
+            // Sau khi bấm đăng nhập thành công nhảy vào trang /en/app của Cửu Nhị
+            setCurrentTab("yilore");
           }}
           onShowToast={showToast}
         />

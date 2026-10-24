@@ -6,3 +6,8 @@ coverage/
 *.log
 .env*
 !.env.example
+
+.camoufox_*/
+data/yilore_scan/
+data/hexagram_audit_screenshots/
+gemini_*.html

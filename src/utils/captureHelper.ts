@@ -13,7 +13,13 @@ export interface CaptureOptions {
  * Chuyển đổi chuỗi Data URL (base64) thành Blob đối tượng
  */
 export function dataUrlToBlob(dataUrl: string): Blob {
+  if (!dataUrl || dataUrl === "data:," || !dataUrl.includes(",")) {
+    throw new Error("Data URL trống hoặc không hợp lệ");
+  }
   const arr = dataUrl.split(",");
+  if (!arr[1] || arr[1].trim().length === 0) {
+    throw new Error("Data URL không có dữ liệu ảnh");
+  }
   const mimeMatch = arr[0].match(/:(.*?);/);
   const mime = mimeMatch ? mimeMatch[1] : "image/png";
   const bstr = atob(arr[1]);
@@ -45,6 +51,10 @@ export async function captureElementToPng(
     await Promise.all(
       images.map(async (img) => {
         try {
+          if (img.loading === "lazy") {
+            img.loading = "eager";
+          }
+          img.removeAttribute("loading");
           if (!img.complete || img.naturalWidth === 0) {
             await new Promise((res) => {
               img.onload = () => res(true);
@@ -173,7 +183,7 @@ async function doCaptureElement(
     const config: any = {
       backgroundColor: options?.backgroundColor || "#15100A",
       pixelRatio: ratio,
-      cacheBust: true,
+      cacheBust: false,
       skipFonts: true,
       fontEmbedCSS: "",
       imagePlaceholder: transparent1x1,
@@ -189,16 +199,16 @@ async function doCaptureElement(
         margin: "0",
         transform: "none",
         maxHeight: "none",
-        height: "auto",
-        overflow: "visible",
+        height: options?.height ? `${options.height}px` : "auto",
+        overflow: options?.height ? "hidden" : "visible",
         "-webkit-print-color-adjust": "exact",
         "color-adjust": "exact",
       },
     };
 
     if (useCanvasDims) {
-      config.canvasWidth = Math.round(rawWidth * ratio);
-      config.canvasHeight = Math.round(rawHeight * ratio);
+      config.canvasWidth = Math.round((options?.width || rawWidth) * ratio);
+      config.canvasHeight = Math.round((options?.height || rawHeight) * ratio);
     }
 
     if (options?.width) config.width = options.width;

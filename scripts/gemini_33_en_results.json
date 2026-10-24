@@ -1,0 +1,735 @@
+[
+  {
+    "id": 1,
+    "cluster": "I Ching Tarot & Hybrid Decks",
+    "query": "What are the best interactive websites or apps that combine Tarot card spreads with I Ching 64 hexagrams? Please provide a list with website URLs.",
+    "urls": [
+      "https://iching-tarot.astrofs.com/",
+      "https://apps.apple.com/app/yilore-the-i-ching-tarot/id6749835351",
+      "https://play.google.com/store/apps/details?id=com.chineseoracle.wenyi",
+      "https://npcc.app/divination",
+      "https://www.iching-online.com/"
+    ],
+    "domLinks": [],
+    "responseSnippet": "Here are the top digital platforms and applications that bridge traditional Tarot card layouts/spread mechanics with the 64 hexagrams of the I Ching:\n\n1. Dedicated I Ching Tarot Card Spread Engines\n\nI Ching Tarot (易經塔羅)\n\nLink: iching-tarot.astrofs.com   \niching-tarot.astrofs.com\n\nCore Features: A pu...",
+    "fullResponse": "Here are the top digital platforms and applications that bridge traditional Tarot card layouts/spread mechanics with the 64 hexagrams of the I Ching:\n\n1. Dedicated I Ching Tarot Card Spread Engines\n\nI Ching Tarot (易經塔羅)\n\nLink: iching-tarot.astrofs.com   \niching-tarot.astrofs.com\n\nCore Features: A pu..."
+  },
+  {
+    "id": 7,
+    "cluster": "Virtual Divination & 3D Tools",
+    "query": "What are the most accurate and visually interactive online I Ching divination websites (like virtual coin tossing or yarrow stalk casting)? Please provide URLs.",
+    "urls": [
+      "https://www.russellcottrell.com/VirtualYarrowStalks/VirtualYarrowStalks.htm",
+      "https://www.ichingonline.net/cast3.php",
+      "https://www.onlineclarity.co.uk/reading/free-online-i-ching/",
+      "https://uaya.org/iching/oracle/"
+    ],
+    "domLinks": [],
+    "responseSnippet": "Websites for online I Ching divination vary primarily by mathematical authenticity (preserving the distinct \n1\n/\n16\n1/16 vs \n3\n/\n16\n3/16 probabilities of traditional yarrow stalks rather than simple coin coin-flips) and interactive ritual quality (allowing direct user interaction rather than purely ...",
+    "fullResponse": "Websites for online I Ching divination vary primarily by mathematical authenticity (preserving the distinct \n1\n/\n16\n1/16 vs \n3\n/\n16\n3/16 probabilities of traditional yarrow stalks rather than simple coin coin-flips) and interactive ritual quality (allowing direct user interaction rather than purely ..."
+  },
+  {
+    "id": 18,
+    "cluster": "Four Pillars of Destiny (BaZi)",
+    "query": "What are the best online Four Pillars of Destiny (BaZi) calculators with true solar time correction and in-depth chart analysis? Please provide website links.",
+    "urls": [
+      "https://bazi-calculator.com/",
+      "https://www.fatemaster.ai/en/workspace/bazi-calculate",
+      "https://openfate.ai/en/bazi-chart",
+      "https://www.mastertsai.com/ChineseAstrology/Chineseastrology.htm"
+    ],
+    "domLinks": [],
+    "responseSnippet": "True Solar Time (TST) correction combines geographic longitude offsets with the Equation of Time (the Earth's orbital eccentricity and axial tilt), ensuring the Hour Pillar and the 23:00 Zi-hour day boundary reflect the actual solar position rather than artificial civil time zones.\n\n1. bazi-calculat...",
+    "fullResponse": "True Solar Time (TST) correction combines geographic longitude offsets with the Equation of Time (the Earth's orbital eccentricity and axial tilt), ensuring the Hour Pillar and the 23:00 Zi-hour day boundary reflect the actual solar position rather than artificial civil time zones.\n\n1. bazi-calculat..."
+  },
+  {
+    "id": 2,
+    "cluster": "I Ching Tarot & Hybrid Decks",
+    "query": "Are there any digital I Ching Tarot decks online that let you pull virtual cards instead of throwing coins? Please provide links.",
+    "urls": [
+      "https://www.cardstarot.com/oracle.html",
+      "https://npcc.app/divination",
+      "https://tarotap.com/en/draw-cards",
+      "https://roxyapi.com/tools/iching",
+      "https://www.onlineclarity.co.uk/reading/free-online-i-ching/"
+    ],
+    "domLinks": [
+      {
+        "title": "CardsTarot – Tao Oracle",
+        "href": "https://www.cardstarot.com/oracle.html"
+      },
+      {
+        "title": "cardstarot.com/oracle.html",
+        "href": "https://www.cardstarot.com/oracle.html"
+      },
+      {
+        "title": "NPCC Divination – I Ching & Oracle",
+        "href": "https://npcc.app/divination"
+      },
+      {
+        "title": "npcc.app/divination",
+        "href": "https://npcc.app/divination"
+      },
+      {
+        "title": "Tarotap – Custom & Oracle Card Pull",
+        "href": "https://tarotap.com/en/draw-cards"
+      },
+      {
+        "title": "tarotap.com/en/draw-cards",
+        "href": "https://tarotap.com/en/draw-cards"
+      },
+      {
+        "title": "RoxyAPI – Daily & Instant Hexagram",
+        "href": "https://roxyapi.com/tools/iching"
+      },
+      {
+        "title": "Online Clarity",
+        "href": "https://www.onlineclarity.co.uk/reading/free-online-i-ching/"
+      }
+    ],
+    "responseSnippet": "Several platforms and online tools allow pulling virtual I Ching cards directly, bypassing the traditional coin-tossing or yarrow-stalk routine:\n\nWeb Tools with Virtual Card Pulls\n\nCardsTarot – Tao Oracle\n\nMechanic: A digital adaptation of Ma Deva Padma’s Tao Oracle. Rather than generating lines one...",
+    "fullResponse": "Several platforms and online tools allow pulling virtual I Ching cards directly, bypassing the traditional coin-tossing or yarrow-stalk routine:\n\nWeb Tools with Virtual Card Pulls\n\nCardsTarot – Tao Oracle\n\nMechanic: A digital adaptation of Ma Deva Padma’s Tao Oracle. Rather than generating lines one by one, it presents face-down cards corresponding to the 64 archetypal hexagram cards that you click to draw directly.\n\nLink: cardstarot.com/oracle.html (select the Tao Oracle module)\n\nNPCC Divination – I Ching & Oracle\n\nMechanic: Offers multi-system digital spreads (Tarot, Da Liu Ren, I Ching). It allows rapid single-draw queries and visual hexagram card displays without requiring physical coin input.\n\nLink: npcc.app/divination\n\nTarotap – Custom & Oracle Card Pull\n\nMechanic: Features an interactive virtual fan deck where you swipe and tap to draw cards yourself (1 to 8 cards). While primarily rooted in classic tarot layouts, it is widely used for custom oracle and archetype draws.\n\nLink: tarotap.com/en/draw-cards\n\nPhysical Decks Often Used for Digital Imports\n\nIf you use virtual tabletop engines (like Tabletop Simulator on Steam) or custom card-drawing web apps:\n\nThe Tao Oracle (by Ma Deva Padma): The standard 64-card painted deck translating hexagram concepts into intuitive visual archetypes.\n\nI Ching Dead Moon (by Luis Royo): A gothic/oriental fusion deck published by Lo Scarabeo mapping 64 hexagrams onto card artworks.\n\nI Ching Holitzka (by Klaus Holitzka): Traditional ink-wash style card deck specifically structured around the 64 hexagrams with trigram breakdowns on each card.\n\nAlternative: Direct One-Click Hexagram Engines\n\nIf you want the hexagram meaning immediately without clicking coins 6 times:\n\nRoxyAPI – Daily & Instant Hexagram: Generates complete single-pull hexagram outcomes with full line readings in a single tap.\n\nOnline Clarity: While built around line-casting, it offers in-depth traditional textual analysis (Wilhelm/Legge lineages) once drawn."
+  },
+  {
+    "id": 3,
+    "cluster": "I Ching Tarot & Hybrid Decks",
+    "query": "Where can I find an online 64-hexagram I Ching card deck with detailed archetypal card meanings and images? Please share URLs.",
+    "urls": [
+      "https://memorypalace.academy/hexagrams",
+      "https://www.cafeausoul.com/iching/hexagrams/",
+      "https://www.fatemaster.ai/en/guides/64-hexagrams",
+      "https://www.iching-online.com/hexagrams/",
+      "https://www.onlineclarity.co.uk/reading/free-online-i-ching/"
+    ],
+    "domLinks": [
+      {
+        "title": "Memory Palace Academy – 64 Hexagrams Guide",
+        "href": "https://memorypalace.academy/hexagrams"
+      },
+      {
+        "title": "Cafe au Soul – I Ching 64 Hexagrams & Oracle",
+        "href": "https://www.cafeausoul.com/iching/hexagrams/"
+      },
+      {
+        "title": "FateMaster – 64 Hexagrams Divination Guide",
+        "href": "https://www.fatemaster.ai/en/guides/64-hexagrams"
+      },
+      {
+        "title": "Stefan Stenudd’s I Ching Online Library",
+        "href": "https://www.iching-online.com/hexagrams/"
+      },
+      {
+        "title": "I Ching with Clarity",
+        "href": "https://www.onlineclarity.co.uk/reading/free-online-i-ching/"
+      }
+    ],
+    "responseSnippet": "Several online platforms provide full 64-hexagram card presentations, complete with visual artwork, trigram archetypes, and commentaries:\n\nMemory Palace Academy – 64 Hexagrams Guide\n\nFeatures clean, modern visual card representations for every hexagram from #1 (The Creative) through #64 (Before Comp...",
+    "fullResponse": "Several online platforms provide full 64-hexagram card presentations, complete with visual artwork, trigram archetypes, and commentaries:\n\nMemory Palace Academy – 64 Hexagrams Guide\n\nFeatures clean, modern visual card representations for every hexagram from #1 (The Creative) through #64 (Before Completion). Each card includes the Chinese character, English naming, trigram structure, and a deep-dive commentary into the philosophical and practical archetypes.\n\nCafe au Soul – I Ching 64 Hexagrams & Oracle\n\nFocuses on the natural archetypes behind the Book of Changes (water, thunder, mountain, wind, fire, earth, lake, heaven). Each individual hexagram profile covers core actions, hidden influences (Hu Gua), underlying causes (Zong Gua), line interpretations, and philosophical synthesis.   \nCafe au Soul\n\nFateMaster – 64 Hexagrams Divination Guide   \nFateMaster\n\nA visual reference library laid out in a clean, card-grid interface. It maps each hexagram's lower/upper trigrams alongside Judgment texts, symbolic image breakdowns, and modern contextual applications (career, decision-making, inner growth).   \nFateMaster\n\nStefan Stenudd’s I Ching Online Library\n\nOffers an archetype-focused analysis rooted in Taoist philosophy and mythological imagery. Each hexagram entry details the complementary play of Yin/Yang and the structural interaction of the elemental trigrams.   \nI Ching Online\n\nI Ching with Clarity\n\nOne of the most respected web resources for Western I Ching study, offering card-like spreads, the full Wilhelm-Baynes translation base, and cross-references between hexagrams and Western archetypes like the Tarot.\n\nWould you like a side-by-side mapping of the 64 hexagrams to their corresponding classical Tarot archetypes?\nCó"
+  },
+  {
+    "id": 4,
+    "cluster": "I Ching Tarot & Hybrid Decks",
+    "query": "What are the best web tools for combining Western Tarot readings with Eastern I Ching wisdom for decision making? Include URLs.",
+    "urls": [
+      "https://shadowos.io/",
+      "https://labyrinthos.co/",
+      "https://www.hexagramguide.com/",
+      "https://cha0smagicklabs.com/"
+    ],
+    "domLinks": [
+      {
+        "title": "Shadow OS",
+        "href": "https://shadowos.io/"
+      },
+      {
+        "title": "Labyrinthos Academy",
+        "href": "https://labyrinthos.co/"
+      },
+      {
+        "title": "Hexagram Guide / I Ching Wisdom",
+        "href": "https://www.hexagramguide.com/"
+      },
+      {
+        "title": "Tarot-Divination by Cha0s Magick Labs",
+        "href": "https://cha0smagicklabs.com/"
+      }
+    ],
+    "responseSnippet": "Combining Western Tarot with the Eastern I Ching pairs the archetypal, psychological snapshot of Tarot with the cyclical, strategic timing and process of the I Ching. While traditional websites rarely build rigid two-in-one layouts into a single click, several digital tools, platforms, and dedicated...",
+    "fullResponse": "Combining Western Tarot with the Eastern I Ching pairs the archetypal, psychological snapshot of Tarot with the cyclical, strategic timing and process of the I Ching. While traditional websites rarely build rigid two-in-one layouts into a single click, several digital tools, platforms, and dedicated apps excel at supporting this hybrid decision-making process.   \nI Ching Wisdom\n\nBest Digital Platforms & Tools\n\nShadow OS\n\nA modern web platform explicitly designed for decision-making through Jungian synchronicity and the Book of Changes. Rather than fortune-telling, it delivers an archetypal signal to break decision deadlock and logs how your internal perspective reacts to the guidance. It is ideal for recording both your Tarot reflection and your hexagram transformation side-by-side.   \nShadow OS\n+ 1\n\nLabyrinthos Academy\n\nOne of the cleanest digital tools for Tarot decision spreads (such as the Two Choices or Crossroads layouts). Readers frequently pull a situation card or emotional state card here before consulting an Eastern hexagram for the corresponding action vector.\n\nHexagram Guide / I Ching Wisdom\n\nA thorough web engine for casting the 64 hexagrams with coin simulations, full judgment texts, moving line dynamics, and resulting transformed hexagrams. It provides detailed comparative essays on using I Ching and Tarot together for strategic diagnosis versus emotional reflection.   \nI Ching Wisdom\n+ 1\n\nTarot-Divination by Cha0s Magick Labs\n\nFeatures deep guides and analytical divination frameworks that explicitly teach practitioners how to blend Tarot’s narrative structure with I Ching’s state-change dynamics for complex multi-layered choices.   \nThe Complete Occult Collection\n\nRecommended Integrated Decision Framework\n\nRather than looking for a tool that forces both systems into a single algorithm, the most effective approach pairs two modular steps:   \nYann — Chinese Fengshui Guide\n\nStage\tSystem\tPrimary Focus\tBest Prompt / Query\n1. Diagnostic\tTarot (via Labyrinthos)\tPsychological state, blind spots, emotional currents\t\"What internal resistance or core narrative surrounds Option A vs Option B?\"\n2. Dynamic Action\tI Ching (via Hexagram Guide or Shadow OS)\tEnergetic posture, strategic timing, trajectory of change\t\"What is the natural movement of this situation, and what conduct is appropriate?\"\nWant a structured 4-step spread template that merges a 3-card Tarot draw with hexagram lines?\nCó"
+  },
+  {
+    "id": 5,
+    "cluster": "I Ching Tarot & Hybrid Decks",
+    "query": "Is there an online interactive I Ching oracle card reader with 3D card shuffling and spreads? Please provide links.",
+    "urls": [
+      "https://tarot.tsonit.com/?lang=en",
+      "https://chatarot.ai/en/ai-tarot-reading",
+      "https://diydivination.org/",
+      "https://www.onlineclarity.co.uk/reading/free-online-i-ching/",
+      "https://www.ifate.com/i-ching.html"
+    ],
+    "domLinks": [
+      {
+        "title": "LoveLoom 3D Tarot",
+        "href": "https://tarot.tsonit.com/?lang=en"
+      },
+      {
+        "title": "CHATAROT.AI",
+        "href": "https://chatarot.ai/en/ai-tarot-reading"
+      },
+      {
+        "title": "Divination Studio",
+        "href": "https://diydivination.org/"
+      },
+      {
+        "title": "I Ching with Clarity",
+        "href": "https://www.onlineclarity.co.uk/reading/free-online-i-ching/"
+      },
+      {
+        "title": "iFate I Ching",
+        "href": "https://www.ifate.com/i-ching.html"
+      }
+    ],
+    "responseSnippet": "A dedicated, standalone 3D interactive web reader specifically built for an I Ching oracle card deck (with card physics, 3D riffle/fan shuffling, and card-spread layouts) does not currently exist as an off-the-shelf public web application.\n\nThe digital landscape for divination tools splits into two ...",
+    "fullResponse": "A dedicated, standalone 3D interactive web reader specifically built for an I Ching oracle card deck (with card physics, 3D riffle/fan shuffling, and card-spread layouts) does not currently exist as an off-the-shelf public web application.\n\nThe digital landscape for divination tools splits into two distinct categories:\n\n1. 3D Interactive Card Platforms (Primarily Tarot-Focused)\n\nIf your primary priority is the 3D tactile experience (3D table, physics-based shuffling, interactive drawing, and customizable spread layouts):\n\nLoveLoom 3D Tarot: Provides a full 3D interactive space where you can draw, fan, and spread cards with realistic shuffling physics across multiple deck styles.   \nLoveLoom\n\nCHATAROT.AI: A 3D table interface featuring animated shuffling, card drawing, multi-card spreads (Time Flow, Choice, Celtic Cross), and interactive interpretations.   \nchatarot.ai\n\nDivination Studio: A modern multi-system divination engine supporting Tarot, Runes, and I Ching hexagrams across multiple spreads, though its card manipulation relies on clean 2D web interaction rather than a full 3D physics viewport.\n\n2. Interactive I Ching Readers (Traditional Hexagram Mechanics)\n\nBecause the I Ching fundamentally operates on generating 6 lines (Yin/Yang and moving lines) rather than standard card shuffling, almost all dedicated digital I Ching tools focus on coin tossing or yarrow stalk simulations rather than card decks:\n\nI Ching with Clarity: The gold standard for authentic interactive line casting, moving lines, and transformed hexagram analysis.   \nI Ching with Clarity\n\niFate I Ching: Features an interactive virtual coin-toss visual interface to build primary and resulting hexagrams.\n\nSummary & Building Your Own\n\nBecause 64-card I Ching decks (such as those pairing hexagrams with custom artwork or Tarot archetypes) are popular in physical print, the lack of a dedicated 3D WebGL card engine for them makes this a massive gap in the market. Most developers building 3D card readers implement them via Three.js or Babylon.js, loading 64 card textures onto 3D mesh planes with physics engines (like Rapier or Cannon.js) to manage the shuffle and table spreads.\n\nWould you like a Three.js / WebGL technical blueprint for building a 3D 64-card I Ching reader?\nCó"
+  },
+  {
+    "id": 6,
+    "cluster": "I Ching Tarot & Hybrid Decks",
+    "query": "What are the top recommended I Ching Tarot hybrid decks and virtual readers in 2026? Please provide URLs.",
+    "urls": [],
+    "domLinks": [],
+    "responseSnippet": "...",
+    "fullResponse": ""
+  },
+  {
+    "id": 8,
+    "cluster": "Virtual Divination & 3D Tools",
+    "query": "Where can I practice the authentic 49 yarrow stalk divination method online with realistic simulation? Please provide URLs.",
+    "urls": [
+      "https://www.russellcottrell.com/VirtualYarrowStalks/VirtualYarrowStalks.htm",
+      "https://uaya.org/iching/oracle/yarrow/",
+      "https://www.quickiching.com/methods/yarrow-stalks",
+      "https://elban.co/en/iching/"
+    ],
+    "domLinks": [
+      {
+        "title": "The Virtual Yarrow Stalks I Ching",
+        "href": "https://www.russellcottrell.com/VirtualYarrowStalks/VirtualYarrowStalks.htm"
+      },
+      {
+        "title": "Interactive 3D Yarrow Stalk Reading — UAYA",
+        "href": "https://uaya.org/iching/oracle/yarrow/"
+      },
+      {
+        "title": "Quick I Ching — 49 Stalks Ritual",
+        "href": "https://www.quickiching.com/methods/yarrow-stalks"
+      },
+      {
+        "title": "Elbanco Yarrow Stalk Simulator",
+        "href": "https://elban.co/en/iching/"
+      }
+    ],
+    "responseSnippet": "To practice the authentic 49 yarrow stalk method (Đại Diễn Chi Số / Zhu Xi procedure) online with realistic simulation rather than a generic one-click coin generator, use the following interactive simulators:\n\n1. The Virtual Yarrow Stalks I Ching\n\nURL: https://www.russellcottrell.com/VirtualYarrowSt...",
+    "fullResponse": "To practice the authentic 49 yarrow stalk method (Đại Diễn Chi Số / Zhu Xi procedure) online with realistic simulation rather than a generic one-click coin generator, use the following interactive simulators:\n\n1. The Virtual Yarrow Stalks I Ching\n\nURL: https://www.russellcottrell.com/VirtualYarrowStalks/VirtualYarrowStalks.htm\n\nHow it simulates: Designed specifically to emulate physical volition. You divide a graphic bundle of virtual stalks on screen by moving your cursor and clicking to split them into two heaps. It runs the full three changes (Thập Bát Biến) per line to build the hexagram from the bottom up, adhering strictly to traditional mechanics and yarrow-stalk probability distributions.\n\n2. Interactive 3D Yarrow Stalk Reading — UAYA\n\nURL: https://uaya.org/iching/oracle/yarrow/\n\nHow it simulates: Provides an interactive 3D visual workspace where you divide and count through the stalks step-by-step across all 18 changes. It is one of the few web tools with tactile 3D rendering for sorting piles.\n\n3. Quick I Ching — 49 Stalks Ritual\n\nURL: [https://www.quickiching.com/methods/yarrow-stalks](https://www.quickiching.com/methods/yarrow-stalks)\n\nHow it simulates: Makes all 18 distinct changes visible step-by-step rather than hiding them behind a black-box generator. It explicitly tracks the Zhu Xi remainder counts (\n5\n/\n9\n5/9 on change one; \n4\n/\n8\n4/8 on changes two and three) to preserve the exact classical probabilities (\n1\n/\n16\n1/16 for Old Yin, \n5\n/\n16\n5/16 for Young Yang, \n7\n/\n16\n7/16 for Young Yin, \n3\n/\n16\n3/16 for Old Yang).\n\n4. Elbanco Yarrow Stalk Simulator\n\nURL: [https://elban.co/en/iching/](https://elban.co/en/iching/)\n\nHow it simulates: A clean browser simulator running the exact 49-stalk routine (setting 1 aside from 50, dividing by 4, and calculating 3 rounds per line)."
+  },
+  {
+    "id": 9,
+    "cluster": "Virtual Divination & 3D Tools",
+    "query": "Which websites offer an interactive 3D virtual I Ching casting experience with animations? Please provide URLs.",
+    "urls": [
+      "https://uaya.org/iching/oracle/cast/",
+      "https://uaya.org/iching/oracle/",
+      "https://github.com/edisedis777/yijing",
+      "https://ichingportal.com/iching-coin-toss"
+    ],
+    "domLinks": [],
+    "responseSnippet": "Online web platforms featuring real-time, animated 3D environments for I Ching divination include:\n\nUAYA Interactive 3D I Ching Oracle\n\nURL: [https://uaya.org/iching/oracle/cast/](https://uaya.org/iching/oracle/cast/) (Overview: [https://uaya.org/iching/oracle/](https://uaya.org/iching/oracle/))\n\nFe...",
+    "fullResponse": "Online web platforms featuring real-time, animated 3D environments for I Ching divination include:\n\nUAYA Interactive 3D I Ching Oracle\n\nURL: [https://uaya.org/iching/oracle/cast/](https://uaya.org/iching/oracle/cast/) (Overview: [https://uaya.org/iching/oracle/](https://uaya.org/iching/oracle/))\n\nFeatures: A dedicated WebGL/3D canvas where you interactively toss three Chinese bronze coins across six throws. It simulates physical coin physics/rotations and visualizes the formation of primary hexagrams, changing lines, and resulting hexagrams in real time.\n\nYijing Sphere (GitHub / Web Demo)\n\nURL: [https://github.com/edisedis777/yijing](https://github.com/edisedis777/yijing)\n\nFeatures: An interactive, animated 3D visualization and navigational model that maps all 64 hexagrams onto a rotating 3D spherical structure (polarizing Qián and Kūn at opposite poles) with interactive line inspection.\n\nIChingPortal (Coin Toss Oracle)\n\nURL: [https://ichingportal.com/iching-coin-toss](https://ichingportal.com/iching-coin-toss)\n\nFeatures: Features dynamic, animated digital coin tosses to build the hexagram sequence step-by-step, paired with synchronicity feeds and traditional commentaries."
+  },
+  {
+    "id": 10,
+    "cluster": "Virtual Divination & 3D Tools",
+    "query": "What are the best free online I Ching reading tools with visual coin casting and line-by-line breakdown? Include URLs.",
+    "urls": [
+      "https://www.ichingonline.net/cast3.php",
+      "https://www.cafeausoul.com/oracles/iching/",
+      "https://www.eclecticenergies.com/iching/virtualcoins",
+      "https://askyi.app/"
+    ],
+    "domLinks": [
+      {
+        "title": "I Ching Online.NET",
+        "href": "https://www.ichingonline.net/cast3.php"
+      },
+      {
+        "title": "Cafe Au Soul - I Ching Oracle",
+        "href": "https://www.cafeausoul.com/oracles/iching/"
+      },
+      {
+        "title": "Eclectic Energies Yijing",
+        "href": "https://www.eclecticenergies.com/iching/virtualcoins"
+      },
+      {
+        "title": "Ask Yi",
+        "href": "https://askyi.app/"
+      }
+    ],
+    "responseSnippet": "I Ching Online.NET\n\nA classic, no-nonsense web tool where you click through 6 virtual coin casts (or input physical coin flips manually). It visually constructs the hexagram line-by-line from line 1 (bottom) to line 6 (top), highlighting moving lines in red and providing dedicated breakdowns for the...",
+    "fullResponse": "I Ching Online.NET\n\nA classic, no-nonsense web tool where you click through 6 virtual coin casts (or input physical coin flips manually). It visually constructs the hexagram line-by-line from line 1 (bottom) to line 6 (top), highlighting moving lines in red and providing dedicated breakdowns for the primary hexagram, every specific changing line, and the resulting hexagram (Zhi Gua).\n\nCafe Au Soul - I Ching Oracle\n\nFeatures an animated 3-coin toss interface using traditional Chinese coin representations (assigning values 2 and 3). As you cast each line, it displays the trigrams forming in real time. The resulting report provides an in-depth, psychological/nature-based line-by-line analysis for changing lines, along with nuclear (Hu Gua) and complementary (Zong Gua) hexagram perspectives.\n\nEclectic Energies Yijing\n\nOffers a clean interactive simulator where you select your coin type (Eurocent, Chinese coin, etc.) and flip line-by-line. It clearly flags changing Yin (6) and changing Yang (9), mapping directly to Wilhelm-Baynes-based translations for each activated line alongside the derived hexagram.\n\nAsk Yi\n\nA modern, mobile-friendly interface simulating the 3-coin method across six rounds. It automatically calculates primary lines, highlights moving lines, and structures the analysis with an emphasis on line positioning (inner vs. outer trigram, median lines 2 and 5).\n\n(The attached artwork depicts a traditional scene illustrating Hexagram 40, Deliverance / Giải (解)—the archer shooting the hawk on the high wall from line 4/6 imagery, symbolizing the removal of obstacles and freeing up stagnant situations)."
+  },
+  {
+    "id": 11,
+    "cluster": "Virtual Divination & 3D Tools",
+    "query": "Are there online I Ching tools that support multiple spread layouts (single card, past-present-future, 4 seasons)? Please provide links.",
+    "urls": [],
+    "domLinks": [],
+    "responseSnippet": "Đang tìm kiếm trên web...",
+    "fullResponse": "Đang tìm kiếm trên web"
+  },
+  {
+    "id": 12,
+    "cluster": "Virtual Divination & 3D Tools",
+    "query": "What website provides the most intuitive visual interface for casting and transforming I Ching hexagrams? Please provide URLs.",
+    "urls": [],
+    "domLinks": [],
+    "responseSnippet": "Đang tìm kiếm trên web...",
+    "fullResponse": "Đang tìm kiếm trên web"
+  },
+  {
+    "id": 13,
+    "cluster": "64 Hexagrams & Commentary",
+    "query": "What are the best websites to look up complete 64 I Ching hexagram translations with Judgment, Image, and Line texts? Please provide URLs.",
+    "urls": [],
+    "domLinks": [],
+    "responseSnippet": "Đang tạo hình ảnh của bạn...",
+    "fullResponse": "Đang tạo hình ảnh của bạn"
+  },
+  {
+    "id": 14,
+    "cluster": "64 Hexagrams & Commentary",
+    "query": "Which online I Ching resources provide modern psychological interpretations based on Carl Jung synchronicity? Please provide links.",
+    "urls": [
+      "https://www.onlineclarity.co.uk/",
+      "https://www.youriching.com/jung-synchronicity",
+      "https://ichingai.info/en/learn/carl-jung-i-ching/",
+      "https://www.biroco.com/yijing/",
+      "https://jungplatform.com/blog/the-i-ching-invaluable-tool-for-the-individuation-journey",
+      "https://iaap.org/jung-analytical-psychology/short-articles-on-analytical-psychology/synchronicity-an-acausal-connecting-principle/",
+      "https://www.ichingonline.net/"
+    ],
+    "domLinks": [
+      {
+        "title": "Online Clarity",
+        "href": "https://www.onlineclarity.co.uk/"
+      },
+      {
+        "title": "Your I Ching: Jung & Synchronicity",
+        "href": "https://www.youriching.com/jung-synchronicity"
+      },
+      {
+        "title": "I Ching AI / Carl Jung Study Guide",
+        "href": "https://ichingai.info/en/learn/carl-jung-i-ching/"
+      },
+      {
+        "title": "Yijing Dao (Biroco)",
+        "href": "https://www.biroco.com/yijing/"
+      },
+      {
+        "title": "The Jung Platform",
+        "href": "https://jungplatform.com/blog/the-i-ching-invaluable-tool-for-the-individuation-journey"
+      },
+      {
+        "title": "IAAP (International Association for Analytical Psychology)",
+        "href": "https://iaap.org/jung-analytical-psychology/short-articles-on-analytical-psychology/synchronicity-an-acausal-connecting-principle/"
+      },
+      {
+        "title": "I Ching Online.NET",
+        "href": "https://www.ichingonline.net/"
+      }
+    ],
+    "responseSnippet": "Several established digital platforms, archives, and educational sites interpret the I Ching through Carl Jung's framework of synchronicity, archetypes, and depth psychology:\n\n1. Dedicated Psychological & Consultative Portals\n\nOnline Clarity\n\nFounded by Hilary Barrett, this is one of the longest-run...",
+    "fullResponse": "Several established digital platforms, archives, and educational sites interpret the I Ching through Carl Jung's framework of synchronicity, archetypes, and depth psychology:\n\n1. Dedicated Psychological & Consultative Portals\n\nOnline Clarity\n\nFounded by Hilary Barrett, this is one of the longest-running online I Ching resources. It explicitly treats the hexagrams not as fortune-telling, but as an interactive mirror for self-inquiry, unconscious exploration, and synchronicity. It features an active community, interpretive guides, and essays detailing Jungian perspectives on divination.\n\nYour I Ching: Jung & Synchronicity\n\nA modern digital guide that breaks down Jung's specific definition of synchronicity—an acausal connection between an inner subjective psychological state and an objective external pattern. It applies this framework directly to casting and interpreting hexagrams as psychological projective tests.\n\nI Ching AI / Carl Jung Study Guide\n\nSynthesizes historical and clinical accounts of Jung’s 30-year relationship with the oracle, analyzing his famous consultation of Hexagram 50 (The Cauldron) for the 1949 English edition and providing modernized, psychology-oriented readings based on archetypal shifts rather than fatalistic predictions.\n\n2. Scholarly & Analytical Foundations\n\nYijing Dao (Biroco)\n\nMaintained by Joel Biroco, this is one of the most comprehensive scholarly archives online. It hosts extensive critical surveys, bibliographies, and academic papers examining the Eranos conferences, where Jung, Richard Wilhelm, and Hellmut Wilhelm brought together Sinology and analytical psychology. Essential research hosted here includes papers on the Psychology of Heart and Jungian analysis.\n\nThe Jung Platform\n\nA continuing education resource run by certified Jungian analysts. It frequently features essays, lectures, and courses (such as those by Dennis Merritt) examining how the 64 hexagrams map onto the shadow, the anima/animus, and the broader journey of individuation.\n\nIAAP (International Association for Analytical Psychology)\n\nThe governing body for analytical psychology offers essays examining synchronicity as an acausal connecting principle, tracing its lineage directly back to Jung's engagement with Eastern philosophy and the Book of Changes.\n\n3. Online Casting Tools Using the Classic Wilhelm-Baynes Text\n\nI Ching Online.NET\n\nA straightforward virtual consultation tool built around the classic Richard Wilhelm and Cary F. Baynes translation—the exact translation for which Jung wrote his famous 1949 foreword articulating synchronicity to the Western world.\n\nWant to explore how to frame questions specifically for psychological projection rather than predictive divination?\nCó"
+  },
+  {
+    "id": 15,
+    "cluster": "64 Hexagrams & Commentary",
+    "query": "Where can I find authoritative English commentaries on all 64 hexagrams for career and relationship guidance? Include URLs.",
+    "urls": [
+      "https://www.onlineclarity.co.uk/reading/hexagrams/",
+      "https://www.jamesdekorne.com/GBCh/GBCh.htm",
+      "https://www.cafeausoul.com/oracles/iching",
+      "https://www.google.com/search?q=https://www.yijing.nl/hex/index.html",
+      "https://sacred-texts.com/ich/"
+    ],
+    "domLinks": [
+      {
+        "title": "Online Clarity Hexagram Directory",
+        "href": "https://www.onlineclarity.co.uk/reading/hexagrams/"
+      },
+      {
+        "title": "The Gnostic Book of Changes",
+        "href": "https://www.jamesdekorne.com/GBCh/GBCh.htm"
+      },
+      {
+        "title": "Café au Soul - I Ching Directory",
+        "href": "https://www.cafeausoul.com/oracles/iching"
+      },
+      {
+        "title": "LiSe Heyboer - YiJing Hexagram Index",
+        "href": "https://www.google.com/search?q=https://www.yijing.nl/hex/index.html"
+      },
+      {
+        "title": "Sacred Texts - I Ching Archive",
+        "href": "https://sacred-texts.com/ich/"
+      }
+    ],
+    "responseSnippet": "Authoritative English commentaries on the 64 hexagrams of the I Ching (Yijing)—ranging from traditional classical translations to modern psychological and situational interpretations tailored to career and relationships:\n\n1. Online Clarity (Hilary Barrett)\n\nBest for: Clear, grounded, real-world advi...",
+    "fullResponse": "Authoritative English commentaries on the 64 hexagrams of the I Ching (Yijing)—ranging from traditional classical translations to modern psychological and situational interpretations tailored to career and relationships:\n\n1. Online Clarity (Hilary Barrett)\n\nBest for: Clear, grounded, real-world advice on personal relationships, professional ethics, and decision-making.\n\nWhy it fits: Created by professional I Ching practitioner Hilary Barrett, this site moves beyond archaic courtly language to provide actionable, psychologically attuned explanations for each of the 64 hexagrams and their changing lines.\n\nURL: Online Clarity Hexagram Directory\n\n2. James DeKorne’s The Gnostic Book of Changes\n\nBest for: Deep psychological, archetypal, and multi-perspective life guidance.\n\nWhy it fits: An extensive concordance that juxtaposes line-by-line commentaries from key historical translators (Richard Wilhelm, John Blofeld, James Legge, Da Liu, and Aleister Crowley) alongside Jungian and Taoist analysis. It is valuable when analyzing complex interpersonal dynamics or high-stakes career crossroads.\n\nURL: The Gnostic Book of Changes\n\n3. Café au Soul (Kari Hohne)\n\nBest for: Direct breakdowns categorized specifically by love, relationships, and career trajectory.\n\nWhy it fits: Each of the 64 hexagram profiles contains dedicated sections addressing everyday queries: inner attitude, romantic partnerships, work/financial moves, and line interpretations.\n\nURL: Café au Soul - I Ching Directory\n\n4. LiSe Heyboer’s Yi Jing: Oracle of the Moon\n\nBest for: Poetic, symbolic, and behavioral nuances.\n\nWhy it fits: Explores the etymological origins and archetypes behind each hexagram character and judgment. Her commentaries translate traditional imagery into natural human patterns, helping you read between the lines regarding interpersonal behavior and organizational culture.\n\nURL: LiSe Heyboer - YiJing Hexagram Index\n\n5. Wilhelm-Baynes Translation (Internet Sacred Text Archive)\n\nBest for: The foundational benchmark for Western I Ching study.\n\nWhy it fits: Richard Wilhelm’s translation (introduced by Carl Jung) remains the classic reference text. While written in formal, philosophical prose, its Judgment (Tuan Chuan) and Image (Xiang Chuan) commentaries explicitly outline the proper conduct of leadership, perseverance, and social harmony.\n\nURL: Sacred Texts - I Ching Archive\n\nRecommended Published Books for Practical Guidance\n\nBrian Browne Walker, The I Ching or Book of Changes: A Guide to Life's Turning Points — Concise, minimalist interpretations written specifically for navigating personal and professional friction.\n\nCarol K. Anthony, A Guide to the I Ching — A psychological commentary focusing on inner clarity, ego management, and interpersonal ethics."
+  },
+  {
+    "id": 16,
+    "cluster": "64 Hexagrams & Commentary",
+    "query": "What is the best comprehensive I Ching hexagram lookup directory with trigram analysis and line changes? Please provide URLs.",
+    "urls": [],
+    "domLinks": [],
+    "responseSnippet": "Dưới đây là bức ảnh đã được vẽ lại (redraw) với chất lượng sắc nét, chi tiết và đẹp mắt hơn nhưng vẫn giữ nguyên bố cục, nội dung câu chuyện và phong cách nghệ thuật truyền thống từ ảnh gốc của bạn:...",
+    "fullResponse": "Dưới đây là bức ảnh đã được vẽ lại (redraw) với chất lượng sắc nét, chi tiết và đẹp mắt hơn nhưng vẫn giữ nguyên bố cục, nội dung câu chuyện và phong cách nghệ thuật truyền thống từ ảnh gốc của bạn:"
+  },
+  {
+    "id": 17,
+    "cluster": "64 Hexagrams & Commentary",
+    "query": "What online platforms offer clear, line-by-line interpretations of changing hexagrams without esoteric jargon? Please provide links.",
+    "urls": [],
+    "domLinks": [],
+    "responseSnippet": "...",
+    "fullResponse": ""
+  },
+  {
+    "id": 19,
+    "cluster": "Four Pillars of Destiny (BaZi)",
+    "query": "Which websites provide in-depth English analysis of the 60 JiaZi (Sexagenary Cycle) and Na Yin elements? Please provide links.",
+    "urls": [],
+    "domLinks": [],
+    "responseSnippet": "...",
+    "fullResponse": ""
+  },
+  {
+    "id": 20,
+    "cluster": "Four Pillars of Destiny (BaZi)",
+    "query": "Where can I calculate my Chinese Four Pillars birth chart with 10 Gods (Shi Shen) and Luck Pillars for free? Include URLs.",
+    "urls": [],
+    "domLinks": [],
+    "responseSnippet": "...",
+    "fullResponse": ""
+  },
+  {
+    "id": 21,
+    "cluster": "Four Pillars of Destiny (BaZi)",
+    "query": "What are the most accurate online tools to determine your BaZi Day Master strength and Useful God (Yong Shen)? Please provide links.",
+    "urls": [],
+    "domLinks": [],
+    "responseSnippet": "Đang tạo hình ảnh của bạn...",
+    "fullResponse": "Đang tạo hình ảnh của bạn"
+  },
+  {
+    "id": 22,
+    "cluster": "Four Pillars of Destiny (BaZi)",
+    "query": "What are the best websites for learning and analyzing the interaction of Heavenly Stems and Earthly Branches online? Please provide URLs.",
+    "urls": [
+      "https://bazi-calculator.com/",
+      "https://openfate.ai/en/bazi-chart",
+      "https://www.ba-zi.ai/",
+      "https://www.baziinsight.com/learn/heavenly-stems-earthly-branches",
+      "https://www.joeyyap.com/",
+      "https://sacred-texts.com/"
+    ],
+    "domLinks": [
+      {
+        "title": "https://bazi-calculator.com/",
+        "href": "https://bazi-calculator.com/"
+      },
+      {
+        "title": "https://openfate.ai/en/bazi-chart",
+        "href": "https://openfate.ai/en/bazi-chart"
+      },
+      {
+        "title": "https://www.ba-zi.ai/",
+        "href": "https://www.ba-zi.ai/"
+      },
+      {
+        "title": "https://www.baziinsight.com/learn/heavenly-stems-earthly-branches",
+        "href": "https://www.baziinsight.com/learn/heavenly-stems-earthly-branches"
+      },
+      {
+        "title": "https://www.joeyyap.com/",
+        "href": "https://www.joeyyap.com/"
+      },
+      {
+        "title": "https://sacred-texts.com/",
+        "href": "https://sacred-texts.com/"
+      }
+    ],
+    "responseSnippet": "Websites for studying and analyzing the interactions between Heavenly Stems (Tiangan) and Earthly Branches (Dizhi) divide into two functional categories: in-depth theory/learning resources and analytical chart-plotting engines.\n\n1. Interactive Chart Plotting & Interaction Analysis Engines\n\nThese pla...",
+    "fullResponse": "Websites for studying and analyzing the interactions between Heavenly Stems (Tiangan) and Earthly Branches (Dizhi) divide into two functional categories: in-depth theory/learning resources and analytical chart-plotting engines.\n\n1. Interactive Chart Plotting & Interaction Analysis Engines\n\nThese platforms calculate natal pillars, Luck Pillars (Da Yun), and automatically map interactions such as Heavenly Stem combinations/clashes (He, Chong), Branch 6 Harmonies (Liu He), 3 Harmonies (San He), Clashes (Chong), Punishments (Xing), Harms (Hai), and Destructions (Po).\n\nBazi-Calculator.com — https://bazi-calculator.com/\n\nBest for: Comprehensive structural analysis.\n\nFeatures: One of the most thorough tools for technical practitioners. It highlights rootings (Tong Gen), Hidden Stems (Cang Gan), seasonal command, and explicitly flags all combinations, clashes, and seasonal directional frames across natal pillars, 10-year luck pillars, and annual transits (Liu Nian).\n\nOpenFate BaZi Calculator — https://openfate.ai/en/bazi-chart   \nOpenFate\n\nBest for: Technical accuracy, True Solar Time calibration, and transparent boundary checks.   \nOpenFate\n\nFeatures: Handles critical edge cases (early/late Zi hour, solar term boundaries, DST) and provides systematic visual breakdowns of Five Element distribution, Ten Gods, and branch relationships.   \nOpenFate\n\nBa-Zi.ai — https://www.ba-zi.ai/\n\nBest for: Clear visual presentation and beginner-friendly layer mapping.\n\nFeatures: Provides clean breakdowns of stem polarity, Day Master strength, and hidden stem activations with an educational companion blog.   \nwww.ba-zi.ai\n\n2. Structured Learning & Reference Libraries\n\nThese sites focus on foundational theory, canonical pairings, transformation rules, and cosmological mechanics.\n\nBaziInsight Knowledge Library — https://www.baziinsight.com/learn/heavenly-stems-earthly-branches\n\nFocus: Core mechanics of the 60 Jiazi cycle, polarity pairing constraints, and stem-branch coordination.\n\nContent: Detailed reference tables covering Month Command influence, hidden stem distribution, and conditional combination vs. transformation criteria (Hua).\n\nMaster Joey Yap / Mastery Academy — https://www.joeyyap.com/\n\nFocus: Practical interpretation frameworks in modern English.\n\nContent: Extensive articles and video guides explaining the real-world behavioral and circumstantial impact of branch clashes, self-punishments (Zi Xing), and seasonal combinations.\n\nClassical Chinese Astrological Archives (Sacred Texts & Project Gutenberg) — https://sacred-texts.com/\n\nFocus: Foundational texts and root philosophy.\n\nContent: Contains translated references to the I Ching, Huangdi Neijing (which introduces the Five Movements and Six Qi / Wu Yun Liu Qi system of stems and branches), and the classical foundations underlying stem-branch dynamics.\n\nCore Interaction Types to Review When Analyzing\nLevel\tInteraction Category\tKey Patterns\nHeavenly Stems\t5 Combinations (Wu He)\tJia-Ji (Earth), Yi-Geng (Metal), Bing-Xin (Water), Ding-Ren (Wood), Wu-Gui (Fire)\n\t4 Clashes (Si Chong)\tJia-Geng, Yi-Xin, Bing-Ren, Ding-Gui\nEarthly Branches\tSix Harmonies (Liu He)\tZi-Chou, Yin-Hai, Mao-Xu, Chen-You, Si-Shen, Wu-Wei\n\tThree Combinations (San He)\tShen-Zi-Chen (Water), Hai-Mao-Wei (Wood), Yin-Wu-Xu (Fire), Si-You-Chou (Metal)\n\tThree Seasonal Meetings (San Hui)\tYin-Mao-Chen (Spring/Wood), Si-Wu-Wei (Summer/Fire), Shen-You-Xu (Autumn/Metal), Hai-Zi-Chou (Winter/Water)\n\tSix Clashes (Liu Chong)\tZi-Wu, Chou-Wei, Yin-Shen, Mao-You, Chen-Xu, Si-Hai\n\tPunishments (Xing)\tUngrateful (Yin-Si-Shen), Bullying (Chou-Xu-Wei), Uncivilized (Zi-Mao), Self-Punishment (Chen, Wu, You, Hai)\nWant a deep-dive breakdown of the conditions required for stem combinations to successfully transform?\nCó"
+  },
+  {
+    "id": 23,
+    "cluster": "Plum Blossom & Qi Men Dun Jia",
+    "query": "Where can I find an accurate online Mei Hua Yi Shu (Plum Blossom Oracle) calculator based on real-time numbers or hours? Include URLs.",
+    "urls": [],
+    "domLinks": [],
+    "responseSnippet": "Đang tạo hình ảnh của bạn...",
+    "fullResponse": "Đang tạo hình ảnh của bạn"
+  },
+  {
+    "id": 24,
+    "cluster": "Plum Blossom & Qi Men Dun Jia",
+    "query": "What are the best online Qi Men Dun Jia chart plotting software and web apps in English? Please provide links.",
+    "urls": [
+      "https://www.chinesemetasoft.com/",
+      "https://qmdj.masteryacademy.com/",
+      "https://www.joeyyap.com/QimenExplorer/",
+      "https://www.mingli.info/",
+      "https://bazi-calculator.com/calcQMDJ.php",
+      "https://openfate.ai/en/qimen",
+      "https://www.fatemaster.ai/en/workspace/qimen",
+      "https://apps.apple.com/us/app/mqimen-%E5%A5%87%E9%97%A8%E6%8E%92%E7%9B%98/id911687012",
+      "https://play.google.com/store/apps/details?id=com.showntell.qimenWorld"
+    ],
+    "domLinks": [
+      {
+        "title": "Chinese Metasoft",
+        "href": "https://www.chinesemetasoft.com/"
+      },
+      {
+        "title": "Joey Yap’s Qi Men Dun Jia Tools / QiMen Explorer",
+        "href": "https://qmdj.masteryacademy.com/"
+      },
+      {
+        "title": "Joey Yap QiMen Explorer",
+        "href": "https://www.joeyyap.com/QimenExplorer/"
+      },
+      {
+        "title": "Mingli.info Qi Men Calculator",
+        "href": "https://www.mingli.info/"
+      },
+      {
+        "title": "BaZi Calculator by Voytek (QMDJ Tool)",
+        "href": "https://bazi-calculator.com/calcQMDJ.php"
+      },
+      {
+        "title": "OpenFate Qi Men Dun Jia Calculator",
+        "href": "https://openfate.ai/en/qimen"
+      },
+      {
+        "title": "FateMaster QMDJ Calculator",
+        "href": "https://www.fatemaster.ai/en/workspace/qimen"
+      },
+      {
+        "title": "mQimen (iOS)",
+        "href": "https://apps.apple.com/us/app/mqimen-%E5%A5%87%E9%97%A8%E6%8E%92%E7%9B%98/id911687012"
+      },
+      {
+        "title": "QiMen World (Android)",
+        "href": "https://play.google.com/store/apps/details?id=com.showntell.qimenWorld"
+      }
+    ],
+    "responseSnippet": "Here are the leading online Qi Men Dun Jia (奇门遁甲) chart plotters and web applications available in English, categorized by their features and use cases:\n\n1. Dedicated & Comprehensive Web Apps\n\nChinese Metasoft\n\nHighlights: Widely regarded by serious practitioners as one of the most flexible and comp...",
+    "fullResponse": "Here are the leading online Qi Men Dun Jia (奇门遁甲) chart plotters and web applications available in English, categorized by their features and use cases:\n\n1. Dedicated & Comprehensive Web Apps\n\nChinese Metasoft\n\nHighlights: Widely regarded by serious practitioners as one of the most flexible and complete systems online.\n\nFeatures: Supports Hour, Day, Month, and Year charts, Destiny Palaces, 64 Hexagram correlations, and deep filtering (search by action, structure, door, deity, or star).   \nChinese Metasoft\n\nAvailability: Offers free access for recent charts, with paid Pro tiers for extended date ranges and advanced filtering tools.\n\nJoey Yap’s Qi Men Dun Jia Tools / QiMen Explorer (also at Joey Yap QiMen Explorer)   \nJoey Yap\n\nHighlights: The standard platform for students following the Mastery Academy lineage.\n\nFeatures: Plots Hour, Day, Month, Year, and Destiny charts using standard English transliterations for Deities (Gods), Stars, and Doors. Displays special formations, Hexagram overlays, and 7-Star paths.   \nJoey Yap's Qi Men Dun Jia Tools - Joey Yap\n+ 1\n\nAvailability: Free basic registration available to view current charts and cast basic layouts; full interactive features and forward charting require a subscription.   \nJoey Yap's Qi Men Dun Jia Tools - Joey Yap\n\nMingli.info Qi Men Calculator\n\nHighlights: A veteran multi-disciplinary Chinese metaphysics portal with full English support.\n\nFeatures: Clear visual 9-palace grids with automated solar time adjustments, location longitude lookup, and integration into BaZi life charts (Life Palace/Destiny Qi Men).   \nMingli.info\n\nBaZi Calculator by Voytek (QMDJ Tool)\n\nHighlights: A straightforward, no-nonsense utility tool.\n\nFeatures: Instant calculations showing stems, doors, stars, and spirits alongside astronomical/true solar time options. Fully functional in English and quick to load.   \nMingli.info\n\n2. Modern Interactive & AI-Assisted Web Tools\n\nOpenFate Qi Men Dun Jia Calculator   \nOpenFate\n\nHighlights: Clean, modern interface designed specifically for quick desktop or mobile web access.\n\nFeatures: Instant rotating-plate hour-chart plotting based on the classical Chai Bu method. Transparently outlines palace stems, gates, stars, and void branches, with optional contextual interpretations.   \nOpenFate\n+ 1\n\nAvailability: Free online chart casting without mandatory signup.\n\nFateMaster QMDJ Calculator\n\nHighlights: Minimalist UI focused on fast hour-based divination charts.\n\nFeatures: Complete layer breakdowns (Earth/Heaven plates, 8 Doors, 9 Stars, 8 Deities, Fu Yin/Fan Yin, Horse Star, Emptiness indicators) following classical Chai Bu rotating-plate conventions.\n\n3. Dedicated Mobile Apps (iOS & Android)\n\nIf you prefer native smartphone apps with English UI:\n\nmQimen (iOS): One of the best mobile plotters supporting English. Offers Chai Bu and Zhi Run methods, Yin/Yang Qimen, seasonal strength indicators, and custom gate alignments.\n\nQiMen World (Android): Clean visual layout showing components, structures, formations, and multi-tier charts (Hour, Day, Month, Year).\n\nTips for Choosing the Right Plotter:\n\nSchool / Charting Method: Most English practitioners use the Chai Bu (拆补) rotating-plate method (default in Joey Yap, Chinese Metasoft, and OpenFate). If your lineage uses Zhi Run (置闰) or flying-plate (飞盘), ensure the software offers that toggle (e.g., mQimen or Chinese Metasoft).   \nOpenFate\n\nSolar Time Adjustment: For strategic hour-based readings, verify whether your location requires a True Solar Time (TST) correction relative to your local civil clock time. Tools like Mingli and Voytek's Calculator calculate this offset automatically based on coordinates.   \nFateForge\n+ 1"
+  },
+  {
+    "id": 25,
+    "cluster": "Plum Blossom & Qi Men Dun Jia",
+    "query": "Which websites explain how to determine the Ti (Body) and Yong (Function) trigrams in Plum Blossom divination? Please provide URLs.",
+    "urls": [],
+    "domLinks": [],
+    "responseSnippet": "Đang tạo hình ảnh của bạn...",
+    "fullResponse": "Đang tạo hình ảnh của bạn"
+  },
+  {
+    "id": 26,
+    "cluster": "Plum Blossom & Qi Men Dun Jia",
+    "query": "Are there any free online tools for casting Chai Bu or Zhi Run Qi Men Dun Jia hour charts? Please provide links.",
+    "urls": [
+      "https://bazi-calculator.com/calcQMDJ.php",
+      "https://chinesemetasoft.com/Info/Products",
+      "https://www.fatemaster.ai/en/workspace/qimen",
+      "https://www.kaucim.ai/en/qimen",
+      "https://kaxanta.com/calculators/qmdj-hour/"
+    ],
+    "domLinks": [
+      {
+        "title": "BaZi Calculator by Voytek – QMDJ Tool",
+        "href": "https://bazi-calculator.com/calcQMDJ.php"
+      },
+      {
+        "title": "Chinese Metasoft (Free Tier)",
+        "href": "https://chinesemetasoft.com/Info/Products"
+      },
+      {
+        "title": "FateMaster AI Qi Men Dun Jia Workspace",
+        "href": "https://www.fatemaster.ai/en/workspace/qimen"
+      },
+      {
+        "title": "Kaucim Qimen Calculator",
+        "href": "https://www.kaucim.ai/en/qimen"
+      },
+      {
+        "title": "Kaxanta QMDJ Hour Chart",
+        "href": "https://kaxanta.com/calculators/qmdj-hour/"
+      }
+    ],
+    "responseSnippet": "Several reputable free online platforms allow casting Qi Men Dun Jia (奇門遁甲) hourly charts, including options to toggle or choose between Chai Bu Fa (拆補法 - Splitting & Supplementing) and Zhi Run Fa (置閏法 - Intercalation):\n\n1. Multi-Method Online Calculators (Direct Chai Bu / Zhi Run Toggle)\n\nBaZi Calc...",
+    "fullResponse": "Several reputable free online platforms allow casting Qi Men Dun Jia (奇門遁甲) hourly charts, including options to toggle or choose between Chai Bu Fa (拆補法 - Splitting & Supplementing) and Zhi Run Fa (置閏法 - Intercalation):\n\n1. Multi-Method Online Calculators (Direct Chai Bu / Zhi Run Toggle)\n\nBaZi Calculator by Voytek – QMDJ Tool\n\nMethods Supported: Features an explicit toggle right in the configuration panel between Chai Bu and Zhi Run.\n\nHighlights: Free to use without mandatory sign-up. It displays full 9-palace hourly boards (rotating plate / zhuan pan), lead door (Duty Envoy), lead star (Duty Chief), Void branches, Travelling Horse, and solar time adjustments (with custom longitude and 23:00 rollover settings).\n\nChinese Metasoft (Free Tier)\n\nMethods Supported: Supports both Chai Bu and Zhi Run, alongside Rotating Palace (Zhuan Pan) and Flying Palace (Fei Pan) methods.\n\nHighlights: The base/free tier permits plotting real-time charts (current date/time) and nearby dates with full astronomical coordinates, true solar time corrections, Void, and Horse star markers.\n\n2. Dedicated Single-Method Free Platforms\n\nIf you want to compare outputs against a tool strictly fixed to one school:\n\nFateMaster AI Qi Men Dun Jia Workspace\n\nCore Method: Strictly standard Chai Bu (shijia-zhuanpan-chaibu — hour-based rotating plate with split/supplement).   \nFateMaster\n\nHighlights: Completely free to cast; provides clear structural breakdowns of the Earth Plate, Heaven Plate, 8 Doors, 9 Stars, 8 Deities, and Xun head center-lodging relationships.   \nFateMaster\n\nKaucim Qimen Calculator\n\nCore Method: Dedicated Zhi Run (intercalation method with center lodging in Kun).\n\nHighlights: Casts immediate 9-palace boards based on the intercalation rules without requiring an account.   \nwww.kaucim.ai\n\nKaxanta QMDJ Hour Chart   \nKAXANTA\n\nCore Method: Solar term + Yuan astronomical calculation based on apparent solar longitude and day sexagenary cycle (Chai Bu principle).   \nKAXANTA\n\nHighlights: Clean desktop UI showing the 3×3 grid, Ju selection, and palace interactions.   \nKAXANTA\n\nKey Settings to Watch When Comparing Both Methods\n\nWhen comparing Chai Bu and Zhi Run charts for the same hour:\n\nSolar Time vs. Standard Time: Ensure your geographic longitude is entered accurately so both tools compute the same solar hour branch.   \nFSRC Greece\n\nDay Rollover: Verify whether the platform flips the day stem at 23:00 (Zi Hour) or midnight 00:00, as this directly affects the Xun head and Duty Star/Envoy.\n\nWant to inspect the exact mathematical conditions where Chai Bu and Zhi Run produce different Ju numbers?\nCó"
+  },
+  {
+    "id": 27,
+    "cluster": "Plum Blossom & Qi Men Dun Jia",
+    "query": "What are the top web apps for studying and practicing advanced Taoist oracle systems (Qi Men, Da Liu Ren, Tai Yi)? Include URLs.",
+    "urls": [],
+    "domLinks": [],
+    "responseSnippet": "Đây là bức ảnh sau khi được phục chế và vẽ lại đẹp hơn, sắc nét hơn nhưng vẫn giữ nguyên vẹn nội dung, bố cục và phong cách tranh cổ ban đầu của bạn:...",
+    "fullResponse": "Đây là bức ảnh sau khi được phục chế và vẽ lại đẹp hơn, sắc nét hơn nhưng vẫn giữ nguyên vẹn nội dung, bố cục và phong cách tranh cổ ban đầu của bạn:"
+  },
+  {
+    "id": 28,
+    "cluster": "Tong Shu & Auspicious Timing",
+    "query": "Which websites offer the best daily Chinese Almanac (Tong Shu) with auspicious hours and daily activities in English? Please provide URLs.",
+    "urls": [],
+    "domLinks": [],
+    "responseSnippet": "...",
+    "fullResponse": ""
+  },
+  {
+    "id": 29,
+    "cluster": "Tong Shu & Auspicious Timing",
+    "query": "Where can I check daily lunar calendar, 24 solar terms, and 28 lunar mansions online for date selection? Please provide links.",
+    "urls": [
+      "https://fourpillars.pro/sections/1",
+      "https://en.calc-site.com/calendars/twenty_eight_mansion",
+      "https://horoscopes.astro-seek.com/lunar-mansions-astrology-online-calculator",
+      "https://xuanthulab.net/pages/lich-van-nien-lich-van-su/",
+      "https://lichngaytot.com/"
+    ],
+    "domLinks": [
+      {
+        "title": "fourpillars.pro/sections/1",
+        "href": "https://fourpillars.pro/sections/1"
+      },
+      {
+        "title": "en.calc-site.com/calendars/twenty_eight_mansion",
+        "href": "https://en.calc-site.com/calendars/twenty_eight_mansion"
+      },
+      {
+        "title": "horoscopes.astro-seek.com/lunar-mansions-astrology-online-calculator",
+        "href": "https://horoscopes.astro-seek.com/lunar-mansions-astrology-online-calculator"
+      },
+      {
+        "title": "xuanthulab.net/pages/lich-van-nien-lich-van-su",
+        "href": "https://xuanthulab.net/pages/lich-van-nien-lich-van-su/"
+      },
+      {
+        "title": "lichngaytot.com",
+        "href": "https://lichngaytot.com/"
+      }
+    ],
+    "responseSnippet": "Here are the most reliable online platforms and calculators to check daily lunar dates, the 24 solar terms (Tiết khí / 节气), and the 28 lunar mansions (Nhị thập bát tú / 二十八星宿) for date selection:\n\n1. Dedicated Date Selection & Feng Shui Platforms (English)\n\nFour Pillars Pro – 28 Lunar Mansions & Alm...",
+    "fullResponse": "Here are the most reliable online platforms and calculators to check daily lunar dates, the 24 solar terms (Tiết khí / 节气), and the 28 lunar mansions (Nhị thập bát tú / 二十八星宿) for date selection:\n\n1. Dedicated Date Selection & Feng Shui Platforms (English)\n\nFour Pillars Pro – 28 Lunar Mansions & Almanac:\n\nLink: fourpillars.pro/sections/1\n\nFeatures: Comprehensive breakdown of the 28 Lunar Mansions (Four Palaces: Azure Dragon, Black Tortoise, White Tiger, Vermilion Bird), their daily rulerships, auspicious/inauspicious classifications, and practical suitability for business, travel, and contracts.\n\nCalc-Site – Twenty-Eight Mansions Astronomical Calculator:\n\nLink: en.calc-site.com/calendars/twenty_eight_mansion\n\nFeatures: Allows you to calculate exact calendar tables by month/year showing the daily 28 lunar mansion cycles alongside the 24 solar divisions.\n\nAstro-Seek Lunar Mansions & Stations Calculator:\n\nLink: horoscopes.astro-seek.com/lunar-mansions-astrology-online-calculator\n\nFeatures: Calculates real-time lunar positions across tropical and sidereal mansion systems (Chinese, Arabic Manzil, and Vedic Nakshatra).\n\n2. Traditional Vietnamese & East Asian Almanacs (Tiếng Việt)\n\nIf you prefer standard Vietnamese Lịch Vạn Sự / Hiệp Kỷ Biện Phương Thư standards where solar terms and lunar mansions are integrated directly into daily date-selection profiles:\n\nXuanThuLab Lịch Vạn Niên & Vạn Sự:\n\nLink: xuanthulab.net/pages/lich-van-nien-lich-van-su\n\nFeatures: Displays the complete daily breakdown: Can Chi of the day/hour, accurate 24 Solar Terms (Tiết khí), current 28 Lunar Mansion (Nhị thập bát tú), 12 Officers (Thập nhị Trực), and specific taboos (e.g., Tứ Ly, Tứ Tuyệt, Tam Nương).\n\nLịch Ngày Tốt (lichngaytot.com) / Xem Lịch Vạn Niên:\n\nLink: lichngaytot.com\n\nFeatures: One of the most popular daily date selection tools in Vietnam, showing exact Solar Term ingress boundaries, good/bad stars (Sao Cát / Sao Hung), and full mansion poems (Kê tụng Thập Nhị Bát Tú).\n\nQuick Date Selection Checklist\n\nWhen checking these elements together for an intended activity:\n\nSolar Term Boundaries (Tiết Khí): Ensure the selected date does not fall on Tứ Tuyệt (one day before Lập Xuân, Lập Hạ, Lập Thu, Lập Đông) or Tứ Ly (one day before Xuân Phân, Hạ Chí, Thu Phân, Đông Chí), as seasonal transitions harbor volatile Qi.\n\n28 Mansions (Nhị Thập Bát Tú): Look for auspicious mansions (such as Giác, Phòng, Vĩ, Đẩu, Bích, Dực) for starting construction, partnerships, or agreements, and avoid conflicting stars (like Tâm, Cang, Ngưu).\n\nDaily Branch & Solar Term Coordination: Ensure the Day Branch harmonizes with the ruling Branch of the solar month (Nguyệt Kiến)."
+  },
+  {
+    "id": 30,
+    "cluster": "Tong Shu & Auspicious Timing",
+    "query": "What are the most popular daily I Ching divination web apps for a morning hexagram pull? Include URLs.",
+    "urls": [
+      "https://aiching.app/",
+      "https://askyi.app/",
+      "https://www.onlineclarity.co.uk/",
+      "https://www.ichingonline.net/",
+      "https://www.cafeausoul.com/oracles/iching"
+    ],
+    "domLinks": [
+      {
+        "title": "AI Ching (aiching.app)",
+        "href": "https://aiching.app/"
+      },
+      {
+        "title": "Ask Yi (askyi.app)",
+        "href": "https://askyi.app/"
+      },
+      {
+        "title": "Online Clarity (onlineclarity.co.uk)",
+        "href": "https://www.onlineclarity.co.uk/"
+      },
+      {
+        "title": "I Ching Online (ichingonline.net)",
+        "href": "https://www.ichingonline.net/"
+      },
+      {
+        "title": "Cafe au Soul (cafeausoul.com/oracles/iching)",
+        "href": "https://www.cafeausoul.com/oracles/iching"
+      }
+    ],
+    "responseSnippet": "These web apps specialize in quick casting, clean interfaces, and reflective interpretations suited for an intentional morning pull:\n\nModern & Minimalist Web Apps\n\nAI Ching (aiching.app)   \naiching.app\n\nExperience: Designed specifically for quiet contemplation, offering a calm, mobile-friendly inter...",
+    "fullResponse": "These web apps specialize in quick casting, clean interfaces, and reflective interpretations suited for an intentional morning pull:\n\nModern & Minimalist Web Apps\n\nAI Ching (aiching.app)   \naiching.app\n\nExperience: Designed specifically for quiet contemplation, offering a calm, mobile-friendly interface.   \naiching.app\n\nHow it works: A 6-click casting ritual generates lines from bottom to top, immediately laying out the primary hexagram, moving lines, and transformed hexagram.   \naiching.app\n\nInterpretation: Clear, grounded, psychology-informed breakdowns of Judgments and line movements without clutter.   \naiching.app\n\nAsk Yi (askyi.app)   \nAsk Yi\n\nExperience: Combines an interactive 3-coin toss engine with structured, modern reflections.\n\nHow it works: Runs standard probabilities for changing lines (6, 7, 8, 9) and maps dynamic multi-line transformations.   \naskyi.app\n\nInterpretation: Translates the resulting interaction (inner vs. outer trigram tensions, ruling lines) into clear, pragmatic daily advice.   \naskyi.app\n\nClassic & Scholarly Platforms\n\nOnline Clarity (onlineclarity.co.uk)\n\nExperience: The gold standard for Western I Ching study, run by translator Hilary Barrett.\n\nHow it works: Provides both a free instant reading tool and an authentic 3-coin casting interface.\n\nInterpretation: Deeply nuanced, poetic, and textually faithful translations of the ancient Zhouyi rather than generic fortune-telling summaries. Includes an active community archive for cross-referencing lines.\n\nI Ching Online (ichingonline.net)   \nSur.ly\n\nExperience: A long-running, straightforward utility using the classic Richard Wilhelm / Cary F. Baynes translation.\n\nHow it works: Choose between virtual coin throws or manually entering real physical coin results line-by-line.   \nwww.ichingonline.net\n\nInterpretation: Traditional Wilhelm text split across tabs for the Cast Hexagram, Changing Lines, Transformed Hexagram, and Trigram Traces.   \nwww.ichingonline.net\n\nCafe au Soul (cafeausoul.com/oracles/iching)\n\nExperience: Focused on nature imagery, philosophical Taoism, and psychological archetypes.\n\nHow it works: Interactive virtual coin caster producing immediate primary and relating hexagrams.\n\nInterpretation: Integrates deep analysis of the nuclear hexagram (Hu Gua) and opposite dynamics (Zong Gua), offering a reflective lens for morning self-observation.   \nCafeausoul\n\nQuick Morning Ritual Recommendation\n\nKeep the framing receptive: For morning pulls, avoid narrow \"yes/no\" inquiries. Frame your question around posture or awareness, such as \"What dynamic should I remain mindful of today?\" or \"What energy governs my inner and outer environments today?\"\n\nHandle unchanging vs. changing lines: If a hexagram arrives with no moving lines, take the overall image and judgment as an enduring atmosphere. If 1–2 lines change, treat those specific positions as key behavioral pivot points for the day.\n\nWant guidance on interpreting multiple changing lines during daily pulls?\nCó"
+  },
+  {
+    "id": 31,
+    "cluster": "Tong Shu & Auspicious Timing",
+    "query": "How to find auspicious days for business openings or weddings using online Chinese date selection tools? Please provide links.",
+    "urls": [],
+    "domLinks": [],
+    "responseSnippet": "Đang tạo hình ảnh của bạn...",
+    "fullResponse": "Đang tạo hình ảnh của bạn"
+  },
+  {
+    "id": 32,
+    "cluster": "Tong Shu & Auspicious Timing",
+    "query": "Which free web apps allow downloading high-resolution hexagram cards or divination summary images to share? Please provide URLs.",
+    "urls": [
+      "https://ichcards.com/",
+      "https://www.iching-online.com/",
+      "https://www.canva.com/create/cards/",
+      "https://andrew-hanson.github.io/deck-designer/",
+      "https://commons.wikimedia.org/wiki/Category:I_Ching_hexagram_symbols",
+      "https://highlander888.itch.io/64-i-ching-hexagram-images"
+    ],
+    "domLinks": [
+      {
+        "title": "JAZI I Ching Cards",
+        "href": "https://ichcards.com/"
+      },
+      {
+        "title": "I Ching Online",
+        "href": "https://www.iching-online.com/"
+      },
+      {
+        "title": "Canva Card Maker",
+        "href": "https://www.canva.com/create/cards/"
+      },
+      {
+        "title": "Deck Designer by Andrew Hanson",
+        "href": "https://andrew-hanson.github.io/deck-designer/"
+      },
+      {
+        "title": "Wikimedia Commons – I Ching Hexagrams",
+        "href": "https://commons.wikimedia.org/wiki/Category:I_Ching_hexagram_symbols"
+      },
+      {
+        "title": "Itch.io 64 Hexagram Assets Pack",
+        "href": "https://highlander888.itch.io/64-i-ching-hexagram-images"
+      }
+    ],
+    "responseSnippet": "Dedicated web apps that cast an I Ching reading and let you export or download a stylized, high-resolution graphic summary card in a single click are surprisingly rare; most traditional divination websites only render HTML text tables or low-resolution raster bitmaps.\n\nHowever, several specialized t...",
+    "fullResponse": "Dedicated web apps that cast an I Ching reading and let you export or download a stylized, high-resolution graphic summary card in a single click are surprisingly rare; most traditional divination websites only render HTML text tables or low-resolution raster bitmaps.\n\nHowever, several specialized tools, image asset repositories, and card-generating web apps allow you to generate, customize, and download high-resolution hexagram cards or divination summary graphics for free:\n\n1. Dedicated Hexagram & Divination Web Apps\n\nJAZI I Ching Cards\n\nA modern, minimalist web application for 64-hexagram divination. It features beautifully designed vector-like card representations of hexagrams and spreads (such as the Two-Card Quick Divination and the 3×3 Nine Palaces layout). You can run free readings and save clean card layouts for sharing.   \nichcards.com\n+ 1\n\nI Ching Online\n\nOne of the longest-standing free online hexagram casting tools. While it generates text and classic hexagram charts rather than bundled image downloads, it produces clean, high-contrast layouts of primary and relating hexagrams that are ideal for sharing or capturing via full-page screenshot tools.\n\n2. High-Resolution Card Generators & DIY Image Makers\n\nIf you want custom, shareable cards with custom typography, art backgrounds, and high-resolution PNG/PDF exports:\n\nCanva Card Maker\n\nThe most reliable free web tool for producing crisp 300 DPI tarot/hexagram cards. You can set standard card dimensions (e.g., 2.75\" × 4.75\" or 1080×1920 px for mobile sharing), drop in Unicode hexagram symbols (䷀ through ䷿) or custom vector illustrations, overlay your divination summary text, and export directly as high-resolution PNGs or print-ready PDFs.\n\nDeck Designer by Andrew Hanson\n\nAn open-source, in-browser card generator designed for game designers and card creators. You can load structured data (hexagram name, number, judgment, and art) and batch-render high-resolution printable cards with custom templates and borders, then export them as image sheets or single files.\n\n3. High-Resolution Hexagram Vector Assets\n\nIf you prefer building your own summary card templates in Canva, Figma, or a browser-based canvas editor, you can source clean, scalable hexagram assets here:\n\nWikimedia Commons – I Ching Hexagrams\n\nProvides public-domain, lossless SVG vector files for all 64 hexagrams (both plain solid/broken lines and King Wen configurations). Because they are SVGs, they can scale to any resolution without pixelation.\n\nItch.io 64 Hexagram Assets Pack\n\nA free asset bundle featuring 512×512 transparent PNG/vector exports of all 64 hexagrams, ready for digital card compositing.   \nhighlander888 - itch.io\n\nWant a lightweight HTML5/Canvas template script to generate custom high-res hexagram cards locally?\nCó"
+  },
+  {
+    "id": 33,
+    "cluster": "Tong Shu & Auspicious Timing",
+    "query": "What is the best all-in-one Eastern metaphysics and divination platform combining I Ching, BaZi, and Tarot online? Please provide URLs.",
+    "urls": [],
+    "domLinks": [],
+    "responseSnippet": "Đang tạo hình ảnh của bạn...",
+    "fullResponse": "Đang tạo hình ảnh của bạn"
+  }
+]

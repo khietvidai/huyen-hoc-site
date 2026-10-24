@@ -42,10 +42,12 @@ export const ExportImageModal: React.FC<ExportImageModalProps> = ({
 
   // Khởi tạo Blob URL bền vững khi mở ảnh
   useEffect(() => {
-    if (!imageUrl) {
+    if (!imageUrl || imageUrl === "data:," || imageUrl.length < 64) {
       setBlobUrl("");
+      setIsImgError(Boolean(imageUrl));
       return;
     }
+    setIsImgError(false);
     let url = "";
     if (imageUrl.startsWith("data:")) {
       try {
@@ -60,9 +62,12 @@ export const ExportImageModal: React.FC<ExportImageModalProps> = ({
     }
     return () => {
       if (url && url.startsWith("blob:")) {
-        try {
-          URL.revokeObjectURL(url);
-        } catch {}
+        const toRevoke = url;
+        setTimeout(() => {
+          try {
+            URL.revokeObjectURL(toRevoke);
+          } catch {}
+        }, 10000);
       }
     };
   }, [imageUrl]);
@@ -81,7 +86,6 @@ export const ExportImageModal: React.FC<ExportImageModalProps> = ({
       setPan({ x: 0, y: 0 });
       setIsDownloaded(false);
       setIsCopied(false);
-      setIsImgError(false);
     }
   }, [isOpen, imageUrl]);
 
@@ -215,7 +219,7 @@ export const ExportImageModal: React.FC<ExportImageModalProps> = ({
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-2 sm:p-4 select-none animate-in fade-in"
+      className="fixed inset-0 z-[260] bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-2 sm:p-4 select-none animate-in fade-in"
     >
       {/* Modal Container */}
       <div
@@ -309,10 +313,9 @@ export const ExportImageModal: React.FC<ExportImageModalProps> = ({
             <a
               href={blobUrl || imageUrl}
               download={cleanFilename}
-              onClick={() => {
-                setIsDownloaded(true);
-                setTimeout(() => setIsDownloaded(false), 2500);
-                downloadDataUrlAsPng(imageUrl, filename);
+              onClick={(e) => {
+                e.preventDefault();
+                handleDownload();
               }}
               className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#C89B3C] to-[#E2C37A] hover:brightness-110 text-[#14120F] font-bold text-xs flex items-center gap-1.5 shadow cursor-pointer transition-all active:scale-95 no-underline"
               title="Tải ảnh về máy tính"
@@ -396,7 +399,7 @@ export const ExportImageModal: React.FC<ExportImageModalProps> = ({
               </div>
             ) : (
               <img
-                src={imageUrl}
+                src={blobUrl || imageUrl}
                 alt="Ảnh trận pháp đã xuất"
                 referrerPolicy="no-referrer"
                 onError={() => setIsImgError(true)}
@@ -411,10 +414,9 @@ export const ExportImageModal: React.FC<ExportImageModalProps> = ({
             <a
               href={blobUrl || imageUrl}
               download={cleanFilename}
-              onClick={() => {
-                setIsDownloaded(true);
-                setTimeout(() => setIsDownloaded(false), 2500);
-                downloadDataUrlAsPng(imageUrl, filename);
+              onClick={(e) => {
+                e.preventDefault();
+                handleDownload();
               }}
               className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 hover:brightness-110 text-stone-950 font-bold text-xs flex items-center gap-1.5 shadow-md cursor-pointer transition-transform active:scale-95 no-underline"
               title="Tải ảnh này về máy tính hoặc điện thoại"

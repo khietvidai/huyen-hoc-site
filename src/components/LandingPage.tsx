@@ -2699,6 +2699,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
     requestTickRef.current = requestTick;
     renderFullSpreadRef.current = () => {
+      if (layer) {
+        layer.style.opacity = "1";
+        layer.style.visibility = "visible";
+      }
       renderCards(0, 0, 0, 1, 0);
     };
     window.addEventListener("scroll", requestTick, { passive: true });
@@ -2869,7 +2873,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       }
 
       // Đợi 1 frame để trình duyệt áp dụng styles transform lên DOM
-      await new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 50)));
+      await new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 60)));
 
       const stage = stageRef.current;
       if (!stage) {
@@ -2877,30 +2881,71 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       }
 
       const stageRect = stage.getBoundingClientRect();
+      const stageW = stageRect.width || stage.offsetWidth || 1000;
+      const stageH = stageRect.height || stage.offsetHeight || 600;
       const activeSlots = slotRefs.current.slice(0, cards.length).filter(Boolean) as HTMLElement[];
 
       if (activeSlots.length === 0) {
         throw new Error("Không có lá bài nào để chụp");
       }
 
-      // 2. Tính toán chính xác khung bao (Bounding Box) của toàn bộ lá bài đang hiển thị
+      // 2. Phân tích tọa độ transform thực tế & tính toán khung bao (Bounding Box) chuẩn xác
       let minX = Infinity;
       let minY = Infinity;
       let maxX = -Infinity;
       let maxY = -Infinity;
 
-      activeSlots.forEach((slot) => {
+      interface SlotDrawMeta {
+        idx: number;
+        card: DynamicCardItem;
+        slot: HTMLElement;
+        cx: number;
+        cy: number;
+        unscaledW: number;
+        unscaledH: number;
+        rotDeg: number;
+        sc: number;
+        zIndex: number;
+      }
+
+      const slotMetas: SlotDrawMeta[] = activeSlots.map((slot, idx) => {
+        const card = cards[idx];
+        const tf = slot.style.transform || "";
+        const t3d = tf.match(/translate3d\(\s*([-\d.]+)px\s*,\s*([-\d.]+)px/i);
+        const rotM = tf.match(/rotate\(\s*([-\d.]+)deg\)/i);
+        const scaleM = tf.match(/scale\(\s*([-\d.]+)\)/i);
+        const tx = t3d ? parseFloat(t3d[1]) : 0;
+        const ty = t3d ? parseFloat(t3d[2]) : 0;
+        const rotDeg = rotM ? parseFloat(rotM[1]) : 0;
+        const sc = scaleM ? parseFloat(scaleM[1]) : 1;
+        const zIndex = parseFloat(slot.style.zIndex || String(10 + idx)) || 10 + idx;
+
+        const unscaledW = slot.offsetWidth || (card?.type === "yao" ? 208 : 176);
+        const unscaledH = slot.offsetHeight || (card?.type === "yao" ? 240 : 272);
+        const cx = stageW / 2 + tx;
+        const cy = stageH / 2 + ty;
+
+        // Tính khung bao hình học có tính góc xoay và nhãn phía trên lá bài
+        const rad = Math.abs((rotDeg * Math.PI) / 180);
+        const halfW = ((unscaledW * Math.cos(rad) + unscaledH * Math.sin(rad)) * sc) / 2;
+        const halfH = ((unscaledW * Math.sin(rad) + unscaledH * Math.cos(rad)) * sc) / 2;
+        const topBadgeExtra = card?.positionLabel ? 42 : 12;
+
+        minX = Math.min(minX, cx - halfW - 14);
+        maxX = Math.max(maxX, cx + halfW + 14);
+        minY = Math.min(minY, cy - halfH - topBadgeExtra);
+        maxY = Math.max(maxY, cy + halfH + 14);
+
         const r = slot.getBoundingClientRect();
-        if (r.width > 0 && r.height > 0) {
+        if (r.width > 0 && r.height > 0 && stageRect.width > 0) {
           minX = Math.min(minX, r.left - stageRect.left);
           minY = Math.min(minY, r.top - stageRect.top);
           maxX = Math.max(maxX, r.right - stageRect.left);
           maxY = Math.max(maxY, r.bottom - stageRect.top);
         }
 
-        // Nếu có nhãn vị trí / nút đổi thế phía trên lá bài thì bao gồm luôn vào khung
         const badge = slot.querySelector("div.absolute") as HTMLElement | null;
-        if (badge) {
+        if (badge && stageRect.width > 0) {
           const br = badge.getBoundingClientRect();
           if (br.width > 0 && br.height > 0) {
             minX = Math.min(minX, br.left - stageRect.left);
@@ -2909,102 +2954,426 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             maxY = Math.max(maxY, br.bottom - stageRect.top);
           }
         }
+
+        return { idx, card, slot, cx, cy, unscaledW, unscaledH, rotDeg, sc, zIndex };
       });
 
       if (!isFinite(minX) || !isFinite(maxX)) {
         minX = 0;
         minY = 0;
-        maxX = stageRect.width;
-        maxY = stageRect.height;
+        maxX = stageW;
+        maxY = stageH;
       }
 
-      // Căn lề padding thanh thoát (~42px) đúng như ảnh mẫu chuẩn
-      const padX = 42;
-      const padY = 42;
+      // Căn lề padding thanh thoát (~44px) đúng như ảnh mẫu chuẩn
+      const padX = 44;
+      const padY = 44;
       const cropW = Math.max(320, Math.round(maxX - minX + padX * 2));
-      const cropH = Math.max(200, Math.round(maxY - minY + padY * 2));
+      const cropH = Math.max(220, Math.round(maxY - minY + padY * 2));
+      const maxCanvasDim = 3840;
+      const idealRatio = Math.min(3, Math.max(2, Math.ceil(1600 / cropW)));
+      const exportRatio = Math.min(idealRatio, maxCanvasDim / cropW, maxCanvasDim / cropH);
 
-      // 3. Tạo khung chứa tạm thời (Offscreen container) với nền trắng kẻ ô tọa độ mờ
-      const outerWrapper = document.createElement("div");
-      outerWrapper.setAttribute("data-capture-root", "true");
-      outerWrapper.setAttribute("data-capturing", "true");
-      outerWrapper.style.position = "fixed";
-      outerWrapper.style.left = "-99999px";
-      outerWrapper.style.top = "0";
-      outerWrapper.style.width = "0";
-      outerWrapper.style.height = "0";
-      outerWrapper.style.overflow = "hidden";
-      outerWrapper.style.zIndex = "-9999";
+      let dataUrl = "";
 
-      const container = document.createElement("div");
-      container.setAttribute("data-capturing", "true");
-      container.style.position = "relative";
-      container.style.width = `${cropW}px`;
-      container.style.height = `${cropH}px`;
-      container.style.overflow = "hidden";
-      container.style.backgroundColor = "#FFFFFF";
-      container.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.055) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.055) 1px, transparent 1px)`;
-      container.style.backgroundSize = "48px 48px";
-      container.style.boxSizing = "border-box";
-
-      // 4. Clone stage chứa bài sang container và dịch chuyển sao cho khớp khung crop
-      const stageClone = stage.cloneNode(true) as HTMLElement;
-      stageClone.setAttribute("data-capturing", "true");
-      stageClone.style.position = "absolute";
-      stageClone.style.left = `${Math.round(-minX + padX)}px`;
-      stageClone.style.top = `${Math.round(-minY + padY)}px`;
-      stageClone.style.transform = "none";
-      stageClone.style.width = `${stageRect.width}px`;
-      stageClone.style.height = `${stageRect.height}px`;
-      stageClone.style.margin = "0";
-      stageClone.style.pointerEvents = "none";
-
-      container.appendChild(stageClone);
-      outerWrapper.appendChild(container);
-      document.body.appendChild(outerWrapper);
-
-      // Đảm bảo toàn bộ ảnh webp của các lá bài đã nạp xong và decode sẵn sàng
-      const imgs = Array.from(stageClone.querySelectorAll("img"));
-      await Promise.all(
-        imgs.map(async (img) => {
-          if (img.complete && img.naturalWidth > 0) {
-            if (typeof img.decode === "function") await img.decode().catch(() => {});
-            return true;
+      // 3. Phương thức chính: Kết xuất trực tiếp lên HTML5 Canvas 2D (Sắc nét tuyệt đối, không bị lỗi SVG/CSS/Brave)
+      try {
+        const loadCardImg = async (card: DynamicCardItem, slotEl: HTMLElement): Promise<HTMLImageElement | null> => {
+          const domImg = slotEl.querySelector("img") as HTMLImageElement | null;
+          if (domImg && domImg.complete && domImg.naturalWidth > 0) {
+            return domImg;
           }
-          return new Promise((res) => {
-            img.onload = async () => {
-              if (typeof img.decode === "function") await img.decode().catch(() => {});
-              res(true);
-            };
-            img.onerror = () => res(false);
-            setTimeout(() => res(false), 2000);
+          const fallbackSrc =
+            card.type === "yao"
+              ? `/assets/oss/${card.hexNumber}/${card.hexNumber}-${card.yaoNumber}a.webp`
+              : `/assets/oss/${card.hexNumber}/${card.hexNumber}a.webp`;
+
+          const tryLoad = (src: string) =>
+            new Promise<HTMLImageElement | null>((resolve) => {
+              const img = new Image();
+              img.crossOrigin = "anonymous";
+              const timer = setTimeout(() => resolve(null), 3500);
+              img.onload = async () => {
+                clearTimeout(timer);
+                if (typeof img.decode === "function") {
+                  await img.decode().catch(() => {});
+                }
+                resolve(img.naturalWidth > 0 ? img : null);
+              };
+              img.onerror = () => {
+                clearTimeout(timer);
+                resolve(null);
+              };
+              img.src = src;
+            });
+
+          const primary = await tryLoad(card.img);
+          if (primary) return primary;
+          if (fallbackSrc !== card.img) {
+            return await tryLoad(fallbackSrc);
+          }
+          return null;
+        };
+
+        const loadedImages = await Promise.all(
+          slotMetas.map((m) => loadCardImg(m.card, m.slot))
+        );
+
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(cropW * exportRatio));
+        canvas.height = Math.max(1, Math.round(cropH * exportRatio));
+        const ctx = canvas.getContext("2d");
+
+        if (ctx) {
+          ctx.scale(exportRatio, exportRatio);
+
+          // Vẽ nền trắng và lưới tọa độ mờ 48x48px giống hệt #destiny-cards
+          ctx.fillStyle = "#FFFFFF";
+          ctx.fillRect(0, 0, cropW, cropH);
+
+          ctx.strokeStyle = "rgba(0, 0, 0, 0.055)";
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          for (let gx = 0; gx <= cropW; gx += 48) {
+            ctx.moveTo(gx + 0.5, 0);
+            ctx.lineTo(gx + 0.5, cropH);
+          }
+          for (let gy = 0; gy <= cropH; gy += 48) {
+            ctx.moveTo(0, gy + 0.5);
+            ctx.lineTo(cropW, gy + 0.5);
+          }
+          ctx.stroke();
+
+          const drawRoundRect = (
+            c: CanvasRenderingContext2D,
+            x: number,
+            y: number,
+            w: number,
+            h: number,
+            r: number
+          ) => {
+            const radius = Math.min(r, w / 2, h / 2);
+            c.beginPath();
+            c.moveTo(x + radius, y);
+            c.lineTo(x + w - radius, y);
+            c.quadraticCurveTo(x + w, y, x + w, y + radius);
+            c.lineTo(x + w, y + h - radius);
+            c.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
+            c.lineTo(x + radius, y + h);
+            c.quadraticCurveTo(x, y + h, x, y + h - radius);
+            c.lineTo(x, y + radius);
+            c.quadraticCurveTo(x, y, x + radius, y);
+            c.closePath();
+          };
+
+          const sortedMetas = [...slotMetas].sort(
+            (a, b) => a.zIndex - b.zIndex || a.idx - b.idx
+          );
+
+          // Lớp 1: Vẽ thân thẻ bài, hình ảnh quẻ/hào, viền vàng & nhãn chân bài
+          for (const item of sortedMetas) {
+            const img = loadedImages[item.idx];
+            const cw = item.unscaledW;
+            const ch = item.unscaledH;
+            const rx = -cw / 2;
+            const ry = -ch / 2;
+            const cardRadius = 16;
+
+            ctx.save();
+            ctx.translate(item.cx - minX + padX, item.cy - minY + padY);
+            ctx.rotate((item.rotDeg * Math.PI) / 180);
+            ctx.scale(item.sc, item.sc);
+
+            // Bóng đổ thẻ bài
+            ctx.save();
+            ctx.shadowColor = "rgba(0, 0, 0, 0.28)";
+            ctx.shadowBlur = 24;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 10;
+            drawRoundRect(ctx, rx, ry, cw, ch, cardRadius);
+            const bgGrad = ctx.createLinearGradient(rx, ry, rx + cw, ry + ch);
+            bgGrad.addColorStop(0, "#2D2820");
+            bgGrad.addColorStop(1, "#1C1A15");
+            ctx.fillStyle = bgGrad;
+            ctx.fill();
+            ctx.restore();
+
+            // Vẽ ảnh thẻ bài bên trong khung bo góc
+            ctx.save();
+            drawRoundRect(ctx, rx, ry, cw, ch, cardRadius);
+            ctx.clip();
+
+            if (mode === "thap_tinh" && item.idx === 1 && isCard2Reversed) {
+              ctx.rotate(Math.PI);
+            }
+
+            if (img && img.naturalWidth > 0 && img.naturalHeight > 0) {
+              const imgRatio = img.naturalWidth / img.naturalHeight;
+              const boxRatio = cw / ch;
+              if (item.card.type === "yao") {
+                ctx.fillStyle = "#09090B";
+                ctx.fillRect(rx, ry, cw, ch);
+                let dw = cw;
+                let dh = ch;
+                if (imgRatio > boxRatio) {
+                  dh = cw / imgRatio;
+                } else {
+                  dw = ch * imgRatio;
+                }
+                ctx.drawImage(img, -dw / 2, -dh / 2, dw, dh);
+              } else {
+                let dw = cw;
+                let dh = ch;
+                if (imgRatio > boxRatio) {
+                  dw = ch * imgRatio;
+                } else {
+                  dh = cw / imgRatio;
+                }
+                ctx.drawImage(img, -dw / 2, -dh / 2, dw, dh);
+              }
+            } else {
+              // Dự phòng nếu ảnh chưa tải kịp
+              ctx.fillStyle = "rgba(255,255,255,0.65)";
+              ctx.font = "32px serif";
+              ctx.textAlign = "center";
+              ctx.textBaseline = "middle";
+              ctx.fillText(item.card.symbol || "☯", 0, -14);
+              ctx.fillStyle = "#FFFFFF";
+              ctx.font = "bold 13px 'Lora', Georgia, serif";
+              ctx.fillText(item.card.name, 0, 18);
+            }
+            ctx.restore();
+
+            // Viền chỉ vàng quanh lá bài
+            drawRoundRect(ctx, rx + 0.5, ry + 0.5, cw - 1, ch - 1, cardRadius);
+            ctx.strokeStyle = "rgba(196, 150, 62, 0.42)";
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+
+            // Nhãn chân thẻ bài cho chế độ Tháp La
+            if (mode === "thap_la") {
+              const bottomText =
+                item.idx === 0
+                  ? `[Bản Quái] ${item.card.hanzi || item.card.symbol || ""}`
+                  : item.idx === 1
+                  ? `[Biến Quái] ${item.card.hanzi || item.card.symbol || ""}`
+                  : item.card.yaoNumber && item.card.yaoNumber > 0
+                  ? `[Hào Động ${item.card.yaoNumber}] ${
+                      item.card.hanzi ||
+                      item.card.name
+                        .split("·")[0]
+                        ?.replace(/^Hào\s*\d+:\s*/, "")
+                        .trim() ||
+                      ""
+                    }`
+                  : "Toàn Tĩnh";
+
+              ctx.font = "600 9.5px 'Be Vietnam Pro', sans-serif";
+              const bMetrics = ctx.measureText(bottomText);
+              const bW = Math.min(cw - 12, bMetrics.width + 18);
+              const bH = 18;
+              const bX = -bW / 2;
+              const bY = ch / 2 - bH - 8;
+
+              drawRoundRect(ctx, bX, bY, bW, bH, 9);
+              ctx.fillStyle = "rgba(0, 0, 0, 0.86)";
+              ctx.fill();
+              ctx.strokeStyle = "rgba(245, 158, 11, 0.55)";
+              ctx.lineWidth = 1;
+              ctx.stroke();
+
+              ctx.fillStyle = "#FEF3C7";
+              ctx.textAlign = "center";
+              ctx.textBaseline = "middle";
+              ctx.fillText(bottomText, 0, bY + bH / 2 + 0.5);
+            }
+
+            ctx.restore();
+          }
+
+          // Lớp 2: Vẽ nhãn vị trí trận pháp phía trên từng lá bài
+          for (const item of sortedMetas) {
+            if (!item.card.positionLabel) continue;
+
+            let topText = item.card.positionLabel;
+            let pillBg = "rgba(24, 24, 27, 0.92)";
+            let pillBorder = "rgba(120, 113, 108, 0.65)";
+            let pillColor = "#F5F5F4";
+
+            if (mode === "thap_la") {
+              if (item.idx === 0) {
+                topText = `Quẻ Chủ: #${item.card.hexNumber} ${item.card.name.replace("Quẻ Chủ: ", "")}`;
+                pillBg = "rgba(69, 26, 3, 0.95)";
+                pillBorder = "rgba(245, 158, 11, 0.85)";
+                pillColor = "#FDE68A";
+              } else if (item.idx === 1) {
+                topText = item.card.name.includes("Đồng Quẻ Chủ")
+                  ? `Quẻ Biến (Đồng Quẻ Chủ): #${item.card.hexNumber}`
+                  : `Quẻ Biến: #${item.card.hexNumber} ${item.card.name.replace("Quẻ Biến: ", "")}`;
+                pillBg = "rgba(2, 44, 34, 0.95)";
+                pillBorder = "rgba(16, 185, 129, 0.85)";
+                pillColor = "#A7F3D0";
+              } else {
+                topText =
+                  item.card.yaoNumber && item.card.yaoNumber > 0
+                    ? `Hào ${item.card.yaoNumber}: ${
+                        item.card.hanzi ||
+                        item.card.name.split("·")[1]?.trim() ||
+                        `Hào ${item.card.yaoNumber}`
+                      }`
+                    : "Quẻ Tĩnh (0 Hào Động)";
+                pillBg = "rgba(24, 24, 27, 0.95)";
+                pillBorder = "rgba(196, 150, 62, 0.85)";
+                pillColor = "#FCD34D";
+              }
+            } else if (mode === "thap_tinh" && item.idx === 1) {
+              topText = isCard2Reversed ? "2. Ngược: Trở Ngại 🔄" : "2. Xuôi: Hỗ Trợ 🔄";
+              pillBg = isCard2Reversed ? "#4C0519" : "#022C22";
+              pillBorder = isCard2Reversed ? "#F43F5E" : "#10B981";
+              pillColor = isCard2Reversed ? "#FECDD3" : "#A7F3D0";
+            } else if (mode === "thap_tinh" && item.idx === 0) {
+              topText = "1. Tình Huống Hiện Tại";
+              pillBg = "rgba(24, 24, 27, 0.95)";
+              pillBorder = "rgba(217, 119, 6, 0.7)";
+              pillColor = "#FDE68A";
+            } else if (mode === "thap_tinh" && item.idx === 9) {
+              topText = "10. Lá Bài Khuyên Bảo";
+              pillBg = "rgba(69, 26, 3, 0.95)";
+              pillBorder = "rgba(245, 158, 11, 0.85)";
+              pillColor = "#FDE68A";
+            }
+
+            ctx.save();
+            ctx.translate(item.cx - minX + padX, item.cy - minY + padY);
+            ctx.rotate((item.rotDeg * Math.PI) / 180);
+            ctx.scale(item.sc, item.sc);
+
+            ctx.font = "bold 11.5px 'Lora', Georgia, serif";
+            const tMetrics = ctx.measureText(topText);
+            const pW = tMetrics.width + 22;
+            const pH = 24;
+            const pX = -pW / 2;
+            const pY = -item.unscaledH / 2 - pH - 8;
+
+            ctx.save();
+            ctx.shadowColor = "rgba(0, 0, 0, 0.35)";
+            ctx.shadowBlur = 8;
+            ctx.shadowOffsetY = 3;
+            drawRoundRect(ctx, pX, pY, pW, pH, 12);
+            ctx.fillStyle = pillBg;
+            ctx.fill();
+            ctx.restore();
+
+            drawRoundRect(ctx, pX, pY, pW, pH, 12);
+            ctx.strokeStyle = pillBorder;
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+
+            ctx.fillStyle = pillColor;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(topText, 0, pY + pH / 2 + 0.5);
+
+            ctx.restore();
+          }
+
+          dataUrl = canvas.toDataURL("image/png");
+          if (!dataUrl || dataUrl === "data:," || dataUrl.length < 200) {
+            dataUrl = canvas.toDataURL("image/jpeg", 0.92);
+          }
+        }
+      } catch (canvasErr) {
+        console.warn("Canvas 2D snapshot fallback sang html-to-image:", canvasErr);
+      }
+
+      // 4. Phương thức dự phòng: Sử dụng html-to-image nếu Canvas 2D chưa tạo được ảnh
+      if (!dataUrl || dataUrl === "data:," || dataUrl.length < 200) {
+        const outerWrapper = document.createElement("div");
+        outerWrapper.setAttribute("data-capture-root", "true");
+        outerWrapper.setAttribute("data-capture-fixed-size", "true");
+        outerWrapper.style.position = "fixed";
+        outerWrapper.style.left = "-99999px";
+        outerWrapper.style.top = "0";
+        outerWrapper.style.width = `${cropW}px`;
+        outerWrapper.style.height = `${cropH}px`;
+        outerWrapper.style.overflow = "hidden";
+        outerWrapper.style.zIndex = "-9999";
+
+        const container = document.createElement("div");
+        container.setAttribute("data-capture-fixed-size", "true");
+        container.style.position = "relative";
+        container.style.width = `${cropW}px`;
+        container.style.height = `${cropH}px`;
+        container.style.overflow = "hidden";
+        container.style.backgroundColor = "#FFFFFF";
+        container.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.055) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.055) 1px, transparent 1px)`;
+        container.style.backgroundSize = "48px 48px";
+        container.style.boxSizing = "border-box";
+
+        const stageClone = stage.cloneNode(true) as HTMLElement;
+        stageClone.setAttribute("data-capture-fixed-size", "true");
+        stageClone.style.position = "absolute";
+        stageClone.style.left = `${Math.round(-minX + padX)}px`;
+        stageClone.style.top = `${Math.round(-minY + padY)}px`;
+        stageClone.style.transform = "none";
+        stageClone.style.width = `${stageW}px`;
+        stageClone.style.height = `${stageH}px`;
+        stageClone.style.margin = "0";
+        stageClone.style.pointerEvents = "none";
+
+        container.appendChild(stageClone);
+        outerWrapper.appendChild(container);
+        document.body.appendChild(outerWrapper);
+
+        try {
+          const imgs = Array.from(stageClone.querySelectorAll("img"));
+          await Promise.all(
+            imgs.map(async (img) => {
+              img.loading = "eager";
+              img.removeAttribute("loading");
+              if (img.complete && img.naturalWidth > 0) {
+                if (typeof img.decode === "function") await img.decode().catch(() => {});
+                return true;
+              }
+              return new Promise((res) => {
+                img.onload = async () => {
+                  if (typeof img.decode === "function") await img.decode().catch(() => {});
+                  res(true);
+                };
+                img.onerror = () => res(false);
+                setTimeout(() => res(false), 2000);
+              });
+            })
+          );
+          await new Promise((resolve) => setTimeout(resolve, 80));
+
+          dataUrl = await toPng(container, {
+            width: cropW,
+            height: cropH,
+            canvasWidth: Math.round(cropW * exportRatio),
+            canvasHeight: Math.round(cropH * exportRatio),
+            pixelRatio: exportRatio,
+            backgroundColor: "#FFFFFF",
+            cacheBust: false,
+            skipFonts: true,
+            filter: (node: Node) => {
+              if (node instanceof HTMLElement) {
+                if (node.classList.contains("no-capture")) return false;
+                const tag = node.tagName.toLowerCase();
+                if (tag === "script" || tag === "noscript" || tag === "iframe") return false;
+              }
+              return true;
+            },
           });
-        })
-      );
-      await new Promise((resolve) => setTimeout(resolve, 80));
-
-      // Tính tỷ lệ xuất chuẩn sắc nét cao: trên mobile (màn hẹp) tăng ratio tự động để đạt ít nhất 1360px
-      const exportRatio = Math.min(4, Math.max(2, Math.ceil(1360 / cropW)));
-
-      // 5. Kết xuất ảnh độ phân giải cao (Retina sắc nét trên cả điện thoại & máy tính)
-      const dataUrl = await toPng(container, {
-        pixelRatio: exportRatio,
-        backgroundColor: "#FFFFFF",
-        cacheBust: false,
-        skipFonts: true,
-        filter: (node: Node) => {
-          if (node instanceof HTMLElement) {
-            if (node.classList.contains("no-capture")) return false;
-            const tag = node.tagName.toLowerCase();
-            if (tag === "script" || tag === "noscript" || tag === "iframe") return false;
+        } finally {
+          if (outerWrapper.parentNode) {
+            outerWrapper.parentNode.removeChild(outerWrapper);
           }
-          return true;
-        },
-      });
+        }
+      }
 
-      // Dọn dẹp DOM tạm
-      if (outerWrapper.parentNode) {
-        outerWrapper.parentNode.removeChild(outerWrapper);
+      if (!dataUrl || dataUrl === "data:," || dataUrl.length < 200) {
+        throw new Error("Dữ liệu ảnh xuất ra không hợp lệ");
       }
 
       // 6. Đặt tên tệp theo loại trải bài & ngày tháng rồi tự động tải về
@@ -3035,7 +3404,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       }
       setIsCapturingSnapshot(false);
     }
-  }, [cards, mode, isCapturingSnapshot]);
+  }, [cards, mode, isCard2Reversed, isCapturingSnapshot]);
 
   /* ── Chuyển chế độ và cuộn mượt xuống khu vực trải bài ── */
   const handleSwitchModeAndScroll = useCallback(
@@ -3335,9 +3704,9 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 <button
                   type="button"
                   id="btn-user-cuunhi-badge"
-                  onClick={() => onEnterApp("divination")}
+                  onClick={() => onEnterApp("yilore")}
                   className="inline-flex h-9 items-center gap-1.5 rounded-full bg-stone-900 px-3 text-xs font-semibold text-white transition hover:bg-stone-800 shadow-sm cursor-pointer"
-                  title="Nhấn để vào đài bốc quẻ Cửu Nhị"
+                  title="Nhấn để vào ứng dụng Cửu Nhị (/en/app)"
                 >
                   <span className="text-[#C4963E]">☯</span>
                   <span className="max-w-[100px] truncate">{currentUser.name}</span>
@@ -3930,11 +4299,11 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 </div>
               </div>
 
-              {/* Nút Use on web đen nguyên bản Yilore */}
+              {/* Nút Bắt đầu ngay -> Nhảy qua trang /en/app (yêu cầu đăng nhập) */}
               <button
                 type="button"
                 id="btn-use-on-web"
-                onClick={() => onEnterApp("divination")}
+                onClick={() => onEnterApp("yilore")}
                 className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-white font-semibold cursor-pointer transition hover:scale-[1.03] active:scale-[0.98] shadow-lg"
                 style={{
                   background: "linear-gradient(135deg,#0B0B0D 0%,#17181C 55%,#252830 100%)",
