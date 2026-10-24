@@ -606,7 +606,10 @@ export default function App() {
 
       let targetId = deckIdToLoad;
       if (!targetId) {
-        if (savedActive === "deck_ngu_che" || savedActive === "deck_ngu_che_khong_chu") {
+        if (savedActive === "deck_ngu_che_khong_chu") {
+          localStorage.removeItem("iching_active_deck_id");
+          targetId = DEFAULT_DECK_ID;
+        } else if (savedActive === "deck_ngu_che") {
           targetId = savedActive;
         } else if (!curIsVip) {
           targetId = DEFAULT_DECK_ID;
@@ -616,7 +619,7 @@ export default function App() {
           targetId = customDeck || DEFAULT_VIP_DECK_ID;
         }
       } else {
-        if (!curIsVip && targetId !== "deck_ngu_che" && targetId !== "deck_ngu_che_khong_chu") {
+        if (!curIsVip && targetId !== "deck_ngu_che") {
           targetId = DEFAULT_DECK_ID;
         }
       }

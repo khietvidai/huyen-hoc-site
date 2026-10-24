@@ -328,7 +328,7 @@ export function stripNguHanhFromCanChiHan(canChiHan: string): string {
   return canChiHan.replace(/[金木水火土]/g, "").trim();
 }
 
-const NGU_CHE_DATA_VERSION = "20261023_brave_ultra_v7";
+const NGU_CHE_DATA_VERSION = "20261024_gemini_ultra_v8";
 const hexCache = new Map<number, NguCheHexagramData>();
 let introCache: NguCheIntroData | null = null;
 

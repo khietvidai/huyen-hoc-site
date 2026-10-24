@@ -1433,7 +1433,6 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 className="px-2.5 py-1.5 rounded-xl bg-[#1D1711] hover:bg-[#282017] border border-[#4E3B27] hover:border-[#C9A55A] text-[#F3E7D0] text-xs font-serif font-semibold cursor-pointer outline-none transition-all shadow-sm"
                 title="Tùy chỉnh đổi nhanh bộ bài đang dùng"
               >
-                <option value="deck_ngu_che_khong_chu">Bộ Ngự Chế Tinh Túy (Không Chữ)</option>
                 <option value="deck_ngu_che">Bộ Ngự Chế Tinh Túy (Có Chữ)</option>
                 <option value="deck_bo_khong_chu">Bộ Không Chữ (Nguyên Bản) [VIP]</option>
                 <option value="deck_quan_tu">Bộ Quân Tử (64 Quẻ)</option>

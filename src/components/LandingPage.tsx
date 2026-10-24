@@ -191,14 +191,6 @@ export const LANDING_PRESET_DECKS: LandingDeckConfig[] = [
     ext: "png",
   },
   {
-    id: "deck_ngu_che_khong_chu",
-    name: "Bộ Ngự Chế Tinh Túy (Không Chữ)",
-    shortName: "Ngự Chế Không Chữ",
-    description: "Bộ bài 64 quẻ Ngự Chế Tân Tập Đoán Dịch Tinh Túy không chữ full tranh",
-    back: `/decks/deck_ngu_che_khong_chu/back.jpg?v=${PRESET_DECK_VERSION}`,
-    ext: "png",
-  },
-  {
     id: "deck_oss",
     name: "Bộ Thần Bách Dịch Họa (OSS 384 Hào)",
     shortName: "Thần Bách Dịch Họa",
@@ -246,7 +238,7 @@ export function getLandingCardFrontUrl(deckId: string, hexNumber: number, yaoNum
     return `/assets/oss/${hexNumber}/${hexNumber}a.webp`;
   }
   const cfg = getLandingDeckConfig(deckId);
-  const vQuery = (deckId === "deck_ngu_che" || deckId === "deck_ngu_che_khong_chu") ? `?v=${PRESET_DECK_VERSION}` : "";
+  const vQuery = deckId === "deck_ngu_che" ? `?v=${PRESET_DECK_VERSION}` : "";
   return `/decks/${deckId}/${hexNumber}.${cfg.ext || "png"}${vQuery}`;
 }
 

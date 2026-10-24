@@ -188,7 +188,6 @@ export const PRESET_DECK_CONFIG: Record<string, { ext: string; back: string; ver
   deck_bo_khong_chu: { ext: "png", back: "/decks/deck_bo_khong_chu/back.jpg" },
   deck_quan_tu: { ext: "jpg", back: "/decks/deck_quan_tu/back.svg" },
   deck_ngu_che: { ext: "png", back: `/decks/deck_ngu_che/back.jpg?v=${PRESET_DECK_VERSION}`, version: PRESET_DECK_VERSION },
-  deck_ngu_che_khong_chu: { ext: "png", back: `/decks/deck_ngu_che_khong_chu/back.jpg?v=${PRESET_DECK_VERSION}`, version: PRESET_DECK_VERSION },
 };
 
 export const DEFAULT_DECK_ID = "deck_quan_tu";
@@ -200,7 +199,6 @@ export const PRESET_DECK_NAMES: Record<string, string> = {
   deck_bo_1: "Bộ 1 (Nguyên Bản Có Chữ)",
   deck_bo_2: "Bộ 2 (Có Chữ)",
   deck_ngu_che: "Bộ Ngự Chế Tinh Túy (Có Chữ)",
-  deck_ngu_che_khong_chu: "Bộ Ngự Chế Tinh Túy (Không Chữ)",
 };
 
 export const INITIAL_PRESET_DECKS: DeckInfo[] = [
@@ -253,16 +251,6 @@ export const INITIAL_PRESET_DECKS: DeckInfo[] = [
     cardBackImage: "/decks/deck_ngu_che/back.jpg",
     cardCount: 64,
     createdAt: 1700000004000,
-  },
-  {
-    id: "deck_ngu_che_khong_chu",
-    name: "Bộ Ngự Chế Tinh Túy (Không Chữ)",
-    description: "Bộ bài Kinh Dịch 64 quẻ không chữ full khung dọc dựa theo thuyết minh tượng ý và bố cục tranh gốc Ngự Chế Tân Tập Đoán Dịch Tinh Túy 100%.",
-    isPreset: true,
-    themeStyle: "golden",
-    cardBackImage: "/decks/deck_ngu_che_khong_chu/back.jpg",
-    cardCount: 64,
-    createdAt: 1700000005000,
   },
 ];
 
@@ -318,7 +306,7 @@ function openDB(): Promise<IDBDatabase> {
   });
 }
 
-const LEGACY_OLD_PRESET_IDS = new Set(["deck_golden", "deck_ink", "deck_woodblock", "deck_mystic"]);
+const LEGACY_OLD_PRESET_IDS = new Set(["deck_golden", "deck_ink", "deck_woodblock", "deck_mystic", "deck_ngu_che_khong_chu"]);
 
 /**
  * Get active deck ID (sync with localStorage)
@@ -568,7 +556,7 @@ export async function getDeckImages(deckId: string): Promise<Record<number, stri
     }
   }
 
-  if (deckId === "deck_ngu_che" || deckId === "deck_ngu_che_khong_chu") {
+  if (deckId === "deck_ngu_che") {
     return results;
   }
 
@@ -792,7 +780,7 @@ export async function importDeckBundle(bundle: {
 
 export async function getCardImage(cardNumber: number): Promise<string | null> {
   const activeDeckId = await getActiveDeckId();
-  if (activeDeckId !== "deck_ngu_che" && activeDeckId !== "deck_ngu_che_khong_chu") {
+  if (activeDeckId !== "deck_ngu_che") {
     try {
       const db = await openDB();
       const custom = await new Promise<string | null>((resolve) => {
