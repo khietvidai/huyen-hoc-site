@@ -384,6 +384,7 @@ interface YiloreDesktopSidebarProps {
   userCredits?: number;
   userTierLabel?: string;
   onOpenCreditsModal: () => void;
+  onGoHome?: () => void;
   onExitToMainApp?: () => void;
   onShowToast?: (msg: string) => void;
 }
@@ -397,6 +398,7 @@ export const YiloreDesktopSidebar: React.FC<YiloreDesktopSidebarProps> = ({
   userCredits = 0,
   userTierLabel = "Chưa đăng ký",
   onOpenCreditsModal,
+  onGoHome,
   onExitToMainApp,
   onShowToast,
 }) => {
@@ -583,6 +585,22 @@ export const YiloreDesktopSidebar: React.FC<YiloreDesktopSidebarProps> = ({
           Nạp tín dụng · Đặc quyền hội viên
         </button>
 
+        {/* Return to Home Page */}
+        <button
+          type="button"
+          onClick={() => {
+            if (onGoHome) {
+              onGoHome();
+            } else if (typeof window !== "undefined") {
+              window.location.href = "/";
+            }
+          }}
+          className="w-full rounded-full border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-800 transition hover:bg-stone-100"
+          title="Trang chủ"
+        >
+          Trang chủ
+        </button>
+
         {/* Sign out (or Return to main app) */}
         <button
           type="button"
@@ -612,6 +630,7 @@ interface YiloreMobileHeaderProps {
   isOpen?: boolean;
   setIsOpen?: (v: boolean) => void;
   onOpenCreditsModal?: () => void;
+  onGoHome?: () => void;
   onExitToMainApp?: () => void;
   onShowToast?: (msg: string) => void;
   onOpenSettings?: () => void;
@@ -622,6 +641,7 @@ export const YiloreMobileHeader: React.FC<YiloreMobileHeaderProps> = ({
   activeRoute,
   setActiveRoute,
   onOpenCreditsModal,
+  onGoHome,
   onExitToMainApp,
   onOpenSettings,
   onOpenConvList,
@@ -783,18 +803,32 @@ export const YiloreMobileHeader: React.FC<YiloreMobileHeaderProps> = ({
                 );
               })}
             </nav>
-            {onExitToMainApp && (
-              <div className="border-t border-stone-200 p-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    onExitToMainApp();
-                  }}
-                  className="w-full rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-800 transition hover:bg-stone-100"
-                >
-                  Đăng xuất
-                </button>
+            {(onGoHome || onExitToMainApp) && (
+              <div className="space-y-2 border-t border-stone-200 p-3">
+                {onGoHome && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      onGoHome();
+                    }}
+                    className="w-full rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-800 transition hover:bg-stone-100"
+                  >
+                    Trang chủ
+                  </button>
+                )}
+                {onExitToMainApp && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      onExitToMainApp();
+                    }}
+                    className="w-full rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-800 transition hover:bg-stone-100"
+                  >
+                    Đăng xuất
+                  </button>
+                )}
               </div>
             )}
           </aside>

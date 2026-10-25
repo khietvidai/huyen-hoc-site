@@ -50,6 +50,7 @@ interface YiloreAppSuiteProps {
     isAdmin?: boolean;
     incenseSticks?: number;
   } | null;
+  onGoHome?: () => void;
   onExitToMainApp?: () => void;
   onShowToast?: (msg: string) => void;
 }
@@ -101,6 +102,7 @@ function computeBaziFromDate(dateStr: string, hour: number): [string, string, st
 
 export const YiloreAppSuite: React.FC<YiloreAppSuiteProps> = ({
   currentUser,
+  onGoHome,
   onExitToMainApp,
   onShowToast,
 }) => {
@@ -756,6 +758,7 @@ export const YiloreAppSuite: React.FC<YiloreAppSuiteProps> = ({
           userCredits={userCredits}
           userTierLabel={userTierLabel}
           onOpenCreditsModal={() => setIsCreditsModalOpen(true)}
+          onGoHome={onGoHome}
           onExitToMainApp={onExitToMainApp}
           onShowToast={onShowToast}
         />
@@ -772,6 +775,7 @@ export const YiloreAppSuite: React.FC<YiloreAppSuiteProps> = ({
             isOpen={isMobileMenuOpen}
             setIsOpen={setIsMobileMenuOpen}
             onOpenCreditsModal={() => setIsCreditsModalOpen(true)}
+            onGoHome={onGoHome}
             onExitToMainApp={onExitToMainApp}
             onShowToast={onShowToast}
           />
