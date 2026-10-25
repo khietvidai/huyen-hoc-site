@@ -50,6 +50,7 @@ import { TraditionalHexagramFigure } from "./TraditionalHexagramFigure";
 import { SpreadDiagram } from "./SpreadDiagram";
 import { ExportImageModal } from "./ExportImageModal";
 import { FullScreenCardHoverModal, HoverCardData } from "./FullScreenCardHoverModal";
+import { XuanBaguaStage, CardTwoSidedModal } from "./XuanBaguaStage";
 import { zenAudio } from "../utils/zenAudio";
 import { CanonicalHexagramCard } from "./CanonicalHexagramCard";
 import { HexagramElementsChart } from "./HexagramElementsChart";
@@ -153,9 +154,11 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
     spreadType === "coins" ||
     Boolean(
       cardsDrawSummary &&
+        spreadType !== "thapla" &&
         (cardsDrawSummary.toLowerCase().includes("cỏ thi") ||
           cardsDrawSummary.toLowerCase().includes("đại diễn") ||
-          cardsDrawSummary.toLowerCase().includes("đồng") ||
+          cardsDrawSummary.toLowerCase().includes("đồng xu") ||
+          cardsDrawSummary.toLowerCase().includes("đồng tiền") ||
           cardsDrawSummary.toLowerCase().includes("lục hào"))
     );
 
@@ -168,19 +171,25 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
     return changingLines.length > 0 ? changingLines[0] : 1;
   });
 
+  const [inspectingTwoSidedCard, setInspectingTwoSidedCard] = useState<{
+    card: Hexagram;
+    positionTitle?: string;
+    isReversed?: boolean;
+  } | null>(null);
+
   const [detailCardSize, setDetailCardSize] = useState<"mini" | "compact" | "normal" | "large" | "xlarge">(() => {
     try {
-      const isInit = localStorage.getItem("iching_detail_card_size_v2_init");
+      const isInit = localStorage.getItem("iching_detail_card_size_v3_init");
       if (!isInit) {
-        localStorage.setItem("iching_detail_card_size_v2_init", "true");
-        localStorage.setItem("iching_detail_card_size", "mini");
-        return "mini";
+        localStorage.setItem("iching_detail_card_size_v3_init", "true");
+        localStorage.setItem("iching_detail_card_size", "normal");
+        return "normal";
       }
       const saved = localStorage.getItem("iching_detail_card_size");
       if (saved === "mini" || saved === "compact" || saved === "normal" || saved === "large" || saved === "xlarge") return saved;
-      return "mini";
+      return "normal";
     } catch {
-      return "mini";
+      return "normal";
     }
   });
 
@@ -188,7 +197,7 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
     setDetailCardSize(size);
     try {
       localStorage.setItem("iching_detail_card_size", size);
-      localStorage.setItem("iching_detail_card_size_v2_init", "true");
+      localStorage.setItem("iching_detail_card_size_v3_init", "true");
     } catch {}
   };
 
@@ -285,7 +294,7 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
   const getDetailCardSize = (defaultSize: "xs" | "sm" | "md" | "lg" | "xl" | "draw-2" | "draw-3" | "tiny"): "xs" | "sm" | "md" | "lg" | "xl" | "draw-2" | "draw-3" | "tiny" => {
     if (detailCardSize === "mini") return "tiny";
     if (detailCardSize === "compact") return "xs";
-    if (detailCardSize === "normal") return "sm";
+    if (detailCardSize === "normal") return defaultSize === "xl" ? "lg" : "md";
     if (detailCardSize === "large") return "lg";
     if (detailCardSize === "xlarge") return "xl";
     return defaultSize;
@@ -749,7 +758,9 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
       `Lĩnh vực: ${category}\n` +
       spreadInfo +
       `Quẻ Chủ: Quẻ số ${primaryHexagram.number} - ${primaryHexagram.name} (${primaryHexagram.vietnameseName})\n` +
-      `Hào Động: ${changingLines.length > 0 ? changingLines.map(l => `Hào ${l}`).join(", ") : "Không có (Quẻ tĩnh)"}\n` +
+      (changingLines.length > 0 && (!transformedHexagram || primaryHexagram.number !== transformedHexagram.number)
+        ? `Hào Động: ${changingLines.map(l => `Hào ${l}`).join(", ")}\n`
+        : "") +
       (transformedHexagram ? `Quẻ Biến: Quẻ số ${transformedHexagram.number} - ${transformedHexagram.name} (${transformedHexagram.vietnameseName})\n` : "") +
       `\nThoán từ: ${primaryHexagram.judgment}\n` +
       `Đại tượng: ${primaryHexagram.image}\n` +
@@ -1161,11 +1172,12 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
             </div>
           </div>
         ) : (
-          <div
-            className="bg-lacquer-950/60 border border-gold-800 rounded-sm p-3 sm:p-5 md:p-6 overflow-visible shadow-2xl"
+          <XuanBaguaStage
+            baguaSize="xl"
+            className="p-3 sm:p-5 md:p-6 overflow-visible shadow-2xl"
           >
             {/* Header of Cards section: Cố định sẵn */}
-            <div className="relative z-10 bg-lacquer-950/95 border border-gold-800 rounded-sm p-3 sm:p-4 mb-4 space-y-2.5 transition-all">
+            <div className="relative z-10 bg-[#FAF6EE]/95 border border-[#C4963E]/55 rounded-xl p-3 sm:p-4 mb-4 space-y-2.5 transition-all shadow-sm">
               <div className="flex flex-col items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -1560,6 +1572,22 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
 
                         {/* Top-right draw additional card & interpret button */}
                         <div className="no-capture flex items-center gap-1 ml-auto shrink-0 flex-wrap justify-end">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setInspectingTwoSidedCard({
+                                card,
+                                positionTitle: roleTitle,
+                                isReversed: card.isReversed ?? false,
+                              });
+                            }}
+                            className="flex items-center gap-0.5 px-2 py-0.5 rounded-sm bg-[#9A1F1A] hover:bg-[#7A1C18] text-[#FFFDF8] border border-[#C4963E] text-[8.5px] sm:text-[9.5px] font-serif font-bold shadow-sm transition-all cursor-pointer shrink-0 whitespace-nowrap"
+                            title="Mở cửa sổ xem song song cả 2 mặt bài (Quẻ Tượng & Thoán Từ)"
+                          >
+                            <ZoomIn className="w-2.5 h-2.5 text-[#E2C275]" />
+                            <span>2 mặt</span>
+                          </button>
                           {showCompanionButton && companionList.length === 0 && (
                             <button
                               type="button"
@@ -1827,6 +1855,27 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
 
                         {/* Top-right draw additional card & interpret button */}
                         <div className="no-capture flex items-center gap-1.5 ml-auto shrink-0 flex-wrap justify-end">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setInspectingTwoSidedCard({
+                                card: primaryHexagram,
+                                positionTitle:
+                                  doubleMode === "choice_ab"
+                                    ? `LÁ 1: [LỰA CHỌN A] ${choiceALabel || "Phương án A"}`
+                                    : doubleMode === "present_future"
+                                    ? "LÁ 1: HIỆN TẠI (GỐC RỄ & THỰC TRẠNG)"
+                                    : "LÁ BÀI BỐC ĐƯỢC (QUẺ CHỦ)",
+                                isReversed: primaryHexagram.isReversed ?? false,
+                              });
+                            }}
+                            className="flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-sm bg-[#9A1F1A] hover:bg-[#7A1C18] text-[#FFFDF8] border border-[#C4963E] text-[10px] sm:text-xs font-serif font-bold shadow-sm transition-all cursor-pointer shrink-0 whitespace-nowrap"
+                            title="Mở cửa sổ xem song song cả 2 mặt bài (Quẻ Tượng & Thoán Từ)"
+                          >
+                            <ZoomIn className="w-3 h-3 text-[#E2C275]" />
+                            <span>2 mặt</span>
+                          </button>
                           {showCompanionButton && primaryList.length === 0 && (
                             <button
                               type="button"
@@ -2061,6 +2110,27 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
 
                         {/* Top-right draw additional card & interpret button */}
                         <div className="no-capture flex items-center gap-1.5 ml-auto shrink-0 flex-wrap justify-end">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setInspectingTwoSidedCard({
+                                card: transformedHexagram,
+                                positionTitle:
+                                  doubleMode === "choice_ab"
+                                    ? `LÁ 2: [LỰA CHỌN B] ${choiceBLabel || "Phương án B"}`
+                                    : doubleMode === "present_future"
+                                    ? "LÁ 2: TƯƠNG LAI (XU HƯỚNG & KẾT QUẢ)"
+                                    : "LÁ BÀI THỨ 2 (BIẾN CHUYỂN)",
+                                isReversed: isCard2Reversed ?? transformedHexagram.isReversed ?? false,
+                              });
+                            }}
+                            className="flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-sm bg-[#9A1F1A] hover:bg-[#7A1C18] text-[#FFFDF8] border border-[#C4963E] text-[10px] sm:text-xs font-serif font-bold shadow-sm transition-all cursor-pointer shrink-0 whitespace-nowrap"
+                            title="Mở cửa sổ xem song song cả 2 mặt bài (Quẻ Tượng & Thoán Từ)"
+                          >
+                            <ZoomIn className="w-3 h-3 text-[#E2C275]" />
+                            <span>2 mặt</span>
+                          </button>
                           {showCompanionButton && transformedList.length === 0 && (
                             <button
                               type="button"
@@ -2255,7 +2325,7 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
             );
           })()
         )}
-          </div>
+          </XuanBaguaStage>
         )}
 
         {/* Companion Cards Detailed Reading Section */}
@@ -2379,323 +2449,401 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
           </div>
         )}
 
-        {/* HIỆN KHI GIEO QUẺ CỎ THI, GIEO 3 ĐỒNG XU (KHÔNG HIỆN Ở BỐC BÀI TAM TÀI) */}
-        {isYarrowOrCoins && (
-          <div id="thuyet-minh-section" className="space-y-6 pt-5 border-t border-gold-800">
-            {/* 1. HƯỚNG DẪN HÀO ĐỘNG (CHU HY - THÁI PHÁT) */}
-            <div className="space-y-2.5">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rotate-45 bg-gold-500" />
-                <h3 className="font-display font-semibold text-ivory-100 text-base sm:text-lg tracking-wide flex items-center gap-2">
-                  <span>1. HƯỚNG DẪN HÀO ĐỘNG</span>
-                  <span className="text-[11px] font-mono text-amber-400 bg-lacquer-700 px-2 py-0.5 rounded border border-gold-800">
-                    Quy tắc Chu Hy • Thái Phát
-                  </span>
-                </h3>
-              </div>
-              <ChangingLinesGuideView
-                primaryHexagram={primaryHexagram}
-                changingLines={changingLines}
-                transformedHexagram={transformedHexagram}
-                onNavigateToManual={(hexNum) => onNavigateToManual?.(hexNum ?? primaryHexagram.number)}
-                onSelectLine={(line) => setSelectedCanonicalLine(line)}
-              />
-            </div>
+        {/* LUẬN GIẢI CHUYÊN SÂU TOÀN QUẺ & 6 HÀO, ĐỒ THỊ NGŨ HÀNH, TƯỢNG TRUYỆN, KHỔNG MINH THẦN QUẺ (HIỆN CHO MỌI PHƯƠNG PHÁP BỐC BÀI & GIEO QUẺ) */}
+        {(() => {
+          const selectableCards: { label: string; card: Hexagram; idx: number }[] =
+            drawnCards && drawnCards.length > 1
+              ? drawnCards.map((c, idx) => ({
+                  idx,
+                  card: c,
+                  label: `Lá ${idx + 1}: #${c.number} ${c.name}`,
+                }))
+              : !drawnCards && transformedHexagram
+              ? [
+                  { idx: 0, card: primaryHexagram, label: `Lá 1 (Quẻ Chủ): #${primaryHexagram.number} ${primaryHexagram.name}` },
+                  { idx: 1, card: transformedHexagram, label: `Lá 2 (Quẻ Biến): #${transformedHexagram.number} ${transformedHexagram.name}` },
+                ]
+              : [];
 
-            {/* 2. PHẦN LUẬN GIẢI KINH DỊCH LIÊN QUAN */}
-            <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gold-800 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rotate-45 bg-gold-500" />
-                  <h3 className="font-display font-semibold text-ivory-100 text-base sm:text-lg tracking-wide flex items-center gap-2 flex-wrap">
-                    <span>2. PHẦN LUẬN GIẢI KINH DỊCH LIÊN QUAN</span>
-                    <span className="text-[11px] font-mono text-gold-500 bg-lacquer-700 px-2 py-0.5 rounded border border-gold-800">
-                      Quẻ #{primaryHexagram.number} {primaryHexagram.name}
-                      {transformedHexagram ? ` ➔ Quẻ Biến #${transformedHexagram.number} ${transformedHexagram.name}` : ""}
-                    </span>
-                  </h3>
+          const activeCardIndex =
+            selectedCardIdx !== null && selectableCards.some((s) => s.idx === selectedCardIdx)
+              ? selectedCardIdx
+              : 0;
+          const activeReadingHexagram: Hexagram =
+            selectableCards.find((s) => s.idx === activeCardIndex)?.card || primaryHexagram;
+
+          return (
+            <div id="thuyet-minh-section" className="space-y-6 pt-5 border-t border-gold-800">
+              {/* 1. HƯỚNG DẪN HÀO ĐỘNG (CHU HY - THÁI PHÁT) — Hiện khi có hào động hoặc Cỏ Thi / Đồng Xu */}
+              {(isYarrowOrCoins || changingLines.length > 0) && (
+                <div className="space-y-2.5">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rotate-45 bg-gold-500" />
+                    <h3 className="font-display font-semibold text-ivory-100 text-base sm:text-lg tracking-wide flex items-center gap-2">
+                      <span>1. HƯỚNG DẪN HÀO ĐỘNG</span>
+                      <span className="text-[11px] font-mono text-amber-400 bg-lacquer-700 px-2 py-0.5 rounded border border-gold-800">
+                        Quy tắc Chu Hy • Thái Phát
+                      </span>
+                    </h3>
+                  </div>
+                  <ChangingLinesGuideView
+                    primaryHexagram={primaryHexagram}
+                    changingLines={changingLines}
+                    transformedHexagram={transformedHexagram}
+                    onNavigateToManual={(hexNum) => onNavigateToManual?.(hexNum ?? primaryHexagram.number)}
+                    onSelectLine={(line) => setSelectedCanonicalLine(line)}
+                  />
                 </div>
+              )}
 
-                {/* Tabs Switcher */}
-                <div className="flex items-center text-xs font-serif flex-wrap gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => setDetailActiveTab("canonical")}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-all cursor-pointer ${
-                      detailActiveTab === "canonical"
-                        ? "bg-gold-500/15 text-gold-200 border border-gold-500"
-                        : "text-ivory-500 hover:text-gold-200 border border-transparent"
-                    }`}
-                  >
-                    <BookOpen className="w-3.5 h-3.5" />
-                    <span>Toàn Quẻ & 6 Hào</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setDetailActiveTab("elements")}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-all cursor-pointer ${
-                      detailActiveTab === "elements"
-                        ? "bg-gold-500/15 text-gold-200 border border-gold-500"
-                        : "text-gold-300 bg-lacquer-700 border border-gold-800 hover:text-gold-200"
-                    }`}
-                    title="Biểu đồ phân bố ngũ hành của các hào bằng recharts"
-                  >
-                    <BarChart3 className="w-3.5 h-3.5 text-amber-500" />
-                    <span>Đồ Thị Ngũ Hành</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setDetailActiveTab("xiangzhuan")}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-all cursor-pointer ${
-                      detailActiveTab === "xiangzhuan"
-                        ? "bg-gold-500/15 text-gold-200 border border-gold-500"
-                        : "text-ivory-500 hover:text-gold-200 border border-transparent"
-                    }`}
-                  >
-                    <Compass className="w-3.5 h-3.5" />
-                    <span>Tượng Truyện</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setDetailActiveTab("khongminh")}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-all cursor-pointer ${
-                      detailActiveTab === "khongminh"
-                        ? "bg-gold-500/15 text-gold-200 border border-gold-500"
-                        : "text-ivory-500 hover:text-gold-200 border border-transparent"
-                    }`}
-                    title="Khổng Minh Thần Quẻ (384 quẻ ứng 384 hào)"
-                  >
-                    <Scroll className="w-3.5 h-3.5" />
-                    <span>Khổng Minh Thần Quẻ</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* TAB 1: LUẬN GIẢI QUẺ & 6 HÀO KINH ĐIỂN */}
-              {detailActiveTab === "canonical" && (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-end">
-                    <button
-                      type="button"
-                      onClick={() => onNavigateToManual?.(primaryHexagram.number)}
-                      className="flex items-center gap-1.5 px-3 py-1 rounded-sm text-xs font-serif font-bold bg-lacquer-700 hover:bg-gold-500 text-gold-300 hover:text-lacquer-900 border border-gold-800 transition-all cursor-pointer shadow active:scale-95"
-                      title="Mở toàn văn Thuyết Minh (gồm Đại Tượng Truyện & Tiểu Tượng Truyện)"
-                    >
-                      <Eye className="w-3.5 h-3.5" />
-                      <span>Xem Toàn Văn Thuyết Minh 64 Quẻ</span>
-                    </button>
+              {/* 2. PHẦN LUẬN GIẢI KINH DỊCH LIÊN QUAN */}
+              <div className="space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gold-800 pb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rotate-45 bg-gold-500" />
+                    <h3 className="font-display font-semibold text-ivory-100 text-base sm:text-lg tracking-wide flex items-center gap-2 flex-wrap">
+                      <span>PHẦN LUẬN GIẢI KINH DỊCH CHUYÊN SÂU (TOÀN QUẺ & 6 HÀO)</span>
+                      <span className="text-[11px] font-mono text-gold-500 bg-lacquer-700 px-2 py-0.5 rounded border border-gold-800">
+                        Đang soi: Quẻ #{activeReadingHexagram.number} {activeReadingHexagram.name} ({activeReadingHexagram.vietnameseName})
+                      </span>
+                    </h3>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-                    {/* Quẻ Chủ */}
-                    <div className="bg-lacquer-800 border border-gold-800 rounded-sm p-3.5 space-y-2">
-                      <div className="flex items-center justify-between border-b border-gold-800 pb-1.5">
-                        <span className="text-xs font-serif font-bold text-gold-500">
-                          QUẺ CHỦ #{primaryHexagram.number}: {primaryHexagram.name} ({primaryHexagram.vietnameseName})
-                        </span>
-                        <span className="text-[10px] font-mono text-ivory-500">
-                          {primaryHexagram.upperTrigram} / {primaryHexagram.lowerTrigram} • {primaryHexagram.element}
-                        </span>
-                      </div>
-                      {primaryHexagram.overview && (
-                        <p className="text-xs text-ivory-300 leading-relaxed italic">
-                          "{primaryHexagram.overview}"
-                        </p>
-                      )}
-                      <div className="text-xs text-ivory-300 space-y-1">
-                        <div>
-                          <strong className="text-gold-500">Thoán từ:</strong> {primaryHexagram.judgment}
-                        </div>
-                        <div>
-                          <strong className="text-gold-500">Đại tượng:</strong> {primaryHexagram.image}
-                        </div>
-                      </div>
-                      {primaryHexagram.advice && (
-                        <div className="text-xs text-gold-300 bg-lacquer-700 p-2.5 rounded-sm border border-gold-800 leading-relaxed">
-                          <strong className="text-gold-500">Lời khuyên:</strong> {primaryHexagram.advice}
-                        </div>
-                      )}
+                  {/* Tabs Switcher */}
+                  <div className="flex items-center text-xs font-serif flex-wrap gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setDetailActiveTab("canonical")}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-all cursor-pointer ${
+                        detailActiveTab === "canonical"
+                          ? "bg-gold-500/15 text-gold-200 border border-gold-500"
+                          : "text-ivory-500 hover:text-gold-200 border border-transparent"
+                      }`}
+                    >
+                      <BookOpen className="w-3.5 h-3.5" />
+                      <span>Toàn Quẻ & 6 Hào</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setDetailActiveTab("elements")}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-all cursor-pointer ${
+                        detailActiveTab === "elements"
+                          ? "bg-gold-500/15 text-gold-200 border border-gold-500"
+                          : "text-gold-300 bg-lacquer-700 border border-gold-800 hover:text-gold-200"
+                      }`}
+                      title="Biểu đồ phân bố ngũ hành của các hào bằng recharts"
+                    >
+                      <BarChart3 className="w-3.5 h-3.5 text-amber-500" />
+                      <span>Đồ Thị Ngũ Hành</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setDetailActiveTab("xiangzhuan")}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-all cursor-pointer ${
+                        detailActiveTab === "xiangzhuan"
+                          ? "bg-gold-500/15 text-gold-200 border border-gold-500"
+                          : "text-ivory-500 hover:text-gold-200 border border-transparent"
+                      }`}
+                    >
+                      <Compass className="w-3.5 h-3.5" />
+                      <span>Tượng Truyện</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setDetailActiveTab("khongminh")}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-all cursor-pointer ${
+                        detailActiveTab === "khongminh"
+                          ? "bg-gold-500/15 text-gold-200 border border-gold-500"
+                          : "text-ivory-500 hover:text-gold-200 border border-transparent"
+                      }`}
+                      title="Khổng Minh Thần Quẻ (384 quẻ ứng 384 hào)"
+                    >
+                      <Scroll className="w-3.5 h-3.5" />
+                      <span>Khổng Minh Thần Quẻ</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Card Selector Bar when multiple cards were drawn */}
+                {selectableCards.length > 1 && (
+                  <div className="p-3 rounded-xl bg-[#FAF6EE] border border-[#C4963E]/60 flex flex-wrap items-center gap-2 shadow-sm">
+                    <span className="text-[11px] font-serif font-bold text-[#7A1C18] uppercase tracking-wider mr-1">
+                      ✦ Chọn lá bài để xem Toàn Quẻ & 6 Hào:
+                    </span>
+                    {selectableCards.map((item) => {
+                      const isActive = activeCardIndex === item.idx;
+                      return (
+                        <button
+                          key={item.idx}
+                          type="button"
+                          onClick={() => setSelectedCardIdx(item.idx)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-serif font-bold transition-all cursor-pointer border ${
+                            isActive
+                              ? "bg-[#9A1F1A] text-[#FFFDF8] border-[#C4963E] shadow-sm"
+                              : "bg-[#FFFDF8] text-[#3A2E21] border-[#C4963E]/45 hover:border-[#9A1F1A]/60"
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      );
+                    })}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setInspectingTwoSidedCard({
+                          card: activeReadingHexagram,
+                          positionTitle: `Lá ${activeCardIndex + 1} • Quẻ #${activeReadingHexagram.number}`,
+                          isReversed: activeReadingHexagram.isReversed ?? false,
+                        })
+                      }
+                      className="ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#16120D] text-[#F3E5AB] border border-[#C4963E] text-xs font-serif font-bold hover:brightness-110 transition-all cursor-pointer"
+                    >
+                      <ZoomIn className="w-3.5 h-3.5 text-[#E2C275]" />
+                      <span>Soi 2 Mặt Lá Đang Chọn</span>
+                    </button>
+                  </div>
+                )}
+
+                {/* TAB 1: LUẬN GIẢI QUẺ & 6 HÀO KINH ĐIỂN */}
+                {detailActiveTab === "canonical" && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setInspectingTwoSidedCard({
+                            card: activeReadingHexagram,
+                            positionTitle: `Quẻ #${activeReadingHexagram.number} ${activeReadingHexagram.name}`,
+                            isReversed: activeReadingHexagram.isReversed ?? false,
+                          })
+                        }
+                        className="flex items-center gap-1.5 px-3 py-1 rounded-sm text-xs font-serif font-bold bg-[#9A1F1A] hover:bg-[#7A1C18] text-[#FFFDF8] border border-[#C4963E] transition-all cursor-pointer shadow active:scale-95"
+                      >
+                        <ZoomIn className="w-3.5 h-3.5 text-[#E2C275]" />
+                        <span>Soi 2 Mặt Lá Bài (Quẻ Tượng & Thoán Từ)</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => onNavigateToManual?.(activeReadingHexagram.number)}
+                        className="flex items-center gap-1.5 px-3 py-1 rounded-sm text-xs font-serif font-bold bg-lacquer-700 hover:bg-gold-500 text-gold-300 hover:text-lacquer-900 border border-gold-800 transition-all cursor-pointer shadow active:scale-95"
+                        title="Mở toàn văn Thuyết Minh (gồm Đại Tượng Truyện & Tiểu Tượng Truyện)"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>Xem Toàn Văn Thuyết Minh 64 Quẻ</span>
+                      </button>
                     </div>
 
-                    {/* Quẻ Biến (nếu có) hoặc Đạo xử thế */}
-                    {transformedHexagram ? (
-                      <div className="bg-lacquer-800 border border-[#4D2E1F] rounded-sm p-3.5 space-y-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                      {/* Quẻ Đang Xem */}
+                      <div className="bg-lacquer-800 border border-gold-800 rounded-sm p-3.5 space-y-2">
                         <div className="flex items-center justify-between border-b border-gold-800 pb-1.5">
-                          <span className="text-xs font-serif font-bold text-[#E28355]">
-                            QUẺ BIẾN #{transformedHexagram.number}: {transformedHexagram.name} ({transformedHexagram.vietnameseName})
+                          <span className="text-xs font-serif font-bold text-gold-500">
+                            QUẺ #{activeReadingHexagram.number}: {activeReadingHexagram.name} ({activeReadingHexagram.vietnameseName})
                           </span>
                           <span className="text-[10px] font-mono text-ivory-500">
-                            {transformedHexagram.upperTrigram} / {transformedHexagram.lowerTrigram} • {transformedHexagram.element}
+                            {activeReadingHexagram.upperTrigram} / {activeReadingHexagram.lowerTrigram} • {activeReadingHexagram.element}
                           </span>
                         </div>
-                        {transformedHexagram.overview && (
+                        {activeReadingHexagram.overview && (
                           <p className="text-xs text-ivory-300 leading-relaxed italic">
-                            "{transformedHexagram.overview}"
+                            "{activeReadingHexagram.overview}"
                           </p>
                         )}
                         <div className="text-xs text-ivory-300 space-y-1">
                           <div>
-                            <strong className="text-[#E28355]">Thoán từ:</strong> {transformedHexagram.judgment}
+                            <strong className="text-gold-500">Thoán từ:</strong> {activeReadingHexagram.judgment}
                           </div>
                           <div>
-                            <strong className="text-[#E28355]">Đại tượng:</strong> {transformedHexagram.image}
+                            <strong className="text-gold-500">Đại tượng:</strong> {activeReadingHexagram.image}
                           </div>
                         </div>
-                        {transformedHexagram.advice && (
-                          <div className="text-xs text-gold-300 bg-[#2A1C15] p-2.5 rounded-sm border border-[#4E2F20] leading-relaxed">
-                            <strong className="text-[#E28355]">Lời khuyên:</strong> {transformedHexagram.advice}
+                        {activeReadingHexagram.advice && (
+                          <div className="text-xs text-gold-300 bg-lacquer-700 p-2.5 rounded-sm border border-gold-800 leading-relaxed">
+                            <strong className="text-gold-500">Lời khuyên:</strong> {activeReadingHexagram.advice}
                           </div>
                         )}
                       </div>
-                    ) : (
-                      <div className="bg-lacquer-800 border border-gold-800 rounded-sm p-3.5 space-y-2 flex flex-col justify-between">
-                        <div>
-                          <div className="text-xs font-serif font-bold text-gold-500 border-b border-gold-800 pb-1.5 mb-2">
-                            ĐẠO XỬ THẾ CỦA BẬC QUÂN TỬ
+
+                      {/* Quẻ Biến (nếu có) hoặc Đạo xử thế */}
+                      {transformedHexagram && activeReadingHexagram.number === primaryHexagram.number ? (
+                        <div className="bg-lacquer-800 border border-[#4D2E1F] rounded-sm p-3.5 space-y-2">
+                          <div className="flex items-center justify-between border-b border-gold-800 pb-1.5">
+                            <span className="text-xs font-serif font-bold text-[#E28355]">
+                              QUẺ BIẾN #{transformedHexagram.number}: {transformedHexagram.name} ({transformedHexagram.vietnameseName})
+                            </span>
+                            <span className="text-[10px] font-mono text-ivory-500">
+                              {transformedHexagram.upperTrigram} / {transformedHexagram.lowerTrigram} • {transformedHexagram.element}
+                            </span>
                           </div>
-                          <p className="text-xs text-ivory-300 leading-relaxed">
-                            Kinh Dịch lấy đức cương kiện, trung chính làm gốc. Khi gặp quẻ này, nên thuận theo thời vận, giữ tâm bình thản, tiến thoái có chừng mực để chuyển họa thành phúc, hanh thông đại cát.
+                          {transformedHexagram.overview && (
+                            <p className="text-xs text-ivory-300 leading-relaxed italic">
+                              "{transformedHexagram.overview}"
+                            </p>
+                          )}
+                          <div className="text-xs text-ivory-300 space-y-1">
+                            <div>
+                              <strong className="text-[#E28355]">Thoán từ:</strong> {transformedHexagram.judgment}
+                            </div>
+                            <div>
+                              <strong className="text-[#E28355]">Đại tượng:</strong> {transformedHexagram.image}
+                            </div>
+                          </div>
+                          {transformedHexagram.advice && (
+                            <div className="text-xs text-gold-300 bg-[#2A1C15] p-2.5 rounded-sm border border-[#4E2F20] leading-relaxed">
+                              <strong className="text-[#E28355]">Lời khuyên:</strong> {transformedHexagram.advice}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="bg-lacquer-800 border border-gold-800 rounded-sm p-3.5 space-y-2 flex flex-col justify-between">
+                          <div>
+                            <div className="text-xs font-serif font-bold text-gold-500 border-b border-gold-800 pb-1.5 mb-2">
+                              ĐẠO XỬ THẾ CỦA BẬC QUÂN TỬ
+                            </div>
+                            <p className="text-xs text-ivory-300 leading-relaxed">
+                              Kinh Dịch lấy đức cương kiện, trung chính làm gốc. Khi gặp quẻ này, nên thuận theo thời vận, giữ tâm bình thản, tiến thoái có chừng mực để chuyển họa thành phúc, hanh thông đại cát.
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => onNavigateToManual?.(activeReadingHexagram.number)}
+                            className="w-full flex items-center justify-center gap-1.5 py-2 rounded-sm bg-lacquer-700 hover:bg-gold-800 text-gold-500 border border-gold-800 text-xs font-serif transition-colors cursor-pointer"
+                          >
+                            <BookOpen className="w-3.5 h-3.5" />
+                            <span>Đọc Luận Giải Chi Tiết Cả 6 Hào Trong Thuyết Minh</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Quy tắc đặc biệt Dụng Cửu / Dụng Lục */}
+                    {activeReadingHexagram.number === 1 && changingLines.length === 6 && (
+                      <div className="mt-4 p-4 sm:p-5 bg-lacquer-950/60 border border-gold-600 border-l-2 border-l-gold-500 rounded-sm space-y-3 relative overflow-hidden">
+                        <div className="flex items-center justify-between flex-wrap gap-2 border-b border-gold-800 pb-2.5">
+                          <div className="flex items-center gap-2 text-gold-300">
+                            <Sparkles className="w-5 h-5 text-gold-500 animate-pulse" />
+                            <span className="font-serif font-black text-sm sm:text-base uppercase tracking-wider">
+                              QUY TẮC ĐẶC BIỆT KINH DỊCH: QUẺ THUẦN CÀN ĐỘNG CẢ 6 HÀO ➔ DỤNG CỬU (用九)
+                            </span>
+                          </div>
+                          <span className="text-[11px] font-mono bg-lacquer-900 text-gold-500 px-2.5 py-0.5 rounded border border-gold-700 font-bold">
+                            CÀN BIẾN THUẦN KHÔN
+                          </span>
+                        </div>
+                        <div className="text-xs sm:text-sm font-serif text-ivory-100 leading-relaxed space-y-2.5">
+                          <p>
+                            Kinh Dịch quy định khi quẻ <strong className="text-gold-300">Bát Thuần Càn</strong> động cả 6 hào dương, áp dụng hào đặc biệt:
+                          </p>
+                          <div className="bg-lacquer-900 border-l-4 border-gold-500 p-3.5 rounded-r-xl space-y-1">
+                            <div className="font-serif font-black text-base sm:text-lg text-gold-300">
+                              “Dụng Cửu: Kiến quần long vô thủ, cát (用九：見群龍無首，吉)”
+                            </div>
+                            <div className="text-xs text-ivory-300 italic">
+                              Dịch nghĩa: Dùng chín - Thấy bầy rồng không có đầu, tốt lành (Quần long vô thủ cát).
+                            </div>
+                          </div>
+                          <p className="text-xs text-ivory-300">
+                            <strong>Đạo lý cốt tủy:</strong> Bầy rồng cùng bay lượn hòa hợp mà không ai tranh giành ngôi vị thủ lĩnh; biết cương biết nhu, tùy thời biến hóa thì việc gì cũng hanh thông, đại cát đại lợi.
                           </p>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => onNavigateToManual?.(primaryHexagram.number)}
-                          className="w-full flex items-center justify-center gap-1.5 py-2 rounded-sm bg-lacquer-700 hover:bg-gold-800 text-gold-500 border border-gold-800 text-xs font-serif transition-colors cursor-pointer"
-                        >
-                          <BookOpen className="w-3.5 h-3.5" />
-                          <span>Đọc Luận Giải Chi Tiết Cả 6 Hào Trong Thuyết Minh</span>
-                        </button>
                       </div>
                     )}
-                  </div>
 
-                  {/* Quy tắc đặc biệt Dụng Cửu / Dụng Lục */}
-                  {primaryHexagram.number === 1 && changingLines.length === 6 && (
-                    <div className="mt-4 p-4 sm:p-5 bg-lacquer-950/60 border border-gold-600 border-l-2 border-l-gold-500 rounded-sm space-y-3 relative overflow-hidden">
-                      <div className="flex items-center justify-between flex-wrap gap-2 border-b border-gold-800 pb-2.5">
-                        <div className="flex items-center gap-2 text-gold-300">
-                          <Sparkles className="w-5 h-5 text-gold-500 animate-pulse" />
-                          <span className="font-serif font-black text-sm sm:text-base uppercase tracking-wider">
-                            QUY TẮC ĐẶC BIỆT KINH DỊCH: QUẺ THUẦN CÀN ĐỘNG CẢ 6 HÀO ➔ DỤNG CỬU (用九)
+                    {activeReadingHexagram.number === 2 && changingLines.length === 6 && (
+                      <div className="mt-4 p-4 sm:p-5 bg-lacquer-950/60 border border-gold-600 border-l-2 border-l-gold-500 rounded-sm space-y-3 relative overflow-hidden">
+                        <div className="flex items-center justify-between flex-wrap gap-2 border-b border-gold-800 pb-2.5">
+                          <div className="flex items-center gap-2 text-gold-300">
+                            <Sparkles className="w-5 h-5 text-gold-500 animate-pulse" />
+                            <span className="font-serif font-black text-sm sm:text-base uppercase tracking-wider">
+                              QUY TẮC ĐẶC BIỆT KINH DỊCH: QUẺ THUẦN KHÔN ĐỘNG CẢ 6 HÀO ➔ DỤNG LỤC (用六)
+                            </span>
+                          </div>
+                          <span className="text-[11px] font-mono bg-lacquer-900 text-gold-500 px-2.5 py-0.5 rounded border border-gold-700 font-bold">
+                            KHÔN BIẾN THUẦN CÀN
                           </span>
                         </div>
-                        <span className="text-[11px] font-mono bg-lacquer-900 text-gold-500 px-2.5 py-0.5 rounded border border-gold-700 font-bold">
-                          CÀN BIẾN THUẦN KHÔN
-                        </span>
-                      </div>
-                      <div className="text-xs sm:text-sm font-serif text-ivory-100 leading-relaxed space-y-2.5">
-                        <p>
-                          Kinh Dịch quy định khi quẻ <strong className="text-gold-300">Bát Thuần Càn</strong> động cả 6 hào dương, áp dụng hào đặc biệt:
-                        </p>
-                        <div className="bg-lacquer-900 border-l-4 border-gold-500 p-3.5 rounded-r-xl space-y-1">
-                          <div className="font-serif font-black text-base sm:text-lg text-gold-300">
-                            “Dụng Cửu: Kiến quần long vô thủ, cát (用九：見群龍無首，吉)”
+                        <div className="text-xs sm:text-sm font-serif text-ivory-100 leading-relaxed space-y-2.5">
+                          <p>
+                            Kinh Dịch quy định khi quẻ <strong className="text-gold-300">Bát Thuần Khôn</strong> động cả 6 hào âm, áp dụng hào đặc biệt:
+                          </p>
+                          <div className="bg-lacquer-900 border-l-4 border-gold-500 p-3.5 rounded-r-xl space-y-1">
+                            <div className="font-serif font-black text-base sm:text-lg text-gold-300">
+                              “Dụng Lục: Lợi vĩnh trinh (用六：利永貞)”
+                            </div>
+                            <div className="text-xs text-ivory-300 italic">
+                              Dịch nghĩa: Dùng sáu - Thuận lợi về việc giữ lòng chính bền vững lâu dài.
+                            </div>
                           </div>
-                          <div className="text-xs text-ivory-300 italic">
-                            Dịch nghĩa: Dùng chín - Thấy bầy rồng không có đầu, tốt lành (Quần long vô thủ cát).
-                          </div>
+                          <p className="text-xs text-ivory-300">
+                            <strong>Đạo lý cốt tủy:</strong> Đạo Khôn nhu thuận chuyển biến thành sức mạnh cương kiện của Càn, giữ vững sự thuần chính kiên định muôn đời thì phúc lộc trường cửu viên mãn.
+                          </p>
                         </div>
-                        <p className="text-xs text-ivory-300">
-                          <strong>Đạo lý cốt tủy:</strong> Bầy rồng cùng bay lượn hòa hợp mà không ai tranh giành ngôi vị thủ lĩnh; biết cương biết nhu, tùy thời biến hóa thì việc gì cũng hanh thông, đại cát đại lợi.
-                        </p>
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {primaryHexagram.number === 2 && changingLines.length === 6 && (
-                    <div className="mt-4 p-4 sm:p-5 bg-lacquer-950/60 border border-gold-600 border-l-2 border-l-gold-500 rounded-sm space-y-3 relative overflow-hidden">
-                      <div className="flex items-center justify-between flex-wrap gap-2 border-b border-gold-800 pb-2.5">
-                        <div className="flex items-center gap-2 text-gold-300">
-                          <Sparkles className="w-5 h-5 text-gold-500 animate-pulse" />
-                          <span className="font-serif font-black text-sm sm:text-base uppercase tracking-wider">
-                            QUY TẮC ĐẶC BIỆT KINH DỊCH: QUẺ THUẦN KHÔN ĐỘNG CẢ 6 HÀO ➔ DỤNG LỤC (用六)
-                          </span>
-                        </div>
-                        <span className="text-[11px] font-mono bg-lacquer-900 text-gold-500 px-2.5 py-0.5 rounded border border-gold-700 font-bold">
-                          KHÔN BIẾN THUẦN CÀN
-                        </span>
-                      </div>
-                      <div className="text-xs sm:text-sm font-serif text-ivory-100 leading-relaxed space-y-2.5">
-                        <p>
-                          Kinh Dịch quy định khi quẻ <strong className="text-gold-300">Bát Thuần Khôn</strong> động cả 6 hào âm, áp dụng hào đặc biệt:
-                        </p>
-                        <div className="bg-lacquer-900 border-l-4 border-gold-500 p-3.5 rounded-r-xl space-y-1">
-                          <div className="font-serif font-black text-base sm:text-lg text-gold-300">
-                            “Dụng Lục: Lợi vĩnh trinh (用六：利永貞)”
-                          </div>
-                          <div className="text-xs text-ivory-300 italic">
-                            Dịch nghĩa: Dùng sáu - Thuận lợi về việc giữ lòng chính bền vững lâu dài.
-                          </div>
-                        </div>
-                        <p className="text-xs text-ivory-300">
-                          <strong>Đạo lý cốt tủy:</strong> Đạo Khôn nhu thuận chuyển biến thành sức mạnh cương kiện của Càn, giữ vững sự thuần chính kiên định muôn đời thì phúc lộc trường cửu viên mãn.
-                        </p>
-                      </div>
+                    {/* KHO TÀNG KINH DỊCH NGUYÊN BẢN & HÀO TỪ CỐT LÕI */}
+                    <div className="mt-4">
+                      <CanonicalHexagramCard
+                        hexNumber={activeReadingHexagram.number}
+                        initialLine={
+                          (activeReadingHexagram.number === 1 || activeReadingHexagram.number === 2) && changingLines.length === 6
+                            ? 7
+                            : changingLines.length > 0
+                            ? changingLines[0]
+                            : 1
+                        }
+                        selectedLine={selectedCanonicalLine}
+                        onSelectLine={setSelectedCanonicalLine}
+                        onNavigateHex={(hexNum) => onNavigateToManual?.(hexNum)}
+                      />
                     </div>
-                  )}
-
-                  {/* KHO TÀNG KINH DỊCH NGUYÊN BẢN & HÀO TỪ CỐT LÕI */}
-                  <div className="mt-4">
-                    <CanonicalHexagramCard
-                      hexNumber={primaryHexagram.number}
-                      initialLine={
-                        (primaryHexagram.number === 1 || primaryHexagram.number === 2) && changingLines.length === 6
-                          ? 7
-                          : changingLines.length > 0
-                          ? changingLines[0]
-                          : 1
-                      }
-                      selectedLine={selectedCanonicalLine}
-                      onSelectLine={setSelectedCanonicalLine}
-                      onNavigateHex={(hexNum) => onNavigateToManual?.(hexNum)}
-                    />
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* TAB 2: ĐỒ THỊ PHÂN BỐ NGŨ HÀNH (RECHARTS) */}
-              {detailActiveTab === "elements" && (
-                <div className="space-y-4 pt-1">
-                  <HexagramElementsChart
-                    primaryHexagram={primaryHexagram}
-                    changingLines={changingLines}
-                    transformedHexagram={transformedHexagram}
-                  />
-                </div>
-              )}
-
-              {/* TAB 3: THẬP DỰC • TƯỢNG TRUYỆN (KHỔNG TỬ) */}
-              {detailActiveTab === "xiangzhuan" && (
-                <div className="space-y-4 pt-1">
-                  <XiangzhuanView hexNumber={primaryHexagram.number} />
-                </div>
-              )}
-
-              {/* TAB 4: KHỔNG MINH THẦN QUẺ (384 HÀO) */}
-              {detailActiveTab === "khongminh" && (
-                <div className="space-y-6 pt-1">
-                  <KhongMinhKinhDichView
-                    primaryHex={primaryHexagram}
-                    activeLine={changingLines && changingLines.length > 0 ? changingLines[0] : 2}
-                    sourceName={changingLines && changingLines.length > 0 ? "Chiêm Thời" : "Hoạt Thời"}
-                    onShowToast={onShowToast}
-                  />
-
-                  <div className="border-t border-[#3A2817] pt-4">
-                    <KhongMinhSingleHexView
-                      kingWenNumber={primaryHexagram.number}
+                {/* TAB 2: ĐỒ THỊ PHÂN BỐ NGŨ HÀNH (RECHARTS) */}
+                {detailActiveTab === "elements" && (
+                  <div className="space-y-4 pt-1">
+                    <HexagramElementsChart
+                      primaryHexagram={activeReadingHexagram}
                       changingLines={changingLines}
-                      defaultExpanded={false}
+                      transformedHexagram={transformedHexagram}
                     />
                   </div>
-                </div>
-              )}
+                )}
+
+                {/* TAB 3: THẬP DỰC • TƯỢNG TRUYỆN (KHỔNG TỬ) */}
+                {detailActiveTab === "xiangzhuan" && (
+                  <div className="space-y-4 pt-1">
+                    <XiangzhuanView hexNumber={activeReadingHexagram.number} />
+                  </div>
+                )}
+
+                {/* TAB 4: KHỔNG MINH THẦN QUẺ (384 HÀO) */}
+                {detailActiveTab === "khongminh" && (
+                  <div className="space-y-6 pt-1">
+                    <KhongMinhKinhDichView
+                      primaryHex={activeReadingHexagram}
+                      activeLine={changingLines && changingLines.length > 0 ? changingLines[0] : 2}
+                      sourceName={changingLines && changingLines.length > 0 ? "Chiêm Thời" : "Hoạt Thời"}
+                      onShowToast={onShowToast}
+                    />
+
+                    <div className="border-t border-[#3A2817] pt-4">
+                      <KhongMinhSingleHexView
+                        kingWenNumber={activeReadingHexagram.number}
+                        changingLines={changingLines}
+                        defaultExpanded={false}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
       </div>
 
       {/* Google Workspace Direct Actions */}
@@ -2778,6 +2926,17 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Modal Soi Lá Bài 2 Mặt (Quẻ Tượng & Thoán Từ) */}
+      <CardTwoSidedModal
+        isOpen={Boolean(inspectingTwoSidedCard)}
+        onClose={() => setInspectingTwoSidedCard(null)}
+        hexagram={inspectingTwoSidedCard?.card || null}
+        positionTitle={inspectingTwoSidedCard?.positionTitle}
+        frontImageUrl={inspectingTwoSidedCard ? cardImages[inspectingTwoSidedCard.card.number] : undefined}
+        backImageUrl={cardBackImage}
+        isReversed={inspectingTwoSidedCard?.isReversed}
+      />
 
       <FullScreenCardHoverModal
         data={hoveredCardData}

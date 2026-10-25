@@ -210,7 +210,7 @@ export const CardVisual: React.FC<CardVisualProps> = ({
           transformStyle: "preserve-3d",
           willChange: "transform",
         }}
-        className={`relative select-none rounded-xl sm:rounded-2xl overflow-hidden border-2 border-[#524433] shadow-xl transition-colors cursor-pointer ${sizeClasses[size]} ${className} bg-gradient-to-br from-[#251D16] via-[#1A140F] to-[#100C09]`}
+        className={`imperial-dark-preserve relative select-none rounded-xl sm:rounded-2xl overflow-hidden border-2 border-[#524433] shadow-xl transition-colors cursor-pointer ${sizeClasses[size]} ${className} bg-gradient-to-br from-[#251D16] via-[#1A140F] to-[#100C09]`}
       >
         {slotNumber !== undefined && (
           <div

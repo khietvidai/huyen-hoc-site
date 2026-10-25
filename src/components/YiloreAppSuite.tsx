@@ -743,10 +743,10 @@ export const YiloreAppSuite: React.FC<YiloreAppSuiteProps> = ({
   });
 
   // ============================================================================
-  // RENDER 1:1 YILORE APP SHELL (Matches AppShellLayout in 0ib.3e8tnanrm.js)
+  // RENDER 1:1 YILORE APP SHELL (Synchronized with Cửu Nhị Xuan Parchment Theme)
   // ============================================================================
   return (
-    <div className="yilore-1to1-root font-serif flex h-svh min-h-0 flex-col bg-stone-50 text-stone-900">
+    <div className="yilore-1to1-root font-serif flex h-svh min-h-0 flex-col bg-[#F6F3EB] text-[#1C1813]">
       <div className="flex min-h-0 flex-1 overflow-hidden">
         {/* 1:1 Desktop Sidebar (xl:flex w-52) */}
         <YiloreDesktopSidebar
@@ -782,7 +782,16 @@ export const YiloreAppSuite: React.FC<YiloreAppSuiteProps> = ({
 
           {/* Main Area */}
           {activeRoute === "chat" ? (
-            <main className="flex min-h-0 flex-1 flex-col overflow-hidden p-0">
+            <main className="relative flex min-h-0 flex-1 flex-col overflow-hidden p-0 bg-[radial-gradient(ellipse_at_top,#FDFBF7_0%,#F6F3EB_55%,#EDE5D5_100%)]">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 opacity-[0.42]"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(to right, rgba(180,145,70,0.13) 1px, transparent 1px), linear-gradient(to bottom, rgba(180,145,70,0.13) 1px, transparent 1px)",
+                  backgroundSize: "48px 48px",
+                }}
+              />
               <YiloreChatView
                 conversations={conversations}
                 activeConversation={activeConversation}
@@ -809,7 +818,30 @@ export const YiloreAppSuite: React.FC<YiloreAppSuiteProps> = ({
               />
             </main>
           ) : (
-            <main className="relative min-h-0 flex-1 overflow-auto p-4 sm:p-6">
+            <main className="relative min-h-0 flex-1 overflow-auto p-4 sm:p-6 bg-[radial-gradient(ellipse_at_top,#FDFBF7_0%,#F6F3EB_55%,#EDE5D5_100%)]">
+              {/* Subtle 48x48px Antique Copper Grid matching LandingPage */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 opacity-[0.45]"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(to right, rgba(180,145,70,0.13) 1px, transparent 1px), linear-gradient(to bottom, rgba(180,145,70,0.13) 1px, transparent 1px)",
+                  backgroundSize: "48px 48px",
+                }}
+              />
+              {/* Rotating Celestial Bagua Watermark matching LandingPage */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute right-[-120px] top-[60px] h-[480px] w-[480px] select-none opacity-[0.045]"
+              >
+                <svg viewBox="0 0 200 200" className="h-full w-full animate-[spin_180s_linear_infinite]">
+                  <circle cx="100" cy="100" r="95" fill="none" stroke="#8A6A2F" strokeWidth="1.2" strokeDasharray="3 3" />
+                  <circle cx="100" cy="100" r="78" fill="none" stroke="#8A6A2F" strokeWidth="0.9" />
+                  <circle cx="100" cy="100" r="56" fill="none" stroke="#8A6A2F" strokeWidth="0.8" strokeDasharray="6 4" />
+                  <polygon points="100,12 162,38 188,100 162,162 100,188 38,162 12,100 38,38" fill="none" stroke="#8A6A2F" strokeWidth="1" />
+                  <circle cx="100" cy="100" r="28" fill="none" stroke="#8A6A2F" strokeWidth="1.2" />
+                </svg>
+              </div>
               {/* Watermark Decorations with Cửu Nhị BrandMark */}
               <div
                 aria-hidden="true"

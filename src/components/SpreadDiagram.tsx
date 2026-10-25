@@ -18,6 +18,7 @@ import { Camera, Check, Loader2, Sparkles, ZoomIn, Compass, Grid3X3, Calendar, R
 import { captureElementToPng } from "../utils/captureHelper";
 import { ExportImageModal } from "./ExportImageModal";
 import { FullScreenCardHoverModal, HoverCardData } from "./FullScreenCardHoverModal";
+import { XuanBaguaStage, CardTwoSidedModal } from "./XuanBaguaStage";
 
 interface SpreadContextType {
   cardImages: Record<number, string>;
@@ -28,6 +29,12 @@ interface SpreadContextType {
   onVideoUpdated?: (num: number, url: string) => void;
   onHoverCard?: (data: HoverCardData) => void;
   onLeaveCard?: () => void;
+  onInspectTwoSided?: (data: {
+    card: Hexagram;
+    positionLabel?: string;
+    positionMeaning?: string;
+    isReversed?: boolean;
+  }) => void;
   allFlipped?: boolean;
   flipKey?: number;
   companionCards?: Record<string, Hexagram | Hexagram[]>;
@@ -503,6 +510,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
       onVideoUpdated,
       onHoverCard: handleCardHoverInternal,
       onLeaveCard: handleCardLeaveInternal,
+      onInspectTwoSided: (data) => setInspectingModalCard(data),
       allFlipped: internalAllFlipped,
       flipKey,
       companionCards,
@@ -735,13 +743,20 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
     </div>
   );
 
-  // Trạng thái mở rộng bảng tùy chỉnh chi tiết (mặc định mở sẵn như hình người dùng yêu cầu, người dùng đóng/mở thì lưu nhớ theo ý người dùng)
+  const [inspectingModalCard, setInspectingModalCard] = useState<{
+    card: Hexagram;
+    positionLabel?: string;
+    positionMeaning?: string;
+    isReversed?: boolean;
+  } | null>(null);
+
+  // Trạng thái mở rộng bảng tùy chỉnh chi tiết (mặc định thu gọn gọn gàng như Trang Chủ)
   const [showDetailedControls, setShowDetailedControls] = useState<boolean>(() => {
     try {
-      const saved = localStorage.getItem("iching_show_detailed_controls");
-      return saved !== null ? saved === "true" : true;
+      const saved = localStorage.getItem("iching_show_detailed_controls_v2");
+      return saved !== null ? saved === "true" : false;
     } catch {
-      return true;
+      return false;
     }
   });
 
@@ -749,7 +764,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
     setShowDetailedControls((prev) => {
       const next = !prev;
       try {
-        localStorage.setItem("iching_show_detailed_controls", String(next));
+        localStorage.setItem("iching_show_detailed_controls_v2", String(next));
       } catch {}
       return next;
     });
@@ -762,32 +777,39 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
     badgeText?: string
   ) => {
     return (
-      <div className="relative z-10 bg-[#15120E] border border-[#3D3121] rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 shadow-xl space-y-2.5 transition-all">
-        {/* Hàng 1: Tiêu đề + Thông tin bố cục cố định sẵn (Full-width, không bao giờ bị chèn ép) */}
+      <div
+        className="relative z-10 rounded-2xl border border-[#C4963E]/50 p-3.5 sm:p-4 mb-5 shadow-[0_12px_32px_rgba(62,48,26,0.12)] space-y-2.5 transition-all"
+        style={{
+          background: "linear-gradient(180deg, rgba(253, 251, 247, 0.96) 0%, rgba(243, 236, 224, 0.94) 100%)",
+        }}
+      >
+        {/* Hàng 1: Tiêu đề chuẩn Sân Khấu Định Mệnh Trang Chủ */}
         <div className="w-full">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#C9A55A] shadow-[0_0_8px_#C9A55A] shrink-0" />
-            <h3 className="text-sm sm:text-base md:text-lg font-serif font-bold text-[#F5EAD4] tracking-wide">
+            <span className="inline-flex items-center justify-center w-5 h-5 rounded-md bg-[#9E2A2B] text-amber-50 text-[10px] font-serif border border-[#D4AF37]/60 shadow-2xs shrink-0">
+              ☯
+            </span>
+            <h3 className="text-sm sm:text-base md:text-lg font-serif font-bold text-[#1C1813] tracking-wide">
               {title}
             </h3>
             {badgeText && (
-              <span className="text-[10px] font-mono text-[#C9A55A] bg-[#241D14] px-2 py-0.5 rounded border border-[#483723] shrink-0">
-                {badgeText}
+              <span className="text-[10px] font-serif font-bold text-[#F3E5AB] bg-[#16130F] px-2.5 py-0.5 rounded-full border border-[#C4963E]/70 shrink-0">
+                ✦ {badgeText}
               </span>
             )}
-            <span className="text-[10px] font-mono text-emerald-400/90 bg-[#122416] px-2 py-0.5 rounded border border-[#234D2B] shrink-0">
-              ✓ Cố định sẵn
+            <span className="text-[10px] font-serif font-semibold text-emerald-900 bg-emerald-50/90 px-2 py-0.5 rounded-full border border-emerald-500/45 shrink-0">
+              ✓ Cửu Nhị Huyền Đàn
             </span>
           </div>
           {subtitle && (
-            <p className="text-xs text-[#A89882] font-serif mt-1 leading-relaxed">
+            <p className="text-xs text-[#5C5346] font-serif mt-1 leading-relaxed">
               {subtitle}
             </p>
           )}
         </div>
 
-        {/* Hàng 2: Thanh công cụ thao tác nhanh (Chế độ xem, Lật bài, Chụp ảnh, Tùy chỉnh) */}
-        <div className="flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-[#2C2115] w-full">
+        {/* Hàng 2: Thanh công cụ Ngọc Giản tinh gọn 4 nút chính */}
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-[#C4963E]/25 w-full">
           {/* Nhóm điều khiển đặc thù trận pháp */}
           {extraControls ? (
             <div className="flex items-center flex-wrap gap-2">
@@ -795,8 +817,9 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
             </div>
           ) : <div />}
 
-          {/* Quick Primary Actions: View Mode, Flip, Capture, Toggle detailed toolbar */}
+          {/* Quick Primary Actions: Cỡ lá, Lật bài, Chụp ảnh, Tùy chỉnh */}
           <div className="flex items-center flex-wrap gap-2 sm:ml-auto">
+            {renderCardSizeControls()}
             {renderFlipAllButton()}
 
             {/* Chụp màn hình nhanh */}
@@ -804,7 +827,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
               type="button"
               onClick={handleCaptureScreenshot}
               disabled={isCapturing}
-              className="no-capture flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-serif font-bold bg-[#2A2117] hover:bg-[#382B1E] text-[#EAD8B1] hover:text-[#FFF] border border-[#4A3925] transition-all cursor-pointer shadow"
+              className="no-capture flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-serif font-bold bg-[#261E16] hover:bg-[#382B1E] text-[#F3E5AB] hover:text-[#FFF] border border-[#C4963E]/65 transition-all cursor-pointer shadow"
               title="Chụp ảnh toàn bộ lá bài trong trận pháp để lưu trữ hoặc chia sẻ"
             >
               {isCapturing ? (
@@ -820,7 +843,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
               ) : (
                 <>
                   <Camera className="w-3.5 h-3.5 text-[#C9A55A]" />
-                  <span>Chụp Toàn Bộ Lá Bài</span>
+                  <span>Chụp Bàn Bài</span>
                 </>
               )}
             </button>
@@ -837,32 +860,31 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
               </button>
             )}
 
-            {/* Nút Bật/Tắt mở rộng bảng tùy chỉnh chi tiết (Đã cố định sẵn) */}
+            {/* Nút Bật/Tắt mở rộng bảng tùy chỉnh chi tiết */}
             <button
               type="button"
               onClick={toggleDetailedControls}
-              className={`no-capture flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-serif transition-all cursor-pointer border shadow ${
+              className={`no-capture flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-serif transition-all cursor-pointer border shadow-2xs ${
                 showDetailedControls
-                  ? "bg-[#2E2013] text-[#E6D3A3] border-[#C9A55A] font-bold ring-1 ring-[#C9A55A]/50"
-                  : "bg-[#1C1712] text-[#A89882] border-[#382B1D] hover:text-[#E6D3A3] hover:border-[#523E28]"
+                  ? "bg-[#261E16] text-[#F3E5AB] border-[#D4AF37] font-bold"
+                  : "bg-[#FAF6EE] text-[#5C4D3B] border-[#C4963E]/40 hover:text-[#1C1610] hover:border-[#C4963E]"
               }`}
-              title="Mở rộng / Thu gọn các nút điều khiển chi tiết (cỡ bài, xoay bài, cỡ lá bổ trợ, kéo bài, xem gần...)"
+              title="Mở rộng / Thu gọn các nút điều khiển chi tiết (xoay bài, cỡ lá bổ trợ, kéo bài, xem gần...)"
             >
-              <Settings className="w-3.5 h-3.5 text-[#C9A55A]" />
-              <span>{showDetailedControls ? "Thu gọn tùy chỉnh" : "Tùy chỉnh (Cố định sẵn)"}</span>
+              <Settings className="w-3.5 h-3.5 text-[#B8862D]" />
+              <span>{showDetailedControls ? "Thu gọn" : "Tùy chỉnh nâng cao"}</span>
               {showDetailedControls ? (
                 <ChevronUp className="w-3 h-3 text-[#C9A55A]" />
               ) : (
-                <ChevronDown className="w-3 h-3 text-[#A89882]" />
+                <ChevronDown className="w-3 h-3 text-[#8A7960]" />
               )}
             </button>
           </div>
         </div>
 
-        {/* Hàng 2 (Mở rộng): Bảng điều khiển chi tiết các thiết lập đã cố định sẵn */}
+        {/* Hàng 2 (Mở rộng): Bảng điều khiển chi tiết */}
         {showDetailedControls && (
-          <div className="pt-2.5 border-t border-[#2C2317] flex items-center flex-wrap gap-2 animate-in fade-in duration-200">
-            {renderCardSizeControls()}
+          <div className="pt-2.5 border-t border-[#C4963E]/25 flex items-center flex-wrap gap-2 animate-in fade-in duration-200">
             {renderCompanionSizeControls()}
             {renderRotateAllButton()}
             {renderAllowFlipOnClickButton()}
@@ -875,29 +897,44 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
     );
   };
 
-  const renderHoverModal = () => {
-    if (onHoverCard || !internalHoveredCardData) return null;
-    return (
-      <FullScreenCardHoverModal
-        data={internalHoveredCardData}
-        cardImages={cardImages}
-        cardVideos={cardVideos}
-        cardBackUrl={cardBackUrl}
-        onClose={() => setInternalHoveredCardData(null)}
-        onMouseEnter={() => {
-          if (closeTimerRef.current) {
-            clearTimeout(closeTimerRef.current);
-            closeTimerRef.current = null;
+  const renderHoverModal = () => (
+    <>
+      {inspectingModalCard && (
+        <CardTwoSidedModal
+          hexagram={inspectingModalCard.card}
+          positionLabel={inspectingModalCard.positionLabel}
+          positionMeaning={inspectingModalCard.positionMeaning}
+          isReversed={inspectingModalCard.isReversed}
+          onClose={() => setInspectingModalCard(null)}
+          onViewFullDetail={
+            onNavigateToManual
+              ? () => onNavigateToManual(inspectingModalCard.card.number)
+              : undefined
           }
-        }}
-        onMouseLeave={() => {
-          closeTimerRef.current = setTimeout(() => {
-            setInternalHoveredCardData(null);
-          }, 140);
-        }}
-      />
-    );
-  };
+        />
+      )}
+      {!onHoverCard && internalHoveredCardData && (
+        <FullScreenCardHoverModal
+          data={internalHoveredCardData}
+          cardImages={cardImages}
+          cardVideos={cardVideos}
+          cardBackUrl={cardBackUrl}
+          onClose={() => setInternalHoveredCardData(null)}
+          onMouseEnter={() => {
+            if (closeTimerRef.current) {
+              clearTimeout(closeTimerRef.current);
+              closeTimerRef.current = null;
+            }
+          }}
+          onMouseLeave={() => {
+            closeTimerRef.current = setTimeout(() => {
+              setInternalHoveredCardData(null);
+            }, 140);
+          }}
+        />
+      )}
+    </>
+  );
 
   useEffect(() => {
     if (diceRollResult) {
@@ -919,17 +956,17 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
   const [showExportModal, setShowExportModal] = useState(false);
   const [cardSizeScale, setCardSizeScale] = useState<"mini" | "compact" | "normal" | "large" | "xlarge">(() => {
     try {
-      const isInit = localStorage.getItem("iching_spread_card_size_v2_init");
+      const isInit = localStorage.getItem("iching_spread_card_size_v3_init");
       if (!isInit) {
-        localStorage.setItem("iching_spread_card_size_v2_init", "true");
-        localStorage.setItem("iching_spread_card_size_scale", "mini");
-        return "mini";
+        localStorage.setItem("iching_spread_card_size_v3_init", "true");
+        localStorage.setItem("iching_spread_card_size_scale", "normal");
+        return "normal";
       }
       const saved = localStorage.getItem("iching_spread_card_size_scale");
       if (saved === "mini" || saved === "compact" || saved === "normal" || saved === "large" || saved === "xlarge") return saved;
-      return "mini";
+      return "normal";
     } catch {
-      return "mini";
+      return "normal";
     }
   });
   const localCardsRef = useRef<HTMLDivElement>(null);
@@ -939,7 +976,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
     setCardSizeScale(size);
     try {
       localStorage.setItem("iching_spread_card_size_scale", size);
-      localStorage.setItem("iching_spread_card_size_v2_init", "true");
+      localStorage.setItem("iching_spread_card_size_v3_init", "true");
     } catch {}
   };
 
@@ -962,7 +999,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
       await new Promise((resolve) => setTimeout(resolve, 150));
 
       const dataUrl = await captureElementToPng(targetCardsRef.current, {
-        backgroundColor: "#15120E",
+        backgroundColor: "#F6F3EB",
         pixelRatio: 2,
         minWidth: 1140,
       });
@@ -987,12 +1024,12 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
   };
 
   const getCardSize = (defaultSize: "xs" | "sm"): "tiny" | "xs" | "sm" | "md" | "lg" | "xl" => {
-    if (cardSizeScale === "mini") return "tiny";
-    if (cardSizeScale === "compact") return "xs";
-    if (cardSizeScale === "normal") return defaultSize;
+    if (cardSizeScale === "mini") return "xs";
+    if (cardSizeScale === "compact") return defaultSize;
+    if (cardSizeScale === "normal") return defaultSize === "xs" ? "sm" : "md";
     if (cardSizeScale === "large") return defaultSize === "xs" ? "md" : "lg";
     if (cardSizeScale === "xlarge") return defaultSize === "xs" ? "lg" : "xl";
-    return defaultSize;
+    return defaultSize === "xs" ? "sm" : "md";
   };
 
   const renderCardSizeControls = () => (
@@ -1098,9 +1135,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
   if (spreadType === "seven_stars" && cards.length >= 7) {
     return (
       <SpreadContext.Provider value={spreadContextValue}>
-        <div
-          className="bg-[#15120E] border border-[#3D3121] rounded-2xl p-3 sm:p-5 md:p-6 shadow-2xl"
-        >
+        <XuanBaguaStage baguaSize="xl">
           {renderSpreadTopHeader(
             "TRẬN PHÁP THẤT TINH (7 LÁ BÀI DỊCH HỌC)",
             "Đồ hình Thất Tinh Bắc Đẩu: Cân bằng Tam Giác Bản Thân • Ngoại Cảnh • Dòng Thời Gian • Minh Triết Khuyên Nhủ",
@@ -1108,10 +1143,10 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
             "7 Quẻ Thất Tinh"
           )}
 
-          {/* 7-Star Layout: CHÍNH XÁC KHU VỰC CÁC LÁ BÀI ĐƯỢC CHỤP */}
+          {/* 7-Star Layout: Sân Khấu Giấy Tuyên Thành & Tinh Bàn Bát Quái */}
           <div
             ref={targetCardsRef}
-            className="max-w-4xl mx-auto space-y-4 sm:space-y-6 md:space-y-8 py-3 px-2 sm:px-4 bg-[#15120E] rounded-xl"
+            className="max-w-4xl mx-auto space-y-4 sm:space-y-6 md:space-y-8 py-3 px-2 sm:px-4 rounded-xl"
           >
             {/* Row 1: Top Center - 4. Lá Bài Gợi Ý */}
             <div className="flex justify-center">
@@ -1195,7 +1230,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
               />
             </div>
           </div>
-        </div>
+        </XuanBaguaStage>
         {renderHoverModal()}
         {renderExportModal()}
       </SpreadContext.Provider>
@@ -1205,7 +1240,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
   if (spreadType === "nine_palaces" && cards.length >= 9) {
     return (
       <SpreadContext.Provider value={spreadContextValue}>
-        <div className="bg-[#15120E] border border-[#3D3121] rounded-2xl p-3 sm:p-5 md:p-6 shadow-2xl">
+        <XuanBaguaStage baguaSize="xl">
           {renderSpreadTopHeader(
             "TRẬN PHÁP CỬU CUNG PHONG THỦY (9 LÁ BÀI - PHI TINH LẠC THƯ)",
             "Đồ hình 3x3 Lạc Thư: Hàng 1 (Đông Nam • Chính Nam • Tây Nam) — Hàng 2 (Chính Đông • Trung Cung • Chính Tây) — Hàng 3 (Đông Bắc • Chính Bắc • Tây Bắc)",
@@ -1526,7 +1561,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
               })}
             </div>
           </div>
-        </div>
+        </XuanBaguaStage>
         {renderHoverModal()}
         {renderExportModal()}
       </SpreadContext.Provider>
@@ -1628,7 +1663,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
 
     return (
       <SpreadContext.Provider value={spreadContextValue}>
-        <div className="bg-[#15120E] border border-[#3D3121] rounded-2xl p-3 sm:p-5 md:p-6 shadow-2xl space-y-6">
+        <XuanBaguaStage baguaSize="xl" className="space-y-6">
           {renderSpreadTopHeader(
             "TRẬN PHÁP 12 ĐỊA CHI & 12 CUNG TỬ VI (12 LÁ BÀI)",
             <>
@@ -1947,7 +1982,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
               })}
             </div>
           </div>
-        </div>
+        </XuanBaguaStage>
         {renderHoverModal()}
         {renderExportModal()}
       </SpreadContext.Provider>
@@ -1963,9 +1998,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
 
     return (
       <SpreadContext.Provider value={spreadContextValue}>
-        <div
-          className="bg-[#15120E] border border-[#3D3121] rounded-2xl p-3 sm:p-5 md:p-6 shadow-2xl"
-        >
+        <XuanBaguaStage baguaSize="xl">
           {/* Header using renderSpreadTopHeader */}
           {renderSpreadTopHeader(
             isExpanded
@@ -2086,8 +2119,8 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
             isExpanded ? "11 Quẻ Thập Tinh" : "10 Quẻ Thập Tinh"
           )}
 
-        {/* 10-Star / 11-Star Layout: CHÍNH XÁC KHU VỰC CÁC LÁ BÀI ĐƯỢC CHỤP */}
-        <div ref={targetCardsRef} className="w-full bg-[#15120E] py-2 px-1 sm:px-3 rounded-xl">
+        {/* 10-Star / 11-Star Layout: Sân Khấu Giấy Tuyên Thành */}
+        <div ref={targetCardsRef} className="w-full py-2 px-1 sm:px-3 rounded-xl">
           {tenStarView === "cross" ? (
             <div className="w-full max-w-3xl mx-auto flex flex-col items-center gap-3 sm:gap-4 py-2">
               {/* ============================================================== */}
@@ -2362,7 +2395,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
         </div>
 
         {/* Legend / Guide at bottom of diagram */}
-        <div className="mt-3 pt-3 border-t border-[#2C2317] flex flex-col sm:flex-row items-center justify-between text-[11px] text-[#A69780] font-serif gap-2">
+        <div className="mt-3 pt-3 border-t border-[#C4963E]/30 flex flex-col sm:flex-row items-center justify-between text-[11px] text-[#5C4D3B] font-serif gap-2">
           <span>
             {isExpanded ? (
               <>
@@ -2374,7 +2407,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
               </>
             )}
           </span>
-          <span className="text-[#C9A55A]">
+          <span className="text-[#6E4E16] font-bold">
             {isExpanded ? (
               <>
                 Quẻ 2: 2A ({isCard2AReversed ? "Nghịch" : "Thuận"}) & 2B ({isCard2BReversed ? "Nghịch" : "Thuận"}) →{" "}
@@ -2392,16 +2425,24 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
             )}
           </span>
         </div>
-      </div>
+      </XuanBaguaStage>
       {renderHoverModal()}
       {renderExportModal()}
     </SpreadContext.Provider>
     );
   }
 
-    // Custom Spread Layout (Cho phép số lượng lá bài bất kỳ như 4, 6, 8, 12 lá...)
+    // Custom Spread Layout (Cho phép số lượng lá bài bất kỳ như 4, 5 Ngũ Hành, 6, 8, 12 lá...)
   if (spreadType === "custom" || (cards && cards.length > 0)) {
     const cardCount = cards.length;
+    const isFiveElements = cardCount === 5;
+    const fiveElementsLabels = [
+      "1. HÀNH KIM · Cương Quyết & Nguyên Tắc",
+      "2. HÀNH MỘC · Sinh Trưởng & Khởi Phát",
+      "3. HÀNH THỦY · Trí Tuệ & Linh Hoạt",
+      "4. HÀNH HỎA · Nhiệt Huyết & Danh Vọng",
+      "5. HÀNH THỔ · Trung Tâm & Nền Tảng",
+    ];
     let gridColsClass = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3";
     if (cardCount <= 1) {
       gridColsClass = "grid grid-cols-1 max-w-xs mx-auto";
@@ -2412,8 +2453,6 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
     } else if (cardCount === 4) {
       gridColsClass = "grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-4xl mx-auto";
     } else if (cardCount === 5) {
-      // 5 Lá: Trên màn hình nhỏ/điện thoại: 3 lá ở hàng trên, 2 lá cuối cùng bên phải (lá 4 & 5) nhảy xuống hàng dưới và căn giữa
-      // Trên màn hình lớn (md: trở lên): dàn đủ 5 lá thành 1 hàng ngang
       gridColsClass = "grid grid-cols-6 md:grid-cols-5 gap-2.5 sm:gap-3 max-w-5xl mx-auto";
     } else if (cardCount <= 6) {
       gridColsClass = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 max-w-6xl mx-auto";
@@ -2427,19 +2466,23 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
 
     return (
       <SpreadContext.Provider value={spreadContextValue}>
-        <div className="bg-[#15120E] border border-[#3D3121] rounded-2xl p-3 sm:p-5 md:p-6 shadow-2xl">
-          {/* Header of Custom Spread */}
+        <XuanBaguaStage baguaSize="xl">
+          {/* Header of Custom / Five Elements Spread */}
           {renderSpreadTopHeader(
-            `TRẬN PHÁP TÙY CHỈNH (${cardCount} LÁ BÀI DỊCH HỌC)`,
-            `Toàn bộ ${cardCount} lá bài được soi chiếu theo từng mục đích thỉnh vấn riêng biệt được ghi rõ bên dưới mỗi lá.`,
+            isFiveElements
+              ? "TRẬN PHÁP NGŨ HÀNH (5 LÁ · KIM MỘC THỦY HỎA THỔ)"
+              : `TRẬN PHÁP TÙY CHỈNH (${cardCount} LÁ BÀI DỊCH HỌC)`,
+            isFiveElements
+              ? "Khảo sát sự vận động tương sinh tương khắc của 5 nguồn năng lượng: Kim (Nguyên tắc), Mộc (Sinh trưởng), Thủy (Trí tuệ), Hỏa (Bùng nổ), Thổ (Trung tâm ổn định)."
+              : `Toàn bộ ${cardCount} lá bài được soi chiếu theo từng mục đích thỉnh vấn riêng biệt được ghi rõ bên dưới mỗi lá.`,
             undefined,
-            `${cardCount} Lá Tự Chọn`
+            isFiveElements ? "5 Quẻ Ngũ Hành" : `${cardCount} Lá Tự Chọn`
           )}
 
           {/* Custom Cards Area */}
           <div
             ref={targetCardsRef}
-            className="p-3 sm:p-4 bg-[#14100D] rounded-xl border border-[#2A2117]"
+            className="p-3 sm:p-4 rounded-2xl"
           >
             <div className={gridColsClass}>
               {cards.map((card, idx) => {
@@ -2447,11 +2490,8 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                 const positionPurpose =
                   customPositions?.[idx]?.purpose ||
                   customPositions?.[idx]?.name ||
-                  `Lá ${idx + 1}: Mục đích xem số ${idx + 1}`;
+                  (isFiveElements ? fiveElementsLabels[idx] : `Lá ${idx + 1}: Mục đích xem số ${idx + 1}`);
 
-                // Định vị cột linh hoạt theo kích thước màn hình
-                // Khi 5 lá: trên mobile/màn hình nhỏ (< md), 3 lá đầu chiếm 2/6 cột (đủ hàng 1), 2 lá sau nhảy xuống hàng 2 và căn giữa
-                // Trên md trở lên: mỗi lá chiếm 1/5 cột (thành 1 hàng ngang hoàn chỉnh)
                 let cardColSpanClass = "";
                 if (cardCount === 5) {
                   if (idx === 0 || idx === 1 || idx === 2) {
@@ -2471,7 +2511,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                       if (onHoverCard && card) {
                         onHoverCard({
                           card,
-                          positionTitle: `Lá #${idx + 1}`,
+                          positionTitle: isFiveElements ? fiveElementsLabels[idx] : `Lá #${idx + 1}`,
                           positionSubtitle: card.vietnameseName,
                         });
                       }
@@ -2479,18 +2519,18 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                     onMouseLeave={() => {
                       if (onLeaveCard) onLeaveCard();
                     }}
-                    className={`flex flex-col items-center bg-[#181410] rounded-xl p-2.5 border transition-all ${cardColSpanClass} ${
+                    className={`flex flex-col items-center bg-[#FAF6EE]/95 rounded-2xl p-2.5 border transition-all ${cardColSpanClass} ${
                       interactive ? "cursor-pointer group" : ""
                     } ${
                       isSelected
-                        ? "border-[#C9A55A] ring-2 ring-[#C9A55A]/50 shadow-[0_0_15px_rgba(212,175,55,0.25)] bg-[#1F1913]"
-                        : "border-[#2D2318] hover:border-[#4E3C29] hover:bg-[#1A1511]"
+                        ? "border-[#C9A55A] ring-2 ring-[#C9A55A]/60 shadow-[0_8px_24px_rgba(196,150,62,0.28)] bg-[#FFFDF8]"
+                        : "border-[#C4963E]/40 hover:border-[#C4963E] hover:bg-[#FFFDF8] shadow-sm"
                     }`}
                   >
                     {/* Top card index header */}
                     <div className="flex items-center justify-between w-full mb-2 px-1">
-                      <span className="text-[10px] font-mono font-bold text-[#C9A55A] bg-[#271E14] px-2 py-0.5 rounded border border-[#443522]">
-                        Lá #{idx + 1}
+                      <span className="text-[10px] font-serif font-bold text-[#F3E5AB] bg-[#16120D] px-2.5 py-0.5 rounded-full border border-[#C4963E]/65">
+                        {isFiveElements ? fiveElementsLabels[idx].split("·")[0].trim() : `Lá #${idx + 1}`}
                       </span>
                       {isSelected && (
                         <span className="no-capture w-4 h-4 rounded-full bg-[#C9A55A] text-[#120F0C] text-[9px] font-bold flex items-center justify-center shadow">
@@ -2504,7 +2544,7 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                       <SpreadCardSlot
                         position={{
                           id: String(idx),
-                          name: `Lá #${idx + 1}`,
+                          name: isFiveElements ? fiveElementsLabels[idx] : `Lá #${idx + 1}`,
                           description: card.vietnameseName,
                         }}
                         slotKey={`custom_${idx}`}
@@ -2517,31 +2557,31 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                         onVideoUpdated={onVideoUpdated}
                         interactive={interactive}
                         hideTitle={true}
-                        size={cardCount === 5 ? (isMobileScreen ? "tiny" : getCardSize("sm")) : cardCount > 8 ? getCardSize("xs") : getCardSize("sm")}
+                        size={cardCount === 5 ? (isMobileScreen ? "xs" : getCardSize("sm")) : cardCount > 8 ? getCardSize("xs") : getCardSize("sm")}
                       />
                     </div>
 
                   {/* Hexagram Name & Omen */}
                   <div className="w-full text-center mt-2 px-1">
-                    <div className="text-xs font-serif font-bold text-[#EAD8B1] truncate">
+                    <div className="text-xs font-serif font-bold text-[#1C1813] truncate">
                       Quẻ #{card.number} {card.name}
                     </div>
-                    <div className="text-[10px] text-[#A69780] truncate">
+                    <div className="text-[10px] text-[#6E4E16] truncate font-medium">
                       {card.vietnameseName}
                     </div>
                   </div>
 
                   {/* Phần DƯỚI TRẬN PHÁP: Mục đích của lá bài */}
-                  <div className="w-full mt-2.5 pt-2 border-t border-[#2C2216] text-left">
-                    <div className="text-[9px] uppercase tracking-wider font-mono text-[#C89B3C] font-semibold mb-0.5 flex items-center gap-1">
-                      <Sparkles className="w-2.5 h-2.5" />
-                      Mục đích xem:
+                  <div className="w-full mt-2.5 pt-2 border-t border-[#C4963E]/25 text-left">
+                    <div className="text-[9px] uppercase tracking-wider font-mono text-[#6E4E16] font-semibold mb-0.5 flex items-center gap-1">
+                      <Sparkles className="w-2.5 h-2.5 text-[#B8862D]" />
+                      Cung vị / Mục đích:
                     </div>
                     <div
-                      className={`text-[11px] font-serif leading-snug rounded p-1.5 border transition-colors ${
+                      className={`text-[11px] font-serif leading-snug rounded-lg p-1.5 border transition-colors ${
                         isSelected
-                          ? "bg-[#2A2016] text-[#FFF] border-[#C9A55A]/60 font-semibold"
-                          : "bg-[#13100D] text-[#D8C4A0] border-[#2A2016]"
+                          ? "bg-[#261E16] text-[#F3E5AB] border-[#D4AF37] font-semibold"
+                          : "bg-[#F3ECE0] text-[#3D3326] border-[#C4963E]/30"
                       }`}
                       title={positionPurpose}
                     >
@@ -2557,13 +2597,13 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
                         e.stopPropagation();
                         onSelectCard && onSelectCard(idx);
                       }}
-                      className={`no-capture mt-2.5 w-full text-[10px] font-bold py-1 px-1.5 rounded-lg border transition-all ${
+                      className={`no-capture mt-2.5 w-full text-[10px] font-bold py-1.5 px-1.5 rounded-xl border transition-all cursor-pointer ${
                         isSelected
-                          ? "bg-[#C9A55A] text-[#120F0C] border-[#C9A55A]"
-                          : "bg-[#221B14] text-[#A89882] border-[#362B1D] hover:text-[#FFF] hover:bg-[#2C231A]"
+                          ? "bg-gradient-to-r from-[#E5C158] to-[#C4963E] text-[#1A130A] border-[#D4AF37]"
+                          : "bg-[#261E16] text-[#F3E5AB] border-[#C4963E]/55 hover:brightness-110"
                       }`}
                     >
-                      {isSelected ? "Đang xem chi tiết" : "Xem luận giải"}
+                      {isSelected ? "✦ Đang xem chi tiết" : "Xem luận giải"}
                     </button>
                   )}
                 </div>
@@ -2573,15 +2613,15 @@ export const SpreadDiagram: React.FC<SpreadDiagramProps> = ({
         </div>
 
         {/* Footer guide */}
-        <div className="mt-3 pt-3 border-t border-[#2C2317] flex flex-col sm:flex-row items-center justify-between text-[11px] text-[#A69780] font-serif gap-2">
+        <div className="mt-3 pt-3 border-t border-[#C4963E]/30 flex flex-col sm:flex-row items-center justify-between text-[11px] text-[#5C4D3B] font-serif gap-2">
           <span>
-            ✦ <strong>Trận pháp tự do:</strong> Bấm vào bất kỳ lá bài nào bên trên để xem chi tiết quẻ ứng với mục đích đã điền.
+            ✦ <strong>{isFiveElements ? "Trận pháp Ngũ Hành:" : "Trận pháp tự do:"}</strong> Bấm vào bất kỳ lá bài nào bên trên để soi 2 mặt hoặc xem luận giải chi tiết.
           </span>
-          <span className="text-[#C9A55A]">
+          <span className="text-[#6E4E16] font-bold">
             Tổng số: <strong>{cardCount} lá bài</strong>
           </span>
         </div>
-      </div>
+      </XuanBaguaStage>
       {renderHoverModal()}
       {renderExportModal()}
     </SpreadContext.Provider>
@@ -2702,17 +2742,17 @@ const SpreadCardSlot: React.FC<SpreadCardSlotProps> = ({
           ctx.onLeaveCard();
         }
       }}
-      className={`flex flex-col items-center text-center p-1 sm:p-2 rounded-xl transition-all relative z-10 hover:z-40 w-auto max-w-none min-w-0 ${
+      className={`flex flex-col items-center text-center p-1 sm:p-2 rounded-2xl transition-all relative z-10 hover:z-40 w-auto max-w-none min-w-0 ${
         interactive ? "cursor-pointer group" : ""
       } ${
         isSelected && ctx.enableSelectionHighlight !== false
-          ? "bg-[#251D14] ring-2 ring-[#C9A55A] shadow-[0_0_15px_rgba(212,175,55,0.3)] scale-102"
-          : "hover:bg-[#1C1712]"
+          ? "bg-[#FAF6EE]/95 ring-2 ring-[#C9A55A] shadow-[0_8px_24px_rgba(196,150,62,0.28)] scale-102"
+          : "hover:bg-[#FAF6EE]/80"
       }`}
     >
       {!hideTitle && (
-        <div className="text-[10px] sm:text-[11px] font-serif font-bold text-[#EAD8B1] mb-1.5 w-full text-center px-0.5 break-words line-clamp-2 min-h-[2.2em] flex items-center justify-center leading-tight pointer-events-none">
-          {customTitle || position.name}
+        <div className="mb-1.5 inline-flex items-center justify-center px-2.5 py-0.5 rounded-full bg-[#16120D]/95 border border-[#C4963E]/65 text-[10px] sm:text-[11px] font-serif font-bold text-[#F3E5AB] shadow-md max-w-[200px] leading-tight pointer-events-none">
+          <span className="truncate">{customTitle || position.name}</span>
         </div>
       )}
 
@@ -2739,17 +2779,38 @@ const SpreadCardSlot: React.FC<SpreadCardSlotProps> = ({
             dragKey={ctx.dragResetKey}
             enableHoverZoom={ctx.enableHoverZoom !== false}
           />
-          {/* Subtle quick flip button on hover */}
-          {ctx.allowFlipOnClick !== false && (
-            <button
-              type="button"
-              onClick={handleToggleCardFlip}
-              className="no-capture absolute -top-1.5 -left-1.5 w-5 h-5 rounded-full bg-[#18120C]/90 hover:bg-[#2B2014] border border-[#523E27] hover:border-[#C9A55A] text-[#C9A55A] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow z-20 cursor-pointer"
-              title="Lật 3D xem mặt sau Bát Quái ☯ / mặt Quẻ"
-            >
-              <RotateCw className="w-2.5 h-2.5" />
-            </button>
-          )}
+          {/* Subtle quick flip & 2-sided inspect buttons on hover */}
+          <div className="no-capture absolute -top-2 -left-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+            {ctx.allowFlipOnClick !== false && (
+              <button
+                type="button"
+                onClick={handleToggleCardFlip}
+                className="w-5 h-5 rounded-full bg-[#18120C]/95 hover:bg-[#2B2014] border border-[#C4963E]/70 text-[#F3E5AB] flex items-center justify-center shadow cursor-pointer"
+                title="Lật 3D xem mặt sau Bát Quái ☯ / mặt Quẻ"
+              >
+                <RotateCw className="w-2.5 h-2.5" />
+              </button>
+            )}
+            {ctx.onInspectTwoSided && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  ctx.onInspectTwoSided?.({
+                    card,
+                    positionLabel: customTitle || position.name,
+                    positionMeaning: position.description,
+                    isReversed: effectiveReversed,
+                  });
+                }}
+                className="px-1.5 py-0.5 rounded-full bg-[#18120C]/95 hover:bg-[#C9A55A] text-[#F3E5AB] hover:text-[#120F0C] border border-[#C4963E]/70 text-[8.5px] font-serif font-bold flex items-center gap-0.5 shadow cursor-pointer"
+                title="Mở bảng Soi Lá Bài Cả 2 Mặt (Quẻ Tượng & Thoán Từ)"
+              >
+                <ZoomIn className="w-2.5 h-2.5" />
+                <span>2 mặt</span>
+              </button>
+            )}
+          </div>
 
           {isSelected && ctx.enableSelectionHighlight !== false && (
             <div className="no-capture absolute -top-1 -right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-[#C9A55A] text-[#120F0C] rounded-full text-[8px] sm:text-[9px] font-bold flex items-center justify-center shadow z-20">

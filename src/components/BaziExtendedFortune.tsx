@@ -453,15 +453,17 @@ export interface BaziExtendedFortuneProps {
   onSelectJiazi?: (id: string) => void;
   cardImages?: Record<number, string>;
   className?: string;
+  defaultExpanded?: boolean;
 }
 
 export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
   onSelectJiazi,
   cardImages = {},
   className = "",
+  defaultExpanded = false,
 }) => {
-  // Trạng thái thu gọn / mở rộng: MẶC ĐỊNH LÀ THU GỌN (false) KHI VÀO PHẦN HOA GIÁP
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  // Trạng thái thu gọn / mở rộng
+  const [isOpen, setIsOpen] = useState<boolean>(defaultExpanded);
 
   useEffect(() => {
     try {
@@ -1427,109 +1429,116 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
             <span className="hidden sm:inline">{copied ? "Đã chép" : "Sao chép"}</span>
           </button>
 
-          {/* 5B. Nút Chụp Tổng Bát Tự (Bao gồm Bát Tự & Các Thiên) */}
-          <button
-            type="button"
-            onClick={() =>
-              handleCaptureElement(
-                fullBaziContainerRef,
-                `Tổng Bát Tự (${dayCan} ${dayChi})`,
-                `tong-bat-tu-${dayCan}-${dayChi}.png`,
-                "full"
-              )
-            }
-            disabled={isCapturingTarget !== null}
-            className="no-capture flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-[#2F2113] to-[#3D2B19] hover:from-[#3D2C1B] hover:to-[#4D3823] text-amber-200 border border-[#5E4327] hover:border-[#C9A55A] font-semibold text-xs shadow-md transition-all cursor-pointer active:scale-95 whitespace-nowrap"
-            title="Chụp ảnh toàn bộ lá số Bát Tự (Bốn Trụ, Vận Trình và các Thiên đang mở)"
-          >
-            {isCapturingTarget === "full" ? (
-              <Loader2 className="w-3.5 h-3.5 text-amber-400 animate-spin" />
-            ) : (
-              <Camera className="w-3.5 h-3.5 text-amber-400" />
-            )}
-            <span>Chụp Tổng Bát Tự</span>
-          </button>
-
-          {/* 5B-2. Nút Tải Tổng Bát Tự Trực Tiếp */}
-          <button
-            type="button"
-            onClick={() =>
-              handleCaptureElement(
-                fullBaziContainerRef,
-                `Tổng Bát Tự (${dayCan} ${dayChi})`,
-                `tong-bat-tu-${dayCan}-${dayChi}.png`,
-                "full",
-                true
-              )
-            }
-            disabled={isCapturingTarget !== null}
-            className="no-capture flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-stone-950 font-bold text-xs shadow-md transition-all cursor-pointer active:scale-95 whitespace-nowrap"
-            title="Chụp và tải trực tiếp tệp ảnh PNG toàn bộ lá số Bát Tự về máy"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>Tải Tổng Bát Tự</span>
-          </button>
-
-          {/* 5C. Nút Chụp Bát Tự Riêng (Chỉ Bốn Trụ & Vận Trình) */}
-          <button
-            type="button"
-            onClick={() =>
-              handleCaptureElement(
-                onlyBaziContainerRef,
-                `Bát Tự Riêng (${dayCan} ${dayChi})`,
-                `bat-tu-rieng-${dayCan}-${dayChi}.png`,
-                "only"
-              )
-            }
-            disabled={isCapturingTarget !== null}
-            className="no-capture flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#241A10] hover:bg-[#332517] text-[#D6B97A] border border-[#4F3924] hover:border-[#C9A55A] text-xs font-medium transition-all cursor-pointer active:scale-95 whitespace-nowrap"
-            title="Chụp ảnh riêng khối Bát Tự 8 ô, Đại Vận và Lưu Niên (không bao gồm các Thiên)"
-          >
-            {isCapturingTarget === "only" ? (
-              <Loader2 className="w-3.5 h-3.5 text-amber-400 animate-spin" />
-            ) : (
-              <Camera className="w-3.5 h-3.5 text-[#C9A55A]" />
-            )}
-            <span>Chụp Bát Tự Riêng</span>
-          </button>
-
-          {/* 5C-2. Nút Tải Bát Tự Riêng Trực Tiếp */}
-          <button
-            type="button"
-            onClick={() =>
-              handleCaptureElement(
-                onlyBaziContainerRef,
-                `Bát Tự Riêng (${dayCan} ${dayChi})`,
-                `bat-tu-rieng-${dayCan}-${dayChi}.png`,
-                "only",
-                true
-              )
-            }
-            disabled={isCapturingTarget !== null}
-            className="no-capture flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#382819] hover:bg-[#4A3521] text-[#F3D58C] border border-[#6B4F2D] hover:border-[#C9A55A] text-xs font-semibold transition-all cursor-pointer active:scale-95 whitespace-nowrap"
-            title="Chụp và tải trực tiếp tệp ảnh PNG khối Bát Tự 8 ô về máy"
-          >
-            <Download className="w-3.5 h-3.5 text-amber-300" />
-            <span>Tải Bát Tự Riêng</span>
-          </button>
-
-          {/* 5D. Nút Chụp Các Thiên Riêng */}
+          {/* 5B. Menu Chụp & Tải Ảnh Bát Tự (Gộp Tổng Bát Tự, Bát Tự Riêng & 5 Thiên gọn gàng trong 1 Menu) */}
           <div className="relative no-capture">
             <button
               type="button"
               onClick={() => setCaptureDropdownOpen((o) => !o)}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#22170E] hover:bg-[#322316] text-amber-200 border border-[#4C3622] hover:border-[#C9A55A] text-xs font-medium transition-all cursor-pointer active:scale-95 whitespace-nowrap"
-              title="Chụp ảnh riêng từng Thiên (Gia Cấu, Kết Cấu, Hành Vi, Thực Thi)"
+              disabled={isCapturingTarget !== null}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#2F2113] to-[#3D2B19] hover:from-[#3D2C1B] hover:to-[#4D3823] text-amber-200 border border-[#5E4327] hover:border-[#C9A55A] text-xs font-semibold shadow-md transition-all cursor-pointer active:scale-95 whitespace-nowrap"
+              title="Chụp hoặc tải ảnh Tổng Bát Tự, Bát Tự Riêng và từng Thiên"
             >
-              <Camera className="w-3.5 h-3.5 text-amber-400" />
-              <span>Chụp Từng Thiên</span>
+              {isCapturingTarget !== null ? (
+                <Loader2 className="w-3.5 h-3.5 text-amber-400 animate-spin" />
+              ) : (
+                <Camera className="w-3.5 h-3.5 text-amber-400" />
+              )}
+              <span>Chụp & Tải Ảnh</span>
               <ChevronDown
                 className={`w-3 h-3 text-[#A89882] transition-transform ${captureDropdownOpen ? "rotate-180" : ""}`}
               />
             </button>
 
             {captureDropdownOpen && (
-              <div className="absolute right-0 mt-1.5 w-64 rounded-xl bg-[#1C130B] border border-[#553E26] shadow-2xl py-1.5 z-50 animate-in fade-in">
+              <div className="absolute right-0 mt-1.5 w-72 rounded-xl bg-[#1C130B] border border-[#553E26] shadow-2xl py-1.5 z-50 animate-in fade-in">
+                <div className="px-3 py-1 text-[10px] uppercase tracking-wider text-amber-300/90 font-semibold border-b border-[#352516] flex items-center justify-between">
+                  <span>Toàn Bộ Lá Số & Bát Tự 8 Ô</span>
+                </div>
+
+                {/* Tổng Bát Tự */}
+                <div className="px-2.5 py-1.5 hover:bg-[#2B1F13] flex items-center justify-between gap-1 text-xs text-[#E5D7BF]">
+                  <span className="truncate flex-1 font-semibold text-amber-200">Tổng Bát Tự & Các Thiên</span>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCaptureDropdownOpen(false);
+                        handleCaptureElement(
+                          fullBaziContainerRef,
+                          `Tổng Bát Tự (${dayCan} ${dayChi})`,
+                          `tong-bat-tu-${dayCan}-${dayChi}.png`,
+                          "full"
+                        );
+                      }}
+                      className="px-2 py-0.5 rounded bg-[#352718] hover:bg-[#483521] text-amber-300 border border-[#553E26] text-[11px] flex items-center gap-1 cursor-pointer"
+                      title="Chụp & Xem ảnh Tổng Bát Tự"
+                    >
+                      <Camera className="w-3 h-3 text-amber-400" />
+                      <span>Chụp</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCaptureDropdownOpen(false);
+                        handleCaptureElement(
+                          fullBaziContainerRef,
+                          `Tổng Bát Tự (${dayCan} ${dayChi})`,
+                          `tong-bat-tu-${dayCan}-${dayChi}.png`,
+                          "full",
+                          true
+                        );
+                      }}
+                      className="px-2 py-0.5 rounded bg-amber-700 hover:bg-amber-600 text-stone-950 font-bold text-[11px] flex items-center gap-1 cursor-pointer"
+                      title="Tải trực tiếp PNG Tổng Bát Tự"
+                    >
+                      <Download className="w-3 h-3" />
+                      <span>Tải</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Bát Tự Riêng */}
+                <div className="px-2.5 py-1.5 hover:bg-[#2B1F13] flex items-center justify-between gap-1 text-xs text-[#E5D7BF] border-b border-[#352516]">
+                  <span className="truncate flex-1 font-medium">Bát Tự Riêng (8 Ô & Vận)</span>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCaptureDropdownOpen(false);
+                        handleCaptureElement(
+                          onlyBaziContainerRef,
+                          `Bát Tự Riêng (${dayCan} ${dayChi})`,
+                          `bat-tu-rieng-${dayCan}-${dayChi}.png`,
+                          "only"
+                        );
+                      }}
+                      className="px-2 py-0.5 rounded bg-[#352718] hover:bg-[#483521] text-amber-300 border border-[#553E26] text-[11px] flex items-center gap-1 cursor-pointer"
+                      title="Chụp & Xem ảnh Bát Tự Riêng"
+                    >
+                      <Camera className="w-3 h-3 text-amber-400" />
+                      <span>Chụp</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCaptureDropdownOpen(false);
+                        handleCaptureElement(
+                          onlyBaziContainerRef,
+                          `Bát Tự Riêng (${dayCan} ${dayChi})`,
+                          `bat-tu-rieng-${dayCan}-${dayChi}.png`,
+                          "only",
+                          true
+                        );
+                      }}
+                      className="px-2 py-0.5 rounded bg-amber-700 hover:bg-amber-600 text-stone-950 font-bold text-[11px] flex items-center gap-1 cursor-pointer"
+                      title="Tải trực tiếp PNG Bát Tự Riêng"
+                    >
+                      <Download className="w-3 h-3" />
+                      <span>Tải</span>
+                    </button>
+                  </div>
+                </div>
+
                 <div className="px-3 py-1 text-[10px] uppercase tracking-wider text-[#A89882] font-semibold border-b border-[#352516] flex items-center justify-between">
                   <span>Chụp / Tải Từng Thiên</span>
                 </div>

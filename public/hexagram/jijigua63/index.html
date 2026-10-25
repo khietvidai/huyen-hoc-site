@@ -332,6 +332,156 @@
     .yilore-lightbox-close:hover {
       background: rgba(255, 255, 255, 0.4);
     }
+    /* === IMPERIAL ORIENTAL MYSTICISM INNER PAGE THEME (P6/P7/P9) === */
+    .yilore-header {
+      border-bottom: 1px solid rgba(196, 150, 62, 0.3) !important;
+      background-color: rgba(250, 247, 240, 0.96) !important;
+    }
+    .yilore-sidebar-desktop {
+      border-right: 1px solid rgba(196, 150, 62, 0.25) !important;
+      background-color: #FAF6EC !important;
+    }
+    .yilore-main-col {
+      background-color: #F6F3EB !important;
+      background-image:
+        radial-gradient(circle at 50% 0%, rgba(196, 150, 62, 0.09) 0%, transparent 70%),
+        linear-gradient(to right, rgba(196, 150, 62, 0.055) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(196, 150, 62, 0.055) 1px, transparent 1px) !important;
+      background-size: 100% 100%, 48px 48px, 48px 48px !important;
+    }
+
+    /* Hexagram & Yao Imperial Title Banner */
+    main > section.mb-8:first-of-type {
+      position: relative;
+      overflow: hidden;
+      border-radius: 1.5rem;
+      border: 1px solid rgba(196, 150, 62, 0.45);
+      background: linear-gradient(135deg, #16130E 0%, #241D14 52%, #16130E 100%);
+      padding: 1.75rem 2rem;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.16), inset 0 1px 0 rgba(235, 203, 139, 0.22);
+    }
+    main > section.mb-8:first-of-type h1 {
+      color: #FAF5EA !important;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+    }
+    main > section.mb-8:first-of-type p {
+      color: #D8CEBE !important;
+    }
+    main > section.mb-8:first-of-type span.font-mono {
+      background: rgba(196, 150, 62, 0.2) !important;
+      border: 1px solid rgba(232, 199, 123, 0.45) !important;
+      color: #E8C77B !important;
+    }
+    main > section.mb-8:first-of-type span.text-stone-600,
+    main > section.mb-8:first-of-type span.text-stone-500 {
+      color: #E5D9C5 !important;
+    }
+    main > section.mb-8:first-of-type div.rounded-2xl {
+      background: rgba(196, 150, 62, 0.15) !important;
+      border: 1px solid rgba(232, 199, 123, 0.42) !important;
+      color: #F5EAD4 !important;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+    main > section.mb-8:first-of-type div.rounded-2xl strong {
+      color: #F3D78D !important;
+    }
+
+    /* Quick Section Anchor Pills */
+    nav[aria-label="Section navigation"] a {
+      border-color: rgba(196, 150, 62, 0.35) !important;
+      background: linear-gradient(180deg, #FDFBF7 0%, #F3EDE0 100%) !important;
+      color: #443C34 !important;
+      box-shadow: 0 2px 6px rgba(28, 25, 23, 0.04);
+    }
+    nav[aria-label="Section navigation"] a:hover {
+      border-color: #C4963E !important;
+      background: linear-gradient(135deg, #241D14 0%, #16130E 100%) !important;
+      color: #E8C77B !important;
+      transform: translateY(-1px);
+    }
+
+    /* Major Content Sections (Xuan Parchment Panels) */
+    #opening,
+    #yilore-reading,
+    #divination,
+    #yao-ci,
+    #faq,
+    #related-hexagram,
+    #related-yao {
+      border-color: rgba(196, 150, 62, 0.34) !important;
+      background: linear-gradient(180deg, #FDFBF7 0%, #F8F3E8 100%) !important;
+      box-shadow: 0 14px 34px rgba(28, 25, 23, 0.055), inset 0 1px 0 rgba(255, 255, 255, 0.85) !important;
+    }
+
+    /* Sub-cards inside sections */
+    #divination article,
+    #yao-ci article,
+    #faq article,
+    #related-hexagram a.group,
+    #related-yao a.group {
+      border-color: rgba(196, 150, 62, 0.26) !important;
+      background: rgba(253, 251, 247, 0.88) !important;
+      transition: all 0.25s ease !important;
+    }
+    #divination article:hover,
+    #yao-ci article:hover,
+    #faq article:hover,
+    #related-hexagram a.group:hover,
+    #related-yao a.group:hover {
+      border-color: #C4963E !important;
+      background: #FFFDF9 !important;
+      box-shadow: 0 10px 26px rgba(196, 150, 62, 0.14) !important;
+      transform: translateY(-2px);
+    }
+
+    /* Card frames inside Yilore Reading & Opening */
+    #opening img.rounded-xl,
+    #yilore-reading .rounded-xl.border {
+      border: 1.5px solid rgba(196, 150, 62, 0.45) !important;
+      box-shadow: 0 14px 32px rgba(28, 25, 23, 0.14) !important;
+    }
+
+    /* Blog Article Detail Styling */
+    main > article {
+      border-radius: 1.5rem;
+      border: 1px solid rgba(196, 150, 62, 0.34);
+      background: linear-gradient(180deg, #FDFBF7 0%, #F8F3E8 100%);
+      padding: 2rem 2.25rem;
+      box-shadow: 0 16px 38px rgba(28, 25, 23, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.88);
+    }
+    @media (max-width: 640px) {
+      main > article {
+        padding: 1.25rem 1.15rem;
+      }
+    }
+    main > article > header span.rounded-full {
+      border-color: rgba(196, 150, 62, 0.4) !important;
+      background-color: rgba(196, 150, 62, 0.12) !important;
+      color: #845D18 !important;
+    }
+    .prose blockquote {
+      border-left: 4px solid #C4963E !important;
+      background: rgba(196, 150, 62, 0.08) !important;
+      color: #3F3830 !important;
+    }
+    .prose th {
+      background-color: rgba(196, 150, 62, 0.14) !important;
+      border-color: rgba(196, 150, 62, 0.3) !important;
+      color: #1C1917 !important;
+    }
+    .prose td {
+      border-color: rgba(196, 150, 62, 0.22) !important;
+    }
+    details.group.rounded-2xl,
+    .yilore-grid-2 a.group {
+      border-color: rgba(196, 150, 62, 0.28) !important;
+      background: linear-gradient(180deg, #FDFBF7 0%, #F7F2E7 100%) !important;
+    }
+    details.group.rounded-2xl:hover,
+    .yilore-grid-2 a.group:hover {
+      border-color: #C4963E !important;
+      box-shadow: 0 10px 24px rgba(196, 150, 62, 0.13) !important;
+    }
   </style>
   
   <script type="application/ld+json">

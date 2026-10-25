@@ -215,6 +215,13 @@ function drawCardsForMode(mode: SpreadMode): DynamicCardItem[] {
       transHex = getTransformedHexagram(priHex, changingLines) || priHex;
     }
 
+    // Nếu Quẻ Chủ và Quẻ Biến cùng 1 quẻ thì không hiện hào động
+    if (priHex.number === transHex.number) {
+      changingLines = [];
+    }
+
+    const isSameHex = priHex.number === transHex.number || changingLines.length === 0;
+
     const primaryCard: DynamicCardItem = {
       id: `thapla-primary-${priHex.number}`,
       type: "hexagram",
@@ -236,55 +243,38 @@ function drawCardsForMode(mode: SpreadMode): DynamicCardItem[] {
       hexNumber: transHex.number,
       symbol: transHex.symbol,
       hanzi: transHex.hanzi || transHex.name,
-      name: changingLines.length === 0 ? `Quẻ Biến (Đồng Quẻ Chủ): ${transHex.name}` : `Quẻ Biến: ${transHex.name}`,
-      sub: changingLines.length === 0 ? `Biến Quái • Động 0 hào đồng Bản Quái (#${transHex.number})` : `Biến Quái • Định hướng tương lai (#${transHex.number})`,
+      name: isSameHex ? `Quẻ Biến (Đồng Quẻ Chủ): ${transHex.name}` : `Quẻ Biến: ${transHex.name}`,
+      sub: isSameHex ? `Biến Quái • Đồng Bản Quái (#${transHex.number})` : `Biến Quái • Định hướng tương lai (#${transHex.number})`,
       desc: `【Biến Quái: Định Hướng Tương Lai】Quái từ: "${transHex.judgment}" | Đại Tượng: "${transHex.image}" — ${transHex.overview || transHex.advice}`,
       img: `/assets/oss/${transHex.number}/${transHex.number}a.webp`,
       backImg: `/assets/oss/${transHex.number}/${transHex.number}b.webp`,
-      positionLabel: changingLines.length === 0 ? "Quẻ Biến (Đồng Quẻ Chủ)" : "Quẻ Biến (Biến Quái)",
-      positionDesc: changingLines.length === 0 ? "Động 0 hào: Quẻ biến giữ nguyên quẻ chủ, lấy tĩnh chế động" : "Định hướng xu thế phát triển và kết quả chuyển dịch",
+      positionLabel: isSameHex ? "Quẻ Biến (Đồng Quẻ Chủ)" : "Quẻ Biến (Biến Quái)",
+      positionDesc: isSameHex ? "Quẻ Tĩnh: Quẻ biến giữ nguyên quẻ chủ, lấy tĩnh chế động" : "Định hướng xu thế phát triển và kết quả chuyển dịch",
     };
 
     // 3. Các lá hào từ (ở 384 lá bài hào từ) thay đổi theo các hào động AI đã chọn
+    // Nếu Quẻ Chủ và Quẻ Biến cùng 1 quẻ thì không hiện hào động
     const changingYaoCards: DynamicCardItem[] = [];
-    changingLines.forEach((lineNum) => {
-      const isYangToYin = priHex.lines?.[lineNum - 1] === 1;
-      const lineMeaning = priHex.lineMeanings?.find((m) => m.line === lineNum);
-      const yaoName = lineMeaning?.name || `Hào ${lineNum}`;
-      changingYaoCards.push({
-        id: `thapla-yao-${priHex.number}-${lineNum}`,
-        type: "yao",
-        hexNumber: priHex.number,
-        yaoNumber: lineNum,
-        symbol: priHex.symbol,
-        hanzi: yaoName,
-        name: `Hào ${lineNum}: ${priHex.name} · ${yaoName}`,
-        sub: `Hào Động • Lời khuyên then chốt (${isYangToYin ? "⚊ Dương ➔ ⚏ Âm" : "⚏ Âm ➔ ⚊ Dương"})`,
-        desc: `【Hào Động: Lời Khuyên Then Chốt】Hào từ: "${lineMeaning?.text || ""}" — ${lineMeaning?.meaning || ""}${lineMeaning?.detailedExplanation ? ` | Biến số mấu chốt: ${lineMeaning.detailedExplanation}` : ""}`,
-        img: `/assets/oss/${priHex.number}/${priHex.number}-${lineNum}a.webp`,
-        backImg: `/assets/oss/${priHex.number}/${priHex.number}-${lineNum}b.webp`,
-        positionLabel: `Hào Động: Hào ${lineNum}`,
-        positionDesc: `Bước ngoặt biến dịch then chốt do AI phân định tại vị trí Hào ${lineNum}`,
-      });
-    });
-
-    if (changingYaoCards.length === 0) {
-      const defaultLine = 1;
-      const lineMeaning = priHex.lineMeanings?.find((m) => m.line === defaultLine);
-      changingYaoCards.push({
-        id: `thapla-yao-${priHex.number}-tinh`,
-        type: "yao",
-        hexNumber: priHex.number,
-        yaoNumber: defaultLine,
-        symbol: priHex.symbol,
-        hanzi: "Quẻ Tĩnh",
-        name: `${priHex.name} · Lục Hào Toàn Tĩnh`,
-        sub: "AI Động 0 Hào • Quẻ Biến vẫn là Quẻ Chủ",
-        desc: `Toàn quẻ không có hào động. Giữ vững tâm tĩnh, dĩ bất biến ứng vạn biến, bám sát Thoán Từ: "${priHex.judgment}" — ${lineMeaning?.meaning || priHex.overview || ""}`,
-        img: `/assets/oss/${priHex.number}/${priHex.number}-${defaultLine}a.webp`,
-        backImg: `/assets/oss/${priHex.number}/${priHex.number}-${defaultLine}b.webp`,
-        positionLabel: "Hào Tĩnh: 0 Hào Động",
-        positionDesc: "Không có biến động, cục diện vững vàng, lấy tĩnh chế động",
+    if (!isSameHex) {
+      changingLines.forEach((lineNum) => {
+        const isYangToYin = priHex.lines?.[lineNum - 1] === 1;
+        const lineMeaning = priHex.lineMeanings?.find((m) => m.line === lineNum);
+        const yaoName = lineMeaning?.name || `Hào ${lineNum}`;
+        changingYaoCards.push({
+          id: `thapla-yao-${priHex.number}-${lineNum}`,
+          type: "yao",
+          hexNumber: priHex.number,
+          yaoNumber: lineNum,
+          symbol: priHex.symbol,
+          hanzi: yaoName,
+          name: `Hào ${lineNum}: ${priHex.name} · ${yaoName}`,
+          sub: `Hào Động • Lời khuyên then chốt (${isYangToYin ? "⚊ Dương ➔ ⚏ Âm" : "⚏ Âm ➔ ⚊ Dương"})`,
+          desc: `【Hào Động: Lời Khuyên Then Chốt】Hào từ: "${lineMeaning?.text || ""}" — ${lineMeaning?.meaning || ""}${lineMeaning?.detailedExplanation ? ` | Biến số mấu chốt: ${lineMeaning.detailedExplanation}` : ""}`,
+          img: `/assets/oss/${priHex.number}/${priHex.number}-${lineNum}a.webp`,
+          backImg: `/assets/oss/${priHex.number}/${priHex.number}-${lineNum}b.webp`,
+          positionLabel: `Hào Động: Hào ${lineNum}`,
+          positionDesc: `Bước ngoặt biến dịch then chốt do AI phân định tại vị trí Hào ${lineNum}`,
+        });
       });
     }
 
@@ -846,18 +836,30 @@ function generateHexagramPrediction(
   if (currentMode === "thap_la") {
     const pri = cardsList[0];
     const trans = cardsList[1];
-    const yaos = cardsList.slice(2);
+    const isSameHex = pri?.hexNumber !== undefined && trans?.hexNumber !== undefined && pri.hexNumber === trans.hexNumber;
+    const yaos = isSameHex ? [] : cardsList.slice(2).filter((c) => !c.id.endsWith("-tinh"));
     const transHex = HEXAGRAMS.find((h) => h.number === trans?.hexNumber);
     const priHex = HEXAGRAMS.find((h) => h.number === pri?.hexNumber);
     const omenTrans = transHex?.omen ? `[${transHex.omen}] ` : "";
-    const yaoText = yaos.length > 0 ? yaos.map((y) => y.name).join(", ") : "Quẻ Tĩnh (Không đổi)";
+    const yaoText = yaos.length > 0 ? yaos.map((y) => y.name).join(", ") : "";
 
     if (isQuestionEmpty) {
+      if (yaos.length === 0) {
+        return `Bản Quái: ${pri?.name} ➔ Biến Quái: ${trans?.name} (Quẻ Tĩnh • Không có hào động). Dự đoán: Quẻ Chủ và Quẻ Biến cùng 1 quẻ, cục diện kiên định bất biến (${transHex?.overview || trans?.sub}).${EMPTY_QUESTION_REMINDER}`;
+      }
       return `Bản Quái: ${pri?.name} ➔ Hào Động: ${yaoText} ➔ Biến Quái: ${trans?.name}. Dự đoán: Khởi đầu từ bối cảnh ${pri?.name}, sau khi chuyển biến tại các hào động, tương lai chuyển hóa viên mãn về ${trans?.name} (${transHex?.overview || trans?.sub}).${EMPTY_QUESTION_REMINDER}`;
     }
 
     const insightTrans = getHexDomainInsight(transHex, domain);
     const omenOutlook = getOmenOutlookText(transHex?.omen);
+
+    if (yaos.length === 0) {
+      return `🕊️ Tâm niệm / Câu hỏi: "${cleanedQuestion}"
+• Mai Hoa Dịch Số: Bản Quái: ${pri?.name} ➔ Biến Quái: ${trans?.name} ${omenTrans}(Quẻ Tĩnh • Không có hào động).
+• Chiêm đoán theo ${domainLabel}: Quẻ Chủ và Quẻ Biến cùng 1 quẻ (${pri?.name}), không phát sinh hào động (${insightTrans || trans?.sub}).
+• Dự đoán viễn cảnh: Về việc bạn đang tâm niệm: ${omenOutlook}
+• Phương châm hành động: ${transHex?.advice || priHex?.advice || "Giữ vững tâm tĩnh, dĩ bất biến ứng vạn biến để đón nhận thành quả viên mãn."}`;
+    }
 
     return `🕊️ Tâm niệm / Câu hỏi: "${cleanedQuestion}"
 • Mai Hoa Dịch Số: Bản Quái: ${pri?.name} ➔ Hào Động: ${yaoText} ➔ Biến Quái: ${trans?.name} ${omenTrans}.
@@ -1009,7 +1011,8 @@ async function formatSpreadForAI(
   if (currentMode === "thap_la") {
     const pri = cardsList[0];
     const trans = cardsList[1];
-    const yaos = cardsList.slice(2);
+    const isSameHex = pri?.hexNumber !== undefined && trans?.hexNumber !== undefined && pri.hexNumber === trans.hexNumber;
+    const yaos = isSameHex ? [] : cardsList.slice(2).filter((c) => !c.id.endsWith("-tinh"));
 
     const priHex = HEXAGRAMS.find((h) => h.number === pri?.hexNumber) || HEXAGRAMS[0];
     const transHex = HEXAGRAMS.find((h) => h.number === trans?.hexNumber) || HEXAGRAMS[1];
@@ -1028,9 +1031,13 @@ async function formatSpreadForAI(
       lines.push(`【ĐÁP ÁN / CHIÊM NGHIỆM TỰ ĐIỀN】:`);
       lines.push(`"${cleanedAnswer}"\n`);
     }
-    lines.push(`Cấu trúc: Quẻ Chủ & Quẻ Biến song song Trên - Dưới • Dải Hào Động (Bộ 384 Lá) kế bên Quẻ Chủ`);
-    lines.push(`Thứ tự đọc chiêm bốc: 1. Bản Quái (Quẻ Chủ) ➔ 2. Hào Động (Bước Ngoặt) ➔ 3. Biến Quái (Quẻ Biến)\n`);
-    lines.push(`Thứ tự đọc chiêm bốc: 1. Bản Quái (Quẻ Chủ) ➔ 2. Hào Động (Bước Ngoặt) ➔ 3. Biến Quái (Quẻ Biến)\n`);
+    if (yaos.length > 0) {
+      lines.push(`Cấu trúc: Quẻ Chủ & Quẻ Biến song song Trên - Dưới • Dải Hào Động (Bộ 384 Lá) kế bên Quẻ Chủ`);
+      lines.push(`Thứ tự đọc chiêm bốc: 1. Bản Quái (Quẻ Chủ) ➔ 2. Hào Động (Bước Ngoặt) ➔ 3. Biến Quái (Quẻ Biến)\n`);
+    } else {
+      lines.push(`Cấu trúc: Quẻ Chủ & Quẻ Biến cùng 1 quẻ (Quẻ Tĩnh • Không có hào động)`);
+      lines.push(`Thứ tự đọc chiêm bốc: 1. Bản Quái (Quẻ Chủ) ➔ 2. Biến Quái (Đồng Quẻ Chủ)\n`);
+    }
 
     if (!includeFullBakhKhoa) {
       // ── THÔNG TIN CƠ BẢN (KHI NHẤN NHẸ / BỐC QUẺ BÌNH THƯỜNG) ──
@@ -1044,11 +1051,9 @@ async function formatSpreadForAI(
         lines.push("");
       }
 
-      lines.push(`----------------------------------------`);
-      lines.push(`【2. HÀO ĐỘNG (BỘ 384 LÁ BÀI HÀO TỪ) — KẾ BÊN QUẺ CHỦ】`);
-      if (yaos.length === 0) {
-        lines.push(`• Tình trạng: Quẻ Tĩnh (Không có hào biến). Cục diện kiên định bất biến, dĩ bất biến ứng vạn biến.`);
-      } else {
+      if (yaos.length > 0) {
+        lines.push(`----------------------------------------`);
+        lines.push(`【2. HÀO ĐỘNG (BỘ 384 LÁ BÀI HÀO TỪ) — KẾ BÊN QUẺ CHỦ】`);
         yaos.forEach((y, idx) => {
           lines.push(`▶ Hào Động thứ ${idx + 1}: ${y.name}`);
           lines.push(`• Quẻ tượng: ${y.symbol}`);
@@ -1056,12 +1061,12 @@ async function formatSpreadForAI(
           lines.push(`• Ý nghĩa: ${y.sub}`);
           lines.push(`• Lời giải: ${y.desc}`);
         });
+        lines.push("");
       }
-      lines.push("");
 
       if (trans) {
         lines.push(`----------------------------------------`);
-        lines.push(`【3. BIẾN QUÁI (QUẺ BIẾN) — LÁ DƯỚI SONG SONG】`);
+        lines.push(`【${yaos.length > 0 ? "3" : "2"}. BIẾN QUÁI (QUẺ BIẾN) — LÁ DƯỚI SONG SONG】`);
         lines.push(`• Quẻ tượng: ${trans.symbol}`);
         lines.push(`• Tên: ${trans.name}`);
         lines.push(`• Ý nghĩa: ${trans.sub}`);
@@ -1101,16 +1106,14 @@ async function formatSpreadForAI(
         lines.push("");
       }
 
-      lines.push(`----------------------------------------`);
-      lines.push(`【2. HÀO ĐỘNG (BỘ 384 LÁ BÀI HÀO TỪ) — KẾ BÊN QUẺ CHỦ】`);
-      lines.push(`• Văn Bản Trọng Tâm: Hào Từ của chính hào biến động`);
-      lines.push(`• Ý Nghĩa Thực Tiễn Trong Đời Sống: Lời khuyên then chốt: Trọng tâm hành động và biến số mấu chốt bạn cần lưu tâm`);
-      lines.push(`• Số lượng hào biến động: ${yaos.length} hào (Sắp xếp theo thứ tự từ Hào Sơ ➔ Hào Lục)`);
-      lines.push("");
+      if (yaos.length > 0) {
+        lines.push(`----------------------------------------`);
+        lines.push(`【2. HÀO ĐỘNG (BỘ 384 LÁ BÀI HÀO TỪ) — KẾ BÊN QUẺ CHỦ】`);
+        lines.push(`• Văn Bản Trọng Tâm: Hào Từ của chính hào biến động`);
+        lines.push(`• Ý Nghĩa Thực Tiễn Trong Đời Sống: Lời khuyên then chốt: Trọng tâm hành động và biến số mấu chốt bạn cần lưu tâm`);
+        lines.push(`• Số lượng hào biến động: ${yaos.length} hào (Sắp xếp theo thứ tự từ Hào Sơ ➔ Hào Lục)`);
+        lines.push("");
 
-      if (yaos.length === 0) {
-        lines.push(`• Tình trạng: Quẻ Tĩnh (Không có hào biến). Cục diện kiên định bất biến, dĩ bất biến ứng vạn biến, bám sát Thoán Từ của Bản Quái.`);
-      } else {
         yaos.forEach((y, idx) => {
           const lineNum = y.yaoNumber || (idx + 1);
           const lineMeaning = priHex.lineMeanings?.find((m) => m.line === lineNum);
@@ -1136,12 +1139,12 @@ async function formatSpreadForAI(
             });
           }
         });
+        lines.push("");
       }
-      lines.push("");
 
       if (trans) {
         lines.push(`----------------------------------------`);
-        lines.push(`【3. BIẾN QUÁI (QUẺ BIẾN) — LÁ DƯỚI SONG SONG】`);
+        lines.push(`【${yaos.length > 0 ? "3" : "2"}. BIẾN QUÁI (QUẺ BIẾN) — LÁ DƯỚI SONG SONG】`);
         lines.push(`• Văn Bản Trọng Tâm: Quái Từ của Quẻ Biến (Thoán Từ, Đại Tượng Truyện)`);
         lines.push(`• Ý Nghĩa Thực Tiễn Trong Đời Sống: Định hướng tương lai: Xu thế phát triển tiếp theo sau khi sự chuyển hóa hoàn tất`);
         lines.push(`• Quẻ số: #${transHex.number} - ${transHex.name} (${transHex.hanzi || transHex.name}) [${transHex.symbol}]`);
@@ -1176,12 +1179,20 @@ async function formatSpreadForAI(
     if (cleanedQuestion) {
       lines.push(`▶ Trọng tâm giải đáp: Tập trung luận giải và tháo gỡ dứt khoát câu hỏi/tâm niệm: "${cleanedQuestion}"`);
     }
-    lines.push(`Xin hãy phân tích trải bài Tháp La Kinh Dịch theo đúng 3 tầng thứ tự và ý nghĩa thực tiễn trong đời sống:`);
-    lines.push(`1. BẢN QUÁI (Định vị bối cảnh): Dựa vào Thoán Từ (Quái Từ), Đại Tượng Truyện và Luận giải chuyên sâu, nhận diện bản chất loại hoàn cảnh thực tại đương số đang đối mặt. Cục diện đang ở đâu? Cơ hội và trở lực tiềm ẩn xung quanh là gì?`);
-    lines.push(`2. HÀO ĐỘNG (Lời khuyên then chốt): Dựa vào Hào Từ của chính các hào biến động (phân tích tuần tự từ Hào Sơ lên Hào Lục). Đâu là trọng tâm hành động và biến số mấu chốt đương số cần lưu tâm? Chỉ rõ việc nên làm, việc cần tránh và thời điểm chuyển hóa quyết định.`);
-    lines.push(`3. BIẾN QUÁI (Định hướng tương lai): Dựa vào Quái Từ của Quẻ Biến, dự báo xu thế phát triển tiếp theo sau khi sự chuyển hóa hoàn tất. Đưa ra chiến lược tổng thể và tâm thế sáng suốt nhất để đương số chủ động kiến tạo cát tường.`);
-    if (cleanedQuestion) {
-      lines.push(`4. Đúc kết lời đáp trực tiếp cho việc đương số đang tâm niệm hỏi.`);
+    if (yaos.length > 0) {
+      lines.push(`Xin hãy phân tích trải bài Tháp La Kinh Dịch theo đúng 3 tầng thứ tự và ý nghĩa thực tiễn trong đời sống:`);
+      lines.push(`1. BẢN QUÁI (Định vị bối cảnh): Dựa vào Thoán Từ (Quái Từ), Đại Tượng Truyện và Luận giải chuyên sâu, nhận diện bản chất loại hoàn cảnh thực tại đương số đang đối mặt. Cục diện đang ở đâu? Cơ hội và trở lực tiềm ẩn xung quanh là gì?`);
+      lines.push(`2. HÀO ĐỘNG (Lời khuyên then chốt): Dựa vào Hào Từ của chính các hào biến động (phân tích tuần tự từ Hào Sơ lên Hào Lục). Đâu là trọng tâm hành động và biến số mấu chốt đương số cần lưu tâm? Chỉ rõ việc nên làm, việc cần tránh và thời điểm chuyển hóa quyết định.`);
+      lines.push(`3. BIẾN QUÁI (Định hướng tương lai): Dựa vào Quái Từ của Quẻ Biến, dự báo xu thế phát triển tiếp theo sau khi sự chuyển hóa hoàn tất. Đưa ra chiến lược tổng thể và tâm thế sáng suốt nhất để đương số chủ động kiến tạo cát tường.`);
+      if (cleanedQuestion) {
+        lines.push(`4. Đúc kết lời đáp trực tiếp cho việc đương số đang tâm niệm hỏi.`);
+      }
+    } else {
+      lines.push(`Xin hãy phân tích trải bài Tháp La Kinh Dịch (Quẻ Tĩnh - Quẻ Chủ và Quẻ Biến cùng 1 quẻ, không có hào động):`);
+      lines.push(`1. BẢN QUÁI & BIẾN QUÁI ĐỒNG NHẤT (Định vị bối cảnh & Định hướng tương lai): Dựa vào Thoán Từ (Quái Từ) và Đại Tượng Truyện, phân tích sâu sắc bản chất cục diện hiện tại và phương châm dĩ bất biến ứng vạn biến.`);
+      if (cleanedQuestion) {
+        lines.push(`2. Đúc kết lời đáp trực tiếp cho việc đương số đang tâm niệm hỏi.`);
+      }
     }
 
     return lines.join("\n");
@@ -1829,7 +1840,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       setMode(item.mode as SpreadMode);
     }
     if (Array.isArray(item.cards) && item.cards.length > 0) {
-      setCards(item.cards);
+      const loadedCards =
+        item.mode === "thap_la" &&
+        item.cards.length >= 2 &&
+        item.cards[0]?.hexNumber !== undefined &&
+        item.cards[0]?.hexNumber === item.cards[1]?.hexNumber
+          ? item.cards.slice(0, 2)
+          : item.cards;
+      setCards(loadedCards);
     }
     if (typeof item.isCard2Reversed === "boolean") {
       setIsCard2Reversed(item.isCard2Reversed);
@@ -1883,7 +1901,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       setMode(item.mode as SpreadMode);
     }
     if (Array.isArray(item.cards) && item.cards.length > 0) {
-      setCards(item.cards);
+      const loadedCards =
+        item.mode === "thap_la" &&
+        item.cards.length >= 2 &&
+        item.cards[0]?.hexNumber !== undefined &&
+        item.cards[0]?.hexNumber === item.cards[1]?.hexNumber
+          ? item.cards.slice(0, 2)
+          : item.cards;
+      setCards(loadedCards);
     }
     if (typeof item.isCard2Reversed === "boolean") {
       setIsCard2Reversed(item.isCard2Reversed);
@@ -3027,11 +3052,11 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         if (ctx) {
           ctx.scale(exportRatio, exportRatio);
 
-          // Vẽ nền trắng và lưới tọa độ mờ 48x48px giống hệt #destiny-cards
-          ctx.fillStyle = "#FFFFFF";
+          // Vẽ nền Giấy Tuyên Thành (#F6F3EB) và lưới tọa độ Tơ Đồng Cổ 48x48px giống hệt #destiny-cards
+          ctx.fillStyle = "#F6F3EB";
           ctx.fillRect(0, 0, cropW, cropH);
 
-          ctx.strokeStyle = "rgba(0, 0, 0, 0.055)";
+          ctx.strokeStyle = "rgba(180, 145, 70, 0.14)";
           ctx.lineWidth = 1;
           ctx.beginPath();
           for (let gx = 0; gx <= cropW; gx += 48) {
@@ -3619,12 +3644,12 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       `}</style>
 
       {/* ══════════════════════════════════════════════════════════════════
-          1. STICKY HEADER – IDENTICAL TO YILORE with CỬU NHỊ LOGO
+          1. STICKY HEADER – IDENTICAL TO YILORE with CỬU NHỊ LOGO & UNIFIED NAV
           ══════════════════════════════════════════════════════════════════ */}
-      <header className="sticky top-0 z-[110] flex h-16 shrink-0 items-center justify-between border-b border-stone-200 bg-white/95 px-4 backdrop-blur-sm sm:px-6">
-        <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+      <header className="sticky top-0 z-[110] flex h-16 shrink-0 items-center justify-between border-b border-[#C4963E]/35 bg-[#FAF7F0]/95 px-4 backdrop-blur-md shadow-[0_4px_18px_rgba(28,22,14,0.06)] sm:px-6">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-3 shrink-0">
           <a
-            className="flex min-w-0 flex-1 items-center gap-2.5 font-semibold text-stone-900 sm:gap-3 cursor-pointer no-underline"
+            className="flex min-w-0 items-center gap-2.5 font-semibold text-[#1C1813] sm:gap-3 cursor-pointer no-underline"
             href="#"
             onClick={(e) => {
               e.preventDefault();
@@ -3632,34 +3657,22 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             }}
           >
             {/* Logo Cửu Nhị */}
-            <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-2xl bg-zinc-950 flex items-center justify-center border border-[#C4963E]/40 shadow-sm">
+            <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-2xl bg-zinc-950 flex items-center justify-center border border-[#C4963E]/50 shadow-sm">
               <BrandMark size={32} title="Cửu Nhị" />
             </span>
-            <span className="min-w-0 truncate font-serif text-sm font-semibold sm:text-base sm:text-lg">
-              I Ching Tarot
+            <span className="min-w-0 truncate font-serif text-sm font-bold text-[#1C1813] sm:text-base lg:text-lg">
+              I Ching Tarot · Cửu Nhị
             </span>
           </a>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-          {/* Nút vào trực tiếp Trang Bốc Quẻ Cửu Nhị (10 Pháp Khí Khởi Quẻ) */}
-          <button
-            type="button"
-            onClick={() => onEnterApp("divination")}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-200 hover:text-amber-100 transition px-3 py-1.5 rounded-full bg-zinc-950 hover:bg-zinc-900 border border-[#C4963E]/60 hover:border-[#C4963E] cursor-pointer shadow-xs active:scale-95"
-            title="Mở Điện Thờ Bốc Quẻ Cửu Nhị (10 Phương Pháp Khởi Quẻ)"
-          >
-            <span className="text-[#C4963E]">☯</span>
-            <span className="hidden sm:inline">Bốc Quẻ Cửu Nhị</span>
-            <span className="sm:hidden">Bốc Quẻ</span>
-          </button>
-
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           {/* Nút chụp hình thẻ bài: Tự động căn chỉnh & chụp trọn vẹn toàn bộ trải bài */}
           <button
             type="button"
             onClick={handleCaptureCardsSnapshot}
             disabled={isCapturingSnapshot}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-stone-800 hover:text-amber-950 transition px-3 py-1.5 rounded-full bg-white hover:bg-amber-50 border border-stone-200/90 hover:border-amber-400/80 cursor-pointer shadow-xs active:scale-95 disabled:opacity-60"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1C1813] hover:text-amber-950 transition px-3 py-1.5 rounded-full bg-[#FDFBF7] hover:bg-amber-50 border border-[#C4963E]/55 hover:border-amber-500 cursor-pointer shadow-xs active:scale-95 disabled:opacity-60"
             title="Tự động căn chụp đầy đủ toàn bộ thẻ bài đang trải"
           >
             {isCapturingSnapshot ? (
@@ -3669,85 +3682,12 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               </>
             ) : (
               <>
-                <Camera className="w-3.5 h-3.5 text-amber-600" />
+                <Camera className="w-3.5 h-3.5 text-amber-700" />
                 <span className="hidden xs:inline sm:inline">Chụp hình thẻ bài</span>
                 <span className="xs:hidden sm:hidden">Chụp hình</span>
               </>
             )}
           </button>
-
-          {/* Ngôn ngữ & Đăng nhập / Tài khoản Cửu Nhị */}
-          <div className="flex items-center gap-1 rounded-full border border-stone-200/90 bg-stone-50/95 px-1 py-1 shadow-sm backdrop-blur-sm sm:gap-1.5 sm:px-1.5">
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
-                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-stone-200/80 bg-white text-stone-600 transition hover:bg-stone-50"
-                aria-label="Language"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 22a10 10 0 100-20 10 10 0 000 20zM2 12h20" stroke="currentColor" strokeWidth="1.5" />
-                  <path d="M12 2a15 15 0 000 20M12 2a15 15 0 010 20" stroke="currentColor" strokeWidth="1.5" />
-                </svg>
-              </button>
-              {isLangMenuOpen && (
-                <ul className="absolute right-0 z-[120] mt-1 min-w-[10.5rem] rounded-xl border border-stone-200 bg-white py-1 shadow-lg text-left">
-                  <li>
-                    <a className="block px-3 py-2 text-sm bg-amber-50 text-amber-900 font-semibold" href="#">
-                      🇻🇳 Tiếng Việt
-                    </a>
-                  </li>
-                  <li>
-                    <a className="block px-3 py-2 text-sm text-stone-700 hover:bg-stone-50" href="#">
-                      🇬🇧 English
-                    </a>
-                  </li>
-                  <li>
-                    <a className="block px-3 py-2 text-sm text-stone-700 hover:bg-stone-50" href="#">
-                      🇹🇼 繁體中文
-                    </a>
-                  </li>
-                </ul>
-              )}
-            </div>
-
-            {currentUser ? (
-              <div className="flex items-center gap-1 sm:gap-1.5">
-                <button
-                  type="button"
-                  id="btn-user-cuunhi-badge"
-                  onClick={() => onEnterApp("yilore")}
-                  className="inline-flex h-9 items-center gap-1.5 rounded-full bg-stone-900 px-3 text-xs font-semibold text-white transition hover:bg-stone-800 shadow-sm cursor-pointer"
-                  title="Nhấn để vào ứng dụng Cửu Nhị (/en/app)"
-                >
-                  <span className="text-[#C4963E]">☯</span>
-                  <span className="max-w-[100px] truncate">{currentUser.name}</span>
-                  {currentUser.isAdmin && (
-                    <span className="text-[10px] bg-[#C4963E] text-stone-950 font-bold px-1.5 py-0.5 rounded-full">Admin</span>
-                  )}
-                </button>
-                {onLogout && (
-                  <button
-                    type="button"
-                    onClick={onLogout}
-                    className="inline-flex h-9 items-center justify-center rounded-full px-2.5 text-xs font-medium text-stone-500 hover:text-stone-900 hover:bg-stone-200/60 transition cursor-pointer"
-                    title="Đăng xuất tài khoản Cửu Nhị"
-                  >
-                    Thoát
-                  </button>
-                )}
-              </div>
-            ) : (
-              <button
-                type="button"
-                id="btn-web-signin"
-                onClick={() => onOpenAuthModal?.("login")}
-                className="inline-flex h-9 min-w-[4.75rem] shrink-0 items-center justify-center whitespace-nowrap rounded-full bg-black px-3.5 text-xs font-semibold text-white transition hover:bg-zinc-800 sm:min-w-[5.25rem] sm:text-sm cursor-pointer shadow-sm"
-              >
-                Đăng nhập
-              </button>
-            )}
-          </div>
         </div>
       </header>
 
@@ -3952,28 +3892,110 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         </section>
 
         {/* ══════════════════════════════════════════════════════════════════
-            3. SECTION 2: DESTINY CARDS – 100% IDENTICAL TO YILORE
+            2.5. CẦU CHUYỂN SẮC THỦY MẶC (INK-WASH TRANSITION BRIDGE)
+            Chuyển cảnh mượt mà từ Bầu Trời Đêm Huyền Mặc sang Giấy Tuyên Thành
+            ══════════════════════════════════════════════════════════════════ */}
+        <div
+          aria-hidden="true"
+          className="relative w-full h-28 sm:h-36 overflow-hidden pointer-events-none select-none flex items-center justify-center"
+          style={{
+            background: "linear-gradient(180deg, #07080D 0%, #171410 36%, #DDD4C3 82%, #F6F3EB 100%)",
+          }}
+        >
+          {/* Hào quang 2800K lan tỏa ở đường chân trời */}
+          <div
+            className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-24 opacity-60"
+            style={{
+              background: "radial-gradient(ellipse 55% 60% at 50% 50%, rgba(212, 175, 55, 0.24) 0%, transparent 75%)",
+            }}
+          />
+          {/* Đường chỉ vàng lưỡng nghi & Ấn Cửu Nhị ở trung tâm cầu chuyển */}
+          <div className="relative z-10 flex items-center gap-3 px-5 py-1.5 rounded-full bg-[#120F0B]/90 border border-[#C4963E]/60 shadow-[0_6px_24px_rgba(196,150,62,0.28)] backdrop-blur-md">
+            <span className="h-[1px] w-8 sm:w-14 bg-gradient-to-r from-transparent to-[#D4AF37]" />
+            <span className="text-[#D4AF37] text-sm leading-none">☯</span>
+            <span className="font-serif text-[10px] sm:text-xs font-semibold tracking-[0.26em] uppercase text-[#F3E5AB]">
+              Cửu Nhị Huyền Đàn · 64 Quẻ Chu Dịch
+            </span>
+            <span className="text-[#D4AF37] text-sm leading-none">✦</span>
+            <span className="h-[1px] w-8 sm:w-14 bg-gradient-to-l from-transparent to-[#D4AF37]" />
+          </div>
+        </div>
+
+        {/* ══════════════════════════════════════════════════════════════════
+            3. SECTION 2: DESTINY CARDS – BÀN TRẢI BÀI GIẤY TUYÊN THÀNH & LA BÀN BÁT QUÁI
             ══════════════════════════════════════════════════════════════════ */}
         <section
           id="destiny-cards"
           aria-label="命运卡牌"
-          className="relative w-full bg-white px-5 pt-12 pb-36 sm:px-8 sm:pt-20 sm:pb-52 min-h-[95vh] sm:min-h-[110vh] overflow-hidden flex flex-col justify-between"
+          className="relative w-full bg-[#F6F3EB] px-5 pt-10 pb-36 sm:px-8 sm:pt-16 sm:pb-52 min-h-[95vh] sm:min-h-[110vh] overflow-hidden flex flex-col justify-between"
+          style={{
+            backgroundImage: "radial-gradient(ellipse 85% 75% at 50% 50%, #FAF8F2 0%, #F4EFE4 65%, #EAE2D3 100%)",
+          }}
         >
-          {/* Lưới tọa độ ngầm mờ ảo */}
+          {/* Lưới tọa độ Tơ Đồng Cổ 48x48px với mặt nạ tỏa tròn (Radial Vignette) */}
           <div
-            className="pointer-events-none absolute inset-0 opacity-[0.055]"
+            className="pointer-events-none absolute inset-0"
             style={{
-              backgroundImage: `linear-gradient(rgba(0,0,0,0.45) 1px,transparent 1px),
-                                linear-gradient(90deg,rgba(0,0,0,0.45) 1px,transparent 1px)`,
+              backgroundImage: `linear-gradient(rgba(180,145,70,0.13) 1px,transparent 1px),
+                                linear-gradient(90deg,rgba(180,145,70,0.13) 1px,transparent 1px)`,
               backgroundSize: "48px 48px",
+              maskImage: "radial-gradient(ellipse 80% 75% at 50% 52%, black 45%, transparent 95%)",
+              WebkitMaskImage: "radial-gradient(ellipse 80% 75% at 50% 52%, black 45%, transparent 95%)",
             }}
           />
 
+          {/* La Bàn Bát Quái Chìm (Celestial Bagua Astrolabe SVG Watermark) xoay chậm dưới tâm bàn bài */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none select-none absolute left-1/2 top-[56%] -translate-x-1/2 -translate-y-1/2 z-[1] flex items-center justify-center"
+          >
+            <svg
+              viewBox="0 0 600 600"
+              className="w-[460px] h-[460px] sm:w-[640px] sm:h-[640px] md:w-[740px] md:h-[740px] opacity-[0.16] animate-[spin_180s_linear_infinite]"
+            >
+              <defs>
+                <radialGradient id="baguaGoldGlow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#D4AF37" stopOpacity="0.25" />
+                  <stop offset="65%" stopColor="#C4963E" stopOpacity="0.08" />
+                  <stop offset="100%" stopColor="#C4963E" stopOpacity="0" />
+                </radialGradient>
+              </defs>
+              <circle cx="300" cy="300" r="285" fill="url(#baguaGoldGlow)" />
+              <circle cx="300" cy="300" r="280" fill="none" stroke="#B8892E" strokeWidth="1.5" strokeDasharray="6 6" />
+              <circle cx="300" cy="300" r="256" fill="none" stroke="#B8892E" strokeWidth="1.2" />
+              <circle cx="300" cy="300" r="215" fill="none" stroke="#B8892E" strokeWidth="1" strokeDasharray="3 5" />
+              <circle cx="300" cy="300" r="168" fill="none" stroke="#B8892E" strokeWidth="1.2" />
+              <circle cx="300" cy="300" r="108" fill="none" stroke="#B8892E" strokeWidth="1" />
+              <polygon
+                points="300,32 490,110 568,300 490,490 300,568 110,490 32,300 110,110"
+                fill="none"
+                stroke="#B8892E"
+                strokeWidth="1.2"
+              />
+              {/* 8 Đường trục Bát Quái */}
+              <line x1="300" y1="20" x2="300" y2="580" stroke="#B8892E" strokeWidth="0.9" strokeOpacity="0.6" />
+              <line x1="20" y1="300" x2="580" y2="300" stroke="#B8892E" strokeWidth="0.9" strokeOpacity="0.6" />
+              <line x1="102" y1="102" x2="498" y2="498" stroke="#B8892E" strokeWidth="0.9" strokeOpacity="0.6" />
+              <line x1="498" y1="102" x2="102" y2="498" stroke="#B8892E" strokeWidth="0.9" strokeOpacity="0.6" />
+              {/* Bát Quái Tiên Thiên Ký Hiệu */}
+              <g fill="#9A6F1A" fontSize="24" fontFamily="serif" textAnchor="middle" dominantBaseline="central">
+                <text x="300" y="64">☰ 乾</text>
+                <text x="466" y="134">☱ 兌</text>
+                <text x="536" y="300">☲ 離</text>
+                <text x="466" y="466">☳ 震</text>
+                <text x="300" y="536">☷ 坤</text>
+                <text x="134" y="466">☶ 艮</text>
+                <text x="64" y="300">☵ 坎</text>
+                <text x="134" y="134">☴ 巽</text>
+              </g>
+            </svg>
+          </div>
+
           {/* Tiêu đề thanh nhã, giữ vị trí tự nhiên phía trên các lá bài để không bao giờ bị lá bài che khuất */}
-          <div className="relative z-[38] mx-auto max-w-4xl px-4 pt-4 pb-4 text-center sm:px-0 sm:pt-6 sm:pb-6">
+          <div className="relative z-[38] mx-auto max-w-4xl px-4 pt-2 pb-4 text-center sm:px-0 sm:pt-4 sm:pb-6">
             <div className="relative">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200/80 text-[#C4963E] text-xs font-semibold mb-3 tracking-widest uppercase">
-                <span>✦</span>
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#16130F] border border-[#C4963E]/70 text-[#F3E5AB] text-xs font-semibold mb-3.5 tracking-widest uppercase shadow-[0_4px_18px_rgba(20,16,10,0.16)]">
+                <span className="text-[#D4AF37]">✦</span>
                 <span>
                   {mode === "that_tinh"
                     ? "Trận Pháp Thất Tinh Bắc Đẩu (7 Lá Chu Dịch)"
@@ -3992,18 +4014,18 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     : "Hệ Thống 64 Quẻ & 384 Hào Chu Dịch"}
                 </span>
                 {isRitualCompleted && (
-                  <span className="ml-1 px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-800 text-[10px] font-bold border border-amber-400">
+                  <span className="ml-1 px-2 py-0.5 rounded-full bg-[#C4963E]/25 text-[#F3E5AB] text-[10px] font-bold border border-[#D4AF37]">
                     ✦ Đắc Pháp Tam Kính
                   </span>
                 )}
                 {isKeepCards && (
-                  <span className="ml-1 px-2 py-0.5 rounded-full bg-amber-100 text-[#7c5516] text-[10px] font-bold border border-[#C4963E]/60 shadow-xs">
+                  <span className="ml-1 px-2 py-0.5 rounded-full bg-amber-950 text-amber-200 text-[10px] font-bold border border-[#C4963E]/80 shadow-xs">
                     🔒 Giữ nguyên
                   </span>
                 )}
-                <span>✦</span>
+                <span className="text-[#D4AF37]">✦</span>
               </div>
-              <h2 className="mb-3 text-3xl font-bold text-zinc-900 sm:text-5xl lg:text-6xl tracking-tight font-serif">
+              <h2 className="mb-3 text-3xl font-bold text-[#1C1813] sm:text-5xl lg:text-6xl tracking-tight font-serif drop-shadow-[0_1px_0_rgba(255,255,255,0.8)]">
                 {mode === "that_tinh"
                   ? "Trận Pháp Thất Tinh"
                   : mode === "thap_tinh"
@@ -4020,7 +4042,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   ? "Trận Pháp Ngũ Hành"
                   : "Bộ Bài I Ching Tarot Phong Cách Đông Phương"}
               </h2>
-              <p className="mx-auto max-w-2xl text-base leading-relaxed text-zinc-500 sm:text-lg">
+              <p className="mx-auto max-w-2xl text-base leading-relaxed text-[#5C5346] sm:text-lg font-serif">
                 {mode === "that_tinh" ? (
                   <>
                     Khảo sát toàn diện 7 phương diện: Quá khứ, Bản thân hiện tại, Diễn biến, Gợi ý chiến lược, Kết quả, Ngoại cảnh và Điểm mù bản thân.
@@ -4028,7 +4050,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 ) : mode === "thap_tinh" ? (
                   <>
                     Tâm điểm thập tự kết hợp 10 vị thế thời vận.
-                    <span className="font-semibold text-amber-700"> Lá thứ 2: {isCard2Reversed ? "Chiều Ngược (Trở Ngại)" : "Chiều Xuôi (Hỗ Trợ)"}</span> (bấm vào lá hoặc nút để đổi chiều).
+                    <span className="font-semibold text-amber-800"> Lá thứ 2: {isCard2Reversed ? "Chiều Ngược (Trở Ngại)" : "Chiều Xuôi (Hỗ Trợ)"}</span> (bấm vào lá hoặc nút để đổi chiều).
                   </>
                 ) : mode === "thap_la" ? (
                   <>
@@ -4060,8 +4082,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             </div>
           </div>
 
-          {/* Điểm neo cho các lá bài xòe ra ở giữa phần trắng – Khoảng trắng kéo dài rộng rãi */}
-          <div className={`flex items-center justify-center pt-4 pb-4 ${mode === "that_tinh" || mode === "thap_tinh" || mode === "thap_la" ? "min-h-[680px] sm:min-h-[760px] md:min-h-[820px]" : "min-h-[540px] sm:min-h-[580px]"}`}>
+          {/* Điểm neo cho các lá bài xòe ra ở giữa phần Giấy Tuyên Thành */}
+          <div className={`relative z-10 flex items-center justify-center pt-4 pb-4 ${mode === "that_tinh" || mode === "thap_tinh" || mode === "thap_la" ? "min-h-[680px] sm:min-h-[760px] md:min-h-[820px]" : "min-h-[540px] sm:min-h-[580px]"}`}>
             <div
               ref={destinyAnchorRef}
               id="destiny-card-anchor"
@@ -4071,10 +4093,12 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           </div>
 
           {/* Chú thích gợi ý tương tác đặt riêng biệt phía dưới xa, hoàn toàn không chạm hay che vào đáy lá bài */}
-          <div className="mt-6 mb-10 text-center pointer-events-auto">
-            <p className="text-xs sm:text-sm text-zinc-400 font-sans tracking-wide">
-              ✦ Nhấp vào từng lá bài để tra cứu quẻ tượng, hào từ & lời giải AI ✦
-            </p>
+          <div className="relative z-10 mt-6 mb-10 text-center pointer-events-auto">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#EFE9DA]/90 border border-[#C4963E]/35 text-xs sm:text-sm text-[#6E5626] font-serif tracking-wide shadow-2xs">
+              <span className="text-[#C4963E]">✦</span>
+              <span>Nhấp vào từng lá bài để soi Mặt Trước &amp; Mặt Sau, tra cứu Hào Từ &amp; Lời Giải AI</span>
+              <span className="text-[#C4963E]">✦</span>
+            </span>
           </div>
         </section>
       </div>
@@ -4245,15 +4269,15 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════
-          5. SECTION 3: FEATURES SECTION – 100% IDENTICAL TO YILORE
+          5. SECTION 3: FEATURES SECTION – HƯƠNG ÁN KHỞI NIỆM & CỬU NHỊ COMMAND DOCK
           ══════════════════════════════════════════════════════════════════ */}
       <section
         ref={featuresSecRef}
         id="features-section"
-        className="relative py-24 sm:py-36 px-5 sm:px-8 bg-white border-t border-zinc-100 overflow-hidden"
+        className="relative py-20 sm:py-32 px-5 sm:px-8 bg-gradient-to-b from-[#F6F3EB] via-[#FAF7F0] to-[#EFE8D8] border-t border-[#C4963E]/25 overflow-hidden"
       >
         {/* Họa tiết núi vẽ mountain.svg ở góc trái dưới */}
-        <div className="pointer-events-none absolute left-0 bottom-20 z-[1] opacity-95">
+        <div className="pointer-events-none absolute left-0 bottom-20 z-[1] opacity-90">
           <img
             alt="mountain decoration"
             loading="lazy"
@@ -4266,89 +4290,87 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         </div>
 
         <div className="relative z-10 max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            {/* Cột trái: Văn bản tính năng & 3 dấu chấm vàng */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Cột trái: Văn bản tính năng, Hương Án Khởi Niệm & Cửu Nhị Command Dock */}
             <div>
-              <p className="text-sm font-medium tracking-[0.25em] uppercase mb-6 text-[#C4963E]">
-                AI × KINH DỊCH × HUYỀN HỌC PHƯƠNG ĐÔNG
-              </p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-zinc-900 leading-tight mb-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#16130F]/90 border border-[#C4963E]/50 mb-5 shadow-xs">
+                <span className="text-[#D4AF37] text-xs">☯</span>
+                <span className="text-[11px] font-semibold tracking-[0.22em] uppercase text-[#F3E5AB]">
+                  AI × KINH DỊCH × HUYỀN HỌC PHƯƠNG ĐÔNG
+                </span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1C1813] font-serif leading-tight mb-5">
                 Mang trí tuệ cổ nhân vào<br />
-                <span style={{ color: "#C4963E" }}>cuộc sống hôm nay</span>
+                <span className="text-[#B8862D]">cuộc sống hôm nay</span>
               </h2>
-              <p className="text-base sm:text-lg leading-relaxed mb-10 text-zinc-500">
+              <p className="text-base sm:text-lg leading-relaxed mb-7 text-[#5A5043] font-serif">
                 Khi bạn cảm thấy bế tắc trong sự nghiệp, tình cảm hay những ngã rẽ cuộc đời,
                 I Ching Tarot kết hợp phương pháp chiêm bốc cổ truyền và AI để chuyển hóa
                 sự phức tạp thành hướng dẫn rõ ràng, có thể hành động.
               </p>
 
-              <div className="space-y-4 mb-10">
+              <div className="space-y-3.5 mb-8">
                 <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-[rgba(196,150,62,0.15)]">
-                    <div className="w-2 h-2 rounded-full" style={{ background: "#C4963E" }} />
+                  <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-[rgba(196,150,62,0.18)] border border-[#C4963E]/40">
+                    <div className="w-2 h-2 rounded-full bg-[#C4963E]" />
                   </div>
-                  <span className="text-base text-zinc-600">
+                  <span className="text-sm sm:text-base text-[#3D352B]">
                     Luận giải AI: hướng dẫn tập trung, sắc sảo cho từng câu hỏi cụ thể của bạn
                   </span>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-[rgba(196,150,62,0.15)]">
-                    <div className="w-2 h-2 rounded-full" style={{ background: "#C4963E" }} />
+                  <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-[rgba(196,150,62,0.18)] border border-[#C4963E]/40">
+                    <div className="w-2 h-2 rounded-full bg-[#C4963E]" />
                   </div>
-                  <span className="text-base text-zinc-600">
+                  <span className="text-sm sm:text-base text-[#3D352B]">
                     Đa dạng phương pháp: Bốc bài, Xăm Khổng Minh, Cỏ Thi, 3 Đồng Xu, Mai Hoa, Lục Nhâm
                   </span>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-[rgba(196,150,62,0.15)]">
-                    <div className="w-2 h-2 rounded-full" style={{ background: "#C4963E" }} />
+                  <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-[rgba(196,150,62,0.18)] border border-[#C4963E]/40">
+                    <div className="w-2 h-2 rounded-full bg-[#C4963E]" />
                   </div>
-                  <span className="text-base text-zinc-600">
+                  <span className="text-sm sm:text-base text-[#3D352B]">
                     12 trận pháp trải bài từ đơn giản đến chuyên sâu (Thất Tinh, Cửu Cung, Thập Nhị Cung)
                   </span>
                 </div>
               </div>
 
-              {/* Nút Bắt đầu ngay -> Nhảy qua trang /en/app (yêu cầu đăng nhập) */}
-              <button
-                type="button"
-                id="btn-use-on-web"
-                onClick={() => onEnterApp("yilore")}
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-white font-semibold cursor-pointer transition hover:scale-[1.03] active:scale-[0.98] shadow-lg"
-                style={{
-                  background: "linear-gradient(135deg,#0B0B0D 0%,#17181C 55%,#252830 100%)",
-                  border: "1px solid rgba(255,255,255,0.12)",
-                  boxShadow: "0 14px 36px rgba(0,0,0,0.35)",
-                }}
-              >
-                <span>Bắt đầu ngay</span>
-                <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                </svg>
-              </button>
-
-              {/* Khung nhập: Nội dung tâm niệm / Câu hỏi (ngay sau Bắt đầu ngay) */}
-              <div className="mt-5 max-w-xl">
-                <div className="rounded-2xl border border-amber-200/80 bg-gradient-to-b from-[#FAF8F5] to-[#F5EFE6]/70 p-3.5 sm:p-4 shadow-sm backdrop-blur-xs transition focus-within:border-[#C4963E] focus-within:ring-2 focus-within:ring-[#C4963E]/20">
-                  <div className="flex items-center justify-between mb-2">
+              {/* MODULE 1: HƯƠNG ÁN KHỞI NIỆM (TRỤC LỤA GIẤY TUYÊN THÀNH VIỀN KÉP CHỈ VÀNG ĐỒNG BỘ TRANG CHỦ) */}
+              <div className="mt-6 max-w-xl">
+                <div
+                  className="relative rounded-2xl border border-[#C4963E]/45 p-4 sm:p-5 backdrop-blur-md transition-all duration-300 focus-within:border-[#C4963E] focus-within:shadow-[0_16px_38px_-6px_rgba(196,150,62,0.22),inset_0_0_0_3px_#FDFBF7,inset_0_0_0_4px_rgba(196,150,62,0.32)]"
+                  style={{
+                    background: "linear-gradient(180deg, rgba(253, 251, 247, 0.96) 0%, rgba(244, 238, 226, 0.94) 100%)",
+                    boxShadow:
+                      "0 12px 32px -8px rgba(110, 90, 55, 0.12), 0 2px 6px rgba(110, 90, 55, 0.06), inset 0 0 0 3px #FDFBF7, inset 0 0 0 4px rgba(196, 150, 62, 0.18)",
+                  }}
+                >
+                  <div className="flex items-center justify-between mb-2.5">
                     <label
                       htmlFor="user-intent-question-input"
-                      className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#7C5516]"
+                      className="flex items-center gap-2 text-xs font-serif font-bold uppercase tracking-[0.16em] text-[#6E4E16]"
                     >
-                      <span className="text-sm">🕊️</span>
-                      <span>Nội dung tâm niệm / Câu hỏi</span>
+                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-md bg-[#9E2A2B] text-amber-50 text-[10px] font-serif border border-[#D4AF37]/60 shadow-2xs">
+                        印
+                      </span>
+                      <span>Hương Án Khởi Niệm · Câu Hỏi Chiêm Bốc</span>
                     </label>
-                    {userIntentQuestion.trim() && (
+                    {userIntentQuestion.trim() ? (
                       <button
                         type="button"
                         onClick={() => handleQuestionChange("")}
-                        className="text-[11px] text-stone-400 hover:text-rose-600 font-medium transition cursor-pointer flex items-center gap-1"
+                        className="text-[11px] text-[#7D6E57] hover:text-[#9E2A2B] font-semibold transition cursor-pointer flex items-center gap-1"
                         title="Xóa nội dung câu hỏi"
                       >
                         ✕ Xóa
                       </button>
+                    ) : (
+                      <span className="hidden sm:inline text-[11px] italic text-[#8A7960] font-serif">
+                        “Tâm tĩnh tắc linh”
+                      </span>
                     )}
                   </div>
 
@@ -4357,117 +4379,132 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     rows={2}
                     value={userIntentQuestion}
                     onChange={(e) => handleQuestionChange(e.target.value)}
-                    placeholder="Nhập câu hỏi, việc đang trăn trở hoặc tâm niệm chiêm bốc của bạn (Ví dụ: Sự nghiệp tháng tới diễn biến ra sao? Có nên đổi việc không?...)"
-                    className="w-full resize-none rounded-xl bg-white border border-stone-200/90 px-3.5 py-2 text-xs sm:text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:border-[#C4963E] transition leading-relaxed shadow-2xs"
+                    placeholder="Tĩnh tâm nhập câu hỏi hoặc sự việc đang trăn trở (VD: Sự nghiệp tháng tới diễn biến ra sao? Có nên ký kết hợp tác này không?...)"
+                    className="w-full resize-none rounded-xl bg-[#F6F1E5]/85 focus:bg-[#FFFEFA] border border-[#C4963E]/35 px-3.5 py-2.5 text-xs sm:text-sm text-[#1E1912] placeholder:text-[#8A7960] focus:outline-none focus:border-[#C4963E] focus:ring-2 focus:ring-[#C4963E]/15 transition leading-relaxed font-serif shadow-inner"
                   />
 
-                  <div className="mt-2 flex flex-wrap items-center justify-between gap-1.5 text-[11px] text-stone-500">
-                    <span className="flex items-center gap-1">
-                      <span className="text-[#C4963E] font-bold">💡</span>
+                  <div className="mt-2.5 flex flex-wrap items-center justify-between gap-1.5 text-[11px] text-[#6E5D47]">
+                    <span className="flex items-center gap-1.5">
+                      <span className="text-[#B8862D] font-bold">✦</span>
                       {userIntentQuestion.trim()
-                        ? "Câu hỏi này sẽ được tự động đính kèm khi bấm 'Chép cho AI'."
-                        : "Nhập câu hỏi để khi 'Chép cho AI', AI sẽ giải đáp đúng trọng tâm của bạn."}
+                        ? "Tâm niệm đã được niêm phong vào quẻ bài để gửi cho AI luận giải."
+                        : "Nhập câu hỏi để khi 'Chép Toàn Thư AI', AI luận giải đúng trọng tâm của bạn."}
                     </span>
                     {userIntentQuestion.trim() && (
-                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-800 bg-emerald-50 border border-emerald-300/80 px-2 py-0.5 rounded-full">
-                        ✓ Đã ghim vào bản chép AI
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-900 bg-emerald-50/90 border border-emerald-500/45 px-2.5 py-0.5 rounded-full">
+                        ✓ Đã ghim tâm niệm
                       </span>
                     )}
                   </div>
                 </div>
               </div>
 
-              {/* Cụm nút chọn hình thức gieo quẻ & thao tác (Tối ưu hóa gọn gàng cho điện thoại) */}
-              <div className="mt-5 pt-5 border-t border-zinc-200/80 flex flex-col gap-2.5 max-w-xl">
-                {/* Tiêu đề nhóm nhỏ */}
-                <div className="flex items-center justify-between mb-0.5">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#7C5516] flex items-center gap-1.5">
-                    <span>✦</span>
-                    <span>Chọn trận pháp gieo quẻ</span>
+              {/* MODULE 2: CỬU NHỊ COMMAND DOCK (NGỌC GIẢN KÍNH MỜ GIẤY TUYÊN THÀNH HÒA QUYỆN NÚI THỦY MẶC) */}
+              <div
+                className="mt-4 max-w-xl rounded-2xl border border-[#C4963E]/45 p-4 sm:p-5 backdrop-blur-xl flex flex-col gap-3.5"
+                style={{
+                  background: "linear-gradient(180deg, rgba(253, 251, 247, 0.92) 0%, rgba(243, 236, 224, 0.88) 100%)",
+                  boxShadow:
+                    "0 16px 38px -10px rgba(92, 74, 44, 0.14), 0 2px 8px rgba(92, 74, 44, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.9)",
+                }}
+              >
+                {/* Header Thanh Pháp Khí */}
+                <div className="flex items-center justify-between border-b border-[#C4963E]/25 pb-2.5">
+                  <span className="text-[11px] font-serif font-bold uppercase tracking-[0.18em] text-[#6E4E16] flex items-center gap-1.5">
+                    <span className="text-[#B8862D] text-xs">☯</span>
+                    <span>Cửu Nhị Command Dock · Chọn Trận Pháp</span>
                   </span>
-                  {isKeepCards && (
-                    <span className="text-[10px] font-semibold text-amber-800 bg-amber-100/90 border border-amber-300 px-2 py-0.5 rounded-full">
-                      🔒 Đang giữ bài
-                    </span>
-                  )}
+                  <div className="flex items-center gap-1.5">
+                    {isRitualCompleted && (
+                      <span className="text-[10px] font-bold text-[#F3E5AB] bg-[#1C1610] border border-[#D4AF37] px-2.5 py-0.5 rounded-full shadow-2xs">
+                        ✦ Đắc Pháp
+                      </span>
+                    )}
+                    {isKeepCards && (
+                      <span className="text-[10px] font-semibold text-[#7A5518] bg-[#FAF0D7] border border-[#C4963E]/55 px-2.5 py-0.5 rounded-full">
+                        🔒 Đang khóa bài
+                      </span>
+                    )}
+                  </div>
                 </div>
 
-                {/* Hàng 1: Trận pháp cơ bản (1 Lá, 2 Lá, 3 Lá, 5 Lá) -> Grid 4 cột gọn gàng trên mobile */}
-                <div className="grid grid-cols-4 gap-1.5 sm:flex sm:flex-wrap sm:gap-2">
+                {/* CỤM 1A: Trận pháp cơ bản (1 Lá, 2 Lá, 3 Lá, 5 Lá) */}
+                <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
                   <RitualHoldButton
                     id="hero-mode-1"
                     active={mode === "1_single"}
                     onClick={(isRitual) => handleSwitchModeAndScroll("1_single", isRitual)}
-                    className={`flex items-center justify-center px-1.5 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-[11px] sm:text-xs transition cursor-pointer shadow-xs ${
+                    className={`flex items-center justify-center px-2 py-2 rounded-xl text-[11px] sm:text-xs transition cursor-pointer ${
                       mode === "1_single"
-                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.02]"
-                        : "bg-white hover:bg-stone-50 text-zinc-800 hover:text-zinc-950 border border-stone-300 font-medium hover:scale-[1.01]"
+                        ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border border-[#D4AF37] font-bold shadow-[0_6px_16px_rgba(28,22,16,0.24),inset_0_1px_0_rgba(212,175,55,0.35)] scale-[1.02]"
+                        : "bg-[#FAF6EE]/90 hover:bg-[#EFE6D5] text-[#4A3B28] hover:text-[#1C1610] border border-[#C4963E]/30 hover:border-[#C4963E]/65 font-medium shadow-2xs"
                     }`}
                     title="Kính Thiên, Kính Địa, Kính Nhân (1 Lá - Đơn Quẻ)"
                   >
                     <span className="sm:hidden">1 Lá</span>
-                    <span className="hidden sm:inline">1 Lá (Đơn Quẻ)</span>
+                    <span className="hidden sm:inline">1 Lá · Đơn Quẻ</span>
                   </RitualHoldButton>
 
                   <RitualHoldButton
                     id="hero-mode-2"
                     active={mode === "1_to_2"}
                     onClick={(isRitual) => handleSwitchModeAndScroll("1_to_2", isRitual)}
-                    className={`flex items-center justify-center px-1.5 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-[11px] sm:text-xs transition cursor-pointer shadow-xs ${
+                    className={`flex items-center justify-center px-2 py-2 rounded-xl text-[11px] sm:text-xs transition cursor-pointer ${
                       mode === "1_to_2"
-                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.02]"
-                        : "bg-white hover:bg-stone-50 text-zinc-800 hover:text-zinc-950 border border-stone-300 font-medium hover:scale-[1.01]"
+                        ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border border-[#D4AF37] font-bold shadow-[0_6px_16px_rgba(28,22,16,0.24),inset_0_1px_0_rgba(212,175,55,0.35)] scale-[1.02]"
+                        : "bg-[#FAF6EE]/90 hover:bg-[#EFE6D5] text-[#4A3B28] hover:text-[#1C1610] border border-[#C4963E]/30 hover:border-[#C4963E]/65 font-medium shadow-2xs"
                     }`}
                     title="Kính Thiên, Kính Địa, Kính Nhân (2 Lá - Âm Dương)"
                   >
                     <span className="sm:hidden">2 Lá</span>
-                    <span className="hidden sm:inline">2 Lá (Âm Dương)</span>
+                    <span className="hidden sm:inline">2 Lá · Âm Dương</span>
                   </RitualHoldButton>
 
                   <RitualHoldButton
                     id="hero-mode-3"
                     active={mode === "1_to_3"}
                     onClick={(isRitual) => handleSwitchModeAndScroll("1_to_3", isRitual)}
-                    className={`flex items-center justify-center px-1.5 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-[11px] sm:text-xs transition cursor-pointer shadow-xs ${
+                    className={`flex items-center justify-center px-2 py-2 rounded-xl text-[11px] sm:text-xs transition cursor-pointer ${
                       mode === "1_to_3"
-                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.02]"
-                        : "bg-white hover:bg-stone-50 text-zinc-800 hover:text-zinc-950 border border-stone-300 font-medium hover:scale-[1.01]"
+                        ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border border-[#D4AF37] font-bold shadow-[0_6px_16px_rgba(28,22,16,0.24),inset_0_1px_0_rgba(212,175,55,0.35)] scale-[1.02]"
+                        : "bg-[#FAF6EE]/90 hover:bg-[#EFE6D5] text-[#4A3B28] hover:text-[#1C1610] border border-[#C4963E]/30 hover:border-[#C4963E]/65 font-medium shadow-2xs"
                     }`}
                     title="Kính Thiên, Kính Địa, Kính Nhân (3 Lá - Tam Tài)"
                   >
                     <span className="sm:hidden">3 Lá</span>
-                    <span className="hidden sm:inline">3 Lá (Tam Tài)</span>
+                    <span className="hidden sm:inline">3 Lá · Tam Tài</span>
                   </RitualHoldButton>
 
                   <RitualHoldButton
                     id="hero-mode-5"
                     active={mode === "3_to_5"}
                     onClick={(isRitual) => handleSwitchModeAndScroll("3_to_5", isRitual)}
-                    className={`flex items-center justify-center px-1.5 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-[11px] sm:text-xs transition cursor-pointer shadow-xs ${
+                    className={`flex items-center justify-center px-2 py-2 rounded-xl text-[11px] sm:text-xs transition cursor-pointer ${
                       mode === "3_to_5"
-                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.02]"
-                        : "bg-white hover:bg-stone-50 text-zinc-800 hover:text-zinc-950 border border-stone-300 font-medium hover:scale-[1.01]"
+                        ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border border-[#D4AF37] font-bold shadow-[0_6px_16px_rgba(28,22,16,0.24),inset_0_1px_0_rgba(212,175,55,0.35)] scale-[1.02]"
+                        : "bg-[#FAF6EE]/90 hover:bg-[#EFE6D5] text-[#4A3B28] hover:text-[#1C1610] border border-[#C4963E]/30 hover:border-[#C4963E]/65 font-medium shadow-2xs"
                     }`}
                     title="Kính Thiên, Kính Địa, Kính Nhân (5 Lá - Ngũ Hành)"
                   >
                     <span className="sm:hidden">5 Lá</span>
-                    <span className="hidden sm:inline">5 Lá (Ngũ Hành)</span>
+                    <span className="hidden sm:inline">5 Lá · Ngũ Hành</span>
                   </RitualHoldButton>
                 </div>
 
-                {/* Hàng 2: Trận pháp mở rộng (Thất Tinh & Thập Tinh) -> Grid 2 cột trên mobile */}
-                <div className="grid grid-cols-2 gap-1.5 sm:flex sm:flex-wrap sm:gap-2">
+                {/* CỤM 1B: Đại Trận Pháp (Thất Tinh 7 Lá, Thập Tinh 10 Lá & Tháp La Kinh Dịch) */}
+                <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
                   <RitualHoldButton
                     id="hero-mode-that-tinh"
                     active={mode === "that_tinh"}
                     onClick={(isRitual) => handleSwitchModeAndScroll("that_tinh", isRitual)}
-                    className={`flex items-center justify-center px-2 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-[11px] sm:text-xs transition cursor-pointer shadow-xs ${
+                    className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl text-[11px] sm:text-xs transition cursor-pointer ${
                       mode === "that_tinh"
-                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.02]"
-                        : "bg-white hover:bg-stone-50 text-zinc-800 hover:text-zinc-950 border border-stone-300 font-medium hover:scale-[1.01]"
+                        ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border border-[#D4AF37] font-bold shadow-[0_6px_16px_rgba(28,22,16,0.24),inset_0_1px_0_rgba(212,175,55,0.35)] scale-[1.01]"
+                        : "bg-[#FAF6EE]/90 hover:bg-[#EFE6D5] text-[#4A3B28] hover:text-[#1C1610] border border-[#C4963E]/30 hover:border-[#C4963E]/65 font-medium shadow-2xs"
                     }`}
                     title="Trận Pháp Thất Tinh (7 Lá): Khảo sát 7 góc độ toàn diện cuộc sống"
                   >
+                    <span className={mode === "that_tinh" ? "text-[#D4AF37]" : "text-[#B8862D]"}>✦</span>
                     <span className="sm:hidden">7 Lá (Thất Tinh)</span>
                     <span className="hidden sm:inline">Thất Tinh Trận (7 Lá)</span>
                   </RitualHoldButton>
@@ -4476,173 +4513,284 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     id="hero-mode-thap-tinh"
                     active={mode === "thap_tinh"}
                     onClick={(isRitual) => handleSwitchModeAndScroll("thap_tinh", isRitual)}
-                    className={`flex items-center justify-center px-2 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-[11px] sm:text-xs transition cursor-pointer shadow-xs ${
+                    className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl text-[11px] sm:text-xs transition cursor-pointer ${
                       mode === "thap_tinh"
-                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.02]"
-                        : "bg-white hover:bg-stone-50 text-zinc-800 hover:text-zinc-950 border border-stone-300 font-medium hover:scale-[1.01]"
+                        ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border border-[#D4AF37] font-bold shadow-[0_6px_16px_rgba(28,22,16,0.24),inset_0_1px_0_rgba(212,175,55,0.35)] scale-[1.01]"
+                        : "bg-[#FAF6EE]/90 hover:bg-[#EFE6D5] text-[#4A3B28] hover:text-[#1C1610] border border-[#C4963E]/30 hover:border-[#C4963E]/65 font-medium shadow-2xs"
                     }`}
                     title="Trận Pháp Thập Tinh (10 Lá): Đỉnh cao Celtic Cross - Lá 2: Xuôi Hỗ Trợ / Ngược Trở Ngại"
                   >
+                    <span className={mode === "thap_tinh" ? "text-[#D4AF37]" : "text-[#B8862D]"}>۞</span>
                     <span className="sm:hidden">10 Lá (Thập Tinh)</span>
                     <span className="hidden sm:inline">Thập Tinh Trận (10 Lá)</span>
                   </RitualHoldButton>
                 </div>
 
-                {/* Hàng 2.5: Tháp La Kinh Dịch (Trận pháp độc quyền nổi bật) */}
+                {/* Trận pháp Độc Quyền: Tháp La Kinh Dịch */}
                 <div className="w-full">
                   <RitualHoldButton
                     id="hero-mode-thap-la"
                     active={mode === "thap_la"}
                     onClick={(isRitual) => handleSwitchModeAndScroll("thap_la", isRitual)}
-                    className={`flex items-center justify-center gap-1.5 w-full px-3 py-2 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-xs transition cursor-pointer shadow-xs ${
+                    className={`flex items-center justify-center gap-2 w-full px-3.5 py-2.5 rounded-xl text-xs transition cursor-pointer ${
                       mode === "thap_la"
-                        ? "bg-zinc-950 text-[#C4963E] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.01]"
-                        : "bg-white hover:bg-stone-50 text-zinc-800 hover:text-zinc-950 border border-stone-300 font-medium hover:scale-[1.01]"
+                        ? "bg-gradient-to-r from-[#261E16] via-[#18130E] to-[#261E16] text-[#F3E5AB] border-2 border-[#D4AF37] font-bold shadow-[0_8px_22px_rgba(28,22,16,0.28)] scale-[1.01]"
+                        : "bg-gradient-to-r from-[#F5EFE0] via-[#FAF6EC] to-[#F5EFE0] hover:from-[#EFE5CF] hover:to-[#EFE5CF] text-[#2C2218] border border-[#C4963E]/55 font-semibold shadow-2xs"
                     }`}
                     title="Tháp La Kinh Dịch: Quẻ Chủ & Quẻ Biến Song Song Trên - Dưới & Dải Hào Từ Biến Dịch (384 Hào)"
                   >
-                    <span>☯</span>
-                    <span className="font-semibold">Tháp La Kinh Dịch</span>
-                    <span className="text-[10px] text-amber-700/80 font-normal hidden xs:inline sm:inline">
-                      (Bản Quái • Hào Động • Biến Quái)
+                    <span className={mode === "thap_la" ? "text-[#D4AF37] text-sm" : "text-[#996515] text-sm"}>☯</span>
+                    <span className="font-serif tracking-wide">Tháp La Kinh Dịch</span>
+                    <span className={`text-[10px] font-normal hidden xs:inline sm:inline ${mode === "thap_la" ? "text-[#D4AF37]" : "text-[#8C621E]"}`}>
+                      (Bản Quái • 6 Hào Động • Biến Quái)
                     </span>
                   </RitualHoldButton>
                 </div>
 
-                {/* Hàng 3: Thao tác (Giữ nguyên, Chép cho AI & Nút đổi chiều Lá 2 khi ở Thập Tinh Trận) */}
-                <div className="flex flex-col gap-2 pt-1">
-                  {mode === "thap_tinh" && (
-                    <button
-                      type="button"
-                      onClick={handleToggleCard2Reversed}
-                      className={`inline-flex items-center justify-center gap-1.5 w-full px-3.5 py-1.5 rounded-xl sm:rounded-full text-xs font-bold transition cursor-pointer shadow-xs active:scale-95 ${
-                        isCard2Reversed
-                          ? "bg-rose-950 text-rose-200 border-2 border-rose-500 shadow-rose-950/40"
-                          : "bg-emerald-950 text-emerald-200 border-2 border-emerald-500 shadow-emerald-950/40"
-                      }`}
-                      title="Bấm để đổi thế Lá thứ 2: Chiều Xuôi (Hỗ Trợ) ↔ Chiều Ngược (Trở Ngại)"
-                    >
-                      <span className="text-amber-300">🔄</span>
-                      <span>Lá 2: {isCard2Reversed ? "Ngược (Trở Ngại)" : "Xuôi (Hỗ Trợ)"}</span>
-                    </button>
-                  )}
+                {/* Nút Đổi Chiều Lá 2 khi đang ở Thập Tinh Trận */}
+                {mode === "thap_tinh" && (
+                  <button
+                    type="button"
+                    onClick={handleToggleCard2Reversed}
+                    className={`inline-flex items-center justify-center gap-1.5 w-full px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer shadow-xs active:scale-95 ${
+                      isCard2Reversed
+                        ? "bg-rose-50/95 text-rose-900 border border-rose-400/70"
+                        : "bg-emerald-50/95 text-emerald-900 border border-emerald-400/70"
+                    }`}
+                    title="Bấm để đổi thế Lá thứ 2: Chiều Xuôi (Hỗ Trợ) ↔ Chiều Ngược (Trở Ngại)"
+                  >
+                    <span>🔄</span>
+                    <span>Thế Lá Thứ 2: {isCard2Reversed ? "Chiều Ngược (Trở Ngại)" : "Chiều Xuôi (Hỗ Trợ)"}</span>
+                  </button>
+                )}
 
-                  <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-2">
-                    {/* Ô Giữ nguyên */}
+                {/* CỤM 2 & 3: QUẢN TRỊ BÀN QUẺ & NÚT CHÉP TOÀN THƯ AI */}
+                <div className="pt-2 border-t border-[#C4963E]/25 flex flex-col gap-2.5">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2">
+                    {/* Nút Khóa / Giữ nguyên */}
                     <RitualHoldButton
                       id="hero-action-keep-cards"
                       active={isKeepCards}
                       onClick={(isRitual) => handleToggleKeepCards(isRitual)}
-                      className={`inline-flex items-center justify-center gap-1.5 w-full sm:w-auto px-3 py-2 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-xs font-semibold transition cursor-pointer shadow-xs active:scale-95 select-none ${
+                      className={`inline-flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-semibold transition cursor-pointer select-none ${
                         isKeepCards
-                          ? "bg-[#fbf4e6] text-[#7c5516] border-2 border-[#C4963E] font-bold shadow-md shadow-[#C4963E]/25 scale-[1.01]"
-                          : "bg-white hover:bg-stone-50 text-zinc-700 hover:text-zinc-950 border border-stone-300 font-medium hover:scale-[1.01]"
+                          ? "bg-[#F5E8C7] text-[#5C3D0E] border border-[#C4963E] font-bold shadow-2xs"
+                          : "bg-[#FAF6EE]/90 hover:bg-[#EFE6D5] text-[#4A3B28] border border-[#C4963E]/30"
                       }`}
-                      title="Ô giữ nguyên: Bật/Tắt giữ nguyên các lá bài hiện tại"
+                      title="Ô giữ nguyên: Bật/Tắt giữ nguyên các lá bài hiện tại khi đổi trận pháp"
                     >
                       <span
-                        className={`w-3.5 h-3.5 rounded flex items-center justify-center text-[10px] font-bold shrink-0 transition-all ${
+                        className={`w-3.5 h-3.5 rounded flex items-center justify-center text-[10px] font-bold shrink-0 ${
                           isKeepCards
-                            ? "bg-[#C4963E] text-zinc-950 shadow-xs"
-                            : "border border-stone-400 bg-stone-50 text-transparent"
+                            ? "bg-[#B8862D] text-white"
+                            : "border border-[#9E8A68] bg-white/80 text-transparent"
                         }`}
                       >
                         ✓
                       </span>
                       <span className="truncate">Giữ nguyên</span>
-                      {isKeepCards && (
-                        <span className="text-[10px] text-amber-800 font-bold hidden sm:inline ml-0.5">
-                          (Đã khóa)
-                        </span>
-                      )}
                     </RitualHoldButton>
 
-                    {/* Nút Chép cho AI */}
-                    <div className="relative inline-flex items-center w-full sm:w-auto">
-                      <button
-                        type="button"
-                        onClick={handleCopyCardsForAI}
-                        className={`inline-flex items-center justify-center gap-1.5 w-full px-3 py-2 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-xs font-semibold transition cursor-pointer shadow-xs active:scale-95 select-none ${
-                          copiedAI
-                            ? "bg-emerald-600 text-white border border-emerald-500 shadow-md scale-[1.01]"
-                            : isRitualCompleted
-                            ? "bg-gradient-to-r from-amber-500/20 via-yellow-400/25 to-amber-500/20 hover:from-amber-500/30 hover:to-amber-500/30 text-amber-950 dark:text-amber-200 border-2 border-amber-500 shadow-md shadow-amber-500/20 ring-1 ring-amber-400/50"
-                            : "bg-[#fbf4e6] hover:bg-[#f6ebd1] text-[#7c5516] border border-[#c4963e]/50 shadow-xs"
-                        }`}
-                        title="Sao chép toàn bộ thông tin các lá bài (kèm câu hỏi & đáp án) để gửi cho AI"
-                      >
-                        <span className="text-sm shrink-0">
-                          {copiedAI ? "✓" : isRitualCompleted ? "✨" : "📋"}
-                        </span>
-                        <span className="truncate">
-                          {copiedAI
-                            ? "Đã chép!"
-                            : isRitualCompleted
-                            ? "Chép Toàn Thư"
-                            : "Chép cho AI"}
-                        </span>
-                        {(userIntentQuestion.trim() || userCustomAnswer.trim()) && !copiedAI && (
-                          <span className="text-[9px] font-medium text-amber-800 bg-amber-100/90 px-1 py-0.2 rounded-full border border-amber-300/60 hidden sm:inline ml-0.5">
-                            +Hỏi&amp;Đáp
-                          </span>
-                        )}
-                      </button>
-                      {isRitualCompleted && (
-                        <span className="absolute -top-2.5 -right-1 bg-gradient-to-r from-amber-600 to-yellow-600 text-[8.5px] font-bold text-white px-1.5 py-0.2 rounded-full shadow-md pointer-events-none animate-pulse">
-                          ✦ Đắc Pháp
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Nút Lưu Quẻ trong Destiny Cards */}
+                    {/* Nút Lưu Quẻ */}
                     <button
                       type="button"
                       onClick={() => setIsSaveDialogOpen(true)}
-                      className="inline-flex items-center justify-center gap-1.5 w-full sm:w-auto px-3 py-2 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-xs font-semibold bg-[#fef8ed] hover:bg-[#fcf1db] text-[#7c5516] border border-amber-300 transition cursor-pointer shadow-xs active:scale-95 select-none"
+                      className="inline-flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-semibold bg-[#FAF6EE]/90 hover:bg-[#EFE6D5] text-[#4A3B28] hover:text-[#1C1610] border border-[#C4963E]/35 transition cursor-pointer active:scale-95 select-none shadow-2xs"
                       title="Lưu trải bài hiện tại kèm Câu hỏi AI và Đáp án tự điền"
                     >
-                      <Bookmark className="w-3.5 h-3.5 text-amber-600" />
+                      <Bookmark className="w-3.5 h-3.5 text-[#B8862D]" />
                       <span>Lưu Quẻ</span>
                     </button>
 
-                    {/* Nút Mở Quẻ trong Destiny Cards */}
+                    {/* Nút Mở Quẻ */}
                     <button
                       type="button"
                       onClick={() => {
                         reloadSavedSpreads();
                         setIsSavedSpreadsModalOpen(true);
                       }}
-                      className="inline-flex items-center justify-center gap-1.5 w-full sm:w-auto px-3 py-2 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-xs font-semibold bg-[#fef8ed] hover:bg-[#fcf1db] text-[#7c5516] border border-amber-300 transition cursor-pointer shadow-xs active:scale-95 select-none"
+                      className="inline-flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-semibold bg-[#FAF6EE]/90 hover:bg-[#EFE6D5] text-[#4A3B28] hover:text-[#1C1610] border border-[#C4963E]/35 transition cursor-pointer active:scale-95 select-none shadow-2xs"
                       title="Mở danh sách các quẻ đã lưu"
                     >
-                      <FolderOpen className="w-3.5 h-3.5 text-amber-600" />
+                      <FolderOpen className="w-3.5 h-3.5 text-[#B8862D]" />
                       <span>Mở Quẻ</span>
                       {savedSpreads.length > 0 && (
-                        <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-500 text-zinc-950">
+                        <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-[#1C1610] text-[#F3E5AB]">
                           {savedSpreads.length}
                         </span>
                       )}
                     </button>
 
-                    {/* Nút Quẻ Tạm Thời trong Destiny Cards */}
+                    {/* Nút Quẻ Tạm Thời */}
                     <button
                       type="button"
                       onClick={() => {
                         reloadTempSpreads();
                         setIsTempSpreadsModalOpen(true);
                       }}
-                      className="inline-flex items-center justify-center gap-1.5 w-full sm:w-auto px-3 py-2 sm:px-4 sm:py-2 rounded-xl sm:rounded-full text-xs font-semibold bg-[#fef8ed] hover:bg-[#fcf1db] text-[#7c5516] border border-amber-300 transition cursor-pointer shadow-xs active:scale-95 select-none"
+                      className="inline-flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-semibold bg-[#FAF6EE]/90 hover:bg-[#EFE6D5] text-[#4A3B28] hover:text-[#1C1610] border border-[#C4963E]/35 transition cursor-pointer active:scale-95 select-none shadow-2xs"
                       title="Mở danh sách các quẻ tạm thời mới mở hôm nay chưa nhấn lưu"
                     >
-                      <Clock className="w-3.5 h-3.5 text-amber-600" />
-                      <span>Quẻ Tạm Thời</span>
+                      <Clock className="w-3.5 h-3.5 text-[#B8862D]" />
+                      <span className="truncate">Quẻ Tạm</span>
                       {tempSpreads.length > 0 && (
-                        <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-200 text-amber-900 border border-amber-400">
+                        <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-[#F3E5AB] text-[#5C3D0E] border border-[#C4963E]/60">
                           {tempSpreads.length}
                         </span>
                       )}
                     </button>
                   </div>
+
+                  {/* CỤM 3: HERO CTA - CHÉP TOÀN THƯ CHO AI (ĐIỂM NHẤN SƠN MÀI HỔ PHÁCH × VÀNG KIM HOÀNG GIA) */}
+                  <div className="relative w-full">
+                    <button
+                      type="button"
+                      onClick={handleCopyCardsForAI}
+                      className={`inline-flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl text-xs sm:text-sm font-serif font-bold transition cursor-pointer shadow-md active:scale-[0.99] select-none ${
+                        copiedAI
+                          ? "bg-emerald-700 text-white border border-emerald-400"
+                          : "text-[#F5E6C4] border border-[#D4AF37]/85 hover:brightness-110"
+                      }`}
+                      style={
+                        copiedAI
+                          ? undefined
+                          : {
+                              background: "linear-gradient(135deg, #2A2118 0%, #1C1610 55%, #261D14 100%)",
+                              boxShadow: "0 10px 24px -4px rgba(28, 22, 16, 0.28), inset 0 1px 0 rgba(212, 175, 55, 0.35)",
+                            }
+                      }
+                      title="Sao chép toàn bộ thông tin các lá bài (kèm câu hỏi & đáp án) để gửi cho AI luận giải"
+                    >
+                      <span className="text-base text-[#E5C158] shrink-0">
+                        {copiedAI ? "✓" : isRitualCompleted ? "✨" : "⚡"}
+                      </span>
+                      <span>
+                        {copiedAI
+                          ? "Đã Sao Chép Toàn Bộ Quẻ Cho AI!"
+                          : isRitualCompleted
+                          ? "Chép Toàn Thư Bách Khoa Cho AI (Đắc Pháp)"
+                          : "Chép Toàn Bộ Quẻ Bài & Câu Hỏi Cho AI"}
+                      </span>
+                      {(userIntentQuestion.trim() || userCustomAnswer.trim()) && !copiedAI && (
+                        <span className="text-[10px] font-sans font-bold text-[#1C1610] bg-[#F3E5AB] px-2 py-0.5 rounded-full border border-[#D4AF37]">
+                          +Kèm Tâm Niệm
+                        </span>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* KHỐI 3: CỤM NÚT VÀO NHẬT KÝ & NGÔN NGỮ / ĐĂNG NHẬP (ĐỒNG BỘ CẶP PHÁP KHÍ LỤA TUYÊN THÀNH 44PX) */}
+              <div className="mt-5 max-w-xl flex flex-wrap items-center justify-between gap-3">
+                <button
+                  type="button"
+                  id="btn-use-on-web"
+                  onClick={() => onEnterApp("yilore")}
+                  className="group inline-flex h-11 items-center gap-2.5 px-5 rounded-full text-[#231C14] font-serif text-xs sm:text-sm font-bold cursor-pointer transition-all hover:-translate-y-0.5 active:scale-[0.98]"
+                  style={{
+                    background: "linear-gradient(180deg, #FDFBF7 0%, #F2EAE0 100%)",
+                    border: "1px solid rgba(196, 150, 62, 0.55)",
+                    boxShadow: "0 6px 18px rgba(110, 90, 55, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.9)",
+                  }}
+                >
+                  <span className="w-6 h-6 rounded-full bg-[#1C1610] border border-[#D4AF37]/80 flex items-center justify-center text-[#E5C158] text-xs shadow-2xs">
+                    ☯
+                  </span>
+                  <span>Vào nhật ký chiêm bốc</span>
+                  <svg viewBox="0 0 24 24" className="w-4 h-4 text-[#996515] transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </button>
+
+                {/* Ngôn ngữ & Đăng nhập / Tài khoản Cửu Nhị (Đồng bộ vỏ Lụa Tuyên Thành + nút Sơn Mài Hổ Phách, xóa bỏ bg-stone-50 & bg-black) */}
+                <div
+                  className="inline-flex h-11 items-center gap-2 rounded-full px-1.5 pl-3 backdrop-blur-md"
+                  style={{
+                    background: "linear-gradient(180deg, #FDFBF7 0%, #F2EAE0 100%)",
+                    border: "1px solid rgba(196, 150, 62, 0.55)",
+                    boxShadow: "0 6px 18px rgba(110, 90, 55, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.9)",
+                  }}
+                >
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+                      className="flex h-8 cursor-pointer items-center gap-1.5 rounded-full px-2 text-xs font-serif font-bold text-[#4A3B28] transition hover:text-[#1C1610]"
+                      aria-label="Language"
+                      title="Chuyển đổi ngôn ngữ"
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" className="text-[#996515]">
+                        <path d="M12 22a10 10 0 100-20 10 10 0 000 20zM2 12h20" stroke="currentColor" strokeWidth="1.6" />
+                        <path d="M12 2a15 15 0 000 20M12 2a15 15 0 010 20" stroke="currentColor" strokeWidth="1.6" />
+                      </svg>
+                      <span className="uppercase tracking-wider text-[11px]">VI</span>
+                    </button>
+                    {isLangMenuOpen && (
+                      <ul className="absolute bottom-full left-0 z-[120] mb-2 min-w-[10.5rem] rounded-xl border border-[#C4963E]/45 bg-[#FDFBF7] py-1 shadow-xl text-left">
+                        <li>
+                          <a className="block px-3 py-2 text-sm bg-[#F5E8C7]/70 text-[#5C3D0E] font-semibold" href="#">
+                            🇻🇳 Tiếng Việt
+                          </a>
+                        </li>
+                        <li>
+                          <a className="block px-3 py-2 text-sm text-[#4A3B28] hover:bg-[#FAF3E3]" href="#">
+                            🇬🇧 English
+                          </a>
+                        </li>
+                        <li>
+                          <a className="block px-3 py-2 text-sm text-[#4A3B28] hover:bg-[#FAF3E3]" href="#">
+                            🇹🇼 繁體中文
+                          </a>
+                        </li>
+                      </ul>
+                    )}
+                  </div>
+
+                  {/* Vạch ngăn cách Chỉ Vàng 2800K */}
+                  <span className="h-4 w-[1px] bg-[#C4963E]/35" />
+
+                  {currentUser ? (
+                    <div className="flex items-center gap-1 sm:gap-1.5">
+                      <button
+                        type="button"
+                        id="btn-user-cuunhi-badge"
+                        onClick={() => onEnterApp("yilore")}
+                        className="inline-flex h-8 items-center gap-1.5 rounded-full bg-gradient-to-b from-[#2A2118] to-[#1C1610] border border-[#D4AF37]/75 px-3.5 text-xs font-serif font-bold text-[#F3E5AB] transition hover:brightness-110 shadow-2xs cursor-pointer"
+                        title="Nhấn để vào ứng dụng Cửu Nhị (/en/app)"
+                      >
+                        <span className="text-[#D4AF37]">☯</span>
+                        <span className="max-w-[100px] truncate">{currentUser.name}</span>
+                        {currentUser.isAdmin && (
+                          <span className="text-[10px] bg-[#D4AF37] text-[#1C1610] font-bold px-1.5 py-0.5 rounded-full">Admin</span>
+                        )}
+                      </button>
+                      {onLogout && (
+                        <button
+                          type="button"
+                          onClick={onLogout}
+                          className="inline-flex h-8 items-center justify-center rounded-full px-2.5 text-xs font-semibold text-[#6E5D47] hover:text-[#9E2A2B] hover:bg-[#EFE6D5] transition cursor-pointer"
+                          title="Đăng xuất tài khoản Cửu Nhị"
+                        >
+                          Thoát
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      id="btn-web-signin"
+                      onClick={() => onOpenAuthModal?.("login")}
+                      className="inline-flex h-8 min-w-[5rem] shrink-0 items-center justify-center whitespace-nowrap rounded-full px-4 text-xs font-serif font-bold text-[#F3E5AB] transition hover:brightness-110 cursor-pointer"
+                      style={{
+                        background: "linear-gradient(135deg, #2A2118 0%, #1C1610 100%)",
+                        border: "1px solid rgba(212, 175, 55, 0.72)",
+                        boxShadow: "0 4px 10px rgba(28, 22, 16, 0.22)",
+                      }}
+                    >
+                      Đăng nhập
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -4685,12 +4833,6 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           <button type="button" onClick={() => window.open(getBlogUrl(), "_blank", "noopener,noreferrer")} className="text-[#C4963E] hover:underline font-semibold cursor-pointer">
             📝 Blog Dịch Học ↗
           </button>
-          <button type="button" onClick={() => setIsOracleOpen(true)} className="hover:text-white transition cursor-pointer">
-            🪙 Tung 3 Đồng Xu
-          </button>
-          <button type="button" onClick={() => setIsLifeConfigOpen(true)} className="hover:text-white transition cursor-pointer">
-            🖨️ Phiếu Nhân Sinh
-          </button>
           <button type="button" onClick={() => onEnterApp("pricing")} className="hover:text-white transition cursor-pointer">
             Báo Giá
           </button>
@@ -4702,73 +4844,82 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       </footer>
 
       {/* ══════════════════════════════════════════════════════════════════
-          7. MODAL: CHI TIẾT THẺ BÀI (MẶT TRƯỚC & MẶT SAU)
+          7. MODAL: CHI TIẾT THẺ BÀI (HỘP GẤM BẢO VẬT 2 MẶT)
           ══════════════════════════════════════════════════════════════════ */}
       {selectedCard && (
         <div
-          className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md overflow-y-auto"
+          className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-4 bg-black/88 backdrop-blur-md overflow-y-auto"
           onClick={() => setSelectedCard(null)}
         >
           <div
-            className="relative w-full max-w-lg sm:max-w-xl my-auto rounded-3xl bg-[#16171B] border border-[#C4963E]/40 shadow-2xl p-5 sm:p-6 text-center text-stone-200"
+            className="relative w-full max-w-lg sm:max-w-xl my-auto rounded-3xl bg-gradient-to-b from-[#1A1612] via-[#13100C] to-[#0E0B08] border-2 border-[#C4963E]/60 shadow-[0_0_70px_rgba(196,150,62,0.22)] p-5 sm:p-6 text-center text-stone-200 overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Hào quang 2800K rọi từ đỉnh hộp gấm */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-56 opacity-45"
+              style={{
+                background: "radial-gradient(ellipse at center, rgba(212, 175, 55, 0.35) 0%, transparent 70%)",
+              }}
+            />
+
             <button
               type="button"
               onClick={() => setSelectedCard(null)}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-stone-300 hover:text-white transition cursor-pointer z-10"
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-[#C4963E]/30 border border-[#C4963E]/30 flex items-center justify-center text-stone-300 hover:text-white transition cursor-pointer z-10"
               title="Đóng bảng chi tiết"
             >
               ✕
             </button>
 
             {/* Bộ chuyển đổi góc nhìn: Cả 2 mặt / Mặt trước / Mặt sau */}
-            <div className="flex items-center justify-center gap-1.5 mb-4">
+            <div className="relative z-10 inline-flex items-center justify-center gap-1 p-1 rounded-full bg-[#0B0907]/90 border border-[#C4963E]/40 mb-4">
               <button
                 type="button"
                 onClick={() => setModalCardView("both")}
-                className={`px-3 py-1 rounded-full text-xs font-semibold transition cursor-pointer ${
+                className={`px-3.5 py-1 rounded-full text-xs font-serif font-semibold transition cursor-pointer ${
                   modalCardView === "both"
-                    ? "bg-[#C4963E] text-stone-950 font-bold shadow-md"
-                    : "bg-white/10 text-stone-300 hover:bg-white/15"
+                    ? "bg-gradient-to-r from-[#E5C158] to-[#C4963E] text-stone-950 font-bold shadow-md"
+                    : "text-[#D8C8A8] hover:text-white"
                 }`}
               >
-                ✦ Cả 2 mặt
+                ✦ Cả 2 Mặt
               </button>
               <button
                 type="button"
                 onClick={() => setModalCardView("front")}
-                className={`px-3 py-1 rounded-full text-xs font-semibold transition cursor-pointer ${
+                className={`px-3.5 py-1 rounded-full text-xs font-serif font-semibold transition cursor-pointer ${
                   modalCardView === "front"
-                    ? "bg-[#C4963E] text-stone-950 font-bold shadow-md"
-                    : "bg-white/10 text-stone-300 hover:bg-white/15"
+                    ? "bg-gradient-to-r from-[#E5C158] to-[#C4963E] text-stone-950 font-bold shadow-md"
+                    : "text-[#D8C8A8] hover:text-white"
                 }`}
               >
-                Mặt trước
+                Mặt Trước
               </button>
               <button
                 type="button"
                 onClick={() => setModalCardView("back")}
-                className={`px-3 py-1 rounded-full text-xs font-semibold transition cursor-pointer ${
+                className={`px-3.5 py-1 rounded-full text-xs font-serif font-semibold transition cursor-pointer ${
                   modalCardView === "back"
-                    ? "bg-[#C4963E] text-stone-950 font-bold shadow-md"
-                    : "bg-white/10 text-stone-300 hover:bg-white/15"
+                    ? "bg-gradient-to-r from-[#E5C158] to-[#C4963E] text-stone-950 font-bold shadow-md"
+                    : "text-[#D8C8A8] hover:text-white"
                 }`}
               >
-                Mặt sau
+                Mặt Sau
               </button>
             </div>
 
             {/* Khung hiển thị các lá bài (Full hình 100% không bị crop xén) */}
             {modalCardView === "both" ? (
-              <div className="flex items-center justify-center gap-3 sm:gap-6 mb-4">
+              <div className="relative z-10 flex items-center justify-center gap-3 sm:gap-6 mb-4">
                 {/* Khung Mặt Trước */}
                 <div className="flex flex-col items-center">
-                  <span className="text-[11px] font-semibold text-amber-300/80 mb-1.5 flex items-center gap-1">
-                    <span className="text-amber-400">✦</span> Mặt Trước
+                  <span className="text-[11px] font-serif font-semibold text-[#F3E5AB] mb-1.5 flex items-center gap-1">
+                    <span className="text-[#D4AF37]">✦</span> Mặt Trước (Quẻ Tượng)
                   </span>
                   <div
-                    className={`relative rounded-2xl overflow-hidden shadow-2xl border border-[#C4963E]/50 bg-black/80 flex items-center justify-center p-1 group hover:border-amber-400 transition-transform duration-500 ${
+                    className={`relative rounded-2xl overflow-hidden shadow-[0_12px_36px_rgba(0,0,0,0.65)] border-2 border-[#C4963E]/65 bg-[#0A0806] flex items-center justify-center p-1 group hover:border-[#F3E5AB] transition-transform duration-500 ${
                       mode === "thap_tinh" && selectedCard.id === cards[1]?.id && isCard2Reversed ? "rotate-180" : ""
                     }`}
                     style={{
@@ -4798,11 +4949,11 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
                 {/* Khung Mặt Sau */}
                 <div className="flex flex-col items-center">
-                  <span className="text-[11px] font-semibold text-amber-300/80 mb-1.5 flex items-center gap-1">
-                    <span className="text-amber-400">✦</span> Mặt Sau
+                  <span className="text-[11px] font-serif font-semibold text-[#F3E5AB] mb-1.5 flex items-center gap-1">
+                    <span className="text-[#D4AF37]">✦</span> Mặt Sau (Thoán Từ)
                   </span>
                   <div
-                    className="relative rounded-2xl overflow-hidden shadow-2xl border border-[#C4963E]/50 bg-black/80 flex items-center justify-center p-1 group hover:border-amber-400 transition"
+                    className="relative rounded-2xl overflow-hidden shadow-[0_12px_36px_rgba(0,0,0,0.65)] border-2 border-[#C4963E]/65 bg-[#0A0806] flex items-center justify-center p-1 group hover:border-[#F3E5AB] transition"
                     style={{
                       width: selectedCard.type === "yao" ? "150px" : "140px",
                       height: selectedCard.type === "yao" ? "200px" : "205px",
@@ -4834,12 +4985,12 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 </div>
               </div>
             ) : (
-              <div className="mx-auto flex flex-col items-center justify-center mb-4">
-                <span className="text-[11px] font-semibold text-amber-300/80 mb-1.5 flex items-center gap-1">
-                  <span className="text-amber-400">✦</span> {modalCardView === "front" ? "Mặt Trước" : "Mặt Sau"}
+              <div className="relative z-10 mx-auto flex flex-col items-center justify-center mb-4">
+                <span className="text-[11px] font-serif font-semibold text-[#F3E5AB] mb-1.5 flex items-center gap-1">
+                  <span className="text-[#D4AF37]">✦</span> {modalCardView === "front" ? "Mặt Trước (Quẻ Tượng)" : "Mặt Sau (Thoán Từ)"}
                 </span>
                 <div
-                  className={`relative rounded-2xl overflow-hidden shadow-2xl border border-[#C4963E]/50 bg-black/80 flex items-center justify-center p-1 group hover:border-amber-400 transition-transform duration-500 ${
+                  className={`relative rounded-2xl overflow-hidden shadow-[0_12px_36px_rgba(0,0,0,0.65)] border-2 border-[#C4963E]/65 bg-[#0A0806] flex items-center justify-center p-1 group hover:border-[#F3E5AB] transition-transform duration-500 ${
                     mode === "thap_tinh" && selectedCard.id === cards[1]?.id && isCard2Reversed ? "rotate-180" : ""
                   }`}
                   style={{
@@ -4878,8 +5029,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             )}
 
             {selectedCard.positionLabel && (
-              <div className="mb-3 flex flex-wrap items-center justify-center gap-2">
-                <span className="inline-block px-3 py-1 rounded-full text-xs font-bold font-serif bg-amber-500/20 text-amber-300 border border-amber-500/40 tracking-wider">
+              <div className="relative z-10 mb-3 flex flex-wrap items-center justify-center gap-2">
+                <span className="inline-block px-3.5 py-1 rounded-full text-xs font-bold font-serif bg-[#C4963E]/20 text-[#F3E5AB] border border-[#C4963E]/55 tracking-wider">
                   Vị trí: {selectedCard.positionLabel}
                 </span>
                 {mode === "thap_tinh" && selectedCard.id === cards[1]?.id && (
@@ -4899,20 +5050,20 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               </div>
             )}
 
-            <div className="mb-2">
-              <span className="inline-block px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#C4963E]/20 text-[#C4963E] border border-[#C4963E]/30 uppercase tracking-wider">
+            <div className="relative z-10 mb-2">
+              <span className="inline-block px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#C4963E]/20 text-[#E5C158] border border-[#C4963E]/40 uppercase tracking-wider">
                 {selectedCard.type === "yao" ? "384 Hào Từ Chu Dịch" : "64 Quẻ Chu Dịch"}
               </span>
             </div>
 
-            <span className="text-4xl text-[#C4963E] font-bold block mb-1">{selectedCard.symbol}</span>
-            <h3 className="text-xl font-bold text-white mb-1">{selectedCard.name}</h3>
-            <p className="text-xs text-stone-400 mb-3">{selectedCard.sub}</p>
-            <p className="text-xs leading-relaxed text-stone-300 bg-white/5 rounded-xl p-3 text-left">
+            <span className="relative z-10 text-4xl text-[#D4AF37] font-bold block mb-1 drop-shadow">{selectedCard.symbol}</span>
+            <h3 className="relative z-10 text-xl font-serif font-bold text-[#FAF0D7] mb-1">{selectedCard.name}</h3>
+            <p className="relative z-10 text-xs text-[#B8A88A] mb-3 font-serif">{selectedCard.sub}</p>
+            <p className="relative z-10 text-xs leading-relaxed text-[#E6D7B8] bg-[#0B0907]/85 border border-[#C4963E]/25 rounded-xl p-3.5 text-left font-serif">
               {selectedCard.desc}
             </p>
 
-            <div className="mt-5 flex flex-col sm:flex-row gap-2.5 justify-center">
+            <div className="relative z-10 mt-5 flex flex-col sm:flex-row gap-2.5 justify-center">
               <button
                 type="button"
                 onClick={() => handleCopySingleCardForAI(selectedCard)}
@@ -4921,7 +5072,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     ? "bg-emerald-600 text-white border-emerald-500"
                     : isRitualCompleted
                     ? "bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border-amber-500/60 ring-1 ring-amber-400/40"
-                    : "bg-white/10 hover:bg-white/15 text-stone-200 hover:text-white border-white/20"
+                    : "bg-[#221D17] hover:bg-[#2C251D] text-[#F3E5AB] border-[#C4963E]/45"
                 }`}
                 title={
                   isRitualCompleted
@@ -4944,7 +5095,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   const targetUrl = getHexDetailUrl(selectedCard.hexNumber, selectedCard.yaoNumber);
                   window.open(targetUrl, "_blank", "noopener,noreferrer");
                 }}
-                className="flex-1 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-[#C4963E] to-[#E5B558] text-stone-950 font-bold text-xs hover:brightness-110 transition shadow-lg cursor-pointer flex items-center justify-center gap-2"
+                className="flex-1 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-[#E5C158] via-[#D4AF37] to-[#B8862D] text-stone-950 font-serif font-bold text-xs hover:brightness-110 transition shadow-lg cursor-pointer flex items-center justify-center gap-2"
                 title="Mở trang luận giải chi tiết của quẻ này trong Bách Khoa Kinh Dịch"
               >
                 <span>📖</span>
@@ -4968,7 +5119,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           onClick={() => setIsOracleOpen(false)}
         >
           <div
-            className="relative w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-3xl bg-[#17181C] border border-[#C4963E]/40 shadow-2xl p-6 text-stone-200"
+            className="relative w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-3xl bg-gradient-to-b from-[#1A1612] to-[#0F0C09] border-2 border-[#C4963E]/55 shadow-[0_0_60px_rgba(196,150,62,0.2)] p-6 text-stone-200"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -4980,34 +5131,37 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             </button>
 
             <div className="text-center mb-5">
-              <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-[#C4963E]/20 text-[#C4963E] mb-2 uppercase tracking-widest">
-                I Ching Tarot Divination
+              <span className="inline-block px-3.5 py-1 rounded-full text-xs font-serif font-semibold bg-[#C4963E]/20 text-[#F3E5AB] border border-[#C4963E]/40 mb-2 uppercase tracking-widest">
+                ☯ Cửu Nhị Lục Hào · Càn Long Thông Bảo
               </span>
-              <h2 className="text-2xl font-bold text-white mb-1">Phòng Gieo Quẻ Kinh Dịch AI</h2>
-              <p className="text-xs text-stone-400">Tĩnh tâm nghĩ về câu hỏi và tung 3 đồng xu 6 lần để tạo quẻ.</p>
+              <h2 className="text-2xl font-serif font-bold text-[#FAF0D7] mb-1">Phòng Gieo Quẻ Kinh Dịch AI</h2>
+              <p className="text-xs text-[#B8A88A]">Tĩnh tâm nghĩ về câu hỏi và tung 3 đồng xu cổ 6 lần để lập quẻ Lục Hào.</p>
             </div>
 
             <div className="mb-4">
-              <label className="block text-xs font-medium text-stone-400 mb-1.5">Câu hỏi trong tâm:</label>
+              <label className="block text-xs font-serif font-medium text-[#D8C8A8] mb-1.5">Câu hỏi trong tâm:</label>
               <input
                 type="text"
                 value={oracleQuestion}
                 onChange={(e) => setOracleQuestion(e.target.value)}
                 placeholder="Ví dụ: Vận thế sự nghiệp tháng tới của tôi ra sao?..."
-                className="w-full rounded-xl bg-white/5 border border-white/15 px-4 py-2.5 text-sm text-white placeholder-stone-500 focus:outline-none focus:border-[#C4963E]"
+                className="w-full rounded-xl bg-[#0B0907]/90 border border-[#C4963E]/35 px-4 py-2.5 text-sm text-[#FAF0D7] placeholder-[#7D6F5B] focus:outline-none focus:border-[#E5C158] font-serif"
               />
             </div>
 
             {/* Sân tung 3 đồng xu */}
-            <div className="rounded-2xl bg-black/40 border border-white/10 p-5 mb-5 text-center">
+            <div className="rounded-2xl bg-[#0B0907]/85 border border-[#C4963E]/30 p-5 mb-5 text-center shadow-inner">
               <div className="flex justify-center items-center gap-6 my-3">
                 {["乾", "通", "寶"].map((txt, i) => (
                   <div
                     key={i}
-                    className={`w-14 h-14 rounded-full flex items-center justify-center font-bold text-amber-900 border-2 border-amber-600 shadow-xl text-lg select-none ${isFlipping ? "flipping" : ""}`}
-                    style={{ background: "radial-gradient(circle, #f6d365 0%, #fda085 100%)" }}
+                    className={`relative w-16 h-16 rounded-full flex items-center justify-center font-serif font-bold text-[#2B1B06] border-2 border-[#FFF0C2]/80 shadow-[0_6px_20px_rgba(212,175,55,0.35)] text-xl select-none ${isFlipping ? "flipping" : ""}`}
+                    style={{
+                      background: "radial-gradient(circle at 35% 35%, #F8E39B 0%, #D4AF37 55%, #8F6516 100%)",
+                    }}
                   >
-                    {txt}
+                    <span className="absolute w-3.5 h-3.5 border border-[#5E400A]/70 bg-[#120E0A]/25 pointer-events-none" />
+                    <span className="relative z-10 drop-shadow-[0_1px_0_rgba(255,255,255,0.6)]">{txt}</span>
                   </div>
                 ))}
               </div>
@@ -5044,10 +5198,13 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   type="button"
                   onClick={handleTossCoin}
                   disabled={isFlipping}
-                  className="px-8 py-3 rounded-full font-bold text-zinc-950 transition-transform active:scale-95 shadow-xl cursor-pointer"
-                  style={{ background: "linear-gradient(135deg, #FAD961 0%, #F76B1C 100%)" }}
+                  className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full font-serif font-bold text-[#14100B] border border-[#FFF2C6] transition-transform active:scale-95 shadow-[0_8px_26px_rgba(212,175,55,0.35)] cursor-pointer"
+                  style={{ background: "linear-gradient(135deg, #F3E5AB 0%, #D4AF37 55%, #B8862D 100%)" }}
                 >
-                  🪙 Tung Đồng Xu (Hào {coinsTossStep + 1}/6)
+                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#1C140A] text-[#F3E5AB] text-[10px] font-serif font-bold border border-[#D4AF37] leading-none">
+                    寶
+                  </span>
+                  <span>Tung Đồng Xu (Hào {coinsTossStep + 1}/6)</span>
                 </button>
               ) : (
                 <button
@@ -5095,15 +5252,15 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       )}
 
       {/* ══════════════════════════════════════════════════════════════════
-          9. MODAL: PHIẾU KIỂM ĐỊNH NHÂN SINH (LIFE CONFIG THERMAL RECEIPT)
+          9. MODAL: PHIẾU KIỂM ĐỊNH NHÂN SINH (SỚ ĐIỆP THIÊN MỆNH & ẤN CHU SA)
           ══════════════════════════════════════════════════════════════════ */}
       {isLifeConfigOpen && (
         <div
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md overflow-y-auto"
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/88 backdrop-blur-md overflow-y-auto"
           onClick={() => setIsLifeConfigOpen(false)}
         >
           <div
-            className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-3xl bg-[#17181C] border border-[#C4963E]/40 shadow-2xl p-6 text-stone-200"
+            className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-3xl bg-gradient-to-b from-[#1A1612] to-[#0E0B08] border-2 border-[#C4963E]/55 shadow-[0_0_65px_rgba(196,150,62,0.22)] p-6 text-stone-200"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -5115,30 +5272,30 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             </button>
 
             <div className="text-center mb-5">
-              <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-[#C4963E]/20 text-[#C4963E] mb-2 uppercase tracking-widest">
-                Life Factory Config
+              <span className="inline-block px-3.5 py-1 rounded-full text-xs font-serif font-semibold bg-[#C4963E]/20 text-[#F3E5AB] border border-[#C4963E]/45 mb-2 uppercase tracking-widest">
+                ☯ Cửu Nhị Thiên Mệnh Tạo Hóa Cục
               </span>
-              <h2 className="text-2xl font-bold text-white mb-1">Hóa Đơn Cấu Hình Cuộc Đời</h2>
-              <p className="text-xs text-stone-400">Xuất bản phiếu kiểm định phần cứng nguyên bản theo Tứ Trụ & Dịch Học.</p>
+              <h2 className="text-2xl font-serif font-bold text-[#FAF0D7] mb-1">Sớ Điệp Cấu Hình Nhân Sinh</h2>
+              <p className="text-xs text-[#B8A88A]">Xuất bản phiếu kiểm định bản mệnh nguyên bản theo Tứ Trụ Bát Tự &amp; Chu Dịch.</p>
             </div>
 
-            <div className="space-y-3 mb-5 text-xs">
+            <div className="space-y-3.5 mb-5 text-xs font-serif">
               <div>
-                <label className="block text-stone-400 mb-1">Ngày Xuất Xưởng (Dương Lịch):</label>
+                <label className="block text-[#D8C8A8] mb-1">Ngày Xuất Xưởng (Dương Lịch):</label>
                 <input
                   type="date"
                   value={birthDate}
                   onChange={(e) => setBirthDate(e.target.value)}
-                  className="w-full rounded-xl bg-white/5 border border-white/15 px-3 py-2 text-white focus:outline-none focus:border-[#C4963E]"
+                  className="w-full rounded-xl bg-[#0B0907]/90 border border-[#C4963E]/35 px-3.5 py-2.5 text-[#FAF0D7] focus:outline-none focus:border-[#E5C158]"
                 />
               </div>
 
               <div>
-                <label className="block text-stone-400 mb-1">Giờ Xuất Xưởng:</label>
+                <label className="block text-[#D8C8A8] mb-1">Giờ Xuất Xưởng (Thời Thần):</label>
                 <select
                   value={birthHour}
                   onChange={(e) => setBirthHour(e.target.value)}
-                  className="w-full rounded-xl bg-[#23252b] border border-white/15 px-3 py-2 text-white focus:outline-none focus:border-[#C4963E]"
+                  className="w-full rounded-xl bg-[#14100C] border border-[#C4963E]/35 px-3.5 py-2.5 text-[#FAF0D7] focus:outline-none focus:border-[#E5C158]"
                 >
                   <option value="23-1">Giờ Tý (23:00 - 00:59)</option>
                   <option value="1-3">Giờ Sửu (01:00 - 02:59)</option>
@@ -5156,29 +5313,29 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               </div>
 
               <div>
-                <label className="block text-stone-400 mb-1">Mẫu Hình / Giới Tính:</label>
-                <div className="flex gap-4">
-                  <label className="flex items-center gap-2 cursor-pointer">
+                <label className="block text-[#D8C8A8] mb-1">Mẫu Hình Âm Dương:</label>
+                <div className="flex gap-5">
+                  <label className="flex items-center gap-2 cursor-pointer text-[#FAF0D7]">
                     <input
                       type="radio"
                       name="cfg-gender"
                       value="Nam"
                       checked={gender === "Nam"}
                       onChange={() => setGender("Nam")}
-                      className="accent-[#C4963E]"
+                      className="accent-[#D4AF37]"
                     />
-                    Nam (Yang Model)
+                    Nam (Càn Dương ☰)
                   </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
+                  <label className="flex items-center gap-2 cursor-pointer text-[#FAF0D7]">
                     <input
                       type="radio"
                       name="cfg-gender"
                       value="Nữ"
                       checked={gender === "Nữ"}
                       onChange={() => setGender("Nữ")}
-                      className="accent-[#C4963E]"
+                      className="accent-[#D4AF37]"
                     />
-                    Nữ (Yin Model)
+                    Nữ (Khôn Âm ☷)
                   </label>
                 </div>
               </div>
@@ -5187,32 +5344,42 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             <button
               type="button"
               onClick={() => setReceiptGenerated(true)}
-              className="w-full py-3 rounded-full font-bold text-zinc-950 transition-transform active:scale-95 shadow-xl mb-4 cursor-pointer"
-              style={{ background: "linear-gradient(135deg, #FAD961 0%, #F76B1C 100%)" }}
+              className="w-full py-3 rounded-full font-serif font-bold text-[#14100B] border border-[#FFF2C6] transition-transform active:scale-95 shadow-[0_8px_28px_rgba(212,175,55,0.32)] mb-4 cursor-pointer"
+              style={{ background: "linear-gradient(135deg, #F3E5AB 0%, #D4AF37 55%, #B8862D 100%)" }}
             >
-              🖨️ In Phiếu Kiểm Định Nhân Sinh
+              🖨️ Khai Ấn &amp; In Sớ Điệp Kiểm Định Nhân Sinh
             </button>
 
             {receiptGenerated && (
-              <div className="rounded-xl bg-[#fffef7] text-stone-900 p-5 font-mono text-xs shadow-2xl border-dashed border-2 border-stone-300">
-                <div className="text-center border-b-2 border-stone-300 pb-2 mb-3">
-                  <p className="font-bold text-xs tracking-widest uppercase">CỬU NHỊ LIFE FACTORY</p>
-                  <p className="text-[10px] text-stone-600">CHỨNG NHẬN KIỂM ĐỊNH PHẦN CỨNG BẢN THỂ</p>
-                  <p className="text-[9px] text-stone-400 mt-0.5">SN: CN-2026-8888</p>
+              <div className="relative rounded-2xl bg-[#FAF6EC] text-[#1E1912] p-5 font-serif text-xs shadow-2xl border-2 border-[#C4963E]/65 overflow-hidden">
+                {/* Dấu Triện Chu Sa Cửu Nhị đóng nghiêng ở góc phải dưới */}
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none select-none absolute bottom-3 right-4 w-20 h-20 rounded-xl border-2 border-[#A62626]/75 flex flex-col items-center justify-center text-[#A62626] font-serif font-bold leading-tight rotate-[-12deg] opacity-85 bg-[#A62626]/[0.04]"
+                >
+                  <span className="text-[10px] tracking-widest">九二</span>
+                  <span className="text-xs tracking-wider border-y border-[#A62626]/60 px-1 my-0.5">天命印</span>
+                  <span className="text-[8px] uppercase">Giám Định</span>
                 </div>
-                <div className="space-y-1 mb-3 text-[11px]">
-                  <div className="flex justify-between"><span>Model:</span><span className="font-bold">{gender === "Nam" ? "Nam (Càn Vi Thiên)" : "Nữ (Khôn Vi Địa)"}</span></div>
-                  <div className="flex justify-between"><span>Ngày Sản Xuất:</span><span>{birthDate}</span></div>
-                  <div className="flex justify-between"><span>Giờ Xuất Xưởng:</span><span>{birthHour}</span></div>
-                  <div className="flex justify-between"><span>Bản Mệnh Ngũ Hành:</span><span className="font-bold text-amber-800">Bạch Lạp Kim (Vàng trong sáp)</span></div>
-                  <div className="flex justify-between"><span>Hiệu Năng Vận Hành:</span><span className="font-bold text-emerald-700">98.5% (Tối Ưu)</span></div>
+
+                <div className="text-center border-b-2 border-[#C4963E]/45 pb-2.5 mb-3">
+                  <p className="font-bold text-xs tracking-[0.22em] uppercase text-[#7C5516]">☯ CỬU NHỊ THIÊN MỆNH TẠO HÓA CỤC ☯</p>
+                  <p className="text-[11px] font-semibold text-[#2E251A] mt-0.5">CHỨNG NHẬN KIỂM ĐỊNH CẤU HÌNH NGUYÊN BẢN</p>
+                  <p className="text-[9.5px] font-mono text-[#7D6E57] mt-0.5">Mã Sớ Điệp: CN-2026-8888 · Chuẩn Văn Vương</p>
                 </div>
-                <div className="border-t border-stone-300 pt-2 mb-2 text-[10px] text-stone-700">
-                  <p className="font-bold mb-0.5">※ Hướng Dẫn Vận Hành Phần Cứng:</p>
-                  <p>Thiên bẩm có trực giác bén nhạy và tư duy chiến lược. Cần bảo dưỡng bằng giấc ngủ sâu, thiền định và giữ cho tâm trí không bị xao động bởi ngoại cảnh.</p>
+                <div className="space-y-1.5 mb-3 text-[11.5px]">
+                  <div className="flex justify-between border-b border-[#E5DEC9] pb-1"><span>Nguyên Mẫu Bản Thể:</span><span className="font-bold text-[#1C1610]">{gender === "Nam" ? "Nam · Càn Vi Thiên (☰)" : "Nữ · Khôn Vi Địa (☷)"}</span></div>
+                  <div className="flex justify-between border-b border-[#E5DEC9] pb-1"><span>Niên Nhật Xuất Xưởng:</span><span className="font-mono font-semibold">{birthDate}</span></div>
+                  <div className="flex justify-between border-b border-[#E5DEC9] pb-1"><span>Thời Thần Khởi Khí:</span><span className="font-semibold">Khung Giờ {birthHour}</span></div>
+                  <div className="flex justify-between border-b border-[#E5DEC9] pb-1"><span>Bản Mệnh Ngũ Hành:</span><span className="font-bold text-[#8C5E14]">Bạch Lạp Kim (Chân Kim Luyện Lửa)</span></div>
+                  <div className="flex justify-between"><span>Độ Tương Thích Thiên Đạo:</span><span className="font-bold text-emerald-800">98.5% (Đắc Thời · Tối Ưu)</span></div>
                 </div>
-                <div className="text-center border-t-2 border-stone-300 pt-2 text-[8px] text-stone-500">
-                  HÀNG XUẤT XƯỞNG MIỄN ĐỔI TRẢ · CẢM ƠN QUÝ KHÁCH
+                <div className="border-t border-[#C4963E]/40 pt-2.5 mb-2.5 text-[11px] text-[#3B3123] leading-relaxed pr-16">
+                  <p className="font-bold text-[#7C5516] mb-0.5">※ Cẩm Nang Bảo Dưỡng &amp; Vận Hành:</p>
+                  <p>Thiên bẩm có trực giác bén nhạy và tư duy chiến lược sâu sắc. Cần bảo dưỡng định kỳ bằng giấc ngủ sâu, tĩnh tâm quán chiếu và giữ tâm bất động trước biến động ngoại cảnh.</p>
+                </div>
+                <div className="text-center border-t-2 border-[#C4963E]/45 pt-2 text-[9px] font-semibold tracking-wider text-[#7D6E57]">
+                  ✦ NGUYÊN BẢN ĐỘC NHẤT VÔ NHỊ · TÂM TĨNH VẠN SỰ THÔNG ✦
                 </div>
               </div>
             )}

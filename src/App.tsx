@@ -30,6 +30,7 @@ import { CHI_LIST, CAN_LIST, getCurrentBaziPillars, PillarItem } from "./data/ba
 import { Hexagram, DivinationRecord, DoubleCardMode, ThreeCardMode, SpreadType, CustomCardPosition } from "./types";
 import { HEXAGRAMS } from "./data/hexagrams";
 import { Header, NavTab } from "./components/Header";
+import { ImperialPageShell } from "./components/ImperialPageShell";
 import { BrandLockup } from "./components/BrandMark";
 import { CardDraw } from "./components/CardDraw";
 import { ThapLaDivination } from "./components/ThapLaDivination";
@@ -208,6 +209,25 @@ export default function App() {
       const h = window.location.hash.toLowerCase();
       if (p.includes("/app") || p.includes("/yilore") || s.includes("yilore") || h.includes("yilore")) {
         return "yilore";
+      }
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get("tab") as NavTab | null;
+      const validTabs: NavTab[] = [
+        "home",
+        "yilore",
+        "pricing",
+        "divination",
+        "manual",
+        "jiazi",
+        "calendar",
+        "hannhiet",
+        "detail",
+        "library",
+        "decks",
+        "history",
+      ];
+      if (tabParam && validTabs.includes(tabParam)) {
+        return tabParam;
       }
     }
     return "home";
@@ -1257,8 +1277,19 @@ export default function App() {
         onOpenAdminModal={() => setIsAdminModalOpen(true)}
       />
 
-      {/* Main Content Area */}
-      <main className={`relative z-10 flex-1 w-full mx-auto px-3 sm:px-4 py-6 sm:py-8 ${currentTab === "detail" ? "max-w-7xl" : "max-w-6xl"}`}>
+      {/* Main Content Area wrapped in ImperialPageShell (3-Tier Homepage Architecture) */}
+      <ImperialPageShell
+        currentTab={currentTab}
+        manualSubTab={manualSubTab}
+        onSelectTab={handleSelectTabWithVipCheck}
+        onSelectManualSubTab={setManualSubTab}
+        hasActiveReading={!!primaryHexagram}
+        historyCount={history.length}
+        divinationMethod={divinationMethod}
+        divinationMethods={DIVINATION_METHODS}
+        onSelectDivinationMethod={handleSelectDivinationMethod}
+      >
+        <main className={`relative z-10 flex-1 w-full mx-auto px-3 sm:px-4 py-4 sm:py-6 ${currentTab === "detail" ? "max-w-7xl" : "max-w-6xl"}`}>
         {/* TAB 0: TRANG CHỦ (PHƯƠNG PHÁP BỐC BÀI I CHING TAROT & LIÊN LẠC) */}
         <div className={(currentTab as string) === "home" ? "space-y-6" : "hidden"}>
           <HomeSection
@@ -1314,7 +1345,7 @@ export default function App() {
           />
 
           {/* Mindful / Traditional Ritual Preparation */}
-          <section className="royal-frame relative overflow-hidden px-5 py-10 sm:px-12 sm:py-14">
+          <section className="royal-frame imperial-dark-preserve relative overflow-hidden px-5 py-9 sm:px-12 sm:py-12">
             <span className="royal-corner tl z-20" />
             <span className="royal-corner tr z-20" />
             <span className="royal-corner bl z-20" />
@@ -1335,18 +1366,18 @@ export default function App() {
             <div className="relative z-10 max-w-2xl mx-auto text-center">
               <div className="royal-eyebrow">Thành tâm tất ứng · Tâm động quẻ sinh</div>
 
-              <h2 className="royal-title mt-5 text-3xl sm:text-5xl">
+              <h2 className="royal-title mt-4 text-3xl sm:text-5xl">
                 Tâm niệm bốc bài
                 <span className="block italic text-gold-300">Kinh Dịch</span>
               </h2>
 
-              <div className="mt-6 flex items-center justify-center gap-4">
+              <div className="mt-5 flex items-center justify-center gap-4">
                 <span className="h-px w-10 sm:w-16 bg-gold-700" />
                 <span className="font-serif text-base sm:text-lg tracking-[0.35em] text-gold-400">齋戒沐浴</span>
                 <span className="h-px w-10 sm:w-16 bg-gold-700" />
               </div>
 
-              <p className="mt-6 text-sm sm:text-[15px] leading-relaxed text-ivory-300 font-serif">
+              <p className="mt-5 text-sm sm:text-[15px] leading-relaxed text-ivory-300 font-serif">
                 Trước khi thỉnh quẻ, cổ nhân luôn nghiêm cẩn thực hành <strong className="text-gold-300 font-medium">Trai Giới Mộc Dục (齋戒沐浴)</strong>: Tắm gội rửa sạch đôi bàn tay (Mộc Dục) và thanh tịnh tâm thức, loại bỏ mọi tạp niệm lo toan (Trai Giới). Thân tâm trong sạch thì quẻ gieo mới linh ứng giao hòa cùng Thiên Địa.
               </p>
 
@@ -1354,7 +1385,7 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setShowPurificationGuide(!showPurificationGuide)}
-                className="royal-link mt-6 cursor-pointer text-left"
+                className="royal-link mt-5 cursor-pointer text-left"
               >
                 <ScrollText className="w-3.5 h-3.5 text-gold-500 shrink-0" />
                 <span>Vì sao cần Trai Giới Mộc Dục trước khi gieo quẻ?</span>
@@ -1363,7 +1394,7 @@ export default function App() {
             </div>
 
             {showPurificationGuide && (
-              <div className="relative z-10 max-w-3xl mx-auto mt-8 text-left border border-gold-800 bg-lacquer-950/85 backdrop-blur-xs p-5 sm:p-7 font-serif space-y-5 animate-in fade-in slide-in-from-top-2 duration-300">
+              <div className="relative z-10 max-w-3xl mx-auto mt-8 text-left border border-gold-800 bg-lacquer-950/90 backdrop-blur-xs p-5 sm:p-7 font-serif space-y-5 animate-in fade-in slide-in-from-top-2 duration-300">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <div className="text-[11px] font-sans uppercase tracking-[0.24em] text-gold-500">Cẩm nang nghi lễ</div>
@@ -1437,34 +1468,58 @@ export default function App() {
                 </div>
               </div>
             )}
+          </section>
 
-            {/* Question & Category Input Box */}
-            <div className="relative z-10 max-w-2xl mx-auto mt-10 pt-8 border-t border-gold-800/70 space-y-5">
+          {/* Hương Án Khởi Niệm · Question & Category Xuan Silk Card */}
+          <section className="royal-frame relative overflow-hidden p-5 sm:p-7">
+            <span className="royal-corner tl z-20" />
+            <span className="royal-corner tr z-20" />
+            <span className="royal-corner bl z-20" />
+            <span className="royal-corner br z-20" />
+
+            <div className="relative z-10 space-y-5">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#C4963E]/30 pb-3.5">
+                <div className="flex items-center gap-3">
+                  <span className="royal-seal w-8 h-8 text-xs shrink-0">印</span>
+                  <div>
+                    <div className="text-[10.5px] font-sans font-bold uppercase tracking-[0.22em] text-[#8A6A2F]">
+                      Hương Án Khởi Niệm · Thành Tâm Thỉnh Vấn
+                    </div>
+                    <h3 className="font-display text-xl sm:text-2xl font-bold text-[#1C1813]">
+                      Nội Dung Câu Hỏi &amp; Lĩnh Vực Chiêm Bốc
+                    </h3>
+                  </div>
+                </div>
+                <span className="rounded-full border border-[#C4963E]/45 bg-[#FAF4E4] px-3 py-1 font-serif text-[11px] font-semibold text-[#6E521F]">
+                  Nhất Niệm Khởi · Thiên Địa Thông
+                </span>
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="sm:col-span-2">
-                  <label className="block text-[11px] font-medium uppercase tracking-[0.2em] text-gold-500 mb-2">
-                    Nội dung tâm niệm / Câu hỏi
+                  <label className="block text-[11px] font-sans font-bold uppercase tracking-[0.18em] text-[#7A5D28] mb-2">
+                    Nội dung tâm niệm / Câu hỏi cần thỉnh vấn
                   </label>
                   <input
                     type="text"
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
                     placeholder="VD: Định hướng công việc và tài vận trong năm nay..."
-                    className="w-full bg-lacquer-950 border border-gold-800 focus:border-gold-500 rounded-sm px-4 py-3 text-sm font-serif text-ivory-100 placeholder:text-ivory-500/70 outline-none transition-colors"
+                    className="w-full bg-[#FDFBF7] border border-[#C4963E]/55 focus:border-[#9E2A2B] rounded-lg px-4 py-3 text-sm font-serif text-[#1C1813] placeholder:text-[#786B59]/75 outline-none transition-colors shadow-[inset_0_1px_2px_rgba(24,18,10,0.05)]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-medium uppercase tracking-[0.2em] text-gold-500 mb-2">
+                  <label className="block text-[11px] font-sans font-bold uppercase tracking-[0.18em] text-[#7A5D28] mb-2">
                     Lĩnh vực thỉnh vấn
                   </label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full bg-lacquer-950 border border-gold-800 focus:border-gold-500 rounded-sm px-3 py-3 text-sm font-serif text-ivory-100 outline-none cursor-pointer transition-colors"
+                    className="w-full bg-[#FDFBF7] border border-[#C4963E]/55 focus:border-[#9E2A2B] rounded-lg px-3.5 py-3 text-sm font-serif font-semibold text-[#1C1813] outline-none cursor-pointer transition-colors shadow-[inset_0_1px_2px_rgba(24,18,10,0.05)]"
                   >
                     {CATEGORIES.map((cat) => (
-                      <option key={cat} value={cat} className="bg-lacquer-800">
+                      <option key={cat} value={cat} className="bg-[#FDFBF7] text-[#1C1813]">
                         {cat}
                       </option>
                     ))}
@@ -1473,9 +1528,9 @@ export default function App() {
               </div>
 
               {/* Quick suggestions */}
-              <div className="space-y-2.5">
-                <span className="text-[11px] uppercase tracking-[0.18em] text-ivory-500 flex items-center gap-1.5">
-                  <HelpCircle className="w-3 h-3 text-gold-600" /> Gợi ý câu hỏi chuẩn
+              <div className="space-y-2.5 pt-1">
+                <span className="text-[11px] font-sans font-bold uppercase tracking-[0.18em] text-[#6E5D47] flex items-center gap-1.5">
+                  <HelpCircle className="w-3.5 h-3.5 text-[#9E2A2B]" /> Gợi ý câu hỏi chuẩn cổ pháp
                 </span>
                 <div className="flex flex-wrap gap-2">
                   {QUESTION_SUGGESTIONS.map((sug, i) => (
@@ -1483,7 +1538,7 @@ export default function App() {
                       key={i}
                       type="button"
                       onClick={() => setQuestion(sug)}
-                      className="text-left text-[12px] font-serif text-ivory-300 hover:text-gold-200 border border-gold-800 hover:border-gold-500 hover:bg-gold-500/5 rounded-sm px-3 py-1.5 transition-colors cursor-pointer"
+                      className="text-left text-[12px] font-serif text-[#2B2218] hover:text-[#9E2A2B] bg-[#FAF5E8] hover:bg-[#F3E9D2] border border-[#C4963E]/45 hover:border-[#9E2A2B]/60 rounded-full px-3.5 py-1.5 transition-colors cursor-pointer"
                     >
                       {sug}
                     </button>
@@ -1498,7 +1553,7 @@ export default function App() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5">
               <div className="text-center lg:text-left">
                 <div className="royal-eyebrow lg:before:hidden">Phương thức thỉnh quẻ</div>
-                <h2 className="royal-title mt-3 text-3xl sm:text-4xl">Tám phép khởi quẻ</h2>
+                <h2 className="royal-title mt-3 text-3xl sm:text-4xl">Mười đại pháp khởi quẻ</h2>
                 <p className="mt-2 text-[13px] text-ivory-500 font-serif">
                   Chọn một phương thức chiêm đoán để bắt đầu. Bấm lần nữa để bỏ chọn.
                 </p>
@@ -1580,12 +1635,12 @@ export default function App() {
                     type="button"
                     aria-pressed={isActive}
                     onClick={() => handleSelectDivinationMethod(method.id)}
-                    className={`royal-card group overflow-hidden p-5 text-left flex flex-col cursor-pointer transition-all ${
-                      isActive ? "!border-gold-400 shadow-[inset_0_0_0_1px_rgba(201,165,90,0.35)] before:!w-full" : ""
+                    className={`royal-card group overflow-hidden p-5 text-left flex flex-col cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:border-[#D4AF37]/65 hover:shadow-[0_12px_34px_rgba(212,175,55,0.18)] ${
+                      isActive ? "!border-gold-400 shadow-[0_0_32px_rgba(212,175,55,0.28),inset_0_0_0_1px_rgba(201,165,90,0.45)] before:!w-full" : ""
                     } ${isLocked ? "opacity-90 hover:border-amber-600/50" : ""}`}
                   >
                     {/* Method Artwork Header (16:10) */}
-                    <div className="relative -mx-5 -mt-5 mb-4 h-36 sm:h-40 overflow-hidden border-b border-gold-800/40 bg-[#0D0B09]">
+                    <div className="imperial-dark-preserve relative -mx-5 -mt-5 mb-4 h-36 sm:h-40 overflow-hidden border-b border-gold-800/40 bg-[#0D0B09]">
                       <img
                         src={method.image}
                         alt={method.title}
@@ -1668,7 +1723,7 @@ export default function App() {
               <span className="royal-corner br z-20" />
 
               {divinationMethod === null && (
-                <div className="relative overflow-hidden rounded-lg py-12 sm:py-16 px-4 text-center max-w-2xl mx-auto">
+                <div className="imperial-dark-preserve relative overflow-hidden rounded-lg py-12 sm:py-16 px-4 text-center max-w-2xl mx-auto bg-[#0D0B09]">
                   {/* Subtle Huyền Đàn 64 Lá Background */}
                   <div className="pointer-events-none absolute inset-0 -mx-6 -my-6 z-0">
                     <img
@@ -2652,30 +2707,75 @@ export default function App() {
             onOpenWorkspace={handleOpenWorkspaceForRecord}
           />
         )}
-      </main>
+        </main>
+      </ImperialPageShell>
 
-      {/* Footer */}
-      <footer className="relative z-10 mt-12 bg-[#0B0A08]/90">
-        <div className="h-px bg-gradient-to-r from-transparent via-gold-600/50 to-transparent" />
-        <div className="max-w-4xl mx-auto px-4 py-12 text-center space-y-6">
+      {/* Footer — Đồng bộ 100% với Trang Chủ (LandingPage.tsx) */}
+      <footer className="relative z-10 bg-[#080810] py-10 px-6 text-center border-t border-[#C4963E]/30 text-stone-300">
+        <div className="h-px bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent -mt-10 mb-8" />
+        <div className="max-w-4xl mx-auto space-y-5">
           <div className="flex justify-center">
-            <BrandLockup markSize={44} />
+            <BrandLockup markSize={42} />
           </div>
-          <p className="font-display italic text-lg text-ivory-300 max-w-xl mx-auto leading-relaxed">
+          <p className="font-display italic text-base sm:text-lg text-[#EAE2D2] max-w-xl mx-auto leading-relaxed">
             "Thiên hành kiện, quân tử dĩ tự cường bất tức. Địa thế khôn, quân tử dĩ hậu đức tải vật."
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+          <div className="flex items-center justify-center gap-6 flex-wrap text-xs text-stone-300">
+            <button
+              type="button"
+              onClick={() => handleSelectTabWithVipCheck("home")}
+              className="hover:text-[#F3E5AB] transition cursor-pointer font-serif"
+            >
+              🏠 Trang Chủ
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSelectTabWithVipCheck("divination")}
+              className="hover:text-[#F3E5AB] transition cursor-pointer font-serif"
+            >
+              ☯ Bốc Quẻ
+            </button>
+            <a
+              href="/vi/hexagram"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#D4AF37] hover:underline font-semibold cursor-pointer font-serif"
+            >
+              📖 Bách Khoa 64 Quẻ Kinh Dịch ↗
+            </a>
+            <a
+              href="/vi/blog/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#D4AF37] hover:underline font-semibold cursor-pointer font-serif"
+            >
+              📝 Blog Dịch Học ↗
+            </a>
+            <button
+              type="button"
+              onClick={() => handleSelectTabWithVipCheck("yilore")}
+              className="hover:text-[#F3E5AB] transition cursor-pointer font-serif"
+            >
+              📓 Sổ Tay Yilore (/en/app)
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSelectTabWithVipCheck("pricing")}
+              className="hover:text-[#F3E5AB] transition cursor-pointer font-serif"
+            >
+              👑 Báo Giá VIP
+            </button>
             <a
               href="https://zalo.me/g/vwzsqvnh3gdbzst2psyh"
               target="_blank"
               rel="noopener noreferrer"
-              className="royal-link"
+              className="text-[#D4AF37] hover:underline font-semibold font-serif"
             >
-              Nhóm Zalo Cửu Nhị · Giao lưu Dịch Lý <span className="text-gold-500">→</span>
+              💬 Nhóm Zalo Cửu Nhị ↗
             </a>
           </div>
-          <p className="text-[10px] uppercase tracking-[0.28em] text-ivory-500/70">
-            Bốc Bài Kinh Dịch &amp; Lục Hào Thần Dịch · Trí tuệ cổ nhân
+          <p className="text-[11px] uppercase tracking-[0.24em] text-stone-500 m-0">
+            Kinh Dịch Chiêm Bốc · 周易塔羅 · Trí Tuệ Cổ Nhân 5.000 Năm
           </p>
         </div>
       </footer>

@@ -90,6 +90,12 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
   const [imageFilter, setImageFilter] = useState<"all" | "has_image" | "no_image">("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [viewMode, setViewMode] = useState<"detail" | "full_image" | "grid" | "sounds" | "hexagrams">("detail");
+  const [activeWorkspace, setActiveWorkspace] = useState<"jiazi" | "bazi" | "lucnham" | "tables">("jiazi");
+  const [tableSubTab, setTableSubTab] = useState<"hexagrams" | "sounds">("hexagrams");
+  const [detailSectionTab, setDetailSectionTab] = useState<"part1" | "part2" | "sound_hex" | "all">("part1");
+  const [isQuickMatrixOpen, setIsQuickMatrixOpen] = useState<boolean>(false);
+  const [isStorageDrawerOpen, setIsStorageDrawerOpen] = useState<boolean>(false);
+  const [birthYearInput, setBirthYearInput] = useState<string>("");
   const [hexagramModalData, setHexagramModalData] = useState<JiaziHexagramLink | null>(null);
   const [detailImageTab, setDetailImageTab] = useState<"jiazi" | "hexagram">("jiazi");
   const [fullImageTab, setFullImageTab] = useState<"jiazi" | "hexagram">("jiazi");
@@ -183,6 +189,25 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
   const selectedEntry = useMemo(() => {
     return getJiaziById(selectedId) || SIXTY_JIAZI[0];
   }, [selectedId]);
+
+  // Tính nhanh Can Chi Hoa Giáp theo năm sinh âm/dương lịch (예: 1984 -> Giáp Tý #1, 1990 -> Canh Ngọ #7)
+  const birthYearMatchedEntry = useMemo(() => {
+    const trimmed = birthYearInput.trim();
+    if (!/^\d{3,4}$/.test(trimmed)) return null;
+    const yr = parseInt(trimmed, 10);
+    if (isNaN(yr) || yr < 100 || yr > 3000) return null;
+    const idx = ((yr - 4) % 60 + 60) % 60;
+    return SIXTY_JIAZI[idx] || null;
+  }, [birthYearInput]);
+
+  // Lắng nghe sự kiện nhảy đến Lục Nhâm từ nơi khác
+  useEffect(() => {
+    const handleJumpLucNham = () => {
+      setActiveWorkspace("lucnham");
+    };
+    window.addEventListener("jump-to-lucnham", handleJumpLucNham);
+    return () => window.removeEventListener("jump-to-lucnham", handleJumpLucNham);
+  }, []);
 
   // Filtered list
   const filteredJiazi = useMemo(() => {
@@ -592,75 +617,82 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
         onChange={handleImportBackup}
       />
 
-      {/* Hero / Header Section */}
-      <div className="royal-frame px-5 py-8 sm:px-10 sm:py-12">
+      {/* Hero / Compact Workspace Header Section */}
+      <div className="royal-frame px-4 py-5 sm:px-8 sm:py-6">
         <span className="royal-corner tl" />
         <span className="royal-corner tr" />
         <span className="royal-corner bl" />
         <span className="royal-corner br" />
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6">
+          {/* Row 1: Title + High-Level Utility Toggles */}
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
             <div>
-              <div className="royal-eyebrow before:hidden">Kho tàng diễn giải 60 Hoa Giáp</div>
-              <h1 className="royal-title mt-3 text-4xl sm:text-5xl flex flex-wrap items-baseline gap-x-4 gap-y-1">
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <span className="royal-eyebrow before:hidden">Không gian Mệnh Lý & Tam Thức</span>
+                <span className="px-2 py-0.5 rounded-sm bg-lacquer-800 border border-gold-800/80 text-[11px] font-mono text-gold-400">
+                  Đang chọn: #{selectedEntry.order.toString().padStart(2, "0")} {selectedEntry.name} ({selectedEntry.elementNapAm})
+                </span>
+              </div>
+              <h1 className="royal-title mt-1.5 text-2xl sm:text-4xl flex flex-wrap items-baseline gap-x-3 gap-y-1">
                 Lục Thập Hoa Giáp
-                <span className="font-serif text-lg sm:text-xl tracking-[0.35em] text-gold-400">
+                <span className="font-serif text-base sm:text-lg tracking-[0.3em] text-gold-400">
                   六十花甲
                 </span>
               </h1>
-              <p className="mt-4 text-sm sm:text-[15px] font-serif text-ivory-300 max-w-2xl leading-relaxed">
-                Chi tiết toàn diện về <strong className="text-gold-400">60 phối tượng tự nhiên</strong> (自然配象) cùng{" "}
-                <strong className="text-gold-400">triết lý nhân sinh minh triết</strong> (哲理/擬人化), hỗ trợ nạp hình
-                ảnh cá nhân hóa cho từng Hoa Giáp với bộ nhớ lưu trữ bền vững.
-              </p>
             </div>
 
-            {/* Quick Stats & Action Buttons */}
-            <div className="flex flex-wrap items-center gap-2.5 self-stretch md:self-auto">
-              <div className="border border-gold-800 rounded-sm px-3.5 py-2 flex items-center gap-2.5">
-                <ImageIcon className="w-4 h-4 text-gold-400" />
-                <div className="text-xs">
-                  <div className="text-ivory-500 text-[10px] uppercase tracking-[0.18em]">Hình đã nạp</div>
-                  <div className="font-bold text-ivory-100">
-                    <span className="text-gold-400 text-sm">{uploadedCount}</span> / 60
-                  </div>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => batchFileInputRef.current?.click()}
-                className="royal-btn-ghost !px-3.5 !py-2 !text-[11px]"
-                title="Nạp nhiều file ảnh cùng lúc (tự động nhận diện theo tên file)"
-              >
-                <Upload className="w-3.5 h-3.5 text-gold-400" />
-                <span>Nạp Ảnh Hàng Loạt</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setJsonError(null);
-                  setJsonSuccessMsg(null);
-                  setParsedJsonData(null);
-                  setIsJsonModalOpen(true);
-                }}
-                className="royal-btn-ghost !px-3.5 !py-2 !text-[11px]"
-                title="Nạp tệp tin JSON hoặc dán trực tiếp JSON dữ liệu/hình ảnh vào Hoa Giáp"
-              >
-                <FileCode2 className="w-3.5 h-3.5 text-gold-400" />
-                <span>Nạp Tệp JSON</span>
-              </button>
-
-              <div className="flex items-center gap-1.5 p-1 border border-gold-800 rounded-sm">
+            {/* Right Utility Buttons: Quick 60 Matrix + Collapsible Image/JSON Manager */}
+            <div className="flex flex-wrap items-center gap-2 self-stretch lg:self-auto">
+              {activeWorkspace === "jiazi" && (
                 <button
                   type="button"
-                  onClick={handleExportBackup}
-                  className="p-1.5 text-ivory-500 hover:text-gold-200 hover:bg-lacquer-700 rounded-sm transition-colors cursor-pointer"
-                  title="Sao lưu toàn bộ ảnh ra tệp JSON"
+                  onClick={() => setIsQuickMatrixOpen((prev) => !prev)}
+                  className={`flex items-center gap-2 px-3.5 py-2 rounded-sm border text-xs font-bold transition-all cursor-pointer shadow-sm ${
+                    isQuickMatrixOpen
+                      ? "bg-gold-500 text-lacquer-950 border-gold-300 shadow-gold-500/20"
+                      : "bg-lacquer-800 hover:bg-lacquer-700 text-gold-300 border-gold-700"
+                  }`}
+                  title="Mở bảng ma trận Lục Tuần 60 Hoa Giáp để nhảy đến bất kỳ Can Chi nào chỉ với 1 cú nhấp"
                 >
-                  <Download className="w-4 h-4" />
+                  <Layers className="w-3.5 h-3.5" />
+                  <span>Bảng Chọn Nhanh 60 Trụ</span>
+                  <span className="px-1.5 py-0.2 rounded-sm bg-lacquer-950/30 text-[10px] font-mono">
+                    #{selectedEntry.order}/60
+                  </span>
                 </button>
+              )}
+
+              <button
+                type="button"
+                onClick={() => setIsStorageDrawerOpen((prev) => !prev)}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-sm border text-xs font-semibold transition-all cursor-pointer ${
+                  isStorageDrawerOpen
+                    ? "bg-lacquer-700 text-gold-200 border-gold-400"
+                    : "bg-lacquer-900/90 hover:bg-lacquer-800 text-ivory-300 border-gold-800"
+                }`}
+                title="Quản lý nạp ảnh hàng loạt, nạp/xuất JSON và chế độ khung ảnh"
+              >
+                <ImageIcon className="w-3.5 h-3.5 text-gold-400" />
+                <span>Kho Ảnh & JSON:</span>
+                <strong className="text-gold-400">{uploadedCount}/60</strong>
+              </button>
+            </div>
+          </div>
+
+          {/* Collapsible Storage & JSON Management Drawer */}
+          {isStorageDrawerOpen && (
+            <div className="mt-4 p-3.5 rounded-sm bg-lacquer-900/95 border border-gold-700/80 flex flex-wrap items-center justify-between gap-3 animate-in fade-in">
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => batchFileInputRef.current?.click()}
+                  className="royal-btn-ghost !px-3 !py-1.5 !text-xs"
+                  title="Nạp nhiều file ảnh cùng lúc (tự động nhận diện theo tên file)"
+                >
+                  <Upload className="w-3.5 h-3.5 text-gold-400" />
+                  <span>Nạp Ảnh Hàng Loạt</span>
+                </button>
+
                 <button
                   type="button"
                   onClick={() => {
@@ -669,28 +701,70 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                     setParsedJsonData(null);
                     setIsJsonModalOpen(true);
                   }}
-                  className="p-1.5 text-ivory-500 hover:text-gold-200 hover:bg-lacquer-700 rounded-sm transition-colors cursor-pointer"
-                  title="Mở giao diện nạp tệp JSON vào Hoa Giáp"
+                  className="royal-btn-ghost !px-3 !py-1.5 !text-xs"
+                  title="Nạp tệp tin JSON hoặc dán trực tiếp JSON dữ liệu/hình ảnh vào Hoa Giáp"
                 >
-                  <FileUp className="w-4 h-4" />
+                  <FileCode2 className="w-3.5 h-3.5 text-gold-400" />
+                  <span>Nạp Tệp JSON</span>
                 </button>
+
+                <button
+                  type="button"
+                  onClick={handleExportBackup}
+                  className="royal-btn-ghost !px-3 !py-1.5 !text-xs"
+                  title="Sao lưu toàn bộ ảnh ra tệp JSON"
+                >
+                  <Download className="w-3.5 h-3.5 text-gold-400" />
+                  <span>Sao Lưu JSON</span>
+                </button>
+
+                <select
+                  value={imageFilter}
+                  onChange={(e) => setImageFilter(e.target.value as any)}
+                  className="px-2.5 py-1.5 text-xs bg-lacquer-800 border border-gold-800 rounded-sm text-ivory-300 outline-none cursor-pointer hover:border-gold-500"
+                >
+                  <option value="all">Lọc ảnh: Tất cả (60)</option>
+                  <option value="has_image">Đã có ảnh ({uploadedCount})</option>
+                  <option value="no_image">Chưa có ảnh ({60 - uploadedCount})</option>
+                </select>
+
+                <button
+                  type="button"
+                  onClick={handleToggleImageFitMode}
+                  className="px-3 py-1.5 text-xs rounded-sm border bg-lacquer-800 border-gold-800 text-ivory-300 hover:border-gold-400 cursor-pointer flex items-center gap-1.5"
+                >
+                  <Maximize2 className="w-3.5 h-3.5 text-gold-400" />
+                  <span>Khung ảnh: <strong className="text-gold-400">{imageFitMode === "contain" ? "FULL 100%" : "Lấp Đầy"}</strong></span>
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2">
                 {uploadedCount > 0 && (
                   <button
                     type="button"
                     onClick={handleClearAll}
-                    className="p-1.5 text-[#E57373] hover:text-gold-200 hover:bg-[#3F1B1B] rounded-sm transition-colors cursor-pointer"
+                    className="px-2.5 py-1.5 text-xs text-[#E57373] hover:text-gold-200 bg-[#2A1212] hover:bg-[#3F1B1B] border border-[#5A2323] rounded-sm transition-colors cursor-pointer flex items-center gap-1"
                     title="Xóa tất cả ảnh đã nạp"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Xóa tất cả</span>
                   </button>
                 )}
+                <button
+                  type="button"
+                  onClick={() => setIsStorageDrawerOpen(false)}
+                  className="p-1.5 text-ivory-500 hover:text-gold-300 cursor-pointer"
+                  title="Đóng ngăn quản lý ảnh"
+                >
+                  <X className="w-4 h-4" />
+                </button>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Status banner if batch uploading */}
           {batchUploadStatus && (
-            <div className="mt-4 p-3 rounded-sm bg-lacquer-700 border border-gold-500 text-xs text-ivory-100 flex items-center justify-between animate-in fade-in">
+            <div className="mt-3 p-2.5 rounded-sm bg-lacquer-700 border border-gold-500 text-xs text-ivory-100 flex items-center justify-between animate-in fade-in">
               <span className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-gold-500" />
                 {batchUploadStatus}
@@ -705,277 +779,470 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
             </div>
           )}
 
-          {/* Search & Filter Toolbar */}
-          <div className="mt-8 pt-6 border-t border-gold-800 flex flex-col gap-3 items-stretch">
-            {/* Search Input */}
-            <div className="relative w-full max-w-xl">
-              <Search className="w-4 h-4 text-ivory-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Tìm Can Chi (Giáp Tý...), quẻ Dịch (Càn, Phục, #24...), nạp âm..."
-                className="w-full pl-10 pr-9 py-2.5 text-sm font-serif bg-lacquer-950 border border-gold-800 focus:border-gold-500 rounded-sm text-ivory-100 placeholder:text-ivory-500/70 outline-none transition-colors"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-ivory-500 hover:text-gold-200"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              )}
-            </div>
-
-            {/* Quick Filters & View Mode */}
-            <div className="flex flex-wrap items-center gap-2">
-              {/* Button Tra Cứu Quẻ Dịch Liên Kết */}
-              <button
-                type="button"
-                onClick={() => {
-                  setHexLookupQuery("");
-                  setHexLookupTrigram("all");
-                  setIsHexLookupModalOpen(true);
-                }}
-                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-lacquer-800 hover:bg-lacquer-700 text-gold-400 border border-gold-800 hover:border-gold-400 rounded-sm transition-all cursor-pointer shadow-sm active:scale-95"
-                title="Mở bảng tra cứu nhanh Quẻ Kinh Dịch đối ứng với 60 Hoa Giáp"
-              >
-                <Compass className="w-3.5 h-3.5 text-gold-400" />
-                <span>Tìm Quẻ Dịch Liên Kết</span>
-              </button>
-
-              {/* Kinh Dịch Hexagram Filter Dropdown */}
-              <select
-                value={selectedHexagram}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setSelectedHexagram(val);
-                  if (val !== "all") {
-                    const match = SIXTY_JIAZI.find(
-                      (it) => it.hexagramLink?.hexagramNumber.toString() === val
-                    );
-                    if (match) {
-                      setSelectedId(match.id);
-                    }
-                  }
-                }}
-                className="px-2.5 py-2 text-xs bg-lacquer-800 border border-gold-800 rounded-sm text-ivory-300 outline-none cursor-pointer hover:border-gold-500 max-w-[190px]"
-                title="Lọc theo Quẻ Kinh Dịch liên kết (60 Quẻ)"
-              >
-                <option value="all">Mọi Quẻ Kinh Dịch (60)</option>
-                {SIXTY_JIAZI.map((item) => (
-                  <option
-                    key={item.id}
-                    value={item.hexagramLink?.hexagramNumber.toString()}
-                  >
-                    #{item.hexagramLink?.hexagramNumber} {item.hexagramLink?.hexagramName} ({item.name})
-                  </option>
-                ))}
-              </select>
-
-              {/* Can Filter */}
-              <select
-                value={selectedCan}
-                onChange={(e) => setSelectedCan(e.target.value)}
-                className="px-2.5 py-2 text-xs bg-lacquer-800 border border-gold-800 rounded-sm text-ivory-300 outline-none cursor-pointer hover:border-gold-500"
-              >
-                <option value="all">Mọi Thiên Can (10)</option>
-                {JIAZI_CAN_LIST.map((can) => (
-                  <option key={can} value={can}>
-                    Can {can}
-                  </option>
-                ))}
-              </select>
-
-              {/* Image Filter */}
-              <select
-                value={imageFilter}
-                onChange={(e) => setImageFilter(e.target.value as any)}
-                className="px-2.5 py-2 text-xs bg-lacquer-800 border border-gold-800 rounded-sm text-ivory-300 outline-none cursor-pointer hover:border-gold-500"
-              >
-                <option value="all">Tất cả ảnh (60)</option>
-                <option value="has_image">Đã có ảnh ({uploadedCount})</option>
-                <option value="no_image">Chưa có ảnh ({60 - uploadedCount})</option>
-              </select>
-
-              {/* View Switcher */}
-              <div className="flex items-center bg-lacquer-800 p-1 border border-gold-800 rounded-sm flex-wrap gap-1">
-                <button
-                  type="button"
-                  onClick={() => setViewMode("detail")}
-                  className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-sm font-medium transition-colors cursor-pointer ${
-                    viewMode === "detail"
-                      ? "bg-gold-500/15 text-gold-200 font-semibold ring-1 ring-inset ring-gold-500/70"
-                      : "text-ivory-500 hover:text-gold-200"
-                  }`}
-                >
-                  <BookOpen className="w-3.5 h-3.5" />
-                  <span>Diễn Giải</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewMode("full_image")}
-                  className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-sm font-medium transition-colors cursor-pointer ${
-                    viewMode === "full_image"
-                      ? "bg-gold-500/15 text-gold-200 font-semibold ring-1 ring-inset ring-gold-500/70"
-                      : "text-ivory-500 hover:text-gold-200"
-                  }`}
-                  title="Chế độ hiển thị Ảnh Full & Toàn Cảnh Hoa Giáp"
-                >
-                  <Maximize2 className="w-3.5 h-3.5" />
-                  <span>Ảnh Full (Toàn Cảnh)</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewMode("grid")}
-                  className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-sm font-medium transition-colors cursor-pointer ${
-                    viewMode === "grid"
-                      ? "bg-gold-500/15 text-gold-200 font-semibold ring-1 ring-inset ring-gold-500/70"
-                      : "text-ivory-500 hover:text-gold-200"
-                  }`}
-                >
-                  <Layers className="w-3.5 h-3.5" />
-                  <span>Lưới Thẻ (60)</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewMode("sounds")}
-                  className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-sm font-medium transition-colors cursor-pointer ${
-                    viewMode === "sounds"
-                      ? "bg-gold-500/15 text-gold-200 font-semibold ring-1 ring-inset ring-gold-500/70"
-                      : "text-ivory-500 hover:text-gold-200"
-                  }`}
-                  title="Bảng tra 30 Tượng Khí & Âm Thanh Nạp Âm Hoa Giáp"
-                >
-                  <Volume2 className="w-3.5 h-3.5" />
-                  <span>Tượng Âm Thanh (30)</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewMode("hexagrams")}
-                  className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-sm font-medium transition-colors cursor-pointer ${
-                    viewMode === "hexagrams"
-                      ? "bg-gold-500/15 text-gold-200 font-semibold ring-1 ring-inset ring-gold-500/70"
-                      : "text-ivory-500 hover:text-gold-200"
-                  }`}
-                  title="Bảng đối ứng 60 Hoa Giáp và 60 Quẻ Kinh Dịch"
-                >
-                  <Compass className="w-3.5 h-3.5" />
-                  <span>Liên Kết Kinh Dịch (60)</span>
-                </button>
-              </div>
-
-              {/* Fast Toggle Image Fit Mode: Contain (Full 100%) vs Cover */}
-              <button
-                type="button"
-                onClick={handleToggleImageFitMode}
-                className={`flex items-center gap-1.5 px-3 py-2 text-xs rounded-sm border transition-all cursor-pointer font-medium ${
-                  imageFitMode === "contain"
-                    ? "bg-lacquer-700 border-gold-400 text-gold-300"
-                    : "bg-lacquer-800 border-gold-800 text-ivory-500 hover:text-gold-200"
-                }`}
-                title={
-                  imageFitMode === "contain"
-                    ? "Ảnh Hoa Giáp đang luôn ở trạng thái FULL (Toàn bộ ảnh 100% nguyên vẹn không bị cắt xén). Nhấp để đổi sang lấp đầy."
-                    : "Đang lấp đầy khung bài. Nhấp để chuyển về trạng thái FULL nguyên vẹn."
-                }
-              >
-                <Maximize2 className="w-3.5 h-3.5 text-gold-400" />
-                <span>
-                  Trạng Thái:{" "}
-                  <strong className={imageFitMode === "contain" ? "text-gold-400 font-bold" : "text-white"}>
-                    {imageFitMode === "contain" ? "FULL (Toàn Bộ 100%)" : "Lấp Đầy Khung"}
-                  </strong>
-                </span>
-              </button>
-            </div>
-          </div>
-
-          {/* 12 Địa Chi Tabs */}
-          <div className="mt-4 flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
+          {/* Row 2: 4-PILLAR WORKSPACE NAVIGATION BAR (Tách biệt hoàn toàn 4 công cụ lớn để không chồng chéo) */}
+          <div className="mt-4 pt-4 border-t border-gold-800/80 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
             <button
               type="button"
-              onClick={() => setSelectedBranch("all")}
-              className={`px-3 py-1.5 text-xs rounded-sm font-medium whitespace-nowrap transition-all cursor-pointer ${
-                selectedBranch === "all"
-                  ? "bg-gold-500/15 text-gold-200 font-semibold ring-1 ring-inset ring-gold-500/70"
-                  : "bg-lacquer-800 text-ivory-500 hover:text-gold-200 border border-lacquer-700"
+              onClick={() => {
+                setActiveWorkspace("jiazi");
+                if (viewMode === "sounds" || viewMode === "hexagrams") {
+                  setViewMode("detail");
+                }
+              }}
+              className={`flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-sm border text-left transition-all cursor-pointer ${
+                activeWorkspace === "jiazi"
+                  ? "bg-gradient-to-r from-gold-500/20 to-lacquer-800 border-gold-400 text-gold-200 shadow-md ring-1 ring-inset ring-gold-400/50"
+                  : "bg-lacquer-900/80 hover:bg-lacquer-800 border-gold-800/70 text-ivory-300 hover:text-gold-200"
               }`}
             >
-              Tất cả (60)
+              <div className="flex items-center gap-2.5 min-w-0">
+                <BookOpen className="w-4 h-4 text-gold-400 shrink-0" />
+                <div className="min-w-0">
+                  <div className="text-xs font-bold truncate">1. Cẩm Nang 60 Hoa Giáp</div>
+                  <div className="text-[10px] text-ivory-500 truncate">Phối tượng • Triết lý • Hình thẻ</div>
+                </div>
+              </div>
+              <span className="px-1.5 py-0.5 rounded-sm bg-lacquer-950/70 border border-gold-800 text-[10px] font-mono text-gold-400 shrink-0">
+                #{selectedEntry.order.toString().padStart(2, "0")}
+              </span>
             </button>
-            {JIAZI_BRANCH_LIST.map((branch) => {
-              const countInBranch = SIXTY_JIAZI.filter((j) => j.branchGroup === branch).length;
-              const hasImagesInBranch = SIXTY_JIAZI.filter(
-                (j) => j.branchGroup === branch && images[j.id]
-              ).length;
-              return (
-                <button
-                  key={branch}
-                  type="button"
-                  onClick={() => setSelectedBranch(branch)}
-                  className={`px-3 py-1.5 text-xs rounded-sm font-medium whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
-                    selectedBranch === branch
-                      ? "bg-gold-500/15 text-gold-200 font-semibold ring-1 ring-inset ring-gold-500/70"
-                      : "bg-lacquer-800 text-ivory-500 hover:text-gold-200 border border-lacquer-700"
-                  }`}
-                >
-                  <span>Chi {branch}</span>
-                  <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded-sm ${
-                      selectedBranch === branch
-                        ? "bg-gold-500/20 text-gold-200"
-                        : "bg-lacquer-700 text-ivory-500"
-                    }`}
-                  >
-                    {hasImagesInBranch}/{countInBranch}
-                  </span>
-                </button>
-              );
-            })}
+
+            <button
+              type="button"
+              onClick={() => setActiveWorkspace("bazi")}
+              className={`flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-sm border text-left transition-all cursor-pointer ${
+                activeWorkspace === "bazi"
+                  ? "bg-gradient-to-r from-gold-500/20 to-lacquer-800 border-gold-400 text-gold-200 shadow-md ring-1 ring-inset ring-gold-400/50"
+                  : "bg-lacquer-900/80 hover:bg-lacquer-800 border-gold-800/70 text-ivory-300 hover:text-gold-200"
+              }`}
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <Compass className="w-4 h-4 text-gold-400 shrink-0" />
+                <div className="min-w-0">
+                  <div className="text-xs font-bold truncate">2. Lá Số Bát Tự & Ngũ Thiên</div>
+                  <div className="text-[10px] text-ivory-500 truncate">Tứ Trụ • Đại Vận • 5 Thiên</div>
+                </div>
+              </div>
+              <span className="px-1.5 py-0.5 rounded-sm bg-lacquer-950/70 border border-gold-800 text-[10px] font-mono text-gold-400 shrink-0">
+                8 Ô
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveWorkspace("lucnham")}
+              className={`flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-sm border text-left transition-all cursor-pointer ${
+                activeWorkspace === "lucnham"
+                  ? "bg-gradient-to-r from-gold-500/20 to-lacquer-800 border-gold-400 text-gold-200 shadow-md ring-1 ring-inset ring-gold-400/50"
+                  : "bg-lacquer-900/80 hover:bg-lacquer-800 border-gold-800/70 text-ivory-300 hover:text-gold-200"
+              }`}
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <Sparkles className="w-4 h-4 text-gold-400 shrink-0" />
+                <div className="min-w-0">
+                  <div className="text-xs font-bold truncate">3. Bàn Lục Nhâm Đại Độn</div>
+                  <div className="text-[10px] text-ivory-500 truncate">Thiên Địa Bàn • Xí Ngầu D12</div>
+                </div>
+              </div>
+              <span className="px-1.5 py-0.5 rounded-sm bg-lacquer-950/70 border border-gold-800 text-[10px] font-mono text-gold-400 shrink-0">
+                Tam Thức
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveWorkspace("tables")}
+              className={`flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-sm border text-left transition-all cursor-pointer ${
+                activeWorkspace === "tables"
+                  ? "bg-gradient-to-r from-gold-500/20 to-lacquer-800 border-gold-400 text-gold-200 shadow-md ring-1 ring-inset ring-gold-400/50"
+                  : "bg-lacquer-900/80 hover:bg-lacquer-800 border-gold-800/70 text-ivory-300 hover:text-gold-200"
+              }`}
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <Volume2 className="w-4 h-4 text-gold-400 shrink-0" />
+                <div className="min-w-0">
+                  <div className="text-xs font-bold truncate">4. Bảng 60 Quẻ & 30 Âm Tượng</div>
+                  <div className="text-[10px] text-ivory-500 truncate">Kinh Dịch đối ứng & Nạp Âm</div>
+                </div>
+              </div>
+              <span className="px-1.5 py-0.5 rounded-sm bg-lacquer-950/70 border border-gold-800 text-[10px] font-mono text-gold-400 shrink-0">
+                60 / 30
+              </span>
+            </button>
           </div>
+
+          {/* Row 3: Streamlined Command Bar (Only shown in Workspace 1: Cẩm Nang 60 Hoa Giáp) */}
+          {activeWorkspace === "jiazi" && (
+            <div className="mt-3 pt-3 border-t border-gold-800/60 flex flex-col gap-2.5">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                {/* Search Input */}
+                <div className="relative flex-1 min-w-[220px] max-w-md">
+                  <Search className="w-3.5 h-3.5 text-ivory-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Tìm Can Chi (Giáp Tý...), Quẻ (#24), Nạp Âm..."
+                    className="w-full pl-9 pr-8 py-1.5 text-xs font-serif bg-lacquer-950 border border-gold-800 focus:border-gold-500 rounded-sm text-ivory-100 placeholder:text-ivory-500/70 outline-none transition-colors"
+                  />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery("")}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-ivory-500 hover:text-gold-200"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+
+                {/* Birth-Year Quick Calculator (Tra Nhanh Năm Sinh -> Hoa Giáp) */}
+                <div className="flex items-center gap-1.5 bg-lacquer-950 border border-gold-800 rounded-sm px-2.5 py-1">
+                  <span className="text-[11px] text-gold-400 font-semibold whitespace-nowrap">🎂 Năm sinh:</span>
+                  <input
+                    type="text"
+                    value={birthYearInput}
+                    onChange={(e) => setBirthYearInput(e.target.value.replace(/[^\d]/g, "").slice(0, 4))}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && birthYearMatchedEntry) {
+                        handleSelectEntry(birthYearMatchedEntry.id);
+                        setViewMode("detail");
+                      }
+                    }}
+                    placeholder="VD: 1990"
+                    className="w-16 bg-transparent text-xs font-mono font-bold text-ivory-100 placeholder:text-ivory-500/50 outline-none text-center border-b border-gold-800 focus:border-gold-400"
+                  />
+                  {birthYearMatchedEntry ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleSelectEntry(birthYearMatchedEntry.id);
+                        setViewMode("detail");
+                      }}
+                      className="px-2 py-0.5 rounded-sm bg-gold-500 hover:bg-gold-400 text-lacquer-950 text-[11px] font-bold transition-all cursor-pointer flex items-center gap-1 whitespace-nowrap"
+                      title={`Nhấn để mở ngay #${birthYearMatchedEntry.order} ${birthYearMatchedEntry.name} (${birthYearMatchedEntry.elementNapAm})`}
+                    >
+                      <span>→ #{birthYearMatchedEntry.order.toString().padStart(2, "0")} {birthYearMatchedEntry.name}</span>
+                    </button>
+                  ) : (
+                    <span className="text-[10px] text-ivory-500 hidden xl:inline">Gõ 4 số để tra trụ</span>
+                  )}
+                </div>
+
+                {/* Compact Filter Dropdowns: Thiên Can + Địa Chi + Tìm Quẻ */}
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <select
+                    value={selectedCan}
+                    onChange={(e) => setSelectedCan(e.target.value)}
+                    className="px-2.5 py-1.5 text-xs bg-lacquer-800 border border-gold-800 rounded-sm text-ivory-300 outline-none cursor-pointer hover:border-gold-500"
+                    title="Lọc theo 10 Thiên Can"
+                  >
+                    <option value="all">Thiên Can (10)</option>
+                    {JIAZI_CAN_LIST.map((can) => (
+                      <option key={can} value={can}>
+                        Can {can}
+                      </option>
+                    ))}
+                  </select>
+
+                  <select
+                    value={selectedBranch}
+                    onChange={(e) => setSelectedBranch(e.target.value)}
+                    className="px-2.5 py-1.5 text-xs bg-lacquer-800 border border-gold-800 rounded-sm text-ivory-300 outline-none cursor-pointer hover:border-gold-500"
+                    title="Lọc theo 12 Địa Chi"
+                  >
+                    <option value="all">Địa Chi (12)</option>
+                    {JIAZI_BRANCH_LIST.map((branch) => (
+                      <option key={branch} value={branch}>
+                        Chi {branch} (5 trụ)
+                      </option>
+                    ))}
+                  </select>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setHexLookupQuery("");
+                      setHexLookupTrigram("all");
+                      setIsHexLookupModalOpen(true);
+                    }}
+                    className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold bg-lacquer-800 hover:bg-lacquer-700 text-gold-400 border border-gold-800 hover:border-gold-400 rounded-sm transition-all cursor-pointer"
+                    title="Mở bảng tra cứu nhanh Quẻ Kinh Dịch đối ứng với 60 Hoa Giáp"
+                  >
+                    <Compass className="w-3.5 h-3.5 text-gold-400" />
+                    <span>Tra Quẻ Dịch</span>
+                  </button>
+
+                  {/* 3 Clean View Modes */}
+                  <div className="flex items-center bg-lacquer-900 p-0.5 border border-gold-800 rounded-sm gap-0.5">
+                    <button
+                      type="button"
+                      onClick={() => setViewMode("detail")}
+                      className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-sm font-medium transition-colors cursor-pointer ${
+                        viewMode === "detail"
+                          ? "bg-gold-500/20 text-gold-200 font-semibold ring-1 ring-inset ring-gold-500/70"
+                          : "text-ivory-500 hover:text-gold-200"
+                      }`}
+                    >
+                      <BookOpen className="w-3.5 h-3.5" />
+                      <span>Diễn Giải</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setViewMode("grid")}
+                      className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-sm font-medium transition-colors cursor-pointer ${
+                        viewMode === "grid"
+                          ? "bg-gold-500/20 text-gold-200 font-semibold ring-1 ring-inset ring-gold-500/70"
+                          : "text-ivory-500 hover:text-gold-200"
+                      }`}
+                    >
+                      <Layers className="w-3.5 h-3.5" />
+                      <span>Lưới 60 Thẻ</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setViewMode("full_image")}
+                      className={`flex items-center gap-1 px-2.5 py-1 text-xs rounded-sm font-medium transition-colors cursor-pointer ${
+                        viewMode === "full_image"
+                          ? "bg-gold-500/20 text-gold-200 font-semibold ring-1 ring-inset ring-gold-500/70"
+                          : "text-ivory-500 hover:text-gold-200"
+                      }`}
+                      title="Chế độ hiển thị Ảnh Full & Toàn Cảnh Hoa Giáp"
+                    >
+                      <Maximize2 className="w-3.5 h-3.5" />
+                      <span>Toàn Cảnh</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Collapsible 6x10 Lục Tuần Quick Matrix (Bảng chọn nhanh 60 Hoa Giáp theo 6 Tuần Giáp) */}
+              {isQuickMatrixOpen && (
+                <div className="mt-1 p-3.5 rounded-sm bg-lacquer-950/95 border border-gold-600/80 shadow-2xl animate-in fade-in">
+                  <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 mb-3 border-b border-gold-800/80">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-gold-400 uppercase tracking-wider">
+                        ⚡ Bảng Ma Trận 60 Hoa Giáp Theo Lục Tuần (6 Tuần × 10 Trụ)
+                      </span>
+                      <span className="text-[11px] text-ivory-500">
+                        — Nhấp vào bất kỳ ô nào để mở ngay diễn giải
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsQuickMatrixOpen(false)}
+                      className="text-xs text-ivory-500 hover:text-gold-300 flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>Thu gọn bảng</span>
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-2">
+                    {[
+                      { label: "Tuần Giáp Tý (Không Vong: Tuất Hợi)", start: 0 },
+                      { label: "Tuần Giáp Tuất (Không Vong: Thân Dậu)", start: 10 },
+                      { label: "Tuần Giáp Thân (Không Vong: Ngọ Mùi)", start: 20 },
+                      { label: "Tuần Giáp Ngọ (Không Vong: Thìn Tỵ)", start: 30 },
+                      { label: "Tuần Giáp Thìn (Không Vong: Dần Mão)", start: 40 },
+                      { label: "Tuần Giáp Dần (Không Vong: Tý Sửu)", start: 50 },
+                    ].map((tuan) => {
+                      const rowItems = SIXTY_JIAZI.slice(tuan.start, tuan.start + 10);
+                      return (
+                        <div key={tuan.start} className="grid grid-cols-1 lg:grid-cols-12 gap-1.5 items-center">
+                          <div className="lg:col-span-2 text-[10px] font-mono font-semibold text-gold-400/90 bg-lacquer-900 px-2 py-1.5 rounded-sm border border-gold-800/60 truncate">
+                            {tuan.label}
+                          </div>
+                          <div className="lg:col-span-10 grid grid-cols-5 sm:grid-cols-10 gap-1">
+                            {rowItems.map((item) => {
+                              const isCur = item.id === selectedId;
+                              return (
+                                <button
+                                  key={item.id}
+                                  type="button"
+                                  onClick={() => {
+                                    handleSelectEntry(item.id);
+                                    setViewMode("detail");
+                                    setIsQuickMatrixOpen(false);
+                                  }}
+                                  className={`px-1.5 py-1.5 rounded-sm border text-center transition-all cursor-pointer ${
+                                    isCur
+                                      ? "bg-gold-500 text-lacquer-950 border-gold-300 font-bold shadow-md scale-[1.02]"
+                                      : "bg-lacquer-900 hover:bg-lacquer-800 text-ivory-200 border-gold-800/60 hover:border-gold-400"
+                                  }`}
+                                  title={`#${item.order} ${item.name} (${item.chinese}) — ${item.elementNapAm}`}
+                                >
+                                  <div className={`text-[9px] font-mono ${isCur ? "text-lacquer-900 font-bold" : "text-gold-500"}`}>
+                                    #{item.order.toString().padStart(2, "0")}
+                                  </div>
+                                  <div className="text-[11px] font-serif font-bold truncate leading-tight">
+                                    {item.name}
+                                  </div>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Bảng Bát Tự Mở Rộng: Tứ Trụ • Đại Vận • Lưu Niên • Nam Nữ • Thu Gọn & Lưu Bát Tự */}
-      <div className="max-w-6xl mx-auto px-4 pt-6">
-        <BaziExtendedFortune
-          cardImages={images}
-          onSelectJiazi={(id) => {
-            setSelectedId(id);
-            setViewMode("detail");
-            const detailContainer = document.getElementById("jiazi-detail-container");
-            if (detailContainer) {
-              detailContainer.scrollIntoView({ behavior: "smooth", block: "start" });
-            }
-          }}
-        />
-      </div>
+      {/* Main Content Area Routed by Active Workspace */}
+      <div id="jiazi-detail-container" className="max-w-6xl mx-auto px-4 py-6">
+        {activeWorkspace === "bazi" ? (
+          /* ========================================================
+             WORKSPACE 2: LÁ SỐ BÁT TỰ & NGŨ THIÊN LUẬN MỆNH
+             ======================================================== */
+          <div className="space-y-4 animate-in fade-in">
+            <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 rounded-sm bg-lacquer-900 border border-gold-800 text-xs text-ivory-300">
+              <span>
+                🧭 <strong className="text-gold-400">Không gian Lá Số Bát Tự & Ngũ Thiên:</strong> Điền 4 Trụ hoặc bấm{" "}
+                <strong className="text-gold-300">Lấy Ngày Giờ Hiện Tại</strong>. Nhấp vào nút{" "}
+                <strong className="text-gold-300">Xem #X</strong> trên mỗi trụ để mở ngay Cẩm Nang Hoa Giáp của trụ đó.
+              </span>
+              <button
+                type="button"
+                onClick={() => setActiveWorkspace("jiazi")}
+                className="text-gold-400 hover:text-gold-200 font-semibold flex items-center gap-1 cursor-pointer"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+                <span>Quay lại Cẩm Nang 60 Hoa Giáp</span>
+              </button>
+            </div>
 
-      {/* Phần Lục Nhâm Đại Độn (Thập Nhị Thiên Tướng • Nguyệt Tướng • Hoạt Thời • Thiên Địa Bàn) - Bỏ hoàn toàn phần Lục Nhâm Hóa Dịch ở Tab Hoa Giáp */}
-      <div className="max-w-6xl mx-auto px-4 pt-6" id="lucnham-chart-area-hoagiap">
-        <JiaziLucNhamSection
-          id="lucnham-chart-area-hoagiap"
-          mode="hoagiap"
-          storageKey="iching_lucnham_bazi_hoagiap"
-          storageScope="hoagiap"
-          boardContextLabel="Bảng Tab Hoa Giáp"
-          showHoaDich={false}
-          onSelectJiazi={(id) => {
-            setSelectedId(id);
-            setViewMode("detail");
-            const detailContainer = document.getElementById("jiazi-detail-container");
-            if (detailContainer) {
-              detailContainer.scrollIntoView({ behavior: "smooth", block: "start" });
-            }
-          }}
-        />
-      </div>
+            <BaziExtendedFortune
+              defaultExpanded={true}
+              cardImages={images}
+              onSelectJiazi={(id) => {
+                setSelectedId(id);
+                setActiveWorkspace("jiazi");
+                setViewMode("detail");
+                const detailContainer = document.getElementById("jiazi-detail-container");
+                if (detailContainer) {
+                  detailContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+              }}
+            />
+          </div>
+        ) : activeWorkspace === "lucnham" ? (
+          /* ========================================================
+             WORKSPACE 3: BÀN LỤC NHÂM ĐẠI ĐỘN (TAM THỨC)
+             ======================================================== */
+          <div className="space-y-4 animate-in fade-in" id="lucnham-chart-area-hoagiap">
+            <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 rounded-sm bg-lacquer-900 border border-gold-800 text-xs text-ivory-300">
+              <span>
+                🎲 <strong className="text-gold-400">Không gian Bàn Lục Nhâm Đại Độn:</strong> Thiên Địa Bàn, Nguyệt Tướng, Tứ Khóa Tam Truyền và Xí Ngầu Hoạt Thời 12 Mặt.
+              </span>
+              <button
+                type="button"
+                onClick={() => setActiveWorkspace("jiazi")}
+                className="text-gold-400 hover:text-gold-200 font-semibold flex items-center gap-1 cursor-pointer"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+                <span>Quay lại Cẩm Nang 60 Hoa Giáp</span>
+              </button>
+            </div>
 
-      {/* Main Content Area */}
-      <div id="jiazi-detail-container" className="max-w-6xl mx-auto px-4 py-8">
-        {viewMode === "sounds" ? (
+            <JiaziLucNhamSection
+              id="lucnham-chart-area-hoagiap"
+              mode="hoagiap"
+              storageKey="iching_lucnham_bazi_hoagiap"
+              storageScope="hoagiap"
+              boardContextLabel="Bảng Tab Hoa Giáp"
+              showHoaDich={false}
+              defaultExpanded={true}
+              onSelectJiazi={(id) => {
+                setSelectedId(id);
+                setActiveWorkspace("jiazi");
+                setViewMode("detail");
+                const detailContainer = document.getElementById("jiazi-detail-container");
+                if (detailContainer) {
+                  detailContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+              }}
+            />
+          </div>
+        ) : activeWorkspace === "tables" ? (
+          /* ========================================================
+             WORKSPACE 4: BẢNG ĐỐI ỨNG 60 QUẺ DỊCH & 30 TƯỢNG ÂM THANH
+             ======================================================== */
+          <div className="space-y-5 animate-in fade-in">
+            <div className="flex flex-wrap items-center justify-between gap-3 bg-lacquer-900 border border-gold-800 p-3 rounded-sm">
+              <div className="flex items-center gap-2 flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => setTableSubTab("hexagrams")}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-sm text-xs font-bold transition-all cursor-pointer ${
+                    tableSubTab === "hexagrams"
+                      ? "bg-gold-500 text-lacquer-950 shadow"
+                      : "bg-lacquer-800 text-ivory-300 hover:text-gold-300 border border-gold-800"
+                  }`}
+                >
+                  <Compass className="w-4 h-4" />
+                  <span>Bảng 60 Hoa Giáp ↔ 60 Quẻ Kinh Dịch</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTableSubTab("sounds")}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-sm text-xs font-bold transition-all cursor-pointer ${
+                    tableSubTab === "sounds"
+                      ? "bg-gold-500 text-lacquer-950 shadow"
+                      : "bg-lacquer-800 text-ivory-300 hover:text-gold-300 border border-gold-800"
+                  }`}
+                >
+                  <Volume2 className="w-4 h-4" />
+                  <span>Bảng 30 Tượng Khí & Âm Thanh Nạp Âm</span>
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setActiveWorkspace("jiazi")}
+                className="text-xs text-gold-400 hover:text-gold-200 font-semibold flex items-center gap-1 cursor-pointer"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+                <span>Quay lại Cẩm Nang 60 Hoa Giáp</span>
+              </button>
+            </div>
+
+            {tableSubTab === "sounds" ? (
+              <JiaziSoundTable
+                onSelectCanChi={(id) => {
+                  handleSelectEntry(id);
+                  setActiveWorkspace("jiazi");
+                  setViewMode("detail");
+                }}
+                activeSoundType={playingSoundType}
+                onTogglePlay={handleTogglePlaySound}
+              />
+            ) : (
+              <JiaziHexagramTable
+                cardImages={cardImages}
+                onSelectJiazi={(id) => {
+                  handleSelectEntry(id);
+                  setActiveWorkspace("jiazi");
+                  setViewMode("detail");
+                }}
+                onSelectHexagram={(hexNum) => {
+                  if (onSelectHexagram) {
+                    onSelectHexagram(hexNum);
+                  } else {
+                    const link = selectedEntry.hexagramLink;
+                    if (link && link.hexagramNumber === hexNum) {
+                      setHexagramModalData(link);
+                    }
+                  }
+                }}
+              />
+            )}
+          </div>
+        ) : viewMode === "sounds" ? (
           /* ========================================================
              VIEW MODE: 30 NAP AM SOUND SYMBOLISM TABLE & SYNTHESIZER
              ======================================================== */
@@ -1589,9 +1856,9 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
           /* ========================================================
              VIEW MODE: MASTER-DETAIL / IN-DEPTH INTERPRETATION
              ======================================================== */
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
             {/* LEFT COLUMN: Can Chi Selector & Card Image (lg:col-span-5) */}
-            <div className="lg:col-span-5 space-y-6">
+            <div className="lg:col-span-5 lg:sticky lg:top-20 space-y-4">
               {/* Card Image Display & Upload Frame */}
               <div
                 onDragOver={(e) => e.preventDefault()}
@@ -1896,153 +2163,91 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                 </div>
               </div>
 
-              {/* Companion Bridge Card: Hoa Giáp ↔ Quẻ Kinh Dịch */}
-              {selectedEntry.hexagramLink && (() => {
-                const hexImg = cardImages?.[selectedEntry.hexagramLink.hexagramNumber];
-
-                return (
-                  <div className="bg-lacquer-800 border border-gold-800 rounded-md p-3.5 shadow-md flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-11 h-14 rounded-sm overflow-hidden border border-gold-800 bg-lacquer-900 flex items-center justify-center shrink-0 shadow-sm">
-                        {hexImg ? (
-                          <img
-                            src={hexImg}
-                            alt={selectedEntry.hexagramLink.hexagramName}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="flex flex-col items-center justify-center text-center p-0.5">
-                            <span className="text-xl font-serif text-gold-400 leading-none">
-                              {selectedEntry.hexagramLink.symbol}
-                            </span>
-                            <span className="text-[8px] font-mono text-ivory-500 mt-0.5">
-                              #{selectedEntry.hexagramLink.hexagramNumber}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                      <div className="min-w-0">
-                        <div className="text-[10px] text-ivory-500 font-mono">
-                          QUẺ KINH DỊCH TƯƠNG ỨNG
-                        </div>
-                        <div className="text-xs font-serif font-bold text-ivory-100 truncate flex items-center gap-1.5 mt-0.5">
-                          <span>#{selectedEntry.hexagramLink.hexagramNumber} {selectedEntry.hexagramLink.hexagramName}</span>
-                          <span className="text-gold-500 font-normal">({selectedEntry.hexagramLink.hexagramHanzi})</span>
-                        </div>
-                        <div className="text-[10px] text-ivory-500 truncate">
-                          {hexImg ? "✓ Đã có hình quẻ Kinh Dịch" : "Vạch hào Chu Dịch"}
-                        </div>
-                      </div>
+              {/* Unified Navigation & Same-Branch Quick Switcher Card */}
+              <div className="bg-lacquer-800 border border-gold-800/80 rounded-md p-3.5 space-y-3 shadow-lg">
+                {/* Prev / Next Navigation Bar */}
+                <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-lacquer-700">
+                  <button
+                    type="button"
+                    onClick={() => handleSelectEntry(prevEntry.id)}
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-ivory-300 hover:text-gold-200 hover:bg-lacquer-700 rounded-sm transition-colors cursor-pointer"
+                  >
+                    <ChevronLeft className="w-4 h-4 text-gold-400" />
+                    <div className="text-left">
+                      <div className="text-[10px] text-gold-700">Trước (#{prevEntry.order})</div>
+                      <div className="font-bold">{prevEntry.name}</div>
                     </div>
+                  </button>
 
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      {hexImg && (
+                  <button
+                    type="button"
+                    onClick={() => setIsQuickMatrixOpen((p) => !p)}
+                    className="px-2.5 py-1 rounded-sm bg-lacquer-900 hover:bg-lacquer-700 border border-gold-800 text-center cursor-pointer transition-colors"
+                    title="Mở bảng chọn nhanh 60 Hoa Giáp"
+                  >
+                    <div className="text-xs font-serif font-bold text-gold-400">
+                      {selectedEntry.name}
+                    </div>
+                    <div className="text-[10px] text-ivory-500">
+                      #{selectedEntry.order} / 60 • Bảng 60 ▾
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleSelectEntry(nextEntry.id)}
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-ivory-300 hover:text-gold-200 hover:bg-lacquer-700 rounded-sm transition-colors cursor-pointer text-right"
+                  >
+                    <div className="text-right">
+                      <div className="text-[10px] text-gold-700">Kế tiếp (#{nextEntry.order})</div>
+                      <div className="font-bold">{nextEntry.name}</div>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-gold-400" />
+                  </button>
+                </div>
+
+                {/* Quick Horizontal Carousel of Current Branch (5 items) */}
+                <div>
+                  <div className="text-[11px] font-bold text-gold-500 mb-2 flex items-center justify-between">
+                    <span>5 TRỤ CÙNG ĐỊA CHI {selectedEntry.branchGroup.toUpperCase()}</span>
+                    <span className="text-[10px] text-gold-700 font-normal">Bấm chuyển nhanh</span>
+                  </div>
+                  <div className="grid grid-cols-5 gap-1.5">
+                    {SIXTY_JIAZI.filter((j) => j.branchGroup === selectedEntry.branchGroup).map((item) => {
+                      const isCur = item.id === selectedEntry.id;
+                      const hasPic = !!images[item.id];
+                      return (
                         <button
+                          key={item.id}
                           type="button"
-                          onClick={() => {
-                            setLightboxZoom(1);
-                            setLightboxImage(hexImg);
-                          }}
-                          className="px-2.5 py-1.5 text-xs font-medium bg-lacquer-700 hover:bg-lacquer-700 text-gold-300 border border-gold-800 rounded-sm transition-all cursor-pointer shadow-sm flex items-center gap-1"
-                          title="Xem ảnh phóng to"
+                          onClick={() => handleSelectEntry(item.id)}
+                          className={`p-1.5 rounded-sm text-center border transition-all cursor-pointer ${
+                            isCur
+                              ? "bg-lacquer-700 border-gold-500 text-gold-400 font-bold shadow-sm"
+                              : "bg-lacquer-900 border-lacquer-700 text-ivory-500 hover:border-gold-800 hover:text-gold-200"
+                          }`}
                         >
-                          <Eye className="w-3 h-3 text-gold-400" />
-                          <span>Xem Hình</span>
+                          <div className="text-[9px] text-gold-700">#{item.order}</div>
+                          <div className="text-xs font-serif font-bold truncate">{item.name}</div>
+                          <div className="text-[10px] mt-0.5 flex justify-center">
+                            {hasPic ? (
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                            ) : (
+                              <span className="w-1.5 h-1.5 rounded-full bg-gold-800" />
+                            )}
+                          </div>
                         </button>
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setDetailImageTab((prev) => (prev === "jiazi" ? "hexagram" : "jiazi"));
-                        }}
-                        className="px-2.5 py-1.5 text-xs font-bold bg-gold-800 hover:bg-gold-800 text-gold-400 border border-gold-700 rounded-sm transition-all cursor-pointer shadow-sm flex items-center gap-1"
-                        title="Đổi khung ảnh chính sang xem quẻ kinh dịch hoặc hoa giáp"
-                      >
-                        <RefreshCw className="w-3 h-3" />
-                        <span>{detailImageTab === "jiazi" ? "Hiện Quẻ" : "Hiện Hoa Giáp"}</span>
-                      </button>
-                    </div>
+                      );
+                    })}
                   </div>
-                );
-              })()}
-
-              {/* Prev / Next Navigation Bar */}
-              <div className="flex items-center justify-between gap-3 bg-lacquer-800 border border-lacquer-700 p-3 rounded-md">
-                <button
-                  type="button"
-                  onClick={() => handleSelectEntry(prevEntry.id)}
-                  className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-ivory-300 hover:text-gold-200 hover:bg-lacquer-700 rounded-sm transition-colors cursor-pointer"
-                >
-                  <ChevronLeft className="w-4 h-4 text-gold-400" />
-                  <div className="text-left">
-                    <div className="text-[10px] text-gold-700">Trước</div>
-                    <div className="font-bold">{prevEntry.name}</div>
-                  </div>
-                </button>
-
-                <div className="text-center">
-                  <div className="text-xs font-serif font-bold text-gold-400">
-                    {selectedEntry.name}
-                  </div>
-                  <div className="text-[10px] text-gold-700">
-                    #{selectedEntry.order} / 60
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => handleSelectEntry(nextEntry.id)}
-                  className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-ivory-300 hover:text-gold-200 hover:bg-lacquer-700 rounded-sm transition-colors cursor-pointer text-right"
-                >
-                  <div className="text-right">
-                    <div className="text-[10px] text-gold-700">Kế tiếp</div>
-                    <div className="font-bold">{nextEntry.name}</div>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-gold-400" />
-                </button>
-              </div>
-
-              {/* Quick Horizontal Carousel of Current Branch (5 items) */}
-              <div className="bg-lacquer-800 border border-lacquer-700 rounded-md p-4">
-                <div className="text-xs font-bold text-gold-500 mb-2.5 flex items-center justify-between">
-                  <span>CÙNG CHI {selectedEntry.branchGroup.toUpperCase()} ({SIXTY_JIAZI.filter(j => j.branchGroup === selectedEntry.branchGroup).length} CAN CHI)</span>
-                  <span className="text-[10px] text-gold-700 font-normal">Bấm chuyển nhanh</span>
-                </div>
-                <div className="grid grid-cols-5 gap-2">
-                  {SIXTY_JIAZI.filter((j) => j.branchGroup === selectedEntry.branchGroup).map((item) => {
-                    const isCur = item.id === selectedEntry.id;
-                    const hasPic = !!images[item.id];
-                    return (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => handleSelectEntry(item.id)}
-                        className={`p-2 rounded-sm text-center border transition-all cursor-pointer ${
-                          isCur
-                            ? "bg-lacquer-700 border-gold-500 text-gold-500 font-bold shadow-sm"
-                            : "bg-lacquer-900 border-lacquer-700 text-ivory-500 hover:border-gold-800 hover:text-gold-200"
-                        }`}
-                      >
-                        <div className="text-[10px] text-gold-700">#{item.order}</div>
-                        <div className="text-xs font-serif font-bold mt-0.5 truncate">{item.can}</div>
-                        <div className="text-[10px] mt-1 flex justify-center">
-                          {hasPic ? (
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                          ) : (
-                            <span className="w-1.5 h-1.5 rounded-full bg-gold-800" />
-                          )}
-                        </div>
-                      </button>
-                    );
-                  })}
                 </div>
               </div>
             </div>
 
-            {/* RIGHT COLUMN: Full PDF In-depth Interpretations (lg:col-span-7) */}
-            <div className="lg:col-span-7 space-y-6">
+            {/* RIGHT COLUMN: Structured In-depth Interpretations with Section Tabs (lg:col-span-7) */}
+            <div className="lg:col-span-7 space-y-5">
               {/* Title & Summary Banner */}
-              <div className="relative overflow-hidden border border-gold-800 border-t-gold-600 bg-lacquer-900/80 p-6 sm:p-8">
+              <div className="relative overflow-hidden border border-gold-800 border-t-gold-600 bg-lacquer-900/80 p-5 sm:p-6 rounded-sm">
                 <div className="absolute top-0 right-0 transform translate-x-4 -translate-y-4 text-8xl font-serif text-gold-500/[0.06] select-none pointer-events-none">
                   {selectedEntry.chinese}
                 </div>
@@ -2110,439 +2315,545 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                     </span>
                   </div>
 
-                  <h2 className="royal-title mt-2 text-4xl sm:text-5xl flex flex-wrap items-baseline gap-x-4">
+                  <h2 className="royal-title mt-1.5 text-3xl sm:text-4xl flex flex-wrap items-baseline gap-x-4">
                     {selectedEntry.name}
-                    <span className="text-xl font-serif tracking-[0.3em] text-gold-500">
+                    <span className="text-lg font-serif tracking-[0.3em] text-gold-500">
                       {selectedEntry.chinese}
                     </span>
                   </h2>
 
-                  <div className="mt-3 text-sm font-serif italic text-gold-400 flex items-center gap-2">
+                  <div className="mt-2 text-xs sm:text-sm font-serif italic text-gold-400 flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rotate-45 bg-gold-500" />
                     <span>Biểu tượng cốt lõi: {selectedEntry.symbolicCreature}</span>
                   </div>
 
-                  <p className="mt-5 text-[15px] font-serif text-ivory-300 leading-relaxed border-l border-gold-600 pl-4">
+                  <p className="mt-3.5 text-sm sm:text-[15px] font-serif text-ivory-300 leading-relaxed border-l-2 border-gold-600 pl-3.5">
                     {selectedEntry.summary}
                   </p>
                 </div>
               </div>
 
-              {/* TƯỢNG ÂM THANH & KHÍ TƯỢNG (氣象與象徵之聲) */}
-              {(() => {
-                const companionOrder =
-                  selectedEntry.order % 2 === 1
-                    ? selectedEntry.order + 1
-                    : selectedEntry.order - 1;
-                const companionEntry = SIXTY_JIAZI.find(
-                  (item) => item.order === companionOrder
-                );
-                const isCurrentPlaying =
-                  playingSoundType === selectedEntry.soundSymbolism.soundType;
+              {/* 4-TAB READING NAVIGATION BAR (Giúp đọc từng phần gọn gàng không phải cuộn trang dài) */}
+              <div className="bg-lacquer-900 border border-gold-800 rounded-sm p-1.5 grid grid-cols-2 sm:grid-cols-4 gap-1.5 shadow-md">
+                <button
+                  type="button"
+                  onClick={() => setDetailSectionTab("part1")}
+                  className={`flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-sm text-xs font-bold transition-all cursor-pointer ${
+                    detailSectionTab === "part1"
+                      ? "bg-gold-500 text-lacquer-950 shadow"
+                      : "bg-lacquer-800/70 text-ivory-300 hover:text-gold-300 hover:bg-lacquer-800"
+                  }`}
+                >
+                  <Trees className="w-3.5 h-3.5 shrink-0" />
+                  <span className="truncate">1. Phối Tượng ({selectedEntry.part1.items.length})</span>
+                </button>
 
-                return (
-                  <div
-                    className={`bg-lacquer-800 border rounded-md p-6 sm:p-7 shadow-xl transition-all relative overflow-hidden ${
-                      isCurrentPlaying
-                        ? "border-gold-500 ring-2 ring-gold-500/30"
-                        : "border-gold-800"
-                    }`}
-                  >
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gold-800 pb-4 mb-5">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`w-10 h-10 rounded-md border flex items-center justify-center transition-colors ${
-                            isCurrentPlaying
-                              ? "bg-gold-500/15 text-gold-200 border-gold-500"
-                              : "bg-lacquer-700 border-gold-800 text-gold-400"
-                          }`}
-                        >
-                          <Volume2 className="w-5 h-5" />
+                <button
+                  type="button"
+                  onClick={() => setDetailSectionTab("part2")}
+                  className={`flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-sm text-xs font-bold transition-all cursor-pointer ${
+                    detailSectionTab === "part2"
+                      ? "bg-gold-500 text-lacquer-950 shadow"
+                      : "bg-lacquer-800/70 text-ivory-300 hover:text-gold-300 hover:bg-lacquer-800"
+                  }`}
+                >
+                  <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                  <span className="truncate">2. Triết Lý ({selectedEntry.part2.items.length})</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setDetailSectionTab("sound_hex")}
+                  className={`flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-sm text-xs font-bold transition-all cursor-pointer ${
+                    detailSectionTab === "sound_hex"
+                      ? "bg-gold-500 text-lacquer-950 shadow"
+                      : "bg-lacquer-800/70 text-ivory-300 hover:text-gold-300 hover:bg-lacquer-800"
+                  }`}
+                >
+                  <Volume2 className="w-3.5 h-3.5 shrink-0" />
+                  <span className="truncate">3. Âm Tượng & Quẻ #{selectedEntry.hexagramLink?.hexagramNumber}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setDetailSectionTab("all")}
+                  className={`flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-sm text-xs font-bold transition-all cursor-pointer ${
+                    detailSectionTab === "all"
+                      ? "bg-gold-500 text-lacquer-950 shadow"
+                      : "bg-lacquer-800/70 text-ivory-300 hover:text-gold-300 hover:bg-lacquer-800"
+                  }`}
+                >
+                  <BookOpen className="w-3.5 h-3.5 shrink-0" />
+                  <span className="truncate">Đọc Toàn Văn</span>
+                </button>
+              </div>
+
+              {/* PART 1: CHI TIẾT TƯỢNG HÌNH (Phối tượng tự nhiên - 自然配象) */}
+              {(detailSectionTab === "part1" || detailSectionTab === "all") && (
+                <div className="bg-lacquer-800 border border-gold-800 rounded-md p-5 sm:p-6 shadow-xl animate-in fade-in">
+                  <div className="flex items-center justify-between gap-3 border-b border-gold-800 pb-3.5 mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-sm bg-lacquer-700 border border-gold-800 flex items-center justify-center text-gold-400">
+                        <Trees className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg sm:text-xl font-display font-semibold text-ivory-100">
+                          {selectedEntry.part1.title}
+                        </h3>
+                        <div className="text-xs text-ivory-500">
+                          Tự nhiên phối tượng • Tượng hình vũ trụ quan ({selectedEntry.part1.items.length} luận điểm)
                         </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h3 className="text-lg sm:text-xl font-display font-semibold text-ivory-100">
-                              Tượng Âm Thanh & Khí Tượng
-                            </h3>
-                            <span className="text-xs font-serif text-gold-500 bg-lacquer-700 px-2 py-0.5 rounded border border-gold-800">
-                              氣象與象徵之聲
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3.5">
+                    {selectedEntry.part1.items.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="bg-lacquer-900 border border-lacquer-700 hover:border-gold-800 rounded-md p-4 transition-colors"
+                      >
+                        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-1.5">
+                          <h4 className="text-sm font-serif font-bold text-ivory-100 flex items-center gap-2">
+                            <span className="w-5 h-5 rounded-full bg-lacquer-700 text-gold-400 text-xs flex items-center justify-center font-mono">
+                              {idx + 1}
                             </span>
-                          </div>
-                          <div className="text-xs text-ivory-500 mt-0.5">
-                            Trạng thái khí vận và âm thanh biểu trưng của {selectedEntry.elementNapAm}
-                          </div>
+                            {item.title}
+                          </h4>
+                          {item.chineseTerm && (
+                            <span className="text-xs text-gold-500 font-serif bg-lacquer-800 px-2 py-0.5 rounded border border-gold-800 self-start sm:self-auto">
+                              {item.chineseTerm}
+                            </span>
+                          )}
                         </div>
-                      </div>
-
-                      {/* Interactive Sound Trigger */}
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleTogglePlaySound(selectedEntry.soundSymbolism.soundType)
-                        }
-                        className={`flex items-center gap-2 px-4 py-2 rounded-sm text-xs font-bold transition-all cursor-pointer shadow-md active:scale-95 shrink-0 ${
-                          isCurrentPlaying
-                            ? "bg-rose-600 text-white animate-pulse"
-                            : "bg-gold-400 hover:bg-gold-400 text-lacquer-900"
-                        }`}
-                      >
-                        {isCurrentPlaying ? (
-                          <>
-                            <Square className="w-3.5 h-3.5 fill-current" />
-                            <span>Dừng Âm Tượng</span>
-                          </>
-                        ) : (
-                          <>
-                            <Play className="w-3.5 h-3.5 fill-current" />
-                            <span>Nghe Tượng Âm Thanh</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
-
-                    {/* Playing wave indicator */}
-                    {isCurrentPlaying && (
-                      <div className="mb-4 py-2 px-4 rounded-sm bg-lacquer-800 border border-gold-500/50 flex items-center justify-between text-xs text-gold-400 animate-in fade-in">
-                        <span className="flex items-center gap-2 font-medium">
-                          <Waves className="w-4 h-4 animate-bounce" />
-                          <span>Đang mô phỏng cộng hưởng âm tượng: {selectedEntry.soundSymbolism.soundName}</span>
-                        </span>
-                        <div className="flex items-center gap-1">
-                          <span className="w-1 h-3.5 bg-gold-400 rounded-full animate-pulse" />
-                          <span className="w-1 h-5 bg-gold-400 rounded-full animate-pulse delay-75" />
-                          <span className="w-1 h-2.5 bg-gold-400 rounded-full animate-pulse delay-150" />
-                          <span className="w-1 h-4 bg-gold-400 rounded-full animate-pulse delay-200" />
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Two Primary Descriptive Blocks */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {/* Block 1: Tượng Khí & Trạng Thái */}
-                      <div className="bg-lacquer-900 border border-lacquer-700 rounded-md p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-[11px] font-bold text-ivory-500 tracking-wider uppercase">
-                            Tượng Khí & Trạng Thái
-                          </span>
-                          <span className="text-[10px] px-2 py-0.5 rounded-sm bg-lacquer-700 border border-gold-800 text-gold-500 font-mono">
-                            Hành {selectedEntry.soundSymbolism.element}
-                          </span>
-                        </div>
-                        <p className="text-sm font-serif text-ivory-100 leading-relaxed">
-                          {selectedEntry.soundSymbolism.qiState}
+                        <p className="text-xs sm:text-sm text-ivory-300 leading-relaxed pl-7">
+                          {item.description}
                         </p>
                       </div>
+                    ))}
+                  </div>
 
-                      {/* Block 2: Âm Thanh Tượng Trưng */}
-                      <div className="bg-lacquer-800 border border-gold-800 rounded-md p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-[11px] font-bold text-gold-400 tracking-wider uppercase flex items-center gap-1">
-                            <Volume2 className="w-3 h-3 text-gold-400" />
-                            Âm Thanh Tượng Trưng
-                          </span>
-                          <span className="text-[10px] text-ivory-500 font-mono">
-                            {selectedEntry.soundSymbolism.napAm}
-                          </span>
-                        </div>
-                        <p className="text-sm font-semibold text-ivory-100 leading-relaxed">
-                          {selectedEntry.soundSymbolism.soundName}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Companion info & Link to 30 sounds table */}
-                    <div className="mt-4 pt-3 border-t border-lacquer-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
-                      {companionEntry && (
-                        <div className="text-ivory-500 flex items-center gap-1.5 flex-wrap">
-                          <span>Đồng nạp âm ({selectedEntry.elementNapAm}):</span>
-                          <button
-                            type="button"
-                            onClick={() => handleSelectEntry(companionEntry.id)}
-                            className="text-gold-400 hover:underline font-serif font-bold flex items-center gap-1 cursor-pointer bg-lacquer-700 px-2 py-0.5 rounded border border-gold-800"
-                          >
-                            <span>#{companionEntry.order} {companionEntry.name} ({companionEntry.chinese})</span>
-                          </button>
-                        </div>
-                      )}
-
+                  {detailSectionTab === "part1" && (
+                    <div className="mt-4 pt-3 border-t border-lacquer-700 flex items-center justify-end">
                       <button
                         type="button"
-                        onClick={() => setViewMode("sounds")}
-                        className="text-ivory-500 hover:text-gold-500 flex items-center gap-1 cursor-pointer transition-colors"
+                        onClick={() => setDetailSectionTab("part2")}
+                        className="px-3.5 py-1.5 rounded-sm bg-lacquer-700 hover:bg-gold-500 text-gold-300 hover:text-lacquer-950 border border-gold-700 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
                       >
-                        <span>Xem toàn bộ bảng 30 Tượng Âm Thanh</span>
+                        <span>Xem tiếp Phần 2: Triết Lý Nhân Sinh ({selectedEntry.part2.items.length})</span>
                         <ChevronRight className="w-3.5 h-3.5" />
                       </button>
                     </div>
-                  </div>
-                );
-              })()}
-
-              {/* LIÊN KẾT KINH DỊCH: QUẺ TƯƠNG ỨNG VỚI HOA GIÁP */}
-              {selectedEntry.hexagramLink && (
-                <div className="bg-lacquer-800 border border-gold-800 rounded-md p-6 sm:p-7 shadow-xl relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-4 text-8xl font-serif text-gold-500/10 select-none pointer-events-none">
-                    {selectedEntry.hexagramLink.symbol}
-                  </div>
-
-                  <div className="relative z-10">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gold-800 pb-4 mb-5">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-md bg-lacquer-700 border border-gold-800 flex items-center justify-center text-gold-400 shadow-sm text-2xl font-serif">
-                          {selectedEntry.hexagramLink.symbol}
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h3 className="text-lg sm:text-xl font-display font-semibold text-ivory-100">
-                              Quẻ Kinh Dịch Tương Ứng
-                            </h3>
-                            <span className="text-xs font-serif text-gold-500 bg-lacquer-700 px-2 py-0.5 rounded border border-gold-800">
-                              周易對應卦象
-                            </span>
-                          </div>
-                          <div className="text-xs text-ivory-500 mt-0.5">
-                            Quy luật Tiên Thiên Chu Kỳ Tiêu Trưởng: {selectedEntry.name} ({selectedEntry.elementNapAm}) ↔ Quẻ #{selectedEntry.hexagramLink.hexagramNumber} {selectedEntry.hexagramLink.hexagramName}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Action buttons */}
-                      <div className="flex items-center gap-2 flex-wrap">
-                        {onSelectHexagram && (
-                          <button
-                            type="button"
-                            onClick={() => onSelectHexagram(selectedEntry.hexagramLink.hexagramNumber)}
-                            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-sm text-xs font-bold bg-gold-500 hover:bg-gold-400 text-lacquer-900 transition-all cursor-pointer shadow-md active:scale-95 shrink-0"
-                            title="Mở toàn bộ luận giải chi tiết của quẻ này trong mục Giải Nghĩa Kinh Dịch"
-                          >
-                            <BookOpen className="w-3.5 h-3.5" />
-                            <span>Tra Cứu Quẻ Này</span>
-                          </button>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() => setViewMode("hexagrams")}
-                          className="flex items-center gap-1 px-3 py-1.5 rounded-sm text-xs font-medium bg-lacquer-700 hover:bg-lacquer-700 text-ivory-300 border border-gold-800 transition-colors cursor-pointer shrink-0"
-                          title="Mở bảng đối ứng đầy đủ 60 Hoa Giáp và 60 Quẻ Dịch"
-                        >
-                          <Compass className="w-3.5 h-3.5 text-gold-400" />
-                          <span>Xem Bảng 60 Quẻ</span>
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Hexagram Banner Info & Visual Artwork */}
-                    {(() => {
-                      const hexObj = HEXAGRAMS.find((h) => h.number === selectedEntry.hexagramLink?.hexagramNumber);
-                      const hexImg = cardImages?.[selectedEntry.hexagramLink?.hexagramNumber || 0];
-
-                      return (
-                        <div className="bg-lacquer-900 border border-lacquer-700 rounded-md p-4 sm:p-5 shadow-inner">
-                          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5 pb-4 border-b border-gold-800">
-                            {/* Visual Thumbnail & Zoom Button */}
-                            <div className="shrink-0 flex flex-col items-center">
-                              {hexObj ? (
-                                <div className="rounded-sm overflow-hidden shadow-lg border border-gold-800 bg-lacquer-950">
-                                  <CardVisual
-                                    hexagram={hexObj}
-                                    imageUrl={hexImg}
-                                    size="sm"
-                                    showName={false}
-                                    enableZoomModal={true}
-                                  />
-                                </div>
-                              ) : (
-                                <div className="w-24 h-32 rounded-sm bg-lacquer-700 border border-gold-800 flex items-center justify-center text-3xl text-gold-400 font-serif shadow-inner">
-                                  {selectedEntry.hexagramLink.symbol}
-                                </div>
-                              )}
-
-                              <div className="mt-2 text-center space-y-1">
-                                {hexImg && (
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      setLightboxZoom(1);
-                                      setLightboxImage(hexImg);
-                                    }}
-                                    className="text-[11px] text-gold-500 hover:text-gold-300 flex items-center justify-center gap-1 cursor-pointer transition-colors"
-                                  >
-                                    <Eye className="w-3 h-3" />
-                                    <span>Phóng to ảnh</span>
-                                  </button>
-                                )}
-                              </div>
-                            </div>
-
-                            {/* Hexagram Meta & Meaning */}
-                            <div className="flex-1 min-w-0 w-full">
-                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                                <div className="flex items-center gap-2 flex-wrap">
-                                  <span className="text-2xl font-serif text-gold-400 font-bold">
-                                    {selectedEntry.hexagramLink.symbol}
-                                  </span>
-                                  <span className="text-lg font-serif font-bold text-ivory-100">
-                                    {selectedEntry.hexagramLink.hexagramName}
-                                  </span>
-                                  <span className="text-xs font-serif text-ivory-500">
-                                    ({selectedEntry.hexagramLink.hexagramHanzi})
-                                  </span>
-                                  <span className="px-2 py-0.5 rounded-md bg-lacquer-700 border border-gold-800 text-[10px] font-mono font-bold text-gold-400">
-                                    Quẻ #{selectedEntry.hexagramLink.hexagramNumber}
-                                  </span>
-                                </div>
-                                <div className="text-xs text-ivory-500 flex items-center gap-2">
-                                  <span>Thượng: <strong className="text-ivory-300">{selectedEntry.hexagramLink.upperTrigram}</strong></span>
-                                  <span>•</span>
-                                  <span>Hạ: <strong className="text-gold-400">{selectedEntry.hexagramLink.lowerTrigram}</strong></span>
-                                </div>
-                              </div>
-
-                              <p className="text-xs text-ivory-300 leading-relaxed mb-3">
-                                {hexObj ? hexObj.overview : selectedEntry.hexagramLink.natureMeaning}
-                              </p>
-
-                              <div className="flex items-center gap-2 flex-wrap pt-2 border-t border-lacquer-700">
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setDetailImageTab("hexagram");
-                                    const el = document.getElementById("jiazi-detail-container");
-                                    if (el) el.scrollIntoView({ behavior: "smooth" });
-                                  }}
-                                  className="px-2.5 py-1 text-xs rounded-sm bg-lacquer-700 hover:bg-gold-800 text-gold-300 border border-gold-800 font-medium transition-all cursor-pointer flex items-center gap-1 shadow-sm"
-                                >
-                                  <Maximize2 className="w-3 h-3 text-gold-400" />
-                                  <span>Hiện hình quẻ ở khung chính</span>
-                                </button>
-                                {onSelectHexagram && (
-                                  <button
-                                    type="button"
-                                    onClick={() => onSelectHexagram(selectedEntry.hexagramLink.hexagramNumber)}
-                                    className="px-2.5 py-1 text-xs rounded-sm bg-lacquer-700 hover:bg-gold-800 text-gold-300 hover:text-gold-200 border border-gold-800 hover:border-gold-400 font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
-                                    title="Nhấp để nhảy sang phần giải thích trong Sách Thuyết Minh Kinh Dịch"
-                                  >
-                                    <BookOpen className="w-3.5 h-3.5 text-gold-400" />
-                                    <span>Xem giải nghĩa quẻ #{selectedEntry.hexagramLink.hexagramNumber}</span>
-                                  </button>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs mt-3.5">
-                            <div className="bg-lacquer-800 border border-lacquer-700 rounded-sm p-3">
-                              <div className="text-[11px] font-bold text-gold-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                                <Sparkles className="w-3.5 h-3.5" />
-                                <span>Tượng Quẻ & Khí Vận</span>
-                              </div>
-                              <p className="text-ivory-300 leading-relaxed">
-                                {selectedEntry.hexagramLink.natureMeaning}
-                              </p>
-                            </div>
-
-                            <div className="bg-lacquer-800 border border-lacquer-700 rounded-sm p-3">
-                              <div className="text-[11px] font-bold text-gold-500 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                                <Compass className="w-3.5 h-3.5" />
-                                <span>Luận Giải Tương Liên Hoa Giáp & Quẻ Dịch</span>
-                              </div>
-                              <p className="text-ivory-300 leading-relaxed">
-                                {selectedEntry.hexagramLink.linkAnalysis}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })()}
-                  </div>
+                  )}
                 </div>
               )}
 
-              {/* PART 1: CHI TIẾT TƯỢNG HÌNH (Phối tượng tự nhiên - 自然配象) */}
-              <div className="bg-lacquer-800 border border-gold-800 rounded-md p-6 sm:p-7 shadow-xl">
-                <div className="flex items-center gap-3 border-b border-gold-800 pb-4 mb-5">
-                  <div className="w-9 h-9 rounded-sm bg-lacquer-700 border border-gold-800 flex items-center justify-center text-gold-400">
-                    <Trees className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg sm:text-xl font-display font-semibold text-ivory-100">
-                      {selectedEntry.part1.title}
-                    </h3>
-                    <div className="text-xs text-ivory-500">
-                      Tự nhiên phối tượng • Tượng hình vũ trụ quan
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  {selectedEntry.part1.items.map((item, idx) => (
-                    <div
-                      key={idx}
-                      className="bg-lacquer-900 border border-lacquer-700 hover:border-gold-800 rounded-md p-4 transition-colors"
-                    >
-                      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-1.5">
-                        <h4 className="text-sm font-serif font-bold text-ivory-100 flex items-center gap-2">
-                          <span className="w-5 h-5 rounded-full bg-lacquer-700 text-gold-400 text-xs flex items-center justify-center font-mono">
-                            {idx + 1}
-                          </span>
-                          {item.title}
-                        </h4>
-                        {item.chineseTerm && (
-                          <span className="text-xs text-gold-500 font-serif bg-lacquer-800 px-2 py-0.5 rounded border border-gold-800 self-start sm:self-auto">
-                            {item.chineseTerm}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-xs sm:text-sm text-ivory-300 leading-relaxed pl-7">
-                        {item.description}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
               {/* PART 2: Ý NGHĨA TRIẾT LÝ & NHÂN SINH (哲理 / 擬人化) */}
-              <div className="bg-lacquer-800 border border-gold-800 rounded-md p-6 sm:p-7 shadow-xl">
-                <div className="flex items-center gap-3 border-b border-gold-800 pb-4 mb-5">
-                  <div className="w-9 h-9 rounded-sm bg-lacquer-700 border border-gold-800 flex items-center justify-center text-gold-400">
-                    <Sparkles className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg sm:text-xl font-display font-semibold text-ivory-100">
-                      {selectedEntry.part2.title}
-                    </h3>
-                    <div className="text-xs text-ivory-500">
-                      Nhân sinh minh triết • Nghệ thuật xử thế & tu dưỡng
+              {(detailSectionTab === "part2" || detailSectionTab === "all") && (
+                <div className="bg-lacquer-800 border border-gold-800 rounded-md p-5 sm:p-6 shadow-xl animate-in fade-in">
+                  <div className="flex items-center gap-3 border-b border-gold-800 pb-3.5 mb-4">
+                    <div className="w-9 h-9 rounded-sm bg-lacquer-700 border border-gold-800 flex items-center justify-center text-gold-400">
+                      <Sparkles className="w-5 h-5" />
                     </div>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  {selectedEntry.part2.items.map((item, idx) => (
-                    <div
-                      key={idx}
-                      className="bg-lacquer-900 border border-lacquer-700 hover:border-gold-800 rounded-md p-4 transition-colors"
-                    >
-                      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-1.5">
-                        <h4 className="text-sm font-serif font-bold text-gold-400 flex items-center gap-2">
-                          <span className="w-5 h-5 rounded-full bg-gold-800 text-ivory-100 text-xs flex items-center justify-center font-mono">
-                            {idx + 1}
-                          </span>
-                          {item.title}
-                        </h4>
-                        {item.chineseTerm && (
-                          <span className="text-xs text-ivory-500 font-serif bg-lacquer-800 px-2 py-0.5 rounded border border-gold-800 self-start sm:self-auto">
-                            {item.chineseTerm}
-                          </span>
-                        )}
+                    <div>
+                      <h3 className="text-lg sm:text-xl font-display font-semibold text-ivory-100">
+                        {selectedEntry.part2.title}
+                      </h3>
+                      <div className="text-xs text-ivory-500">
+                        Nhân sinh minh triết • Nghệ thuật xử thế & tu dưỡng ({selectedEntry.part2.items.length} luận điểm)
                       </div>
-                      <p className="text-xs sm:text-sm text-ivory-300 leading-relaxed pl-7">
-                        {item.description}
-                      </p>
                     </div>
-                  ))}
+                  </div>
+
+                  <div className="space-y-3.5">
+                    {selectedEntry.part2.items.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="bg-lacquer-900 border border-lacquer-700 hover:border-gold-800 rounded-md p-4 transition-colors"
+                      >
+                        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-1.5">
+                          <h4 className="text-sm font-serif font-bold text-gold-400 flex items-center gap-2">
+                            <span className="w-5 h-5 rounded-full bg-gold-800 text-ivory-100 text-xs flex items-center justify-center font-mono">
+                              {idx + 1}
+                            </span>
+                            {item.title}
+                          </h4>
+                          {item.chineseTerm && (
+                            <span className="text-xs text-ivory-500 font-serif bg-lacquer-800 px-2 py-0.5 rounded border border-gold-800 self-start sm:self-auto">
+                              {item.chineseTerm}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs sm:text-sm text-ivory-300 leading-relaxed pl-7">
+                          {item.description}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {detailSectionTab === "part2" && (
+                    <div className="mt-4 pt-3 border-t border-lacquer-700 flex items-center justify-between">
+                      <button
+                        type="button"
+                        onClick={() => setDetailSectionTab("part1")}
+                        className="text-xs text-ivory-500 hover:text-gold-300 flex items-center gap-1 cursor-pointer"
+                      >
+                        <ChevronLeft className="w-3.5 h-3.5" />
+                        <span>Phần 1: Phối Tượng Tự Nhiên</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setDetailSectionTab("sound_hex")}
+                        className="px-3.5 py-1.5 rounded-sm bg-lacquer-700 hover:bg-gold-500 text-gold-300 hover:text-lacquer-950 border border-gold-700 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+                      >
+                        <span>Xem tiếp Phần 3: Âm Tượng & Quẻ Dịch</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  )}
                 </div>
-              </div>
+              )}
+
+              {/* PART 3: TƯỢNG ÂM THANH & QUẺ KINH DỊCH TƯƠNG ỨNG */}
+              {(detailSectionTab === "sound_hex" || detailSectionTab === "all") && (
+                <div className="space-y-5 animate-in fade-in">
+                  {/* TƯỢNG ÂM THANH & KHÍ TƯỢNG (氣象與象徵之聲) */}
+                  {(() => {
+                    const companionOrder =
+                      selectedEntry.order % 2 === 1
+                        ? selectedEntry.order + 1
+                        : selectedEntry.order - 1;
+                    const companionEntry = SIXTY_JIAZI.find(
+                      (item) => item.order === companionOrder
+                    );
+                    const isCurrentPlaying =
+                      playingSoundType === selectedEntry.soundSymbolism.soundType;
+
+                    return (
+                      <div
+                        className={`bg-lacquer-800 border rounded-md p-5 sm:p-6 shadow-xl transition-all relative overflow-hidden ${
+                          isCurrentPlaying
+                            ? "border-gold-500 ring-2 ring-gold-500/30"
+                            : "border-gold-800"
+                        }`}
+                      >
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gold-800 pb-4 mb-4">
+                          <div className="flex items-center gap-3">
+                            <div
+                              className={`w-10 h-10 rounded-md border flex items-center justify-center transition-colors ${
+                                isCurrentPlaying
+                                  ? "bg-gold-500/15 text-gold-200 border-gold-500"
+                                  : "bg-lacquer-700 border-gold-800 text-gold-400"
+                              }`}
+                            >
+                              <Volume2 className="w-5 h-5" />
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <h3 className="text-lg sm:text-xl font-display font-semibold text-ivory-100">
+                                  Tượng Âm Thanh & Khí Tượng
+                                </h3>
+                                <span className="text-xs font-serif text-gold-500 bg-lacquer-700 px-2 py-0.5 rounded border border-gold-800">
+                                  氣象與象徵之聲
+                                </span>
+                              </div>
+                              <div className="text-xs text-ivory-500 mt-0.5">
+                                Trạng thái khí vận và âm thanh biểu trưng của {selectedEntry.elementNapAm}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Interactive Sound Trigger */}
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleTogglePlaySound(selectedEntry.soundSymbolism.soundType)
+                            }
+                            className={`flex items-center gap-2 px-4 py-2 rounded-sm text-xs font-bold transition-all cursor-pointer shadow-md active:scale-95 shrink-0 ${
+                              isCurrentPlaying
+                                ? "bg-rose-600 text-white animate-pulse"
+                                : "bg-gold-400 hover:bg-gold-400 text-lacquer-900"
+                            }`}
+                          >
+                            {isCurrentPlaying ? (
+                              <>
+                                <Square className="w-3.5 h-3.5 fill-current" />
+                                <span>Dừng Âm Tượng</span>
+                              </>
+                            ) : (
+                              <>
+                                <Play className="w-3.5 h-3.5 fill-current" />
+                                <span>Nghe Tượng Âm Thanh</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+
+                        {/* Playing wave indicator */}
+                        {isCurrentPlaying && (
+                          <div className="mb-4 py-2 px-4 rounded-sm bg-lacquer-800 border border-gold-500/50 flex items-center justify-between text-xs text-gold-400 animate-in fade-in">
+                            <span className="flex items-center gap-2 font-medium">
+                              <Waves className="w-4 h-4 animate-bounce" />
+                              <span>Đang mô phỏng cộng hưởng âm tượng: {selectedEntry.soundSymbolism.soundName}</span>
+                            </span>
+                            <div className="flex items-center gap-1">
+                              <span className="w-1 h-3.5 bg-gold-400 rounded-full animate-pulse" />
+                              <span className="w-1 h-5 bg-gold-400 rounded-full animate-pulse delay-75" />
+                              <span className="w-1 h-2.5 bg-gold-400 rounded-full animate-pulse delay-150" />
+                              <span className="w-1 h-4 bg-gold-400 rounded-full animate-pulse delay-200" />
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Two Primary Descriptive Blocks */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {/* Block 1: Tượng Khí & Trạng Thái */}
+                          <div className="bg-lacquer-900 border border-lacquer-700 rounded-md p-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-[11px] font-bold text-ivory-500 tracking-wider uppercase">
+                                Tượng Khí & Trạng Thái
+                              </span>
+                              <span className="text-[10px] px-2 py-0.5 rounded-sm bg-lacquer-700 border border-gold-800 text-gold-500 font-mono">
+                                Hành {selectedEntry.soundSymbolism.element}
+                              </span>
+                            </div>
+                            <p className="text-sm font-serif text-ivory-100 leading-relaxed">
+                              {selectedEntry.soundSymbolism.qiState}
+                            </p>
+                          </div>
+
+                          {/* Block 2: Âm Thanh Tượng Trưng */}
+                          <div className="bg-lacquer-800 border border-gold-800 rounded-md p-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-[11px] font-bold text-gold-400 tracking-wider uppercase flex items-center gap-1">
+                                <Volume2 className="w-3 h-3 text-gold-400" />
+                                Âm Thanh Tượng Trưng
+                              </span>
+                              <span className="text-[10px] text-ivory-500 font-mono">
+                                {selectedEntry.soundSymbolism.napAm}
+                              </span>
+                            </div>
+                            <p className="text-sm font-semibold text-ivory-100 leading-relaxed">
+                              {selectedEntry.soundSymbolism.soundName}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Companion info & Link to 30 sounds table */}
+                        <div className="mt-4 pt-3 border-t border-lacquer-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
+                          {companionEntry && (
+                            <div className="text-ivory-500 flex items-center gap-1.5 flex-wrap">
+                              <span>Đồng nạp âm ({selectedEntry.elementNapAm}):</span>
+                              <button
+                                type="button"
+                                onClick={() => handleSelectEntry(companionEntry.id)}
+                                className="text-gold-400 hover:underline font-serif font-bold flex items-center gap-1 cursor-pointer bg-lacquer-700 px-2 py-0.5 rounded border border-gold-800"
+                              >
+                                <span>#{companionEntry.order} {companionEntry.name} ({companionEntry.chinese})</span>
+                              </button>
+                            </div>
+                          )}
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setActiveWorkspace("tables");
+                              setTableSubTab("sounds");
+                            }}
+                            className="text-ivory-500 hover:text-gold-500 flex items-center gap-1 cursor-pointer transition-colors"
+                          >
+                            <span>Xem toàn bộ bảng 30 Tượng Âm Thanh</span>
+                            <ChevronRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })()}
+
+                  {/* LIÊN KẾT KINH DỊCH: QUẺ TƯƠNG ỨNG VỚI HOA GIÁP */}
+                  {selectedEntry.hexagramLink && (
+                    <div className="bg-lacquer-800 border border-gold-800 rounded-md p-5 sm:p-6 shadow-xl relative overflow-hidden">
+                      <div className="absolute top-0 right-0 p-4 text-8xl font-serif text-gold-500/10 select-none pointer-events-none">
+                        {selectedEntry.hexagramLink.symbol}
+                      </div>
+
+                      <div className="relative z-10">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gold-800 pb-4 mb-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-md bg-lacquer-700 border border-gold-800 flex items-center justify-center text-gold-400 shadow-sm text-2xl font-serif">
+                              {selectedEntry.hexagramLink.symbol}
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <h3 className="text-lg sm:text-xl font-display font-semibold text-ivory-100">
+                                  Quẻ Kinh Dịch Tương Ứng
+                                </h3>
+                                <span className="text-xs font-serif text-gold-500 bg-lacquer-700 px-2 py-0.5 rounded border border-gold-800">
+                                  周易對應卦象
+                                </span>
+                              </div>
+                              <div className="text-xs text-ivory-500 mt-0.5">
+                                Quy luật Tiên Thiên Chu Kỳ Tiêu Trưởng: {selectedEntry.name} ({selectedEntry.elementNapAm}) ↔ Quẻ #{selectedEntry.hexagramLink.hexagramNumber} {selectedEntry.hexagramLink.hexagramName}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Action buttons */}
+                          <div className="flex items-center gap-2 flex-wrap">
+                            {onSelectHexagram && (
+                              <button
+                                type="button"
+                                onClick={() => onSelectHexagram(selectedEntry.hexagramLink.hexagramNumber)}
+                                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-sm text-xs font-bold bg-gold-500 hover:bg-gold-400 text-lacquer-900 transition-all cursor-pointer shadow-md active:scale-95 shrink-0"
+                                title="Mở toàn bộ luận giải chi tiết của quẻ này trong mục Giải Nghĩa Kinh Dịch"
+                              >
+                                <BookOpen className="w-3.5 h-3.5" />
+                                <span>Tra Cứu Quẻ Này</span>
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setActiveWorkspace("tables");
+                                setTableSubTab("hexagrams");
+                              }}
+                              className="flex items-center gap-1 px-3 py-1.5 rounded-sm text-xs font-medium bg-lacquer-700 hover:bg-lacquer-700 text-ivory-300 border border-gold-800 transition-colors cursor-pointer shrink-0"
+                              title="Mở bảng đối ứng đầy đủ 60 Hoa Giáp và 60 Quẻ Dịch"
+                            >
+                              <Compass className="w-3.5 h-3.5 text-gold-400" />
+                              <span>Xem Bảng 60 Quẻ</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Hexagram Banner Info & Visual Artwork */}
+                        {(() => {
+                          const hexObj = HEXAGRAMS.find((h) => h.number === selectedEntry.hexagramLink?.hexagramNumber);
+                          const hexImg = cardImages?.[selectedEntry.hexagramLink?.hexagramNumber || 0];
+
+                          return (
+                            <div className="bg-lacquer-900 border border-lacquer-700 rounded-md p-4 sm:p-5 shadow-inner">
+                              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5 pb-4 border-b border-gold-800">
+                                {/* Visual Thumbnail & Zoom Button */}
+                                <div className="shrink-0 flex flex-col items-center">
+                                  {hexObj ? (
+                                    <div className="rounded-sm overflow-hidden shadow-lg border border-gold-800 bg-lacquer-950">
+                                      <CardVisual
+                                        hexagram={hexObj}
+                                        imageUrl={hexImg}
+                                        size="sm"
+                                        showName={false}
+                                        enableZoomModal={true}
+                                      />
+                                    </div>
+                                  ) : (
+                                    <div className="w-24 h-32 rounded-sm bg-lacquer-700 border border-gold-800 flex items-center justify-center text-3xl text-gold-400 font-serif shadow-inner">
+                                      {selectedEntry.hexagramLink.symbol}
+                                    </div>
+                                  )}
+
+                                  <div className="mt-2 text-center space-y-1">
+                                    {hexImg && (
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          setLightboxZoom(1);
+                                          setLightboxImage(hexImg);
+                                        }}
+                                        className="text-[11px] text-gold-500 hover:text-gold-300 flex items-center justify-center gap-1 cursor-pointer transition-colors"
+                                      >
+                                        <Eye className="w-3 h-3" />
+                                        <span>Phóng to ảnh</span>
+                                      </button>
+                                    )}
+                                  </div>
+                                </div>
+
+                                {/* Hexagram Meta & Meaning */}
+                                <div className="flex-1 min-w-0 w-full">
+                                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                      <span className="text-2xl font-serif text-gold-400 font-bold">
+                                        {selectedEntry.hexagramLink.symbol}
+                                      </span>
+                                      <span className="text-lg font-serif font-bold text-ivory-100">
+                                        {selectedEntry.hexagramLink.hexagramName}
+                                      </span>
+                                      <span className="text-xs font-serif text-ivory-500">
+                                        ({selectedEntry.hexagramLink.hexagramHanzi})
+                                      </span>
+                                      <span className="px-2 py-0.5 rounded-md bg-lacquer-700 border border-gold-800 text-[10px] font-mono font-bold text-gold-400">
+                                        Quẻ #{selectedEntry.hexagramLink.hexagramNumber}
+                                      </span>
+                                    </div>
+                                    <div className="text-xs text-ivory-500 flex items-center gap-2">
+                                      <span>Thượng: <strong className="text-ivory-300">{selectedEntry.hexagramLink.upperTrigram}</strong></span>
+                                      <span>•</span>
+                                      <span>Hạ: <strong className="text-gold-400">{selectedEntry.hexagramLink.lowerTrigram}</strong></span>
+                                    </div>
+                                  </div>
+
+                                  <p className="text-xs text-ivory-300 leading-relaxed mb-3">
+                                    {hexObj ? hexObj.overview : selectedEntry.hexagramLink.natureMeaning}
+                                  </p>
+
+                                  <div className="flex items-center gap-2 flex-wrap pt-2 border-t border-lacquer-700">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setDetailImageTab("hexagram");
+                                        const el = document.getElementById("jiazi-detail-container");
+                                        if (el) el.scrollIntoView({ behavior: "smooth" });
+                                      }}
+                                      className="px-2.5 py-1 text-xs rounded-sm bg-lacquer-700 hover:bg-gold-800 text-gold-300 border border-gold-800 font-medium transition-all cursor-pointer flex items-center gap-1 shadow-sm"
+                                    >
+                                      <Maximize2 className="w-3 h-3 text-gold-400" />
+                                      <span>Hiện hình quẻ ở khung chính</span>
+                                    </button>
+                                    {onSelectHexagram && (
+                                      <button
+                                        type="button"
+                                        onClick={() => onSelectHexagram(selectedEntry.hexagramLink.hexagramNumber)}
+                                        className="px-2.5 py-1 text-xs rounded-sm bg-lacquer-700 hover:bg-gold-800 text-gold-300 hover:text-gold-200 border border-gold-800 hover:border-gold-400 font-medium transition-all cursor-pointer flex items-center gap-1.5 shadow-sm active:scale-95"
+                                        title="Nhấp để nhảy sang phần giải thích trong Sách Thuyết Minh Kinh Dịch"
+                                      >
+                                        <BookOpen className="w-3.5 h-3.5 text-gold-400" />
+                                        <span>Xem giải nghĩa quẻ #{selectedEntry.hexagramLink.hexagramNumber}</span>
+                                      </button>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs mt-3.5">
+                                <div className="bg-lacquer-800 border border-lacquer-700 rounded-sm p-3">
+                                  <div className="text-[11px] font-bold text-gold-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                                    <Sparkles className="w-3.5 h-3.5" />
+                                    <span>Tượng Quẻ & Khí Vận</span>
+                                  </div>
+                                  <p className="text-ivory-300 leading-relaxed">
+                                    {selectedEntry.hexagramLink.natureMeaning}
+                                  </p>
+                                </div>
+
+                                <div className="bg-lacquer-800 border border-lacquer-700 rounded-sm p-3">
+                                  <div className="text-[11px] font-bold text-gold-500 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                                    <Compass className="w-3.5 h-3.5" />
+                                    <span>Luận Giải Tương Liên Hoa Giáp & Quẻ Dịch</span>
+                                  </div>
+                                  <p className="text-ivory-300 leading-relaxed">
+                                    {selectedEntry.hexagramLink.linkAnalysis}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         )}

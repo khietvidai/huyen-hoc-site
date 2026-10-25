@@ -48,6 +48,7 @@ import {
   CustomSpreadTemplate,
 } from "../data/spreads";
 import { CardVisual } from "./CardVisual";
+import { XuanBaguaStage, JadeCommandPanel, CardTwoSidedModal } from "./XuanBaguaStage";
 import { FlippableSpiritualCard } from "./FlippableSpiritualCard";
 import { CardInfoSummary } from "./CardInfoSummary";
 import { SpreadDiagram } from "./SpreadDiagram";
@@ -162,37 +163,34 @@ export const CardDraw: React.FC<CardDrawProps> = ({
     isKhongMinhMethod || isNguCheMethod ? "three" : suggestedDrawMode || "single"
   );
 
-  const handleSelectDrawMode = (mode: DrawMode) => {
-    if (!isKhongMinhMethod && !isNguCheMethod && !isRegisteredUser && (mode === "seven" || mode === "nine" || mode === "ten" || mode === "ten_expanded" || mode === "twelve" || mode === "custom")) {
-      const modeNames: Record<string, string> = {
-        seven: "Trận Thất Tinh (7 Lá)",
-        nine: "Trận Cửu Cung (9 Lá)",
-        ten: "Trận Thập Tinh (10 Lá)",
-        ten_expanded: "Trận Thập Tinh Mở Rộng (11 Lá)",
-        twelve: "Trận Thập Nhị Cung (12 Lá)",
-        custom: "Trận Tự Định Nghĩa (Tùy Ý Số Lá)",
-      };
-      const name = modeNames[mode] || "Trận pháp này";
-      if (onShowToast) {
-        onShowToast(`${name} yêu cầu đăng ký tài khoản. Vui lòng đăng ký tài khoản miễn phí để mở khóa toàn bộ trận pháp!`);
-      }
-      if (onRequireAuth) {
-        onRequireAuth("register", `${name} yêu cầu đăng ký tài khoản. Đăng ký tài khoản miễn phí để mở khóa toàn bộ trận pháp bốc bài Kinh Dịch!`);
-      }
-      return;
-    }
-    setDrawMode(mode);
+  const [showMultiDeckPanel, setShowMultiDeckPanel] = useState<boolean>(false);
+  const [inspectingTwoSidedCard, setInspectingTwoSidedCard] = useState<{
+    card: Hexagram;
+    positionLabel?: string;
+    positionTitle?: string;
+    isReversed?: boolean;
+  } | null>(null);
+
+  const handleSelectFiveElementsMode = () => {
+    setCustomCount(5);
+    setCustomCountInput("5");
+    setCustomPurposes([
+      "1. HÀNH KIM · Cương Quyết & Nguyên Tắc",
+      "2. HÀNH MỘC · Sinh Trưởng & Khởi Phát",
+      "3. HÀNH THỦY · Trí Tuệ & Linh Hoạt",
+      "4. HÀNH HỎA · Nhiệt Huyết & Danh Vọng",
+      "5. HÀNH THỔ · Trung Tâm & Nền Tảng",
+    ]);
+    setDrawMode("custom");
     setSelectedDeckIndices([]);
     setRevealedCards([]);
   };
 
-  useEffect(() => {
-    if (!isKhongMinhMethod && !isNguCheMethod && !isRegisteredUser && drawMode !== "single" && drawMode !== "double" && drawMode !== "three") {
-      setDrawMode("single");
-      setSelectedDeckIndices([]);
-      setRevealedCards([]);
-    }
-  }, [isRegisteredUser, isKhongMinhMethod, isNguCheMethod, drawMode]);
+  const handleSelectDrawMode = (mode: DrawMode) => {
+    setDrawMode(mode);
+    setSelectedDeckIndices([]);
+    setRevealedCards([]);
+  };
 
   useEffect(() => {
     if (isKhongMinhMethod) {
@@ -1310,52 +1308,120 @@ export const CardDraw: React.FC<CardDrawProps> = ({
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-6">
-      {/* Header Deck Info and Controls */}
-      <div className="bg-[#171512] border border-[#3A3225] rounded-2xl p-5 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full bg-[#272017] border border-[#443725] text-xs font-serif text-[#C9A55A] flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5" /> Bốc Thẻ Bài Thần Dịch
-            </span>
-            <span className="text-xs text-[#8E806E]">
-              Bộ bài: <strong className="text-[#EAD8B1] font-mono">{deckCount} bộ ({deckCount * 64} lá)</strong>
-              {deckCount >= 2 && (
-                <span className="ml-1.5 text-[#C9A55A] font-serif font-semibold">
-                  • {multiDeckMode === "separate" ? "Từng Bộ Riêng Lẻ" : "Trộn Chung Tất Cả"}
-                </span>
-              )}
-            </span>
+    <div className="w-full max-w-5xl mx-auto space-y-5">
+      {/* CỬU NHỊ COMMAND DOCK: NGỌC GIẢN KÍNH MỜ GIẤY TUYÊN THÀNH ĐỒNG BỘ TRANG CHỦ */}
+      <JadeCommandPanel
+        badgeIcon="☯"
+        title="Cửu Nhị Command Dock · Chọn Trận Pháp & Bộ Bài Kinh Dịch"
+        rightSlot={
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <button
+              type="button"
+              onClick={() => setShowMultiDeckPanel((prev) => !prev)}
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-xl border text-xs font-serif font-bold transition-all cursor-pointer shadow-2xs ${
+                showMultiDeckPanel || deckCount >= 2
+                  ? "bg-[#261E16] text-[#F3E5AB] border-[#D4AF37]"
+                  : "bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#4A3B28] border-[#C4963E]/40"
+              }`}
+              title="Tùy chỉnh số lượng bộ bài tham gia (từ 1 đến 12 bộ bài)"
+            >
+              <Layers className="w-3.5 h-3.5 text-[#C9A55A]" />
+              <span>
+                Số Bộ Bài: <strong>{deckCount} bộ ({deckCount * 64} lá)</strong>
+              </span>
+              <span className="text-[10px] opacity-80">{showMultiDeckPanel ? "▲" : "▼"}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                if (!isVip) {
+                  if (!isRegisteredUser) {
+                    if (onShowToast) onShowToast("Thư viện Bộ Hình 64 Quẻ chỉ dành riêng cho Hội Viên VIP. Vui lòng đăng nhập!");
+                    if (onRequireAuth) onRequireAuth("login", "Đăng nhập hoặc đăng ký tài khoản VIP để truy cập Thư Viện Bộ Hình 64 Quẻ!");
+                  } else {
+                    if (onShowToast) onShowToast("Thư viện Bộ Hình 64 Quẻ chỉ dành riêng cho Hội Viên VIP. Vui lòng nâng cấp gói VIP!");
+                    if (onRequireAuth) onRequireAuth("upgrade", "Nâng cấp Hội Viên VIP để mở khóa Thư Viện Bộ Hình 64 Quẻ và đổi giữa các bộ bài độc quyền!");
+                  }
+                  return;
+                }
+                handleOpenManager();
+              }}
+              className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#261E16] hover:bg-[#34271C] border border-[#C4963E]/60 text-[#F3E7D0] text-xs font-serif font-bold transition-all shadow-2xs cursor-pointer"
+              title={isVip ? "Quản lý ảnh 64 quẻ & nạp hình (Mở Thư Viện)" : "Đặc quyền Hội Viên VIP: Đổi bộ hình hoặc nạp ảnh cho 64 quẻ"}
+            >
+              <Palette className="w-3.5 h-3.5 text-[#C9A55A]" />
+              <span>Bộ Hình:</span>
+              <span className="text-[#C9A55A] font-bold">{activeDeckName}</span>
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded text-[9.5px] font-sans font-bold bg-amber-950/90 text-amber-300 border border-amber-600/50 font-mono">
+                <Crown className="w-2.5 h-2.5 text-amber-400" />
+                VIP
+              </span>
+            </button>
+
+            {onActiveDeckChanged && (
+              <select
+                value={activeDeckId || DEFAULT_DECK_ID}
+                onChange={(e) => onActiveDeckChanged(e.target.value)}
+                className="px-2.5 py-1 rounded-xl bg-[#FAF6EE] hover:bg-[#EFE6D5] border border-[#C4963E]/45 text-[#1C1813] text-xs font-serif font-semibold cursor-pointer outline-none transition-all shadow-2xs"
+                title="Tùy chỉnh đổi nhanh bộ bài đang dùng"
+              >
+                {availableDecks.map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.name}
+                  </option>
+                ))}
+              </select>
+            )}
+
+            <button
+              type="button"
+              onClick={() => {
+                window.dispatchEvent(new CustomEvent("zen-audio-toggle"));
+              }}
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-xl border text-xs font-serif font-bold transition-all shadow-2xs cursor-pointer ${
+                isZenAudioPlaying
+                  ? "bg-[#261E16] border-[#D4AF37] text-[#F3E5AB]"
+                  : "bg-[#FAF6EE] hover:bg-[#EFE6D5] border-[#C4963E]/40 text-[#4A3B28]"
+              }`}
+              title="Bật/Tắt nhạc thiền cổ phong Vũ Lâm Linh khi bốc bài"
+            >
+              <Music className={`w-3.5 h-3.5 text-[#B8862D] ${isZenAudioPlaying ? "animate-bounce" : ""}`} />
+              <span>{isZenAudioPlaying ? "Đang Phát Vũ Lâm Linh" : "Nhạc Vũ Lâm Linh"}</span>
+            </button>
           </div>
+        }
+      >
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 className="text-base sm:text-lg font-serif font-bold text-[#1C1813]">
+                RÚT THẺ BÀI KINH DỊCH ({deckCount >= 2 ? `${deckCount} BỘ • ${deckCount * 64} LÁ` : "ĐỦ 64 LÁ CHU DỊCH"})
+              </h3>
+              <p className="text-xs text-[#5C4D3B] font-serif mt-0.5">
+                {deckCount >= 2
+                  ? `Đang kết hợp ${deckCount} bộ bài (${deckCount * 64} lá) theo hình thức ${multiDeckMode === "separate" ? "bốc từng bộ riêng lẻ" : "trộn chung nhiều bộ vào nhau"}. Chọn lá bài cảm ứng để thỉnh quẻ.`
+                  : "Tĩnh tâm hướng về điều bạn muốn thấu tỏ, chọn trận pháp bên dưới rồi rút trực tiếp trên Sân Khấu Bát Quái."}
+              </p>
+            </div>
 
-          <h3 className="text-lg sm:text-xl font-serif font-bold text-[#F3E6C8]">
-            RÚT THẺ BÀI KINH DỊCH ({deckCount >= 2 ? `${deckCount} BỘ • ${deckCount * 64} LÁ` : "ĐỦ 64 LÁ"})
-          </h3>
-          <p className="text-xs text-[#9E907D] mt-0.5">
-            {deckCount >= 2
-              ? `Đang kết hợp ${deckCount} bộ bài (${deckCount * 64} lá) theo hình thức ${multiDeckMode === "separate" ? "bốc từng bộ riêng lẻ" : "trộn chung nhiều bộ vào nhau"}. Chọn lá bài cảm ứng để thỉnh quẻ.`
-              : "Tĩnh tâm hướng về điều bạn muốn thấu tỏ, sau đó chọn trực tiếp bất kỳ lá bài nào trong đủ 64 lá bên dưới."}
-          </p>
-
-          {/* Nút Tìm hiểu Trai Giới Mộc Dục trước khi bốc bài */}
-          <div className="pt-1.5">
             <button
               type="button"
               onClick={() => setShowCardDrawPurification(!showCardDrawPurification)}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-serif text-[#E0C070] bg-[#1E1711] hover:bg-[#2A1F16] border border-[#48331E] hover:border-[#C9A55A] transition-all cursor-pointer shadow-xs active:scale-95"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-serif text-[#6E4E16] bg-[#FAF6EE] hover:bg-[#EFE6D5] border border-[#C4963E]/45 transition-all cursor-pointer shadow-2xs active:scale-95"
             >
               <span>⛩️</span>
               <span className="font-semibold underline decoration-dotted">
-                Trai Giới Mộc Dục: Vì sao cần rửa tay & tịnh tâm trước khi bốc bài?
+                Nghi thức Trai Giới Mộc Dục
               </span>
-              <span className="text-[10px] font-mono text-[#A89882]">
-                {showCardDrawPurification ? "▲ Ẩn" : "▼ Chi tiết"}
+              <span className="text-[10px] font-mono text-[#8A7960]">
+                {showCardDrawPurification ? "▲ Ẩn" : "▼ Xem"}
               </span>
             </button>
           </div>
 
           {showCardDrawPurification && (
-            <div className="mt-2.5 text-left bg-[#140F0B] border border-[#4D351E] rounded-xl p-3.5 sm:p-4 shadow-xl text-xs font-serif text-[#DECAB2] space-y-2.5 animate-in fade-in duration-200">
+            <div className="text-left bg-[#140F0B] border border-[#4D351E] rounded-xl p-3.5 sm:p-4 shadow-xl text-xs font-serif text-[#DECAB2] space-y-2.5 animate-in fade-in duration-200">
               <div className="flex items-center justify-between border-b border-[#302113] pb-1.5 text-[#E6D3A3] font-bold text-xs">
                 <span className="flex items-center gap-1.5">
                   <span>📜</span> THỦ TỤC TRAI GIỚI MỘC DỤC (齋戒沐浴) TRƯỚC KHI CHẠM THẺ BÀI
@@ -1390,278 +1456,177 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   </p>
                 </div>
               </div>
-
-              <div className="p-2 rounded-lg bg-[#23170D] border border-[#482E18] text-[10.5px] leading-relaxed text-[#EAD8B5] flex items-center gap-1.5">
-                <span>💡</span>
-                <span>
-                  <strong>Nguyên lý:</strong> "Chí thành thông thần, Tâm động quẻ sinh". Thân sạch thì khí vượng, tâm tịnh thì trường năng lượng không bị nhiễu tạp, lá bài rút ra mới phản chiếu đúng đắn thời vận Càn Khôn!
-                </span>
-              </div>
             </div>
           )}
-        </div>
-
-        {/* Action buttons: Deck Manager button & Draw Modes */}
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <button
-              type="button"
-              onClick={() => {
-                if (!isVip) {
-                  if (!isRegisteredUser) {
-                    if (onShowToast) onShowToast("Thư viện Bộ Hình 64 Quẻ chỉ dành riêng cho Hội Viên VIP. Vui lòng đăng nhập!");
-                    if (onRequireAuth) onRequireAuth("login", "Đăng nhập hoặc đăng ký tài khoản VIP để truy cập Thư Viện Bộ Hình 64 Quẻ!");
-                  } else {
-                    if (onShowToast) onShowToast("Thư viện Bộ Hình 64 Quẻ chỉ dành riêng cho Hội Viên VIP. Vui lòng nâng cấp gói VIP!");
-                    if (onRequireAuth) onRequireAuth("upgrade", "Nâng cấp Hội Viên VIP để mở khóa Thư Viện Bộ Hình 64 Quẻ và đổi giữa các bộ bài độc quyền!");
-                  }
-                  return;
-                }
-                handleOpenManager();
-              }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#241C15] hover:bg-[#34271C] border border-[#483724] text-[#F3E7D0] text-xs font-serif font-bold transition-all shadow-sm cursor-pointer"
-              title={isVip ? "Quản lý ảnh 64 quẻ & nạp hình (Mở Thư Viện)" : "Đặc quyền Hội Viên VIP: Đổi bộ hình hoặc nạp ảnh cho 64 quẻ"}
-            >
-              <Palette className="w-3.5 h-3.5 text-[#C9A55A]" />
-              <span>Bộ Hình:</span>
-              <span className="text-[#C9A55A] font-bold">{activeDeckName}</span>
-              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded text-[9.5px] font-sans font-bold bg-amber-950/90 text-amber-300 border border-amber-600/50 font-mono">
-                <Crown className="w-2.5 h-2.5 text-amber-400" />
-                VIP
-              </span>
-            </button>
-
-            {/* Quick Deck Switcher */}
-            {onActiveDeckChanged && (
-              <select
-                value={activeDeckId || DEFAULT_DECK_ID}
-                onChange={(e) => onActiveDeckChanged(e.target.value)}
-                className="px-2.5 py-1.5 rounded-xl bg-[#1D1711] hover:bg-[#282017] border border-[#4E3B27] hover:border-[#C9A55A] text-[#F3E7D0] text-xs font-serif font-semibold cursor-pointer outline-none transition-all shadow-sm"
-                title="Tùy chỉnh đổi nhanh bộ bài đang dùng"
-              >
-                {availableDecks.map((d) => (
-                  <option key={d.id} value={d.id}>
-                    {d.name}
-                  </option>
-                ))}
-
-
-
-
-              </select>
-            )}
-          </div>
-
-          {/* Quick Ambient Zen Music Button (Vũ Lâm Linh) */}
-          <button
-            type="button"
-            onClick={() => {
-              window.dispatchEvent(new CustomEvent("zen-audio-toggle"));
-            }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-serif font-bold transition-all shadow-sm cursor-pointer ${
-              isZenAudioPlaying
-                ? "bg-[#2D2113] border-[#C9A55A] text-[#F5EAD4] shadow-[0_0_12px_rgba(212,175,55,0.25)]"
-                : "bg-[#241C15] hover:bg-[#34271C] border-[#483724] text-[#D8C7B0] hover:text-[#FFF]"
-            }`}
-            title="Bật/Tắt nhạc thiền cổ phong Vũ Lâm Linh (雨霖铃 - Nghiêu Thập Tam) khi bốc bài"
-          >
-            <Music className={`w-3.5 h-3.5 text-[#C9A55A] ${isZenAudioPlaying ? "animate-bounce" : ""}`} />
-            <span>{isZenAudioPlaying ? "Đang Phát Vũ Lâm Linh" : "Bật Nhạc Vũ Lâm Linh"}</span>
-          </button>
 
           {/* Draw Mode Selectors or Khong Minh / Ngu Che Method Banner */}
           {isKhongMinhMethod ? (
-            <div className="flex items-center gap-2.5 bg-gradient-to-r from-[#2A1D11] via-[#1D140C] to-[#120D08] border border-[#5A3F20] px-3.5 py-1.5 rounded-xl shadow-md">
+            <div className="flex items-center gap-2.5 bg-gradient-to-r from-[#2A1D11] via-[#1D140C] to-[#120D08] border border-[#5A3F20] px-3.5 py-2 rounded-xl shadow-md">
               <Scroll className="w-4 h-4 text-[#C9A55A] shrink-0" />
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-xs font-serif font-black text-[#E6D3A3] tracking-wide">
-                  XĂM KHỔNG MINH
-                </span>
-                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/80 px-2 py-0.2 rounded border border-emerald-500/40">
-                  Tam Tài: 3 Lá
+                  XĂM KHỔNG MINH · TAM TÀI 3 LÁ (THIÊN - ĐỊA - NHÂN)
                 </span>
               </div>
             </div>
           ) : isNguCheMethod ? (
-            <div className="flex items-center gap-2.5 bg-gradient-to-r from-[#3A160E] via-[#26110A] to-[#160A06] border border-[#C9A55A]/70 px-3.5 py-1.5 rounded-xl shadow-md">
+            <div className="flex items-center gap-2.5 bg-gradient-to-r from-[#3A160E] via-[#26110A] to-[#160A06] border border-[#C9A55A]/70 px-3.5 py-2 rounded-xl shadow-md">
               <Crown className="w-4 h-4 text-[#F3D787] shrink-0" />
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-xs font-serif font-black text-[#FCE6B4] tracking-wide">
-                  NGỰ CHẾ ĐOÁN DỊCH TINH TÚY
-                </span>
-                <span className="text-[10px] font-mono text-amber-300 bg-amber-950/80 px-2 py-0.2 rounded border border-amber-500/40">
-                  Tam Tài: 3 Lá (Lấy Lá Cuối Làm Quẻ)
+                  NGỰ CHẾ ĐOÁN DỊCH TINH TÚY · TAM TÀI 3 LÁ (LẤY LÁ CUỐI LÀM QUẺ CHỦ)
                 </span>
               </div>
             </div>
           ) : (
-            <div className="flex flex-col gap-1.5 w-full sm:w-auto">
-              <div className="flex flex-wrap items-center p-1 bg-[#100D0B] border border-[#2D241A] rounded-xl gap-1">
+            <div className="flex flex-col gap-2 w-full">
+              {/* Dải nút chọn Trận Pháp chuẩn Cửu Nhị Command Dock của Trang Chủ */}
+              <div className="flex flex-wrap items-center gap-1.5">
                 <button
                   type="button"
                   onClick={() => handleSelectDrawMode("single")}
-                  className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border ${
                     drawMode === "single"
-                      ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
-                      : "text-[#9E907D] hover:text-white"
+                      ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border-[#D4AF37] font-bold shadow-md scale-[1.02]"
+                      : "bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#4A3B28] border-[#C4963E]/35 font-medium"
                   }`}
                 >
-                  1 Lá (Độc Quẻ)
+                  1 Lá · Đơn Quẻ
                 </button>
                 <button
                   type="button"
                   onClick={() => handleSelectDrawMode("double")}
-                  className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border ${
                     drawMode === "double"
-                      ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
-                      : "text-[#9E907D] hover:text-white"
+                      ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border-[#D4AF37] font-bold shadow-md scale-[1.02]"
+                      : "bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#4A3B28] border-[#C4963E]/35 font-medium"
                   }`}
                 >
-                  2 Lá (Song Quẻ)
+                  2 Lá · Âm Dương
                 </button>
                 <button
                   type="button"
                   onClick={() => handleSelectDrawMode("three")}
-                  className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border ${
                     drawMode === "three"
-                      ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
-                      : "text-[#9E907D] hover:text-white"
+                      ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border-[#D4AF37] font-bold shadow-md scale-[1.02]"
+                      : "bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#4A3B28] border-[#C4963E]/35 font-medium"
                   }`}
                 >
-                  3 Lá (Tam Tài / Thời Gian)
+                  3 Lá · Tam Tài
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSelectFiveElementsMode}
+                  className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border ${
+                    drawMode === "custom" && customCount === 5
+                      ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border-[#D4AF37] font-bold shadow-md scale-[1.02]"
+                      : "bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#4A3B28] border-[#C4963E]/35 font-medium"
+                  }`}
+                >
+                  5 Lá · Ngũ Hành
                 </button>
 
                 {/* 7 Lá */}
                 <button
                   type="button"
                   onClick={() => handleSelectDrawMode("seven")}
-                  className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                  className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border flex items-center gap-1 ${
                     drawMode === "seven"
-                      ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
-                      : "text-[#9E907D] hover:text-white"
+                      ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border-[#D4AF37] font-bold shadow-md scale-[1.02]"
+                      : "bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#4A3B28] border-[#C4963E]/35 font-medium"
                   } ${!isRegisteredUser ? "opacity-80" : ""}`}
-                  title={!isRegisteredUser ? "Cần đăng ký tài khoản để mở khóa 7 Lá (Thất Tinh Trận)" : "7 Lá (Thất Tinh Trận)"}
                 >
-                  <span>7 Lá (Thất Tinh Trận)</span>
-                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-400 shrink-0" />}
+                  <span>✦ 7 Lá (Thất Tinh Trận)</span>
+                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-600 shrink-0" />}
                 </button>
 
                 {/* 9 Lá */}
                 <button
                   type="button"
                   onClick={() => handleSelectDrawMode("nine")}
-                  className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                  className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border flex items-center gap-1 ${
                     drawMode === "nine"
-                      ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
-                      : "text-[#9E907D] hover:text-white"
+                      ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border-[#D4AF37] font-bold shadow-md scale-[1.02]"
+                      : "bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#4A3B28] border-[#C4963E]/35 font-medium"
                   } ${!isRegisteredUser ? "opacity-80" : ""}`}
-                  title={!isRegisteredUser ? "Cần đăng ký tài khoản để mở khóa 9 Lá (Cửu Cung)" : "9 Lá (Cửu Cung Phong Thủy)"}
                 >
                   <span>9 Lá (Cửu Cung)</span>
-                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-400 shrink-0" />}
+                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-600 shrink-0" />}
                 </button>
 
                 {/* 10 Lá */}
                 <button
                   type="button"
                   onClick={() => handleSelectDrawMode("ten")}
-                  className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                  className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border flex items-center gap-1 ${
                     drawMode === "ten"
-                      ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
-                      : "text-[#9E907D] hover:text-white"
+                      ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border-[#D4AF37] font-bold shadow-md scale-[1.02]"
+                      : "bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#4A3B28] border-[#C4963E]/35 font-medium"
                   } ${!isRegisteredUser ? "opacity-80" : ""}`}
-                  title={!isRegisteredUser ? "Cần đăng ký tài khoản để mở khóa 10 Lá (Thập Tinh)" : "10 Lá (Thập Tinh Chuẩn)"}
                 >
-                  <span>10 Lá (Thập Tinh)</span>
-                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-400 shrink-0" />}
+                  <span>✦ 10 Lá (Thập Tinh)</span>
+                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-600 shrink-0" />}
                 </button>
 
                 {/* 11 Lá */}
                 <button
                   type="button"
                   onClick={() => handleSelectDrawMode("ten_expanded")}
-                  className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                  className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border flex items-center gap-1 ${
                     drawMode === "ten_expanded"
-                      ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
-                      : "text-[#9E907D] hover:text-white"
+                      ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border-[#D4AF37] font-bold shadow-md scale-[1.02]"
+                      : "bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#4A3B28] border-[#C4963E]/35 font-medium"
                   } ${!isRegisteredUser ? "opacity-80" : ""}`}
-                  title={!isRegisteredUser ? "Cần đăng ký tài khoản để mở khóa 11 Lá (2A & 2B)" : "11 Lá (Thập Tinh 2A & 2B)"}
                 >
                   <Sparkles className="w-3.5 h-3.5 text-inherit" />
                   <span>11 Lá (2A &amp; 2B)</span>
-                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-400 shrink-0" />}
+                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-600 shrink-0" />}
                 </button>
 
                 {/* 12 Lá */}
                 <button
                   type="button"
                   onClick={() => handleSelectDrawMode("twelve")}
-                  className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                  className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border flex items-center gap-1 ${
                     drawMode === "twelve"
-                      ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
-                      : "text-[#9E907D] hover:text-white"
+                      ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border-[#D4AF37] font-bold shadow-md scale-[1.02]"
+                      : "bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#4A3B28] border-[#C4963E]/35 font-medium"
                   } ${!isRegisteredUser ? "opacity-80" : ""}`}
-                  title={!isRegisteredUser ? "Cần đăng ký tài khoản để mở khóa 12 Lá (Địa Chi)" : "12 Lá (Địa Chi & Tử Vi)"}
                 >
                   <span>12 Lá (Địa Chi)</span>
-                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-400 shrink-0" />}
+                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-600 shrink-0" />}
                 </button>
 
                 {/* Tùy ý số lá */}
                 <button
                   type="button"
-                  onClick={() => handleSelectDrawMode("custom")}
-                  className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
-                    drawMode === "custom"
-                      ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
-                      : "text-[#9E907D] hover:text-white"
+                  onClick={() => {
+                    if (customCount === 5) {
+                      setCustomCount(6);
+                      setCustomCountInput("6");
+                      setCustomPurposes(getDefaultCustomPurposes(6));
+                    }
+                    handleSelectDrawMode("custom");
+                  }}
+                  className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border flex items-center gap-1 ${
+                    drawMode === "custom" && customCount !== 5
+                      ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border-[#D4AF37] font-bold shadow-md scale-[1.02]"
+                      : "bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#4A3B28] border-[#C4963E]/35 font-medium"
                   } ${!isRegisteredUser ? "opacity-80" : ""}`}
-                  title={!isRegisteredUser ? "Cần đăng ký tài khoản để mở khóa Tùy Ý Số Lá" : "Tùy Ý Số Lá"}
                 >
                   <Sliders className="w-3 h-3 text-inherit" />
-                  <span>Tùy Ý ({customCount} Lá)</span>
-                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-400 shrink-0" />}
+                  <span>Tùy Ý ({customCount === 5 ? 6 : customCount} Lá)</span>
+                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-600 shrink-0" />}
                 </button>
               </div>
-
-              {/* Access tier indicator banner */}
-              {!isRegisteredUser ? (
-                <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-r from-[#24170D] via-[#1B1108] to-[#24170D] border border-amber-600/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs font-serif">
-                  <div className="flex items-center gap-2">
-                    <Lock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                    <span className="text-[#E6D3A3]">
-                      Chưa đăng ký: Bạn đang sử dụng trải nghiệm <strong>1, 2 và 3 Lá</strong>. Đăng ký tài khoản miễn phí để mở khóa <strong>toàn bộ trận pháp (7, 9, 10, 11, 12 lá và Tùy ý)</strong>!
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => onRequireAuth?.("register", "Đăng ký tài khoản miễn phí để mở khóa toàn bộ trận pháp bốc bài Kinh Dịch!")}
-                    className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-[#C9A55A] to-[#B38728] text-[#120F0C] font-bold text-[11px] shrink-0 cursor-pointer shadow-xs whitespace-nowrap"
-                  >
-                    Đăng Ký Miễn Phí
-                  </button>
-                </div>
-              ) : (
-                <div className="p-2 sm:p-2.5 rounded-xl bg-[#141C14]/80 border border-emerald-600/40 flex items-center justify-between gap-2 text-xs font-serif text-emerald-300">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    <span>
-                      {currentUser ? <>Tài khoản <strong>{currentUser.name}</strong></> : <strong>Khách vãng lai</strong>}: Đã mở khóa <strong>toàn bộ trận pháp</strong> bốc bài Kinh Dịch (1 đến 12 lá và Tùy ý).
-                    </span>
-                  </div>
-                  {currentUser?.isMember && (
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-950 text-amber-300 border border-amber-600/60 font-mono font-bold shrink-0">
-                      Hội Viên VIP
-                    </span>
-                  )}
-                </div>
-              )}
             </div>
           )}
         </div>
-      </div>
+      </JadeCommandPanel>
 
-      {/* MULTI-DECK SELECTION PANEL: 1 ĐẾN 12 BỘ BÀI ĐỒNG THỜI */}
+      {/* MULTI-DECK SELECTION PANEL: 1 ĐẾN 12 BỘ BÀI ĐỒNG THỜI (Thu gọn thông minh, mở khi bấm nút Số Bộ Bài) */}
+      {(showMultiDeckPanel || deckCount >= 2) && (
       <div className="bg-[#181410] border border-[#3E3224] rounded-2xl p-4 sm:p-5 shadow-xl space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#2C2317] pb-3">
           <div className="flex items-center gap-2.5">
@@ -1867,6 +1832,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
           </motion.div>
         )}
       </div>
+      )}
 
       {/* 2-CARD DRAW SUB-PANEL: Mode A (Hiện tại - Tương lai) vs Mode B (Lựa chọn A & B) */}
       {drawMode === "double" && (
@@ -2743,8 +2709,36 @@ export const CardDraw: React.FC<CardDrawProps> = ({
         </motion.div>
       )}
 
+      {/* TRẬN PHÁP NGŨ HÀNH (5 LÁ) SUB-BANNER CHUẨN TRANG CHỦ */}
+      {drawMode === "custom" && customCount === 5 && (
+        <JadeCommandPanel
+          badgeIcon="✦"
+          title="Trận Pháp Ngũ Hành (5 Lá · Kim Mộc Thủy Hỏa Thổ)"
+          rightSlot={
+            <span className="text-[11px] font-serif font-bold text-[#6E4E16] bg-[#FAF0D7] px-2.5 py-0.5 rounded-full border border-[#C4963E]/55">
+              Chuẩn Sân Khấu Định Mệnh Trang Chủ
+            </span>
+          }
+        >
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs font-serif">
+            {[
+              { label: "1. Hành Kim", desc: "Cương quyết & Nguyên tắc", color: "text-amber-900 bg-amber-50 border-amber-300" },
+              { label: "2. Hành Mộc", desc: "Sinh trưởng & Khởi phát", color: "text-emerald-900 bg-emerald-50 border-emerald-300" },
+              { label: "3. Hành Thủy", desc: "Trí tuệ & Linh hoạt", color: "text-sky-900 bg-sky-50 border-sky-300" },
+              { label: "4. Hành Hỏa", desc: "Nhiệt huyết & Danh vọng", color: "text-rose-900 bg-rose-50 border-rose-300" },
+              { label: "5. Hành Thổ", desc: "Trung tâm & Nền tảng", color: "text-yellow-900 bg-yellow-50 border-yellow-400" },
+            ].map((item) => (
+              <div key={item.label} className={`p-2 rounded-xl border ${item.color} flex flex-col justify-center`}>
+                <span className="font-bold text-xs">{item.label}</span>
+                <span className="text-[10.5px] opacity-85">{item.desc}</span>
+              </div>
+            ))}
+          </div>
+        </JadeCommandPanel>
+      )}
+
       {/* CUSTOM SPREAD SUB-PANEL: TÙY Ý NHẬP SỐ LÁ BÀI & MỤC ĐÍCH TỪNG LÁ */}
-      {drawMode === "custom" && (
+      {drawMode === "custom" && customCount !== 5 && (
         <motion.div
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
@@ -2897,8 +2891,8 @@ export const CardDraw: React.FC<CardDrawProps> = ({
         </motion.div>
       )}
 
-      {/* Interactive Deck Layout */}
-      <div className="bg-[#171512] border border-[#3A3225] rounded-2xl p-5 sm:p-6 shadow-2xl relative overflow-hidden">
+      {/* Interactive Deck Layout: Sân Khấu Giấy Tuyên Thành & Tinh Bàn Bát Quái Vàng Kim */}
+      <XuanBaguaStage baguaSize="xl">
         {/* Shuffling 3D Realistic Animation Overlay */}
         <AnimatePresence>
           {isShuffling && (
@@ -2910,12 +2904,12 @@ export const CardDraw: React.FC<CardDrawProps> = ({
           )}
         </AnimatePresence>
 
-        {/* Deck Controls Bar & Layout Switcher */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-[#292219]">
-          <div className="flex items-center gap-3 flex-wrap text-xs text-[#B8AA94]">
+        {/* Deck Controls Bar & Layout Switcher (Đồng bộ Ngọc Giản Kính Mờ) */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 p-3 rounded-2xl bg-[#FAF6EE]/95 border border-[#C4963E]/45 shadow-xs">
+          <div className="flex items-center gap-3 flex-wrap text-xs text-[#4A3B28]">
             <div>
               Đã chọn:{" "}
-              <span className="font-bold text-[#C9A55A] font-mono text-sm">
+              <span className="font-bold text-[#6E4E16] font-mono text-sm">
                 {selectedDeckIndices.length} / {targetCount} lá
               </span>
               {drawMode === "single" && (
@@ -3803,25 +3797,25 @@ export const CardDraw: React.FC<CardDrawProps> = ({
               className={`mt-8 ${
                 isSpreadDiagramMode
                   ? "p-0 bg-transparent border-0 shadow-none"
-                  : "pt-6 border-t border-[#2E251B] animate-in fade-in bg-[#15120E] rounded-2xl p-4 sm:p-6 border border-[#3D3121] shadow-2xl"
+                  : "pt-6 animate-in fade-in bg-[#FAF6EE]/95 rounded-2xl p-4 sm:p-6 border-2 border-[#C4963E]/55 shadow-xl"
               }`}
             >
               {!isSpreadDiagramMode && (
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-5 border-b border-[#2C2317] pb-4">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-5 border-b border-[#C4963E]/35 pb-4">
                   <div className="text-center sm:text-left">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-xs uppercase font-serif font-bold text-[#C9A55A] tracking-widest px-3 py-1 rounded-full bg-[#241C14] border border-[#3E2F20]">
+                      <span className="text-xs uppercase font-serif font-bold text-[#F3E5AB] tracking-widest px-3 py-1 rounded-full bg-[#16120D] border border-[#C4963E]/70 shadow-sm">
                         {allFlippedFront
                           ? "CÁC LÁ BÀI BẠN ĐÃ BỐC (MẶT NGỬA QUẺ DỊCH 卦)"
                           : "CÁC LÁ BÀI BẠN ĐÃ BỐC (MẶT SẤP BÁT QUÁI ☯)"}
                       </span>
-                      <span className="text-[10px] font-mono text-emerald-400/90 bg-[#122416] px-2 py-0.5 rounded border border-[#234D2B]">
+                      <span className="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-600/40">
                         ✓ Cố định sẵn
                       </span>
                     </div>
-                    <p className="text-xs text-[#8C7D6A] mt-1.5">
+                    <p className="text-xs text-[#5C4D3C] mt-1.5 font-medium">
                       {allFlippedFront
-                        ? "Các quẻ khi mở ra đã được lật ngửa cố định sẵn để luận giải • Nhấp nút để lật úp mặt Bát Quái nếu cần."
+                        ? "Nhấp vào lá bài để lật mặt sau (Thoán Từ) hoặc bấm 'Soi 2 Mặt' để xem song song cả 2 mặt bài."
                         : "Tất cả quẻ khi ra đều là mặt sấp. Nhấp vào từng lá bài hoặc bấm nút Mở Luôn để lật mở mặt ngửa xem quẻ Dịch."}
                     </p>
                   </div>
@@ -3831,22 +3825,22 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                     type="button"
                     onClick={handleCaptureDrawnCards}
                     disabled={isCapturing}
-                    className="no-capture flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-serif font-bold bg-[#2A2117] hover:bg-[#382B1E] text-[#EAD8B1] hover:text-[#FFF] border border-[#4A3925] transition-all cursor-pointer shadow"
+                    className="no-capture flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-serif font-bold bg-[#FFFDF8] hover:bg-[#F3ECE0] text-[#3A2E21] border border-[#C4963E]/55 transition-all cursor-pointer shadow-sm"
                     title="Chụp ảnh các lá bài đã bốc thành tệp hình PNG"
                   >
                     {isCapturing ? (
                       <>
-                        <Loader2 className="w-3.5 h-3.5 animate-spin text-[#C9A55A]" />
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-[#9A1F1A]" />
                         <span>Đang chụp...</span>
                       </>
                     ) : capturedSuccess ? (
                       <>
-                        <Check className="w-3.5 h-3.5 text-emerald-400" />
-                        <span className="text-emerald-300">Đã lưu ảnh!</span>
+                        <Check className="w-3.5 h-3.5 text-emerald-700" />
+                        <span className="text-emerald-800">Đã lưu ảnh!</span>
                       </>
                     ) : (
                       <>
-                        <Camera className="w-3.5 h-3.5 text-[#C9A55A]" />
+                        <Camera className="w-3.5 h-3.5 text-[#9A1F1A]" />
                         <span>Chụp Toàn Bộ Lá Bài</span>
                       </>
                     )}
@@ -3856,7 +3850,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                     <button
                       type="button"
                       onClick={() => setShowExportModal(true)}
-                      className="no-capture flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-serif text-[#C9A55A] bg-[#221A12] hover:bg-[#302418] border border-[#443522] transition-colors cursor-pointer"
+                      className="no-capture flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-serif font-bold text-[#7A1C18] bg-[#FFFDF8] hover:bg-[#F3ECE0] border border-[#C4963E]/55 transition-colors cursor-pointer"
                       title="Mở lại ảnh đã xuất để phóng to/thu nhỏ lá bài"
                     >
                       <ZoomIn className="w-3.5 h-3.5" />
@@ -3868,14 +3862,14 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   <button
                     type="button"
                     onClick={handleToggleRotateCards}
-                    className={`no-capture flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer shadow active:scale-95 group border ${
+                    className={`no-capture flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer shadow-sm active:scale-95 group border ${
                       isAllCardsRotated
-                        ? "bg-[#281E13] text-[#E6D3A3] border-[#C9A55A] ring-1 ring-[#C9A55A]/50"
-                        : "bg-[#221A12] text-[#EAD8B1] hover:text-[#FFF] border-[#52412B] hover:border-[#C9A55A]"
+                        ? "bg-[#1C1610] text-[#F3E5AB] border-[#C4963E]"
+                        : "bg-[#FFFDF8] text-[#3A2E21] hover:bg-[#F3ECE0] border-[#C4963E]/50"
                     }`}
                     title="Bật/Tắt xoay bài: Xoay đảo chiều 180° (Ngược / Xuôi) cho toàn bộ các lá bài đã bốc"
                   >
-                    <RotateCw className={`w-3.5 h-3.5 text-[#C9A55A] transition-transform duration-500 ${isAllCardsRotated ? "rotate-180 text-[#E6D3A3]" : "group-hover:rotate-180"}`} />
+                    <RotateCw className={`w-3.5 h-3.5 text-[#C4963E] transition-transform duration-500 ${isAllCardsRotated ? "rotate-180 text-[#F3E5AB]" : "group-hover:rotate-180"}`} />
                     <span>{isAllCardsRotated ? "Xoay Bài: 180° (Ngược)" : "Xoay Bài: 0° (Thuận)"}</span>
                   </button>
 
@@ -3883,10 +3877,10 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   <button
                     type="button"
                     onClick={handleToggleFlipCards}
-                    className={`no-capture flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer shadow active:scale-95 group border ${
+                    className={`no-capture flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer shadow-sm active:scale-95 group border ${
                       allFlippedFront
-                        ? "bg-[#281E13] text-[#E6D3A3] border-[#C9A55A] ring-1 ring-[#C9A55A]/50"
-                        : "bg-[#221A12] text-[#EAD8B1] hover:text-[#FFF] border-[#52412B] hover:border-[#C9A55A]"
+                        ? "bg-[#9A1F1A] text-[#FFFDF8] border-[#C4963E]"
+                        : "bg-[#FFFDF8] text-[#3A2E21] hover:bg-[#F3ECE0] border-[#C4963E]/50"
                     }`}
                     title="Bật/Tắt trạng thái khi hiện quẻ: Mở Luôn (Mặt quẻ 卦) hoặc Úp Bài (Mặt Bát Quái ☯)"
                   >
@@ -3898,14 +3892,14 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   <button
                     type="button"
                     onClick={handleToggleAllowFlipOnClick}
-                    className={`no-capture flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer shadow active:scale-95 group border ${
+                    className={`no-capture flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer shadow-sm active:scale-95 group border ${
                       allowFlipOnClick
-                        ? "bg-[#281E13] text-[#E6D3A3] border-[#C9A55A] ring-1 ring-[#C9A55A]/50"
-                        : "bg-[#221A12] text-[#A89882] hover:text-[#FFF] border-[#52412B] hover:border-[#C9A55A]"
+                        ? "bg-[#1C1610] text-[#F3E5AB] border-[#C4963E]"
+                        : "bg-[#FFFDF8] text-[#6E5C47] hover:bg-[#F3ECE0] border-[#C4963E]/50"
                     }`}
                     title="Bật/Tắt xoay bài qua mặt sau: Khi TẮT, nhấn vào lá bài sẽ không xoay lật mặt trước hay mặt sau nữa"
                   >
-                    <FlipHorizontal className={`w-3.5 h-3.5 ${allowFlipOnClick ? "text-[#C9A55A]" : "text-[#8C7D6A]"}`} />
+                    <FlipHorizontal className={`w-3.5 h-3.5 ${allowFlipOnClick ? "text-[#E2C275]" : "text-[#8C7D6A]"}`} />
                     <span>{allowFlipOnClick ? "Xoay Mặt Sau: BẬT" : "Xoay Mặt Sau: TẮT (Khóa)"}</span>
                   </button>
 
@@ -3913,10 +3907,10 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   <button
                     type="button"
                     onClick={handleToggleAllowReversedCards}
-                    className={`no-capture flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer shadow active:scale-95 group border ${
+                    className={`no-capture flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-serif font-bold transition-all cursor-pointer shadow-sm active:scale-95 group border ${
                       effectiveAllowReversedCards
-                        ? "bg-[#281E13] text-[#E6D3A3] border-[#C9A55A] ring-1 ring-[#C9A55A]/50"
-                        : "bg-[#221A12] text-[#A89882] hover:text-[#FFF] border-[#52412B] hover:border-[#C9A55A]"
+                        ? "bg-[#1C1610] text-[#F3E5AB] border-[#C4963E]"
+                        : "bg-[#FFFDF8] text-[#6E5C47] hover:bg-[#F3ECE0] border-[#C4963E]/50"
                     }`}
                     title={
                       effectiveAllowReversedCards
@@ -3924,7 +3918,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                         : "Chế độ: Chỉ Xem Thuận (toàn bộ lá bài ra chiều thuận). Bấm để chuyển sang Xem Thuận Nghịch."
                     }
                   >
-                    <RotateCw className={`w-3.5 h-3.5 transition-transform duration-300 ${effectiveAllowReversedCards ? "text-[#C9A55A] rotate-180" : "text-[#8C7D6A]"}`} />
+                    <RotateCw className={`w-3.5 h-3.5 transition-transform duration-300 ${effectiveAllowReversedCards ? "text-[#E2C275] rotate-180" : "text-[#8C7D6A]"}`} />
                     <span><strong>{effectiveAllowReversedCards ? "Xem Thuận Nghịch" : "Chỉ Xem Thuận"}</strong></span>
                   </button>
                 </div>
@@ -4016,12 +4010,12 @@ export const CardDraw: React.FC<CardDrawProps> = ({
             ) : (
               <div
                 ref={cardsGridRef}
-                className={`flex flex-wrap items-center justify-center p-3 sm:p-6 bg-[#15120E] rounded-xl max-w-7xl mx-auto gap-4 sm:gap-6 relative overflow-visible`}
+                className={`flex flex-wrap items-center justify-center p-3 sm:p-6 bg-gradient-to-b from-[#FAF8F2] to-[#F1EAE0] border border-[#C4963E]/40 rounded-xl max-w-7xl mx-auto gap-4 sm:gap-6 relative overflow-visible`}
               >
                 {/* Header Banner - Xuất hiện trang trọng khi chụp ảnh hoặc xem toàn cảnh */}
-                <div className="w-full text-center py-2 sm:py-3 mb-1 border-b border-[#3B2C1C]/80 bg-gradient-to-r from-transparent via-[#20170E] to-transparent">
-                  <div className="flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base font-serif font-bold text-[#E6D3A3] tracking-widest uppercase">
-                    <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C9A55A]" />
+                <div className="w-full text-center py-2 sm:py-3 mb-1 border-b border-[#C4963E]/40 bg-gradient-to-r from-transparent via-[#F3ECE0] to-transparent">
+                  <div className="flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base font-serif font-bold text-[#7A1C18] tracking-widest uppercase">
+                    <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C4963E]" />
                     <span>
                       CỬU NHỊ DỊCH HỌC • TRẬN PHÁP{" "}
                       {drawMode === "single"
@@ -4040,9 +4034,9 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                           : "QUÁ KHỨ - HIỆN TẠI - TƯƠNG LAI"
                         : `TÙY CHỈNH (${revealedCards.length} LÁ)`}
                     </span>
-                    <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C9A55A]" />
+                    <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C4963E]" />
                   </div>
-                  <p className="text-[9.5px] sm:text-[10.5px] text-[#8C7A62] font-mono mt-0.5">
+                  <p className="text-[9.5px] sm:text-[10.5px] text-[#6E5C47] font-mono mt-0.5">
                     ✦ Thời khắc chiêm bốc: {new Date().toLocaleDateString("vi-VN", { weekday: "long", year: "numeric", month: "long", day: "numeric" })} ✦
                   </p>
                 </div>
@@ -4050,13 +4044,48 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                 {revealedCards.map((card, i) => {
                   const customImage = cardImages[card.number];
                   const customVideo = cardVideos[card.number];
+                  const roleLabel =
+                    drawMode === "single"
+                      ? "LÁ BÀI THỈNH ĐƯỢC (QUẺ CHỦ)"
+                      : drawMode === "double"
+                      ? doubleSpreadMode === "choice_ab"
+                        ? i === 0
+                          ? `LÁ 1: [LỰA CHỌN A] ${choiceALabel.trim() || "Phương án A"}`
+                          : `LÁ 2: [LỰA CHỌN B] ${choiceBLabel.trim() || "Phương án B"}`
+                        : i === 0
+                        ? "LÁ 1: HIỆN TẠI (GỐC RỄ & THỰC TRẠNG)"
+                        : "LÁ 2: TƯƠNG LAI (XU HƯỚNG & KẾT QUẢ)"
+                      : drawMode === "three" && threeSpreadMode === "choice_abc"
+                      ? i === 0
+                        ? `LÁ 1: [LỰA CHỌN A] ${choiceALabel.trim() || "Phương án A"}`
+                        : i === 1
+                        ? `LÁ 2: [LỰA CHỌN B] ${choiceBLabel.trim() || "Phương án B"}`
+                        : `LÁ 3: [LỰA CHỌN C] ${choiceCLabel.trim() || "Phương án C"}`
+                      : drawMode === "three" && threeSpreadMode === "tam_tai"
+                      ? i === 0
+                        ? "LÁ 1: THIÊN ĐẠO (THIÊN THỜI & HOÀN CẢNH KHÁCH QUAN)"
+                        : i === 1
+                        ? "LÁ 2: ĐỊA ĐẠO (ĐỊA LỢI & NỀN TẢNG MÔI TRƯỜNG)"
+                        : "LÁ 3: NHÂN ĐẠO (NHÂN HÒA & CON NGƯỜI HÀNH ĐỘNG)"
+                      : drawMode === "three" && threeSpreadMode === "ngu_che"
+                      ? i === 0
+                        ? "LÁ 1: THIÊN ĐẠO (THIÊN THỜI & KHỞI CƠ)"
+                        : i === 1
+                        ? "LÁ 2: ĐỊA ĐẠO (ĐỊA LỢI & NỀN TẢNG)"
+                        : "👑 LÁ 3 (LÁ CUỐI): NHÂN ĐẠO — LẤY LÀM QUẺ CHỦ NGỰ CHẾ"
+                      : i === 0
+                      ? "LÁ 1: QUÁ KHỨ (CĂN NGUYÊN & KHỞI ĐẦU)"
+                      : i === 1
+                      ? "LÁ 2: HIỆN TẠI (THỰC TRẠNG & TÌNH THẾ)"
+                      : "LÁ 3: TƯƠNG LAI (TRIỂN VỌNG & KẾT QUẢ)";
+
                   return (
                     <motion.div
                       key={card.instanceId || `${card.number}_${card.deckNumber || 1}_${i}`}
                       initial={{ opacity: 0, scale: 0.85, y: 20 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       transition={{ duration: 0.45, delay: i * 0.15 }}
-                      className="bg-gradient-to-b from-[#221B14] to-[#15120E] border border-[#4D3E2B] rounded-xl sm:rounded-2xl shadow-2xl flex flex-col items-center text-center relative hover:z-30 overflow-visible p-3 sm:p-5 shrink-0 max-w-full"
+                      className="bg-gradient-to-b from-[#FDFBF7] to-[#F3ECE0] border-2 border-[#C4963E]/60 rounded-xl sm:rounded-2xl shadow-xl flex flex-col items-center text-center relative hover:z-30 overflow-visible p-3 sm:p-5 shrink-0 max-w-full"
                     >
                       {/* Deck Badge if multi-deck */}
                       {deckCount >= 2 && (
@@ -4065,49 +4094,11 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                         </div>
                       )}
 
-                      {/* Role Title */}
-                      <div
-                        className={`font-mono font-bold text-[#C9A55A] uppercase leading-tight pointer-events-none ${
-                          revealedCards.length >= 3
-                            ? "text-[8px] sm:text-[10px] md:text-[11px] mb-1 mt-0.5 min-h-[2.2em] flex items-center justify-center"
-                            : revealedCards.length === 2
-                            ? "text-[9px] sm:text-[10px] md:text-[11px] mb-1.5 mt-0.5 min-h-[2em] flex items-center justify-center"
-                            : "text-[11px] mb-2 mt-1"
-                        }`}
-                      >
-                        {drawMode === "single"
-                          ? "LÁ BÀI THỈNH ĐƯỢC (QUẺ CHỦ)"
-                          : drawMode === "double"
-                          ? doubleSpreadMode === "choice_ab"
-                            ? i === 0
-                              ? `LÁ 1: [LỰA CHỌN A] ${choiceALabel.trim() || "Phương án A"}`
-                              : `LÁ 2: [LỰA CHỌN B] ${choiceBLabel.trim() || "Phương án B"}`
-                            : i === 0
-                            ? "LÁ 1: HIỆN TẠI (GỐC RỄ & THỰC TRẠNG)"
-                            : "LÁ 2: TƯƠNG LAI (XU HƯỚNG & KẾT QUẢ)"
-                          : drawMode === "three" && threeSpreadMode === "choice_abc"
-                          ? i === 0
-                            ? `LÁ 1: [LỰA CHỌN A] ${choiceALabel.trim() || "Phương án A"}`
-                            : i === 1
-                            ? `LÁ 2: [LỰA CHỌN B] ${choiceBLabel.trim() || "Phương án B"}`
-                            : `LÁ 3: [LỰA CHỌN C] ${choiceCLabel.trim() || "Phương án C"}`
-                          : drawMode === "three" && threeSpreadMode === "tam_tai"
-                          ? i === 0
-                            ? "LÁ 1: THIÊN ĐẠO (THIÊN THỜI & HOÀN CẢNH KHÁCH QUAN)"
-                            : i === 1
-                            ? "LÁ 2: ĐỊA ĐẠO (ĐỊA LỢI & NỀN TẢNG MÔI TRƯỜNG)"
-                            : "LÁ 3: NHÂN ĐẠO (NHÂN HÒA & CON NGƯỜI HÀNH ĐỘNG)"
-                          : drawMode === "three" && threeSpreadMode === "ngu_che"
-                          ? i === 0
-                            ? "LÁ 1: THIÊN ĐẠO (THIÊN THỜI & KHỞI CƠ)"
-                            : i === 1
-                            ? "LÁ 2: ĐỊA ĐẠO (ĐỊA LỢI & NỀN TẢNG)"
-                            : "👑 LÁ 3 (LÁ CUỐI): NHÂN ĐẠO — LẤY LÀM QUẺ CHỦ NGỰ CHẾ"
-                          : i === 0
-                          ? "LÁ 1: QUÁ KHỨ (CĂN NGUYÊN & KHỞI ĐẦU)"
-                          : i === 1
-                          ? "LÁ 2: HIỆN TẠI (THỰC TRẠNG & TÌNH THẾ)"
-                          : "LÁ 3: TƯƠNG LAI (TRIỂN VỌNG & KẾT QUẢ)"}
+                      {/* Role Title — Nhãn Vị Trí Sơn Mài Nổi */}
+                      <div className="mb-2 mt-0.5 px-3 py-1 rounded-full bg-[#16120D] border border-[#C4963E]/70 shadow-sm pointer-events-none">
+                        <span className="font-serif font-bold text-[#F3E5AB] uppercase tracking-wider text-[9px] sm:text-[11px]">
+                          {roleLabel}
+                        </span>
                       </div>
 
                       {/* PROMINENT CARD IMAGE DISPLAY WITH 3D SPIRITUAL FLIP */}
@@ -4135,7 +4126,23 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                         />
                       </div>
 
-                      {/* Thông tin chi tiết trọn vẹn của lá bài: Quẻ danh, Hán tự, Ngũ hành, Cát hung, Chiều lá bài, Thoán từ */}
+                      {/* Nút Soi 2 Mặt (Quẻ Tượng & Thoán Từ) */}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setInspectingTwoSidedCard({
+                            card,
+                            positionTitle: roleLabel,
+                            isReversed: isCardRotated(i),
+                          })
+                        }
+                        className="no-capture mt-1 mb-1 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#9A1F1A] hover:bg-[#7A1C18] text-[#FFFDF8] border border-[#C4963E] text-[10px] sm:text-xs font-serif font-bold shadow-sm transition-all cursor-pointer"
+                      >
+                        <ZoomIn className="w-3 h-3 text-[#E2C275]" />
+                        <span>Soi 2 Mặt (Quẻ Tượng & Thoán Từ)</span>
+                      </button>
+
+                      {/* Thông tin chi tiết trọn vẹn của lá bài */}
                       <CardInfoSummary
                         card={card}
                         isReversed={isCardRotated(i)}
@@ -4153,16 +4160,32 @@ export const CardDraw: React.FC<CardDrawProps> = ({
             <div className="text-center mt-6 no-capture">
               <button
                 onClick={() => processResults(revealedCards)}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#C89B3C] to-[#E2C37A] text-[#14120F] font-bold text-sm shadow-xl hover:brightness-110 transition-all cursor-pointer"
+                className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl bg-gradient-to-r from-[#9A1F1A] via-[#B3261E] to-[#8C1D18] text-[#FFFDF8] border-2 border-[#E2C275] font-serif font-bold text-sm sm:text-base shadow-[0_6px_22px_rgba(154,31,26,0.35)] hover:brightness-110 transition-all cursor-pointer"
               >
-                <span>Xem Chi Tiết Luận Giải Quẻ</span>
-                <ArrowRight className="w-4 h-4" />
+                <span>☯ Vào Xem Chi Tiết Luận Giải Quẻ & 6 Hào</span>
+                <ArrowRight className="w-4 h-4 text-[#E2C275]" />
               </button>
             </div>
           </div>
         );
       })()}
-      </div>
+
+      {/* Modal Soi Lá Bài 2 Mặt (Quẻ Tượng & Thoán Từ) */}
+      <CardTwoSidedModal
+        isOpen={Boolean(inspectingTwoSidedCard)}
+        onClose={() => setInspectingTwoSidedCard(null)}
+        hexagram={inspectingTwoSidedCard?.card || null}
+        positionTitle={inspectingTwoSidedCard?.positionTitle}
+        frontImageUrl={inspectingTwoSidedCard ? cardImages[inspectingTwoSidedCard.card.number] : undefined}
+        backImageUrl={cardBackImage}
+        isReversed={inspectingTwoSidedCard?.isReversed}
+        onOpenFullDetail={
+          revealedCards.length > 0
+            ? () => processResults(revealedCards)
+            : undefined
+        }
+      />
+      </XuanBaguaStage>
 
       <ExportImageModal
         isOpen={showExportModal}

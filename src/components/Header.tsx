@@ -295,17 +295,50 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-[#0B0A08]/95">
+    <header className="sticky top-0 z-40 border-b border-[#C4963E]/30 bg-[#0B0A08]/95 backdrop-blur-md shadow-[0_6px_24px_rgba(0,0,0,0.4)]">
       <div className="max-w-6xl mx-auto px-4 h-16 sm:h-[72px] flex items-center justify-between gap-3">
         {/* Logo: quẻ Càn với hào Cửu Nhị điểm son */}
         <button
           type="button"
           onClick={() => handleSelectTab("home")}
-          className="cursor-pointer select-none min-w-0 hover:brightness-110 transition"
+          className="cursor-pointer select-none min-w-0 hover:brightness-110 transition shrink-0"
           title="Về Trang Chủ Cửu Nhị"
         >
           <BrandLockup markSize={38} />
         </button>
+
+        {/* Thanh điều hướng nhanh trên màn hình lớn (Đồng bộ toàn trang) */}
+        <nav
+          aria-label="Điều hướng phân hệ nhanh"
+          className="hidden xl:flex items-center gap-1 rounded-full border border-[#C4963E]/30 bg-[#14110D]/90 px-2 py-1 shadow-inner"
+        >
+          {[
+            { id: "home" as NavTab, label: "Trang Chủ" },
+            { id: "divination" as NavTab, label: "☯ Bốc Quẻ" },
+            { id: "manual" as NavTab, label: "Thuyết Minh" },
+            { id: "jiazi" as NavTab, label: "Hoa Giáp" },
+            { id: "calendar" as NavTab, label: "Lịch Dụng Sự" },
+            { id: "hannhiet" as NavTab, label: "Hàn Nhiệt" },
+            { id: "yilore" as NavTab, label: "Sổ Tay" },
+            { id: "pricing" as NavTab, label: "Báo Giá" },
+          ].map((navItem) => {
+            const isActive = currentTab === navItem.id;
+            return (
+              <button
+                key={navItem.id}
+                type="button"
+                onClick={() => handleSelectTab(navItem.id)}
+                className={`cursor-pointer rounded-full px-3 py-1.5 font-serif text-[12px] font-medium transition-all whitespace-nowrap ${
+                  isActive
+                    ? "bg-gradient-to-b from-[#2A2016] to-[#18130E] text-[#F3E5AB] border border-[#D4AF37]/80 shadow-[0_2px_10px_rgba(212,175,55,0.22)]"
+                    : "text-[#D8CBB8] hover:text-[#F3E5AB] hover:bg-white/[0.05] border border-transparent"
+                }`}
+              >
+                {navItem.label}
+              </button>
+            );
+          })}
+        </nav>
 
         {/* Hành động bên phải */}
         <div className="flex items-center gap-1.5 sm:gap-2.5 justify-end">

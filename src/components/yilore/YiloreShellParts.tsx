@@ -431,25 +431,25 @@ export const YiloreDesktopSidebar: React.FC<YiloreDesktopSidebarProps> = ({
   ];
 
   return (
-    <aside className="hidden min-h-0 w-52 shrink-0 flex-col border-r border-stone-200 bg-white/95 font-serif xl:flex">
+    <aside className="hidden min-h-0 w-56 shrink-0 flex-col border-r border-[#C4963E]/40 bg-gradient-to-b from-[#FAF7F0] via-[#F6F1E5] to-[#EFE8D7] font-serif shadow-[4px_0_24px_rgba(28,22,14,0.06)] xl:flex">
       {/* Top Brand Logo -> Ledger (/en/app) */}
-      <div className="flex shrink-0 items-center gap-2 border-b border-stone-200/90 px-3 py-3">
+      <div className="flex shrink-0 items-center gap-2 border-b border-[#C4963E]/35 px-3 py-3">
         <button
           type="button"
           onClick={() => setActiveRoute("ledger")}
-          className="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg p-1 text-left text-stone-900 transition hover:bg-stone-100"
+          className="flex min-w-0 flex-1 items-center gap-2.5 rounded-xl p-1.5 text-left text-[#1C1813] transition hover:bg-[#EDE4D0]/70"
           title="Sổ Tay Cửu Nhị"
         >
           <BrandMark size={36} className="shrink-0" />
           <div className="flex min-w-0 flex-col leading-tight">
-            <span className="truncate text-[15px] font-semibold tracking-tight text-stone-900">Cửu Nhị</span>
-            <span className="truncate text-[10px] font-medium tracking-[0.18em] text-stone-500">玖 貳 · 易 數</span>
+            <span className="truncate text-[15px] font-bold tracking-tight text-[#1C1813]">Cửu Nhị</span>
+            <span className="truncate text-[10px] font-semibold tracking-[0.18em] text-[#8A6A2F]">玖 貳 · 易 數</span>
           </div>
         </button>
       </div>
 
       {/* 6 Navigation Links */}
-      <nav className="min-h-0 w-full flex-1 space-y-0.5 overflow-y-auto py-3 pl-2 pr-2">
+      <nav className="min-h-0 w-full flex-1 space-y-1 overflow-y-auto py-3 pl-2.5 pr-2.5">
         {YILORE_NAV_ITEMS.map((item) => {
           const isActive = activeRoute === item.id;
           const label = item.labelVi;
@@ -459,25 +459,30 @@ export const YiloreDesktopSidebar: React.FC<YiloreDesktopSidebarProps> = ({
               type="button"
               onClick={() => setActiveRoute(item.id)}
               title={label}
-              className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors ${
-                isActive ? "bg-amber-50 text-amber-950" : "text-stone-700 hover:bg-stone-100"
+              className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium transition-all ${
+                isActive
+                  ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border border-[#D4AF37] shadow-[0_4px_14px_rgba(24,19,14,0.22)]"
+                  : "text-[#2B2218] hover:bg-[#EDE4D0]/75 border border-transparent"
               }`}
             >
-              <YiloreNavIcon name={item.icon} className="h-5 w-5 shrink-0 text-stone-600" />
+              <YiloreNavIcon
+                name={item.icon}
+                className={`h-5 w-5 shrink-0 ${isActive ? "text-[#E6C875]" : "text-[#7A5D28]"}`}
+              />
               <span className="truncate">{label}</span>
             </button>
           );
         })}
       </nav>
 
-      {/* Bottom Footer: User ID, Language, Credits Card, Buy Credits, iOS/Android, Sign out */}
-      <div className="mt-auto shrink-0 space-y-3 border-t border-stone-200/90 px-3 py-3">
+      {/* Bottom Footer: User ID, Language, Credits Card, Buy Credits, Return Home, Sign out */}
+      <div className="mt-auto shrink-0 space-y-2.5 border-t border-[#C4963E]/35 px-3 py-3">
         {/* User ID Row */}
         <div className="flex items-center justify-between gap-2 text-[11px] leading-tight">
-          <span className="shrink-0 font-medium text-stone-600">Mã ID:</span>
+          <span className="shrink-0 font-medium text-[#6E5D47]">Mã ID:</span>
           <div className="flex min-w-0 max-w-[58%] items-center justify-end gap-1">
             <span
-              className="truncate font-mono text-[12px] font-semibold tracking-wide text-stone-900"
+              className="truncate font-mono text-[12px] font-semibold tracking-wide text-[#1C1813]"
               title={userIdDisplay}
             >
               {copied ? "Đã chép" : userIdDisplay}
@@ -485,7 +490,7 @@ export const YiloreDesktopSidebar: React.FC<YiloreDesktopSidebarProps> = ({
             <button
               type="button"
               onClick={handleCopyId}
-              className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-stone-500 transition hover:bg-stone-200/60 hover:text-stone-900 active:opacity-80"
+              className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-[#7A5D28] transition hover:bg-[#E8DEC8] hover:text-[#1C1813] active:opacity-80"
               aria-label="Sao chép mã ID"
               title="Sao chép mã ID"
             >
@@ -499,17 +504,17 @@ export const YiloreDesktopSidebar: React.FC<YiloreDesktopSidebarProps> = ({
           <button
             type="button"
             onClick={() => setLangMenuOpen((v) => !v)}
-            className="flex w-full items-center gap-2 rounded-lg py-1.5 text-left text-xs font-medium text-stone-700 transition-colors hover:bg-stone-100 hover:text-stone-900"
+            className="flex w-full items-center gap-2 rounded-lg py-1.5 text-left text-xs font-medium text-[#3D352B] transition-colors hover:bg-[#EDE4D0]/70 hover:text-[#1C1813]"
           >
-            <GlobeIcon className="h-4 w-4 shrink-0 text-stone-500" />
+            <GlobeIcon className="h-4 w-4 shrink-0 text-[#7A5D28]" />
             <span>Ngôn ngữ</span>
-            <span className="ml-auto text-[11px] font-semibold text-stone-500">
+            <span className="ml-auto text-[11px] font-semibold text-[#7A5D28]">
               {langOptions.find((o) => o.code === lang)?.label || "Tiếng Việt"}
             </span>
           </button>
 
           {langMenuOpen && (
-            <div className="absolute bottom-full left-0 z-50 mb-1 w-full overflow-hidden rounded-lg border border-stone-200 bg-white py-1 shadow-lg">
+            <div className="absolute bottom-full left-0 z-50 mb-1 w-full overflow-hidden rounded-lg border border-[#C4963E]/50 bg-[#FDFBF7] py-1 shadow-lg">
               {langOptions.map((opt) => (
                 <button
                   key={opt.code}
@@ -520,14 +525,14 @@ export const YiloreDesktopSidebar: React.FC<YiloreDesktopSidebarProps> = ({
                   }}
                   className={`flex w-full items-center px-3 py-1.5 text-left text-xs font-medium transition-colors ${
                     opt.code === lang
-                      ? "bg-amber-50 text-amber-900"
-                      : "text-stone-700 hover:bg-stone-50 hover:text-stone-900"
+                      ? "bg-[#261E16] text-[#F3E5AB]"
+                      : "text-[#2B2218] hover:bg-[#F3EBD9] hover:text-[#1C1813]"
                   }`}
                 >
                   {opt.label}
                   {opt.code === lang && (
                     <svg
-                      className="ml-auto h-3.5 w-3.5 text-amber-600"
+                      className="ml-auto h-3.5 w-3.5 text-[#E6C875]"
                       viewBox="0 0 24 24"
                       fill="none"
                       aria-hidden="true"
@@ -550,7 +555,7 @@ export const YiloreDesktopSidebar: React.FC<YiloreDesktopSidebarProps> = ({
         {/* CreditsSidebarCard (variant="balancePanel") using /yilore-assets/credit-bg.svg */}
         <div
           onClick={onOpenCreditsModal}
-          className="relative cursor-pointer overflow-hidden rounded-2xl transition hover:brightness-105"
+          className="relative cursor-pointer overflow-hidden rounded-2xl border border-[#D4AF37]/50 shadow-[0_6px_18px_rgba(24,18,10,0.22)] transition hover:brightness-105"
         >
           <div
             aria-hidden="true"
@@ -564,13 +569,13 @@ export const YiloreDesktopSidebar: React.FC<YiloreDesktopSidebarProps> = ({
           />
           <div className="relative flex min-w-0 items-start justify-between gap-2 px-3 py-4">
             <div className="min-w-0 space-y-2">
-              <div className="flex items-center gap-2 text-white/60">
+              <div className="flex items-center gap-2 text-[#F3E5AB]/85">
                 <CreditCoinIcon member={userTierLabel !== "Chưa đăng ký"} />
                 <span className="text-[11px] font-medium leading-none">Tín dụng</span>
               </div>
-              <p className="pl-0.5 text-[26px] font-bold leading-none tracking-tight text-white">{userCredits}</p>
+              <p className="pl-0.5 text-[26px] font-bold leading-none tracking-tight text-[#FFF7DE]">{userCredits}</p>
             </div>
-            <p className="shrink-0 bg-gradient-to-b from-white/90 to-white/60 bg-clip-text pt-1 text-[12px] font-normal leading-snug text-transparent">
+            <p className="shrink-0 bg-gradient-to-b from-[#F3E5AB] to-[#C4963E] bg-clip-text pt-1 text-[12px] font-semibold leading-snug text-transparent">
               {userTierLabel}
             </p>
           </div>
@@ -580,9 +585,9 @@ export const YiloreDesktopSidebar: React.FC<YiloreDesktopSidebarProps> = ({
         <button
           type="button"
           onClick={onOpenCreditsModal}
-          className="flex w-full items-center rounded-lg py-1.5 text-left text-xs font-medium text-stone-700 transition-colors hover:bg-stone-100 hover:text-stone-900"
+          className="flex w-full items-center rounded-lg py-1.5 text-left text-xs font-semibold text-[#7A5D28] transition-colors hover:bg-[#EDE4D0]/70 hover:text-[#9E2A2B]"
         >
-          Nạp tín dụng · Đặc quyền hội viên
+          ✦ Nạp tín dụng · Đặc quyền hội viên
         </button>
 
         {/* Return to Home Page */}
@@ -595,7 +600,7 @@ export const YiloreDesktopSidebar: React.FC<YiloreDesktopSidebarProps> = ({
               window.location.href = "/";
             }
           }}
-          className="w-full rounded-full border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-800 transition hover:bg-stone-100"
+          className="w-full rounded-full border border-[#D4AF37] bg-gradient-to-b from-[#261E16] to-[#18130E] px-4 py-2.5 text-sm font-semibold text-[#F3E5AB] shadow-[0_4px_12px_rgba(24,18,10,0.2)] transition hover:brightness-110"
           title="Trang chủ"
         >
           Trang chủ
@@ -611,7 +616,7 @@ export const YiloreDesktopSidebar: React.FC<YiloreDesktopSidebarProps> = ({
               onShowToast?.("Đã đăng xuất khỏi phiên Cửu Nhị.");
             }
           }}
-          className="w-full rounded-full border border-stone-300 bg-white px-4 py-2.5 text-sm font-semibold text-stone-800 transition hover:bg-stone-100"
+          className="w-full rounded-full border border-[#C4963E]/60 bg-[#FDFBF7] px-4 py-2.5 text-sm font-semibold text-[#2B2218] transition hover:bg-[#EDE4D0]"
           title="Đăng xuất"
         >
           Đăng xuất
@@ -650,21 +655,21 @@ export const YiloreMobileHeader: React.FC<YiloreMobileHeaderProps> = ({
 
   return (
     <>
-      <div className="flex min-w-0 shrink-0 items-center gap-2 border-b border-stone-200 bg-white/95 px-3 py-0 font-serif xl:hidden">
+      <div className="flex min-w-0 shrink-0 items-center gap-2 border-b border-[#C4963E]/40 bg-[#FAF7F0]/98 px-3 py-0 font-serif xl:hidden">
         <button
           type="button"
           onClick={() => setActiveRoute("ledger")}
-          className="flex shrink-0 items-center gap-2 rounded-md py-2 pl-0.5 pr-2 text-stone-900 transition-colors hover:bg-stone-50"
+          className="flex shrink-0 items-center gap-2 rounded-md py-2 pl-0.5 pr-2 text-[#1C1813] transition-colors hover:bg-[#EDE4D0]"
           title="Sổ Tay Cửu Nhị"
         >
           <BrandMark size={34} className="shrink-0" />
-          <span className="whitespace-nowrap text-[15px] font-semibold tracking-tight">Cửu Nhị</span>
+          <span className="whitespace-nowrap text-[15px] font-bold tracking-tight">Cửu Nhị</span>
         </button>
 
         <button
           type="button"
           onClick={() => setMobileMenuOpen(true)}
-          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-stone-600 transition hover:bg-stone-100 md:hidden"
+          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-[#524535] transition hover:bg-[#EDE4D0] md:hidden"
           aria-label="Trình đơn"
           title="Trình đơn"
         >
@@ -674,10 +679,10 @@ export const YiloreMobileHeader: React.FC<YiloreMobileHeaderProps> = ({
           </svg>
         </button>
 
-        <span className="hidden h-6 w-px shrink-0 bg-stone-200 md:block" aria-hidden="true" />
+        <span className="hidden h-6 w-px shrink-0 bg-[#C4963E]/35 md:block" aria-hidden="true" />
 
         <nav
-          className="hidden min-w-0 flex-1 items-center gap-0.5 overflow-x-auto overscroll-x-contain py-1 md:flex [scrollbar-width:thin]"
+          className="hidden min-w-0 flex-1 items-center gap-1 overflow-x-auto overscroll-x-contain py-1 md:flex [scrollbar-width:thin]"
           aria-label="Điều hướng"
         >
           {YILORE_NAV_ITEMS.map((item) => {
@@ -688,16 +693,16 @@ export const YiloreMobileHeader: React.FC<YiloreMobileHeaderProps> = ({
                 key={item.id}
                 type="button"
                 onClick={() => setActiveRoute(item.id)}
-                className={`inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-md px-2.5 py-2 text-sm font-medium transition-colors ${
+                className={`inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-sm font-medium transition-colors ${
                   isActive
-                    ? "text-amber-950 underline decoration-amber-500 decoration-2 underline-offset-4"
-                    : "text-stone-600 hover:bg-stone-100 hover:text-stone-900"
+                    ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border border-[#D4AF37]"
+                    : "text-[#3D3225] hover:bg-[#EDE4D0] hover:text-[#1C1813]"
                 }`}
                 title={label}
               >
                 <YiloreNavIcon
                   name={item.icon}
-                  className={`h-5 w-5 shrink-0 ${isActive ? "text-amber-800" : "text-stone-500"}`}
+                  className={`h-4 w-4 shrink-0 ${isActive ? "text-[#E6C875]" : "text-[#7A5D28]"}`}
                 />
                 <span>{label}</span>
               </button>

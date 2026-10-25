@@ -27,6 +27,7 @@ import { HEXAGRAMS, getTransformedHexagram } from "../data/hexagrams";
 import { CardVisual } from "./CardVisual";
 import { captureElementToPng } from "../utils/captureHelper";
 import { ExportImageModal } from "./ExportImageModal";
+import { XuanBaguaStage, JadeCommandPanel, CardTwoSidedModal } from "./XuanBaguaStage";
 import { zenAudio } from "../utils/zenAudio";
 
 interface ThapLaDivinationProps {
@@ -74,6 +75,12 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
 
   // Thẻ hào đang được chọn xem sâu
   const [selectedYaoLine, setSelectedYaoLine] = useState<number | null>(null);
+
+  // Soi lá bài 2 mặt
+  const [inspectingTwoSidedCard, setInspectingTwoSidedCard] = useState<{
+    card: Hexagram;
+    positionTitle?: string;
+  } | null>(null);
 
   // Export ảnh modal
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
@@ -155,7 +162,12 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
       trans = getTransformedHexagram(pri, changes) || pri;
     }
 
-    return { pri, trans, changes, numChanging };
+    // Nếu Quẻ Chủ và Quẻ Biến cùng 1 quẻ thì không hiện hào động
+    if (pri.number === trans.number) {
+      changes = [];
+    }
+
+    return { pri, trans, changes, numChanging: changes.length };
   };
 
   // Khởi quẻ Tháp La Kinh Dịch
@@ -177,7 +189,7 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
 
       const summaryText = `Tháp La Kinh Dịch: Quẻ Chủ #${pri.number} ${pri.name} → ${
         changes.length === 0
-          ? `Động 0 hào (Quẻ Tĩnh) ➔ Quẻ Biến đồng Quẻ Chủ #${trans.number} ${trans.name}`
+          ? `Quẻ Tĩnh (Không có hào động) ➔ Quẻ Biến giống Quẻ Chủ #${trans.number} ${trans.name}`
           : `AI phân định động ${changes.length} hào (${changes.map((c) => `Hào ${c}`).join(", ")}) ➔ Quẻ Biến #${trans.number} ${trans.name}`
       }`;
 
@@ -197,7 +209,7 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
 
       if (onShowToast) {
         if (changes.length === 0) {
-          onShowToast(`Khởi quẻ Tháp La thành công! Động 0 hào: Quẻ Biến đồng Quẻ Chủ #${pri.number} ${pri.name} (Quẻ Tĩnh).`);
+          onShowToast(`Khởi quẻ Tháp La thành công! Quẻ Chủ và Quẻ Biến cùng 1 quẻ #${pri.number} ${pri.name} (Quẻ Tĩnh • Không có hào động).`);
         } else {
           onShowToast(`Khởi quẻ Tháp La thành công! AI chọn động ${changes.length} hào (${changes.map((c) => `Hào ${c}`).join(", ")}).`);
         }
@@ -243,6 +255,7 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
   const handleCopyForAI = async () => {
     if (!primaryHex || !transformedHex) return;
 
+    const hasChanging = changingLines.length > 0 && primaryHex.number !== transformedHex.number;
     const cleanedQuestion = question.trim();
     const lines: string[] = [];
     lines.push(`=== BẢNG LUẬN GIẢI THÁP LA KINH DỊCH (周易塔羅) ===`);
@@ -250,8 +263,13 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
       lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
       lines.push(`"${cleanedQuestion}"\n`);
     }
-    lines.push(`Cấu trúc: Quẻ Chủ & Quẻ Biến song song Trên - Dưới • Dải Hào Động (Bộ 384 Lá) kế bên Quẻ Chủ`);
-    lines.push(`Thứ tự đọc chiêm bốc: 1. Bản Quái (Quẻ Chủ) ➔ 2. Hào Động (Bước Ngoặt) ➔ 3. Biến Quái (Quẻ Biến)\n`);
+    if (hasChanging) {
+      lines.push(`Cấu trúc: Quẻ Chủ & Quẻ Biến song song Trên - Dưới • Dải Hào Động (Bộ 384 Lá) kế bên Quẻ Chủ`);
+      lines.push(`Thứ tự đọc chiêm bốc: 1. Bản Quái (Quẻ Chủ) ➔ 2. Hào Động (Bước Ngoặt) ➔ 3. Biến Quái (Quẻ Biến)\n`);
+    } else {
+      lines.push(`Cấu trúc: Quẻ Chủ & Quẻ Biến cùng 1 quẻ (Quẻ Tĩnh • Không có hào động)`);
+      lines.push(`Thứ tự đọc chiêm bốc: 1. Bản Quái (Quẻ Chủ) ➔ 2. Biến Quái (Đồng Quẻ Chủ)\n`);
+    }
 
     lines.push(`----------------------------------------`);
     lines.push(`【1. BẢN QUÁI (QUẺ CHỦ) — LÁ TRÊN SONG SONG】`);
@@ -271,17 +289,14 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
     if (primaryHex.advice) lines.push(`• Lời khuyên nền tảng: ${primaryHex.advice}`);
     lines.push("");
 
-    lines.push(`----------------------------------------`);
-    lines.push(`【2. HÀO ĐỘNG (BỘ 384 LÁ BÀI HÀO TỪ) — KẾ BÊN QUẺ CHỦ】`);
-    lines.push(`• Văn Bản Trọng Tâm: Hào Từ của chính hào biến động`);
-    lines.push(`• Ý Nghĩa Thực Tiễn Trong Đời Sống: Lời khuyên then chốt: Trọng tâm hành động và biến số mấu chốt bạn cần lưu tâm`);
-    lines.push(`• Cơ chế phân định: Đầu tiên bốc ngẫu nhiên lá Quẻ Chủ; sau đó AI lựa chọn ngẫu nhiên từ 0 đến 6 hào động (động 0 hào thì Quẻ Biến vẫn là Quẻ Chủ; động 1 hào chọn random từ Hào 1 đến Hào 6; các động hào khác cũng random tương tự).`);
-    lines.push(`• Số lượng hào biến động: ${changingLines.length} hào ${changingLines.length > 0 ? `(${changingLines.map((c) => `Hào ${c}`).join(", ")})` : "(Động 0 hào • Quẻ Tĩnh)"}`);
-    lines.push("");
+    if (hasChanging) {
+      lines.push(`----------------------------------------`);
+      lines.push(`【2. HÀO ĐỘNG (BỘ 384 LÁ BÀI HÀO TỪ) — KẾ BÊN QUẺ CHỦ】`);
+      lines.push(`• Văn Bản Trọng Tâm: Hào Từ của chính hào biến động`);
+      lines.push(`• Ý Nghĩa Thực Tiễn Trong Đời Sống: Lời khuyên then chốt: Trọng tâm hành động và biến số mấu chốt bạn cần lưu tâm`);
+      lines.push(`• Số lượng hào biến động: ${changingLines.length} hào (${changingLines.map((c) => `Hào ${c}`).join(", ")})`);
+      lines.push("");
 
-    if (changingLines.length === 0) {
-      lines.push(`• Tình trạng: Quẻ Tĩnh (Động 0 hào). Quẻ Biến vẫn giữ nguyên là Quẻ Chủ (#${primaryHex.number} ${primaryHex.name}). Cục diện kiên định bất biến, dĩ bất biến ứng vạn biến, bám sát Thoán Từ của Bản Quái.`);
-    } else {
       changingLines.forEach((lineNum, idx) => {
         const lineMeaning = primaryHex.lineMeanings?.find((m) => m.line === lineNum);
         const isYangToYin = (primaryHex.lines?.[lineNum - 1] === 1);
@@ -293,13 +308,13 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
           lines.push(`  - Trọng tâm hành động & Biến số mấu chốt: ${lineMeaning.detailedExplanation}`);
         }
       });
+      lines.push("");
     }
-    lines.push("");
 
     lines.push(`----------------------------------------`);
-    lines.push(`【3. BIẾN QUÁI (QUẺ BIẾN) — LÁ DƯỚI SONG SONG】`);
-    if (changingLines.length === 0) {
-      lines.push(`• Ghi chú: Động 0 hào nên Quẻ Biến đồng Quẻ Chủ (#${transformedHex.number} - ${transformedHex.name}).`);
+    lines.push(`【${hasChanging ? "3" : "2"}. BIẾN QUÁI (QUẺ BIẾN) — LÁ DƯỚI SONG SONG】`);
+    if (!hasChanging) {
+      lines.push(`• Ghi chú: Quẻ Tĩnh không có hào động, Quẻ Biến giữ nguyên là Quẻ Chủ (#${transformedHex.number} - ${transformedHex.name}).`);
     }
     lines.push(`• Văn Bản Trọng Tâm: Quái Từ của Quẻ Biến (Thoán Từ, Đại Tượng Truyện)`);
     lines.push(`• Ý Nghĩa Thực Tiễn Trong Đời Sống: Định hướng tương lai: Xu thế phát triển tiếp theo sau khi sự chuyển hóa hoàn tất`);
@@ -322,12 +337,20 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
     if (cleanedQuestion) {
       lines.push(`▶ Trọng tâm giải đáp: Tập trung luận giải và tháo gỡ dứt khoát câu hỏi/tâm niệm: "${cleanedQuestion}"`);
     }
-    lines.push(`Xin hãy phân tích trải bài Tháp La Kinh Dịch theo đúng 3 tầng thứ tự và ý nghĩa thực tiễn trong đời sống:`);
-    lines.push(`1. BẢN QUÁI (Định vị bối cảnh): Dựa vào Thoán Từ (Quái Từ) và Đại Tượng Truyện, nhận diện bản chất loại hoàn cảnh thực tại đương số đang đối mặt. Cục diện đang ở đâu? Cơ hội và trở lực tiềm ẩn xung quanh là gì?`);
-    lines.push(`2. HÀO ĐỘNG (Lời khuyên then chốt): Dựa vào Hào Từ của chính các hào biến động (phân tích tuần tự từ Hào Sơ lên Hào Lục). Đâu là trọng tâm hành động và biến số mấu chốt đương số cần lưu tâm? Chỉ rõ việc nên làm, việc cần tránh và thời điểm chuyển hóa quyết định.`);
-    lines.push(`3. BIẾN QUÁI (Định hướng tương lai): Dựa vào Quái Từ của Quẻ Biến, dự báo xu thế phát triển tiếp theo sau khi sự chuyển hóa hoàn tất. Đưa ra chiến lược tổng thể và tâm thế sáng suốt nhất để đương số chủ động kiến tạo cát tường.`);
-    if (cleanedQuestion) {
-      lines.push(`4. Đúc kết lời đáp trực tiếp cho câu hỏi/tâm niệm của đương số.`);
+    if (hasChanging) {
+      lines.push(`Xin hãy phân tích trải bài Tháp La Kinh Dịch theo đúng 3 tầng thứ tự và ý nghĩa thực tiễn trong đời sống:`);
+      lines.push(`1. BẢN QUÁI (Định vị bối cảnh): Dựa vào Thoán Từ (Quái Từ) và Đại Tượng Truyện, nhận diện bản chất loại hoàn cảnh thực tại đương số đang đối mặt. Cục diện đang ở đâu? Cơ hội và trở lực tiềm ẩn xung quanh là gì?`);
+      lines.push(`2. HÀO ĐỘNG (Lời khuyên then chốt): Dựa vào Hào Từ của chính các hào biến động (phân tích tuần tự từ Hào Sơ lên Hào Lục). Đâu là trọng tâm hành động và biến số mấu chốt đương số cần lưu tâm? Chỉ rõ việc nên làm, việc cần tránh và thời điểm chuyển hóa quyết định.`);
+      lines.push(`3. BIẾN QUÁI (Định hướng tương lai): Dựa vào Quái Từ của Quẻ Biến, dự báo xu thế phát triển tiếp theo sau khi sự chuyển hóa hoàn tất. Đưa ra chiến lược tổng thể và tâm thế sáng suốt nhất để đương số chủ động kiến tạo cát tường.`);
+      if (cleanedQuestion) {
+        lines.push(`4. Đúc kết lời đáp trực tiếp cho câu hỏi/tâm niệm của đương số.`);
+      }
+    } else {
+      lines.push(`Xin hãy phân tích trải bài Tháp La Kinh Dịch (Quẻ Tĩnh - Quẻ Chủ và Quẻ Biến cùng 1 quẻ, không có hào động):`);
+      lines.push(`1. BẢN QUÁI & BIẾN QUÁI ĐỒNG NHẤT (Định vị bối cảnh & Định hướng tương lai): Dựa vào Thoán Từ (Quái Từ) và Đại Tượng Truyện, phân tích bản chất hoàn cảnh hiện tại và phương châm dĩ bất biến ứng vạn biến.`);
+      if (cleanedQuestion) {
+        lines.push(`2. Đúc kết lời đáp trực tiếp cho câu hỏi/tâm niệm của đương số.`);
+      }
     }
 
     const text = lines.join("\n");
@@ -361,51 +384,20 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* 1. Header Giới Thiệu Hình Thức Tháp La Kinh Dịch */}
-      <div className="royal-frame p-6 sm:p-8 bg-gradient-to-b from-[#18130E] via-[#120E0A] to-[#0A0806] border border-[#C4963E]/40 rounded-3xl shadow-2xl relative overflow-hidden">
-        <span className="royal-corner tl z-20" />
-        <span className="royal-corner tr z-20" />
-        <span className="royal-corner bl z-20" />
-        <span className="royal-corner br z-20" />
-
-        {/* Background Artwork Layer: Tháp La Kinh Dịch */}
-        <div className="pointer-events-none absolute inset-0 z-0">
-          <img
-            src="/assets/cuunhi/03_card_02_thap_la_kinh_dich.webp"
-            alt=""
-            className="h-full w-full object-cover object-right opacity-45"
-            loading="lazy"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#120E0A]/95 via-[#120E0A]/80 to-[#120E0A]/45" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0806] via-transparent to-[#120E0A]/60" />
-        </div>
-
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase bg-[#C4963E]/20 text-[#E0B861] border border-[#C4963E]/40">
-                Phương Pháp Bốc Bài Mới
-              </span>
-              <span className="text-[11px] font-serif tracking-[0.25em] text-[#C4963E]/80">
-                塔羅周易
-              </span>
-            </div>
-            <h2 className="font-display text-2xl sm:text-3xl text-[#FAF5EB] font-bold tracking-wide">
-              Tháp La Kinh Dịch
-            </h2>
-            <p className="text-xs sm:text-sm text-[#D1C2A5] font-serif max-w-2xl leading-relaxed">
-              Đầu tiên bốc ngẫu nhiên lá <strong className="text-[#F3D99B]">Quẻ Chủ (Bản Quái)</strong>, sau đó AI lựa chọn ngẫu nhiên <strong className="text-[#F3D99B]">từ 0 đến 6 hào động</strong> để xác lập <strong className="text-[#F3D99B]">Quẻ Biến</strong> (động 0 hào thì Quẻ Biến vẫn là Quẻ Chủ; động 1..6 hào ngẫu nhiên chọn các hào 1..6) đặt song song trên - dưới, kèm dải bài Hào Từ biến dịch.
-            </p>
-          </div>
-
+      {/* 1. Header Giới Thiệu Hình Thức Tháp La Kinh Dịch — Ngọc Giản Kính Mờ */}
+      <JadeCommandPanel
+        title="THÁP LA KINH DỊCH • CHỦ QUÁI, HÀO BIẾN & CHI QUÁI"
+        subtitle="Bốc ngẫu nhiên lá Quẻ Chủ (Bản Quái) từ 64 quẻ, sau đó AI phân định từ 0 đến 6 hào động để xác lập Quẻ Biến và dải bài Hào Từ biến dịch"
+        badge="塔羅周易"
+        rightSlot={
           <div className="flex items-center gap-2 shrink-0">
             {step === "drawn" && (
               <button
                 type="button"
                 onClick={handleReset}
-                className="royal-btn-ghost !px-4 !py-2 text-xs flex items-center gap-1.5 cursor-pointer"
+                className="px-3.5 py-2 rounded-xl text-xs font-serif font-bold bg-[#FFFDF8] text-[#3A2E21] border border-[#C4963E]/55 hover:border-[#9A1F1A] flex items-center gap-1.5 cursor-pointer shadow-sm"
               >
-                <RotateCcw className="w-3.5 h-3.5" />
+                <RotateCcw className="w-3.5 h-3.5 text-[#9A1F1A]" />
                 <span>Gieo Quẻ Mới</span>
               </button>
             )}
@@ -414,64 +406,53 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
                 type="button"
                 onClick={handleExportPng}
                 disabled={isCapturing}
-                className="royal-btn-gold !px-4 !py-2 text-xs flex items-center gap-1.5 cursor-pointer"
+                className="px-3.5 py-2 rounded-xl text-xs font-serif font-bold bg-[#9A1F1A] text-[#FFFDF8] border border-[#C4963E] flex items-center gap-1.5 cursor-pointer shadow-sm"
               >
-                <Camera className="w-3.5 h-3.5" />
+                <Camera className="w-3.5 h-3.5 text-[#E2C275]" />
                 <span>{isCapturing ? "Đang chụp..." : "Xuất Ảnh (PNG)"}</span>
               </button>
             )}
           </div>
-        </div>
-
+        }
+      >
         {/* Khẩu Quyết 3 Ngôi */}
-        <div className="relative z-10 mt-5 pt-4 border-t border-[#332617] grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-          <div className="p-3 rounded-xl bg-[#221A12]/80 backdrop-blur-xs border border-[#3D2D1B] flex items-center gap-2.5">
-            <span className="w-7 h-7 rounded-lg bg-[#C4963E]/20 text-[#E0B861] font-bold flex items-center justify-center shrink-0 border border-[#C4963E]/40">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div className="p-3 rounded-xl bg-[#FFFDF8] border border-[#C4963E]/50 flex items-center gap-2.5 shadow-sm">
+            <span className="w-7 h-7 rounded-lg bg-[#9A1F1A] text-[#FFFDF8] font-bold flex items-center justify-center shrink-0 border border-[#C4963E]">
               Chủ
             </span>
             <div>
-              <div className="font-bold text-[#F5EAD4]">Bản Quái (Quẻ Chủ)</div>
-              <div className="text-[11px] text-[#A69780] font-sans">Nhìn nhận cục diện thực tại</div>
+              <div className="font-bold text-[#221A13]">Bản Quái (Quẻ Chủ)</div>
+              <div className="text-[11px] text-[#6E5C47] font-sans">Nhìn nhận cục diện thực tại</div>
             </div>
           </div>
-          <div className="p-3 rounded-xl bg-[#221A12]/80 backdrop-blur-xs border border-[#3D2D1B] flex items-center gap-2.5">
-            <span className="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-300 font-bold flex items-center justify-center shrink-0 border border-amber-500/40">
+          <div className="p-3 rounded-xl bg-[#FFFDF8] border border-[#C4963E]/50 flex items-center gap-2.5 shadow-sm">
+            <span className="w-7 h-7 rounded-lg bg-[#1C1610] text-[#F3E5AB] font-bold flex items-center justify-center shrink-0 border border-[#C4963E]">
               Động
             </span>
             <div>
-              <div className="font-bold text-[#F5EAD4]">Hào Động (Hào Biến)</div>
-              <div className="text-[11px] text-[#A69780] font-sans">Nhận diện bước ngoặt (Sơ ➔ Lục)</div>
+              <div className="font-bold text-[#221A13]">Hào Động (Hào Biến)</div>
+              <div className="text-[11px] text-[#6E5C47] font-sans">Nhận diện bước ngoặt (Sơ ➔ Lục)</div>
             </div>
           </div>
-          <div className="p-3 rounded-xl bg-[#221A12]/80 backdrop-blur-xs border border-[#3D2D1B] flex items-center gap-2.5">
-            <span className="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-300 font-bold flex items-center justify-center shrink-0 border border-emerald-500/40">
+          <div className="p-3 rounded-xl bg-[#FFFDF8] border border-[#C4963E]/50 flex items-center gap-2.5 shadow-sm">
+            <span className="w-7 h-7 rounded-lg bg-emerald-800 text-[#FFFDF8] font-bold flex items-center justify-center shrink-0 border border-emerald-600">
               Biến
             </span>
             <div>
-              <div className="font-bold text-[#F5EAD4]">Biến Quái (Quẻ Biến)</div>
-              <div className="text-[11px] text-[#A69780] font-sans">Thấu suốt xu thế tương lai</div>
+              <div className="font-bold text-[#221A13]">Biến Quái (Quẻ Biến)</div>
+              <div className="text-[11px] text-[#6E5C47] font-sans">Thấu suốt xu thế tương lai</div>
             </div>
           </div>
         </div>
-      </div>
+      </JadeCommandPanel>
 
-      {/* 2. KHU VỰC BỐC BÀI KHI CHƯA RÚT (READY STATE) */}
+      {/* 2. KHU VỰC BỐC BÀI KHI CHƯA RÚT (READY STATE) — Sân Khấu Giấy Tuyên Thành & Tinh Bàn Bát Quái */}
       {step !== "drawn" && (
-        <div className="royal-card relative overflow-hidden p-6 sm:p-10 text-center space-y-8 max-w-3xl mx-auto">
-          {/* Subtle Altar Background */}
-          <div className="pointer-events-none absolute inset-0 z-0">
-            <img
-              src="/assets/cuunhi/12_altar_huyen_dan_64_la.webp"
-              alt=""
-              className="h-full w-full object-cover object-center opacity-25"
-              loading="lazy"
-            />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_10%,#120F0C_85%)]" />
-          </div>
-
+        <XuanBaguaStage baguaSize="lg" className="text-center space-y-8 max-w-4xl mx-auto">
           {/* Nhập câu hỏi nghi vấn */}
           <div className="relative z-10 max-w-xl mx-auto text-left space-y-2">
-            <label className="text-xs font-bold text-[#D1C2A5] tracking-wide uppercase flex items-center gap-1.5">
+            <label className="text-xs font-serif font-bold text-[#7A1C18] tracking-wide uppercase flex items-center gap-1.5">
               <span>Nghi Vấn / Câu Hỏi Cần Chiêm Đoán:</span>
             </label>
             <input
@@ -479,19 +460,19 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
               value={question}
               onChange={(e) => handleQuestionChange(e.target.value)}
               placeholder="Ví dụ: Kế hoạch kinh doanh mới trong 3 tháng tới sẽ phát triển ra sao?..."
-              className="w-full px-4 py-2.5 rounded-xl bg-[#17120C]/90 border border-[#3E2F1D] text-sm text-[#F5EAD4] placeholder-[#73634E] focus:outline-none focus:border-[#C4963E]"
+              className="w-full px-4 py-2.5 rounded-xl bg-[#FFFDF8] border-2 border-[#C4963E]/60 text-sm text-[#221A13] placeholder-[#8C7A64] focus:outline-none focus:border-[#9A1F1A] shadow-sm"
             />
           </div>
 
           {/* Mô phỏng 2 bước: Bốc Quẻ Chủ & AI Khởi Hào Động */}
           <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-lg mx-auto">
             {/* Bước 1: Quẻ Chủ */}
-            <div className="p-5 rounded-2xl bg-[#19130D]/90 backdrop-blur-xs border border-[#3B2C1B] flex flex-col items-center text-center space-y-3 shadow-lg hover:border-[#C4963E]/60 transition-colors">
-              <span className="text-[11px] font-mono font-bold text-[#C4963E] uppercase tracking-wider">
+            <div className="p-5 rounded-2xl bg-[#FAF6EE]/95 border-2 border-[#C4963E]/60 flex flex-col items-center text-center space-y-3 shadow-lg hover:border-[#9A1F1A] transition-colors">
+              <span className="px-3 py-0.5 rounded-full bg-[#16120D] border border-[#C4963E]/70 text-[10px] font-serif font-bold text-[#F3E5AB] uppercase tracking-wider">
                 Bước 1 • Bốc Quẻ Chủ
               </span>
               <div
-                className="w-28 h-42 sm:w-32 sm:h-48 rounded-xl border border-[#C4963E]/60 bg-[#0D0B09] flex items-center justify-center shadow-xl relative overflow-hidden group cursor-pointer"
+                className="w-28 h-42 sm:w-32 sm:h-48 rounded-xl border-2 border-[#C4963E] bg-[#0D0B09] flex items-center justify-center shadow-xl relative overflow-hidden group cursor-pointer"
                 onClick={handleDrawThapLa}
               >
                 <img
@@ -506,18 +487,18 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
                 </div>
               </div>
               <div>
-                <h4 className="text-sm font-bold text-[#FAF5EB]">Bốc Lá Quẻ Chủ</h4>
-                <p className="text-[11px] text-[#A89882]">Định vị bối cảnh thực tại (64 quẻ)</p>
+                <h4 className="text-sm font-serif font-bold text-[#221A13]">Bốc Lá Quẻ Chủ</h4>
+                <p className="text-[11px] text-[#5C4D3C]">Định vị bối cảnh thực tại (64 quẻ)</p>
               </div>
             </div>
 
             {/* Bước 2: AI Khởi Hào Động */}
-            <div className="p-5 rounded-2xl bg-[#19130D]/90 backdrop-blur-xs border border-[#3B2C1B] flex flex-col items-center text-center space-y-3 shadow-lg hover:border-[#C4963E]/60 transition-colors">
-              <span className="text-[11px] font-mono font-bold text-emerald-400 uppercase tracking-wider">
+            <div className="p-5 rounded-2xl bg-[#FAF6EE]/95 border-2 border-[#C4963E]/60 flex flex-col items-center text-center space-y-3 shadow-lg hover:border-[#9A1F1A] transition-colors">
+              <span className="px-3 py-0.5 rounded-full bg-[#9A1F1A] border border-[#C4963E] text-[10px] font-serif font-bold text-[#FFFDF8] uppercase tracking-wider">
                 Bước 2 • AI Khởi Hào Động
               </span>
               <div
-                className="w-28 h-42 sm:w-32 sm:h-48 rounded-xl border border-emerald-500/50 bg-[#0D0B09] flex items-center justify-center shadow-xl relative overflow-hidden group cursor-pointer"
+                className="w-28 h-42 sm:w-32 sm:h-48 rounded-xl border-2 border-[#C4963E] bg-[#0D0B09] flex items-center justify-center shadow-xl relative overflow-hidden group cursor-pointer"
                 onClick={handleDrawThapLa}
               >
                 <img
@@ -533,8 +514,8 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
                 </div>
               </div>
               <div>
-                <h4 className="text-sm font-bold text-[#FAF5EB]">AI Phân Định Hào Biến</h4>
-                <p className="text-[11px] text-[#A89882]">Random 0-6 hào để sinh Quẻ Biến</p>
+                <h4 className="text-sm font-serif font-bold text-[#221A13]">AI Phân Định Hào Biến</h4>
+                <p className="text-[11px] text-[#5C4D3C]">Random 0-6 hào để sinh Quẻ Biến</p>
               </div>
             </div>
           </div>
@@ -545,62 +526,58 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
               type="button"
               disabled={step === "shuffling"}
               onClick={handleDrawThapLa}
-              className="royal-btn-gold !px-8 !py-3.5 text-sm sm:text-base font-bold shadow-xl cursor-pointer inline-flex items-center gap-2 group transition-all transform hover:scale-[1.02]"
+              className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#9A1F1A] via-[#B3261E] to-[#8C1D18] text-[#FFFDF8] border-2 border-[#E2C275] text-sm sm:text-base font-serif font-bold shadow-[0_6px_22px_rgba(154,31,26,0.35)] cursor-pointer inline-flex items-center gap-2 group transition-all transform hover:scale-[1.02]"
             >
               {step === "shuffling" ? (
                 <>
-                  <Shuffle className="w-5 h-5 animate-spin text-[#14120F]" />
+                  <Shuffle className="w-5 h-5 animate-spin text-[#E2C275]" />
                   <span>Đang bốc Quẻ Chủ & AI tính toán hào biến (0 - 6 hào)...</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-5 h-5 text-[#14120F]" />
+                  <Sparkles className="w-5 h-5 text-[#E2C275]" />
                   <span>Khởi Quẻ Tháp La (Bốc Quẻ Chủ & AI Khởi Hào Động)</span>
                 </>
               )}
             </button>
-            <p className="text-[11px] text-[#8C7D6A] mt-2 font-serif">
-              Đầu tiên bốc lá Quẻ Chủ, sau đó AI ngẫu nhiên chọn từ 0 đến 6 hào động (động 0 hào thì Quẻ Biến vẫn là Quẻ Chủ; động 1..6 hào chọn ngẫu nhiên từ Hào 1 đến Hào 6).
+            <p className="text-[11px] text-[#5C4D3C] mt-2 font-serif">
+              Đầu tiên bốc lá Quẻ Chủ, sau đó AI ngẫu nhiên chọn từ 0 đến 6 hào động để xác lập Quẻ Biến.
             </p>
           </div>
-        </div>
+        </XuanBaguaStage>
       )}
 
-      {/* 3. KHU VỰC KẾT QUẢ TRẢI BÀI (DRAWN STATE) */}
+      {/* 3. KHU VỰC KẾT QUẢ TRẢI BÀI (DRAWN STATE) — Sân Khấu Giấy Tuyên Thành & Tinh Bàn Bát Quái */}
       {step === "drawn" && primaryHex && transformedHex && (
         <div ref={spreadAreaRef} className="space-y-6">
           {/* A. SƠ ĐỒ TRẢI BÀI THÁP LA (SPREAD DIAGRAM) */}
-          <div className="royal-frame p-6 sm:p-8 bg-[#120E0A] border border-[#3E2E1B] rounded-3xl space-y-6 shadow-2xl">
-            <div className="border-b border-[#302316] pb-3 flex items-center justify-between">
+          <XuanBaguaStage baguaSize="xl" className="space-y-6">
+            <div className="border-b border-[#C4963E]/40 pb-3 flex items-center justify-between flex-wrap gap-2">
               <div className="flex items-center gap-2">
-                <Layers className="w-4 h-4 text-[#C4963E]" />
-                <h3 className="font-bold text-sm sm:text-base text-[#F5EAD4] uppercase tracking-wide">
-                  Sơ Đồ Trải Bài Tháp La Kinh Dịch
+                <Layers className="w-4 h-4 text-[#9A1F1A]" />
+                <h3 className="font-serif font-bold text-sm sm:text-base text-[#7A1C18] uppercase tracking-wide">
+                  Sơ Đồ Trải Bài Tháp La Kinh Dịch (Chủ Quái • Hào Biến • Chi Quái)
                 </h3>
               </div>
-              <span className="text-xs font-mono text-[#C4963E] bg-[#22180F] px-2.5 py-0.5 rounded-full border border-[#44321D]">
-                {changingLines.length === 0
-                  ? "AI Động 0 Hào • Quẻ Tĩnh (Quẻ Biến = Quẻ Chủ)"
+              <span className="text-xs font-serif font-bold text-[#F3E5AB] bg-[#16120D] px-3 py-1 rounded-full border border-[#C4963E]">
+                {changingLines.length === 0 || primaryHex.number === transformedHex.number
+                  ? "Quẻ Tĩnh • Không Có Hào Động (Quẻ Biến = Quẻ Chủ)"
                   : `AI Động ${changingLines.length} Hào (${changingLines.map((c) => `Hào ${c}`).join(", ")})`}
               </span>
             </div>
 
             {/* BỐ CỤC CHÍNH: 2 LÁ BÀI SONG SONG TRÊN DƯỚI & KẾ BÊN LÀ DẢI HÀO TỪ THAY ĐỔI */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              {/* CỘT TRÁI (Lg: 4/12 hoặc 5/12): 2 LÁ BÀI SONG SONG TRÊN - DƯỚI (TRÊN MOBILE & TABLET XẾP CÂN ĐỐI) */}
-              <div className="lg:col-span-4 xl:col-span-4 flex flex-col sm:flex-row lg:flex-col items-center justify-around gap-4 bg-[#18120B] p-4 sm:p-5 rounded-2xl border border-[#362717] shadow-inner">
+            <div className={changingLines.length > 0 && primaryHex.number !== transformedHex.number ? "grid grid-cols-1 lg:grid-cols-12 gap-6 items-start" : "max-w-3xl mx-auto"}>
+              {/* CỘT QUẺ CHỦ & QUẺ BIẾN */}
+              <div className={`${changingLines.length > 0 && primaryHex.number !== transformedHex.number ? "lg:col-span-4 xl:col-span-4 flex flex-col sm:flex-row lg:flex-col" : "flex flex-col sm:flex-row"} items-center justify-around gap-4 bg-[#FAF6EE]/95 p-4 sm:p-5 rounded-2xl border-2 border-[#C4963E]/60 shadow-lg`}>
                 {/* 1. LÁ TRÊN: QUẺ CHỦ (BẢN QUÁI) */}
                 <div className="w-full flex flex-col items-center text-center space-y-1.5 sm:space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[#C4963E] text-stone-950 font-sans">
-                      <span className="inline sm:hidden lg:inline">Lá Trên</span>
-                      <span className="hidden sm:inline lg:hidden">Lá Trái</span>
-                    </span>
-                    <span className="text-xs font-bold text-[#F3D99B] uppercase font-serif">
-                      Quẻ Chủ • Bản Quái
+                  <div className="px-3 py-1 rounded-full bg-[#16120D] border border-[#C4963E]/70 shadow-sm">
+                    <span className="text-[11px] font-bold text-[#F3E5AB] uppercase font-serif">
+                      Lá 1 • Quẻ Chủ (Bản Quái)
                     </span>
                   </div>
-                  <span className="text-[11px] text-[#A69780] font-serif italic">
+                  <span className="text-[11px] text-[#5C4D3C] font-serif italic">
                     "Nhìn nhận cục diện thực tại"
                   </span>
 
@@ -615,43 +592,52 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
                     />
                   </div>
 
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setInspectingTwoSidedCard({
+                        card: primaryHex,
+                        positionTitle: "Lá 1 • Quẻ Chủ (Bản Quái)",
+                      })
+                    }
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#9A1F1A] hover:bg-[#7A1C18] text-[#FFFDF8] border border-[#C4963E] text-[10px] font-serif font-bold shadow-sm transition-all cursor-pointer"
+                  >
+                    <span>Soi 2 Mặt (Quẻ Tượng & Thoán Từ)</span>
+                  </button>
+
                   <div className="pt-1">
-                    <div className="text-sm font-bold text-[#FAF5EB] font-serif">
+                    <div className="text-sm font-bold text-[#221A13] font-serif">
                       #{primaryHex.number} {primaryHex.name} ({primaryHex.hanzi})
                     </div>
-                    <div className="text-[11px] text-[#C4963E] font-serif">
+                    <div className="text-[11px] text-[#7A1C18] font-serif font-semibold">
                       {primaryHex.upperTrigram} vi Thượng • {primaryHex.lowerTrigram} vi Hạ
                     </div>
-                    <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#2B1F13] text-[#E0B861] border border-[#483521]">
+                    <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#16120D] text-[#F3E5AB] border border-[#C4963E]">
                       {primaryHex.omen}
                     </span>
                   </div>
                 </div>
 
-                {/* DÂY CHUYỀN CHUYỂN HÓA SONG SONG TRÊN DƯỚI (HOẶC TRÁI PHẢI TRÊN TABLET) */}
-                <div className="flex flex-col sm:flex-row lg:flex-col items-center gap-1.5 text-xs text-[#A89882] py-1 shrink-0">
-                  <div className="h-px w-10 sm:h-10 sm:w-px lg:h-px lg:w-10 bg-[#3D2C1B]" />
-                  <div className="flex items-center gap-1 font-mono text-[11px] text-[#C4963E]">
+                {/* DÂY CHUYỀN CHUYỂN HÓA SONG SONG TRÊN DƯỚI */}
+                <div className="flex flex-col sm:flex-row lg:flex-col items-center gap-1.5 text-xs text-[#7A1C18] py-1 shrink-0">
+                  <div className="h-px w-10 sm:h-10 sm:w-px lg:h-px lg:w-10 bg-[#C4963E]" />
+                  <div className="flex items-center gap-1 font-serif font-bold text-[11px] text-[#9A1F1A]">
                     <ArrowDown className="sm:hidden lg:inline w-3.5 h-3.5 animate-bounce" />
                     <ArrowRight className="hidden sm:inline lg:hidden w-3.5 h-3.5" />
                     <span>Dịch Chuyển</span>
                   </div>
-                  <div className="h-px w-10 sm:h-10 sm:w-px lg:h-px lg:w-10 bg-[#3D2C1B]" />
+                  <div className="h-px w-10 sm:h-10 sm:w-px lg:h-px lg:w-10 bg-[#C4963E]" />
                 </div>
 
                 {/* 2. LÁ DƯỚI: QUẺ BIẾN (BIẾN QUÁI) */}
                 <div className="w-full flex flex-col items-center text-center space-y-1.5 sm:space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-600 text-stone-950 font-sans">
-                      <span className="inline sm:hidden lg:inline">Lá Dưới</span>
-                      <span className="hidden sm:inline lg:hidden">Lá Phải</span>
-                    </span>
-                    <span className="text-xs font-bold text-emerald-300 uppercase font-serif">
-                      {changingLines.length === 0 ? "Quẻ Biến (Đồng Quẻ Chủ)" : "Quẻ Biến • Biến Quái"}
+                  <div className="px-3 py-1 rounded-full bg-[#16120D] border border-emerald-600/70 shadow-sm">
+                    <span className="text-[11px] font-bold text-emerald-300 uppercase font-serif">
+                      {changingLines.length === 0 || primaryHex.number === transformedHex.number ? "Lá 2 • Quẻ Biến (Đồng Quẻ Chủ)" : "Lá 2 • Quẻ Biến (Biến Quái)"}
                     </span>
                   </div>
-                  <span className="text-[11px] text-[#A69780] font-serif italic">
-                    {changingLines.length === 0 ? '"Động 0 hào — Quẻ biến vẫn là quẻ chủ"' : '"Thấu suốt xu thế tương lai"'}
+                  <span className="text-[11px] text-[#5C4D3C] font-serif italic">
+                    {changingLines.length === 0 || primaryHex.number === transformedHex.number ? '"Quẻ Tĩnh — Quẻ biến vẫn là quẻ chủ"' : '"Thấu suốt xu thế tương lai"'}
                   </span>
 
                   <div className="pt-1">
@@ -665,52 +651,54 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
                     />
                   </div>
 
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setInspectingTwoSidedCard({
+                        card: transformedHex,
+                        positionTitle: "Lá 2 • Quẻ Biến (Biến Quái)",
+                      })
+                    }
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#9A1F1A] hover:bg-[#7A1C18] text-[#FFFDF8] border border-[#C4963E] text-[10px] font-serif font-bold shadow-sm transition-all cursor-pointer"
+                  >
+                    <span>Soi 2 Mặt (Quẻ Tượng & Thoán Từ)</span>
+                  </button>
+
                   <div className="pt-1">
-                    <div className="text-sm font-bold text-[#FAF5EB] font-serif">
+                    <div className="text-sm font-bold text-[#221A13] font-serif">
                       #{transformedHex.number} {transformedHex.name} ({transformedHex.hanzi})
                     </div>
-                    <div className="text-[11px] text-emerald-400 font-serif">
+                    <div className="text-[11px] text-emerald-800 font-serif font-semibold">
                       {transformedHex.upperTrigram} vi Thượng • {transformedHex.lowerTrigram} vi Hạ
                     </div>
-                    <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#122419] text-emerald-300 border border-[#1E3E2B]">
+                    <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-900 text-emerald-100 border border-emerald-600">
                       {transformedHex.omen}
                     </span>
                   </div>
                 </div>
               </div>
 
-              {/* CỘT PHẢI (Lg: 8/12): KẾ BÊN QUẺ CHỦ LÀ CÁC LÁ HÀO TỪ THAY ĐỔI THEO THỨ TỰ TỪ SƠ TỚI LỤC */}
-              <div className="lg:col-span-8 xl:col-span-8 space-y-4">
-                <div className="flex items-center justify-between border-b border-[#302316] pb-2">
-                  <div>
-                    <h4 className="text-sm sm:text-base font-bold text-[#F5EAD4] font-serif flex items-center gap-2">
-                      <span>Dải Lá Hào Từ Thay Đổi</span>
-                      <span className="text-xs text-[#C4963E] font-normal">
-                        (Thứ tự từ Hào Sơ ➔ Hào Lục)
-                      </span>
-                    </h4>
-                    <p className="text-[11px] text-[#A69780] font-serif">
-                      "Hào động nhận diện bước ngoặt" — Các mắt xích chuyển hóa Quẻ Chủ thành Quẻ Biến.
-                    </p>
+              {/* CỘT PHẢI (Lg: 8/12): CHỈ HIỆN KHI CÓ HÀO ĐỘNG VÀ QUẺ CHỦ KHÁC QUẺ BIẾN */}
+              {changingLines.length > 0 && primaryHex.number !== transformedHex.number && (
+                <div className="lg:col-span-8 xl:col-span-8 space-y-4 bg-[#15110C]/95 p-4 sm:p-5 rounded-2xl border border-[#C4963E]/50 shadow-xl">
+                  <div className="flex items-center justify-between border-b border-[#302316] pb-2">
+                    <div>
+                      <h4 className="text-sm sm:text-base font-bold text-[#F5EAD4] font-serif flex items-center gap-2">
+                        <span>Dải Lá Hào Từ Thay Đổi</span>
+                        <span className="text-xs text-[#C4963E] font-normal">
+                          (Thứ tự từ Hào Sơ ➔ Hào Lục)
+                        </span>
+                      </h4>
+                      <p className="text-[11px] text-[#A69780] font-serif">
+                        "Hào động nhận diện bước ngoặt" — Các mắt xích chuyển hóa Quẻ Chủ thành Quẻ Biến.
+                      </p>
+                    </div>
+                    <span className="text-[11px] font-mono text-[#D4AF37]">
+                      {changingLines.length} / 6 Hào
+                    </span>
                   </div>
-                  <span className="text-[11px] font-mono text-[#D4AF37]">
-                    {changingLines.length} / 6 Hào
-                  </span>
-                </div>
 
-                {/* Trường hợp 0 hào động (Quẻ Tĩnh) */}
-                {changingLines.length === 0 ? (
-                  <div className="p-6 rounded-2xl bg-[#1C1610] border border-[#3E2F1E] text-center space-y-3">
-                    <span className="text-2xl text-[#C4963E]">☯</span>
-                    <h5 className="font-bold text-[#F5EAD4] text-sm">
-                      AI Phân Định: Động 0 Hào — Quẻ Tĩnh Kiên Định
-                    </h5>
-                    <p className="text-xs text-[#A89882] max-w-md mx-auto leading-relaxed">
-                      AI đã ngẫu nhiên lựa chọn <strong className="text-[#F3D99B]">0 hào động</strong>. Theo quy tắc trận Tháp La Kinh Dịch, khi động 0 hào thì <strong className="text-[#F3D99B]">Quẻ Biến vẫn là Quẻ Chủ</strong> (#{primaryHex.number} {primaryHex.name}). Điều này ứng với đạo lý "Tâm tĩnh tắc an, dĩ bất biến ứng vạn biến". Bạn cần bám sát Thoán Từ và Đại Tượng của Quẻ Chủ, kiên trì đường lối hiện tại mà không cần vội vã cải biến.
-                    </p>
-                  </div>
-                ) : (
-                  /* Danh sách các Thẻ Bài Hào Từ Biến Động */
+                  {/* Danh sách các Thẻ Bài Hào Từ Biến Động */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                     {changingLines.map((lineNum) => {
                       const isYangToYin = primaryHex.lines[lineNum - 1] === 1;
@@ -804,138 +792,135 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
                       );
                     })}
                   </div>
-                )}
 
-                {/* Chi Tiết Hào Động Được Chọn (Detail Box) */}
-                {selectedYaoLine && (
-                  <div className="p-4 sm:p-5 rounded-2xl bg-[#1F1710] border border-[#C4963E]/50 space-y-3 mt-4 shadow-lg">
-                    <div className="flex items-center justify-between border-b border-[#302316] pb-2">
-                      <div className="flex items-center gap-2">
-                        <Flame className="w-4 h-4 text-[#C4963E]" />
-                        <span className="text-xs font-bold text-[#F5EAD4] font-serif uppercase tracking-wide">
-                          Khảo Cứu Bước Ngoặt: {YAO_POSITION_NAMES[selectedYaoLine]?.title}
+                  {/* Chi Tiết Hào Động Được Chọn (Detail Box) */}
+                  {selectedYaoLine && (
+                    <div className="p-4 sm:p-5 rounded-2xl bg-[#1F1710] border border-[#C4963E]/50 space-y-3 mt-4 shadow-lg">
+                      <div className="flex items-center justify-between border-b border-[#302316] pb-2">
+                        <div className="flex items-center gap-2">
+                          <Flame className="w-4 h-4 text-[#C4963E]" />
+                          <span className="text-xs font-bold text-[#F5EAD4] font-serif uppercase tracking-wide">
+                            Khảo Cứu Bước Ngoặt: {YAO_POSITION_NAMES[selectedYaoLine]?.title}
+                          </span>
+                        </div>
+                        <span className="text-[10px] text-[#A69780] font-mono">
+                          Quẻ #{primaryHex.number} {primaryHex.name}
                         </span>
                       </div>
-                      <span className="text-[10px] text-[#A69780] font-mono">
-                        Quẻ #{primaryHex.number} {primaryHex.name}
-                      </span>
-                    </div>
 
-                    <div className="flex flex-col sm:flex-row gap-4 items-start pt-1">
-                      {/* Ảnh thẻ bài Hào Từ lớn trong kho Bách Khoa Hexagram */}
-                      <div className="w-20 sm:w-24 shrink-0 rounded-xl overflow-hidden border border-[#C4963E]/50 shadow-lg bg-black aspect-[5/8] mx-auto sm:mx-0">
-                        <img
-                          src={`/assets/oss/${primaryHex.number}/${primaryHex.number}-${selectedYaoLine}a.webp`}
-                          alt={`Hào ${selectedYaoLine} Quẻ ${primaryHex.name}`}
-                          className="w-full h-full object-contain select-none"
-                          loading="lazy"
-                          onError={(e) => {
-                            const target = e.currentTarget;
-                            target.onerror = null;
-                            target.src = `/assets/oss/${primaryHex.number}/${primaryHex.number}a.webp`;
-                          }}
-                        />
-                      </div>
-
-                      <div className="flex-1 space-y-2">
-                        <div className="text-xs sm:text-sm font-bold text-[#F3D99B] font-serif">
-                          "{primaryHex.lineMeanings?.find((m) => m.line === selectedYaoLine)?.text || ""}"
+                      <div className="flex flex-col sm:flex-row gap-4 items-start pt-1">
+                        {/* Ảnh thẻ bài Hào Từ lớn trong kho Bách Khoa Hexagram */}
+                        <div className="w-20 sm:w-24 shrink-0 rounded-xl overflow-hidden border border-[#C4963E]/50 shadow-lg bg-black aspect-[5/8] mx-auto sm:mx-0">
+                          <img
+                            src={`/assets/oss/${primaryHex.number}/${primaryHex.number}-${selectedYaoLine}a.webp`}
+                            alt={`Hào ${selectedYaoLine} Quẻ ${primaryHex.name}`}
+                            className="w-full h-full object-contain select-none"
+                            loading="lazy"
+                            onError={(e) => {
+                              const target = e.currentTarget;
+                              target.onerror = null;
+                              target.src = `/assets/oss/${primaryHex.number}/${primaryHex.number}a.webp`;
+                            }}
+                          />
                         </div>
 
-                        <p className="text-xs text-[#D8C9B0] font-serif leading-relaxed">
-                          {primaryHex.lineMeanings?.find((m) => m.line === selectedYaoLine)?.meaning ||
-                            YAO_POSITION_NAMES[selectedYaoLine]?.essence}
-                        </p>
+                        <div className="flex-1 space-y-2">
+                          <div className="text-xs sm:text-sm font-bold text-[#F3D99B] font-serif">
+                            "{primaryHex.lineMeanings?.find((m) => m.line === selectedYaoLine)?.text || ""}"
+                          </div>
 
-                        <div className="pt-2 text-[11px] text-[#A89882] italic font-serif border-t border-[#312316]">
-                          💡 <strong>Bài học bước ngoặt:</strong> Tại vị trí này, hành động của bạn sẽ quyết định việc đưa cục diện từ {primaryHex.name} tiến hóa sang {transformedHex.name}. Hãy hành xử thận trọng đúng tinh thần trung chính của Kinh Dịch.
+                          <p className="text-xs text-[#D8C9B0] font-serif leading-relaxed">
+                            {primaryHex.lineMeanings?.find((m) => m.line === selectedYaoLine)?.meaning ||
+                              YAO_POSITION_NAMES[selectedYaoLine]?.essence}
+                          </p>
+
+                          <div className="pt-2 text-[11px] text-[#A89882] italic font-serif border-t border-[#312316]">
+                            💡 <strong>Bài học bước ngoặt:</strong> Tại vị trí này, hành động của bạn sẽ quyết định việc đưa cục diện từ {primaryHex.name} tiến hóa sang {transformedHex.name}. Hãy hành xử thận trọng đúng tinh thần trung chính của Kinh Dịch.
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              )}
             </div>
-          </div>
+          </XuanBaguaStage>
 
-          {/* B. BỘ BA LUẬN GIẢI TRIẾT LÝ 3 NGÔI (BẢN QUÁI - HÀO ĐỘNG - BIẾN QUÁI) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* B. BỘ BA LUẬN GIẢI TRIẾT LÝ (ẨN HÀO ĐỘNG KHI QUẺ CHỦ = QUẺ BIẾN) */}
+          <div className={`grid grid-cols-1 ${changingLines.length > 0 && primaryHex.number !== transformedHex.number ? "md:grid-cols-3" : "md:grid-cols-2"} gap-4`}>
             {/* 1. BẢN QUÁI: NHÌN NHẬN CỤC DIỆN */}
-            <div className="p-5 rounded-2xl bg-[#15100B] border border-[#3E2E1B] space-y-3 flex flex-col justify-between shadow-lg">
+            <div className="p-5 rounded-2xl bg-[#FAF6EE] border-2 border-[#C4963E]/55 space-y-3 flex flex-col justify-between shadow-lg">
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <span className="w-6 h-6 rounded bg-[#C4963E]/20 text-[#E0B861] font-bold text-xs flex items-center justify-center border border-[#C4963E]/40">
+                  <span className="w-6 h-6 rounded bg-[#9A1F1A] text-[#FFFDF8] font-bold text-xs flex items-center justify-center border border-[#C4963E]">
                     1
                   </span>
-                  <h4 className="font-bold text-sm text-[#F5EAD4] uppercase font-serif">
+                  <h4 className="font-bold text-sm text-[#221A13] uppercase font-serif">
                     Bản Quái: Nhìn Nhận Cục Diện
                   </h4>
                 </div>
-                <div className="text-xs text-[#C4963E] font-serif font-semibold">
+                <div className="text-xs text-[#7A1C18] font-serif font-bold">
                   Quẻ #{primaryHex.number} {primaryHex.name} ({primaryHex.hanzi})
                 </div>
-                <div className="text-xs text-[#BFAFA0] font-serif italic">
+                <div className="text-xs text-[#5C4D3C] font-serif italic">
                   Thoán từ: "{primaryHex.judgment}"
                 </div>
-                <p className="text-xs text-[#D4C5AE] font-serif leading-relaxed">
+                <p className="text-xs text-[#3A2E21] font-serif leading-relaxed">
                   {primaryHex.overview || primaryHex.advice}
                 </p>
               </div>
-              <div className="pt-2 text-[11px] text-[#A69780] font-sans border-t border-[#291F14]">
+              <div className="pt-2 text-[11px] text-[#6E5C47] font-sans border-t border-[#C4963E]/35">
                 <strong>Bối cảnh thực tại:</strong> Giúp bạn thấu hiểu toàn bộ các lực lượng đang vận hành xung quanh vấn đề hiện tại.
               </div>
             </div>
 
-            {/* 2. HÀO ĐỘNG: NHẬN DIỆN BƯỚC NGOẶT */}
-            <div className="p-5 rounded-2xl bg-[#15100B] border border-amber-600/30 space-y-3 flex flex-col justify-between shadow-lg">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="w-6 h-6 rounded bg-amber-500/20 text-amber-300 font-bold text-xs flex items-center justify-center border border-amber-500/40">
-                    2
-                  </span>
-                  <h4 className="font-bold text-sm text-[#F5EAD4] uppercase font-serif">
-                    Hào Động: Nhận Diện Bước Ngoặt
-                  </h4>
+            {/* 2. HÀO ĐỘNG: NHẬN DIỆN BƯỚC NGOẶT (CHỈ HIỆN KHI CÓ HÀO ĐỘNG VÀ QUẺ CHỦ KHÁC QUẺ BIẾN) */}
+            {changingLines.length > 0 && primaryHex.number !== transformedHex.number && (
+              <div className="p-5 rounded-2xl bg-[#FAF6EE] border-2 border-[#C4963E]/55 space-y-3 flex flex-col justify-between shadow-lg">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="w-6 h-6 rounded bg-[#16120D] text-[#F3E5AB] font-bold text-xs flex items-center justify-center border border-[#C4963E]">
+                      2
+                    </span>
+                    <h4 className="font-bold text-sm text-[#221A13] uppercase font-serif">
+                      Hào Động: Nhận Diện Bước Ngoặt
+                    </h4>
+                  </div>
+                  <div className="text-xs text-[#9A1F1A] font-serif font-bold">
+                    {`Dịch chuyển qua ${changingLines.length} hào: ${changingLines.map((c) => `Hào ${c}`).join(", ")}`}
+                  </div>
+                  <p className="text-xs text-[#3A2E21] font-serif leading-relaxed">
+                    Các hào biến động theo thứ tự từ thấp (Sơ hào) lên cao (Lục hào) đóng vai trò là những điểm rơi quyết định. Nắm bắt đúng thời điểm biến chuyển ở từng hào sẽ giúp bạn xoay chuyển tình thế từ bế tắc sang thông suốt.
+                  </p>
                 </div>
-                <div className="text-xs text-amber-400 font-serif font-semibold">
-                  {changingLines.length > 0
-                    ? `Dịch chuyển qua ${changingLines.length} hào: ${changingLines.map((c) => `Hào ${c}`).join(", ")}`
-                    : "Quẻ Tĩnh không có hào động"}
+                <div className="pt-2 text-[11px] text-[#6E5C47] font-sans border-t border-[#C4963E]/35">
+                  <strong>Trọng tâm hành động:</strong> Chú ý kỹ lời khuyên của các hào động để không phạm sai lầm đáng tiếc.
                 </div>
-                <p className="text-xs text-[#D4C5AE] font-serif leading-relaxed">
-                  {changingLines.length > 0
-                    ? `Các hào biến động theo thứ tự từ thấp (Sơ hào) lên cao (Lục hào) đóng vai trò là những điểm rơi quyết định. Nắm bắt đúng thời điểm biến chuyển ở từng hào sẽ giúp bạn xoay chuyển tình thế từ bế tắc sang thông suốt.`
-                    : `Trường hợp Quẻ Tĩnh biểu thị sự việc đang ở trạng thái ổn định lâu dài. Không nên cưỡng cầu thay đổi mà hãy tập trung hoàn thiện phẩm chất bên trong.`}
-                </p>
               </div>
-              <div className="pt-2 text-[11px] text-[#A69780] font-sans border-t border-[#291F14]">
-                <strong>Trọng tâm hành động:</strong> Chú ý kỹ lời khuyên của các hào động để không phạm sai lầm đáng tiếc.
-              </div>
-            </div>
+            )}
 
             {/* 3. BIẾN QUÁI: THẤU SUỐT TƯƠNG LAI */}
-            <div className="p-5 rounded-2xl bg-[#15100B] border border-emerald-600/30 space-y-3 flex flex-col justify-between shadow-lg">
+            <div className="p-5 rounded-2xl bg-[#FAF6EE] border-2 border-[#C4963E]/55 space-y-3 flex flex-col justify-between shadow-lg">
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <span className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-300 font-bold text-xs flex items-center justify-center border border-emerald-500/40">
-                    3
+                  <span className="w-6 h-6 rounded bg-emerald-800 text-[#FFFDF8] font-bold text-xs flex items-center justify-center border border-emerald-600">
+                    {changingLines.length > 0 && primaryHex.number !== transformedHex.number ? "3" : "2"}
                   </span>
-                  <h4 className="font-bold text-sm text-[#F5EAD4] uppercase font-serif">
-                    {changingLines.length === 0 ? "Biến Quái: Đồng Quẻ Chủ (Tĩnh)" : "Biến Quái: Thấu Suốt Tương Lai"}
+                  <h4 className="font-bold text-sm text-[#221A13] uppercase font-serif">
+                    {changingLines.length === 0 || primaryHex.number === transformedHex.number ? "Biến Quái: Đồng Quẻ Chủ (Tĩnh)" : "Biến Quái: Thấu Suốt Tương Lai"}
                   </h4>
                 </div>
-                <div className="text-xs text-emerald-400 font-serif font-semibold">
+                <div className="text-xs text-emerald-800 font-serif font-bold">
                   Quẻ #{transformedHex.number} {transformedHex.name} ({transformedHex.hanzi})
-                  {changingLines.length === 0 && " • Động 0 Hào"}
                 </div>
-                <div className="text-xs text-[#BFAFA0] font-serif italic">
+                <div className="text-xs text-[#5C4D3C] font-serif italic">
                   Thoán từ: "{transformedHex.judgment}"
                 </div>
-                <p className="text-xs text-[#D4C5AE] font-serif leading-relaxed">
+                <p className="text-xs text-[#3A2E21] font-serif leading-relaxed">
                   {transformedHex.overview || transformedHex.advice}
                 </p>
               </div>
-              <div className="pt-2 text-[11px] text-[#A69780] font-sans border-t border-[#291F14]">
+              <div className="pt-2 text-[11px] text-[#6E5C47] font-sans border-t border-[#C4963E]/35">
                 <strong>Kết quả tương lai:</strong> Xu thế phát triển tất yếu sau khi các bước ngoặt được hóa giải thành công.
               </div>
             </div>
@@ -961,11 +946,11 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
               <button
                 type="button"
                 onClick={onNavigateToDetail}
-                className="royal-btn-gold !px-6 !py-2.5 text-xs font-bold flex items-center gap-2 shadow-lg cursor-pointer"
+                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#9A1F1A] via-[#B3261E] to-[#8C1D18] text-[#FFFDF8] border-2 border-[#E2C275] text-xs font-serif font-bold flex items-center gap-2 shadow-lg cursor-pointer"
               >
-                <BookOpen className="w-4 h-4" />
-                <span>Xem Thuyết Minh Chi Tiết Quẻ & AI Cửu Nhị</span>
-                <ArrowRight className="w-4 h-4" />
+                <BookOpen className="w-4 h-4 text-[#E2C275]" />
+                <span>☯ Vào Xem Thuyết Minh Chi Tiết Quẻ & 6 Hào</span>
+                <ArrowRight className="w-4 h-4 text-[#E2C275]" />
               </button>
             )}
             <button
@@ -979,6 +964,15 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
           </div>
         </div>
       )}
+
+      {/* Modal Soi Lá Bài 2 Mặt */}
+      <CardTwoSidedModal
+        isOpen={Boolean(inspectingTwoSidedCard)}
+        onClose={() => setInspectingTwoSidedCard(null)}
+        hexagram={inspectingTwoSidedCard?.card || null}
+        positionTitle={inspectingTwoSidedCard?.positionTitle}
+        onOpenFullDetail={onNavigateToDetail}
+      />
 
       {/* Modal xuất ảnh PNG */}
       {isExportModalOpen && exportDataUrl && (

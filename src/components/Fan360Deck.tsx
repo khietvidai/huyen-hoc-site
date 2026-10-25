@@ -404,25 +404,25 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
 
   return (
     <div className="relative flex flex-col items-center w-full select-none">
-      {/* Top Controls Toolbar: Tier presets, Filters & Zoom */}
-      <div className="w-full flex flex-wrap items-center justify-between gap-2.5 mb-3 px-1 text-xs text-[#B5A590]">
+      {/* Top Controls Toolbar: Tier presets, Filters & Zoom (Đồng bộ Ngọc Giản Giấy Tuyên Thành) */}
+      <div className="w-full flex flex-wrap items-center justify-between gap-2.5 mb-3 px-3 py-2.5 rounded-2xl bg-[#FAF6EE]/95 border border-[#C4963E]/40 text-xs text-[#5C4D3B] shadow-xs">
         {/* Tier Layout Presets */}
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-[11px] font-serif font-bold text-[#EAD8B1] flex items-center gap-1">
-            <Layers className="w-3.5 h-3.5 text-[#C9A55A]" />
+          <span className="text-[11px] font-serif font-bold text-[#6E4E16] flex items-center gap-1">
+            <Layers className="w-3.5 h-3.5 text-[#B8862D]" />
             Cấu Trúc Tầng:
           </span>
-          <div className="inline-flex p-0.5 bg-[#120F0C] border border-[#34271A] rounded-lg">
+          <div className="inline-flex p-0.5 bg-[#EFE7D6] border border-[#C4963E]/35 rounded-xl">
             <button
               type="button"
               onClick={() => {
                 setTierLayout("tam_tai");
                 setActiveFilter("all");
               }}
-              className={`px-2.5 py-1 rounded text-xs transition-colors cursor-pointer ${
+              className={`px-2.5 py-1 rounded-lg text-xs transition-colors cursor-pointer ${
                 tierLayout === "tam_tai"
-                  ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
-                  : "text-[#9E907D] hover:text-[#FFF]"
+                  ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border border-[#D4AF37] font-bold shadow"
+                  : "text-[#5C4D3B] hover:text-[#1C1610]"
               }`}
               title="3 Tầng: Thiên (28 lá), Nhân (24 lá), Địa (12 lá)"
             >
@@ -434,10 +434,10 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
                 setTierLayout("am_duong");
                 setActiveFilter("all");
               }}
-              className={`px-2.5 py-1 rounded text-xs transition-colors cursor-pointer ${
+              className={`px-2.5 py-1 rounded-lg text-xs transition-colors cursor-pointer ${
                 tierLayout === "am_duong"
-                  ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
-                  : "text-[#9E907D] hover:text-[#FFF]"
+                  ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border border-[#D4AF37] font-bold shadow"
+                  : "text-[#5C4D3B] hover:text-[#1C1610]"
               }`}
               title="2 Tầng: Dương (32 lá) & Âm (32 lá)"
             >
@@ -449,10 +449,10 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
                 setTierLayout("tu_tuong");
                 setActiveFilter("all");
               }}
-              className={`px-2.5 py-1 rounded text-xs transition-colors cursor-pointer ${
+              className={`px-2.5 py-1 rounded-lg text-xs transition-colors cursor-pointer ${
                 tierLayout === "tu_tuong"
-                  ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
-                  : "text-[#9E907D] hover:text-[#FFF]"
+                  ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border border-[#D4AF37] font-bold shadow"
+                  : "text-[#5C4D3B] hover:text-[#1C1610]"
               }`}
               title="4 Tầng: 16 lá mỗi tầng (Thái Dương, Thiếu Dương, Thiếu Âm, Thái Âm)"
             >
@@ -464,10 +464,10 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
                 setTierLayout("don_vong");
                 setActiveFilter("all");
               }}
-              className={`px-2.5 py-1 rounded text-xs transition-colors cursor-pointer ${
+              className={`px-2.5 py-1 rounded-lg text-xs transition-colors cursor-pointer ${
                 tierLayout === "don_vong"
-                  ? "bg-[#C89B3C] text-[#121110] font-bold shadow"
-                  : "text-[#9E907D] hover:text-[#FFF]"
+                  ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border border-[#D4AF37] font-bold shadow"
+                  : "text-[#5C4D3B] hover:text-[#1C1610]"
               }`}
               title="1 Vòng Tròn 360° gồm 64 lá"
             >
@@ -478,14 +478,14 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
 
         {/* View Mode Filters: Show All or Single Tier */}
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-[11px] text-[#8C7B65]">Lọc hiển thị:</span>
+          <span className="text-[11px] font-semibold text-[#6E4E16]">Lọc hiển thị:</span>
           <button
             type="button"
             onClick={() => setActiveFilter("all")}
-            className={`px-2 py-0.5 rounded text-[11px] font-medium border transition-colors cursor-pointer ${
+            className={`px-2.5 py-0.5 rounded-lg text-[11px] font-medium border transition-colors cursor-pointer ${
               activeFilter === "all"
-                ? "bg-[#2F2417] text-[#F3E7CF] border-[#C9A55A]"
-                : "bg-[#14110E] text-[#8C7B65] border-[#292015] hover:text-[#C5B49D]"
+                ? "bg-[#261E16] text-[#F3E5AB] border-[#D4AF37] font-bold"
+                : "bg-[#FDFBF7] text-[#5C4D3B] border-[#C4963E]/35 hover:border-[#C4963E]"
             }`}
           >
             Tất cả các tầng (64 lá)
@@ -495,10 +495,10 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
               key={tier.id}
               type="button"
               onClick={() => setActiveFilter(tier.id)}
-              className={`px-2 py-0.5 rounded text-[11px] font-medium border transition-colors cursor-pointer ${
+              className={`px-2.5 py-0.5 rounded-lg text-[11px] font-medium border transition-colors cursor-pointer ${
                 activeFilter === tier.id
-                  ? "bg-[#2F2417] text-[#F3E7CF] border-[#C9A55A]"
-                  : "bg-[#14110E] text-[#8C7B65] border-[#292015] hover:text-[#C5B49D]"
+                  ? "bg-[#261E16] text-[#F3E5AB] border-[#D4AF37] font-bold"
+                  : "bg-[#FDFBF7] text-[#5C4D3B] border-[#C4963E]/35 hover:border-[#C4963E]"
               }`}
             >
               {tier.shortName}
@@ -555,14 +555,14 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
         </button>
       </div>
 
-      {/* Main 360 Fan Wheel Stage Container (Khung gọn gàng, các lá bài chồng nhẹ lên nhau) */}
+      {/* Main 360 Fan Wheel Stage Container (Đồng bộ Sân Khấu Giấy Tuyên Thành & Tinh Bàn Bát Quái Vàng Kim) */}
       <div
         ref={containerRef}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerLeave={handlePointerUp}
-        className="relative w-full max-w-[540px] sm:max-w-[560px] aspect-square rounded-3xl bg-radial from-[#1A1612] via-[#120F0C] to-[#0A0807] border border-[#3C3021] shadow-[inset_0_0_80px_rgba(0,0,0,0.8),0_15px_40px_rgba(0,0,0,0.6)] overflow-hidden flex items-center justify-center cursor-grab active:cursor-grabbing p-2"
+        className="relative w-full max-w-[540px] sm:max-w-[560px] aspect-square rounded-3xl bg-radial from-[#FAF8F2] via-[#F3ECE0] to-[#E6DEC8] border-2 border-[#C4963E]/65 shadow-[inset_0_0_60px_rgba(196,150,62,0.18),0_18px_42px_rgba(62,48,26,0.18)] overflow-hidden flex items-center justify-center cursor-grab active:cursor-grabbing p-2"
       >
         {/* Shuffle Deck 3D Animation Overlay */}
         <AnimatePresence>
@@ -576,19 +576,12 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
 
         {/* Mystical Background Astrolabe / Bagua Ring Graphics */}
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-          <img
-            src="/assets/cuunhi/12_altar_huyen_dan_64_la.webp"
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover object-center opacity-40"
-            loading="lazy"
-          />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_25%,#0A0807_90%)]" />
-          <div className="w-[88%] h-[88%] rounded-full border border-[#C9A55A]/30 border-dashed animate-[spin_180s_linear_infinite]" />
-          <div className="absolute w-[68%] h-[68%] rounded-full border border-[#C9A55A]/20 animate-[spin_120s_linear_infinite_reverse]" />
-          <div className="absolute w-[44%] h-[44%] rounded-full border border-[#C9A55A]/30 border-dotted animate-[spin_80s_linear_infinite]" />
+          <div className="w-[88%] h-[88%] rounded-full border-[1.5px] border-[#B8892E]/45 border-dashed animate-[spin_180s_linear_infinite]" />
+          <div className="absolute w-[68%] h-[68%] rounded-full border border-[#B8892E]/35 animate-[spin_120s_linear_infinite_reverse]" />
+          <div className="absolute w-[44%] h-[44%] rounded-full border border-[#B8892E]/45 border-dotted animate-[spin_80s_linear_infinite]" />
           {/* Radial Axis Rays */}
-          <div className="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-[#C9A55A]/25 to-transparent" />
-          <div className="absolute h-full w-[1px] bg-gradient-to-b from-transparent via-[#C9A55A]/25 to-transparent" />
+          <div className="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-[#B8892E]/35 to-transparent" />
+          <div className="absolute h-full w-[1px] bg-gradient-to-b from-transparent via-[#B8892E]/35 to-transparent" />
         </div>
 
         {/* Scaled Rotating Wheel Area */}
@@ -1002,20 +995,20 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
       </div>
 
       {/* Under-wheel Legends & Quick Selection Summary */}
-      <div className="w-full max-w-[760px] flex flex-wrap items-center justify-between gap-2 mt-3 pt-2 text-xs text-[#8C7A63]">
+      <div className="w-full max-w-[760px] flex flex-wrap items-center justify-between gap-2 mt-3 pt-2 text-xs text-[#5C4D3B]">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-[11px] font-serif text-[#C4B49C]">Ý nghĩa các tầng:</span>
+          <span className="text-[11px] font-serif font-bold text-[#6E4E16]">Ý nghĩa các tầng:</span>
           {tiers.map((tier) => (
             <span
               key={tier.id}
-              className={`text-[10px] font-serif px-2 py-0.5 rounded-full border ${tier.bgBadge}`}
+              className={`text-[10px] font-serif px-2.5 py-0.5 rounded-full border shadow-2xs ${tier.bgBadge}`}
             >
               ● {tier.name}
             </span>
           ))}
         </div>
 
-        <div className="text-[11px] text-[#A69780] font-mono">
+        <div className="text-[11px] text-[#6E4E16] font-mono font-semibold">
           Tổng cộng: 64 lá bài Kinh Dịch
         </div>
       </div>

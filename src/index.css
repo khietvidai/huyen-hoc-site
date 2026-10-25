@@ -824,3 +824,282 @@ html {
 .yilore-1to1-root .font-mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
 }
+
+/* ============================================================================
+   P1 → P8: HỆ QUY CHIẾU ĐỒNG BỘ TOÀN TRANG THEO TRANG CHỦ (LANDINGPAGE.TSX)
+   "Tuyên Thành Hoàng Kim (#F6F3EB) × Sơn Mài Hổ Phách (#18130E) × Ấn Chu Sa (#9E2A2B)"
+   ============================================================================ */
+.xuan-imperial-canvas {
+  /* Remap @theme tokens sang hệ Giấy Tuyên Thành Hoàng Kim & Mực Tàu Cổ Điển */
+  --color-lacquer-950: #FDFBF7;
+  --color-lacquer-900: #FAF6EE;
+  --color-lacquer-800: #F4EDE0;
+  --color-lacquer-700: #EAE0CE;
+
+  --color-ivory-100: #1C1813;
+  --color-ivory-300: #3D352B;
+  --color-ivory-400: #5A5043;
+  --color-ivory-500: #6E5D47;
+
+  --color-gold-200: #5C3D0E;
+  --color-gold-300: #7A5518;
+  --color-gold-400: #8C621E;
+  --color-gold-500: #996515;
+  --color-gold-600: #B8862D;
+  --color-gold-700: #C4963E;
+  --color-gold-800: #D8C7A8;
+
+  /* Thang Amber & Emerald & Rose đồng bộ tem lụa Trang Chủ */
+  --color-amber-950: #FAF0D7;
+  --color-amber-900: #F5E8C7;
+  --color-amber-400: #8C5A14;
+  --color-amber-300: #6E470B;
+  --color-amber-200: #5C3A08;
+
+  --color-emerald-950: #ECFDF5;
+  --color-emerald-400: #065F46;
+  --color-emerald-300: #064E3B;
+  --color-emerald-200: #064E3B;
+
+  --color-rose-950: #FFF1F2;
+  --color-rose-400: #9F1239;
+  --color-rose-300: #881337;
+  --color-rose-200: #881337;
+
+  --color-cyan-950: #ECFEFF;
+  --color-cyan-400: #0E7490;
+  --color-cyan-300: #155E75;
+
+  color: #1C1813;
+}
+
+/* Khôi phục hệ Token Sơn Mài Đen × Vàng Kim cho các khung Tranh Nghệ Thuật & Nút Sơn Mài Active */
+.xuan-imperial-canvas .imperial-dark-preserve,
+.xuan-imperial-canvas .from-\[\#241E17\].via-\[\#181410\].to-\[\#120F0C\] {
+  --color-lacquer-950: #0b0a08;
+  --color-lacquer-900: #12100d;
+  --color-lacquer-800: #1a1612;
+  --color-lacquer-700: #241f19;
+  --color-ivory-100: #f2ebdd;
+  --color-ivory-300: #cfc4b0;
+  --color-ivory-400: #b8aa96;
+  --color-ivory-500: #9c907c;
+  --color-gold-200: #efe2c0;
+  --color-gold-300: #e6d3a3;
+  --color-gold-400: #d6b97a;
+  --color-gold-500: #c9a55a;
+  --color-gold-600: #a8843f;
+  --color-gold-700: #6e5730;
+  --color-gold-800: #3d3020;
+  --color-amber-950: #241b10;
+  --color-amber-900: #3d2f1b;
+  --color-amber-400: #cfae6c;
+  --color-amber-300: #dec690;
+  --color-amber-200: #eadbb4;
+  --color-emerald-950: #022c22;
+  --color-emerald-400: #34d399;
+  --color-emerald-300: #6ee7b7;
+  --color-rose-950: #4c0519;
+  --color-rose-400: #fb7185;
+  --color-rose-300: #fda4af;
+}
+
+/* Khung Hương Án & Thẻ Sách Cổ Viền Đôi (Royal Frame & Royal Card trên nền Giấy Tuyên Thành) */
+.xuan-imperial-canvas .royal-frame:not(.imperial-dark-preserve) {
+  background: linear-gradient(180deg, rgba(253, 251, 247, 0.97) 0%, rgba(244, 238, 226, 0.95) 100%) !important;
+  border: 1px solid rgba(196, 150, 62, 0.48) !important;
+  outline: 1px solid rgba(196, 150, 62, 0.22) !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 14px 36px -10px rgba(92, 74, 44, 0.14), 0 2px 8px rgba(92, 74, 44, 0.06), inset 0 0 0 3px #FDFBF7 !important;
+  color: #1C1813;
+}
+
+.xuan-imperial-canvas .royal-card:not(.imperial-dark-preserve) {
+  background: linear-gradient(180deg, rgba(253, 251, 247, 0.97) 0%, rgba(244, 238, 226, 0.94) 100%) !important;
+  border: 1px solid rgba(196, 150, 62, 0.44) !important;
+  border-radius: 0.875rem !important;
+  box-shadow: 0 10px 28px -8px rgba(92, 74, 44, 0.12), inset 0 0 0 2px #FDFBF7 !important;
+  color: #1C1813;
+}
+
+.xuan-imperial-canvas .royal-card:not(.imperial-dark-preserve):hover {
+  border-color: #C4963E !important;
+  box-shadow: 0 16px 38px -10px rgba(196, 150, 62, 0.26), inset 0 0 0 2px #FFFDF9 !important;
+}
+
+.xuan-imperial-canvas #divination-card-draw-area:not(.imperial-dark-preserve) {
+  background: linear-gradient(180deg, rgba(253, 251, 247, 0.96) 0%, rgba(244, 238, 226, 0.94) 100%) !important;
+  border-color: rgba(196, 150, 62, 0.48) !important;
+}
+
+/* Nút Chính Sơn Mài Hổ Phách & Nút Phụ Giấy Lụa Tuyên Thành giống hệt Trang Chủ */
+.xuan-imperial-canvas .royal-btn {
+  background: linear-gradient(180deg, #261E16 0%, #18130E 100%) !important;
+  color: #F3E5AB !important;
+  border: 1px solid #D4AF37 !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 6px 16px rgba(28, 22, 16, 0.22), inset 0 1px 0 rgba(212, 175, 55, 0.35) !important;
+}
+
+.xuan-imperial-canvas .royal-btn-ghost {
+  background: linear-gradient(180deg, #FDFBF7 0%, #F2EAE0 100%) !important;
+  color: #3D2E1E !important;
+  border: 1px solid rgba(196, 150, 62, 0.5) !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 4px 10px rgba(110, 90, 55, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+.xuan-imperial-canvas .royal-btn-ghost:hover {
+  background: #EFE6D5 !important;
+  border-color: #C4963E !important;
+  color: #1C1610 !important;
+}
+
+/* Ấn Chu Sa Cửu Nhị (#9E2A2B) */
+.xuan-imperial-canvas .royal-seal {
+  background: #9E2A2B !important;
+  color: #FFF9F5 !important;
+  border: 1px solid rgba(212, 175, 55, 0.65) !important;
+  border-radius: 0.375rem !important;
+}
+
+/* Chuyển đổi các khung màu tối cố định (arbitrary hex) trong các phân hệ con sang Thẻ Giấy Lụa Tuyên Thành */
+.xuan-imperial-canvas :not(.imperial-dark-preserve) > .bg-\[\#171512\],
+.xuan-imperial-canvas .bg-\[\#171512\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#14110E\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#12100E\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#12100E\]\/90:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#15120E\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#15110D\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#14100C\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#16120E\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#140E08\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#241A12\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#201710\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#2B1D12\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#181410\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#171410\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#1D1711\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#1A1612\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#1B1611\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#201811\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#1E1914\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#1C1813\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#1C160F\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#15100B\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#18120B\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#21170E\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#22180F\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#201B15\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#221D16\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#1E1A14\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#241D15\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .bg-\[\#261E14\]:not(.imperial-dark-preserve) {
+  background: linear-gradient(180deg, #FDFBF7 0%, #F5EFE2 100%) !important;
+  border-color: rgba(196, 150, 62, 0.42) !important;
+  color: #1C1813 !important;
+  box-shadow: 0 8px 24px -6px rgba(92, 74, 44, 0.1), inset 0 0 0 2px #FDFBF7;
+}
+
+.xuan-imperial-canvas .bg-\[\#2A1012\]:not(.imperial-dark-preserve) {
+  background: linear-gradient(180deg, #FFF5F5 0%, #FCE8E8 100%) !important;
+  border-color: rgba(158, 42, 43, 0.45) !important;
+  color: #881337 !important;
+  box-shadow: inset 0 0 0 2px #FFFBFB !important;
+}
+
+/* Chuyển đổi các dải gradient tối trong Lục Nhâm / Báo Giá / Kinh Dịch Nguyên Bản / Hàn Nhiệt sang dải Lụa Hoàng Kim */
+.xuan-imperial-canvas .from-\[\#1C1610\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .from-\[\#24190F\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .from-\[\#23180E\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .from-\[\#22180F\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .from-\[\#241A10\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .from-\[\#24170D\]:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .from-cyan-950\/40:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .from-amber-950\/40:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .from-emerald-950\/40:not(.imperial-dark-preserve),
+.xuan-imperial-canvas .from-obsidian-900\/90:not(.imperial-dark-preserve) {
+  background: linear-gradient(135deg, #FDFBF7 0%, #F5ECDC 50%, #FAF5EA 100%) !important;
+  border-color: rgba(196, 150, 62, 0.5) !important;
+  color: #1C1813 !important;
+}
+
+/* Loại bỏ lớp phủ tối hình elip trong thẻ Hero Báo Giá */
+.xuan-imperial-canvas .bg-\[radial-gradient\(ellipse_55\%_45\%_at_50\%_45\%\,rgba\(11\,10\,8\,0\.85\)\,transparent_75\%\)\] {
+  background: radial-gradient(ellipse 55% 45% at 50% 45%, rgba(253, 251, 247, 0.75), transparent 75%) !important;
+}
+
+/* Đồng bộ Typography Mực Tàu & Nâu Trà cho các class hex tùy chỉnh */
+.xuan-imperial-canvas .text-\[\#EAE2D2\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#F8EED9\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#EDE3D0\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#DFCDB5\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#E5C378\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#F5EAD4\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#F8EBD4\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#F3E7D0\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#F3E6C8\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#EDE0C9\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#F0E4D0\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#E6D3A3\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#D6B97A\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#D8C4A0\]:not(.imperial-dark-preserve *) {
+  color: #1C1813 !important;
+}
+
+.xuan-imperial-canvas .text-\[\#A89882\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#A6957E\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#CBB99E\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#8C7A65\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#B8AA96\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#8C7D6A\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#8C7D6B\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#8C7F6E\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#C8B89E\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#DDD0BE\]:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .text-\[\#E0CFB9\]:not(.imperial-dark-preserve *) {
+  color: #5A5043 !important;
+}
+
+.xuan-imperial-canvas .border-\[\#3A3225\],
+.xuan-imperial-canvas .border-\[\#362E22\],
+.xuan-imperial-canvas .border-\[\#382F22\],
+.xuan-imperial-canvas .border-\[\#382E22\],
+.xuan-imperial-canvas .border-\[\#292219\],
+.xuan-imperial-canvas .border-\[\#3E2D1A\],
+.xuan-imperial-canvas .border-\[\#5A4126\],
+.xuan-imperial-canvas .border-\[\#42311E\],
+.xuan-imperial-canvas .border-white\/5,
+.xuan-imperial-canvas .border-white\/10 {
+  border-color: rgba(196, 150, 62, 0.35) !important;
+}
+
+.xuan-imperial-canvas .bg-white\/5:not(.imperial-dark-preserve *),
+.xuan-imperial-canvas .bg-white\/\[0\.02\]:not(.imperial-dark-preserve *) {
+  background-color: rgba(196, 150, 62, 0.09) !important;
+}
+
+/* ============================================================================
+   P6: ĐỒNG BỘ NHẬT KÝ YILORE (/EN/APP) SANG THẺ LỤA TUYÊN THÀNH & SƠN MÀI HỔ PHÁCH
+   ============================================================================ */
+.yilore-1to1-root {
+  --color-stone-50: #F6F3EB;
+  --color-stone-100: #EFE8D8;
+  --color-stone-200: #DFD2B8;
+  --color-stone-300: #C8B590;
+  --color-stone-400: #8C7A5B;
+  --color-stone-500: #6E5D47;
+  --color-stone-600: #524535;
+  --color-stone-700: #3D3225;
+  --color-stone-800: #292118;
+  --color-stone-900: #1C1813;
+}
+
+.yilore-1to1-root main section.rounded-2xl,
+.yilore-1to1-root main div.rounded-2xl.border {
+  background: linear-gradient(180deg, rgba(253, 251, 247, 0.97) 0%, rgba(245, 239, 226, 0.94) 100%) !important;
+  border-color: rgba(196, 150, 62, 0.42) !important;
+  box-shadow: 0 10px 28px -10px rgba(92, 74, 44, 0.12), inset 0 0 0 2px #FDFBF7 !important;
+}
+
+

@@ -134,8 +134,49 @@
       flex: 1 1 0%;
       min-width: 0;
       max-width: 100%;
-      background-color: #ffffff;
+      background-color: #F6F3EB;
+      background-image:
+        linear-gradient(rgba(180, 145, 70, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(180, 145, 70, 0.08) 1px, transparent 1px),
+        radial-gradient(ellipse 85% 75% at 50% 25%, #FAF8F2 0%, #F4EFE4 70%, #ECE4D4 100%);
+      background-size: 48px 48px, 48px 48px, 100% 100%;
       overflow-x: hidden;
+    }
+    .yilore-grid-2 > article {
+      background: linear-gradient(180deg, #FDFBF7 0%, #F7F2E7 100%) !important;
+      border: 1px solid rgba(196, 150, 62, 0.35) !important;
+      box-shadow: 0 6px 22px rgba(28, 24, 19, 0.06) !important;
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    }
+    .yilore-grid-2 > article:hover {
+      border-color: #C4963E !important;
+      box-shadow: 0 14px 36px rgba(196, 150, 62, 0.22) !important;
+      transform: translateY(-4px);
+    }
+    .blog-topic-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 0.95rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: 1px solid rgba(196, 150, 62, 0.38);
+      background: rgba(26, 22, 18, 0.88);
+      color: #E6D7B8;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .blog-topic-pill:hover {
+      border-color: #E5C158;
+      color: #FFFFFF;
+    }
+    .blog-topic-pill.is-active {
+      background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 55%, #B8862D 100%);
+      color: #14100B;
+      border-color: #FFF2C6;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
     }
     .yilore-sidebar-blog-link {
       display: -webkit-box;
@@ -1722,12 +1763,31 @@
           <li class="font-medium text-amber-800">Blog Dịch Học</li>
         </ol>
       </nav>
-      <header class="mb-10">
-        <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-[#C4963E]/15 text-[#9E7326] mb-3 uppercase tracking-wider">
-          Cửu Nhị Tâm Ấn · Chuyên Khảo Dịch Học
+      <header class="mb-10 rounded-3xl border border-[#C4963E]/45 p-6 sm:p-8 shadow-2xl relative overflow-hidden" style="background: linear-gradient(160deg, #171410 0%, #0E0C09 100%);">
+        <div style="position:absolute; top:-60px; right:-60px; width:260px; height:260px; background:radial-gradient(circle, rgba(212,175,55,0.22) 0%, transparent 70%); pointer-events:none;"></div>
+        <span class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold mb-3.5 uppercase tracking-widest" style="background:rgba(196,150,62,0.18); color:#F3E5AB; border:1px solid rgba(196,150,62,0.45);">
+          <span>☯</span>
+          <span>Cửu Nhị Tâm Ấn · Chuyên Khảo Dịch Học</span>
         </span>
-        <h1 class="text-3xl font-bold text-stone-900 sm:text-4xl mb-3">Blog Dịch Học & Tâm Lý Học Ứng Dụng</h1>
-        <p class="text-sm sm:text-base text-stone-600 max-w-3xl leading-relaxed">Khám phá 6 chuyên khảo Kinh Dịch và tâm lý học hiện đại: Xác suất gieo quẻ 3 đồng xu, lịch sử 3000 năm Kinh Dịch, hóa giải lo âu công sở, giải mã giấc mơ rụng răng và so sánh Tarot - Kinh Dịch.</p>
+        <h1 class="text-3xl font-bold sm:text-4xl lg:text-5xl mb-3" style="color:#FAF0D7;">Blog Dịch Học &amp; Tâm Lý Học Ứng Dụng</h1>
+        <p class="text-sm sm:text-base max-w-3xl leading-relaxed mb-6" style="color:#C7B89B;">Khám phá 6 chuyên khảo Kinh Dịch và tâm lý học hiện đại: Xác suất gieo quẻ 3 đồng xu, lịch sử 3.000 năm Kinh Dịch, hóa giải lo âu công sở, giải mã giấc mơ rụng răng và so sánh Tarot – Kinh Dịch.</p>
+        <div class="flex flex-wrap items-center gap-2" id="blog-topic-bar">
+          <button type="button" class="blog-topic-pill is-active" onclick="window.filterBlogTopic('', this)">✦ Tất cả Chuyên Khảo (6)</button>
+          <button type="button" class="blog-topic-pill" onclick="window.filterBlogTopic('nhập môn|lịch sử', this)">☯ Nhập Môn &amp; Lịch Sử</button>
+          <button type="button" class="blog-topic-pill" onclick="window.filterBlogTopic('công sở|nghịch hành', this)">💼 Ứng Dụng Đời Sống &amp; Công Sở</button>
+          <button type="button" class="blog-topic-pill" onclick="window.filterBlogTopic('giấc mơ|tarot', this)">🌙 Giải Mã Tâm Thức &amp; Tarot</button>
+        </div>
+        <script>
+          window.filterBlogTopic = function(pattern, btnEl) {
+            document.querySelectorAll('#blog-topic-bar .blog-topic-pill').forEach(b => b.classList.remove('is-active'));
+            if (btnEl) btnEl.classList.add('is-active');
+            const regex = pattern ? new RegExp(pattern, 'i') : null;
+            document.querySelectorAll('.yilore-grid-2 > article').forEach(art => {
+              const match = !regex || regex.test(art.textContent || '');
+              art.style.display = match ? '' : 'none';
+            });
+          };
+        </script>
       </header>
       <div class="yilore-grid-2">
         
