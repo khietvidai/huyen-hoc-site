@@ -724,14 +724,14 @@ export const YiloreAppSuite: React.FC<YiloreAppSuiteProps> = ({
     (currentUser?.email ? currentUser.email.split("@")[0] : (profile.id || "c6e4506d-950b-419f-a372-01afe8dc49a5").slice(-8).toUpperCase());
   const userCredits = currentUser
     ? currentUser.incenseSticks ?? (currentUser.isMember || currentUser.isAdmin ? 999 : 30)
-    : 0;
+    : 999;
   const userTierLabel = currentUser
     ? currentUser.isAdmin
       ? "Quản trị viên"
       : currentUser.isMember
       ? "Hội viên VIP"
       : "Thành viên"
-    : "Chưa đăng ký";
+    : "Khách vãng lai";
 
   const formattedMonthDay = now.toLocaleDateString("vi-VN", { day: "numeric", month: "long" });
   const formattedWeekday = now.toLocaleDateString("vi-VN", { weekday: "long" });

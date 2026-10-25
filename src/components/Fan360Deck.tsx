@@ -568,14 +568,21 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
         <AnimatePresence>
           {isShuffling && (
             <ShuffleDeckAnimation
-              cardBackUrl={cardBackUrl}
+              cardBackUrl={cardBackUrl || "/assets/cuunhi/13_card_back_huyen_mon.webp"}
               durationMs={5500}
             />
           )}
         </AnimatePresence>
 
         {/* Mystical Background Astrolabe / Bagua Ring Graphics */}
-        <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-30">
+        <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+          <img
+            src="/assets/cuunhi/12_altar_huyen_dan_64_la.webp"
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover object-center opacity-40"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_25%,#0A0807_90%)]" />
           <div className="w-[88%] h-[88%] rounded-full border border-[#C9A55A]/30 border-dashed animate-[spin_180s_linear_infinite]" />
           <div className="absolute w-[68%] h-[68%] rounded-full border border-[#C9A55A]/20 animate-[spin_120s_linear_infinite_reverse]" />
           <div className="absolute w-[44%] h-[44%] rounded-full border border-[#C9A55A]/30 border-dotted animate-[spin_80s_linear_infinite]" />

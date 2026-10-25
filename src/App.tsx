@@ -100,6 +100,7 @@ const DIVINATION_METHODS: {
   chinese: string;
   desc: string;
   toast: string;
+  image: string;
   badge?: string;
 }[] = [
   {
@@ -109,6 +110,7 @@ const DIVINATION_METHODS: {
     chinese: "周易卜卦",
     desc: "Đầy đủ các trận pháp từ 1 đến 12 lá bài (Thất Tinh, Cửu Cung, Thập Tinh...)",
     toast: "Đã chọn hình thức: Bốc Bài Kinh Dịch (Đầy đủ 12 trận pháp)",
+    image: "/assets/cuunhi/02_card_01_boc_bai_kinh_dich.webp",
   },
   {
     id: "thapla",
@@ -117,6 +119,7 @@ const DIVINATION_METHODS: {
     chinese: "塔羅周易",
     desc: "Bốc Quẻ Chủ (Bản Quái) • AI ngẫu nhiên chọn 0-6 hào động • Xác lập Quẻ Biến & dải Hào Từ song song",
     toast: "Đã chọn hình thức: Tháp La Kinh Dịch (Bản Quái • Hào Động • Biến Quái)",
+    image: "/assets/cuunhi/03_card_02_thap_la_kinh_dich.webp",
     badge: "Mới",
   },
   {
@@ -126,6 +129,7 @@ const DIVINATION_METHODS: {
     chinese: "孔明神數",
     desc: "Bốc 3 lá Tam Tài (Thiên - Địa - Nhân) định hào biến & 384 quẻ xăm linh ứng",
     toast: "Đã chọn hình thức: Xăm Khổng Minh (Gia Cát Thần Toán)",
+    image: "/assets/cuunhi/04_card_03_xam_khong_minh.webp",
   },
   {
     id: "nguche",
@@ -134,6 +138,7 @@ const DIVINATION_METHODS: {
     chinese: "御製新集斷易精粹",
     desc: "Bốc 3 lá Thiên - Địa - Nhân (lấy lá cuối làm quẻ), lắc xí ngầu 12 mặt & trích hình + thơ đoán của quẻ và ngày đó",
     toast: "Đã chọn hình thức: Ngự Chế Tân Tập Đoán Dịch Tinh Túy (Cố Cung Bản • 12 Mặt Xí Ngầu)",
+    image: "/assets/cuunhi/05_card_04_ngu_che_doan_dich.webp",
     badge: "Cố Cung",
   },
   {
@@ -143,6 +148,7 @@ const DIVINATION_METHODS: {
     chinese: "大衍筮法",
     desc: "Đại Diễn 50 cọng cỏ thi nguyên bản, 18 biến đổi định hào",
     toast: "Đã chọn hình thức: Phép Rút Cỏ Thi 50 Cọng (Đại Diễn) • Cần trai giới mộc dục, tâm tập trung",
+    image: "/assets/cuunhi/06_card_05_rut_co_thi.webp",
   },
   {
     id: "coins",
@@ -151,6 +157,7 @@ const DIVINATION_METHODS: {
     chinese: "金錢卦",
     desc: "Ba đồng Càn Long gieo 6 lần định hào biến & Lục Hào chiêm đoán",
     toast: "Đã chọn hình thức: Gieo 3 Đồng Tiền Cổ (Lục Hào) • Thời gian gieo quẻ 6 lần",
+    image: "/assets/cuunhi/07_card_06_gieo_3_dong_xu.webp",
   },
   {
     id: "maihoa",
@@ -159,6 +166,7 @@ const DIVINATION_METHODS: {
     chinese: "梅花易數",
     desc: "Thiệu Khang Tiết • Khởi quẻ thời khắc, con số, trắc tự & Thể Dụng ngũ hành",
     toast: "Đã chọn hình thức: Mai Hoa Dịch Số (Thiệu Khang Tiết)",
+    image: "/assets/cuunhi/08_card_07_mai_hoa_dich_so.webp",
   },
   {
     id: "lucnham",
@@ -167,6 +175,7 @@ const DIVINATION_METHODS: {
     chinese: "大六壬",
     desc: "Thiên Bàn, Tứ Khóa, Tam Truyền, 12 Thần Tướng & Hoạt Thời chiêm đoán",
     toast: "Đã chọn hình thức: Lục Nhâm Đại Độn (Tam Thức Cổ Truyền)",
+    image: "/assets/cuunhi/09_card_08_luc_nham_dai_don.webp",
     badge: "Tam Thức",
   },
   {
@@ -176,6 +185,7 @@ const DIVINATION_METHODS: {
     chinese: "奇門遁甲",
     desc: "Bát Trận Đồ • Cửu Cung Lạc Thư, Cửu Tinh, Bát Môn, Bát Thần & Kỳ Môn Hóa Dịch",
     toast: "Đã chọn hình thức: Kỳ Môn Độn Giáp (Bát Trận Đồ • Tam Thức Cổ Truyền)",
+    image: "/assets/cuunhi/10_card_09_ky_mon_don_giap.webp",
     badge: "Tam Thức",
   },
   {
@@ -185,6 +195,7 @@ const DIVINATION_METHODS: {
     chinese: "太乙神數",
     desc: "Thiên Thời & Vận Thế • Thái Ất Cửu Cung, Chủ Toán - Khách Toán & Thái Ất Hóa Dịch",
     toast: "Đã chọn hình thức: Thái Ất Thần Số (Thiên Thời Vận Thế • Tam Thức Chi Thượng)",
+    image: "/assets/cuunhi/11_card_10_thai_at_than_so.webp",
     badge: "Tam Thức",
   },
 ];
@@ -223,9 +234,11 @@ export default function App() {
   // Custom loaded card images (64 hexagrams & card back) & active deck
   const [activeDeckId, setActiveDeckId] = useState<string>(() => {
     const curUser = AuthService.getCurrentUser();
-    const isVip = Boolean(curUser?.isMember || curUser?.isAdmin);
-    if (!isVip) return DEFAULT_DECK_ID;
-    return getUserCustomDeckId(curUser?.id, curUser?.preferredDeckId) || DEFAULT_VIP_DECK_ID;
+    const customDeck = getUserCustomDeckId(curUser?.id, curUser?.preferredDeckId);
+    if (customDeck) return customDeck;
+    const savedActive = typeof window !== "undefined" ? localStorage.getItem("iching_active_deck_id") : null;
+    if (savedActive && savedActive !== "deck_ngu_che_khong_chu") return savedActive;
+    return DEFAULT_DECK_ID;
   });
   const [cardImages, setCardImages] = useState<Record<number, string>>({});
   const [cardVideos, setCardVideos] = useState<Record<number, string>>({});
@@ -290,34 +303,19 @@ export default function App() {
       if (e.detail && e.detail.user !== undefined) {
         const nextUser = e.detail.user;
         setCurrentUser(nextUser);
-        const isNowVip = Boolean(nextUser?.isMember || nextUser?.isAdmin);
-        if (!isNowVip) {
-          setManualSubTab("book");
-          loadCustomDeck(DEFAULT_DECK_ID);
-        } else {
-          // Khi là tài khoản VIP: tự động chuyển qua Bộ Không Chữ (Nguyên Bản)
-          // hoặc bộ bài người dùng đã từng tùy chọn trước đó
-          const customDeck = getUserCustomDeckId(nextUser?.id, nextUser?.preferredDeckId);
-          const targetDeck = customDeck || DEFAULT_VIP_DECK_ID;
-          loadCustomDeck(targetDeck);
-          if (!customDeck) {
-            showToast("Tài khoản VIP: Đã tự động kích hoạt Bộ Không Chữ (Nguyên Bản)!");
-          }
-        }
+        const customDeck = getUserCustomDeckId(nextUser?.id, nextUser?.preferredDeckId);
+        const savedActive = typeof window !== "undefined" ? localStorage.getItem("iching_active_deck_id") : null;
+        const targetDeck = customDeck || savedActive || DEFAULT_DECK_ID;
+        loadCustomDeck(targetDeck);
       }
     };
     const handleAdminDataChange = () => {
       const cur = AuthService.getCurrentUser();
       setCurrentUser(cur);
-      const isNowVip = Boolean(cur?.isMember || cur?.isAdmin);
-      if (!isNowVip) {
-        setManualSubTab("book");
-        loadCustomDeck(DEFAULT_DECK_ID);
-      } else {
-        const customDeck = getUserCustomDeckId(cur?.id, cur?.preferredDeckId);
-        const targetDeck = customDeck || DEFAULT_VIP_DECK_ID;
-        loadCustomDeck(targetDeck);
-      }
+      const customDeck = getUserCustomDeckId(cur?.id, cur?.preferredDeckId);
+      const savedActive = typeof window !== "undefined" ? localStorage.getItem("iching_active_deck_id") : null;
+      const targetDeck = customDeck || savedActive || DEFAULT_DECK_ID;
+      loadCustomDeck(targetDeck);
     };
     const handlePopState = () => {
       const p = window.location.pathname.toLowerCase();
@@ -489,8 +487,8 @@ export default function App() {
     }, 3000);
   };
 
-  // Phân quyền người dùng: VIP (Hội viên / Admin) được dùng tất cả phương pháp
-  const isVip = Boolean(currentUser?.isMember || currentUser?.isAdmin);
+  // Mở khóa toàn bộ tính năng cho cả khách vãng lai và hội viên
+  const isVip = true;
 
   const handleSelectDivinationMethod = (methodId: DivinationMethodId) => {
     if (methodId !== "cards" && methodId !== "thapla" && methodId !== "nguche" && !isVip) {
@@ -624,25 +622,16 @@ export default function App() {
   const loadCustomDeck = async (deckIdToLoad?: string) => {
     try {
       const curUser = AuthService.getCurrentUser();
-      const curIsVip = Boolean(curUser?.isMember || curUser?.isAdmin);
       const savedActive = typeof window !== "undefined" ? localStorage.getItem("iching_active_deck_id") : null;
 
       let targetId = deckIdToLoad;
       if (!targetId) {
-        if (savedActive === "deck_ngu_che_khong_chu") {
-          localStorage.removeItem("iching_active_deck_id");
-          targetId = DEFAULT_DECK_ID;
-        } else if (savedActive === "deck_ngu_che") {
+        const customDeck = getUserCustomDeckId(curUser?.id, curUser?.preferredDeckId);
+        if (customDeck) {
+          targetId = customDeck;
+        } else if (savedActive && savedActive !== "deck_ngu_che_khong_chu") {
           targetId = savedActive;
-        } else if (!curIsVip) {
-          targetId = DEFAULT_DECK_ID;
         } else {
-          // Là tài khoản VIP: tự động dùng Bộ Không Chữ (Nguyên Bản), hoặc bộ đã tùy chỉnh trước đó
-          const customDeck = getUserCustomDeckId(curUser?.id, curUser?.preferredDeckId);
-          targetId = customDeck || DEFAULT_VIP_DECK_ID;
-        }
-      } else {
-        if (!curIsVip && targetId !== "deck_ngu_che") {
           targetId = DEFAULT_DECK_ID;
         }
       }
@@ -675,20 +664,6 @@ export default function App() {
     const handleSwitchMethod = (e: any) => {
       if (e.detail) {
         const methodId = (e.detail === "cards_nguche" ? "nguche" : e.detail) as DivinationMethodId;
-        const curUser = AuthService.getCurrentUser();
-        const curIsVip = Boolean(curUser?.isMember || curUser?.isAdmin);
-        if (methodId !== "cards" && methodId !== "thapla" && methodId !== "nguche" && !curIsVip) {
-          if (!curUser) {
-            setAuthModalMode("login");
-            setIsAuthModalOpen(true);
-            showToast("Phương pháp này dành riêng cho tài khoản VIP. Vui lòng đăng nhập hoặc đăng ký!");
-          } else {
-            setAuthModalMode("upgrade");
-            setIsAuthModalOpen(true);
-            showToast("Phương pháp này dành riêng cho Hội Viên VIP. Vui lòng nâng cấp gói VIP!");
-          }
-          return;
-        }
         setDivinationMethod(methodId);
       }
     };
@@ -702,10 +677,8 @@ export default function App() {
 
   const handleActiveDeckChanged = async (newDeckId: string) => {
     const curUser = AuthService.getCurrentUser();
-    const curIsVip = Boolean(curUser?.isMember || curUser?.isAdmin);
-    if (curIsVip) {
-      // Lưu lại tùy chỉnh bộ bài của người dùng VIP vào local & server
-      setUserCustomDeckId(newDeckId, curUser?.id);
+    setUserCustomDeckId(newDeckId, curUser?.id);
+    if (curUser) {
       AuthService.updateUserPreferredDeck(newDeckId);
     }
     setActiveDeckId(newDeckId);
@@ -1120,13 +1093,7 @@ export default function App() {
   if (currentTab === "yilore") {
     return (
       <>
-        <div
-          className={
-            !currentUser
-              ? "pointer-events-none select-none blur-[3px] brightness-75 transition-all duration-300 h-dvh overflow-hidden"
-              : ""
-          }
-        >
+        <div>
           <YiloreAppSuite
             currentUser={currentUser}
             onGoHome={() => {
@@ -1148,42 +1115,31 @@ export default function App() {
           />
         </div>
 
-        {/* Yêu cầu đăng nhập bắt buộc khi vào /en/app */}
-        {!currentUser && (
-          <AuthModal
-            isOpen={true}
-            onClose={() => {
-              setIsAuthModalOpen(false);
-              if (!AuthService.getCurrentUser()) {
-                if (typeof window !== "undefined") {
-                  window.history.pushState({}, "", "/");
-                }
-                setCurrentTab("home");
-              }
-            }}
-            defaultMode={authModalMode}
-            onSuccess={(user) => {
-              setCurrentUser(user);
-              setIsAuthModalOpen(false);
-              const isVipUser = Boolean(user.isMember || user.isAdmin);
-              if (isVipUser) {
-                const customDeck = getUserCustomDeckId(user.id, user.preferredDeckId);
-                const targetDeck = customDeck || DEFAULT_VIP_DECK_ID;
-                loadCustomDeck(targetDeck);
-              }
-              if (typeof window !== "undefined" && !window.location.pathname.toLowerCase().includes("/en/app")) {
-                window.history.pushState({}, "", "/en/app");
-              }
-              setCurrentTab("yilore");
-              showToast(
-                user.isAdmin
-                  ? `Chào mừng Quản Trị Viên Cửu Nhị (${user.name})!`
-                  : `Đăng nhập Cửu Nhị thành công! Kính chào ${user.name}.`
-              );
-            }}
-            onShowToast={showToast}
-          />
-        )}
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={() => setIsAuthModalOpen(false)}
+          defaultMode={authModalMode}
+          onSuccess={(user) => {
+            setCurrentUser(user);
+            setIsAuthModalOpen(false);
+            const isVipUser = Boolean(user.isMember || user.isAdmin);
+            if (isVipUser) {
+              const customDeck = getUserCustomDeckId(user.id, user.preferredDeckId);
+              const targetDeck = customDeck || DEFAULT_VIP_DECK_ID;
+              loadCustomDeck(targetDeck);
+            }
+            if (typeof window !== "undefined" && !window.location.pathname.toLowerCase().includes("/en/app")) {
+              window.history.pushState({}, "", "/en/app");
+            }
+            setCurrentTab("yilore");
+            showToast(
+              user.isAdmin
+                ? `Chào mừng Quản Trị Viên Cửu Nhị (${user.name})!`
+                : `Đăng nhập Cửu Nhị thành công! Kính chào ${user.name}.`
+            );
+          }}
+          onShowToast={showToast}
+        />
 
         {toastMessage && (
           <div className="fixed bottom-6 right-6 z-[300] bg-stone-900 border border-amber-500/60 text-stone-100 px-4 py-2.5 rounded-xl shadow-2xl text-xs sm:text-sm flex items-center gap-2">
@@ -1209,11 +1165,6 @@ export default function App() {
                 window.history.pushState({}, "", "/en/app");
               }
               setCurrentTab("yilore");
-              if (!currentUser) {
-                setAuthModalMode("login");
-                setIsAuthModalOpen(true);
-                showToast("Vui lòng đăng nhập tài khoản Cửu Nhị để sử dụng ứng dụng!");
-              }
             } else {
               setCurrentTab(tab);
             }
@@ -1363,13 +1314,25 @@ export default function App() {
           />
 
           {/* Mindful / Traditional Ritual Preparation */}
-          <section className="royal-frame px-5 py-10 sm:px-12 sm:py-14">
-            <span className="royal-corner tl" />
-            <span className="royal-corner tr" />
-            <span className="royal-corner bl" />
-            <span className="royal-corner br" />
+          <section className="royal-frame relative overflow-hidden px-5 py-10 sm:px-12 sm:py-14">
+            <span className="royal-corner tl z-20" />
+            <span className="royal-corner tr z-20" />
+            <span className="royal-corner bl z-20" />
+            <span className="royal-corner br z-20" />
 
-            <div className="max-w-2xl mx-auto text-center">
+            {/* Background Artwork Layer: Trai Giới Mộc Dục */}
+            <div className="pointer-events-none absolute inset-0 z-0">
+              <img
+                src="/assets/cuunhi/01_banner_trai_gioi_moc_duc.webp"
+                alt=""
+                className="h-full w-full object-cover object-right opacity-80"
+                loading="eager"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#0D0B09]/95 via-[#0D0B09]/80 to-[#0D0B09]/35" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0D0B09] via-[#0D0B09]/40 to-[#0D0B09]/65" />
+            </div>
+
+            <div className="relative z-10 max-w-2xl mx-auto text-center">
               <div className="royal-eyebrow">Thành tâm tất ứng · Tâm động quẻ sinh</div>
 
               <h2 className="royal-title mt-5 text-3xl sm:text-5xl">
@@ -1400,7 +1363,7 @@ export default function App() {
             </div>
 
             {showPurificationGuide && (
-              <div className="max-w-3xl mx-auto mt-8 text-left border border-gold-800 bg-lacquer-950/70 p-5 sm:p-7 font-serif space-y-5 animate-in fade-in slide-in-from-top-2 duration-300">
+              <div className="relative z-10 max-w-3xl mx-auto mt-8 text-left border border-gold-800 bg-lacquer-950/85 backdrop-blur-xs p-5 sm:p-7 font-serif space-y-5 animate-in fade-in slide-in-from-top-2 duration-300">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <div className="text-[11px] font-sans uppercase tracking-[0.24em] text-gold-500">Cẩm nang nghi lễ</div>
@@ -1476,7 +1439,7 @@ export default function App() {
             )}
 
             {/* Question & Category Input Box */}
-            <div className="max-w-2xl mx-auto mt-10 pt-8 border-t border-gold-800/70 space-y-5">
+            <div className="relative z-10 max-w-2xl mx-auto mt-10 pt-8 border-t border-gold-800/70 space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="sm:col-span-2">
                   <label className="block text-[11px] font-medium uppercase tracking-[0.2em] text-gold-500 mb-2">
@@ -1584,7 +1547,7 @@ export default function App() {
                     <span className="font-sans font-bold uppercase tracking-wider text-gold-300 text-[11px]">
                       Quy Định Phân Quyền Chiêm Bái
                     </span>
-                    {isVip ? (
+                    {currentUser?.isMember || currentUser?.isAdmin ? (
                       <span className="text-[10px] uppercase font-sans font-semibold tracking-wide text-amber-300 bg-amber-950/80 border border-amber-500/60 rounded px-1.5 py-0.2">
                         👑 Tài Khoản VIP
                       </span>
@@ -1593,57 +1556,18 @@ export default function App() {
                         ⭐ Tài Khoản Đã Đăng Ký
                       </span>
                     ) : (
-                      <span className="text-[10px] uppercase font-sans font-semibold tracking-wide text-ivory-400 bg-stone-900 border border-stone-700 rounded px-1.5 py-0.2">
-                        Khách Vãng Lai
+                      <span className="text-[10px] uppercase font-sans font-semibold tracking-wide text-emerald-300 bg-emerald-950/80 border border-emerald-600/50 rounded px-1.5 py-0.2">
+                        ✓ Khách Vãng Lai (Đã Mở Khóa Toàn Bộ)
                       </span>
                     )}
                   </div>
                   <p className="text-ivory-400 text-[11.5px] leading-relaxed">
-                    {isVip ? (
-                      <span className="text-emerald-400 font-medium">
-                        Chúc mừng! Bạn là <strong>Hội Viên VIP</strong> — Được sử dụng tất cả 8 đại phương pháp huyền học và toàn bộ 12 trận pháp.
-                      </span>
-                    ) : currentUser ? (
-                      <span>
-                        Tài khoản đã đăng ký: Được sử dụng <strong className="text-gold-300">toàn bộ trận pháp Bốc Bài Kinh Dịch (1—12 lá & Tự chọn)</strong>. Chỉ có <strong className="text-amber-400">Hội viên VIP</strong> mới được sử dụng tất cả 8 phương pháp.
-                      </span>
-                    ) : (
-                      <span>
-                        Chưa đăng ký: Chỉ được bốc bài Kinh Dịch <strong className="text-gold-300">1, 2 và 3 lá</strong>.{" "}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setAuthModalMode("register");
-                            setIsAuthModalOpen(true);
-                          }}
-                          className="text-gold-400 underline font-semibold hover:text-gold-200 cursor-pointer"
-                        >
-                          Đăng ký ngay
-                        </button>{" "}
-                        để mở toàn bộ trận pháp; <strong className="text-amber-400">Nâng cấp VIP</strong> để mở tất cả phương pháp.
-                      </span>
-                    )}
+                    <span className="text-emerald-400 font-medium">
+                      Chúc mừng! Đã mở khóa toàn bộ 10 đại phương pháp huyền học và 12 trận pháp cho {currentUser ? `tài khoản ${currentUser.name}` : "khách vãng lai"}.
+                    </span>
                   </p>
                 </div>
               </div>
-
-              {!isVip && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (!currentUser) {
-                      setAuthModalMode("register");
-                    } else {
-                      setAuthModalMode("upgrade");
-                    }
-                    setIsAuthModalOpen(true);
-                  }}
-                  className="self-start md:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-600 via-gold-500 to-amber-600 hover:brightness-110 active:scale-95 text-obsidian-950 font-sans font-bold text-[11px] shadow cursor-pointer whitespace-nowrap transition-all"
-                >
-                  <Crown className="w-3.5 h-3.5" />
-                  <span>{currentUser ? "Nâng Cấp Hội Viên VIP" : "Đăng Ký / Nâng Cấp VIP"}</span>
-                </button>
-              )}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1656,47 +1580,66 @@ export default function App() {
                     type="button"
                     aria-pressed={isActive}
                     onClick={() => handleSelectDivinationMethod(method.id)}
-                    className={`royal-card group p-5 text-left flex flex-col cursor-pointer transition-all ${
+                    className={`royal-card group overflow-hidden p-5 text-left flex flex-col cursor-pointer transition-all ${
                       isActive ? "!border-gold-400 shadow-[inset_0_0_0_1px_rgba(201,165,90,0.35)] before:!w-full" : ""
-                    } ${isLocked ? "opacity-85 hover:border-amber-600/50" : ""}`}
+                    } ${isLocked ? "opacity-90 hover:border-amber-600/50" : ""}`}
                   >
-                    <div className="flex items-start justify-between gap-2">
-                      <span className={`font-serif text-2xl leading-none transition-colors ${isActive ? "text-gold-400" : isLocked ? "text-amber-700/80 group-hover:text-amber-500" : "text-gold-700 group-hover:text-gold-500"}`}>
-                        {method.numeral}
-                      </span>
-                      <div className="flex items-center gap-1.5">
-                        {isLocked ? (
-                          <span className="flex items-center gap-1 text-[10px] font-sans font-bold uppercase tracking-wider text-amber-300 bg-amber-950/80 border border-amber-500/50 rounded px-1.5 py-0.5 shadow-xs">
-                            <Lock className="w-2.5 h-2.5 text-amber-400" />
-                            VIP
-                          </span>
-                        ) : method.id === "cards" ? (
-                          <span className="text-[10px] uppercase font-sans font-semibold tracking-wider text-emerald-400 border border-emerald-800/80 bg-emerald-950/50 rounded-sm px-1.5 py-0.5">
-                            {!currentUser ? "1-3 Lá" : "12 Trận"}
-                          </span>
-                        ) : method.id === "thapla" ? (
-                          <span className="text-[10px] uppercase font-sans font-semibold tracking-wider text-[#E0B861] border border-[#C4963E]/60 bg-amber-950/60 rounded-sm px-1.5 py-0.5">
-                            2 Bộ Bài • 6 Hào
-                          </span>
-                        ) : method.id === "nguche" ? (
-                          <span className="text-[10px] uppercase font-sans font-semibold tracking-wider text-amber-300 border border-amber-700/80 bg-amber-950/60 rounded-sm px-1.5 py-0.5">
-                            3 Lá • 12 Mặt
-                          </span>
-                        ) : isVip ? (
-                          <span className="flex items-center gap-0.5 text-[10px] uppercase font-sans font-bold tracking-wider text-amber-300 border border-amber-600/70 bg-amber-950/50 rounded-sm px-1.5 py-0.5">
-                            <Crown className="w-2.5 h-2.5 text-amber-400" /> VIP
-                          </span>
-                        ) : null}
-                        {isActive ? (
-                          <span className="royal-seal w-6 h-6 text-[11px]">選</span>
-                        ) : method.badge ? (
-                          <span className="text-[10px] uppercase tracking-[0.18em] text-gold-600 border border-gold-800 rounded-sm px-1.5 py-0.5">
-                            {method.badge}
-                          </span>
-                        ) : null}
+                    {/* Method Artwork Header (16:10) */}
+                    <div className="relative -mx-5 -mt-5 mb-4 h-36 sm:h-40 overflow-hidden border-b border-gold-800/40 bg-[#0D0B09]">
+                      <img
+                        src={method.image}
+                        alt={method.title}
+                        className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#120F0C] via-[#120F0C]/35 to-transparent" />
+                      <div className="absolute inset-x-3.5 top-3 flex items-start justify-between gap-2">
+                        <span
+                          className={`w-9 h-9 rounded-lg bg-[#0D0B09]/85 backdrop-blur-xs border flex items-center justify-center font-serif text-xl leading-none shadow-md transition-colors ${
+                            isActive
+                              ? "border-gold-400 text-gold-300"
+                              : isLocked
+                              ? "border-amber-700/60 text-amber-400 group-hover:border-amber-500"
+                              : "border-gold-700/60 text-gold-400 group-hover:border-gold-500"
+                          }`}
+                        >
+                          {method.numeral}
+                        </span>
+                        <div className="flex items-center gap-1.5 bg-[#0D0B09]/80 backdrop-blur-xs rounded px-1.5 py-0.5 border border-gold-800/40">
+                          {isLocked ? (
+                            <span className="flex items-center gap-1 text-[10px] font-sans font-bold uppercase tracking-wider text-amber-300 bg-amber-950/80 border border-amber-500/50 rounded px-1.5 py-0.5 shadow-xs">
+                              <Lock className="w-2.5 h-2.5 text-amber-400" />
+                              VIP
+                            </span>
+                          ) : method.id === "cards" ? (
+                            <span className="text-[10px] uppercase font-sans font-semibold tracking-wider text-emerald-400 border border-emerald-800/80 bg-emerald-950/50 rounded-sm px-1.5 py-0.5">
+                              12 Trận
+                            </span>
+                          ) : method.id === "thapla" ? (
+                            <span className="text-[10px] uppercase font-sans font-semibold tracking-wider text-[#E0B861] border border-[#C4963E]/60 bg-amber-950/60 rounded-sm px-1.5 py-0.5">
+                              2 Bộ Bài • 6 Hào
+                            </span>
+                          ) : method.id === "nguche" ? (
+                            <span className="text-[10px] uppercase font-sans font-semibold tracking-wider text-amber-300 border border-amber-700/80 bg-amber-950/60 rounded-sm px-1.5 py-0.5">
+                              3 Lá • 12 Mặt
+                            </span>
+                          ) : isVip ? (
+                            <span className="flex items-center gap-0.5 text-[10px] uppercase font-sans font-bold tracking-wider text-amber-300 border border-amber-600/70 bg-amber-950/50 rounded-sm px-1.5 py-0.5">
+                              <Crown className="w-2.5 h-2.5 text-amber-400" /> VIP
+                            </span>
+                          ) : null}
+                          {isActive ? (
+                            <span className="royal-seal w-6 h-6 text-[11px]">選</span>
+                          ) : method.badge ? (
+                            <span className="text-[10px] uppercase tracking-[0.18em] text-gold-400 border border-gold-700/80 bg-[#120F0C]/70 rounded-sm px-1.5 py-0.5">
+                              {method.badge}
+                            </span>
+                          ) : null}
+                        </div>
                       </div>
                     </div>
-                    <h3 className="font-display text-xl text-ivory-100 mt-4 leading-tight flex items-center justify-between gap-1.5">
+
+                    <h3 className="font-display text-xl text-ivory-100 leading-tight flex items-center justify-between gap-1.5">
                       <span>{method.title}</span>
                       {isLocked && <Lock className="w-3.5 h-3.5 text-amber-500/70 shrink-0" />}
                     </h3>
@@ -1717,39 +1660,58 @@ export default function App() {
             {/* Divination Component Rendering */}
             <div
               id="divination-card-draw-area"
-              className="royal-frame relative p-3 sm:p-6 transition-all duration-700"
+              className="royal-frame relative overflow-hidden p-3 sm:p-6 transition-all duration-700"
             >
-              <span className="royal-corner tl" />
-              <span className="royal-corner tr" />
-              <span className="royal-corner bl" />
-              <span className="royal-corner br" />
+              <span className="royal-corner tl z-20" />
+              <span className="royal-corner tr z-20" />
+              <span className="royal-corner bl z-20" />
+              <span className="royal-corner br z-20" />
 
               {divinationMethod === null && (
-                <div className="py-12 sm:py-16 px-2 text-center max-w-xl mx-auto">
-                  <span className="royal-seal w-14 h-14 text-2xl select-none">卦</span>
-                  <h3 className="royal-title mt-6 text-2xl sm:text-3xl">
-                    Tâm tĩnh khởi quẻ · Vạn sự tùy duyên
-                  </h3>
-                  <p className="mt-3 text-sm text-ivory-500 font-serif leading-relaxed">
-                    Tâm thanh tịnh, ý thành kính! Bạn hãy bấm chọn một trong các hình thức chiêm đoán phía trên để bắt đầu gieo quẻ:
-                  </p>
-                  <div className="royal-rule mt-6 text-xs">◆</div>
-                  <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
-                    {DIVINATION_METHODS.map((method) => {
-                      const isLocked = method.id !== "cards" && method.id !== "thapla" && method.id !== "nguche" && !isVip;
-                      return (
-                        <button
-                          key={method.id}
-                          type="button"
-                          onClick={() => handleSelectDivinationMethod(method.id)}
-                          className={`royal-link cursor-pointer inline-flex items-center gap-1.5 ${isLocked ? "text-ivory-500 hover:text-amber-300" : ""}`}
-                        >
-                          <span className="font-serif text-gold-600">{method.numeral}</span>
-                          <span>{method.id === "cards" ? "Bốc Bài Kinh Dịch (Đủ 12 Trận)" : method.id === "coins" ? "Gieo Đồng Xu" : method.title}</span>
-                          {isLocked && <Lock className="w-3 h-3 text-amber-400 inline" />}
-                        </button>
-                      );
-                    })}
+                <div className="relative overflow-hidden rounded-lg py-12 sm:py-16 px-4 text-center max-w-2xl mx-auto">
+                  {/* Subtle Huyền Đàn 64 Lá Background */}
+                  <div className="pointer-events-none absolute inset-0 -mx-6 -my-6 z-0">
+                    <img
+                      src="/assets/cuunhi/12_altar_huyen_dan_64_la.webp"
+                      alt=""
+                      className="h-full w-full object-cover object-center opacity-35"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_15%,#0D0B09_85%)]" />
+                  </div>
+
+                  <div className="relative z-10">
+                    <div className="mx-auto w-20 h-20 rounded-xl overflow-hidden border border-gold-600/60 shadow-[0_0_25px_rgba(196,43,43,0.35)] bg-[#0D0B09]">
+                      <img
+                        src="/assets/cuunhi/14_seal_chu_sa_que.webp"
+                        alt="Ấn Chu Sa Quẻ"
+                        className="w-full h-full object-cover select-none"
+                      />
+                    </div>
+                    <h3 className="royal-title mt-6 text-2xl sm:text-3xl">
+                      Tâm tĩnh khởi quẻ · Vạn sự tùy duyên
+                    </h3>
+                    <p className="mt-3 text-sm text-ivory-400 font-serif leading-relaxed max-w-xl mx-auto">
+                      Tâm thanh tịnh, ý thành kính! Bạn hãy bấm chọn một trong các hình thức chiêm đoán phía trên để bắt đầu gieo quẻ:
+                    </p>
+                    <div className="royal-rule mt-6 text-xs">◆</div>
+                    <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+                      {DIVINATION_METHODS.map((method) => {
+                        const isLocked = method.id !== "cards" && method.id !== "thapla" && method.id !== "nguche" && !isVip;
+                        return (
+                          <button
+                            key={method.id}
+                            type="button"
+                            onClick={() => handleSelectDivinationMethod(method.id)}
+                            className={`royal-link cursor-pointer inline-flex items-center gap-1.5 ${isLocked ? "text-ivory-500 hover:text-amber-300" : ""}`}
+                          >
+                            <span className="font-serif text-gold-600">{method.numeral}</span>
+                            <span>{method.id === "cards" ? "Bốc Bài Kinh Dịch (Đủ 12 Trận)" : method.id === "coins" ? "Gieo Đồng Xu" : method.title}</span>
+                            {isLocked && <Lock className="w-3 h-3 text-amber-400 inline" />}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               )}
@@ -2784,7 +2746,7 @@ export default function App() {
           }
           showToast(
             user.isMember
-              ? `Chúc mừng ${user.name}! Bạn đã là Hội Viên VIP - Đã kích hoạt Bộ Không Chữ (Nguyên Bản).`
+              ? `Chúc mừng ${user.name}! Bạn đã là Hội Viên VIP Cửu Nhị.`
               : `Chào mừng ${user.name} đã đăng nhập!`
           );
           setCurrentTab("divination");

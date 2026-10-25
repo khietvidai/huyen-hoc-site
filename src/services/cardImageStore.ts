@@ -180,10 +180,10 @@ export const PRESET_CARD_BACKS: Record<string, string> = {
 `)}`,
 };
 
-export const PRESET_DECK_VERSION = "20261019_11";
+export const PRESET_DECK_VERSION = "20261025_12";
 
 export const PRESET_DECK_CONFIG: Record<string, { ext: string; back: string; version?: string; customPath?: (i: number) => string }> = {
-  deck_cuu_nhi_vi: { ext: "webp", back: "/yilore-assets/hero-frame.webp", customPath: (i: number) => `/assets/oss/${i}/${i}a.webp` },
+  deck_cuu_nhi_vi: { ext: "webp", back: "/assets/cuunhi/13_card_back_huyen_mon.webp", customPath: (i: number) => `/assets/oss/${i}/${i}a.webp` },
   deck_bo_1: { ext: "png", back: "/decks/deck_bo_1/back.jpg" },
   deck_bo_2: { ext: "png", back: "/decks/deck_bo_2/back.svg" },
   deck_bo_khong_chu: { ext: "png", back: "/decks/deck_bo_khong_chu/back.jpg" },
@@ -210,7 +210,7 @@ export const INITIAL_PRESET_DECKS: DeckInfo[] = [
     description: "Bộ bài Kinh Dịch 64 quẻ Việt hóa chuẩn Bách Khoa Cửu Nhị (ichingtarot.com/vi/hexagram).",
     isPreset: true,
     themeStyle: "golden",
-    cardBackImage: "/yilore-assets/hero-frame.webp",
+    cardBackImage: "/assets/cuunhi/13_card_back_huyen_mon.webp",
     cardCount: 64,
     createdAt: 1699999999000,
   },
@@ -319,6 +319,59 @@ function openDB(): Promise<IDBDatabase> {
 }
 
 const LEGACY_OLD_PRESET_IDS = new Set(["deck_golden", "deck_ink", "deck_woodblock", "deck_mystic", "deck_ngu_che_khong_chu"]);
+const DEFAULT_CUU_NHI_MIGRATION_KEY = "iching_default_cuu_nhi_vi_init_v2";
+
+function ensureDefaultCuuNhiDeckMigration(): void {
+  if (typeof window === "undefined") return;
+  try {
+    if (localStorage.getItem(DEFAULT_CUU_NHI_MIGRATION_KEY) === "1") return;
+    localStorage.setItem(DEFAULT_CUU_NHI_MIGRATION_KEY, "1");
+    localStorage.setItem(ACTIVE_DECK_STORAGE_KEY, DEFAULT_DECK_ID);
+    localStorage.removeItem("iching_vip_custom_deck");
+
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith("iching_user_deck_")) {
+        keysToRemove.push(k);
+      }
+    }
+    keysToRemove.forEach((k) => localStorage.removeItem(k));
+
+    const curUserRaw = localStorage.getItem("iching_current_user");
+    if (curUserRaw) {
+      const curUser = JSON.parse(curUserRaw);
+      if (curUser && typeof curUser === "object") {
+        curUser.preferredDeckId = DEFAULT_DECK_ID;
+        localStorage.setItem("iching_current_user", JSON.stringify(curUser));
+      }
+    }
+
+    const usersDbRaw = localStorage.getItem("iching_users_db");
+    if (usersDbRaw) {
+      const usersDb = JSON.parse(usersDbRaw);
+      if (usersDb && typeof usersDb === "object") {
+        for (const k of Object.keys(usersDb)) {
+          if (usersDb[k]?.user) {
+            usersDb[k].user.preferredDeckId = DEFAULT_DECK_ID;
+          }
+        }
+        localStorage.setItem("iching_users_db", JSON.stringify(usersDb));
+      }
+    }
+
+    openDB()
+      .then((db) => {
+        const tx = db.transaction([STORE_NAME], "readwrite");
+        tx.objectStore(STORE_NAME).put(DEFAULT_DECK_ID, "_system_active_deck_id");
+      })
+      .catch(() => {});
+  } catch (e) {
+    console.warn("Deck migration warning:", e);
+  }
+}
+
+ensureDefaultCuuNhiDeckMigration();
 
 /**
  * Get active deck ID (sync with localStorage)
@@ -400,6 +453,8 @@ export async function getDeckList(): Promise<DeckInfo[]> {
         const needsUpdate =
           !storedList ||
           !Array.isArray(storedList) ||
+          storedList[0]?.id !== INITIAL_PRESET_DECKS[0].id ||
+          storedList[0]?.cardBackImage !== INITIAL_PRESET_DECKS[0].cardBackImage ||
           storedList.some((d) => LEGACY_OLD_PRESET_IDS.has(d.id)) ||
           INITIAL_PRESET_DECKS.some((p) => !storedList.some((d) => d.id === p.id));
 

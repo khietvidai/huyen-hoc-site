@@ -11,7 +11,7 @@
       "memberExpiryDate": "2099-12-31",
       "registeredAt": 1792310651523,
       "incenseSticks": 999,
-      "preferredDeckId": "deck_ngu_che"
+      "preferredDeckId": "deck_cuu_nhi_vi"
     },
     "passwordHash": "OTk5OTk5"
   },
@@ -26,7 +26,8 @@
       "memberTier": "vip",
       "memberExpiryDate": "2099-12-31",
       "registeredAt": 1792311600000,
-      "incenseSticks": 999
+      "incenseSticks": 999,
+      "preferredDeckId": "deck_cuu_nhi_vi"
     },
     "passwordHash": "MTIzNDU2"
   },
@@ -41,7 +42,8 @@
       "memberTier": "vip",
       "memberExpiryDate": "2099-12-31",
       "registeredAt": 1792312000000,
-      "incenseSticks": 999
+      "incenseSticks": 999,
+      "preferredDeckId": "deck_cuu_nhi_vi"
     },
     "passwordHash": "MTIzNDU2"
   }

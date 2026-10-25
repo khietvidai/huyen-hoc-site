@@ -3642,6 +3642,18 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         </div>
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          {/* Nút vào trực tiếp Trang Bốc Quẻ Cửu Nhị (10 Pháp Khí Khởi Quẻ) */}
+          <button
+            type="button"
+            onClick={() => onEnterApp("divination")}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-200 hover:text-amber-100 transition px-3 py-1.5 rounded-full bg-zinc-950 hover:bg-zinc-900 border border-[#C4963E]/60 hover:border-[#C4963E] cursor-pointer shadow-xs active:scale-95"
+            title="Mở Điện Thờ Bốc Quẻ Cửu Nhị (10 Phương Pháp Khởi Quẻ)"
+          >
+            <span className="text-[#C4963E]">☯</span>
+            <span className="hidden sm:inline">Bốc Quẻ Cửu Nhị</span>
+            <span className="sm:hidden">Bốc Quẻ</span>
+          </button>
+
           {/* Nút chụp hình thẻ bài: Tự động căn chỉnh & chụp trọn vẹn toàn bộ trải bài */}
           <button
             type="button"

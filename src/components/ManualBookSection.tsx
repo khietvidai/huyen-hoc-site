@@ -133,7 +133,7 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
   currentUser,
   onOpenAuthModal,
 }) => {
-  const isVip = Boolean(currentUser?.isMember || currentUser?.isAdmin);
+  const isVip: boolean = true;
   const [isExpanded, setIsExpanded] = useState<boolean>(defaultExpanded);
   const [activeSectionId, setActiveSectionId] = useState<string>("hexagram_interpretations");
   const [showChaptersMenu, setShowChaptersMenu] = useState<boolean>(true);
@@ -353,7 +353,7 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
   };
 
   const handleToggleSpeakHexagram = (hex: BookHexagramSummary) => {
-    if (!currentUser?.isMember) {
+    if (!isVip) {
       if (onOpenAuthModal) onOpenAuthModal("register");
       return;
     }
@@ -1435,7 +1435,7 @@ export const ManualBookSection: React.FC<ManualBookSectionProps> = ({
                               </div>
                             </div>
 
-                            {!currentUser?.isMember ? (
+                            {!isVip ? (
                               <div className="royal-card p-5 sm:p-6 text-center space-y-3.5 overflow-hidden mt-2">
                                 <div className="w-12 h-12 mx-auto rounded-md bg-gradient-to-br from-gold-500 to-gold-700 flex items-center justify-center text-lacquer-900 shadow-lg border border-gold-300">
                                   <Lock className="w-6 h-6 text-amber-950" />

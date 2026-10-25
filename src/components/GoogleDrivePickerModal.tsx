@@ -42,7 +42,7 @@ interface GoogleDrivePickerModalProps {
 export const GoogleDrivePickerModal: React.FC<GoogleDrivePickerModalProps> = ({
   isOpen,
   onClose,
-  activeDeckId = "deck_golden",
+  activeDeckId = "deck_cuu_nhi_vi",
   onCardImageSet,
   onCardBackSet,
   currentReadingText,

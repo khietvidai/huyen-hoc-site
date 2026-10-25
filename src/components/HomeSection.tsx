@@ -57,8 +57,8 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
   currentUser = null,
   onOpenAuthModal,
 }) => {
-  const isRegistered = Boolean(currentUser);
-  const isVip = Boolean(currentUser?.isMember || currentUser?.isAdmin);
+  const isRegistered = true;
+  const isVip = true;
   const [activeSpreadTab, setActiveSpreadTab] = useState<SpreadCategory>("summary");
   const [highlight123, setHighlight123] = useState(false);
   const [highlightRitual, setHighlightRitual] = useState(false);
@@ -406,7 +406,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
             <div className="p-3 rounded-xl bg-[#140E08] border border-gold-800/80 space-y-1">
               <span className="text-gold-300 font-bold block">1. Khách Chưa Đăng Ký</span>
               <p className="text-ivory-400 text-[11px] leading-relaxed">
-                Được sử dụng miễn phí hình thức <strong>Bốc bài Kinh Dịch 1, 2 và 3 Lá</strong> (Đơn quẻ, Song quẻ, Dòng thời gian).
+                Được mở khóa miễn phí <strong>toàn bộ các trận pháp (1—12 lá) và tất cả phương pháp chiêm bốc</strong>.
               </p>
             </div>
             <div className="p-3 rounded-xl bg-[#140E08] border border-gold-800/80 space-y-1">
@@ -431,7 +431,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
         <div id="khu-vuc-boc-que-123" className="scroll-mt-28 flex flex-wrap items-center justify-center gap-1.5 pb-2 border-b border-gold-800">
           {[
             { id: "summary", label: "Quy Chuẩn 3 Phương Pháp (1-2-3 Lá • Miễn Phí)" },
-            { id: "advanced", label: "Các Trận Pháp Nâng Cao (7-9-10-12 Lá • Cần Đăng Ký)" },
+            { id: "advanced", label: "Các Trận Pháp Nâng Cao (7-9-10-12 Lá • Đã Mở Khóa)" },
             { id: "examples", label: "Ví Dụ Thực Tế & Minh Họa Quẻ" },
           ].map((tab) => (
             <button

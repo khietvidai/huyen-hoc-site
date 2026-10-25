@@ -227,7 +227,7 @@ export const Header: React.FC<HeaderProps> = ({
       chinese: "說卦",
       desc: "Sách thuyết minh 64 quẻ dịch & thư viện bộ hình",
       icon: BookOpen,
-      vipOnly: true,
+      vipOnly: false,
     },
     {
       id: "jiazi",
@@ -235,7 +235,7 @@ export const Header: React.FC<HeaderProps> = ({
       chinese: "六十花甲",
       desc: "Lục Thập Hoa Giáp, nạp ảnh & Bát Tự Lục Nhâm",
       icon: Compass,
-      vipOnly: true,
+      vipOnly: false,
     },
     {
       id: "calendar",
@@ -243,7 +243,7 @@ export const Header: React.FC<HeaderProps> = ({
       chinese: "用事曆",
       desc: "Can Chi, Trực Nhật Tinh & 12 Giờ Tâm Ấn Phú",
       icon: CalendarDays,
-      vipOnly: true,
+      vipOnly: false,
     },
     {
       id: "hannhiet",
@@ -251,7 +251,7 @@ export const Header: React.FC<HeaderProps> = ({
       chinese: "寒熱命",
       desc: "Bát Tự Hàn Nhiệt Tô Dân Phong, Cửu Cung Phi Tinh & Vận Trình 2027",
       icon: Flame,
-      vipOnly: true,
+      vipOnly: false,
     },
     {
       id: "detail",
@@ -271,7 +271,7 @@ export const Header: React.FC<HeaderProps> = ({
   ];
 
   const currentTabObj = tabs.find((t) => t.id === currentTab) || tabs[0];
-  const isVip = Boolean(currentUser?.isMember || currentUser?.isAdmin);
+  const isVip = true;
 
   const handleSelectTab = (tabId: NavTab) => {
     const targetTab = tabs.find((t) => t.id === tabId);

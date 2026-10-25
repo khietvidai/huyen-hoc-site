@@ -56,7 +56,7 @@ import { Fan360Deck } from "./Fan360Deck";
 import { ShuffleDeckAnimation } from "./ShuffleDeckAnimation";
 import { TwelveSidedDice } from "./TwelveSidedDice";
 import { zenAudio } from "../utils/zenAudio";
-import { PRESET_DECK_NAMES } from "../services/cardImageStore";
+import { PRESET_DECK_NAMES, DEFAULT_DECK_ID, INITIAL_PRESET_DECKS, cardImageStore, DeckInfo } from "../services/cardImageStore";
 
 interface CardDrawProps {
   cardImages?: Record<number, string>;
@@ -144,13 +144,19 @@ export const CardDraw: React.FC<CardDrawProps> = ({
   activeDeckId,
   onActiveDeckChanged,
 }) => {
-  const isRegisteredUser = Boolean(currentUser);
-  const isVip = Boolean(currentUser?.isMember || currentUser?.isAdmin);
+  const isRegisteredUser = true;
+  const isVip = true;
+  const [availableDecks, setAvailableDecks] = useState<DeckInfo[]>(INITIAL_PRESET_DECKS);
+  useEffect(() => {
+    cardImageStore.getDeckList().then(setAvailableDecks).catch(() => {});
+  }, [activeDeckId]);
   const activeDeckName = activeDeckId
-    ? PRESET_DECK_NAMES[activeDeckId] || "Bộ Bài Đang Dùng"
-    : isVip
-    ? "Bộ Không Chữ (Nguyên Bản)"
-    : "Bộ Quân Tử (64 Quẻ)";
+    ? availableDecks.find((d) => d.id === activeDeckId)?.name || PRESET_DECK_NAMES[activeDeckId] || "Bộ Bài Đang Dùng"
+    : "Bộ Cửu Nhị Việt Hóa (64 Quẻ)";
+
+
+
+
   const handleOpenManager = onOpenDeckManager || onManageDeck || (() => {});
   const [drawMode, setDrawMode] = useState<DrawMode>(() =>
     isKhongMinhMethod || isNguCheMethod ? "three" : suggestedDrawMode || "single"
@@ -200,7 +206,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
       setSelectedDeckIndices([]);
       setRevealedCards([]);
       if (onActiveDeckChanged) {
-        onActiveDeckChanged("deck_ngu_che");
+      // Giữ nguyên bộ bài người dùng đang chọn (mặc định Bộ Cửu Nhị Việt Hóa)
       }
     } else if (suggestedDrawMode) {
       setDrawMode(suggestedDrawMode);
@@ -1426,18 +1432,22 @@ export const CardDraw: React.FC<CardDrawProps> = ({
             </button>
 
             {/* Quick Deck Switcher */}
-            {(isVip || isNguCheMethod) && onActiveDeckChanged && (
+            {onActiveDeckChanged && (
               <select
-                value={activeDeckId || "deck_bo_khong_chu"}
+                value={activeDeckId || DEFAULT_DECK_ID}
                 onChange={(e) => onActiveDeckChanged(e.target.value)}
                 className="px-2.5 py-1.5 rounded-xl bg-[#1D1711] hover:bg-[#282017] border border-[#4E3B27] hover:border-[#C9A55A] text-[#F3E7D0] text-xs font-serif font-semibold cursor-pointer outline-none transition-all shadow-sm"
                 title="Tùy chỉnh đổi nhanh bộ bài đang dùng"
               >
-                <option value="deck_ngu_che">Bộ Ngự Chế Tinh Túy (Có Chữ)</option>
-                <option value="deck_bo_khong_chu">Bộ Không Chữ (Nguyên Bản) [VIP]</option>
-                <option value="deck_quan_tu">Bộ Quân Tử (64 Quẻ)</option>
-                <option value="deck_bo_1">Bộ 1 (Nguyên Bản Có Chữ)</option>
-                <option value="deck_bo_2">Bộ 2 (Có Chữ)</option>
+                {availableDecks.map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.name}
+                  </option>
+                ))}
+
+
+
+
               </select>
             )}
           </div>
@@ -1636,7 +1646,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                     <span>
-                      Tài khoản <strong>{currentUser?.name}</strong>: Đã mở khóa <strong>toàn bộ trận pháp</strong> bốc bài Kinh Dịch (1 đến 12 lá và Tùy ý).
+                      {currentUser ? <>Tài khoản <strong>{currentUser.name}</strong></> : <strong>Khách vãng lai</strong>}: Đã mở khóa <strong>toàn bộ trận pháp</strong> bốc bài Kinh Dịch (1 đến 12 lá và Tùy ý).
                     </span>
                   </div>
                   {currentUser?.isMember && (

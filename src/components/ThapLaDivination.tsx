@@ -363,10 +363,22 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
     <div className="space-y-6">
       {/* 1. Header Giới Thiệu Hình Thức Tháp La Kinh Dịch */}
       <div className="royal-frame p-6 sm:p-8 bg-gradient-to-b from-[#18130E] via-[#120E0A] to-[#0A0806] border border-[#C4963E]/40 rounded-3xl shadow-2xl relative overflow-hidden">
-        <span className="royal-corner tl" />
-        <span className="royal-corner tr" />
-        <span className="royal-corner bl" />
-        <span className="royal-corner br" />
+        <span className="royal-corner tl z-20" />
+        <span className="royal-corner tr z-20" />
+        <span className="royal-corner bl z-20" />
+        <span className="royal-corner br z-20" />
+
+        {/* Background Artwork Layer: Tháp La Kinh Dịch */}
+        <div className="pointer-events-none absolute inset-0 z-0">
+          <img
+            src="/assets/cuunhi/03_card_02_thap_la_kinh_dich.webp"
+            alt=""
+            className="h-full w-full object-cover object-right opacity-45"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#120E0A]/95 via-[#120E0A]/80 to-[#120E0A]/45" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0806] via-transparent to-[#120E0A]/60" />
+        </div>
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1.5">
@@ -412,8 +424,8 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
         </div>
 
         {/* Khẩu Quyết 3 Ngôi */}
-        <div className="mt-5 pt-4 border-t border-[#332617] grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-          <div className="p-3 rounded-xl bg-[#221A12]/70 border border-[#3D2D1B] flex items-center gap-2.5">
+        <div className="relative z-10 mt-5 pt-4 border-t border-[#332617] grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div className="p-3 rounded-xl bg-[#221A12]/80 backdrop-blur-xs border border-[#3D2D1B] flex items-center gap-2.5">
             <span className="w-7 h-7 rounded-lg bg-[#C4963E]/20 text-[#E0B861] font-bold flex items-center justify-center shrink-0 border border-[#C4963E]/40">
               Chủ
             </span>
@@ -422,7 +434,7 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
               <div className="text-[11px] text-[#A69780] font-sans">Nhìn nhận cục diện thực tại</div>
             </div>
           </div>
-          <div className="p-3 rounded-xl bg-[#221A12]/70 border border-[#3D2D1B] flex items-center gap-2.5">
+          <div className="p-3 rounded-xl bg-[#221A12]/80 backdrop-blur-xs border border-[#3D2D1B] flex items-center gap-2.5">
             <span className="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-300 font-bold flex items-center justify-center shrink-0 border border-amber-500/40">
               Động
             </span>
@@ -431,7 +443,7 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
               <div className="text-[11px] text-[#A69780] font-sans">Nhận diện bước ngoặt (Sơ ➔ Lục)</div>
             </div>
           </div>
-          <div className="p-3 rounded-xl bg-[#221A12]/70 border border-[#3D2D1B] flex items-center gap-2.5">
+          <div className="p-3 rounded-xl bg-[#221A12]/80 backdrop-blur-xs border border-[#3D2D1B] flex items-center gap-2.5">
             <span className="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-300 font-bold flex items-center justify-center shrink-0 border border-emerald-500/40">
               Biến
             </span>
@@ -445,9 +457,20 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
 
       {/* 2. KHU VỰC BỐC BÀI KHI CHƯA RÚT (READY STATE) */}
       {step !== "drawn" && (
-        <div className="royal-card p-6 sm:p-10 text-center space-y-8 max-w-3xl mx-auto">
+        <div className="royal-card relative overflow-hidden p-6 sm:p-10 text-center space-y-8 max-w-3xl mx-auto">
+          {/* Subtle Altar Background */}
+          <div className="pointer-events-none absolute inset-0 z-0">
+            <img
+              src="/assets/cuunhi/12_altar_huyen_dan_64_la.webp"
+              alt=""
+              className="h-full w-full object-cover object-center opacity-25"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_10%,#120F0C_85%)]" />
+          </div>
+
           {/* Nhập câu hỏi nghi vấn */}
-          <div className="max-w-xl mx-auto text-left space-y-2">
+          <div className="relative z-10 max-w-xl mx-auto text-left space-y-2">
             <label className="text-xs font-bold text-[#D1C2A5] tracking-wide uppercase flex items-center gap-1.5">
               <span>Nghi Vấn / Câu Hỏi Cần Chiêm Đoán:</span>
             </label>
@@ -456,22 +479,30 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
               value={question}
               onChange={(e) => handleQuestionChange(e.target.value)}
               placeholder="Ví dụ: Kế hoạch kinh doanh mới trong 3 tháng tới sẽ phát triển ra sao?..."
-              className="w-full px-4 py-2.5 rounded-xl bg-[#17120C] border border-[#3E2F1D] text-sm text-[#F5EAD4] placeholder-[#73634E] focus:outline-none focus:border-[#C4963E]"
+              className="w-full px-4 py-2.5 rounded-xl bg-[#17120C]/90 border border-[#3E2F1D] text-sm text-[#F5EAD4] placeholder-[#73634E] focus:outline-none focus:border-[#C4963E]"
             />
           </div>
 
           {/* Mô phỏng 2 bước: Bốc Quẻ Chủ & AI Khởi Hào Động */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-lg mx-auto">
+          <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-lg mx-auto">
             {/* Bước 1: Quẻ Chủ */}
-            <div className="p-5 rounded-2xl bg-[#19130D] border border-[#3B2C1B] flex flex-col items-center text-center space-y-3 shadow-lg hover:border-[#C4963E]/60 transition-colors">
+            <div className="p-5 rounded-2xl bg-[#19130D]/90 backdrop-blur-xs border border-[#3B2C1B] flex flex-col items-center text-center space-y-3 shadow-lg hover:border-[#C4963E]/60 transition-colors">
               <span className="text-[11px] font-mono font-bold text-[#C4963E] uppercase tracking-wider">
                 Bước 1 • Bốc Quẻ Chủ
               </span>
-              <div className="w-28 h-40 sm:w-32 sm:h-44 rounded-xl border border-[#C4963E]/50 bg-gradient-to-b from-[#251B10] via-[#1A130B] to-[#100C06] p-2 flex items-center justify-center shadow-xl relative overflow-hidden group cursor-pointer"
-                onClick={handleDrawThapLa}>
-                <div className="absolute inset-1 border border-dashed border-[#C4963E]/30 rounded-lg flex flex-col items-center justify-center">
-                  <span className="text-3xl text-[#C4963E]/60 select-none">☯</span>
-                  <span className="text-[10px] text-[#A69780] font-serif mt-1">Bản Quái</span>
+              <div
+                className="w-28 h-42 sm:w-32 sm:h-48 rounded-xl border border-[#C4963E]/60 bg-[#0D0B09] flex items-center justify-center shadow-xl relative overflow-hidden group cursor-pointer"
+                onClick={handleDrawThapLa}
+              >
+                <img
+                  src="/assets/cuunhi/13_card_back_huyen_mon.webp"
+                  alt="Bản Quái"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#0D0B09] via-[#0D0B09]/80 to-transparent py-2 px-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#F3D99B] font-serif">
+                    ☯ Bản Quái
+                  </span>
                 </div>
               </div>
               <div>
@@ -481,15 +512,24 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
             </div>
 
             {/* Bước 2: AI Khởi Hào Động */}
-            <div className="p-5 rounded-2xl bg-[#19130D] border border-[#3B2C1B] flex flex-col items-center text-center space-y-3 shadow-lg hover:border-[#C4963E]/60 transition-colors">
+            <div className="p-5 rounded-2xl bg-[#19130D]/90 backdrop-blur-xs border border-[#3B2C1B] flex flex-col items-center text-center space-y-3 shadow-lg hover:border-[#C4963E]/60 transition-colors">
               <span className="text-[11px] font-mono font-bold text-emerald-400 uppercase tracking-wider">
                 Bước 2 • AI Khởi Hào Động
               </span>
-              <div className="w-28 h-40 sm:w-32 sm:h-44 rounded-xl border border-emerald-500/40 bg-gradient-to-b from-[#132219] via-[#0E1812] to-[#080E0A] p-2 flex items-center justify-center shadow-xl relative overflow-hidden group cursor-pointer"
-                onClick={handleDrawThapLa}>
-                <div className="absolute inset-1 border border-dashed border-emerald-500/30 rounded-lg flex flex-col items-center justify-center">
-                  <span className="text-3xl text-emerald-500/60 select-none">☵</span>
-                  <span className="text-[10px] text-emerald-300/80 font-serif mt-1">0..6 Hào Động</span>
+              <div
+                className="w-28 h-42 sm:w-32 sm:h-48 rounded-xl border border-emerald-500/50 bg-[#0D0B09] flex items-center justify-center shadow-xl relative overflow-hidden group cursor-pointer"
+                onClick={handleDrawThapLa}
+              >
+                <img
+                  src="/assets/cuunhi/13_card_back_huyen_mon.webp"
+                  alt="0..6 Hào Động"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-emerald-950/20 mix-blend-color pointer-events-none" />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#08120C] via-[#08120C]/85 to-transparent py-2 px-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-300 font-serif">
+                    ☵ 0..6 Hào Động
+                  </span>
                 </div>
               </div>
               <div>
@@ -500,7 +540,7 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
           </div>
 
           {/* Nút bấm Khởi Quẻ Tháp La */}
-          <div className="pt-2">
+          <div className="relative z-10 pt-2">
             <button
               type="button"
               disabled={step === "shuffling"}

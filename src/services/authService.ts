@@ -760,7 +760,7 @@ export class AuthService {
       const guestVal = localStorage.getItem(GUEST_INCENSE_KEY);
       if (guestVal !== null) return parseInt(guestVal, 10);
     } catch {}
-    return 1;
+    return 999;
   }
 
   /**
@@ -1026,10 +1026,19 @@ export class AuthService {
       });
       if (resp.ok) {
         const data = await resp.json();
-        if (data.success && data.users) {
+        if (data.success && (data.allUsersMap || data.users)) {
           const merged = this.getUsers();
-          for (const [key, item] of Object.entries(data.users as Record<string, any>)) {
-            if (key && item?.user) {
+          const sourceEntries = data.allUsersMap
+            ? Object.entries(data.allUsersMap as Record<string, any>)
+            : Array.isArray(data.users)
+            ? data.users.map((item: any) => [item.accountKey || item.user?.email || item.user?.username, item])
+            : Object.entries(data.users as Record<string, any>);
+          for (const [rawKey, item] of sourceEntries) {
+            const key = String(rawKey || "").toLowerCase();
+            if (key && !/^\d+$/.test(key) && item?.user) {
+
+
+
               merged[key] = {
                 user: item.user,
                 passwordHash: merged[key]?.passwordHash || item.passwordHash || "",

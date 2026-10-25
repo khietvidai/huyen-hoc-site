@@ -52,7 +52,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
   currentUser,
   onOpenAuthModal,
 }) => {
-  const isVip = Boolean(currentUser?.isMember || currentUser?.isAdmin);
+  const isVip = true;
 
   // Decks list state
   const [decks, setDecks] = useState<DeckInfo[]>([]);
@@ -238,7 +238,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
       try {
         await cardImageStore.deleteDeck(deckId);
         const updated = await refreshDeckList();
-        const nextId = updated[0]?.id || "deck_golden";
+        const nextId = updated[0]?.id || DEFAULT_DECK_ID;
         setSelectedDeckId(nextId);
         onActiveDeckChanged(nextId);
       } catch (err: any) {
@@ -648,7 +648,7 @@ export const DeckManager: React.FC<DeckManagerProps> = ({
             return (
               <div
                 key={deck.id}
-                onClick={() => setSelectedDeckId(deck.id)}
+                onClick={() => handleSelectActiveDeck(deck.id)}
                 className={`relative rounded-2xl p-4 transition-all cursor-pointer flex flex-col justify-between border ${
                   isInspected
                     ? "bg-[#211B15] border-[#C9A55A] shadow-[0_0_20px_rgba(212,175,55,0.15)] ring-1 ring-[#C9A55A]/50"

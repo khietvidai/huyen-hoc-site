@@ -71,7 +71,7 @@ export const GoogleWorkspaceModal: React.FC<GoogleWorkspaceModalProps> = ({
   isOpen,
   onClose,
   defaultTab = "docs",
-  activeDeckId = "deck_golden",
+  activeDeckId = "deck_cuu_nhi_vi",
   onCardImageSet,
   onCardBackSet,
   readingData,
