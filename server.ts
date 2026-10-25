@@ -1815,62 +1815,8 @@ app.post("/api/ngu-che/redraw-batch", async (req: Request, res: Response) => {
   }
 });
 
-// ============================================================================
-// PROXY HỆ THỐNG LỤC NHÂM ĐẠI ĐỘN × BÁT TỰ × KHỔNG MINH (lucnham.khietvidai.workers.dev)
-// ============================================================================
-const LUCNHAM_UPSTREAM = "https://lucnham.khietvidai.workers.dev";
-
-async function proxyLucNhamJson(req: Request, res: Response, upstreamPath: string) {
-  try {
-    const url = `${LUCNHAM_UPSTREAM}${upstreamPath}`;
-    const isGet = req.method === "GET";
-    const upstreamRes = await fetch(url, {
-      method: req.method,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json, image/png, */*",
-      },
-      body: isGet ? undefined : JSON.stringify(req.body ?? {}),
-    });
-
-    const contentType = upstreamRes.headers.get("content-type") || "application/json";
-    res.status(upstreamRes.status);
-    res.setHeader("Content-Type", contentType);
-
-    if (contentType.includes("image/") || contentType.includes("octet-stream")) {
-      const arrayBuf = await upstreamRes.arrayBuffer();
-      return res.send(Buffer.from(arrayBuf));
-    }
-
-    const text = await upstreamRes.text();
-    return res.send(text);
-  } catch (err: any) {
-    console.error(`[LucNham Proxy Error] ${upstreamPath}:`, err);
-    return res.status(502).json({
-      success: false,
-      message: err?.message || "Không thể kết nối máy chủ Lục Nhâm Đại Độn.",
-    });
-  }
-}
-
-app.post("/api/lap-que", (req: Request, res: Response) => proxyLucNhamJson(req, res, "/api/lap-que"));
-app.post("/api/luan-giai", (req: Request, res: Response) => proxyLucNhamJson(req, res, "/api/luan-giai"));
-app.post("/api/clarify-question", (req: Request, res: Response) => proxyLucNhamJson(req, res, "/api/clarify-question"));
-app.post("/api/feedback", (req: Request, res: Response) => proxyLucNhamJson(req, res, "/api/feedback"));
-app.post("/api/laso-png", (req: Request, res: Response) => proxyLucNhamJson(req, res, "/api/laso-png"));
-app.get("/api/history", (req: Request, res: Response) => {
-  const qs = req.originalUrl.includes("?") ? req.originalUrl.slice(req.originalUrl.indexOf("?")) : "";
-  return proxyLucNhamJson(req, res, `/api/history${qs}`);
-});
-app.get("/api/laso-snapshot/:hash", (req: Request, res: Response) => {
-  return proxyLucNhamJson(req, res, `/api/laso-snapshot/${encodeURIComponent(String(req.params.hash || ""))}`);
-});
-
-// Static assets serving for Decks, Jiazi images, Blog, Hexagrams and Luc Nham Dai Don
+// Static assets serving for Decks, Jiazi images, Blog and Hexagrams
 const publicDir = path.join(process.cwd(), "public");
-app.use("/_astro", express.static(path.join(publicDir, "_astro"), { maxAge: "7d" }));
-app.use("/fonts", express.static(path.join(publicDir, "fonts"), { maxAge: "7d" }));
-app.use("/lucnham-daidon", express.static(path.join(publicDir, "lucnham-daidon")));
 app.use("/decks", express.static(path.join(publicDir, "decks"), { maxAge: "7d" }));
 app.use("/images/jiazi", express.static(path.join(publicDir, "images", "jiazi"), { maxAge: "7d" }));
 app.use("/assets", express.static(path.join(publicDir, "assets"), { maxAge: "7d" }));

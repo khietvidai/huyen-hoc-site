@@ -43,7 +43,6 @@ export type NavTab =
   | "jiazi"
   | "calendar"
   | "hannhiet"
-  | "lucnham-daidon"
   | "detail"
   | "library"
   | "decks"
@@ -253,13 +252,6 @@ export const Header: React.FC<HeaderProps> = ({
       desc: "Bát Tự Hàn Nhiệt Tô Dân Phong, Cửu Cung Phi Tinh & Vận Trình 2027",
       icon: Flame,
       vipOnly: true,
-    },
-    {
-      id: "lucnham-daidon",
-      label: "Lục Nhâm Đại Độn",
-      chinese: "六壬大遁",
-      desc: "Lục Nhâm Đại Độn × Bát Tự × Khổng Minh & AI DeepSeek Flash Luận Giải",
-      icon: Compass,
     },
     {
       id: "detail",

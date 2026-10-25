@@ -49,7 +49,6 @@ import { JiaziLucNhamSection } from "./components/JiaziLucNhamSection";
 import { LucNhamHoaDichSection } from "./components/LucNhamHoaDichSection";
 import { LichDungSuSection } from "./components/LichDungSuSection";
 import { HanNhietMenhSection } from "./components/HanNhietMenhSection";
-import { LucNhamDaiDonSection } from "./components/LucNhamDaiDonSection";
 import { HomeSection } from "./components/HomeSection";
 import { LandingPage } from "./components/LandingPage";
 import { YiloreAppSuite } from "./components/YiloreAppSuite";
@@ -1308,7 +1307,7 @@ export default function App() {
       />
 
       {/* Main Content Area */}
-      <main className={`relative z-10 flex-1 w-full mx-auto px-3 sm:px-4 py-6 sm:py-8 ${currentTab === "detail" || currentTab === "lucnham-daidon" ? "max-w-7xl" : "max-w-6xl"}`}>
+      <main className={`relative z-10 flex-1 w-full mx-auto px-3 sm:px-4 py-6 sm:py-8 ${currentTab === "detail" ? "max-w-7xl" : "max-w-6xl"}`}>
         {/* TAB 0: TRANG CHỦ (PHƯƠNG PHÁP BỐC BÀI I CHING TAROT & LIÊN LẠC) */}
         <div className={(currentTab as string) === "home" ? "space-y-6" : "hidden"}>
           <HomeSection
@@ -2584,11 +2583,6 @@ export default function App() {
           ) : (
             <HanNhietMenhSection />
           )}
-        </div>
-
-        {/* TAB: LỤC NHÂM ĐẠI ĐỘN × BÁT TỰ × KHỔNG MINH */}
-        <div className={currentTab === "lucnham-daidon" ? "block" : "hidden"}>
-          <LucNhamDaiDonSection />
         </div>
 
         {/* TAB: DETAILED INTERPRETATION (GIẢI NGHĨA QUẺ) */}
