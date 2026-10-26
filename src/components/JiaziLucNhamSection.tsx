@@ -29,6 +29,7 @@ import {
   AM_CHI_NAMES,
   getCurrentBaziPillars,
   PillarItem,
+  getElementBoxStyle,
 } from "../data/baziConstants";
 import { SIXTY_JIAZI, JiaziEnrichedEntry } from "../data/jiazi";
 
@@ -217,7 +218,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
       }
 
       const dataUrl = await captureElementToPng(targetEl, {
-        backgroundColor: "#16120D",
+        backgroundColor: "#F6F3EB",
         pixelRatio: 2,
       });
 
@@ -432,12 +433,12 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
     <div
       id={id || (effectiveScope === "bocque" ? "lucnham-chart-area-bocque" : "lucnham-chart-area-hoagiap")}
       ref={lucNhamContainerRef}
-      className={`border border-[#3D3021] bg-gradient-to-b from-[#1C1711] via-[#16120D] to-[#120F0B] rounded-2xl shadow-xl overflow-hidden transition-all duration-300 ${className}`}
+      className={`border border-[#C4963E]/45 bg-gradient-to-b from-[#FFFDF8] via-[#FFFDF8] to-[#FFFDF8] rounded-2xl shadow-xl overflow-hidden transition-all duration-300 ${className}`}
     >
       {/* Toast thông báo */}
       {toastMsg && (
         <div className="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-800 text-white font-serif font-bold text-xs shadow-2xl border border-amber-400 flex items-center gap-2 animate-bounce">
-          <Sparkles className="w-4 h-4 text-amber-200" />
+          <Sparkles className="w-4 h-4 text-[#78350F]" />
           <span>{toastMsg}</span>
         </div>
       )}
@@ -445,24 +446,24 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
       {/* ========================================================
           HEADER BAR: PHẦN LỤC NHÂM ĐẠI ĐỘN
           ======================================================== */}
-      <div className="px-4 py-3.5 sm:px-6 sm:py-4 border-b border-[#2E2419] flex flex-wrap items-center justify-between gap-3 bg-[#1F1912]/80 backdrop-blur-sm">
+      <div className="px-4 py-3.5 sm:px-6 sm:py-4 border-b border-[#C4963E]/45 flex flex-wrap items-center justify-between gap-3 bg-[#FFFDF8]/80 backdrop-blur-sm">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-[#2A1E14] border border-[#52412E] text-[#D6B97A] shadow-inner">
-            <Sparkles className="w-5 h-5 text-amber-400" />
+          <div className="p-2 rounded-xl bg-[#FAF6EE] border border-[#C4963E]/45 text-[#6E4E16] shadow-inner">
+            <Sparkles className="w-5 h-5 text-[#92400E]" />
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="text-sm sm:text-base font-bold text-[#F5EAD4] font-serif tracking-wide flex items-center gap-2 flex-wrap">
+              <h2 className="text-sm sm:text-base font-bold text-[#1C1813] font-serif tracking-wide flex items-center gap-2 flex-wrap">
                 LỤC NHÂM ĐẠI ĐỘN
-                <span className="text-[11px] font-normal px-2 py-0.5 rounded-full bg-[#2E2215] text-[#C9A55A] border border-[#533F27]">
+                <span className="text-[11px] font-normal px-2 py-0.5 rounded-full bg-[#FAF6EE] text-[#6E4E16] border border-[#C4963E]/45">
                   {effectiveScope === "bocque" ? "Bảng Bốc Quẻ (Độc Lập)" : "Bảng Tab Hoa Giáp (Độc Lập)"}
                 </span>
-                <span className="text-[10px] text-[#A89882] font-normal hidden sm:inline">
+                <span className="text-[10px] text-[#5C4D3C] font-normal hidden sm:inline">
                   {effectiveScope === "bocque" ? "(Chiêm Đoán Sự Vụ)" : "(Tam Thức • Không Hóa Dịch)"}
                 </span>
               </h2>
             </div>
-            <p className="text-[11px] sm:text-xs text-[#9E8E7A] mt-0.5 line-clamp-1 sm:line-clamp-none">
+            <p className="text-[11px] sm:text-xs text-[#5C4D3C] mt-0.5 line-clamp-1 sm:line-clamp-none">
               {effectiveScope === "bocque"
                 ? "Thiên Địa Bàn • Tứ Khóa • Tam Truyền • 12 Thần Tướng • Thần Sát (Dành riêng cho Bốc Quẻ)"
                 : "Thập Nhị Thiên Tướng • Nguyệt Tướng • Xí Ngầu Hoạt Thời 12 Mặt • Thiên Địa Bàn • Tứ Khóa • Tam Truyền (Dành riêng cho Tab Hoa Giáp)"}
@@ -477,13 +478,13 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
             type="button"
             onClick={() => handleCaptureLucNham("tong")}
             disabled={isCapturing !== null}
-            className="no-capture flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gradient-to-r from-[#2F2113] to-[#3D2B19] hover:from-[#3D2C1B] hover:to-[#4D3823] text-amber-200 border border-[#5E4327] hover:border-[#C9A55A] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
+            className="no-capture flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gradient-to-r from-[#FAF6EE] to-[#FAF6EE] hover:from-[#FAF6EE] hover:to-[#F3ECE0] text-[#78350F] border border-[#C4963E]/45 hover:border-[#B8862D] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
             title="Chụp ảnh toàn bộ bảng Lục Nhâm Đại Độn (Bát Tự, Thiên Địa Bàn, Tứ Khóa, Tam Truyền)"
           >
             {isCapturing === "tong" ? (
-              <Loader2 className="w-3.5 h-3.5 text-amber-400 animate-spin" />
+              <Loader2 className="w-3.5 h-3.5 text-[#92400E] animate-spin" />
             ) : (
-              <Camera className="w-3.5 h-3.5 text-amber-400" />
+              <Camera className="w-3.5 h-3.5 text-[#92400E]" />
             )}
             <span>Chụp Tổng Lục Nhâm</span>
           </button>
@@ -504,7 +505,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#261E16] text-[#C9A55A] border border-[#483724] hover:bg-[#34281D] hover:border-[#C9A55A] transition-all cursor-pointer shadow-sm active:scale-95"
+            className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#FFFDF8] text-[#6E4E16] border border-[#C4963E]/45 hover:bg-[#FAF6EE] hover:border-[#B8862D] transition-all cursor-pointer shadow-sm active:scale-95"
           >
             <span>{isOpen ? "Thu Gọn" : "Mở Bàn Lục Nhâm"}</span>
             <ChevronDown
@@ -518,28 +519,28 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
           THANH TÓM TẮT KHI Ở TRẠNG THÁI THU GỌN
           ======================================================== */}
       {!isOpen && (
-        <div className="px-4 py-3 sm:px-6 flex flex-wrap items-center justify-between gap-3 text-xs bg-[#17120C]">
+        <div className="px-4 py-3 sm:px-6 flex flex-wrap items-center justify-between gap-3 text-xs bg-[#FFFDF8]">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="px-2 py-0.5 rounded bg-[#2E1E12] text-[#D6B97A] font-semibold border border-[#44301D] flex items-center gap-1">
-              <Compass className="w-3.5 h-3.5 text-amber-400" />
+            <span className="px-2 py-0.5 rounded bg-[#FAF6EE] text-[#6E4E16] font-semibold border border-[#C4963E]/45 flex items-center gap-1">
+              <Compass className="w-3.5 h-3.5 text-[#92400E]" />
               <span>Trạng thái: Thu gọn</span>
             </span>
-            <span className="text-[#8C7D6B] hidden sm:inline">•</span>
-            <span className="text-[#A89882] text-[11px] flex items-center gap-1.5 flex-wrap">
+            <span className="text-[#5C4D3C] hidden sm:inline">•</span>
+            <span className="text-[#5C4D3C] text-[11px] flex items-center gap-1.5 flex-wrap">
               <span>Bát Tự Lục Nhâm:</span>
-              <strong className="text-purple-300 font-serif">
+              <strong className="text-[#6B21A8] font-serif">
                 {lucNhamPillars[3].can} {lucNhamPillars[3].chi} (Năm)
               </strong>
               <span className="text-[#6D5A46]">•</span>
-              <strong className="text-emerald-300 font-serif">
+              <strong className="text-[#14532D] font-serif">
                 {lucNhamPillars[2].can} {lucNhamPillars[2].chi} (Tháng)
               </strong>
               <span className="text-[#6D5A46]">•</span>
-              <strong className="text-amber-300 font-serif">
+              <strong className="text-[#78350F] font-serif">
                 {lucNhamPillars[1].can} {lucNhamPillars[1].chi} (Ngày)
               </strong>
               <span className="text-[#6D5A46]">•</span>
-              <strong className="text-sky-300 font-serif">
+              <strong className="text-[#1E3A8A] font-serif">
                 {lucNhamPillars[0].can} {lucNhamPillars[0].chi} (Giờ)
               </strong>
             </span>
@@ -548,7 +549,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
           <button
             type="button"
             onClick={() => setIsOpen(true)}
-            className="text-[#C9A55A] hover:underline flex items-center gap-1 cursor-pointer font-medium ml-auto"
+            className="text-[#6E4E16] hover:underline flex items-center gap-1 cursor-pointer font-medium ml-auto"
           >
             <span>Mở Bàn Lục Nhâm</span>
             <ChevronRight className="w-3.5 h-3.5" />
@@ -573,27 +574,18 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
               ================================================================= */}
           <div
             ref={lucNhamBaziRef}
-            className="p-3.5 sm:p-5 rounded-2xl bg-gradient-to-b from-[#211810] via-[#1B130B] to-[#140E07] border-2 border-[#5C4226] shadow-xl space-y-4"
+            className="p-3 sm:p-4 rounded-xl bg-[#FDFBF7] border border-[#D8C8A8] space-y-3"
           >
-            {/* Header của Bát Tự Lục Nhâm */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#3B2917] gap-2.5">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-600 to-amber-800 text-[#F5EAD4] flex items-center justify-center shadow shrink-0">
-                  <Calendar className="w-4 h-4 text-amber-200" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="text-sm sm:text-base font-bold text-[#F5EAD4] font-serif tracking-wide">
-                      BÁT TỰ BẢNG LỤC NHÂM • {effectiveScope === "bocque" ? "CHỖ BỐC QUẺ" : "TAB HOA GIÁP"}
-                    </h3>
-                    <span className="text-[9.5px] px-2 py-0.5 rounded-full bg-amber-950/90 text-amber-300 border border-amber-600/70 font-semibold">
-                      {effectiveScope === "bocque" ? "Bảng Bốc Quẻ Độc Lập" : "Bảng Hoa Giáp Độc Lập • Nhấp Ô Để Chọn"}
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-[#A89882] mt-0.5">
-                    Bát Tự riêng của bảng này ({effectiveScope === "bocque" ? "Dành cho Chỗ Bốc Quẻ" : "Dành cho Tab Hoa Giáp"}): Khởi Tứ Khóa (Nhật Can, Nhật Chi) và xác định Thời Thần (Trụ Giờ / Hoạt Thời).
-                  </p>
-                </div>
+            {/* Header gọn gàng của Bát Tự Lục Nhâm */}
+            <div className="flex flex-wrap items-center justify-between pb-2.5 border-b border-[#EAE2D0] gap-2">
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-[#9E2A2B] shrink-0" />
+                <h3 className="text-sm font-bold text-[#1C1813] font-serif">
+                  Tứ Trụ Khởi Khóa Lục Nhâm
+                </h3>
+                <span className="text-[11px] text-[#7A6B56] font-serif hidden sm:inline">
+                  (Nhấp vào từng ô Can / Chi để đổi)
+                </span>
               </div>
 
               {/* Action Buttons của Bát Tự Lục Nhâm */}
@@ -603,13 +595,13 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                   type="button"
                   onClick={() => handleCaptureLucNham("bazi")}
                   disabled={isCapturing !== null}
-                  className="no-capture flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#271E15] hover:bg-[#382B1E] text-amber-200 border border-[#523F27] hover:border-[#C9A55A] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
+                  className="no-capture flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#78350F] border border-[#C4963E]/45 hover:border-[#B8862D] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
                   title="Chụp ảnh riêng 4 Trụ Bát Tự Lục Nhâm (Giờ • Ngày • Tháng • Năm)"
                 >
                   {isCapturing === "bazi" ? (
-                    <Loader2 className="w-3.5 h-3.5 text-amber-400 animate-spin" />
+                    <Loader2 className="w-3.5 h-3.5 text-[#92400E] animate-spin" />
                   ) : (
-                    <Camera className="w-3.5 h-3.5 text-amber-400" />
+                    <Camera className="w-3.5 h-3.5 text-[#92400E]" />
                   )}
                   <span>Chụp Bát Tự Lục Nhâm</span>
                 </button>
@@ -619,26 +611,26 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                   type="button"
                   onClick={() => handleCaptureLucNham("bazi", true)}
                   disabled={isCapturing !== null}
-                  className="no-capture flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#3A2A1A] hover:bg-[#4C3622] text-[#F3D58C] border border-[#6B4F2D] hover:border-[#C9A55A] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
+                  className="no-capture flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#FAF6EE] hover:bg-[#F3ECE0] text-[#6E4E16] border border-[#C4963E]/45 hover:border-[#B8862D] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
                   title="Chụp và tải trực tiếp ảnh 4 Trụ Bát Tự Lục Nhâm về máy"
                 >
-                  <Download className="w-3.5 h-3.5 text-amber-300" />
+                  <Download className="w-3.5 h-3.5 text-[#78350F]" />
                   <span>Tải Bát Tự Lục Nhâm</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={handleSetCurrentDateTime}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#2D1F13] hover:bg-[#3D2C1B] text-[#D6B97A] border border-[#52402A] hover:border-[#C9A55A] transition-all cursor-pointer shadow-sm active:scale-95"
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#FAF6EE] hover:bg-[#FAF6EE] text-[#6E4E16] border border-[#C4963E]/45 hover:border-[#B8862D] transition-all cursor-pointer shadow-sm active:scale-95"
                   title="Nạp ngày giờ thực tế hiện tại cho riêng Bát Tự Lục Nhâm"
                 >
-                  <Clock className="w-3.5 h-3.5 text-amber-400" />
+                  <Clock className="w-3.5 h-3.5 text-[#92400E]" />
                   <span>Ngày Giờ Hiện Tại</span>
                 </button>
                 <button
                   type="button"
                   onClick={handleResetDefault}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-[#20160E] hover:bg-[#2F1F13] text-[#A89882] hover:text-[#D6B97A] border border-[#44301D] transition-all cursor-pointer active:scale-95"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#5C4D3C] hover:text-[#6E4E16] border border-[#C4963E]/45 transition-all cursor-pointer active:scale-95"
                   title="Đặt lại Bát Tự Lục Nhâm mẫu chuẩn"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -659,122 +651,83 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                 return (
                   <div
                     key={col.key}
-                    className={`flex flex-col border rounded-xl sm:rounded-2xl p-2 sm:p-3 shadow-md transition-colors relative ${
+                    className={`flex flex-col rounded-xl sm:rounded-2xl p-3 sm:p-4 transition-all relative ${
                       col.idx === 1
-                        ? "bg-[#1B140D] border-[#553E26] hover:border-[#C9A55A]"
-                        : "bg-[#18130E] border-[#332619] hover:border-[#4D3A26]"
+                        ? "bg-[#FFFDF6] border-[1.5px] border-[#9E2A2B]/80 shadow-[0_8px_22px_rgba(158,42,43,0.10)]"
+                        : "bg-[#FFFDF8] border border-[#D8C8A8] hover:border-[#B8862D]"
                     }`}
                   >
-                    {/* Header Cột: Tên Trụ & Chữ Hán Subtitle */}
-                    <div className="text-center pb-1.5 mb-1.5 sm:pb-2 sm:mb-2 border-b border-[#281E14]">
-                      <div className="flex items-center justify-center gap-1">
-                        <span className="text-xs sm:text-sm font-bold text-[#D6B97A] font-serif whitespace-nowrap">
+                    {/* Header Cột */}
+                    <div className="text-center pb-2 mb-1 border-b border-[#EAE2D0]">
+                      <div className="flex items-center justify-center gap-1.5">
+                        <span className={`text-xs sm:text-sm font-bold font-serif whitespace-nowrap ${col.idx === 1 ? "text-[#9E2A2B]" : "text-[#2C241B]"}`}>
                           {col.title}
                         </span>
+                        {col.idx === 1 && (
+                          <span className="px-1.5 py-0.2 rounded-full bg-[#9E2A2B] text-white text-[8.5px] font-serif font-semibold">
+                            Nhật Chủ
+                          </span>
+                        )}
                       </div>
-                      <div className="text-[8.5px] sm:text-[10px] text-[#8C7D6B] font-mono whitespace-nowrap truncate">
+                      <div className="text-[9px] text-[#7A6B56] font-serif mt-0.5 truncate">
                         {col.sub}
                       </div>
                     </div>
 
-                    {/* Ô TRÊN: THIÊN CAN (Hình Can giống hệt Bát Tự trên kia) */}
-                    <div className="mb-1 sm:mb-2">
+                    {/* CAN CHI TỐI GIẢN (KHÔNG HỘP TRONG HỘP) */}
+                    <div className="divide-y divide-[#EAE2D0] my-1">
                       <div
                         onClick={() => setActiveSlot({ colIndex: col.idx, type: "can" })}
-                        className={`relative min-h-[46px] sm:min-h-[64px] rounded-xl border flex flex-col items-center justify-center p-1 sm:p-2 text-center cursor-pointer transition-all duration-200 select-none group ${
-                          canData
-                            ? "bg-gradient-to-b from-[#251D14] to-[#1C160F] border-[#5A4328] hover:border-[#D6B97A] shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:scale-[1.02]"
-                            : "bg-[#14100C]/70 border-dashed border-[#3D3021] hover:border-[#C9A55A] hover:bg-[#1A140F]"
-                        }`}
+                        className="py-3 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-[#FAF6EE]/80 rounded-t-lg transition-colors select-none"
                         title={`Nhấp để chọn Thiên Can cho ${col.title}`}
                       >
                         {canData ? (
-                          <div className="flex flex-col sm:flex-row items-center justify-center gap-0 sm:gap-1.5 sm:gap-2">
-                            <span className="text-sm sm:text-2xl leading-none" title={canData.symbol}>
-                              {canData.emoji}
+                          <>
+                            <span className={`text-lg sm:text-2xl font-serif font-bold ${canData.colorText} leading-none`}>
+                              {canData.emoji} {canData.name}
                             </span>
-                            <span
-                              className={`text-sm sm:text-2xl font-serif font-bold ${canData.colorText} leading-none mt-0.5 sm:mt-0`}
-                            >
-                              {canData.name}
+                            <span className="text-[9px] sm:text-[10px] text-[#7A6B56] font-serif mt-1">
+                              Hành {canData.element}
                             </span>
-                            <span className="hidden md:inline text-xs sm:text-sm text-[#8C7D6B] font-serif">
-                              ({canData.chinese})
-                            </span>
-                          </div>
+                          </>
                         ) : (
-                          <div className="text-center">
-                            <span className="text-[9px] sm:text-xs text-[#A89882] group-hover:text-[#D6B97A] font-medium">
-                              + Chọn Can
-                            </span>
-                          </div>
+                          <span className="text-xs text-[#8A7960] py-2">+ Chọn Can</span>
                         )}
                       </div>
-                    </div>
 
-                    {/* Mũi Tên Kết Nối Âm Dương: ⇅ */}
-                    <div className="flex items-center justify-center my-0 sm:my-0.5 leading-none">
-                      <span className="text-[9px] sm:text-[11px] text-[#6E5A44] font-mono">⇅</span>
-                    </div>
-
-                    {/* Ô DƯỚI: ĐỊA CHI (Hình Chi giống hệt Bát Tự trên kia) */}
-                    <div className="mb-1.5 sm:mb-2.5">
                       <div
                         onClick={() => setActiveSlot({ colIndex: col.idx, type: "chi" })}
-                        className={`relative min-h-[46px] sm:min-h-[64px] rounded-xl border flex flex-col items-center justify-center p-1 sm:p-2 text-center cursor-pointer transition-all duration-200 select-none group ${
-                          chiData
-                            ? "bg-gradient-to-b from-[#231A12] to-[#1A140E] border-[#5A4328] hover:border-[#D6B97A] shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:scale-[1.02]"
-                            : "bg-[#14100C]/70 border-dashed border-[#3D3021] hover:border-[#C9A55A] hover:bg-[#1A140F]"
-                        }`}
+                        className="py-3 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-[#FAF6EE]/80 rounded-b-lg transition-colors select-none"
                         title={`Nhấp để chọn Địa Chi cho ${col.title}`}
                       >
                         {chiData ? (
-                          <div className="flex flex-col sm:flex-row items-center justify-center gap-0 sm:gap-1.5 sm:gap-2">
-                            <span className="text-sm sm:text-2xl leading-none">
-                              {chiData.emoji}
+                          <>
+                            <span className={`text-lg sm:text-2xl font-serif font-bold ${getElementBoxStyle(chiData.element).split(" ").pop()} leading-none`}>
+                              {chiData.emoji} {chiData.name}
                             </span>
-                            <span className="text-sm sm:text-2xl font-serif font-bold text-[#F5EAD4] leading-none mt-0.5 sm:mt-0">
-                              {chiData.name}
+                            <span className="text-[9px] sm:text-[10px] text-[#7A6B56] font-serif mt-1">
+                              Hành {chiData.element}
                             </span>
-                            <span className="hidden md:inline text-xs sm:text-sm text-[#8C7D6B] font-serif">
-                              ({chiData.chinese})
-                            </span>
-                          </div>
+                          </>
                         ) : (
-                          <div className="text-center">
-                            <span className="text-[9px] sm:text-xs text-[#A89882] group-hover:text-[#D6B97A] font-medium">
-                              + Chọn Chi
-                            </span>
-                          </div>
+                          <span className="text-xs text-[#8A7960] py-2">+ Chọn Chi</span>
                         )}
                       </div>
                     </div>
 
-                    {/* HOA GIÁP & NẠP ÂM KẾT QUẢ CỦA TRỤ NÀY */}
-                    <div className="mt-auto pt-1.5 sm:pt-2 border-t border-[#251D14]">
+                    {/* FOOTER TỐI GIẢN */}
+                    <div className="mt-auto pt-2 border-t border-[#EAE2D0] text-center space-y-0.5">
                       {matchedJiazi ? (
-                        <div className="bg-[#201810] border border-[#483724] rounded-lg sm:rounded-xl p-1.5 sm:p-2 flex flex-col gap-0.5 sm:gap-1">
-                          <div className="flex items-center justify-between">
-                            <span className="text-[9px] sm:text-[10px] text-[#C9A55A] font-bold truncate">
-                              #{matchedJiazi.order} {matchedJiazi.name}
-                            </span>
-                            <span className="hidden sm:inline text-[8.5px] px-1 py-0.2 rounded bg-[#15110C] text-[#A89882] whitespace-nowrap">
-                              {matchedJiazi.branchGroup}
-                            </span>
+                        <>
+                          <div className="text-[10px] sm:text-[11px] text-[#2C241B] font-serif font-bold truncate">
+                            #{matchedJiazi.order} {matchedJiazi.name}
                           </div>
-                          <div className="text-[8.5px] sm:text-[9.5px] text-[#C4B49F] truncate">
+                          <div className="text-[9px] sm:text-[10px] text-[#6E5D47] truncate">
                             {matchedJiazi.elementNapAm}
                           </div>
-                          <div className="text-[8px] sm:text-[8.5px] text-[#D6B97A] font-semibold italic truncate">
-                            {col.role}
-                          </div>
-                        </div>
+                        </>
                       ) : (
-                        <div className="bg-[#19130D] border border-dashed border-[#3D2E1C] rounded-lg sm:rounded-xl p-1.5 sm:p-2 text-center">
-                          <span className="text-[8.5px] sm:text-[9.5px] text-[#7A6A55] italic">
-                            Chưa phối Can Chi
-                          </span>
-                        </div>
+                        <span className="text-[9px] text-[#9A8B74] italic">Chưa phối Can Chi</span>
                       )}
                     </div>
                   </div>
@@ -788,15 +741,15 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
               ================================================================= */}
           {activeSlot && (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-              <div className="w-full max-w-xl rounded-2xl bg-[#1A120A] border-2 border-[#C9A55A] p-5 sm:p-6 shadow-2xl space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-[#3B2917]">
+              <div className="w-full max-w-xl rounded-2xl bg-[#FFFDF8] border-2 border-[#B8862D] p-5 sm:p-6 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-[#C4963E]/45">
                   <div>
-                    <h4 className="text-sm sm:text-base font-bold text-[#F5EAD4] font-serif">
+                    <h4 className="text-sm sm:text-base font-bold text-[#1C1813] font-serif">
                       {activeSlot.type === "can"
                         ? `CHỌN THIÊN CAN CHO ${LUCNHAM_PILLAR_INFO[activeSlot.colIndex]?.title.toUpperCase()}`
                         : `CHỌN ĐỊA CHI CHO ${LUCNHAM_PILLAR_INFO[activeSlot.colIndex]?.title.toUpperCase()}`}
                     </h4>
-                    <p className="text-[11px] text-[#8C7D6B]">
+                    <p className="text-[11px] text-[#5C4D3C]">
                       {activeSlot.type === "can"
                         ? "Chọn 1 trong 10 Thiên Can (5 Can Dương & 5 Can Âm)"
                         : "Chọn 1 trong 12 Địa Chi (6 Chi Dương & 6 Chi Âm)"}
@@ -805,7 +758,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                   <button
                     type="button"
                     onClick={() => setActiveSlot(null)}
-                    className="w-7 h-7 rounded-lg bg-[#2B1D10] text-[#A89882] hover:text-white flex items-center justify-center cursor-pointer"
+                    className="w-7 h-7 rounded-lg bg-[#FFFDF8] text-[#5C4D3C] hover:text-white flex items-center justify-center cursor-pointer"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -816,12 +769,12 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                   <div className="space-y-4">
                     {/* Nhóm Can Dương */}
                     <div>
-                      <div className="flex items-center justify-between text-xs font-bold text-yellow-400 mb-2">
+                      <div className="flex items-center justify-between text-xs font-bold text-[#854D0E] mb-2">
                         <span className="flex items-center gap-1.5">
                           <span className="w-2 h-2 rounded-full bg-yellow-400"></span>
                           5 THIÊN CAN DƯƠNG (+)
                         </span>
-                        <span className="text-[10px] text-[#A89882] font-normal">Phối với Chi Dương</span>
+                        <span className="text-[10px] text-[#5C4D3C] font-normal">Phối với Chi Dương</span>
                       </div>
                       <div className="grid grid-cols-5 gap-2">
                         {CAN_LIST.filter((c) => c.polarity === "duong").map((item) => {
@@ -834,13 +787,13 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                               className={`p-2 sm:p-2.5 rounded-xl border flex flex-col items-center justify-center transition-all cursor-pointer ${
                                 isSelected
                                   ? "bg-[#C9A55A] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105"
-                                  : "bg-[#221A12] hover:bg-[#2F2418] text-[#F3E7D0] border-[#3E2E1C] hover:border-yellow-500/60"
+                                  : "bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#1C1813] border-[#C4963E]/45 hover:border-yellow-500/60"
                               }`}
                             >
                               <span className="text-xl sm:text-2xl mb-1">{item.emoji}</span>
                               <span className="text-base sm:text-lg font-serif font-bold">{item.name}</span>
-                              <span className="text-[11px] text-[#A89882]">{item.chinese}</span>
-                              <span className="text-[9px] mt-1 text-[#CDBFA8] text-center line-clamp-1">
+                              <span className="text-[11px] text-[#5C4D3C]">{item.chinese}</span>
+                              <span className="text-[9px] mt-1 text-[#5C4D3C] text-center line-clamp-1">
                                 {item.symbol}
                               </span>
                             </button>
@@ -851,12 +804,12 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
 
                     {/* Nhóm Can Âm */}
                     <div>
-                      <div className="flex items-center justify-between text-xs font-bold text-amber-400 mb-2">
+                      <div className="flex items-center justify-between text-xs font-bold text-[#92400E] mb-2">
                         <span className="flex items-center gap-1.5">
                           <span className="w-2 h-2 rounded-full bg-amber-400"></span>
                           5 THIÊN CAN ÂM (-)
                         </span>
-                        <span className="text-[10px] text-[#A89882] font-normal">Phối với Chi Âm</span>
+                        <span className="text-[10px] text-[#5C4D3C] font-normal">Phối với Chi Âm</span>
                       </div>
                       <div className="grid grid-cols-5 gap-2">
                         {CAN_LIST.filter((c) => c.polarity === "am").map((item) => {
@@ -869,13 +822,13 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                               className={`p-2 sm:p-2.5 rounded-xl border flex flex-col items-center justify-center transition-all cursor-pointer ${
                                 isSelected
                                   ? "bg-[#C9A55A] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105"
-                                  : "bg-[#221A12] hover:bg-[#2F2418] text-[#F3E7D0] border-[#3E2E1C] hover:border-amber-500/60"
+                                  : "bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#1C1813] border-[#C4963E]/45 hover:border-amber-500/60"
                               }`}
                             >
                               <span className="text-xl sm:text-2xl mb-1">{item.emoji}</span>
                               <span className="text-base sm:text-lg font-serif font-bold">{item.name}</span>
-                              <span className="text-[11px] text-[#A89882]">{item.chinese}</span>
-                              <span className="text-[9px] mt-1 text-[#CDBFA8] text-center line-clamp-1">
+                              <span className="text-[11px] text-[#5C4D3C]">{item.chinese}</span>
+                              <span className="text-[9px] mt-1 text-[#5C4D3C] text-center line-clamp-1">
                                 {item.symbol}
                               </span>
                             </button>
@@ -894,12 +847,12 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
 
                   return (
                     <div className="space-y-4">
-                      <div className="text-xs bg-[#24190E] p-2.5 rounded-xl border border-[#48331E] flex items-center justify-between">
+                      <div className="text-xs bg-[#FFFDF8] p-2.5 rounded-xl border border-[#C4963E]/45 flex items-center justify-between">
                         <span>
-                          Thiên Can hiện tại: <strong className="text-[#D6B97A]">{currentCan || "(Chưa chọn)"}</strong>
+                          Thiên Can hiện tại: <strong className="text-[#6E4E16]">{currentCan || "(Chưa chọn)"}</strong>
                         </span>
                         {allowedPolarity && (
-                          <span className="text-[11px] font-bold text-amber-300">
+                          <span className="text-[11px] font-bold text-[#78350F]">
                             Khuyến nghị chọn {allowedPolarity === "am" ? "6 Chi Âm (-)" : "6 Chi Dương (+)"}
                           </span>
                         )}
@@ -907,12 +860,12 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
 
                       {/* Nhóm Chi Dương */}
                       <div>
-                        <div className="flex items-center justify-between text-xs font-bold text-yellow-400 mb-2">
+                        <div className="flex items-center justify-between text-xs font-bold text-[#854D0E] mb-2">
                           <span className="flex items-center gap-1.5">
                             <span className="w-2 h-2 rounded-full bg-yellow-400"></span>
                             6 ĐỊA CHI DƯƠNG (+)
                           </span>
-                          <span className="text-[10px] text-[#A89882] font-normal">
+                          <span className="text-[10px] text-[#5C4D3C] font-normal">
                             Đi với Can Giáp, Bính, Mậu, Canh, Nhâm
                           </span>
                         </div>
@@ -927,13 +880,13 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                                 className={`p-2 sm:p-2.5 rounded-xl border flex flex-col items-center justify-center transition-all cursor-pointer ${
                                   isSelected
                                     ? "bg-[#C9A55A] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105"
-                                    : "bg-[#221A12] hover:bg-[#2F2418] text-[#F3E7D0] border-[#3E2E1C] hover:border-yellow-500/60"
+                                    : "bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#1C1813] border-[#C4963E]/45 hover:border-yellow-500/60"
                                 }`}
                               >
                                 <span className="text-xl sm:text-2xl mb-1">{item.emoji}</span>
                                 <span className="text-sm sm:text-base font-serif font-bold">{item.name}</span>
-                                <span className="text-[11px] text-[#A89882]">{item.chinese}</span>
-                                <span className="text-[9px] mt-1 text-[#CDBFA8] text-center line-clamp-1">
+                                <span className="text-[11px] text-[#5C4D3C]">{item.chinese}</span>
+                                <span className="text-[9px] mt-1 text-[#5C4D3C] text-center line-clamp-1">
                                   {item.zodiac}
                                 </span>
                               </button>
@@ -944,12 +897,12 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
 
                       {/* Nhóm Chi Âm */}
                       <div>
-                        <div className="flex items-center justify-between text-xs font-bold text-amber-400 mb-2">
+                        <div className="flex items-center justify-between text-xs font-bold text-[#92400E] mb-2">
                           <span className="flex items-center gap-1.5">
                             <span className="w-2 h-2 rounded-full bg-amber-400"></span>
                             6 ĐỊA CHI ÂM (-)
                           </span>
-                          <span className="text-[10px] text-[#A89882] font-normal">
+                          <span className="text-[10px] text-[#5C4D3C] font-normal">
                             Đi với Can Ất, Đinh, Kỷ, Tân, Quý
                           </span>
                         </div>
@@ -964,13 +917,13 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                                 className={`p-2 sm:p-2.5 rounded-xl border flex flex-col items-center justify-center transition-all cursor-pointer ${
                                   isSelected
                                     ? "bg-[#C9A55A] text-[#12100E] border-[#E5C158] font-bold shadow-md scale-105"
-                                    : "bg-[#221A12] hover:bg-[#2F2418] text-[#F3E7D0] border-[#3E2E1C] hover:border-amber-500/60"
+                                    : "bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#1C1813] border-[#C4963E]/45 hover:border-amber-500/60"
                                 }`}
                               >
                                 <span className="text-xl sm:text-2xl mb-1">{item.emoji}</span>
                                 <span className="text-sm sm:text-base font-serif font-bold">{item.name}</span>
-                                <span className="text-[11px] text-[#A89882]">{item.chinese}</span>
-                                <span className="text-[9px] mt-1 text-[#CDBFA8] text-center line-clamp-1">
+                                <span className="text-[11px] text-[#5C4D3C]">{item.chinese}</span>
+                                <span className="text-[9px] mt-1 text-[#5C4D3C] text-center line-clamp-1">
                                   {item.zodiac}
                                 </span>
                               </button>
@@ -1010,7 +963,7 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
               - Ẩn hoàn toàn tại Tab Hoa Giáp theo yêu cầu người dùng
               ================================================================= */}
           {showHoaDich && effectiveScope !== "hoagiap" && (
-            <div className="mt-5 pt-4 border-t border-[#3E2D1A]">
+            <div className="mt-5 pt-4 border-t border-[#C4963E]/45">
               <LucNhamHoaDichSection
                 dayCan={effectiveDayCan}
                 dayChi={effectiveDayChi}
@@ -1032,16 +985,16 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
             <div
               ref={lucNhamLuuNienRef}
               id={effectiveScope === "bocque" ? "luunien-thien-bocque" : "luunien-thien-hoagiap"}
-              className="mt-6 pt-5 border-t border-[#3E2D1A]/90 space-y-3"
+              className="mt-6 pt-5 border-t border-[#C4963E]/45 space-y-3"
             >
               <div className="flex flex-wrap items-center justify-between gap-2 px-1">
                 <div className="flex items-center gap-2">
                   <div className="w-2.5 h-2.5 rounded-full bg-[#D6B97A] shadow-[0_0_8px_#D6B97A]" />
-                  <span className="text-xs font-serif font-bold text-[#D6B97A] uppercase tracking-wider">
+                  <span className="text-xs font-serif font-bold text-[#6E4E16] uppercase tracking-wider">
                     LƯU NIÊN THIÊN • QUẺ LỤC NHÂM ({effectiveScope === "bocque" ? "CHỖ BỐC QUẺ" : "TAB HOA GIÁP"})
                   </span>
                 </div>
-                <span className="text-[10px] text-[#A89882] font-mono">
+                <span className="text-[10px] text-[#5C4D3C] font-mono">
                   Chiêm Thời (Trụ Giờ): {effectiveHourCan} {effectiveHourChi}
                 </span>
               </div>

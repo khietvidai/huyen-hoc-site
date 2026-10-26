@@ -342,47 +342,47 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
     switch (el) {
       case "Thủy":
         return {
-          cardBg: "from-[#0F2236] via-[#0D1C2D] to-[#08121E]",
+          cardBg: "from-[#FFFDF8] via-[#FFFDF8] to-[#FFFDF8]",
           border: "border-sky-600/60",
           activeRing: "ring-2 ring-sky-400 border-sky-400 shadow-sky-500/30",
-          text: "text-sky-300",
-          badgeBg: "bg-sky-950/90 text-sky-200 border-sky-600/70",
+          text: "text-[#1E3A8A]",
+          badgeBg: "bg-[#E0F2FE]/90 text-[#1E3A8A] border-sky-600/70",
           dot: "bg-sky-400",
         };
       case "Hỏa":
         return {
-          cardBg: "from-[#331414] via-[#281010] to-[#1C0B0B]",
+          cardBg: "from-[#FFFDF8] via-[#FFFDF8] to-[#FFFDF8]",
           border: "border-rose-600/60",
           activeRing: "ring-2 ring-rose-400 border-rose-400 shadow-rose-500/30",
-          text: "text-rose-300",
-          badgeBg: "bg-rose-950/90 text-rose-200 border-rose-600/70",
+          text: "text-[#991B1B]",
+          badgeBg: "bg-[#FEE2E2]/90 text-[#991B1B] border-rose-600/70",
           dot: "bg-rose-400",
         };
       case "Thổ":
         return {
-          cardBg: "from-[#2E2012] via-[#24190E] to-[#18110A]",
+          cardBg: "from-[#FAF6EE] via-[#FFFDF8] to-[#FFFDF8]",
           border: "border-amber-600/60",
           activeRing: "ring-2 ring-amber-400 border-amber-400 shadow-amber-500/30",
-          text: "text-amber-300",
-          badgeBg: "bg-amber-950/90 text-amber-200 border-amber-600/70",
+          text: "text-[#78350F]",
+          badgeBg: "bg-[#FEF3C7] text-[#78350F] border-amber-600/70",
           dot: "bg-amber-400",
         };
       case "Kim":
         return {
-          cardBg: "from-[#1F252E] via-[#171D24] to-[#10141A]",
+          cardBg: "from-[#FAF6EE] via-[#FFFDF8] to-[#FFFDF8]",
           border: "border-slate-500/60",
           activeRing: "ring-2 ring-slate-300 border-slate-300 shadow-slate-400/30",
-          text: "text-slate-200",
-          badgeBg: "bg-slate-900/90 text-slate-100 border-slate-500/70",
+          text: "text-[#3F3F46]",
+          badgeBg: "bg-[#F1F5F9] text-[#334155] border-[#CBD5E1]",
           dot: "bg-slate-300",
         };
       case "Mộc":
         return {
-          cardBg: "from-[#0F291C] via-[#0C2016] to-[#081710]",
+          cardBg: "from-[#FFFDF8] via-[#FFFDF8] to-[#FFFDF8]",
           border: "border-emerald-600/60",
           activeRing: "ring-2 ring-emerald-400 border-emerald-400 shadow-emerald-500/30",
-          text: "text-emerald-300",
-          badgeBg: "bg-emerald-950/90 text-emerald-200 border-emerald-600/70",
+          text: "text-[#14532D]",
+          badgeBg: "bg-[#DCFCE7]/90 text-[#14532D] border-emerald-600/70",
           dot: "bg-emerald-400",
         };
     }
@@ -478,28 +478,28 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
 
   const getElementBadgeColor = (el: "Thủy" | "Hỏa" | "Kim" | "Mộc") => {
     switch (el) {
-      case "Thủy": return "bg-sky-950/80 text-sky-300 border-sky-700/60";
-      case "Hỏa": return "bg-rose-950/80 text-rose-300 border-rose-700/60";
-      case "Kim": return "bg-slate-900/80 text-slate-200 border-slate-600/60";
-      case "Mộc": return "bg-emerald-950/80 text-emerald-300 border-emerald-700/60";
+      case "Thủy": return "bg-[#E0F2FE]/80 text-[#1E3A8A] border-sky-700/60";
+      case "Hỏa": return "bg-[#FEE2E2] text-[#991B1B] border-rose-700/60";
+      case "Kim": return "bg-[#F4F4F5] text-[#3F3F46] border-slate-600/60";
+      case "Mộc": return "bg-[#DCFCE7] text-[#14532D] border-[#16A34A]/45";
     }
   };
 
   return (
     <div
-      className={`p-3 sm:p-5 rounded-2xl bg-gradient-to-b from-[#1C140B] via-[#161009] to-[#120D08] border border-[#523B25] shadow-xl ${className}`}
+      className={`p-3 sm:p-5 rounded-2xl bg-gradient-to-b from-[#FFFDF8] via-[#FFFDF8] to-[#FFFDF8] border border-[#C4963E]/45 shadow-xl ${className}`}
     >
       {/* Header Kết Cấu Thiên */}
-      <div className="flex flex-row items-center justify-between gap-2 pb-2.5 sm:pb-3 border-b border-[#3B291A]">
+      <div className="flex flex-row items-center justify-between gap-2 pb-2.5 sm:pb-3 border-b border-[#C4963E]/45">
         <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-br from-amber-600 to-amber-800 text-[#F5EAD4] flex items-center justify-center shadow-md shrink-0">
-            <GitMerge className="w-4 h-4 text-amber-200" />
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#9E2A2B] text-[#FFF9F5] flex items-center justify-center shadow-md shrink-0">
+            <GitMerge className="w-4 h-4 text-[#78350F]" />
           </div>
           <div className="min-w-0">
-            <h3 className="text-xs sm:text-base font-bold text-[#F5EAD4] font-serif tracking-wide truncate">
+            <h3 className="text-xs sm:text-base font-bold text-[#1C1813] font-serif tracking-wide truncate">
               KẾT CẤU THIÊN (結構篇)
             </h3>
-            <p className="text-[10px] sm:text-xs text-[#A89882] mt-0.5 line-clamp-1">
+            <p className="text-[10px] sm:text-xs text-[#5C4D3C] mt-0.5 line-clamp-1">
               Phân tích kẹp củng Tam Hợp/Tam Hội, quan hệ Địch - Ngã, Dược Bệnh Ngoại Tà và Nguyên Lưu Ngũ Hành.
             </p>
           </div>
@@ -534,10 +534,10 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
             <button
               type="button"
               onClick={onCapture}
-              className="no-capture flex items-center gap-1 px-2.5 py-1 text-[11px] sm:text-xs font-semibold rounded-lg bg-[#271E15] hover:bg-[#382B1E] text-amber-200 border border-[#523F27] hover:border-[#C9A55A] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
+              className="no-capture flex items-center gap-1 px-2.5 py-1 text-[11px] sm:text-xs font-semibold rounded-lg bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#78350F] border border-[#C4963E]/45 hover:border-[#B8862D] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
               title="Chụp ảnh riêng Kết Cấu Thiên"
             >
-              <Camera className="w-3.5 h-3.5 text-amber-400" />
+              <Camera className="w-3.5 h-3.5 text-[#92400E]" />
               <span>Chụp Kết Cấu</span>
             </button>
           )}
@@ -545,7 +545,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center gap-1 px-2 py-1 text-[11px] sm:text-xs font-medium rounded-lg bg-[#271C11] text-[#D6B97A] border border-[#4D3620] hover:bg-[#382717] transition-all cursor-pointer whitespace-nowrap"
+            className="flex items-center gap-1 px-2 py-1 text-[11px] sm:text-xs font-medium rounded-lg bg-[#FFFDF8] text-[#6E4E16] border border-[#C4963E]/45 hover:bg-[#FAF6EE] transition-all cursor-pointer whitespace-nowrap"
           >
             <span>{isOpen ? "Thu Gọn" : "Mở Rộng"}</span>
             <ChevronDown
@@ -562,21 +562,21 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
           {/* =================================================================
               BƯỚC 1: HỢP COI NGUYÊN CỤC XEM CÓ KẸP CỦNG GÌ KHÔNG?
               ================================================================= */}
-          <div className="space-y-2.5 p-2.5 sm:p-3 rounded-xl bg-[#171109] border border-[#3A2817]">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pb-2 border-b border-[#2C1D10]">
-              <div className="text-[10.5px] sm:text-[11px] font-bold text-[#D6B97A] flex items-center gap-1.5 uppercase tracking-wider">
-                <span className="w-4 h-4 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center text-[10px] font-mono shrink-0">
+          <div className="space-y-2.5 p-2.5 sm:p-3 rounded-xl bg-[#FFFDF8] border border-[#C4963E]/45">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pb-2 border-b border-[#C4963E]/45">
+              <div className="text-[10.5px] sm:text-[11px] font-bold text-[#6E4E16] flex items-center gap-1.5 uppercase tracking-wider">
+                <span className="w-4 h-4 rounded-full bg-amber-500/20 text-[#78350F] flex items-center justify-center text-[10px] font-mono shrink-0">
                   1
                 </span>
                 <span>Bước 1: Hợp coi nguyên cục hợp xem có kẹp củng gì không?</span>
               </div>
-              <div className="text-[9.5px] sm:text-[10px] text-[#A89882] font-mono">
+              <div className="text-[9.5px] sm:text-[10px] text-[#5C4D3C] font-mono">
                 {detectedCung.length > 0 ? (
-                  <span className="text-emerald-400 font-bold">
+                  <span className="text-[#15803D] font-bold">
                     Phát hiện {detectedCung.length} thế kẹp củng
                   </span>
                 ) : (
-                  <span className="text-[#8C7D6B]">(Không có kẹp củng)</span>
+                  <span className="text-[#5C4D3C]">(Không có kẹp củng)</span>
                 )}
               </div>
             </div>
@@ -588,21 +588,21 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                 return (
                   <div
                     key={p.key}
-                    className="p-1 sm:p-1.5 rounded-lg bg-gradient-to-b from-[#211810] to-[#17110A] border border-[#44301D] text-center flex flex-col items-center justify-between min-h-[52px] sm:min-h-[58px]"
+                    className="p-1 sm:p-1.5 rounded-lg bg-gradient-to-b from-[#FFFDF8] to-[#FFFDF8] border border-[#C4963E]/45 text-center flex flex-col items-center justify-between min-h-[52px] sm:min-h-[58px]"
                   >
-                    <div className="text-[8.5px] sm:text-[9.5px] font-bold text-[#D6B97A] truncate w-full pb-0.5 border-b border-[#352516]/70">
+                    <div className="text-[8.5px] sm:text-[9.5px] font-bold text-[#6E4E16] truncate w-full pb-0.5 border-b border-[#C4963E]/45">
                       {p.label}
                     </div>
                     <div className="flex items-center justify-center gap-0.5 sm:gap-1 my-0.5">
                       <span className="text-xs sm:text-base leading-none">{chiData?.emoji || "⭐"}</span>
-                      <span className="text-xs sm:text-sm font-serif font-bold text-[#F5EAD4] leading-none">
+                      <span className="text-xs sm:text-sm font-serif font-bold text-[#1C1813] leading-none">
                         {p.chi}
                       </span>
-                      <span className="text-[8px] sm:text-[9px] text-[#8C7D6B] font-serif">
+                      <span className="text-[8px] sm:text-[9px] text-[#5C4D3C] font-serif">
                         ({chiData?.chinese || ""})
                       </span>
                     </div>
-                    <div className="text-[7.5px] sm:text-[8.5px] text-[#8C7D6B] font-mono leading-none">
+                    <div className="text-[7.5px] sm:text-[8.5px] text-[#5C4D3C] font-mono leading-none">
                       {p.pillar}
                     </div>
                   </div>
@@ -611,14 +611,14 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
             </div>
 
             {/* THANH ĐIỀU HƯỚNG TAB BƯỚC 1 */}
-            <div className="flex items-center gap-1.5 pt-1 border-t border-[#2C1D10] overflow-x-auto scrollbar-none">
+            <div className="flex items-center gap-1.5 pt-1 border-t border-[#C4963E]/45 overflow-x-auto scrollbar-none">
               <button
                 type="button"
                 onClick={() => setActiveTabB1("nguyen_cuc")}
                 className={`px-2.5 py-1 rounded-md text-[10.5px] sm:text-[11px] font-medium transition-all cursor-pointer whitespace-nowrap ${
                   activeTabB1 === "nguyen_cuc"
-                    ? "bg-[#382614] border border-[#C9A55A] text-[#F5EAD4] font-bold"
-                    : "bg-[#1E140C] hover:bg-[#281B10] border border-[#3D2C1A] text-[#8C7D6B]"
+                    ? "bg-[#FAF6EE] border border-[#B8862D] text-[#1C1813] font-bold"
+                    : "bg-[#FFFDF8] hover:bg-[#FFFDF8] border border-[#C4963E]/45 text-[#5C4D3C]"
                 }`}
               >
                 Nguyên Cục Kẹp Củng ({detectedCung.length})
@@ -628,8 +628,8 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                 onClick={() => setActiveTabB1("tam_hop")}
                 className={`px-2.5 py-1 rounded-md text-[10.5px] sm:text-[11px] font-medium transition-all cursor-pointer whitespace-nowrap ${
                   activeTabB1 === "tam_hop"
-                    ? "bg-[#382614] border border-[#C9A55A] text-[#F5EAD4] font-bold"
-                    : "bg-[#1E140C] hover:bg-[#281B10] border border-[#3D2C1A] text-[#8C7D6B]"
+                    ? "bg-[#FAF6EE] border border-[#B8862D] text-[#1C1813] font-bold"
+                    : "bg-[#FFFDF8] hover:bg-[#FFFDF8] border border-[#C4963E]/45 text-[#5C4D3C]"
                 }`}
               >
                 Tam Hợp Củng
@@ -639,8 +639,8 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                 onClick={() => setActiveTabB1("tam_hoi")}
                 className={`px-2.5 py-1 rounded-md text-[10.5px] sm:text-[11px] font-medium transition-all cursor-pointer whitespace-nowrap ${
                   activeTabB1 === "tam_hoi"
-                    ? "bg-[#382614] border border-[#C9A55A] text-[#F5EAD4] font-bold"
-                    : "bg-[#1E140C] hover:bg-[#281B10] border border-[#3D2C1A] text-[#8C7D6B]"
+                    ? "bg-[#FAF6EE] border border-[#B8862D] text-[#1C1813] font-bold"
+                    : "bg-[#FFFDF8] hover:bg-[#FFFDF8] border border-[#C4963E]/45 text-[#5C4D3C]"
                 }`}
               >
                 Tam Hội Củng & Ngoại Lệ
@@ -655,10 +655,10 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                     {detectedCung.map((item) => (
                       <div
                         key={item.pairKey}
-                        className="p-2 rounded-lg bg-gradient-to-r from-[#20170E] to-[#17100A] border border-amber-600/50 shadow-sm flex flex-col justify-between"
+                        className="p-2 rounded-lg bg-gradient-to-r from-[#FFFDF8] to-[#FFFDF8] border border-amber-600/50 shadow-sm flex flex-col justify-between"
                       >
                         <div className="flex items-center justify-between gap-1">
-                          <span className="font-serif text-[11px] sm:text-xs font-bold text-amber-300">
+                          <span className="font-serif text-[11px] sm:text-xs font-bold text-[#78350F]">
                             {item.p1Chi} ({item.p1Label}) + {item.p2Chi} ({item.p2Label})
                           </span>
                           <span
@@ -669,14 +669,14 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                             {item.rule.type === "tam_hop" ? "Tam Hợp" : "Tam Hội"} • {item.rule.element}
                           </span>
                         </div>
-                        <div className="mt-1 pt-1 border-t border-[#362413] flex items-center justify-between text-[10px]">
-                          <span className="text-[#A89882]">
+                        <div className="mt-1 pt-1 border-t border-[#C4963E]/45 flex items-center justify-between text-[10px]">
+                          <span className="text-[#5C4D3C]">
                             ➔ Củng chữ:{" "}
-                            <strong className="text-emerald-400 font-serif text-xs">
+                            <strong className="text-[#15803D] font-serif text-xs">
                               {item.rule.cungChi}
                             </strong>
                           </span>
-                          <span className="text-[8.5px] text-[#8C7D6B] font-mono">
+                          <span className="text-[8.5px] text-[#5C4D3C] font-mono">
                             {item.cungChiAlreadyInChart ? "(Có sẵn trong cục)" : "(Hư thần củng nhập)"}
                           </span>
                         </div>
@@ -684,7 +684,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                     ))}
                   </div>
                 ) : (
-                  <div className="p-2.5 rounded-lg bg-[#1A120B] border border-dashed border-[#3D2C1A] text-center text-[#8C7D6B] text-[11px]">
+                  <div className="p-2.5 rounded-lg bg-[#FFFDF8] border border-dashed border-[#C4963E]/45 text-center text-[#5C4D3C] text-[11px]">
                     Nguyên cục 4 trụ hiện tại không tạo thành thế kẹp củng Tam Hợp hay Tam Hội.
                   </div>
                 )}
@@ -703,29 +703,29 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                       onClick={() => setSelectedRuleId((prev) => (prev === rule.id ? null : rule.id))}
                       className={`p-2 rounded-lg border text-left transition-all cursor-pointer flex flex-col justify-between ${
                         activeInChart
-                          ? "bg-gradient-to-r from-emerald-950/80 to-[#22160C] border-emerald-400 text-emerald-200 ring-1 ring-emerald-500/50 shadow-md"
+                          ? "bg-gradient-to-r from-[#ECFDF5] to-[#FFFDF8] border-emerald-400 text-[#14532D] ring-1 ring-emerald-500/50 shadow-md"
                           : isSelected
-                          ? "bg-[#271C10] border-[#C9A55A] text-[#F5EAD4] ring-1 ring-[#C9A55A]/50"
-                          : "bg-[#1B140D] hover:bg-[#241A10] border-[#3D2C1A] text-[#A89882]"
+                          ? "bg-[#FFFDF8] border-[#B8862D] text-[#1C1813] ring-1 ring-[#C9A55A]/50"
+                          : "bg-[#FFFDF8] hover:bg-[#FFFDF8] border-[#C4963E]/45 text-[#5C4D3C]"
                       }`}
                     >
                       <div className="flex items-center justify-between gap-1 w-full">
-                        <span className="font-serif text-[11px] sm:text-xs font-bold text-[#D6B97A]">
+                        <span className="font-serif text-[11px] sm:text-xs font-bold text-[#6E4E16]">
                           {rule.branch1} - {rule.branch2} củng {rule.cungChi}
                         </span>
                         <span className={`text-[8px] px-1.5 py-0.5 rounded border font-semibold ${getElementBadgeColor(rule.element)}`}>
                           {rule.element} Cục
                         </span>
                       </div>
-                      <div className="mt-1 flex items-center justify-between w-full text-[9px] text-[#8C7D6B]">
+                      <div className="mt-1 flex items-center justify-between w-full text-[9px] text-[#5C4D3C]">
                         <span>{rule.groupName}</span>
                         {hasFullGroupInChart(rule) ? (
-                          <span className="text-amber-400 font-medium">
+                          <span className="text-[#92400E] font-medium">
                             (Đã có đủ chữ - không củng)
                           </span>
                         ) : activeInChart ? (
-                          <span className="text-emerald-400 font-bold flex items-center gap-0.5">
-                            <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                          <span className="text-[#15803D] font-bold flex items-center gap-0.5">
+                            <CheckCircle2 className="w-3 h-3 text-[#15803D]" />
                             <span>Kẹp củng hợp lệ</span>
                           </span>
                         ) : null}
@@ -751,38 +751,38 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                       onClick={() => setSelectedRuleId((prev) => (prev === rule.id ? null : rule.id))}
                       className={`p-2 rounded-lg border text-left transition-all cursor-pointer flex flex-col justify-between ${
                         isException
-                          ? "bg-gradient-to-r from-[#241311] to-[#1C100E] border-rose-800/80 text-rose-200"
+                          ? "bg-gradient-to-r from-[#FFFDF8] to-[#FFFDF8] border-rose-800/80 text-[#991B1B]"
                           : activeInChart
-                          ? "bg-gradient-to-r from-emerald-950/80 to-[#22160C] border-emerald-400 text-emerald-200 ring-1 ring-emerald-500/50 shadow-md"
+                          ? "bg-gradient-to-r from-[#ECFDF5] to-[#FFFDF8] border-emerald-400 text-[#14532D] ring-1 ring-emerald-500/50 shadow-md"
                           : isSelected
-                          ? "bg-[#271C10] border-[#C9A55A] text-[#F5EAD4] ring-1 ring-[#C9A55A]/50"
-                          : "bg-[#1B140D] hover:bg-[#241A10] border-[#3D2C1A] text-[#A89882]"
+                          ? "bg-[#FFFDF8] border-[#B8862D] text-[#1C1813] ring-1 ring-[#C9A55A]/50"
+                          : "bg-[#FFFDF8] hover:bg-[#FFFDF8] border-[#C4963E]/45 text-[#5C4D3C]"
                       }`}
                     >
                       <div className="flex items-center justify-between gap-1 w-full">
-                        <span className={`font-serif text-[11px] sm:text-xs font-bold ${isException ? "text-rose-300" : "text-[#D6B97A]"}`}>
+                        <span className={`font-serif text-[11px] sm:text-xs font-bold ${isException ? "text-[#991B1B]" : "text-[#6E4E16]"}`}>
                           {isException ? `${rule.branch1} - ${rule.branch2} (Ngoại lệ)` : `${rule.branch1} - ${rule.branch2} củng ${rule.cungChi}`}
                         </span>
-                        <span className={`text-[8px] px-1.5 py-0.5 rounded border font-semibold ${isException ? "bg-rose-950 text-rose-300 border-rose-700/60" : getElementBadgeColor(rule.element)}`}>
+                        <span className={`text-[8px] px-1.5 py-0.5 rounded border font-semibold ${isException ? "bg-[#FEE2E2] text-[#991B1B] border-rose-700/60" : getElementBadgeColor(rule.element)}`}>
                           {isException ? "Ngoại Lệ" : `${rule.element} Hội`}
                         </span>
                       </div>
                       <div className="mt-1 w-full text-[9px]">
                         {isException ? (
-                          <div className="text-rose-400 font-medium flex items-center gap-1">
-                            <AlertCircle className="w-3 h-3 text-rose-400 shrink-0" />
+                          <div className="text-[#991B1B] font-medium flex items-center gap-1">
+                            <AlertCircle className="w-3 h-3 text-[#991B1B] shrink-0" />
                             <span>{rule.exceptionNote}</span>
                           </div>
                         ) : (
-                          <div className="flex items-center justify-between text-[#8C7D6B]">
+                          <div className="flex items-center justify-between text-[#5C4D3C]">
                             <span>{rule.groupName}</span>
                             {fullGroup ? (
-                              <span className="text-amber-400 font-medium">
+                              <span className="text-[#92400E] font-medium">
                                 (Đã có đủ chữ - không củng)
                               </span>
                             ) : activeInChart ? (
-                              <span className="text-emerald-400 font-bold flex items-center gap-0.5">
-                                <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                              <span className="text-[#15803D] font-bold flex items-center gap-0.5">
+                                <CheckCircle2 className="w-3 h-3 text-[#15803D]" />
                                 <span>Kẹp củng hợp lệ</span>
                               </span>
                             ) : null}
@@ -801,21 +801,21 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
               - Địch là đi hình hại
               - Ngã là bị hình hại
               ================================================================= */}
-          <div className="space-y-2.5 p-2.5 sm:p-3 rounded-xl bg-[#171109] border border-[#3A2817]">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-2 border-b border-[#2C1D10]">
-              <div className="text-[10.5px] sm:text-[11px] font-bold text-[#D6B97A] flex items-center gap-1.5 uppercase tracking-wider">
-                <span className="w-4 h-4 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center text-[10px] font-mono shrink-0">
+          <div className="space-y-2.5 p-2.5 sm:p-3 rounded-xl bg-[#FFFDF8] border border-[#C4963E]/45">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-2 border-b border-[#C4963E]/45">
+              <div className="text-[10.5px] sm:text-[11px] font-bold text-[#6E4E16] flex items-center gap-1.5 uppercase tracking-wider">
+                <span className="w-4 h-4 rounded-full bg-amber-500/20 text-[#78350F] flex items-center justify-center text-[10px] font-mono shrink-0">
                   2
                 </span>
-                <Swords className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <Swords className="w-3.5 h-3.5 text-[#92400E] shrink-0" />
                 <span>Bước 2: Nguyên cục xem hình hại (Địch - Ngã quan hệ)</span>
               </div>
-              <div className="text-[9px] sm:text-[10px] text-[#8C7D6B] font-mono">
+              <div className="text-[9px] sm:text-[10px] text-[#5C4D3C] font-mono">
                 {dichList.length > 0 || ngaList.length > 0 ? (
                   <span>
-                    {dichList.length > 0 && <span className="text-amber-400 font-bold">Địch: {dichList.map(k => chartPillars.find(p => p.key === k)?.chi).join(", ")}</span>}
-                    {dichList.length > 0 && ngaList.length > 0 && <span className="text-[#8C7D6B]"> ➔ </span>}
-                    {ngaList.length > 0 && <span className="text-sky-400 font-bold">Ngã: {ngaList.map(k => chartPillars.find(p => p.key === k)?.chi).join(", ")}</span>}
+                    {dichList.length > 0 && <span className="text-[#92400E] font-bold">Địch: {dichList.map(k => chartPillars.find(p => p.key === k)?.chi).join(", ")}</span>}
+                    {dichList.length > 0 && ngaList.length > 0 && <span className="text-[#5C4D3C]"> ➔ </span>}
+                    {ngaList.length > 0 && <span className="text-[#1D4ED8] font-bold">Ngã: {ngaList.map(k => chartPillars.find(p => p.key === k)?.chi).join(", ")}</span>}
                   </span>
                 ) : (
                   <span>(Chưa chọn Địch / Ngã)</span>
@@ -824,18 +824,18 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
             </div>
 
             {/* LỜI DẪN BƯỚC 2: MỤC TIÊU TÌM ĐỊCH - NGÃ QUAN HỆ (KHÔNG CHỌN SẴN, NGƯỜI DÙNG TỰ DO CHỌN) */}
-            <div className="text-[10px] text-[#A89882] leading-relaxed">
-              Mục tiêu tìm quan hệ <strong className="text-amber-300">Địch</strong> - <strong className="text-sky-300">Ngã</strong> trong nguyên cục: <span className="text-amber-300 font-semibold">Địch là đi hình hại</span>, <span className="text-sky-300 font-semibold">Ngã là bị hình hại</span>.
+            <div className="text-[10px] text-[#5C4D3C] leading-relaxed">
+              Mục tiêu tìm quan hệ <strong className="text-[#78350F]">Địch</strong> - <strong className="text-[#1E3A8A]">Ngã</strong> trong nguyên cục: <span className="text-[#78350F] font-semibold">Địch là đi hình hại</span>, <span className="text-[#1E3A8A] font-semibold">Ngã là bị hình hại</span>.
             </div>
 
             {/* HÀNG ĐỊCH: ĐI HÌNH HẠI (CHỌN ĐƯỢC NHIỀU HƠN 1, THẲNG HÀNG) */}
-            <div className="space-y-1 pt-1 border-t border-[#2C1D10]">
+            <div className="space-y-1 pt-1 border-t border-[#C4963E]/45">
               <div className="flex items-center justify-between text-[9.5px] sm:text-[10px]">
-                <span className="font-semibold text-amber-400 flex items-center gap-1">
+                <span className="font-semibold text-[#92400E] flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
                   <span>Địch (Bên ĐI hình hại - có thể chọn nhiều):</span>
                 </span>
-                <span className="text-[#8C7D6B] text-[8.5px] sm:text-[9px]">
+                <span className="text-[#5C4D3C] text-[8.5px] sm:text-[9px]">
                   {dichList.length > 0
                     ? `Đã chọn: ${dichList.map((k) => chartPillars.find((p) => p.key === k)?.chi).join(", ")}`
                     : "Chưa chọn"}
@@ -852,24 +852,24 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                       onClick={() => toggleDich(p.key)}
                       className={`relative p-1 sm:p-2 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-between min-h-[56px] sm:min-h-[64px] ${
                         isSelected
-                          ? "bg-gradient-to-b from-[#382614] to-[#25180D] border-amber-400 text-amber-200 font-bold shadow-md shadow-amber-500/20 ring-1 ring-amber-500/60"
-                          : "bg-gradient-to-b from-[#211810] to-[#17110A] hover:bg-[#281D13] border-[#44301D] text-[#A89882]"
+                          ? "bg-gradient-to-b from-[#FAF6EE] to-[#FFFDF8] border-amber-400 text-[#78350F] font-bold shadow-md shadow-amber-500/20 ring-1 ring-amber-500/60"
+                          : "bg-gradient-to-b from-[#FFFDF8] to-[#FFFDF8] hover:bg-[#FFFDF8] border-[#C4963E]/45 text-[#5C4D3C]"
                       }`}
                     >
-                      <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#352516]/70">
-                        <span className={`text-[8.5px] sm:text-[10px] font-bold truncate ${isSelected ? "text-amber-300" : "text-[#D6B97A]"}`}>
+                      <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#C4963E]/45">
+                        <span className={`text-[8.5px] sm:text-[10px] font-bold truncate ${isSelected ? "text-[#78350F]" : "text-[#6E4E16]"}`}>
                           {p.label}
                         </span>
                         {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />}
                       </div>
                       <div className="flex items-center justify-center gap-0.5 sm:gap-1 my-0.5 sm:my-1">
                         <span className="text-xs sm:text-base leading-none">{chiData?.emoji || "⭐"}</span>
-                        <span className={`text-xs sm:text-sm font-serif font-bold leading-none ${isSelected ? "text-amber-200" : "text-[#F5EAD4]"}`}>
+                        <span className={`text-xs sm:text-sm font-serif font-bold leading-none ${isSelected ? "text-[#78350F]" : "text-[#1C1813]"}`}>
                           {p.chi}
                         </span>
-                        <span className="text-[8px] sm:text-[9.5px] text-[#8C7D6B] font-serif">({chiData?.chinese || ""})</span>
+                        <span className="text-[8px] sm:text-[9.5px] text-[#5C4D3C] font-serif">({chiData?.chinese || ""})</span>
                       </div>
-                      <div className="text-[7.5px] sm:text-[8.5px] text-[#8C7D6B] font-mono leading-none">
+                      <div className="text-[7.5px] sm:text-[8.5px] text-[#5C4D3C] font-mono leading-none">
                         {p.pillar}
                       </div>
                     </button>
@@ -881,11 +881,11 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
             {/* HÀNG NGÃ: BỊ HÌNH HẠI (CHỌN ĐƯỢC NHIỀU HƠN 1, THẲNG HÀNG) */}
             <div className="space-y-1">
               <div className="flex items-center justify-between text-[9.5px] sm:text-[10px]">
-                <span className="font-semibold text-sky-400 flex items-center gap-1">
+                <span className="font-semibold text-[#1D4ED8] flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
                   <span>Ngã (Bên BỊ hình hại - có thể chọn nhiều):</span>
                 </span>
-                <span className="text-[#8C7D6B] text-[8.5px] sm:text-[9px]">
+                <span className="text-[#5C4D3C] text-[8.5px] sm:text-[9px]">
                   {ngaList.length > 0
                     ? `Đã chọn: ${ngaList.map((k) => chartPillars.find((p) => p.key === k)?.chi).join(", ")}`
                     : "Chưa chọn"}
@@ -902,24 +902,24 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                       onClick={() => toggleNga(p.key)}
                       className={`relative p-1 sm:p-2 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-between min-h-[56px] sm:min-h-[64px] ${
                         isSelected
-                          ? "bg-gradient-to-b from-[#102433] to-[#0A1823] border-sky-400 text-sky-200 font-bold shadow-md shadow-sky-500/20 ring-1 ring-sky-500/60"
-                          : "bg-gradient-to-b from-[#211810] to-[#17110A] hover:bg-[#281D13] border-[#44301D] text-[#A89882]"
+                          ? "bg-gradient-to-b from-[#FFFDF8] to-[#FFFDF8] border-sky-400 text-[#1E3A8A] font-bold shadow-md shadow-sky-500/20 ring-1 ring-sky-500/60"
+                          : "bg-gradient-to-b from-[#FFFDF8] to-[#FFFDF8] hover:bg-[#FFFDF8] border-[#C4963E]/45 text-[#5C4D3C]"
                       }`}
                     >
-                      <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#352516]/70">
-                        <span className={`text-[8.5px] sm:text-[10px] font-bold truncate ${isSelected ? "text-sky-300" : "text-[#D6B97A]"}`}>
+                      <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#C4963E]/45">
+                        <span className={`text-[8.5px] sm:text-[10px] font-bold truncate ${isSelected ? "text-[#1E3A8A]" : "text-[#6E4E16]"}`}>
                           {p.label}
                         </span>
                         {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0" />}
                       </div>
                       <div className="flex items-center justify-center gap-0.5 sm:gap-1 my-0.5 sm:my-1">
                         <span className="text-xs sm:text-base leading-none">{chiData?.emoji || "⭐"}</span>
-                        <span className={`text-xs sm:text-sm font-serif font-bold leading-none ${isSelected ? "text-sky-200" : "text-[#F5EAD4]"}`}>
+                        <span className={`text-xs sm:text-sm font-serif font-bold leading-none ${isSelected ? "text-[#1E3A8A]" : "text-[#1C1813]"}`}>
                           {p.chi}
                         </span>
-                        <span className="text-[8px] sm:text-[9.5px] text-[#8C7D6B] font-serif">({chiData?.chinese || ""})</span>
+                        <span className="text-[8px] sm:text-[9.5px] text-[#5C4D3C] font-serif">({chiData?.chinese || ""})</span>
                       </div>
-                      <div className="text-[7.5px] sm:text-[8.5px] text-[#8C7D6B] font-mono leading-none">
+                      <div className="text-[7.5px] sm:text-[8.5px] text-[#5C4D3C] font-mono leading-none">
                         {p.pillar}
                       </div>
                     </button>
@@ -932,16 +932,16 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
           {/* =================================================================
               BƯỚC 3: CHỌN DƯỢC, BỆNH, NGOẠI TÀ (THAY THẾ BẰNG BƯỚC 4 Ở TRÊN CHUYỂN XUỐNG)
               ================================================================= */}
-          <div className="space-y-2.5 p-2.5 sm:p-3 rounded-xl bg-[#171109] border border-[#3A2817]">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-2 border-b border-[#2C1D10]">
-              <div className="text-[10.5px] sm:text-[11px] font-bold text-[#D6B97A] flex items-center gap-1.5 uppercase tracking-wider">
-                <span className="w-4 h-4 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center text-[10px] font-mono shrink-0">
+          <div className="space-y-2.5 p-2.5 sm:p-3 rounded-xl bg-[#FFFDF8] border border-[#C4963E]/45">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-2 border-b border-[#C4963E]/45">
+              <div className="text-[10.5px] sm:text-[11px] font-bold text-[#6E4E16] flex items-center gap-1.5 uppercase tracking-wider">
+                <span className="w-4 h-4 rounded-full bg-amber-500/20 text-[#78350F] flex items-center justify-center text-[10px] font-mono shrink-0">
                   3
                 </span>
-                <Activity className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <Activity className="w-3.5 h-3.5 text-[#92400E] shrink-0" />
                 <span>Bước 3: Chọn Dược, Bệnh, Ngoại Tà</span>
               </div>
-              <div className="text-[9px] sm:text-[10px] text-[#8C7D6B] font-mono">
+              <div className="text-[9px] sm:text-[10px] text-[#5C4D3C] font-mono">
                 {duocChiList.length > 0 || benhChiList.length > 0 || ngoaiTaChiList.length > 0
                   ? [
                       duocChiList.length > 0 &&
@@ -958,15 +958,15 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
             </div>
 
             {/* Đoạn nguyên lý then chốt theo đúng lời dạy của người dùng */}
-            <div className="p-2 sm:p-2.5 rounded-lg bg-[#140F0A] border border-[#3A2817] space-y-1 text-[10px] text-[#C4B49F] leading-relaxed">
+            <div className="p-2 sm:p-2.5 rounded-lg bg-[#FFFDF8] border border-[#C4963E]/45 space-y-1 text-[10px] text-[#5C4D3C] leading-relaxed">
               <div>
-                • <strong className="text-emerald-300">Dụng nguyên cục, giải hình hại phương gọi là Dược.</strong>
+                • <strong className="text-[#14532D]">Dụng nguyên cục, giải hình hại phương gọi là Dược.</strong>
               </div>
               <div>
-                • Có thể hợp (<em className="text-[#C9A55A]">Lục Hợp, Tam Hợp, Tam Hội trừ Thìn - Mão và Dậu - Tuất</em>) Địch hoặc Ngã đều là Dược. Sẽ có hơn nhiều loại Dược.
+                • Có thể hợp (<em className="text-[#6E4E16]">Lục Hợp, Tam Hợp, Tam Hội trừ Thìn - Mão và Dậu - Tuất</em>) Địch hoặc Ngã đều là Dược. Sẽ có hơn nhiều loại Dược.
               </div>
-              <div className="text-amber-300 font-semibold flex items-center gap-1 mt-0.5">
-                <AlertTriangle className="w-3 h-3 text-amber-400 shrink-0" />
+              <div className="text-[#78350F] font-semibold flex items-center gap-1 mt-0.5">
+                <AlertTriangle className="w-3 h-3 text-[#92400E] shrink-0" />
                 <span>Lưu niên coi chừng biến thành độc dược còn gọi là ngoại tà.</span>
               </div>
             </div>
@@ -975,11 +975,11 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
               {/* HÀNG DƯỢC */}
               <div className="space-y-1">
                 <div className="flex items-center justify-between text-[9.5px] sm:text-[10px]">
-                  <span className="font-semibold text-emerald-400 flex items-center gap-1">
+                  <span className="font-semibold text-[#15803D] flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                     <span>Dược (Có thể chọn nhiều Chi):</span>
                   </span>
-                  <span className="text-[#8C7D6B] text-[8.5px] sm:text-[9px]">
+                  <span className="text-[#5C4D3C] text-[8.5px] sm:text-[9px]">
                     {duocChiList.length > 0
                       ? `Đã chọn: ${duocChiList.map((k) => chartPillars.find((p) => p.key === k)?.chi).join(", ")}`
                       : "Chưa chọn"}
@@ -997,14 +997,14 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                         onClick={() => toggleDuoc(b.key)}
                         className={`relative p-1 sm:p-2 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-between min-h-[56px] sm:min-h-[64px] ${
                           isSelected
-                            ? "bg-gradient-to-b from-[#142B1E] to-[#0D1C14] border-emerald-400 text-emerald-100 font-bold shadow-md shadow-emerald-500/20 ring-1 ring-emerald-500/60"
-                            : "bg-gradient-to-b from-[#211810] to-[#17110A] hover:bg-[#281D13] border-[#44301D] text-[#A89882]"
+                            ? "bg-gradient-to-b from-[#FAF6EE] to-[#FFFDF8] border-emerald-400 text-[#14532D] font-bold shadow-md shadow-emerald-500/20 ring-1 ring-emerald-500/60"
+                            : "bg-gradient-to-b from-[#FFFDF8] to-[#FFFDF8] hover:bg-[#FFFDF8] border-[#C4963E]/45 text-[#5C4D3C]"
                         }`}
                       >
-                        <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#352516]/70">
+                        <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#C4963E]/45">
                           <span
                             className={`text-[8.5px] sm:text-[10px] font-bold truncate ${
-                              isSelected ? "text-emerald-300" : "text-[#D6B97A]"
+                              isSelected ? "text-[#14532D]" : "text-[#6E4E16]"
                             }`}
                           >
                             {b.label}
@@ -1019,16 +1019,16 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                           </span>
                           <span
                             className={`text-xs sm:text-sm font-serif font-bold leading-none ${
-                              isSelected ? "text-emerald-200" : "text-[#F5EAD4]"
+                              isSelected ? "text-[#14532D]" : "text-[#1C1813]"
                             }`}
                           >
                             {b.chi}
                           </span>
-                          <span className="text-[8px] sm:text-[9.5px] text-[#8C7D6B] font-serif">
+                          <span className="text-[8px] sm:text-[9.5px] text-[#5C4D3C] font-serif">
                             ({chiData?.chinese || ""})
                           </span>
                         </div>
-                        <div className="text-[7.5px] sm:text-[8.5px] text-[#8C7D6B] font-mono leading-none">
+                        <div className="text-[7.5px] sm:text-[8.5px] text-[#5C4D3C] font-mono leading-none">
                           {b.pillar}
                         </div>
                       </button>
@@ -1040,11 +1040,11 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
               {/* HÀNG BỆNH */}
               <div className="space-y-1">
                 <div className="flex items-center justify-between text-[9.5px] sm:text-[10px]">
-                  <span className="font-semibold text-rose-400 flex items-center gap-1">
+                  <span className="font-semibold text-[#991B1B] flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
                     <span>Bệnh (Có thể chọn nhiều Chi):</span>
                   </span>
-                  <span className="text-[#8C7D6B] text-[8.5px] sm:text-[9px]">
+                  <span className="text-[#5C4D3C] text-[8.5px] sm:text-[9px]">
                     {benhChiList.length > 0
                       ? `Đã chọn: ${benhChiList.map((k) => chartPillars.find((p) => p.key === k)?.chi).join(", ")}`
                       : "Chưa chọn"}
@@ -1062,14 +1062,14 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                         onClick={() => toggleBenh(b.key)}
                         className={`relative p-1 sm:p-2 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-between min-h-[56px] sm:min-h-[64px] ${
                           isSelected
-                            ? "bg-gradient-to-b from-[#2E1615] to-[#1C0D0C] border-rose-400 text-rose-100 font-bold shadow-md shadow-rose-500/20 ring-1 ring-rose-500/60"
-                            : "bg-gradient-to-b from-[#211810] to-[#17110A] hover:bg-[#281D13] border-[#44301D] text-[#A89882]"
+                            ? "bg-gradient-to-b from-[#FFFDF8] to-[#FFFDF8] border-rose-400 text-[#991B1B] font-bold shadow-md shadow-rose-500/20 ring-1 ring-rose-500/60"
+                            : "bg-gradient-to-b from-[#FFFDF8] to-[#FFFDF8] hover:bg-[#FFFDF8] border-[#C4963E]/45 text-[#5C4D3C]"
                         }`}
                       >
-                        <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#352516]/70">
+                        <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#C4963E]/45">
                           <span
                             className={`text-[8.5px] sm:text-[10px] font-bold truncate ${
-                              isSelected ? "text-rose-300" : "text-[#D6B97A]"
+                              isSelected ? "text-[#991B1B]" : "text-[#6E4E16]"
                             }`}
                           >
                             {b.label}
@@ -1084,16 +1084,16 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                           </span>
                           <span
                             className={`text-xs sm:text-sm font-serif font-bold leading-none ${
-                              isSelected ? "text-rose-200" : "text-[#F5EAD4]"
+                              isSelected ? "text-[#991B1B]" : "text-[#1C1813]"
                             }`}
                           >
                             {b.chi}
                           </span>
-                          <span className="text-[8px] sm:text-[9.5px] text-[#8C7D6B] font-serif">
+                          <span className="text-[8px] sm:text-[9.5px] text-[#5C4D3C] font-serif">
                             ({chiData?.chinese || ""})
                           </span>
                         </div>
-                        <div className="text-[7.5px] sm:text-[8.5px] text-[#8C7D6B] font-mono leading-none">
+                        <div className="text-[7.5px] sm:text-[8.5px] text-[#5C4D3C] font-mono leading-none">
                           {b.pillar}
                         </div>
                       </button>
@@ -1105,11 +1105,11 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
               {/* HÀNG NGOẠI TÀ */}
               <div className="space-y-1">
                 <div className="flex items-center justify-between text-[9.5px] sm:text-[10px]">
-                  <span className="font-semibold text-purple-400 flex items-center gap-1">
+                  <span className="font-semibold text-[#7E22CE] flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
                     <span>Ngoại Tà (Có thể chọn nhiều Chi):</span>
                   </span>
-                  <span className="text-[#8C7D6B] text-[8.5px] sm:text-[9px]">
+                  <span className="text-[#5C4D3C] text-[8.5px] sm:text-[9px]">
                     {ngoaiTaChiList.length > 0
                       ? `Đã chọn: ${ngoaiTaChiList.map((k) => chartPillars.find((p) => p.key === k)?.chi).join(", ")}`
                       : "Chưa chọn"}
@@ -1127,14 +1127,14 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                         onClick={() => toggleNgoaiTa(b.key)}
                         className={`relative p-1 sm:p-2 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-between min-h-[56px] sm:min-h-[64px] ${
                           isSelected
-                            ? "bg-gradient-to-b from-[#2B142F] to-[#1B0B1E] border-purple-400 text-purple-100 font-bold shadow-md shadow-purple-500/20 ring-1 ring-purple-500/60"
-                            : "bg-gradient-to-b from-[#211810] to-[#17110A] hover:bg-[#281D13] border-[#44301D] text-[#A89882]"
+                            ? "bg-gradient-to-b from-[#FFFDF8] to-[#FFFDF8] border-purple-400 text-[#6B21A8] font-bold shadow-md shadow-purple-500/20 ring-1 ring-purple-500/60"
+                            : "bg-gradient-to-b from-[#FFFDF8] to-[#FFFDF8] hover:bg-[#FFFDF8] border-[#C4963E]/45 text-[#5C4D3C]"
                         }`}
                       >
-                        <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#352516]/70">
+                        <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#C4963E]/45">
                           <span
                             className={`text-[8.5px] sm:text-[10px] font-bold truncate ${
-                              isSelected ? "text-purple-300" : "text-[#D6B97A]"
+                              isSelected ? "text-[#6B21A8]" : "text-[#6E4E16]"
                             }`}
                           >
                             {b.label}
@@ -1149,16 +1149,16 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                           </span>
                           <span
                             className={`text-xs sm:text-sm font-serif font-bold leading-none ${
-                              isSelected ? "text-purple-200" : "text-[#F5EAD4]"
+                              isSelected ? "text-[#6B21A8]" : "text-[#1C1813]"
                             }`}
                           >
                             {b.chi}
                           </span>
-                          <span className="text-[8px] sm:text-[9.5px] text-[#8C7D6B] font-serif">
+                          <span className="text-[8px] sm:text-[9.5px] text-[#5C4D3C] font-serif">
                             ({chiData?.chinese || ""})
                           </span>
                         </div>
-                        <div className="text-[7.5px] sm:text-[8.5px] text-[#8C7D6B] font-mono leading-none">
+                        <div className="text-[7.5px] sm:text-[8.5px] text-[#5C4D3C] font-mono leading-none">
                           {b.pillar}
                         </div>
                       </button>
@@ -1174,37 +1174,37 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
               - Lựa chọn cái nào trước cũng chạy theo cái mũi tên
               - Lục thân gắn ngũ hành phù hợp theo Nhật Can
               ================================================================= */}
-          <div className="space-y-3 p-2.5 sm:p-3.5 rounded-xl bg-gradient-to-b from-[#18120B] via-[#140E08] to-[#100A05] border border-[#45311E] shadow-lg">
+          <div className="space-y-3 p-2.5 sm:p-3.5 rounded-xl bg-gradient-to-b from-[#FFFDF8] via-[#FFFDF8] to-[#FFFDF8] border border-[#C4963E]/45 shadow-lg">
             {/* Header Bước 4 */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pb-2.5 border-b border-[#2E1E11]">
-              <div className="text-[10.5px] sm:text-[11px] font-bold text-[#D6B97A] flex items-center gap-2 uppercase tracking-wider">
-                <span className="w-4 h-4 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center text-[10px] font-mono shrink-0">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pb-2.5 border-b border-[#C4963E]/45">
+              <div className="text-[10.5px] sm:text-[11px] font-bold text-[#6E4E16] flex items-center gap-2 uppercase tracking-wider">
+                <span className="w-4 h-4 rounded-full bg-amber-500/20 text-[#78350F] flex items-center justify-center text-[10px] font-mono shrink-0">
                   4
                 </span>
-                <Waves className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <Waves className="w-3.5 h-3.5 text-[#92400E] shrink-0" />
                 <span>Bước 4: Nguyên Lưu (Ấn &gt;&gt;&gt; Tỷ &gt;&gt;&gt; Thực &gt;&gt;&gt; Tài &gt;&gt;&gt; Quan)</span>
               </div>
-              <div className="flex items-center gap-2 text-[9.5px] sm:text-[10px] text-[#A89882] font-mono">
+              <div className="flex items-center gap-2 text-[9.5px] sm:text-[10px] text-[#5C4D3C] font-mono">
                 <span>
-                  Nhật Can: <strong className="text-amber-300 font-serif font-bold">{dayCan}</strong> ({dayElement})
+                  Nhật Can: <strong className="text-[#78350F] font-serif font-bold">{dayCan}</strong> ({dayElement})
                 </span>
                 <span className="text-[#553E26]">•</span>
-                <span className="text-emerald-400 font-bold">
+                <span className="text-[#15803D] font-bold">
                   Khởi Điểm: {nguyenLuuStart} ({lucThanDataMap[nguyenLuuStart].element})
                 </span>
               </div>
             </div>
 
             {/* Khung Nguyên Lý & Lục Thân Gắn Ngũ Hành */}
-            <div className="p-2 sm:p-2.5 rounded-lg bg-[#140E08] border border-[#3A2817] space-y-1.5 text-[10px] leading-relaxed">
-              <div className="text-[#D8C7B0]">
-                • <strong className="text-amber-300">Nguyên Lưu (源流):</strong> Là chu trình tương sinh khép kín của ngũ hành và thập thần trong mệnh cục Bát Tự theo nguyên lý: <span className="text-amber-200 font-mono font-bold">Ấn &gt;&gt;&gt; Tỷ &gt;&gt;&gt; Thực &gt;&gt;&gt; Tài &gt;&gt;&gt; Quan &gt;&gt;&gt; Ấn</span>.
+            <div className="p-2 sm:p-2.5 rounded-lg bg-[#FFFDF8] border border-[#C4963E]/45 space-y-1.5 text-[10px] leading-relaxed">
+              <div className="text-[#5C4D3C]">
+                • <strong className="text-[#78350F]">Nguyên Lưu (源流):</strong> Là chu trình tương sinh khép kín của ngũ hành và thập thần trong mệnh cục Bát Tự theo nguyên lý: <span className="text-[#78350F] font-mono font-bold">Ấn &gt;&gt;&gt; Tỷ &gt;&gt;&gt; Thực &gt;&gt;&gt; Tài &gt;&gt;&gt; Quan &gt;&gt;&gt; Ấn</span>.
               </div>
-              <div className="text-[#A89882]">
-                • <strong className="text-sky-300">Quy tắc chạy theo mũi tên:</strong> Bạn có thể chọn bất kỳ Lục Thân nào làm điểm khởi nguồn; chuỗi nguyên lưu sẽ tự động chạy tuần hoàn theo chiều mũi tên tương sinh <span className="text-amber-400 font-mono font-bold">&gt;&gt;&gt;</span> từ chữ đó.
+              <div className="text-[#5C4D3C]">
+                • <strong className="text-[#1E3A8A]">Quy tắc chạy theo mũi tên:</strong> Bạn có thể chọn bất kỳ Lục Thân nào làm điểm khởi nguồn; chuỗi nguyên lưu sẽ tự động chạy tuần hoàn theo chiều mũi tên tương sinh <span className="text-[#92400E] font-mono font-bold">&gt;&gt;&gt;</span> từ chữ đó.
               </div>
               <div className="flex flex-wrap items-center gap-1.5 pt-1 text-[9px] sm:text-[9.5px]">
-                <span className="text-[#8C7D6B] font-semibold">Ngũ hành gắn theo Nhật Can ({dayCan} {dayElement}):</span>
+                <span className="text-[#5C4D3C] font-semibold">Ngũ hành gắn theo Nhật Can ({dayCan} {dayElement}):</span>
                 {LUC_THAN_CYCLE.map((type) => {
                   const info = lucThanDataMap[type];
                   const theme = getLucThanElementTheme(info.element);
@@ -1225,12 +1225,12 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
             {/* BỘ NÚT CHỌN LỤC THÂN KHỞI ĐIỂM (CHỌN CÁI NÀO TRƯỚC CŨNG CHẠY THEO MŨI TÊN) */}
             <div className="space-y-1.5 pt-1">
               <div className="flex items-center justify-between text-[9.5px] sm:text-[10px]">
-                <span className="font-semibold text-amber-300 flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-amber-400" />
+                <span className="font-semibold text-[#78350F] flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-[#92400E]" />
                   <span>Chọn Lục Thân Khởi Điểm (Bấm cái nào chuỗi sẽ chạy theo mũi tên từ đó):</span>
                 </span>
-                <span className="text-[#8C7D6B] text-[8.5px] sm:text-[9px]">
-                  Đang khởi phát từ: <strong className="text-amber-300">{nguyenLuuStart}</strong>
+                <span className="text-[#5C4D3C] text-[8.5px] sm:text-[9px]">
+                  Đang khởi phát từ: <strong className="text-[#78350F]">{nguyenLuuStart}</strong>
                 </span>
               </div>
 
@@ -1249,12 +1249,12 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                       className={`relative p-1.5 sm:p-2.5 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-between min-h-[64px] sm:min-h-[72px] bg-gradient-to-b ${theme.cardBg} ${
                         isSelected
                           ? `${theme.activeRing} shadow-lg font-bold scale-[1.02]`
-                          : `${theme.border} hover:border-amber-400/80 hover:bg-[#20160E] opacity-85 hover:opacity-100`
+                          : `${theme.border} hover:border-amber-400/80 hover:bg-[#FFFDF8] opacity-85 hover:opacity-100`
                       }`}
                     >
                       {/* Huy hiệu khởi điểm */}
-                      <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#352516]/60">
-                        <span className={`text-[8.5px] sm:text-[9.5px] font-bold ${isSelected ? "text-amber-300" : "text-[#D6B97A]"}`}>
+                      <div className="flex items-center justify-between w-full px-0.5 pb-0.5 border-b border-[#C4963E]/45">
+                        <span className={`text-[8.5px] sm:text-[9.5px] font-bold ${isSelected ? "text-[#78350F]" : "text-[#6E4E16]"}`}>
                           {isSelected ? "★ Khởi Đầu" : "Lục Thân"}
                         </span>
                         <span className={`w-1.5 h-1.5 rounded-full ${theme.dot}`} />
@@ -1265,14 +1265,14 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                         <span className={`text-sm sm:text-base font-serif font-black leading-none ${theme.text}`}>
                           {type}
                         </span>
-                        <div className="flex items-center gap-0.5 mt-0.5 text-[8.5px] sm:text-[9px] text-[#D8C7B0]">
+                        <div className="flex items-center gap-0.5 mt-0.5 text-[8.5px] sm:text-[9px] text-[#5C4D3C]">
                           <span>{info.element}</span>
                           <span>{info.elementEmoji}</span>
                         </div>
                       </div>
 
                       {/* Chi tiết ngắn */}
-                      <div className="text-[7.5px] sm:text-[8px] text-[#A89882] truncate w-full">
+                      <div className="text-[7.5px] sm:text-[8px] text-[#5C4D3C] truncate w-full">
                         ➔ Sinh {info.generates}
                       </div>
                     </button>
@@ -1282,7 +1282,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
 
               {/* Hàng chọn nhanh cả chuỗi mũi tên hoàn chỉnh */}
               <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto scrollbar-none py-1">
-                <span className="text-[8.5px] sm:text-[9px] text-[#8C7D6B] whitespace-nowrap shrink-0">
+                <span className="text-[8.5px] sm:text-[9px] text-[#5C4D3C] whitespace-nowrap shrink-0">
                   Chuỗi nhanh:
                 </span>
                 {LUC_THAN_CYCLE.map((type) => {
@@ -1302,8 +1302,8 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                       onClick={() => setNguyenLuuStart(type)}
                       className={`px-2 py-0.5 rounded-md text-[9px] sm:text-[9.5px] font-mono whitespace-nowrap border transition-all cursor-pointer ${
                         isSelected
-                          ? "bg-amber-950/80 border-amber-400 text-amber-200 font-bold ring-1 ring-amber-500/50"
-                          : "bg-[#1A120B] hover:bg-[#251A10] border-[#3B2817] text-[#A89882]"
+                          ? "bg-[#FEF3C7] border-amber-400 text-[#78350F] font-bold ring-1 ring-amber-500/50"
+                          : "bg-[#FFFDF8] hover:bg-[#FFFDF8] border-[#C4963E]/45 text-[#5C4D3C]"
                       }`}
                     >
                       {labels.join(" ❯ ")}
@@ -1314,13 +1314,13 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
             </div>
 
             {/* TRÌNH DIỄN DÒNG CHẢY NGUYÊN LƯU VỚI CÁC MŨI TÊN >>> */}
-            <div className="p-2 sm:p-3 rounded-xl bg-[#120B06] border border-[#3A2817] space-y-2.5">
+            <div className="p-2 sm:p-3 rounded-xl bg-[#FFFDF8] border border-[#C4963E]/45 space-y-2.5">
               <div className="flex items-center justify-between text-[10px]">
-                <div className="font-bold text-[#D6B97A] flex items-center gap-1.5">
+                <div className="font-bold text-[#6E4E16] flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                  <span>Dòng Chảy Nguyên Lưu Khởi Phát Từ: <strong className="text-amber-300 font-serif text-xs">{nguyenLuuStart} ({lucThanDataMap[nguyenLuuStart].element})</strong></span>
+                  <span>Dòng Chảy Nguyên Lưu Khởi Phát Từ: <strong className="text-[#78350F] font-serif text-xs">{nguyenLuuStart} ({lucThanDataMap[nguyenLuuStart].element})</strong></span>
                 </div>
-                <div className="text-[9px] text-[#8C7D6B] font-mono">
+                <div className="text-[9px] text-[#5C4D3C] font-mono">
                   (Bấm vào bất kỳ thẻ nào để đổi điểm xuất phát)
                 </div>
               </div>
@@ -1338,12 +1338,12 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                         className={`relative p-2 rounded-xl border transition-all cursor-pointer flex flex-col justify-between bg-gradient-to-b ${theme.cardBg} ${
                           isFirst
                             ? `${theme.activeRing} shadow-md shadow-amber-500/20`
-                            : `${theme.border} hover:border-[#C9A55A]/70 hover:scale-[1.01]`
+                            : `${theme.border} hover:border-[#B8862D] hover:scale-[1.01]`
                         }`}
                       >
                         {/* Header của từng bước */}
-                        <div className="flex items-center justify-between pb-1 border-b border-[#352516]/60">
-                          <span className={`text-[8.5px] sm:text-[9px] font-bold font-mono ${isFirst ? "text-amber-300" : "text-[#A89882]"}`}>
+                        <div className="flex items-center justify-between pb-1 border-b border-[#C4963E]/45">
+                          <span className={`text-[8.5px] sm:text-[9px] font-bold font-mono ${isFirst ? "text-[#78350F]" : "text-[#5C4D3C]"}`}>
                             {isFirst ? "1. Khởi Điểm" : `${idx + 1}. Lưu Chuyển`}
                           </span>
                           <span className={`text-[8px] sm:text-[8.5px] px-1 py-0.2 rounded border font-semibold ${theme.badgeBg}`}>
@@ -1356,28 +1356,28 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                           <div className={`text-base sm:text-lg font-serif font-black leading-tight ${theme.text}`}>
                             {item.type}
                           </div>
-                          <div className="text-[8.5px] sm:text-[9px] text-[#D6B97A] font-serif truncate mt-0.5">
+                          <div className="text-[8.5px] sm:text-[9px] text-[#6E4E16] font-serif truncate mt-0.5">
                             {item.fullName}
                           </div>
                         </div>
 
                         {/* Chi tiết quan hệ sinh và thống kê trong tứ trụ */}
-                        <div className="space-y-1 pt-1 border-t border-[#352516]/60 text-[8px] sm:text-[8.5px]">
-                          <div className="text-[#C4B49F] flex items-center justify-between">
+                        <div className="space-y-1 pt-1 border-t border-[#C4963E]/45 text-[8px] sm:text-[8.5px]">
+                          <div className="text-[#5C4D3C] flex items-center justify-between">
                             <span>Quan hệ sinh:</span>
-                            <span className="font-semibold text-amber-300">➔ {item.generates}</span>
+                            <span className="font-semibold text-[#78350F]">➔ {item.generates}</span>
                           </div>
-                          <div className="text-[#8C7D6B] truncate" title={`Can: ${item.typicalCan} | Chi: ${item.typicalChi}`}>
+                          <div className="text-[#5C4D3C] truncate" title={`Can: ${item.typicalCan} | Chi: ${item.typicalChi}`}>
                             {item.typicalCan} • {item.typicalChi}
                           </div>
-                          <div className="pt-0.5 flex items-center justify-between border-t border-[#291B0F]/60">
-                            <span className="text-[#8C7D6B]">Nguyên cục:</span>
+                          <div className="pt-0.5 flex items-center justify-between border-t border-[#C4963E]/45">
+                            <span className="text-[#5C4D3C]">Nguyên cục:</span>
                             {item.countInChart > 0 ? (
-                              <span className="text-emerald-400 font-bold font-mono">
+                              <span className="text-[#15803D] font-bold font-mono">
                                 {item.countInChart} chữ (Thông)
                               </span>
                             ) : (
-                              <span className="text-amber-400/80 font-mono">
+                              <span className="text-[#92400E]/80 font-mono">
                                 0 chữ (Khuyết)
                               </span>
                             )}
@@ -1385,7 +1385,7 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                         </div>
 
                         {/* Biểu tượng mũi tên phân tách trên màn hình mobile */}
-                        <div className="sm:hidden flex items-center justify-center pt-1 text-amber-400/80 font-mono text-xs">
+                        <div className="sm:hidden flex items-center justify-center pt-1 text-[#92400E]/80 font-mono text-xs">
                           {idx < 4 ? "▼" : "🔄 Vòng Lặp Lại Ấn Tinh"}
                         </div>
                       </div>
@@ -1395,21 +1395,21 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
               </div>
 
               {/* Dải mũi tên tuần hoàn khép kín >>> trên màn hình máy tính */}
-              <div className="hidden sm:flex items-center justify-between px-3 py-1.5 rounded-lg bg-[#181008] border border-[#352516] text-[9.5px] font-mono">
-                <span className="text-amber-300 font-bold flex items-center gap-1">
+              <div className="hidden sm:flex items-center justify-between px-3 py-1.5 rounded-lg bg-[#FFFDF8] border border-[#C4963E]/45 text-[9.5px] font-mono">
+                <span className="text-[#78350F] font-bold flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
                   <span>Dòng Sinh Khép Kín:</span>
                 </span>
-                <div className="flex items-center gap-1.5 text-amber-300/90 font-bold">
+                <div className="flex items-center gap-1.5 text-[#78350F] font-bold">
                   {nguyenLuuSequence.map((item, idx) => (
                     <React.Fragment key={`inline-flow-${item.type}-${idx}`}>
-                      <span className={idx === 0 ? "text-amber-300 underline font-black" : "text-[#E8D7B8]"}>
+                      <span className={idx === 0 ? "text-[#78350F] underline font-black" : "text-[#5C4D3C]"}>
                         {item.type} ({item.element})
                       </span>
                       {idx < 4 ? (
-                        <span className="text-amber-400 font-mono font-black">&gt;&gt;&gt;</span>
+                        <span className="text-[#92400E] font-mono font-black">&gt;&gt;&gt;</span>
                       ) : (
-                        <span className="text-emerald-400 font-mono font-black">&gt;&gt;&gt; (Tuần Hoàn ↺)</span>
+                        <span className="text-[#15803D] font-mono font-black">&gt;&gt;&gt; (Tuần Hoàn ↺)</span>
                       )}
                     </React.Fragment>
                   ))}
@@ -1418,34 +1418,34 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
             </div>
 
             {/* LUẬN GIẢI Ý NGHĨA MỆNH LÝ & ĐÁNH GIÁ ĐỘ LƯU THÔNG CỦA NGUYÊN LƯU */}
-            <div className="p-2 sm:p-2.5 rounded-lg bg-[#140E08] border border-[#382615] space-y-1.5">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-1 border-b border-[#2C1D10]">
-                <div className="font-serif font-bold text-xs sm:text-[13px] text-amber-300">
+            <div className="p-2 sm:p-2.5 rounded-lg bg-[#FFFDF8] border border-[#C4963E]/45 space-y-1.5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-1 border-b border-[#C4963E]/45">
+                <div className="font-serif font-bold text-xs sm:text-[13px] text-[#78350F]">
                   {nguyenLuuInterpretation.title}
                 </div>
-                <div className="text-[9px] sm:text-[9.5px] text-emerald-400 font-mono font-bold">
+                <div className="text-[9px] sm:text-[9.5px] text-[#15803D] font-mono font-bold">
                   {nguyenLuuInterpretation.summary}
                 </div>
               </div>
-              <p className="text-[10px] sm:text-[10.5px] text-[#C4B49F] leading-relaxed">
+              <p className="text-[10px] sm:text-[10.5px] text-[#5C4D3C] leading-relaxed">
                 {nguyenLuuInterpretation.detail}
               </p>
 
               {/* Đánh giá độ thông suốt trong lá số */}
-              <div className="mt-1.5 pt-1.5 border-t border-[#2C1D10] flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[9.5px]">
-                <div className="text-[#8C7D6B] flex items-center gap-1">
+              <div className="mt-1.5 pt-1.5 border-t border-[#C4963E]/45 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[9.5px]">
+                <div className="text-[#5C4D3C] flex items-center gap-1">
                   <span>Khảo sát lưu thông ngũ hành:</span>
-                  <span className="text-[#F5EAD4] font-medium">
+                  <span className="text-[#1C1813] font-medium">
                     {nguyenLuuSequence.filter((i) => i.countInChart > 0).length}/5 mắt xích hiện diện trong 4 trụ
                   </span>
                 </div>
-                <div className="text-[9px] text-[#A89882]">
+                <div className="text-[9px] text-[#5C4D3C]">
                   {nguyenLuuSequence.every((i) => i.countInChart > 0) ? (
-                    <span className="text-emerald-400 font-bold">
+                    <span className="text-[#15803D] font-bold">
                       ✓ Nguyên lưu chu lưu thông suốt không bị gián đoạn.
                     </span>
                   ) : (
-                    <span className="text-amber-400">
+                    <span className="text-[#92400E]">
                       ⚠ Có mắt xích chưa hiển lộ, cần Đại Vận hoặc Lưu Niên bổ cứu để thông dòng.
                     </span>
                   )}

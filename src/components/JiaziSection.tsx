@@ -618,27 +618,27 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
       />
 
       {/* Hero / Compact Workspace Header Section */}
-      <div className="royal-frame px-4 py-5 sm:px-8 sm:py-6">
+      <div className="royal-frame px-4 py-3 sm:px-6 sm:py-3.5">
         <span className="royal-corner tl" />
         <span className="royal-corner tr" />
         <span className="royal-corner bl" />
         <span className="royal-corner br" />
         <div className="max-w-6xl mx-auto">
-          {/* Row 1: Title + High-Level Utility Toggles */}
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2.5 flex-wrap">
-                <span className="royal-eyebrow before:hidden">Không gian Mệnh Lý & Tam Thức</span>
-                <span className="px-2 py-0.5 rounded-sm bg-lacquer-800 border border-gold-800/80 text-[11px] font-mono text-gold-400">
-                  Đang chọn: #{selectedEntry.order.toString().padStart(2, "0")} {selectedEntry.name} ({selectedEntry.elementNapAm})
-                </span>
-              </div>
-              <h1 className="royal-title mt-1.5 text-2xl sm:text-4xl flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                Lục Thập Hoa Giáp
-                <span className="font-serif text-base sm:text-lg tracking-[0.3em] text-gold-400">
+          {/* Row 1: Title + High-Level Utility Toggles (Chỉ hiển thị khi ở tab Cẩm Nang 60 Hoa Giáp) */}
+          {activeWorkspace === "jiazi" && (
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 mb-3 pb-3 border-b border-[#C4963E]/30">
+            <div className="flex items-baseline gap-3 flex-wrap">
+              <h1 className="royal-title text-xl sm:text-2xl flex items-baseline gap-2.5">
+                <span>Lục Thập Hoa Giáp</span>
+                <span className="font-serif text-sm sm:text-base tracking-[0.25em] text-[#8A6A2F]">
                   六十花甲
                 </span>
               </h1>
+              {activeWorkspace === "jiazi" && (
+                <span className="px-2.5 py-0.5 rounded-full bg-[#FAF6EE] border border-[#C4963E]/45 text-[11px] font-serif text-[#6E4E16]">
+                  Đang xem: #{selectedEntry.order.toString().padStart(2, "0")} {selectedEntry.name} ({selectedEntry.elementNapAm})
+                </span>
+              )}
             </div>
 
             {/* Right Utility Buttons: Quick 60 Matrix + Collapsible Image/JSON Manager */}
@@ -678,6 +678,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
               </button>
             </div>
           </div>
+          )}
 
           {/* Collapsible Storage & JSON Management Drawer */}
           {isStorageDrawerOpen && (
@@ -779,8 +780,8 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
             </div>
           )}
 
-          {/* Row 2: 4-PILLAR WORKSPACE NAVIGATION BAR (Tách biệt hoàn toàn 4 công cụ lớn để không chồng chéo) */}
-          <div className="mt-4 pt-4 border-t border-gold-800/80 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+          {/* Row 2: 4-PILLAR WORKSPACE NAVIGATION BAR */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
             <button
               type="button"
               onClick={() => {
@@ -789,20 +790,26 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
                   setViewMode("detail");
                 }
               }}
-              className={`flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-sm border text-left transition-all cursor-pointer ${
+              className={`flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                 activeWorkspace === "jiazi"
-                  ? "bg-gradient-to-r from-gold-500/20 to-lacquer-800 border-gold-400 text-gold-200 shadow-md ring-1 ring-inset ring-gold-400/50"
-                  : "bg-lacquer-900/80 hover:bg-lacquer-800 border-gold-800/70 text-ivory-300 hover:text-gold-200"
+                  ? "bg-gradient-to-r from-[#FFFDF5] to-[#F7EBD2] border-[1.5px] border-[#B8862D] text-[#6E4E16] shadow-[0_6px_18px_rgba(184,134,45,0.16)]"
+                  : "bg-[#FFFDF8] hover:bg-[#FAF6EE] border-[#C4963E]/45 text-[#1C1813] hover:text-[#6E4E16]"
               }`}
             >
               <div className="flex items-center gap-2.5 min-w-0">
-                <BookOpen className="w-4 h-4 text-gold-400 shrink-0" />
+                <BookOpen className="w-4 h-4 text-[#B8862D] shrink-0" />
                 <div className="min-w-0">
-                  <div className="text-xs font-bold truncate">1. Cẩm Nang 60 Hoa Giáp</div>
-                  <div className="text-[10px] text-ivory-500 truncate">Phối tượng • Triết lý • Hình thẻ</div>
+                  <div className="text-xs font-extrabold truncate font-serif">1. Cẩm Nang 60 Hoa Giáp</div>
+                  <div className="text-[10px] text-[#5C4D3C] truncate">Phối tượng • Triết lý • Hình thẻ</div>
                 </div>
               </div>
-              <span className="px-1.5 py-0.5 rounded-sm bg-lacquer-950/70 border border-gold-800 text-[10px] font-mono text-gold-400 shrink-0">
+              <span
+                className={`px-2 py-0.5 rounded-md border text-[10px] font-mono font-extrabold shrink-0 ${
+                  activeWorkspace === "jiazi"
+                    ? "bg-[#9E2A2B] text-white border-[#D4AF37] shadow-sm"
+                    : "bg-[#FAF6EE] border-[#C4963E]/50 text-[#6E4E16]"
+                }`}
+              >
                 #{selectedEntry.order.toString().padStart(2, "0")}
               </span>
             </button>
@@ -810,20 +817,26 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
             <button
               type="button"
               onClick={() => setActiveWorkspace("bazi")}
-              className={`flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-sm border text-left transition-all cursor-pointer ${
+              className={`flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                 activeWorkspace === "bazi"
-                  ? "bg-gradient-to-r from-gold-500/20 to-lacquer-800 border-gold-400 text-gold-200 shadow-md ring-1 ring-inset ring-gold-400/50"
-                  : "bg-lacquer-900/80 hover:bg-lacquer-800 border-gold-800/70 text-ivory-300 hover:text-gold-200"
+                  ? "bg-gradient-to-r from-[#FFFDF5] to-[#F7EBD2] border-[1.5px] border-[#B8862D] text-[#6E4E16] shadow-[0_6px_18px_rgba(184,134,45,0.16)]"
+                  : "bg-[#FFFDF8] hover:bg-[#FAF6EE] border-[#C4963E]/45 text-[#1C1813] hover:text-[#6E4E16]"
               }`}
             >
               <div className="flex items-center gap-2.5 min-w-0">
-                <Compass className="w-4 h-4 text-gold-400 shrink-0" />
+                <Compass className="w-4 h-4 text-[#B8862D] shrink-0" />
                 <div className="min-w-0">
-                  <div className="text-xs font-bold truncate">2. Lá Số Bát Tự & Ngũ Thiên</div>
-                  <div className="text-[10px] text-ivory-500 truncate">Tứ Trụ • Đại Vận • 5 Thiên</div>
+                  <div className="text-xs font-extrabold truncate font-serif">2. Lá Số Bát Tự & Ngũ Thiên</div>
+                  <div className="text-[10px] text-[#5C4D3C] truncate">Tứ Trụ • Đại Vận • 5 Thiên</div>
                 </div>
               </div>
-              <span className="px-1.5 py-0.5 rounded-sm bg-lacquer-950/70 border border-gold-800 text-[10px] font-mono text-gold-400 shrink-0">
+              <span
+                className={`px-2 py-0.5 rounded-md border text-[10px] font-mono font-extrabold shrink-0 ${
+                  activeWorkspace === "bazi"
+                    ? "bg-[#9E2A2B] text-white border-[#D4AF37] shadow-sm"
+                    : "bg-[#FAF6EE] border-[#C4963E]/50 text-[#6E4E16]"
+                }`}
+              >
                 8 Ô
               </span>
             </button>
@@ -831,20 +844,26 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
             <button
               type="button"
               onClick={() => setActiveWorkspace("lucnham")}
-              className={`flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-sm border text-left transition-all cursor-pointer ${
+              className={`flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                 activeWorkspace === "lucnham"
-                  ? "bg-gradient-to-r from-gold-500/20 to-lacquer-800 border-gold-400 text-gold-200 shadow-md ring-1 ring-inset ring-gold-400/50"
-                  : "bg-lacquer-900/80 hover:bg-lacquer-800 border-gold-800/70 text-ivory-300 hover:text-gold-200"
+                  ? "bg-gradient-to-r from-[#FFFDF5] to-[#F7EBD2] border-[1.5px] border-[#B8862D] text-[#6E4E16] shadow-[0_6px_18px_rgba(184,134,45,0.16)]"
+                  : "bg-[#FFFDF8] hover:bg-[#FAF6EE] border-[#C4963E]/45 text-[#1C1813] hover:text-[#6E4E16]"
               }`}
             >
               <div className="flex items-center gap-2.5 min-w-0">
-                <Sparkles className="w-4 h-4 text-gold-400 shrink-0" />
+                <Sparkles className="w-4 h-4 text-[#B8862D] shrink-0" />
                 <div className="min-w-0">
-                  <div className="text-xs font-bold truncate">3. Bàn Lục Nhâm Đại Độn</div>
-                  <div className="text-[10px] text-ivory-500 truncate">Thiên Địa Bàn • Xí Ngầu D12</div>
+                  <div className="text-xs font-extrabold truncate font-serif">3. Bàn Lục Nhâm Đại Độn</div>
+                  <div className="text-[10px] text-[#5C4D3C] truncate">Thiên Địa Bàn • Xí Ngầu D12</div>
                 </div>
               </div>
-              <span className="px-1.5 py-0.5 rounded-sm bg-lacquer-950/70 border border-gold-800 text-[10px] font-mono text-gold-400 shrink-0">
+              <span
+                className={`px-2 py-0.5 rounded-md border text-[10px] font-mono font-extrabold shrink-0 ${
+                  activeWorkspace === "lucnham"
+                    ? "bg-[#9E2A2B] text-white border-[#D4AF37] shadow-sm"
+                    : "bg-[#FAF6EE] border-[#C4963E]/50 text-[#6E4E16]"
+                }`}
+              >
                 Tam Thức
               </span>
             </button>
@@ -852,20 +871,26 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
             <button
               type="button"
               onClick={() => setActiveWorkspace("tables")}
-              className={`flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-sm border text-left transition-all cursor-pointer ${
+              className={`flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                 activeWorkspace === "tables"
-                  ? "bg-gradient-to-r from-gold-500/20 to-lacquer-800 border-gold-400 text-gold-200 shadow-md ring-1 ring-inset ring-gold-400/50"
-                  : "bg-lacquer-900/80 hover:bg-lacquer-800 border-gold-800/70 text-ivory-300 hover:text-gold-200"
+                  ? "bg-gradient-to-r from-[#FFFDF5] to-[#F7EBD2] border-[1.5px] border-[#B8862D] text-[#6E4E16] shadow-[0_6px_18px_rgba(184,134,45,0.16)]"
+                  : "bg-[#FFFDF8] hover:bg-[#FAF6EE] border-[#C4963E]/45 text-[#1C1813] hover:text-[#6E4E16]"
               }`}
             >
               <div className="flex items-center gap-2.5 min-w-0">
-                <Volume2 className="w-4 h-4 text-gold-400 shrink-0" />
+                <Volume2 className="w-4 h-4 text-[#B8862D] shrink-0" />
                 <div className="min-w-0">
-                  <div className="text-xs font-bold truncate">4. Bảng 60 Quẻ & 30 Âm Tượng</div>
-                  <div className="text-[10px] text-ivory-500 truncate">Kinh Dịch đối ứng & Nạp Âm</div>
+                  <div className="text-xs font-extrabold truncate font-serif">4. Bảng 60 Quẻ & 30 Âm Tượng</div>
+                  <div className="text-[10px] text-[#5C4D3C] truncate">Kinh Dịch đối ứng & Nạp Âm</div>
                 </div>
               </div>
-              <span className="px-1.5 py-0.5 rounded-sm bg-lacquer-950/70 border border-gold-800 text-[10px] font-mono text-gold-400 shrink-0">
+              <span
+                className={`px-2 py-0.5 rounded-md border text-[10px] font-mono font-extrabold shrink-0 ${
+                  activeWorkspace === "tables"
+                    ? "bg-[#9E2A2B] text-white border-[#D4AF37] shadow-sm"
+                    : "bg-[#FAF6EE] border-[#C4963E]/50 text-[#6E4E16]"
+                }`}
+              >
                 60 / 30
               </span>
             </button>
@@ -1100,21 +1125,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
              WORKSPACE 2: LÁ SỐ BÁT TỰ & NGŨ THIÊN LUẬN MỆNH
              ======================================================== */
           <div className="space-y-4 animate-in fade-in">
-            <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 rounded-sm bg-lacquer-900 border border-gold-800 text-xs text-ivory-300">
-              <span>
-                🧭 <strong className="text-gold-400">Không gian Lá Số Bát Tự & Ngũ Thiên:</strong> Điền 4 Trụ hoặc bấm{" "}
-                <strong className="text-gold-300">Lấy Ngày Giờ Hiện Tại</strong>. Nhấp vào nút{" "}
-                <strong className="text-gold-300">Xem #X</strong> trên mỗi trụ để mở ngay Cẩm Nang Hoa Giáp của trụ đó.
-              </span>
-              <button
-                type="button"
-                onClick={() => setActiveWorkspace("jiazi")}
-                className="text-gold-400 hover:text-gold-200 font-semibold flex items-center gap-1 cursor-pointer"
-              >
-                <ChevronLeft className="w-3.5 h-3.5" />
-                <span>Quay lại Cẩm Nang 60 Hoa Giáp</span>
-              </button>
-            </div>
+
 
             <BaziExtendedFortune
               defaultExpanded={true}
@@ -1135,19 +1146,7 @@ export const JiaziSection: React.FC<JiaziSectionProps> = ({
              WORKSPACE 3: BÀN LỤC NHÂM ĐẠI ĐỘN (TAM THỨC)
              ======================================================== */
           <div className="space-y-4 animate-in fade-in" id="lucnham-chart-area-hoagiap">
-            <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 rounded-sm bg-lacquer-900 border border-gold-800 text-xs text-ivory-300">
-              <span>
-                🎲 <strong className="text-gold-400">Không gian Bàn Lục Nhâm Đại Độn:</strong> Thiên Địa Bàn, Nguyệt Tướng, Tứ Khóa Tam Truyền và Xí Ngầu Hoạt Thời 12 Mặt.
-              </span>
-              <button
-                type="button"
-                onClick={() => setActiveWorkspace("jiazi")}
-                className="text-gold-400 hover:text-gold-200 font-semibold flex items-center gap-1 cursor-pointer"
-              >
-                <ChevronLeft className="w-3.5 h-3.5" />
-                <span>Quay lại Cẩm Nang 60 Hoa Giáp</span>
-              </button>
-            </div>
+
 
             <JiaziLucNhamSection
               id="lucnham-chart-area-hoagiap"

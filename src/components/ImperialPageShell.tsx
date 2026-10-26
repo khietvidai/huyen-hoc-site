@@ -176,7 +176,7 @@ export const ImperialPageShell: React.FC<ImperialPageShellProps> = ({
           ══════════════════════════════════════════════════════════════════ */}
       <section
         aria-label="Đài Quan Tinh Cửu Nhị"
-        className="relative isolate w-full overflow-hidden py-7 sm:py-10 px-4 sm:px-8"
+        className="relative isolate w-full overflow-hidden py-3.5 sm:py-4.5 px-4 sm:px-8"
       >
         {/* Nền ảnh hero-frame giống hệt Trang Chủ */}
         <div className="pointer-events-none absolute inset-0 z-0">
@@ -213,125 +213,78 @@ export const ImperialPageShell: React.FC<ImperialPageShellProps> = ({
           />
         </div>
 
-        <div className="relative z-10 mx-auto max-w-6xl flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-          {/* Cột Trái: Logo Cửu Nhị + Tiêu đề Phân Hệ */}
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#16130F]/90 border border-[#C4963E]/60 mb-3 shadow-md">
-              <span className="text-[#D4AF37] text-xs">☯</span>
-              <span className="text-[10.5px] sm:text-[11px] font-serif font-semibold tracking-[0.2em] uppercase text-[#F3E5AB]">
-                {meta.badge}
-              </span>
-              <span className="text-[#D4AF37] text-xs">✦</span>
-            </div>
-
-            <div className="flex items-center gap-3.5 mb-2.5">
-              <span
-                className="relative flex items-center justify-center h-12 w-12 sm:h-14 sm:w-14 shrink-0 overflow-hidden rounded-2xl shadow-2xl"
-                style={{
-                  background: "linear-gradient(145deg, #1c1a22 0%, #0d0c11 100%)",
-                  border: "1px solid rgba(196,150,62,0.55)",
-                  boxShadow:
-                    "0 10px 26px rgba(0,0,0,0.55), 0 0 22px rgba(196,150,62,0.24)",
-                }}
-              >
-                <BrandMark size={40} title="Cửu Nhị · Kinh Dịch" />
-              </span>
-              <div>
-                <div className="text-[11px] font-serif tracking-[0.28em] text-[#D4AF37] uppercase">
+        <div className="relative z-10 mx-auto max-w-6xl flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+          {/* Cột Trái: Logo Cửu Nhị + Tiêu đề Phân Hệ Gọn Gàng */}
+          <div className="flex items-center gap-3">
+            <span
+              className="relative flex items-center justify-center h-10 w-10 sm:h-11 sm:w-11 shrink-0 overflow-hidden rounded-xl shadow-xl"
+              style={{
+                background: "linear-gradient(145deg, #1c1a22 0%, #0d0c11 100%)",
+                border: "1px solid rgba(196,150,62,0.55)",
+              }}
+            >
+              <BrandMark size={32} title="Cửu Nhị · Kinh Dịch" />
+            </span>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-serif tracking-[0.22em] text-[#D4AF37] uppercase">
                   {meta.chinese}
-                </div>
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white font-serif tracking-tight leading-tight">
-                  {meta.title}{" "}
-                  <span className="text-[#F3E5AB] italic">{meta.highlight}</span>
-                </h1>
+                </span>
+                <span className="hidden sm:inline text-white/30">•</span>
+                <span className="hidden sm:inline text-[10px] font-serif tracking-[0.15em] text-[#F3E5AB]/80 uppercase">
+                  {meta.badge}
+                </span>
               </div>
+              <h1 className="text-lg sm:text-2xl font-bold text-white font-serif tracking-tight leading-snug">
+                {meta.title}{" "}
+                <span className="text-[#F3E5AB] italic">{meta.highlight}</span>
+              </h1>
             </div>
-
-            <p className="text-xs sm:text-sm text-white/75 font-serif leading-relaxed max-w-2xl">
-              {meta.subtitle}
-            </p>
           </div>
 
-          {/* Cột Phải: Cặp nút Kính Mờ + 4 Thông Số Chuẩn Trang Chủ */}
-          <div className="flex flex-col items-start lg:items-end gap-3.5 shrink-0">
-            <div className="flex flex-wrap items-center gap-2.5">
-              <button
-                type="button"
-                onClick={() => onSelectTab("home")}
-                className="inline-flex h-10 items-center gap-2 rounded-full px-4 text-xs sm:text-sm font-serif font-semibold text-white transition hover:scale-[1.02] hover:bg-white/15 active:scale-[0.98] cursor-pointer shadow-lg"
-                style={{
-                  background: "rgba(255,255,255,0.1)",
-                  border: "1px solid rgba(255,255,255,0.38)",
-                  backdropFilter: "blur(8px)",
-                }}
-              >
-                <span>🏠</span>
-                <span>Về Trang Chủ</span>
-              </button>
+          {/* Cột Phải: Cặp nút Kính Mờ Gọn Gàng */}
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => onSelectTab("home")}
+              className="inline-flex h-8.5 items-center gap-1.5 rounded-full px-3.5 text-xs font-serif font-semibold text-white transition hover:bg-white/15 cursor-pointer"
+              style={{
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.3)",
+                backdropFilter: "blur(8px)",
+              }}
+            >
+              <span>🏠</span>
+              <span>Về Trang Chủ</span>
+            </button>
 
-              <button
-                type="button"
-                onClick={() => onSelectTab("yilore")}
-                className="inline-flex h-10 items-center gap-2 rounded-full px-4 text-xs sm:text-sm font-serif font-semibold text-[#F3E5AB] transition hover:scale-[1.02] hover:brightness-110 active:scale-[0.98] cursor-pointer shadow-lg"
-                style={{
-                  background: "linear-gradient(135deg, #2A2118 0%, #18130E 100%)",
-                  border: "1px solid rgba(212,175,55,0.75)",
-                }}
-              >
-                <span className="text-[#D4AF37]">☯</span>
-                <span>Sổ Tay Yilore (/en/app)</span>
-              </button>
+            <button
+              type="button"
+              onClick={() => onSelectTab("yilore")}
+              className="inline-flex h-8.5 items-center gap-1.5 rounded-full px-3.5 text-xs font-serif font-semibold text-[#F3E5AB] transition hover:brightness-110 cursor-pointer"
+              style={{
+                background: "linear-gradient(135deg, #2A2118 0%, #18130E 100%)",
+                border: "1px solid rgba(212,175,55,0.65)",
+              }}
+            >
+              <span className="text-[#D4AF37]">☯</span>
+              <span>Sổ Tay Yilore</span>
+            </button>
 
-              <a
-                href="/vi/hexagram"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex h-10 items-center gap-1.5 rounded-full px-4 text-xs sm:text-sm font-serif font-semibold text-white transition hover:scale-[1.02] hover:bg-white/15 active:scale-[0.98] cursor-pointer shadow-lg no-underline"
-                style={{
-                  background: "rgba(255,255,255,0.1)",
-                  border: "1px solid rgba(255,255,255,0.38)",
-                  backdropFilter: "blur(8px)",
-                }}
-              >
-                <span>📖</span>
-                <span>Bách Khoa 64 Quẻ ↗</span>
-              </a>
-            </div>
-
-            <div className="flex items-center gap-5 border-t border-white/15 pt-3 text-left">
-              <div>
-                <div className="text-lg sm:text-xl font-bold text-[#D4AF37] font-serif leading-none">
-                  64
-                </div>
-                <div className="text-[10px] uppercase tracking-wider text-white/55 mt-0.5">
-                  Quẻ Chu Dịch
-                </div>
-              </div>
-              <div>
-                <div className="text-lg sm:text-xl font-bold text-[#D4AF37] font-serif leading-none">
-                  384
-                </div>
-                <div className="text-[10px] uppercase tracking-wider text-white/55 mt-0.5">
-                  Hào Tượng
-                </div>
-              </div>
-              <div>
-                <div className="text-lg sm:text-xl font-bold text-[#D4AF37] font-serif leading-none">
-                  12
-                </div>
-                <div className="text-[10px] uppercase tracking-wider text-white/55 mt-0.5">
-                  Trận Pháp
-                </div>
-              </div>
-              <div>
-                <div className="text-lg sm:text-xl font-bold text-[#D4AF37] font-serif leading-none">
-                  10
-                </div>
-                <div className="text-[10px] uppercase tracking-wider text-white/55 mt-0.5">
-                  Pháp Khí
-                </div>
-              </div>
-            </div>
+            <a
+              href="/vi/hexagram"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-8.5 items-center gap-1.5 rounded-full px-3.5 text-xs font-serif font-semibold text-white transition hover:bg-white/15 cursor-pointer no-underline"
+              style={{
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.3)",
+                backdropFilter: "blur(8px)",
+              }}
+            >
+              <span>📖</span>
+              <span>64 Quẻ ↗</span>
+            </a>
           </div>
         </div>
       </section>
@@ -342,7 +295,7 @@ export const ImperialPageShell: React.FC<ImperialPageShellProps> = ({
           ══════════════════════════════════════════════════════════════════ */}
       <div
         aria-hidden="true"
-        className="relative w-full h-20 sm:h-24 overflow-hidden pointer-events-none select-none flex items-center justify-center"
+        className="relative w-full h-11 sm:h-12 overflow-hidden pointer-events-none select-none flex items-center justify-center"
         style={{
           background:
             "linear-gradient(180deg, #07080D 0%, #171410 36%, #DDD4C3 82%, #F6F3EB 100%)",
@@ -447,7 +400,8 @@ export const ImperialPageShell: React.FC<ImperialPageShellProps> = ({
           />
         </div>
 
-        {/* ── CỬU NHỊ COMMAND DOCK (THANH PHÁP KHÍ ĐỒNG BỘ TOÀN TRANG) ── */}
+        {/* ── CỬU NHỊ COMMAND DOCK (CHỈ HIỆN Ở TAB BỐC QUẺ ĐỂ CHỌN 10 PHÁP KHÍ, TRÁNH TRÙNG LẶP VỚI THANH MENU TRÊN CÙNG) ── */}
+        {currentTab === "divination" && (
         <div className="relative z-20 mx-auto max-w-6xl px-3 sm:px-4 pt-3 pb-2">
           <div
             className="rounded-2xl border border-[#C4963E]/50 p-3.5 sm:p-4 backdrop-blur-xl flex flex-col gap-3"
@@ -568,6 +522,8 @@ export const ImperialPageShell: React.FC<ImperialPageShellProps> = ({
               )}
           </div>
         </div>
+
+        )}
 
         {/* Nội dung chính của từng trang con */}
         <div className="relative z-10">{children}</div>

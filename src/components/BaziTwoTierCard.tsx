@@ -37,42 +37,42 @@ export const TWO_TIER_CARD_SIZE_CONFIG: Record<
   "1x": {
     label: "1x Chuẩn",
     multiplier: "1x",
-    cardClasses: "min-w-[40px] min-h-[44px] sm:min-w-[46px] sm:min-h-[50px] p-0.5 sm:p-1 rounded-lg",
-    emojiClasses: "text-xs sm:text-sm leading-none",
-    chiClasses: "text-[11px] sm:text-xs leading-none mt-0.5 font-bold",
-    badgeClasses: "text-[6px] sm:text-[6.5px]",
-    subNoteClasses: "text-[6px]",
-    tamAnClasses: "text-[6.5px] leading-tight",
+    cardClasses: "min-w-[50px] min-h-[54px] sm:min-w-[56px] sm:min-h-[60px] p-1 sm:p-1.5 rounded-lg gap-0.5",
+    emojiClasses: "text-sm sm:text-base font-serif font-black leading-tight",
+    chiClasses: "text-[11px] sm:text-xs leading-snug font-bold",
+    badgeClasses: "text-[7px] sm:text-[7.5px]",
+    subNoteClasses: "text-[7.5px]",
+    tamAnClasses: "text-[7.5px] leading-snug",
   },
   "1.4x": {
     label: "1.4x Vừa",
     multiplier: "1.4x",
-    cardClasses: "min-w-[54px] min-h-[60px] sm:min-w-[62px] sm:min-h-[68px] p-1 sm:p-1.5 rounded-xl",
-    emojiClasses: "text-base sm:text-lg leading-none",
-    chiClasses: "text-xs sm:text-sm leading-none mt-1 font-bold",
-    badgeClasses: "text-[7.5px] sm:text-[8px]",
-    subNoteClasses: "text-[7.5px]",
-    tamAnClasses: "text-[7.5px] sm:text-[8px] leading-tight",
+    cardClasses: "min-w-[68px] min-h-[74px] sm:min-w-[78px] sm:min-h-[84px] p-1.5 sm:p-2 rounded-xl gap-0.5",
+    emojiClasses: "text-lg sm:text-xl font-serif font-black leading-tight",
+    chiClasses: "text-xs sm:text-sm leading-snug font-bold",
+    badgeClasses: "text-[8px] sm:text-[8.5px]",
+    subNoteClasses: "text-[8.5px]",
+    tamAnClasses: "text-[8.5px] sm:text-[9px] leading-snug",
   },
   "1.7x": {
     label: "1.7x Lớn",
     multiplier: "1.7x",
-    cardClasses: "min-w-[66px] min-h-[74px] sm:min-w-[78px] sm:min-h-[86px] p-1.5 sm:p-2 rounded-xl",
-    emojiClasses: "text-xl sm:text-2xl leading-none",
-    chiClasses: "text-sm sm:text-base leading-none mt-1 font-extrabold",
-    badgeClasses: "text-[8.5px] sm:text-[9px]",
-    subNoteClasses: "text-[8px]",
-    tamAnClasses: "text-[8px] sm:text-[8.5px] leading-tight",
+    cardClasses: "min-w-[84px] min-h-[92px] sm:min-w-[98px] sm:min-h-[106px] p-2 sm:p-2.5 rounded-xl gap-0.5",
+    emojiClasses: "text-xl sm:text-2xl font-serif font-black leading-tight",
+    chiClasses: "text-sm sm:text-base leading-snug font-extrabold",
+    badgeClasses: "text-[9px] sm:text-[9.5px]",
+    subNoteClasses: "text-[9px] sm:text-[10px]",
+    tamAnClasses: "text-[9px] sm:text-[10px] leading-snug",
   },
   "2x": {
     label: "2x To Gấp Đôi",
     multiplier: "2x",
-    cardClasses: "min-w-[76px] min-h-[86px] sm:min-w-[94px] sm:min-h-[104px] p-2 sm:p-2.5 rounded-2xl",
-    emojiClasses: "text-2xl sm:text-3xl leading-none",
-    chiClasses: "text-base sm:text-xl leading-none mt-1.5 font-black",
-    badgeClasses: "text-[9px] sm:text-[10px]",
-    subNoteClasses: "text-[8.5px] sm:text-[9px]",
-    tamAnClasses: "text-[8.5px] sm:text-[9.5px] leading-tight",
+    cardClasses: "min-w-[98px] min-h-[108px] sm:min-w-[116px] sm:min-h-[126px] p-2.5 sm:p-3 rounded-xl gap-1",
+    emojiClasses: "text-2xl sm:text-3xl font-serif font-black leading-tight",
+    chiClasses: "text-base sm:text-lg leading-snug font-extrabold",
+    badgeClasses: "text-[9.5px] sm:text-[10.5px]",
+    subNoteClasses: "text-[10px] sm:text-[11px]",
+    tamAnClasses: "text-[9.5px] sm:text-[10.5px] leading-snug",
   },
 };
 
@@ -81,8 +81,8 @@ export const BaziTwoTierSizeSelector: React.FC<{
   onChangeSize: (size: TwoTierCardSize) => void;
 }> = ({ currentSize, onChangeSize }) => {
   return (
-    <div className="flex items-center gap-0.5 sm:gap-1 bg-[#1A1209] p-0.5 rounded-lg border border-[#432F1A] shadow-inner shrink-0">
-      <span className="text-[9px] text-[#A89882] font-semibold px-1 hidden xs:inline">
+    <div className="flex items-center gap-0.5 sm:gap-1 bg-[#FAF6EE] p-0.5 rounded-lg border border-[#D8C8A8] shadow-xs shrink-0">
+      <span className="text-[9px] text-[#5C4D3C] font-semibold px-1 hidden xs:inline">
         Cỡ ô:
       </span>
       {(["1x", "1.4x", "1.7x", "2x"] as TwoTierCardSize[]).map((sz) => {
@@ -94,8 +94,8 @@ export const BaziTwoTierSizeSelector: React.FC<{
             onClick={() => onChangeSize(sz)}
             className={`px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-bold rounded transition-all cursor-pointer ${
               isActive
-                ? "bg-gradient-to-r from-amber-600 to-amber-500 text-stone-950 shadow-sm font-black ring-1 ring-amber-300"
-                : "text-[#C4B49F] hover:text-amber-200 hover:bg-[#2A1B0E]"
+                ? "bg-[#9E2A2B] text-[#FFF9F5] shadow-xs font-black"
+                : "text-[#5C4D3C] hover:text-[#1C1813] hover:bg-[#EFE6D5]"
             }`}
             title={`Chọn kích cỡ ô: ${TWO_TIER_CARD_SIZE_CONFIG[sz].label}`}
           >
@@ -278,29 +278,42 @@ export const BaziTwoTierCard: React.FC<BaziTwoTierCardProps> = ({
     touchStartPos.current = null;
   };
 
-  // Card background styling based on zone & badgeType
-  let cardBg = "bg-[#1A120B] border-[#3E2C1A]";
+  const isCung = badgeType === "cung" || currentZone === "top_cung_origin";
+
+  // Card background styling based on zone & badgeType (Minimalist Xuan Paper)
+  let cardBg = "bg-[#FFFDF8] border-[#C9A86A] shadow-xs";
   if (badgeType === "xung") {
-    cardBg = "bg-gradient-to-b from-[#3E1715] via-[#2A0E0C] to-[#1C0908] border-rose-500 shadow-rose-600/30 ring-1 ring-rose-500/50";
+    cardBg = "bg-[#FFF7F7] border-2 border-[#B91C1C] shadow-xs";
   } else if (badgeType === "hai") {
-    cardBg = "bg-gradient-to-b from-[#38182E] via-[#260E1F] to-[#180813] border-pink-500 shadow-pink-600/25 ring-1 ring-pink-500/40";
+    cardBg = "bg-[#FDF7FA] border-2 border-[#BE185D] shadow-xs";
   } else if (badgeType === "hinh") {
-    cardBg = "bg-gradient-to-b from-[#3A2612] via-[#26180A] to-[#180E05] border-amber-500 shadow-amber-600/25 ring-1 ring-amber-500/40";
-  } else if (badgeType === "cung" || currentZone === "top_cung_origin") {
-    cardBg = "bg-gradient-to-b from-[#311640] via-[#220E2C] to-[#15071D] border-purple-500 shadow-purple-900/30 ring-1 ring-purple-500/50";
+    cardBg = "bg-[#FFFBF2] border-2 border-[#B45309] shadow-xs";
+  } else if (isCung) {
+    cardBg = "bg-[#FAF6FF] border-2 border-[#7E22CE] shadow-xs";
   } else if (badgeType === "toancuc") {
-    cardBg = "bg-gradient-to-b from-[#1F271B] to-[#121A0F] border-emerald-500/70 shadow-sm";
+    cardBg = "bg-[#F4FBF7] border-2 border-[#15803D] shadow-xs";
   } else if (badgeType === "daivan") {
-    cardBg = "bg-gradient-to-b from-[#23180F] to-[#170E08] border-amber-600/70";
+    cardBg = "bg-[#FFFDF5] border-2 border-[#B8862D] shadow-xs";
   } else if (currentZone === "bottom_left" || currentZone === "bottom_right" || currentZone === "bottom_hop") {
-    cardBg = "bg-gradient-to-b from-[#142B1E] to-[#0D1C14] border-emerald-500/80 shadow-md ring-1 ring-emerald-500/40";
+    cardBg = "bg-[#F4FBF7] border-2 border-[#15803D] shadow-xs";
   } else if (currentZone === "middle_same") {
-    cardBg = "bg-gradient-to-b from-[#2E2012] via-[#22160C] to-[#170E07] border-amber-500/80 shadow-lg ring-1 ring-amber-500/40";
+    cardBg = "bg-[#FFFDF5] border-2 border-[#B8862D] shadow-xs";
   } else if (currentZone === "top_left" || currentZone === "top_right") {
-    cardBg = "bg-gradient-to-b from-[#2A1E14] to-[#1C130C] border-[#6B4E28] shadow-sm";
+    cardBg = "bg-[#FFFDF8] border border-[#C4963E] shadow-xs";
   }
 
-  const isCung = badgeType === "cung" || currentZone === "top_cung_origin";
+  const hanziInkColor =
+    badgeType === "xung"
+      ? "text-[#991B1B]"
+      : badgeType === "hai"
+      ? "text-[#9D174D]"
+      : badgeType === "hinh"
+      ? "text-[#92400E]"
+      : isCung
+      ? "text-[#6B21A8]"
+      : currentZone === "bottom_left" || currentZone === "bottom_right" || currentZone === "bottom_hop" || badgeType === "toancuc"
+      ? "text-[#14532D]"
+      : cData?.element === "Mộc" ? "text-[#14532D]" : cData?.element === "Hỏa" ? "text-[#9E2A2B]" : cData?.element === "Thổ" ? "text-[#78350F]" : cData?.element === "Kim" ? "text-[#44403C]" : cData?.element === "Thủy" ? "text-[#1E3A8A]" : "text-[#1C1813]";
 
   return (
     <div
@@ -369,7 +382,7 @@ export const BaziTwoTierCard: React.FC<BaziTwoTierCardProps> = ({
             e.stopPropagation();
             setMenuOpen((prev) => !prev);
           }}
-          className="absolute -top-1 -left-1 opacity-40 hover:opacity-100 p-0.5 rounded-full bg-[#1A1108] border border-[#523C26] text-[#D8C7B0] hover:text-amber-300 cursor-pointer z-10"
+          className="absolute -top-1 -left-1 opacity-60 hover:opacity-100 p-0.5 rounded-full bg-[#FAF6EE] border border-[#C4963E] text-[#5C4D3C] hover:text-[#9E2A2B] cursor-pointer z-10 shadow-xs"
           title="Chuyển vùng thẻ này"
         >
           <Move className="w-2.5 h-2.5" />
@@ -379,36 +392,54 @@ export const BaziTwoTierCard: React.FC<BaziTwoTierCardProps> = ({
       {/* Nhãn Trụ / Badge nhỏ ở trên cùng khi kích cỡ >= 1.4x */}
       {size !== "1x" && (
         <span
-          className={`leading-none truncate max-w-full font-semibold select-none mb-0.5 px-1 py-0.2 rounded-full border ${sizeCfg.badgeClasses} ${
+          className={`leading-snug whitespace-nowrap font-bold select-none px-2 py-0.5 rounded-full border ${sizeCfg.badgeClasses} ${
             badgeType === "xung"
-              ? "bg-rose-950/80 text-rose-300 border-rose-500/50"
+              ? "bg-[#FEE2E2] text-[#991B1B] border-[#DC2626]/45"
               : badgeType === "hai"
-              ? "bg-pink-950/80 text-pink-300 border-pink-500/50"
+              ? "bg-[#FCE7F3] text-[#9D174D] border-[#DB2777]/45"
               : badgeType === "hinh"
-              ? "bg-amber-950/80 text-amber-300 border-amber-500/50"
+              ? "bg-[#FEF3C7] text-[#92400E] border-[#D97706]/45"
               : isCung
-              ? "bg-purple-950/80 text-purple-300 border-purple-500/50"
-              : currentZone === "bottom_left" || currentZone === "bottom_right" || currentZone === "bottom_hop"
-              ? "bg-emerald-950/80 text-emerald-300 border-emerald-500/50"
+              ? "bg-[#F3E8FF] text-[#6B21A8] border-[#9333EA]/45"
+              : currentZone === "bottom_left" || currentZone === "bottom_right" || currentZone === "bottom_hop" || badgeType === "toancuc"
+              ? "bg-[#DCFCE7] text-[#14532D] border-[#16A34A]/45"
               : currentZone === "middle_same"
-              ? "bg-amber-950/80 text-amber-200 border-amber-500/50"
-              : "bg-[#251A0F] text-[#D8C7B0] border-[#553C24]"
+              ? "bg-[#FEF3C7] text-[#78350F] border-[#D97706]/45"
+              : "bg-[#F5EFE2] text-[#5C4318] border-[#C9A86A]"
           }`}
         >
-          {badgeText ? badgeText.split(" ")[0] : label}
+          {badgeType === "xung"
+            ? "Đối Xung"
+            : badgeType === "hai"
+            ? "Đối Hại"
+            : badgeType === "hinh"
+            ? "Đối Hình"
+            : isCung
+            ? "Củng Cục"
+            : badgeType === "toancuc"
+            ? "Toàn Cục"
+            : currentZone === "top_left"
+            ? "Kế Bên"
+            : currentZone === "bottom_left" || currentZone === "bottom_right" || currentZone === "bottom_hop"
+            ? "Hợp Kéo"
+            : currentZone === "middle_same"
+            ? "Chữ Trùng"
+            : badgeType === "doclap"
+            ? "Độc Lập"
+            : label}
         </span>
       )}
 
-      {/* 1. Emoji con giáp ở trên (chỉ hiện khi showEmoji = true) */}
+      {/* 1. Chữ Hán Địa Chi ở trên (chỉ hiện khi showEmoji = true) */}
       {showEmoji && (
-        <span className={`${sizeCfg.emojiClasses} select-none`}>
-          {cData?.emoji || "⭐"}
+        <span className={`${sizeCfg.emojiClasses} ${hanziInkColor} select-none`}>
+          {cData?.emoji || chi}
         </span>
       )}
 
-      {/* 2. Tên Chi chữ serif đậm nét */}
+      {/* 2. Tên Chi chữ Việt serif đậm nét */}
       <span
-        className={`font-serif leading-none select-none ${
+        className={`font-serif leading-snug select-none ${
           showEmoji
             ? sizeCfg.chiClasses
             : size === "1x"
@@ -420,16 +451,16 @@ export const BaziTwoTierCard: React.FC<BaziTwoTierCardProps> = ({
             : "text-lg sm:text-2xl font-black my-auto"
         } ${
           badgeType === "xung"
-            ? "text-rose-200"
+            ? "text-[#991B1B]"
             : badgeType === "hai"
-            ? "text-pink-200"
+            ? "text-[#9D174D]"
             : badgeType === "hinh"
-            ? "text-amber-200"
+            ? "text-[#92400E]"
             : isCung
-            ? "text-purple-200"
-            : currentZone === "bottom_left" || currentZone === "bottom_right" || currentZone === "bottom_hop"
-            ? "text-emerald-200"
-            : "text-[#F5EAD4]"
+            ? "text-[#6B21A8]"
+            : currentZone === "bottom_left" || currentZone === "bottom_right" || currentZone === "bottom_hop" || badgeType === "toancuc"
+            ? "text-[#14532D]"
+            : "text-[#1C1813]"
         }`}
       >
         {isCung ? `(${chi})` : chi}
@@ -438,7 +469,7 @@ export const BaziTwoTierCard: React.FC<BaziTwoTierCardProps> = ({
       {/* Tên Gọi Tâm Ấn Phú gắn vào Địa Chi */}
       {showTamAnPhu && tamAnPhuName && (
         <span
-          className={`font-serif font-bold text-[#E6D3A3] bg-[#291A0E]/95 px-1 py-0.2 rounded border border-amber-600/60 truncate max-w-full leading-tight shadow-xs ${sizeCfg.tamAnClasses} select-none my-0.5`}
+          className={`font-serif font-bold text-[#6E4E16] bg-[#FAF4E6] px-1.5 py-0.5 rounded border border-[#D8C296] whitespace-nowrap leading-snug ${sizeCfg.tamAnClasses} select-none`}
           title={tamAnPhuFullLine ? `Tâm Ấn Phú: ${tamAnPhuFullLine}` : `Tâm Ấn Phú: 《${tamAnPhuName}》${tamAnPhuChinese ? ` (${tamAnPhuChinese})` : ""}`}
         >
           《{tamAnPhuName}》
@@ -447,7 +478,7 @@ export const BaziTwoTierCard: React.FC<BaziTwoTierCardProps> = ({
 
       {/* 3. Tên Trụ (Can Chi) ở dưới cùng */}
       {((size === "2x" || size === "1.7x") || (!showEmoji && size === "1.4x")) && pillar && (
-        <span className={`text-[#A89882] select-none leading-none font-mono font-medium truncate max-w-full ${sizeCfg.subNoteClasses} ${!showEmoji ? "mt-0.5" : ""}`}>
+        <span className={`text-[#5C4D3C] select-none leading-snug font-serif font-semibold whitespace-nowrap ${sizeCfg.subNoteClasses} ${!showEmoji ? "mt-0.5" : ""}`}>
           {pillar}
         </span>
       )}
@@ -455,15 +486,15 @@ export const BaziTwoTierCard: React.FC<BaziTwoTierCardProps> = ({
       {/* Quick Move Menu Popup khi bấm vào thẻ */}
       {menuOpen && (
         <div
-          className="absolute left-1/2 -translate-x-1/2 top-full mt-1.5 w-52 rounded-xl bg-[#1C130B] border-2 border-[#C9A55A] shadow-2xl py-1.5 z-50 text-left animate-in fade-in"
+          className="absolute left-1/2 -translate-x-1/2 top-full mt-1.5 w-52 rounded-xl bg-[#FFFDF8] border-2 border-[#C4963E] shadow-xl py-1.5 z-50 text-left animate-in fade-in"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="px-2.5 py-1 text-[9px] uppercase tracking-wider text-[#A89882] font-semibold border-b border-[#362516] flex items-center justify-between">
+          <div className="px-2.5 py-1 text-[9px] uppercase tracking-wider text-[#5C4D3C] font-semibold border-b border-[#E5D8C1] flex items-center justify-between">
             <span>Chuyển {label} ({chi}) tới:</span>
             <button
               type="button"
               onClick={() => setMenuOpen(false)}
-              className="text-[#8C7D6B] hover:text-white p-0.5 cursor-pointer"
+              className="text-[#5C4D3C] hover:text-[#9E2A2B] p-0.5 cursor-pointer"
             >
               <X className="w-3 h-3" />
             </button>
@@ -481,15 +512,15 @@ export const BaziTwoTierCard: React.FC<BaziTwoTierCardProps> = ({
                   }}
                   className={`w-full px-2.5 py-1 text-[11px] flex items-center justify-between transition-colors cursor-pointer ${
                     isCurrent
-                      ? "bg-[#332212] text-amber-300 font-bold"
-                      : "text-[#E5D7BF] hover:bg-[#2B1E12] hover:text-white"
+                      ? "bg-[#FAF0D7] text-[#78350F] font-bold"
+                      : "text-[#1C1813] hover:bg-[#FAF6EE]"
                   }`}
                 >
                   <div className="flex items-center gap-1.5 truncate">
                     <span>{z.icon}</span>
                     <span className="truncate">{z.label}</span>
                   </div>
-                  {isCurrent && <Check className="w-3 h-3 text-amber-400 shrink-0" />}
+                  {isCurrent && <Check className="w-3 h-3 text-[#92400E] shrink-0" />}
                 </button>
               );
             })}

@@ -138,19 +138,19 @@ const LUC_HOP_MAP: Record<string, string> = {
 };
 
 const GENERAL_COLOR_MAP: Record<string, string> = {
-  "Quý Nhân": "text-amber-300",
-  "Đằng Xà": "text-orange-400",
-  "Chu Tước": "text-rose-400",
-  "Lục Hợp": "text-emerald-300",
-  "Câu Trần": "text-yellow-400",
-  "Câu Trận": "text-yellow-400",
-  "Thanh Long": "text-teal-300",
-  "Thiên Không": "text-sky-300",
-  "Bạch Hổ": "text-stone-300",
-  "Thái Thường": "text-amber-200",
-  "Huyền Vũ": "text-indigo-300",
-  "Thái Âm": "text-purple-300",
-  "Thiên Hậu": "text-pink-300",
+  "Quý Nhân": "text-[#78350F]",
+  "Đằng Xà": "text-[#9A3412]",
+  "Chu Tước": "text-[#991B1B]",
+  "Lục Hợp": "text-[#14532D]",
+  "Câu Trần": "text-[#854D0E]",
+  "Câu Trận": "text-[#854D0E]",
+  "Thanh Long": "text-[#0F766E]",
+  "Thiên Không": "text-[#1E3A8A]",
+  "Bạch Hổ": "text-[#57534E]",
+  "Thái Thường": "text-[#78350F]",
+  "Huyền Vũ": "text-[#3730A3]",
+  "Thái Âm": "text-[#6B21A8]",
+  "Thiên Hậu": "text-[#9D174D]",
 };
 
 const CHINESE_GENERAL_MAP: Record<string, string> = {
@@ -502,19 +502,19 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
     ];
 
     const GENERAL_COLOR_MAP: Record<string, string> = {
-      "Quý Nhân": "text-amber-300",
-      "Đằng Xà": "text-orange-400",
-      "Chu Tước": "text-rose-400",
-      "Lục Hợp": "text-emerald-400",
-      "Câu Trần": "text-yellow-400",
-      "Câu Trận": "text-yellow-400",
+      "Quý Nhân": "text-[#78350F]",
+      "Đằng Xà": "text-[#9A3412]",
+      "Chu Tước": "text-[#991B1B]",
+      "Lục Hợp": "text-[#15803D]",
+      "Câu Trần": "text-[#854D0E]",
+      "Câu Trận": "text-[#854D0E]",
       "Thanh Long": "text-cyan-400",
-      "Thiên Không": "text-sky-300",
-      "Bạch Hổ": "text-stone-300",
-      "Thái Thường": "text-amber-200",
-      "Huyền Vũ": "text-indigo-300",
-      "Thái Âm": "text-purple-300",
-      "Thiên Hậu": "text-pink-300",
+      "Thiên Không": "text-[#1E3A8A]",
+      "Bạch Hổ": "text-[#57534E]",
+      "Thái Thường": "text-[#78350F]",
+      "Huyền Vũ": "text-[#3730A3]",
+      "Thái Âm": "text-[#6B21A8]",
+      "Thiên Hậu": "text-[#9D174D]",
     };
 
     const CHINESE_GENERAL_MAP: Record<string, string> = {
@@ -625,7 +625,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
         generalChinese: CHINESE_GENERAL_MAP[generalName] || "",
         generalOverview: exactGeneral?.overview || "",
         generalNotes: exactGeneral?.notes || "",
-        generalColor: GENERAL_COLOR_MAP[generalName] || "text-amber-300",
+        generalColor: GENERAL_COLOR_MAP[generalName] || "text-[#78350F]",
         tuongName,
         tuongChinese,
         meaning,
@@ -3474,49 +3474,49 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
     switch (rating) {
       case "Hỷ":
         return isButton
-          ? "bg-emerald-900/90 text-emerald-200 border-emerald-400 ring-1 ring-emerald-400 font-bold shadow-sm shadow-emerald-500/20"
-          : "bg-emerald-950 text-emerald-300 border-emerald-700/80";
+          ? "bg-[#DCFCE7] text-[#14532D] border-emerald-400 ring-1 ring-emerald-400 font-bold shadow-sm shadow-emerald-500/20"
+          : "bg-[#DCFCE7] text-[#14532D] border-emerald-700/80";
       case "Trung Cát":
         return isButton
-          ? "bg-teal-900/90 text-teal-200 border-teal-400 ring-1 ring-teal-400 font-bold shadow-sm shadow-teal-500/20"
-          : "bg-teal-950 text-teal-300 border-teal-700/80";
+          ? "bg-[#CCFBF1] text-[#0F766E] border-teal-400 ring-1 ring-teal-400 font-bold shadow-sm shadow-teal-500/20"
+          : "bg-[#F0FDFA] text-[#0F766E] border-teal-500/60";
       case "Trung":
         return isButton
-          ? "bg-amber-900/90 text-amber-200 border-amber-400 ring-1 ring-amber-400 font-bold shadow-sm shadow-amber-500/20"
-          : "bg-amber-950/70 text-amber-300 border-amber-700/80";
+          ? "bg-[#FEF3C7] text-[#78350F] border-amber-400 ring-1 ring-amber-400 font-bold shadow-sm shadow-amber-500/20"
+          : "bg-[#FEF3C7] text-[#78350F] border-amber-700/80";
       case "Trung Kỵ":
         return isButton
-          ? "bg-orange-900/90 text-orange-200 border-orange-400 ring-1 ring-orange-400 font-bold shadow-sm shadow-orange-500/20"
-          : "bg-orange-950 text-orange-300 border-orange-700/80";
+          ? "bg-[#FFEDD5] text-[#9A3412] border-orange-400 ring-1 ring-orange-400 font-bold shadow-sm shadow-orange-500/20"
+          : "bg-[#FFF7ED] text-[#9A3412] border-orange-500/60";
       case "Kỵ":
         return isButton
-          ? "bg-rose-900/90 text-rose-200 border-rose-400 ring-1 ring-rose-400 font-bold shadow-sm shadow-rose-500/20"
-          : "bg-rose-950 text-rose-300 border-rose-700/80";
+          ? "bg-[#FEE2E2] text-[#991B1B] border-rose-400 ring-1 ring-rose-400 font-bold shadow-sm shadow-rose-500/20"
+          : "bg-[#FEE2E2] text-[#991B1B] border-rose-700/80";
       default:
-        return "bg-[#1C140D] text-[#8C7D6B] border-[#3D2C1A]";
+        return "bg-[#FFFDF8] text-[#5C4D3C] border-[#C4963E]/45";
     }
   };
 
   return (
     <div
-      className={`p-3 sm:p-5 rounded-2xl bg-gradient-to-b from-[#1A140F] via-[#15100B] to-[#100C08] border border-[#6B4E28] shadow-2xl ${className}`}
+      className={`p-3 sm:p-5 rounded-2xl bg-gradient-to-b from-[#FFFDF8] via-[#FFFDF8] to-[#FFFDF8] border border-[#C4963E]/45 shadow-2xl ${className}`}
     >
       {/* Header Thực Thi Thiên / Lưu Niên Thiên */}
-      <div className="flex flex-row items-center justify-between gap-2 pb-2.5 sm:pb-3 border-b border-[#44321D]">
+      <div className="flex flex-row items-center justify-between gap-2 pb-2.5 sm:pb-3 border-b border-[#C4963E]/45">
         <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-br from-amber-600 via-amber-700 to-amber-900 text-[#F5EAD4] flex items-center justify-center shadow-lg shrink-0 ring-1 ring-amber-500/50">
-            <PlayCircle className="w-4 h-4 text-amber-200" />
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#9E2A2B] text-[#FFF9F5] flex items-center justify-center shadow-lg shrink-0 ring-1 ring-amber-500/50">
+            <PlayCircle className="w-4 h-4 text-[#78350F]" />
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="text-xs sm:text-base font-bold text-[#F5EAD4] font-serif tracking-wide truncate">
+              <h3 className="text-xs sm:text-base font-bold text-[#1C1813] font-serif tracking-wide truncate">
                 {title || "THỰC THI THIÊN (實施篇)"}
               </h3>
-              <span className="text-[9px] px-2 py-0.5 rounded-full bg-amber-950/90 text-amber-300 border border-amber-600/70 font-semibold font-mono">
+              <span className="text-[9px] px-2 py-0.5 rounded-full bg-[#FEF3C7] text-[#78350F] border border-amber-600/70 font-semibold font-mono">
                 {badgeLabel || "Nguyên Cục + Hành Vận ⟷ Lưu Niên"}
               </span>
             </div>
-            <p className="text-[10px] sm:text-xs text-[#A89882] mt-0.5 line-clamp-1">
+            <p className="text-[10px] sm:text-xs text-[#5C4D3C] mt-0.5 line-clamp-1">
               {subTitle ||
                 `Phân tích tương tác giữa Nguyên Cục cộng Hành Vận (5 Trụ) đối với Địa Chi Lưu Niên (${luuNienInfo.fullName} ${selectedYear}).`}
             </p>
@@ -3546,10 +3546,10 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                 }
                 onCapture();
               }}
-              className="no-capture flex items-center gap-1 px-2.5 py-1 text-[11px] sm:text-xs font-semibold rounded-lg bg-[#271E15] hover:bg-[#382B1E] text-amber-200 border border-[#523F27] hover:border-[#C9A55A] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
+              className="no-capture flex items-center gap-1 px-2.5 py-1 text-[11px] sm:text-xs font-semibold rounded-lg bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#78350F] border border-[#C4963E]/45 hover:border-[#B8862D] transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
               title={captureButtonText ? `Chụp ảnh riêng ${captureButtonText}` : "Chụp ảnh riêng"}
             >
-              <Camera className="w-3.5 h-3.5 text-amber-400" />
+              <Camera className="w-3.5 h-3.5 text-[#92400E]" />
               <span>{captureButtonText || "Chụp Thực Thi"}</span>
             </button>
           )}
@@ -3567,7 +3567,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
               className="no-capture flex items-center gap-1 px-2.5 py-1 text-[11px] sm:text-xs font-semibold rounded-lg bg-gradient-to-r from-amber-700/80 to-amber-900/80 hover:brightness-110 text-amber-100 border border-amber-600/60 hover:border-amber-400 transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
               title={downloadButtonText ? `Tải ảnh riêng ${downloadButtonText} về máy tính` : "Tải ảnh riêng về máy tính"}
             >
-              <Download className="w-3.5 h-3.5 text-amber-300" />
+              <Download className="w-3.5 h-3.5 text-[#78350F]" />
               <span>{downloadButtonText || "Tải Ảnh"}</span>
             </button>
           )}
@@ -3575,7 +3575,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center gap-1 px-2 py-1 text-[11px] sm:text-xs font-medium rounded-lg bg-[#271C11] text-[#D6B97A] border border-[#4D3620] hover:bg-[#382717] transition-all cursor-pointer whitespace-nowrap"
+            className="flex items-center gap-1 px-2 py-1 text-[11px] sm:text-xs font-medium rounded-lg bg-[#FFFDF8] text-[#6E4E16] border border-[#C4963E]/45 hover:bg-[#FAF6EE] transition-all cursor-pointer whitespace-nowrap"
           >
             <span>{isOpen ? "Thu Gọn" : "Mở Rộng"}</span>
             <ChevronDown
@@ -3589,7 +3589,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
 
       {/* Thông báo Toast */}
       {toastMsg && (
-        <div className="fixed top-6 right-6 z-50 px-4 py-2 rounded-xl bg-[#291B0F] border border-[#C9A55A] text-[#E6D3A3] font-serif text-xs font-bold shadow-2xl flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-300">
+        <div className="fixed top-6 right-6 z-50 px-4 py-2 rounded-xl bg-[#FFFDF8] border border-[#B8862D] text-[#6E4E16] font-serif text-xs font-bold shadow-2xl flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-300">
           <span>✨</span>
           <span>{toastMsg}</span>
         </div>
@@ -3600,17 +3600,17 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
           {/* =================================================================
               BỘ CHỌN NĂM LƯU NIÊN KHẢO SÁT & HIỂN THỊ HÀNH VẬN
               ================================================================= */}
-          <div className="p-2.5 sm:p-3 rounded-xl bg-[#171109] border border-[#44301D] space-y-2">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1.5 border-b border-[#2C1D10]">
+          <div className="p-2.5 sm:p-3 rounded-xl bg-[#FFFDF8] border border-[#C4963E]/45 space-y-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1.5 border-b border-[#C4963E]/45">
               <div className="flex items-center gap-2 flex-wrap">
-                <Calendar className="w-4 h-4 text-amber-400" />
-                <span className="font-bold text-[#D6B97A] text-xs sm:text-sm">
+                <Calendar className="w-4 h-4 text-[#92400E]" />
+                <span className="font-bold text-[#6E4E16] text-xs sm:text-sm">
                   Lưu Niên Khảo Sát:
                 </span>
-                <span className="text-amber-200 font-serif font-bold text-sm sm:text-base flex items-center gap-1.5">
+                <span className="text-[#78350F] font-serif font-bold text-sm sm:text-base flex items-center gap-1.5">
                   <span>{luuNienInfo.fullName}</span>
-                  <span className="text-amber-400 font-mono text-xs sm:text-sm">({selectedYear})</span>
-                  <span className="text-xs text-[#A89882]">[{luuNienInfo.napAm}]</span>
+                  <span className="text-[#92400E] font-mono text-xs sm:text-sm">({selectedYear})</span>
+                  <span className="text-xs text-[#5C4D3C]">[{luuNienInfo.napAm}]</span>
                 </span>
               </div>
 
@@ -3621,18 +3621,18 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                   <button
                     type="button"
                     onClick={() => setSelectedYear((y) => y - 1)}
-                    className="p-1 rounded-lg bg-[#24170E] hover:bg-[#352214] border border-[#4D3620] text-[#D6B97A] transition-all cursor-pointer"
+                    className="p-1 rounded-lg bg-[#FFFDF8] hover:bg-[#FAF6EE] border border-[#C4963E]/45 text-[#6E4E16] transition-all cursor-pointer"
                     title="Năm trước"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
-                  <span className="px-2.5 py-0.5 rounded-lg bg-[#2E1D11] border border-amber-600/60 font-mono font-bold text-amber-300 text-xs">
+                  <span className="px-2.5 py-0.5 rounded-lg bg-[#FAF6EE] border border-amber-600/60 font-mono font-bold text-[#78350F] text-xs">
                     {selectedYear}
                   </span>
                   <button
                     type="button"
                     onClick={() => setSelectedYear((y) => y + 1)}
-                    className="p-1 rounded-lg bg-[#24170E] hover:bg-[#352214] border border-[#4D3620] text-[#D6B97A] transition-all cursor-pointer"
+                    className="p-1 rounded-lg bg-[#FFFDF8] hover:bg-[#FAF6EE] border border-[#C4963E]/45 text-[#6E4E16] transition-all cursor-pointer"
                     title="Năm sau"
                   >
                     <ChevronRight className="w-4 h-4" />
@@ -3640,27 +3640,27 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                   <button
                     type="button"
                     onClick={() => setSelectedYear(new Date().getFullYear())}
-                    className="text-[10px] px-2 py-1 rounded-lg bg-[#24170E] hover:bg-[#352214] border border-[#4D3620] text-[#A89882] hover:text-amber-200 transition-all cursor-pointer font-semibold ml-1"
+                    className="text-[10px] px-2 py-1 rounded-lg bg-[#FFFDF8] hover:bg-[#FAF6EE] border border-[#C4963E]/45 text-[#5C4D3C] hover:text-[#78350F] transition-all cursor-pointer font-semibold ml-1"
                   >
                     Hiện Tại
                   </button>
                 </div>
 
                 {/* HÌNH CHI LƯU NIÊN Ở BÊN PHẢI SAU CÙNG */}
-                <div className="flex items-center gap-2 px-2.5 py-1 rounded-xl bg-gradient-to-r from-[#2B1B0F] via-[#382313] to-[#24160B] border-2 border-amber-500/80 shadow-md shadow-amber-600/25 ring-1 ring-amber-400/50 shrink-0">
+                <div className="flex items-center gap-2 px-2.5 py-1 rounded-xl bg-gradient-to-r from-[#FFFDF8] via-[#FAF6EE] to-[#FFFDF8] border-2 border-amber-500/80 shadow-md shadow-amber-600/25 ring-1 ring-amber-400/50 shrink-0">
                   <span className="text-2xl sm:text-3xl leading-none select-none drop-shadow">
                     {targetChiData?.emoji || "⭐"}
                   </span>
                   <div className="flex flex-col text-left leading-none">
                     <div className="flex items-center gap-1">
-                      <span className="font-serif font-bold text-amber-200 text-xs sm:text-sm">
+                      <span className="font-serif font-bold text-[#78350F] text-xs sm:text-sm">
                         {selectedLuuNienChi}
                       </span>
-                      <span className="text-[10px] text-amber-400 font-serif font-bold">
+                      <span className="text-[10px] text-[#92400E] font-serif font-bold">
                         ({targetChiData?.chinese || ""})
                       </span>
                     </div>
-                    <span className="text-[9px] text-[#D8C7B0] font-semibold mt-0.5">
+                    <span className="text-[9px] text-[#5C4D3C] font-semibold mt-0.5">
                       {targetChiData?.zodiac ? `Chi ${selectedLuuNienChi} (${targetChiData.zodiac})` : `Chi ${selectedLuuNienChi}`}
                     </span>
                   </div>
@@ -3670,33 +3670,33 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
 
             {/* THÔNG TIN CAN CHI CỦA TẤT CẢ 6 TRỤ CHUNG 1 HÀNG (GIỜ • NGÀY • THÁNG • NĂM • ĐẠI VẬN • LƯU NIÊN) */}
             <div className="space-y-2 pt-1">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-1.5 text-[11px] text-[#C4B49F]">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-1.5 text-[11px] text-[#5C4D3C]">
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="font-bold text-[#D6B97A] flex items-center gap-1.5">
-                    <MousePointerClick className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="font-bold text-[#6E4E16] flex items-center gap-1.5">
+                    <MousePointerClick className="w-3.5 h-3.5 text-[#92400E]" />
                     <span>Can Chi Bát Tự Toàn Hệ Thống (Trụ Giờ • Trụ Ngày • Trụ Tháng • Trụ Năm • Đại Vận • Lưu Niên)</span>
                   </span>
-                  <span className="text-[9.5px] px-1.5 py-0.2 rounded bg-amber-950/80 text-amber-300 border border-amber-700/60 font-semibold">
+                  <span className="text-[9.5px] px-1.5 py-0.2 rounded bg-[#FEF3C7] text-[#78350F] border border-amber-700/60 font-semibold">
                     Bấm chọn Can Chi để thêm Mũi Tên &amp; Kết Nối Nhiều Ô
                   </span>
                 </div>
 
                 {/* CÁC NÚT CHỌN NHANH BỘ Ô VÀ ĐIỀU KHIỂN ĐƯỜNG DẪN */}
                 <div className="flex items-center gap-1 flex-wrap">
-                  <span className="text-[9.5px] text-[#8C7D6B] font-semibold mr-0.5">Chọn nhanh:</span>
+                  <span className="text-[9.5px] text-[#5C4D3C] font-semibold mr-0.5">Chọn nhanh:</span>
                   <button
                     type="button"
                     onClick={() => setColumnOrder((prev) => (prev === "bazi" ? "luunien_first" : "bazi"))}
-                    className="px-1.5 py-0.5 text-[9.5px] font-bold rounded bg-[#24170E] hover:bg-[#382415] text-amber-300 border border-amber-700/60 transition-all cursor-pointer flex items-center gap-1"
+                    className="px-1.5 py-0.5 text-[9.5px] font-bold rounded bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#78350F] border border-amber-700/60 transition-all cursor-pointer flex items-center gap-1"
                     title="Đổi thứ tự hiển thị: Giờ ➔ Năm ➔ Vận hoặc Lưu Niên ➔ Tứ Trụ"
                   >
-                    <ArrowLeftRight className="w-3 h-3 text-amber-400" />
+                    <ArrowLeftRight className="w-3 h-3 text-[#92400E]" />
                     <span>{columnOrder === "bazi" ? "Thứ tự: Giờ ➔ Vận" : "Thứ tự: L.Niên ➔ Trụ"}</span>
                   </button>
                   <button
                     type="button"
                     onClick={handleSelectAllCan}
-                    className="px-1.5 py-0.5 text-[9.5px] font-bold rounded bg-[#24170E] hover:bg-[#382415] text-emerald-300 border border-emerald-700/60 transition-all cursor-pointer"
+                    className="px-1.5 py-0.5 text-[9.5px] font-bold rounded bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#14532D] border border-[#16A34A]/45 transition-all cursor-pointer"
                     title="Chọn nhanh toàn bộ 6 Thiên Can để liên kết chuỗi can"
                   >
                     ⚡ 6 Thiên Can
@@ -3704,7 +3704,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                   <button
                     type="button"
                     onClick={handleSelectAllChi}
-                    className="px-1.5 py-0.5 text-[9.5px] font-bold rounded bg-[#24170E] hover:bg-[#382415] text-purple-300 border border-purple-700/60 transition-all cursor-pointer"
+                    className="px-1.5 py-0.5 text-[9.5px] font-bold rounded bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#6B21A8] border border-purple-700/60 transition-all cursor-pointer"
                     title="Chọn nhanh toàn bộ 6 Địa Chi để liên kết chuỗi chi"
                   >
                     ⚡ 6 Địa Chi
@@ -3712,7 +3712,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                   <button
                     type="button"
                     onClick={handleSelectNguyenCucChi}
-                    className="px-1.5 py-0.5 text-[9.5px] font-bold rounded bg-[#24170E] hover:bg-[#382415] text-amber-300 border border-amber-700/60 transition-all cursor-pointer"
+                    className="px-1.5 py-0.5 text-[9.5px] font-bold rounded bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#78350F] border border-amber-700/60 transition-all cursor-pointer"
                     title="Chọn nhanh 4 Chi Bát Tự Nguyên Cục (Giờ, Ngày, Tháng, Năm)"
                   >
                     ⚡ 4 Chi Bát Tự
@@ -3720,7 +3720,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                   <button
                     type="button"
                     onClick={handleSelectTamHopIfAny}
-                    className="px-1.5 py-0.5 text-[9.5px] font-bold rounded bg-[#24170E] hover:bg-[#382415] text-indigo-300 border border-indigo-700/60 transition-all cursor-pointer"
+                    className="px-1.5 py-0.5 text-[9.5px] font-bold rounded bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#3730A3] border border-indigo-700/60 transition-all cursor-pointer"
                     title="Tự động phát hiện và chọn nhóm Tam Hợp có mặt"
                   >
                     ⚡ Tam Hợp
@@ -3731,8 +3731,8 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                     onClick={() => setShowTableEmoji(!showTableEmoji)}
                     className={`px-1.5 py-0.5 text-[9.5px] font-bold rounded border transition-all cursor-pointer ${
                       !showTableEmoji
-                        ? "bg-amber-950/90 text-amber-300 border-amber-600/70 shadow-sm"
-                        : "bg-[#24170E] text-[#A89882] border-[#44301D] hover:bg-[#382415] hover:text-amber-200"
+                        ? "bg-[#FEF3C7] text-[#78350F] border-amber-600/70 shadow-sm"
+                        : "bg-[#FFFDF8] text-[#5C4D3C] border-[#C4963E]/45 hover:bg-[#FAF6EE] hover:text-[#78350F]"
                     }`}
                     title={showTableEmoji ? "Bấm để chuyển sang chế độ chỉ hiện thông tin chữ (không hiện icon/emoji)" : "Bấm để hiện thêm icon con giáp trong bảng"}
                   >
@@ -3745,12 +3745,12 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                       onClick={() => setShowArrows(!showArrows)}
                       className={`px-1.5 py-0.5 text-[9.5px] font-bold rounded border transition-all cursor-pointer flex items-center gap-1 ml-1 ${
                         showArrows
-                          ? "bg-amber-950/80 text-amber-300 border-amber-600/80"
-                          : "bg-stone-900 text-stone-400 border-stone-700"
+                          ? "bg-[#FEF3C7] text-[#78350F] border-amber-600/80"
+                          : "bg-[#FAF6EE] text-stone-400 border-stone-700"
                       }`}
                       title={showArrows ? "Tạm ẩn các đường dẫn / mũi tên" : "Hiển thị lại đường dẫn"}
                     >
-                      {showArrows ? <Eye className="w-3 h-3 text-amber-400" /> : <EyeOff className="w-3 h-3" />}
+                      {showArrows ? <Eye className="w-3 h-3 text-[#92400E]" /> : <EyeOff className="w-3 h-3" />}
                       <span>{showArrows ? `Hiện (${arrows.length})` : `Ẩn (${arrows.length})`}</span>
                     </button>
                   )}
@@ -3922,7 +3922,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                 cy={ctrlY}
                                 r={isHovered || isEditing ? "8" : "5.5"}
                                 fill={color}
-                                stroke="#160E08"
+                                stroke="#FFFDF8"
                                 strokeWidth="2"
                                 className="filter drop-shadow-md transition-transform hover:scale-125"
                               />
@@ -3950,7 +3950,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                   cy={effStartY}
                                   r="5"
                                   fill={color}
-                                  stroke="#160E08"
+                                  stroke="#FFFDF8"
                                   strokeWidth="1.5"
                                   className="transition-transform hover:scale-150 drop-shadow"
                                 />
@@ -3969,7 +3969,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                   cy={effEndY}
                                   r="5"
                                   fill={color}
-                                  stroke="#160E08"
+                                  stroke="#FFFDF8"
                                   strokeWidth="1.5"
                                   className="transition-transform hover:scale-150 drop-shadow"
                                 />
@@ -4051,11 +4051,11 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                           {isEditingThis ? (
                             <div
                               onClick={(e) => e.stopPropagation()}
-                              className="p-2 sm:p-2.5 rounded-xl bg-[#1C130A] border-2 border-amber-400 shadow-2xl space-y-2 min-w-[220px] sm:min-w-[260px] text-xs animate-in zoom-in-95"
+                              className="p-2 sm:p-2.5 rounded-xl bg-[#FFFDF8] border-2 border-amber-400 shadow-2xl space-y-2 min-w-[220px] sm:min-w-[260px] text-xs animate-in zoom-in-95"
                             >
-                              <div className="flex items-center justify-between pb-1 border-b border-[#3E2B1A]">
-                                <span className="text-[10px] font-bold text-amber-300 flex items-center gap-1">
-                                  <Edit3 className="w-3.5 h-3.5 text-amber-400" />
+                              <div className="flex items-center justify-between pb-1 border-b border-[#C4963E]/45">
+                                <span className="text-[10px] font-bold text-[#78350F] flex items-center gap-1">
+                                  <Edit3 className="w-3.5 h-3.5 text-[#92400E]" />
                                   <span>Sửa nội dung mũi tên</span>
                                 </span>
                                 <button
@@ -4079,7 +4079,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                     if (e.key === "Escape") setEditingArrowId(null);
                                   }}
                                   placeholder="Nhập nhãn ghi chú..."
-                                  className="w-full px-2 py-1 rounded bg-[#27190E] border border-[#53391F] text-amber-100 text-xs font-semibold focus:outline-none focus:border-amber-400"
+                                  className="w-full px-2 py-1 rounded bg-[#FFFDF8] border border-[#C4963E]/45 text-[#1C1813] text-xs font-semibold focus:outline-none focus:border-amber-400"
                                 />
                               </div>
 
@@ -4101,7 +4101,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                     key={item}
                                     type="button"
                                     onClick={() => setEditingArrowLabel(item)}
-                                    className="px-1.5 py-0.5 rounded bg-[#2D1D10] hover:bg-[#3D2918] border border-[#4E341C] text-stone-300 hover:text-amber-200 cursor-pointer"
+                                    className="px-1.5 py-0.5 rounded bg-[#FAF6EE] hover:bg-[#FAF6EE] border border-[#C4963E]/45 text-[#5C4D3C] hover:text-[#78350F] cursor-pointer"
                                   >
                                     {item}
                                   </button>
@@ -4148,7 +4148,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                       className={`px-1 py-0.5 text-[9px] rounded border cursor-pointer font-bold ${
                                         editingArrowDirection === dir.key
                                           ? "bg-amber-500 text-stone-950 border-amber-300"
-                                          : "bg-[#25180D] text-[#A89882] border-[#442E19]"
+                                          : "bg-[#FFFDF8] text-[#5C4D3C] border-[#C4963E]/45"
                                       }`}
                                       title={dir.title}
                                     >
@@ -4159,14 +4159,14 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                               </div>
 
                               {/* BỘ NÚT TINH CHỈNH VỊ TRÍ MŨI TÊN, ĐƯỜNG CONG VÀ GHI CHÚ */}
-                              <div className="pt-1.5 border-t border-[#3E2B1A] space-y-1.5 text-[10px]">
-                                <div className="flex items-center justify-between text-[#D6B97A] font-semibold text-[9.5px]">
+                              <div className="pt-1.5 border-t border-[#C4963E]/45 space-y-1.5 text-[10px]">
+                                <div className="flex items-center justify-between text-[#6E4E16] font-semibold text-[9.5px]">
                                   <span>📐 Tinh chỉnh vị trí (Nudge):</span>
                                   {hasCustomOffset && (
                                     <button
                                       type="button"
                                       onClick={() => handleResetArrowOffsets(a.id)}
-                                      className="text-[9px] text-[#A89882] hover:text-amber-300 flex items-center gap-0.5 cursor-pointer"
+                                      className="text-[9px] text-[#5C4D3C] hover:text-[#78350F] flex items-center gap-0.5 cursor-pointer"
                                       title="Đặt lại vị trí gốc"
                                     >
                                       <RotateCcw className="w-2.5 h-2.5" />
@@ -4176,13 +4176,13 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                 </div>
 
                                 {/* Dịch chuyển toàn bộ mũi tên */}
-                                <div className="flex items-center justify-between bg-[#140D07] px-1.5 py-1 rounded border border-[#3A2818]">
-                                  <span className="text-[#A89882] text-[9px]">Dịch mũi tên:</span>
+                                <div className="flex items-center justify-between bg-[#FFFDF8] px-1.5 py-1 rounded border border-[#C4963E]/45">
+                                  <span className="text-[#5C4D3C] text-[9px]">Dịch mũi tên:</span>
                                   <div className="flex items-center gap-1">
                                     <button
                                       type="button"
                                       onClick={() => handleNudgeArrow(a.id, "arrow", 0, -8)}
-                                      className="px-1.5 py-0.5 rounded bg-[#25170D] hover:bg-amber-900/60 border border-[#48311D] text-amber-200 text-[9px] cursor-pointer"
+                                      className="px-1.5 py-0.5 rounded bg-[#FFFDF8] hover:bg-[#FEF3C7] border border-[#C4963E]/45 text-[#78350F] text-[9px] cursor-pointer"
                                       title="Dịch mũi tên lên trên"
                                     >
                                       ↑ Lên
@@ -4190,7 +4190,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                     <button
                                       type="button"
                                       onClick={() => handleNudgeArrow(a.id, "arrow", 0, 8)}
-                                      className="px-1.5 py-0.5 rounded bg-[#25170D] hover:bg-amber-900/60 border border-[#48311D] text-amber-200 text-[9px] cursor-pointer"
+                                      className="px-1.5 py-0.5 rounded bg-[#FFFDF8] hover:bg-[#FEF3C7] border border-[#C4963E]/45 text-[#78350F] text-[9px] cursor-pointer"
                                       title="Dịch mũi tên xuống dưới"
                                     >
                                       ↓ Xuống
@@ -4198,7 +4198,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                     <button
                                       type="button"
                                       onClick={() => handleNudgeArrow(a.id, "arrow", -10, 0)}
-                                      className="px-1.5 py-0.5 rounded bg-[#25170D] hover:bg-amber-900/60 border border-[#48311D] text-amber-200 text-[9px] cursor-pointer"
+                                      className="px-1.5 py-0.5 rounded bg-[#FFFDF8] hover:bg-[#FEF3C7] border border-[#C4963E]/45 text-[#78350F] text-[9px] cursor-pointer"
                                       title="Dịch mũi tên sang trái"
                                     >
                                       ← Trái
@@ -4206,7 +4206,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                     <button
                                       type="button"
                                       onClick={() => handleNudgeArrow(a.id, "arrow", 10, 0)}
-                                      className="px-1.5 py-0.5 rounded bg-[#25170D] hover:bg-amber-900/60 border border-[#48311D] text-amber-200 text-[9px] cursor-pointer"
+                                      className="px-1.5 py-0.5 rounded bg-[#FFFDF8] hover:bg-[#FEF3C7] border border-[#C4963E]/45 text-[#78350F] text-[9px] cursor-pointer"
                                       title="Dịch mũi tên sang phải"
                                     >
                                       → Phải
@@ -4215,13 +4215,13 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                 </div>
 
                                 {/* Uốn cong đường dẫn */}
-                                <div className="flex items-center justify-between bg-[#140D07] px-1.5 py-1 rounded border border-[#3A2818]">
-                                  <span className="text-[#A89882] text-[9px]">Uốn cong đường:</span>
+                                <div className="flex items-center justify-between bg-[#FFFDF8] px-1.5 py-1 rounded border border-[#C4963E]/45">
+                                  <span className="text-[#5C4D3C] text-[9px]">Uốn cong đường:</span>
                                   <div className="flex items-center gap-1">
                                     <button
                                       type="button"
                                       onClick={() => handleNudgeArrow(a.id, "curve", 0, -10)}
-                                      className="px-2 py-0.5 rounded bg-[#25170D] hover:bg-amber-900/60 border border-[#48311D] text-amber-200 text-[9px] cursor-pointer"
+                                      className="px-2 py-0.5 rounded bg-[#FFFDF8] hover:bg-[#FEF3C7] border border-[#C4963E]/45 text-[#78350F] text-[9px] cursor-pointer"
                                       title="Uốn cong đường dẫn lên trên"
                                     >
                                       ⤴ Uốn Lên
@@ -4229,7 +4229,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                     <button
                                       type="button"
                                       onClick={() => handleNudgeArrow(a.id, "curve", 0, 10)}
-                                      className="px-2 py-0.5 rounded bg-[#25170D] hover:bg-amber-900/60 border border-[#48311D] text-amber-200 text-[9px] cursor-pointer"
+                                      className="px-2 py-0.5 rounded bg-[#FFFDF8] hover:bg-[#FEF3C7] border border-[#C4963E]/45 text-[#78350F] text-[9px] cursor-pointer"
                                       title="Uốn cong đường dẫn xuống dưới"
                                     >
                                       ⤵ Uốn Xuống
@@ -4238,13 +4238,13 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                 </div>
 
                                 {/* Dịch chuyển ghi chú */}
-                                <div className="flex items-center justify-between bg-[#140D07] px-1.5 py-1 rounded border border-[#3A2818]">
-                                  <span className="text-[#A89882] text-[9px]">Dịch ghi chú:</span>
+                                <div className="flex items-center justify-between bg-[#FFFDF8] px-1.5 py-1 rounded border border-[#C4963E]/45">
+                                  <span className="text-[#5C4D3C] text-[9px]">Dịch ghi chú:</span>
                                   <div className="flex items-center gap-1">
                                     <button
                                       type="button"
                                       onClick={() => handleNudgeArrow(a.id, "badge", 0, -8)}
-                                      className="px-1.5 py-0.5 rounded bg-[#25170D] hover:bg-amber-900/60 border border-[#48311D] text-amber-200 text-[9px] cursor-pointer"
+                                      className="px-1.5 py-0.5 rounded bg-[#FFFDF8] hover:bg-[#FEF3C7] border border-[#C4963E]/45 text-[#78350F] text-[9px] cursor-pointer"
                                       title="Dịch ghi chú lên"
                                     >
                                       ↑ Lên
@@ -4252,7 +4252,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                     <button
                                       type="button"
                                       onClick={() => handleNudgeArrow(a.id, "badge", 0, 8)}
-                                      className="px-1.5 py-0.5 rounded bg-[#25170D] hover:bg-amber-900/60 border border-[#48311D] text-amber-200 text-[9px] cursor-pointer"
+                                      className="px-1.5 py-0.5 rounded bg-[#FFFDF8] hover:bg-[#FEF3C7] border border-[#C4963E]/45 text-[#78350F] text-[9px] cursor-pointer"
                                       title="Dịch ghi chú xuống"
                                     >
                                       ↓ Xuống
@@ -4260,7 +4260,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                     <button
                                       type="button"
                                       onClick={() => handleNudgeArrow(a.id, "badge", -10, 0)}
-                                      className="px-1.5 py-0.5 rounded bg-[#25170D] hover:bg-amber-900/60 border border-[#48311D] text-amber-200 text-[9px] cursor-pointer"
+                                      className="px-1.5 py-0.5 rounded bg-[#FFFDF8] hover:bg-[#FEF3C7] border border-[#C4963E]/45 text-[#78350F] text-[9px] cursor-pointer"
                                       title="Dịch ghi chú sang trái"
                                     >
                                       ← Trái
@@ -4268,7 +4268,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                     <button
                                       type="button"
                                       onClick={() => handleNudgeArrow(a.id, "badge", 10, 0)}
-                                      className="px-1.5 py-0.5 rounded bg-[#25170D] hover:bg-amber-900/60 border border-[#48311D] text-amber-200 text-[9px] cursor-pointer"
+                                      className="px-1.5 py-0.5 rounded bg-[#FFFDF8] hover:bg-[#FEF3C7] border border-[#C4963E]/45 text-[#78350F] text-[9px] cursor-pointer"
                                       title="Dịch ghi chú sang phải"
                                     >
                                       → Phải
@@ -4282,12 +4282,12 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                               </div>
 
                               {/* Các nút hành động */}
-                              <div className="flex items-center justify-between pt-1 border-t border-[#3E2B1A]">
+                              <div className="flex items-center justify-between pt-1 border-t border-[#C4963E]/45">
                                 {hasCustomOffset && (
                                   <button
                                     type="button"
                                     onClick={() => handleResetArrowOffsets(a.id)}
-                                    className="text-[9.5px] text-[#A89882] hover:text-amber-300 flex items-center gap-1 cursor-pointer"
+                                    className="text-[9.5px] text-[#5C4D3C] hover:text-[#78350F] flex items-center gap-1 cursor-pointer"
                                     title="Đặt lại vị trí ghi chú và đường uốn cong về gốc"
                                   >
                                     <RotateCcw className="w-3 h-3" />
@@ -4321,7 +4321,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                   : "hover:scale-105"
                               }`}
                               style={{
-                                backgroundColor: "#160E08F5",
+                                backgroundColor: "#FFFDF8F5",
                                 borderColor: color,
                                 color: color,
                               }}
@@ -4342,7 +4342,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                   e.stopPropagation();
                                   handleStartEditArrow(a);
                                 }}
-                                className="opacity-60 hover:opacity-100 hover:text-amber-300 p-0.5 cursor-pointer ml-0.5 transition-colors"
+                                className="opacity-60 hover:opacity-100 hover:text-[#78350F] p-0.5 cursor-pointer ml-0.5 transition-colors"
                                 title="Sửa nội dung ghi chú"
                               >
                                 <Edit3 className="w-2.5 h-2.5" />
@@ -4356,7 +4356,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                     e.stopPropagation();
                                     handleResetArrowOffsets(a.id);
                                   }}
-                                  className="opacity-60 hover:opacity-100 hover:text-blue-300 p-0.5 cursor-pointer transition-colors"
+                                  className="opacity-60 hover:opacity-100 hover:text-[#1E3A8A] p-0.5 cursor-pointer transition-colors"
                                   title="Đặt lại vị trí mặc định"
                                 >
                                   <RotateCcw className="w-2.5 h-2.5" />
@@ -4370,7 +4370,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                   e.stopPropagation();
                                   setArrows((prev) => prev.filter((item) => item.id !== a.id));
                                 }}
-                                className="opacity-60 hover:opacity-100 hover:text-rose-400 p-0.5 cursor-pointer transition-colors"
+                                className="opacity-60 hover:opacity-100 hover:text-[#991B1B] p-0.5 cursor-pointer transition-colors"
                                 title="Xóa mũi tên này"
                               >
                                 <X className="w-2.5 h-2.5" />
@@ -4403,24 +4403,24 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                           key={`row-pillar-${p.key}`}
                           className={`flex flex-col border rounded-lg sm:rounded-2xl p-1 sm:p-2.5 md:p-3 shadow-md transition-all relative ${
                             isLuuNien
-                              ? "bg-[#131B15] border-[#294B34] hover:border-emerald-400"
+                              ? "bg-[#FFFDF8] border-[#C4963E]/45 hover:border-emerald-400"
                               : isDaiVan
-                              ? "bg-[#1D140C] border-[#5A4026] hover:border-[#C9A55A]"
+                              ? "bg-[#FFFDF8] border-[#C4963E]/45 hover:border-[#B8862D]"
                               : isDayMaster
-                              ? "bg-[#1B140D] border-[#553E26] hover:border-[#C9A55A]"
-                              : "bg-[#18130E] border-[#332619] hover:border-[#4D3A26]"
+                              ? "bg-[#FFFDF8] border-[#C4963E]/45 hover:border-[#B8862D]"
+                              : "bg-[#FFFDF8] border-[#C4963E]/45 hover:border-[#C4963E]/45"
                           }`}
                         >
                           {/* Header: Tên Trụ & Tag */}
-                          <div className="text-center pb-1 mb-1 sm:pb-2 sm:mb-2 border-b border-[#281E14]">
+                          <div className="text-center pb-1 mb-1 sm:pb-2 sm:mb-2 border-b border-[#C4963E]/45">
                             <div className="flex items-center justify-center gap-1">
                               <span
                                 className={`text-[9.5px] sm:text-sm font-bold font-serif whitespace-nowrap ${
                                   isLuuNien
-                                    ? "text-emerald-300"
+                                    ? "text-[#14532D]"
                                     : isDaiVan
-                                    ? "text-amber-300"
-                                    : "text-[#D6B97A]"
+                                    ? "text-[#78350F]"
+                                    : "text-[#6E4E16]"
                                 }`}
                               >
                                 {p.label}
@@ -4429,10 +4429,10 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                             <div
                               className={`text-[7.5px] sm:text-[10px] font-mono whitespace-nowrap truncate ${
                                 isLuuNien
-                                  ? "text-emerald-400/80"
+                                  ? "text-[#15803D]/80"
                                   : isDaiVan
-                                  ? "text-[#A89882]"
-                                  : "text-[#8C7D6B]"
+                                  ? "text-[#5C4D3C]"
+                                  : "text-[#5C4D3C]"
                               }`}
                             >
                               {p.subLabel}
@@ -4448,10 +4448,10 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                               onClick={() => handleToggleNode(canKey)}
                               className={`relative min-h-[38px] sm:min-h-[58px] sm:min-h-[66px] rounded-md sm:rounded-xl border flex flex-col items-center justify-center p-0.5 sm:p-2 text-center cursor-pointer transition-all duration-200 select-none group ${
                                 isCanSelected
-                                  ? "bg-amber-950/95 border-amber-400 ring-2 ring-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.5)] scale-[1.02]"
+                                  ? "bg-[#FEF3C7]/95 border-amber-400 ring-2 ring-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.5)] scale-[1.02]"
                                   : canData
-                                  ? "bg-gradient-to-b from-[#251D14] to-[#1C160F] border-[#5A4328] hover:border-[#D6B97A] shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
-                                  : "bg-[#14100C]/70 border-dashed border-[#3D3021] hover:border-[#C9A55A]"
+                                  ? "bg-gradient-to-b from-[#FFFDF8] to-[#FFFDF8] border-[#C4963E]/45 hover:border-[#B8862D] shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+                                  : "bg-[#FFFDF8]/70 border-dashed border-[#C4963E]/45 hover:border-[#B8862D]"
                               }`}
                               title={
                                 isCanSelected
@@ -4474,13 +4474,13 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                   >
                                     {canData.name}
                                   </span>
-                                  <span className="hidden md:inline text-xs sm:text-sm text-[#8C7D6B] font-serif">
+                                  <span className="hidden md:inline text-xs sm:text-sm text-[#5C4D3C] font-serif">
                                     ({canData.chinese})
                                   </span>
                                 </div>
                               ) : (
                                 <div className="text-center">
-                                  <span className="text-[8px] sm:text-xs text-[#A89882] group-hover:text-[#D6B97A] font-medium">
+                                  <span className="text-[8px] sm:text-xs text-[#5C4D3C] group-hover:text-[#6E4E16] font-medium">
                                     + Can
                                   </span>
                                 </div>
@@ -4502,10 +4502,10 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                               onClick={() => handleToggleNode(chiKey)}
                               className={`relative min-h-[38px] sm:min-h-[58px] sm:min-h-[66px] rounded-md sm:rounded-xl border flex flex-col items-center justify-center p-0.5 sm:p-2 text-center cursor-pointer transition-all duration-200 select-none group ${
                                 isChiSelected
-                                  ? "bg-amber-950/95 border-amber-400 ring-2 ring-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.5)] scale-[1.02]"
+                                  ? "bg-[#FEF3C7]/95 border-amber-400 ring-2 ring-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.5)] scale-[1.02]"
                                   : chiData
-                                  ? "bg-gradient-to-b from-[#231A12] to-[#1A140E] border-[#5A4328] hover:border-[#D6B97A] shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
-                                  : "bg-[#14100C]/70 border-dashed border-[#3D3021] hover:border-[#C9A55A]"
+                                  ? "bg-gradient-to-b from-[#FFFDF8] to-[#FFFDF8] border-[#C4963E]/45 hover:border-[#B8862D] shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+                                  : "bg-[#FFFDF8]/70 border-dashed border-[#C4963E]/45 hover:border-[#B8862D]"
                               }`}
                               title={
                                 isChiSelected
@@ -4521,16 +4521,16 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                               {chiData ? (
                                 <div className="flex flex-col sm:flex-row items-center justify-center gap-0 sm:gap-1.5 sm:gap-2">
                                   <span className="text-xs sm:text-2xl leading-none">{chiData.emoji}</span>
-                                  <span className="text-xs sm:text-2xl font-serif font-bold text-[#F5EAD4] leading-none mt-0.5 sm:mt-0">
+                                  <span className="text-xs sm:text-2xl font-serif font-bold text-[#1C1813] leading-none mt-0.5 sm:mt-0">
                                     {chiData.name}
                                   </span>
-                                  <span className="hidden md:inline text-xs sm:text-sm text-[#8C7D6B] font-serif">
+                                  <span className="hidden md:inline text-xs sm:text-sm text-[#5C4D3C] font-serif">
                                     ({chiData.chinese})
                                   </span>
                                 </div>
                               ) : (
                                 <div className="text-center">
-                                  <span className="text-[8px] sm:text-xs text-[#A89882] group-hover:text-[#D6B97A] font-medium">
+                                  <span className="text-[8px] sm:text-xs text-[#5C4D3C] group-hover:text-[#6E4E16] font-medium">
                                     + Chi
                                   </span>
                                 </div>
@@ -4539,28 +4539,28 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                           </div>
 
                           {/* HOA GIÁP KẾT QUẢ CỦA TRỤ NÀY */}
-                          <div className="mt-auto pt-1 sm:pt-2 border-t border-[#251D14]">
+                          <div className="mt-auto pt-1 sm:pt-2 border-t border-[#C4963E]/45">
                             {matchedJiazi ? (
                               <div
                                 className={`border rounded-md sm:rounded-xl p-1 sm:p-2 flex flex-col gap-0.5 sm:gap-1.5 ${
                                   isLuuNien
-                                    ? "bg-[#101912] border-[#294B34]"
+                                    ? "bg-[#FFFDF8] border-[#C4963E]/45"
                                     : isDaiVan
-                                    ? "bg-[#24190F] border-[#523A22]"
-                                    : "bg-[#201810] border-[#483724]"
+                                    ? "bg-[#FFFDF8] border-[#C4963E]/45"
+                                    : "bg-[#FFFDF8] border-[#C4963E]/45"
                                 }`}
                               >
                                 <div className="flex items-center justify-between">
-                                  <span className="text-[8px] sm:text-[10px] text-[#C9A55A] font-bold truncate">
+                                  <span className="text-[8px] sm:text-[10px] text-[#6E4E16] font-bold truncate">
                                     #{matchedJiazi.order} {matchedJiazi.name}
                                   </span>
                                   <span
                                     className={`hidden sm:inline text-[8.5px] px-1.5 py-0.2 rounded font-medium whitespace-nowrap ${
                                       isLuuNien
-                                        ? "bg-[#142318] text-emerald-300 border border-emerald-900/60"
+                                        ? "bg-[#FFFDF8] text-[#14532D] border border-[#16A34A]/45"
                                         : isDaiVan
-                                        ? "bg-[#17110B] text-amber-300 border border-amber-900/60"
-                                        : "bg-[#15110C] text-[#A89882]"
+                                        ? "bg-[#FFFDF8] text-[#78350F] border border-[#D97706]/45"
+                                        : "bg-[#FFFDF8] text-[#5C4D3C]"
                                     }`}
                                   >
                                     {isLuuNien
@@ -4570,7 +4570,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                       : matchedJiazi.branchGroup}
                                   </span>
                                 </div>
-                                <div className="text-[7px] sm:text-[10px] text-[#C4B49F] truncate">
+                                <div className="text-[7px] sm:text-[10px] text-[#5C4D3C] truncate">
                                   {matchedJiazi.elementNapAm}
                                 </div>
                                 {matchedJiazi.hexagramLink && (
@@ -4578,19 +4578,19 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                     title={`Quẻ #${matchedJiazi.hexagramLink.hexagramNumber}: ${matchedJiazi.hexagramLink.hexagramName}`}
                                     className={`text-[7.5px] sm:text-[9px] flex items-center justify-center sm:justify-start gap-0.5 sm:gap-1 px-0.5 sm:px-1.5 py-0.5 rounded overflow-hidden whitespace-nowrap border ${
                                       isLuuNien
-                                        ? "bg-[#0E1610] text-emerald-200 border-emerald-900/60"
+                                        ? "bg-[#FFFDF8] text-[#14532D] border-[#16A34A]/45"
                                         : isDaiVan
-                                        ? "bg-[#17110B] text-amber-200 border-amber-900/60"
-                                        : "bg-[#15110B] text-[#A89882] border-[#3E2E1D]"
+                                        ? "bg-[#FFFDF8] text-[#78350F] border-[#D97706]/45"
+                                        : "bg-[#FFFDF8] text-[#5C4D3C] border-[#C4963E]/45"
                                     }`}
                                   >
                                     <span
                                       className={`shrink-0 font-bold text-[7.5px] sm:text-xs ${
                                         isLuuNien
-                                          ? "text-emerald-400"
+                                          ? "text-[#15803D]"
                                           : isDaiVan
-                                          ? "text-amber-400"
-                                          : "text-[#C9A55A]"
+                                          ? "text-[#92400E]"
+                                          : "text-[#6E4E16]"
                                       }`}
                                     >
                                       ☯
@@ -4613,8 +4613,8 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                 </button>
                               </div>
                             ) : (
-                              <div className="bg-[#19130D] border border-dashed border-[#3D2E1C] rounded-md sm:rounded-xl p-1 sm:p-2 text-center">
-                                <span className="text-[7.5px] sm:text-[10px] text-[#7A6A55] italic">
+                              <div className="bg-[#FFFDF8] border border-dashed border-[#C4963E]/45 rounded-md sm:rounded-xl p-1 sm:p-2 text-center">
+                                <span className="text-[7.5px] sm:text-[10px] text-[#5C4D3C] italic">
                                   Chưa phối
                                 </span>
                               </div>
@@ -4629,11 +4629,11 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
 
               {/* THANH HÀNH ĐỘNG NHANH KẾT NỐI NHIỀU Ô (KHI CHỌN TỪ 2 Ô TRỞ LÊN) */}
               {selectedNodes.length >= 2 && (
-                <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-r from-[#291A0E] via-[#211409] to-[#180E06] border-2 border-amber-500/80 shadow-2xl space-y-2 animate-in fade-in slide-in-from-top-1">
+                <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-r from-[#FFFDF8] via-[#FFFDF8] to-[#FFFDF8] border-2 border-amber-500/80 shadow-2xl space-y-2 animate-in fade-in slide-in-from-top-1">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="text-[11px] font-black text-amber-300 flex items-center gap-1">
-                        <Network className="w-4 h-4 text-amber-400" />
+                      <span className="text-[11px] font-black text-[#78350F] flex items-center gap-1">
+                        <Network className="w-4 h-4 text-[#92400E]" />
                         <span>KẾT NỐI NHIỀU Ô ({selectedNodes.length} ô đang chọn):</span>
                       </span>
                       {selectedNodes.map((k, idx) => {
@@ -4641,7 +4641,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                         return (
                           <span
                             key={`quick-sel-pill-${k}`}
-                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#170E08] border border-amber-600/60 text-[10px] text-amber-200 font-semibold"
+                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#FFFDF8] border border-amber-600/60 text-[10px] text-[#78350F] font-semibold"
                           >
                             <span className="w-3.5 h-3.5 rounded-full bg-amber-400 text-stone-950 font-black text-[8px] flex items-center justify-center">
                               {idx + 1}
@@ -4650,7 +4650,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                             <button
                               type="button"
                               onClick={() => handleToggleNode(k)}
-                              className="text-stone-400 hover:text-rose-400 ml-0.5 cursor-pointer text-[9px]"
+                              className="text-stone-400 hover:text-[#991B1B] ml-0.5 cursor-pointer text-[9px]"
                               title="Bỏ chọn ô này"
                             >
                               ✕
@@ -4664,9 +4664,9 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                       <button
                         type="button"
                         onClick={() => setShowArrowCreator(!showArrowCreator)}
-                        className="px-2 py-1 text-[10px] font-bold rounded-lg bg-[#302012] hover:bg-[#422D1A] text-amber-200 border border-amber-600/60 transition-all cursor-pointer flex items-center gap-1"
+                        className="px-2 py-1 text-[10px] font-bold rounded-lg bg-[#FAF6EE] hover:bg-[#FAF6EE] text-[#78350F] border border-amber-600/60 transition-all cursor-pointer flex items-center gap-1"
                       >
-                        <Sparkles className="w-3 h-3 text-amber-400" />
+                        <Sparkles className="w-3 h-3 text-[#92400E]" />
                         <span>{showArrowCreator ? "Thu Gọn Tùy Chỉnh" : "Tùy Chỉnh Nhãn / Màu"}</span>
                       </button>
                       <button
@@ -4675,7 +4675,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                           setSelectedNodes([]);
                           setShowArrowCreator(false);
                         }}
-                        className="px-2 py-1 text-[10px] text-stone-400 hover:text-rose-300 transition-colors cursor-pointer"
+                        className="px-2 py-1 text-[10px] text-stone-400 hover:text-[#991B1B] transition-colors cursor-pointer"
                       >
                         ✕ Bỏ chọn
                       </button>
@@ -4683,8 +4683,8 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                   </div>
 
                   {/* CÁC CHẾ ĐỘ NỐI NHIỀU Ô NHANH CHÓNG */}
-                  <div className="flex items-center gap-1.5 flex-wrap pt-0.5 border-t border-[#382617]">
-                    <span className="text-[10px] text-[#A89882] font-semibold mr-1">Chế độ nối:</span>
+                  <div className="flex items-center gap-1.5 flex-wrap pt-0.5 border-t border-[#C4963E]/45">
+                    <span className="text-[10px] text-[#5C4D3C] font-semibold mr-1">Chế độ nối:</span>
 
                     <button
                       type="button"
@@ -4739,7 +4739,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                     <button
                       type="button"
                       onClick={() => handleConnectMultiple("first_to_last")}
-                      className="px-2 py-1 rounded-lg bg-[#2A1D11] hover:bg-[#3D2918] text-amber-200 border border-amber-600/60 text-[10.5px] font-semibold transition-all cursor-pointer active:scale-95 flex items-center gap-1"
+                      className="px-2 py-1 rounded-lg bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#78350F] border border-amber-600/60 text-[10.5px] font-semibold transition-all cursor-pointer active:scale-95 flex items-center gap-1"
                       title="Chỉ tạo 1 đường dẫn giữa ô đầu và ô cuối"
                     >
                       <span>➕ Nối Cặp Đầu - Cuối</span>
@@ -4750,10 +4750,10 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
 
               {/* BẢNG TẠO MŨI TÊN & ĐƯỜNG DẪN KHI CHỌN CAN CHI HOẶC MỞ THỦ CÔNG */}
               {showArrowCreator && (
-                <div className="p-2.5 sm:p-3 rounded-xl bg-[#1A1209] border-2 border-amber-500/80 shadow-2xl space-y-2.5 animate-in fade-in">
-                  <div className="flex items-center justify-between border-b border-[#3E2C1B] pb-1.5">
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-amber-300">
-                      <Sparkles className="w-4 h-4 text-amber-400" />
+                <div className="p-2.5 sm:p-3 rounded-xl bg-[#FFFDF8] border-2 border-amber-500/80 shadow-2xl space-y-2.5 animate-in fade-in">
+                  <div className="flex items-center justify-between border-b border-[#C4963E]/45 pb-1.5">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-[#78350F]">
+                      <Sparkles className="w-4 h-4 text-[#92400E]" />
                       <span>
                         {selectedNodes.length >= 2
                           ? `Tùy Chỉnh & Kết Nối ${selectedNodes.length} Ô Can Chi`
@@ -4766,7 +4766,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                         setShowArrowCreator(false);
                         setSelectedNodes([]);
                       }}
-                      className="text-[#8C7D6B] hover:text-white p-0.5 cursor-pointer"
+                      className="text-[#5C4D3C] hover:text-white p-0.5 cursor-pointer"
                       title="Đóng"
                     >
                       <X className="w-4 h-4" />
@@ -4775,10 +4775,10 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
 
                   {/* KHI ĐANG CHỌN NHIỀU Ô (≥ 2 Ô): HIỂN THỊ CÁC CHẾ ĐỘ KẾT NỐI NHIỀU Ô */}
                   {selectedNodes.length >= 2 && (
-                    <div className="p-2 sm:p-2.5 rounded-lg bg-[#22150A] border border-amber-600/60 space-y-2">
-                      <div className="flex items-center justify-between text-xs font-bold text-amber-300">
+                    <div className="p-2 sm:p-2.5 rounded-lg bg-[#FFFDF8] border border-amber-600/60 space-y-2">
+                      <div className="flex items-center justify-between text-xs font-bold text-[#78350F]">
                         <div className="flex items-center gap-1.5">
-                          <Network className="w-3.5 h-3.5 text-amber-400" />
+                          <Network className="w-3.5 h-3.5 text-[#92400E]" />
                           <span>Chọn chế độ kết nối đồng thời {selectedNodes.length} ô:</span>
                         </div>
                       </div>
@@ -4787,60 +4787,60 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                         <button
                           type="button"
                           onClick={() => handleConnectMultiple("chain")}
-                          className="px-2 py-1.5 rounded-lg bg-[#2D1E11] hover:bg-amber-900/60 border border-amber-500/60 text-amber-200 text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
+                          className="px-2 py-1.5 rounded-lg bg-[#FAF6EE] hover:bg-[#FEF3C7] border border-amber-500/60 text-[#78350F] text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
                           title="Nối tuần tự từ ô 1 tới ô 2, ô 3..."
                         >
-                          <ArrowRight className="w-3.5 h-3.5 text-amber-400" />
+                          <ArrowRight className="w-3.5 h-3.5 text-[#92400E]" />
                           <span>🔗 Nối Tuần Tự (Chain)</span>
                         </button>
 
                         <button
                           type="button"
                           onClick={() => handleConnectMultiple("cycle")}
-                          className="px-2 py-1.5 rounded-lg bg-[#2D1E11] hover:bg-purple-900/60 border border-purple-500/60 text-purple-200 text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
+                          className="px-2 py-1.5 rounded-lg bg-[#FAF6EE] hover:bg-[#F3E8FF]/60 border border-purple-500/60 text-[#6B21A8] text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
                           title="Nối vòng tròn khép kín 1➔2➔3➔1 (Tam Hợp, Tam Hội, Tam Hình)"
                         >
-                          <RotateCcw className="w-3.5 h-3.5 text-purple-400" />
+                          <RotateCcw className="w-3.5 h-3.5 text-[#7E22CE]" />
                           <span>🔄 Vòng Khép Kín (Cycle)</span>
                         </button>
 
                         <button
                           type="button"
                           onClick={() => handleConnectMultiple("all_to_all")}
-                          className="px-2 py-1.5 rounded-lg bg-[#2D1E11] hover:bg-blue-900/60 border border-blue-500/60 text-blue-200 text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
+                          className="px-2 py-1.5 rounded-lg bg-[#FAF6EE] hover:bg-[#DBEAFE] border border-blue-500/60 text-[#1E3A8A] text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
                           title="Mọi ô kết nối qua lại hai chiều lẫn nhau"
                         >
-                          <Network className="w-3.5 h-3.5 text-blue-400" />
+                          <Network className="w-3.5 h-3.5 text-[#1D4ED8]" />
                           <span>🕸️ Nối Tất Cả (Hai Chiều)</span>
                         </button>
 
                         <button
                           type="button"
                           onClick={() => handleConnectMultiple("to_target")}
-                          className="px-2 py-1.5 rounded-lg bg-[#2D1E11] hover:bg-emerald-900/60 border border-emerald-500/60 text-emerald-200 text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
+                          className="px-2 py-1.5 rounded-lg bg-[#FAF6EE] hover:bg-[#DCFCE7] border border-emerald-500/60 text-[#14532D] text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
                           title="Các ô cùng chĩa mũi tên hội tụ về ô cuối"
                         >
-                          <ArrowDown className="w-3.5 h-3.5 text-emerald-400" />
+                          <ArrowDown className="w-3.5 h-3.5 text-[#15803D]" />
                           <span>🎯 Hội Tụ Về Ô Cuối</span>
                         </button>
 
                         <button
                           type="button"
                           onClick={() => handleConnectMultiple("from_source")}
-                          className="px-2 py-1.5 rounded-lg bg-[#2D1E11] hover:bg-rose-900/60 border border-rose-500/60 text-rose-200 text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
+                          className="px-2 py-1.5 rounded-lg bg-[#FAF6EE] hover:bg-[#FEE2E2] border border-rose-500/60 text-[#991B1B] text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
                           title="Ô đầu tiên tỏa mũi tên ra tất cả ô còn lại"
                         >
-                          <Zap className="w-3.5 h-3.5 text-rose-400" />
+                          <Zap className="w-3.5 h-3.5 text-[#991B1B]" />
                           <span>🌟 Tỏa Ra Từ Ô Đầu</span>
                         </button>
 
                         <button
                           type="button"
                           onClick={() => handleConnectMultiple("first_to_last")}
-                          className="px-2 py-1.5 rounded-lg bg-[#2D1E11] hover:bg-amber-800/60 border border-amber-600/40 text-amber-100 text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
+                          className="px-2 py-1.5 rounded-lg bg-[#FAF6EE] hover:bg-[#FEF3C7] border border-amber-600/40 text-[#78350F] text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
                           title="Chỉ nối 1 mũi tên giữa ô đầu và ô cuối"
                         >
-                          <Plus className="w-3.5 h-3.5 text-amber-400" />
+                          <Plus className="w-3.5 h-3.5 text-[#92400E]" />
                           <span>➕ Nối Cặp Đầu - Cuối</span>
                         </button>
                       </div>
@@ -4850,7 +4850,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                   {/* CHỌN ĐIỂM XUẤT PHÁT VÀ ĐIỂM ĐẾN THỦ CÔNG */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                     <div>
-                      <label className="text-[10px] text-[#A89882] font-semibold block mb-0.5">
+                      <label className="text-[10px] text-[#5C4D3C] font-semibold block mb-0.5">
                         Điểm Xuất Phát (Từ):
                       </label>
                       <select
@@ -4864,7 +4864,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                             setNewArrowDirection(sug.direction);
                           }
                         }}
-                        className="w-full px-2 py-1.5 rounded-lg bg-[#24170E] border border-[#4D3620] text-amber-200 text-xs font-semibold focus:outline-none focus:border-amber-400 cursor-pointer"
+                        className="w-full px-2 py-1.5 rounded-lg bg-[#FFFDF8] border border-[#C4963E]/45 text-[#78350F] text-xs font-semibold focus:outline-none focus:border-amber-400 cursor-pointer"
                       >
                         {allNodesList.map((n) => (
                           <option key={`opt-from-${n.key}`} value={n.key}>
@@ -4875,7 +4875,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                     </div>
 
                     <div>
-                      <label className="text-[10px] text-[#A89882] font-semibold block mb-0.5">
+                      <label className="text-[10px] text-[#5C4D3C] font-semibold block mb-0.5">
                         Điểm Đến (Tới):
                       </label>
                       <select
@@ -4889,7 +4889,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                             setNewArrowDirection(sug.direction);
                           }
                         }}
-                        className="w-full px-2 py-1.5 rounded-lg bg-[#24170E] border border-[#4D3620] text-amber-200 text-xs font-semibold focus:outline-none focus:border-amber-400 cursor-pointer"
+                        className="w-full px-2 py-1.5 rounded-lg bg-[#FFFDF8] border border-[#C4963E]/45 text-[#78350F] text-xs font-semibold focus:outline-none focus:border-amber-400 cursor-pointer"
                       >
                         {allNodesList.map((n) => (
                           <option key={`opt-to-${n.key}`} value={n.key}>
@@ -4900,9 +4900,9 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                     </div>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1 border-t border-[#2C1D10]">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1 border-t border-[#C4963E]/45">
                     <div className="flex items-center gap-1 flex-wrap">
-                      <span className="text-[10px] text-[#A89882] font-semibold mr-1">Chiều mũi tên:</span>
+                      <span className="text-[10px] text-[#5C4D3C] font-semibold mr-1">Chiều mũi tên:</span>
                       {[
                         { key: "forward", label: "➔ Xuôi", icon: <ArrowRight className="w-3 h-3" /> },
                         { key: "backward", label: "⬅ Ngược", icon: <ArrowLeft className="w-3 h-3" /> },
@@ -4916,7 +4916,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                           className={`px-2 py-1 text-[10px] font-bold rounded-md border flex items-center gap-1 cursor-pointer transition-all ${
                             newArrowDirection === d.key
                               ? "bg-amber-500 text-stone-950 border-amber-300 shadow-sm"
-                              : "bg-[#251A0F] text-[#C4B49F] border-[#44301D] hover:bg-[#322314]"
+                              : "bg-[#FFFDF8] text-[#5C4D3C] border-[#C4963E]/45 hover:bg-[#FAF6EE]"
                           }`}
                         >
                           {d.icon}
@@ -4926,7 +4926,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                     </div>
 
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] text-[#A89882] font-semibold">Màu sắc:</span>
+                      <span className="text-[10px] text-[#5C4D3C] font-semibold">Màu sắc:</span>
                       {[
                         { name: "Vàng", color: "#F59E0B" },
                         { name: "Lục", color: "#10B981" },
@@ -4952,7 +4952,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
 
                   <div className="space-y-1.5 pt-1">
                     <div className="flex items-center gap-1 flex-wrap">
-                      <span className="text-[10px] text-[#A89882] font-semibold mr-1">Gợi ý nhãn nhanh:</span>
+                      <span className="text-[10px] text-[#5C4D3C] font-semibold mr-1">Gợi ý nhãn nhanh:</span>
                       {[
                         { text: "Tam Hợp", color: "#8B5CF6" },
                         { text: "Tam Hội", color: "#3B82F6" },
@@ -4974,7 +4974,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                             setNewArrowLabel(preset.text);
                             setNewArrowColor(preset.color);
                           }}
-                          className="px-2 py-0.5 text-[9.5px] rounded bg-[#24170E] hover:bg-[#352214] border border-[#44301D] text-[#D8C7B0] hover:text-amber-200 transition-colors cursor-pointer"
+                          className="px-2 py-0.5 text-[9.5px] rounded bg-[#FFFDF8] hover:bg-[#FAF6EE] border border-[#C4963E]/45 text-[#5C4D3C] hover:text-[#78350F] transition-colors cursor-pointer"
                         >
                           {preset.text}
                         </button>
@@ -4987,7 +4987,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                         value={newArrowLabel}
                         onChange={(e) => setNewArrowLabel(e.target.value)}
                         placeholder="Nhập nhãn mũi tên (ví dụ: Tam Hợp Thủy Cục, Sinh Xuất, Hóa Khí...)"
-                        className="flex-1 px-2.5 py-1.5 rounded-lg bg-[#24170E] border border-[#4D3620] text-amber-100 text-xs font-semibold focus:outline-none focus:border-amber-400 placeholder:text-stone-600"
+                        className="flex-1 px-2.5 py-1.5 rounded-lg bg-[#FFFDF8] border border-[#C4963E]/45 text-[#1C1813] text-xs font-semibold focus:outline-none focus:border-amber-400 placeholder:text-stone-600"
                       />
 
                       <button
@@ -5004,25 +5004,25 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
               )}
 
               {/* THANH ĐIỀU KHIỂN & QUẢN LÝ MŨI TÊN / ĐƯỜNG DẪN */}
-              <div className="pt-2 border-t border-[#2C1D10] flex flex-col gap-2">
+              <div className="pt-2 border-t border-[#C4963E]/45 flex flex-col gap-2">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-[11px] font-bold text-[#D6B97A] flex items-center gap-1.5">
-                      <MousePointerClick className="w-3.5 h-3.5 text-amber-400" />
+                    <span className="text-[11px] font-bold text-[#6E4E16] flex items-center gap-1.5">
+                      <MousePointerClick className="w-3.5 h-3.5 text-[#92400E]" />
                       <span>Tương tác Can Chi:</span>
                     </span>
                     {selectedNodes.length >= 2 && (
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-950 text-amber-300 border border-amber-600/70 font-semibold animate-pulse">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#FEF3C7] text-[#78350F] border border-amber-600/70 font-semibold animate-pulse">
                         🎯 Đang chọn {selectedNodes.length} ô. Dùng thanh nối nhanh bên trên hoặc bấm thêm ô khác!
                       </span>
                     )}
                     {selectedNodes.length === 1 && (
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-950 text-amber-300 border border-amber-600/70 font-semibold animate-pulse">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#FEF3C7] text-[#78350F] border border-amber-600/70 font-semibold animate-pulse">
                         🎯 Đang chọn {getNodeInfo(selectedNodes[0])?.name} ({getNodeInfo(selectedNodes[0])?.value}). Bấm thêm các chữ khác để kết nối!
                       </span>
                     )}
                     {selectedNodes.length === 0 && (
-                      <span className="text-[10px] text-[#8C7D6B] italic">
+                      <span className="text-[10px] text-[#5C4D3C] italic">
                         (Bấm vào bất kỳ Can hoặc Chi trên bảng để chọn và tạo mũi tên dẫn kết nối nhiều ô)
                       </span>
                     )}
@@ -5042,9 +5042,9 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                         }
                         setShowArrowCreator(!showArrowCreator);
                       }}
-                      className="flex items-center gap-1 px-2.5 py-1 text-[10.5px] font-semibold rounded-lg bg-[#271E15] hover:bg-[#382B1E] text-amber-200 border border-[#523F27] hover:border-amber-500 transition-all cursor-pointer"
+                      className="flex items-center gap-1 px-2.5 py-1 text-[10.5px] font-semibold rounded-lg bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#78350F] border border-[#C4963E]/45 hover:border-amber-500 transition-all cursor-pointer"
                     >
-                      <Plus className="w-3 h-3 text-amber-400" />
+                      <Plus className="w-3 h-3 text-[#92400E]" />
                       <span>{showArrowCreator ? "Đóng Tạo Mũi Tên" : "Thêm Mũi Tên Thủ Công"}</span>
                     </button>
 
@@ -5052,10 +5052,10 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                       <button
                         type="button"
                         onClick={() => setArrows([])}
-                        className="flex items-center gap-1 px-2 py-1 text-[10.5px] font-semibold rounded-lg bg-[#2A1512] hover:bg-[#3D1A16] text-rose-300 border border-rose-900/60 hover:border-rose-500 transition-all cursor-pointer"
+                        className="flex items-center gap-1 px-2 py-1 text-[10.5px] font-semibold rounded-lg bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#991B1B] border border-rose-900/60 hover:border-rose-500 transition-all cursor-pointer"
                         title="Xóa tất cả mũi tên đã tạo"
                       >
-                        <Trash2 className="w-3 h-3 text-rose-400" />
+                        <Trash2 className="w-3 h-3 text-[#991B1B]" />
                         <span>Xóa Hết ({arrows.length})</span>
                       </button>
                     )}
@@ -5067,7 +5067,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                           setSelectedNodes([]);
                           setShowArrowCreator(false);
                         }}
-                        className="text-[10.5px] px-2 py-1 text-[#8C7D6B] hover:text-white transition-colors cursor-pointer"
+                        className="text-[10.5px] px-2 py-1 text-[#5C4D3C] hover:text-white transition-colors cursor-pointer"
                       >
                         Bỏ chọn
                       </button>
@@ -5078,7 +5078,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                 {/* DANH SÁCH CÁC MŨI TÊN ĐÃ TẠO */}
                 {arrows.length > 0 && (
                   <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
-                    <span className="text-[10px] text-[#A89882] font-semibold">Đã tạo ({arrows.length}):</span>
+                    <span className="text-[10px] text-[#5C4D3C] font-semibold">Đã tạo ({arrows.length}):</span>
                     {arrows.map((a) => {
                       const fromInfo = getNodeInfo(a.fromKey);
                       const toInfo = getNodeInfo(a.toKey);
@@ -5089,7 +5089,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                           key={`chip-${a.id}`}
                           onMouseEnter={() => setHoveredArrowId(a.id)}
                           onMouseLeave={() => setHoveredArrowId((cur) => (cur === a.id ? null : cur))}
-                          className={`flex items-center gap-1 px-2 py-0.5 rounded-lg border text-[10px] font-medium shadow-sm transition-all bg-[#1D140C] ${
+                          className={`flex items-center gap-1 px-2 py-0.5 rounded-lg border text-[10px] font-medium shadow-sm transition-all bg-[#FFFDF8] ${
                             hoveredArrowId === a.id ? "ring-1 ring-amber-400 scale-105" : ""
                           }`}
                           style={{ borderColor: a.color || "#F59E0B" }}
@@ -5097,13 +5097,13 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                           <span style={{ color: a.color || "#F59E0B" }} className="font-bold">
                             {fromInfo?.value || a.fromKey} {dirSymbol} {toInfo?.value || a.toKey}:
                           </span>
-                          <span className="text-[#F5EAD4] font-semibold">{a.label}</span>
+                          <span className="text-[#1C1813] font-semibold">{a.label}</span>
 
                           {/* Nút sửa nội dung và vị trí mũi tên */}
                           <button
                             type="button"
                             onClick={() => handleStartEditArrow(a)}
-                            className="text-amber-400 hover:text-white p-0.5 rounded cursor-pointer transition-colors ml-0.5"
+                            className="text-[#92400E] hover:text-white p-0.5 rounded cursor-pointer transition-colors ml-0.5"
                             title="Sửa nội dung và vị trí mũi tên"
                           >
                             <Edit3 className="w-3 h-3" />
@@ -5114,7 +5114,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                             <button
                               type="button"
                               onClick={() => handleResetArrowOffsets(a.id)}
-                              className="text-blue-300 hover:text-white p-0.5 rounded cursor-pointer transition-colors"
+                              className="text-[#1E3A8A] hover:text-white p-0.5 rounded cursor-pointer transition-colors"
                               title="Đặt lại vị trí gốc"
                             >
                               <RotateCcw className="w-2.5 h-2.5" />
@@ -5125,7 +5125,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                           <button
                             type="button"
                             onClick={() => setArrows((prev) => prev.filter((item) => item.id !== a.id))}
-                            className="text-[#8C7D6B] hover:text-rose-400 p-0.5 rounded cursor-pointer transition-colors"
+                            className="text-[#5C4D3C] hover:text-[#991B1B] p-0.5 rounded cursor-pointer transition-colors"
                             title="Xóa mũi tên"
                           >
                             <X className="w-3 h-3" />
@@ -5139,10 +5139,10 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
             </div>
 
             {/* MỤC CHỌN CHỮ GỒM: HỶ, TRUNG CÁT, TRUNG, TRUNG KỴ, KỴ CHO CHI LƯU NIÊN */}
-            <div className="pt-2 border-t border-[#2C1D10] flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+            <div className="pt-2 border-t border-[#C4963E]/45 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
               <div className="flex items-center gap-2 text-xs sm:text-sm">
-                <span className="font-bold text-[#D6B97A] flex items-center gap-1.5">
-                  <span>Mục chọn chữ cho Địa Chi Lưu Niên <strong className="text-amber-300 font-serif text-sm sm:text-base">{selectedLuuNienChi}</strong>:</span>
+                <span className="font-bold text-[#6E4E16] flex items-center gap-1.5">
+                  <span>Mục chọn chữ cho Địa Chi Lưu Niên <strong className="text-[#78350F] font-serif text-sm sm:text-base">{selectedLuuNienChi}</strong>:</span>
                 </span>
                 {branchRatings[selectedLuuNienChi] && (
                   <span
@@ -5171,7 +5171,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                       className={`px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-xl text-xs sm:text-sm font-semibold border transition-all cursor-pointer ${
                         isSelected
                           ? getRatingBadgeStyle(opt, true)
-                          : "bg-[#1E150D] hover:bg-[#2A1D12] text-[#C4B5A0] border-[#44301D]"
+                          : "bg-[#FFFDF8] hover:bg-[#FFFDF8] text-[#5C4D3C] border-[#C4963E]/45"
                       }`}
                     >
                       {opt}
@@ -5187,7 +5187,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                         [selectedLuuNienChi]: null,
                       }))
                     }
-                    className="text-[10px] sm:text-xs px-2 py-1 text-[#8C7D6B] hover:text-rose-400 transition-colors cursor-pointer"
+                    className="text-[10px] sm:text-xs px-2 py-1 text-[#5C4D3C] hover:text-[#991B1B] transition-colors cursor-pointer"
                   >
                     Xóa
                   </button>
@@ -5198,9 +5198,9 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
 
           {/* CẢNH BÁO TAM HỢP / TAM HỘI TOÀN CỤC NGUYÊN CỤC + HÀNH VẬN */}
           {(fullTamHopList.length > 0 || fullTamHoiList.length > 0) && (
-            <div className="p-2 sm:p-2.5 rounded-lg bg-[#2A1E0E] border border-amber-500/60 flex items-center justify-between text-[10px] text-amber-200">
+            <div className="p-2 sm:p-2.5 rounded-lg bg-[#FFFDF8] border border-amber-500/60 flex items-center justify-between text-[10px] text-[#78350F]">
               <div className="flex items-center gap-1.5">
-                <Gem className="w-4 h-4 text-amber-400 shrink-0" />
+                <Gem className="w-4 h-4 text-[#92400E] shrink-0" />
                 <span>
                   Nguyên Cục + Hành Vận có <strong>{[...fullTamHopList, ...fullTamHoiList].map((g) => `${g.name} (${g.branches.join("-")})`).join(", ")}</strong> đầy đủ.
                   Theo quy tắc: <strong>Ở trên vẫn giữ nguyên toàn bộ cục</strong>, đồng thời <strong>ở dưới vẫn kéo các chữ hợp theo</strong>!
@@ -5222,10 +5222,10 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
               3. Ở DƯỚI CÙNG:
                  - Địa Chi được củng sẽ ở dưới cùng và được đóng mở ngoặc hoặc màu khác để phân biệt
               ================================================================= */}
-          <div className="p-2.5 sm:p-3.5 rounded-xl bg-gradient-to-b from-[#181109] via-[#140E07] to-[#100B05] border border-[#3A2817] space-y-3.5">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-1.5 border-b border-[#2C1D10] gap-1.5">
-              <span className="font-bold text-[#D6B97A] flex items-center gap-1.5 text-[10.5px] sm:text-[11px] uppercase tracking-wider">
-                <Layers className="w-3.5 h-3.5 text-amber-400" />
+          <div className="p-2.5 sm:p-3.5 rounded-xl bg-gradient-to-b from-[#FFFDF8] via-[#FFFDF8] to-[#FFFDF8] border border-[#C4963E]/45 space-y-3.5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-1.5 border-b border-[#C4963E]/45 gap-1.5">
+              <span className="font-bold text-[#6E4E16] flex items-center gap-1.5 text-[10.5px] sm:text-[11px] uppercase tracking-wider">
+                <Layers className="w-3.5 h-3.5 text-[#92400E]" />
                 <span>Bố Cục Hai Tầng: Thượng Tầng (Trên) ⟷ Chi Lưu Niên ở Giữa ⟷ Hạ Tầng (Dưới)</span>
               </span>
               <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap ml-auto sm:ml-0">
@@ -5238,8 +5238,8 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                   onClick={() => setShowTableEmoji(!showTableEmoji)}
                   className={`px-2 py-0.5 text-[9.5px] font-bold rounded-lg border transition-all cursor-pointer ${
                     !showTableEmoji
-                      ? "bg-amber-950/90 text-amber-300 border-amber-600/70 shadow-sm"
-                      : "bg-[#271C11] text-[#A89882] border-[#4D3620] hover:bg-[#382717] hover:text-amber-200"
+                      ? "bg-[#FEF3C7] text-[#78350F] border-amber-600/70 shadow-sm"
+                      : "bg-[#FFFDF8] text-[#5C4D3C] border-[#C4963E]/45 hover:bg-[#FAF6EE] hover:text-[#78350F]"
                   }`}
                   title={showTableEmoji ? "Bấm để chuyển sang chế độ chỉ hiện thông tin chữ (không hiện icon/emoji)" : "Bấm để hiện thêm icon con giáp trong các ô"}
                 >
@@ -5252,8 +5252,8 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                   onClick={handleToggleTwoTierTamAnPhu}
                   className={`px-2 py-0.5 text-[9.5px] font-bold rounded-lg border transition-all cursor-pointer flex items-center gap-1 ${
                     showTwoTierTamAnPhu
-                      ? "bg-amber-950/90 text-amber-300 border-amber-500/80 shadow-sm"
-                      : "bg-[#271C11] text-[#A89882] border-[#4D3620] hover:bg-[#382717] hover:text-amber-200"
+                      ? "bg-[#FEF3C7] text-[#78350F] border-amber-500/80 shadow-sm"
+                      : "bg-[#FFFDF8] text-[#5C4D3C] border-[#C4963E]/45 hover:bg-[#FAF6EE] hover:text-[#78350F]"
                   }`}
                   title={
                     showTwoTierTamAnPhu
@@ -5261,7 +5261,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                       : "Bấm để hiện tên gọi Tâm Ấn Phú trên các Địa Chi trong bố cục 2 tầng"
                   }
                 >
-                  <BookOpen className="w-3 h-3 text-amber-400" />
+                  <BookOpen className="w-3 h-3 text-[#92400E]" />
                   <span>{showTwoTierTamAnPhu ? "📜 Hiện Tâm Ấn" : "📜 Ẩn Tâm Ấn"}</span>
                 </button>
 
@@ -5269,20 +5269,20 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                   <button
                     type="button"
                     onClick={handleResetPositions}
-                    className="flex items-center gap-1 px-2 py-0.5 text-[9.5px] font-semibold rounded-lg bg-amber-950/90 text-amber-300 border border-amber-600/80 hover:bg-amber-900 transition-all cursor-pointer shadow-sm active:scale-95"
+                    className="flex items-center gap-1 px-2 py-0.5 text-[9.5px] font-semibold rounded-lg bg-[#FEF3C7] text-[#78350F] border border-amber-600/80 hover:bg-[#FDE68A] transition-all cursor-pointer shadow-sm active:scale-95"
                     title="Khôi phục lại vị trí tính toán ban đầu của các Địa Chi"
                   >
-                    <RotateCcw className="w-3 h-3 text-amber-400" />
+                    <RotateCcw className="w-3 h-3 text-[#92400E]" />
                     <span>Khôi Phục Vị Trí</span>
                   </button>
                 )}
-                <span className="text-[9px] text-[#8C7D6B] font-mono hidden sm:inline">
+                <span className="text-[9px] text-[#5C4D3C] font-mono hidden sm:inline">
                   {displayedIndependent.length + displayedTopLeft.length + displayedTopOppose.length + displayedTopCungOrigin.length} Chi ở Trên • {displayedBottom.length} Chi ở Dưới
                 </span>
                 <button
                   type="button"
                   onClick={() => setIsTwoTierOpen(!isTwoTierOpen)}
-                  className="flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium rounded-lg bg-[#271C11] text-[#D6B97A] border border-[#4D3620] hover:bg-[#382717] transition-all cursor-pointer whitespace-nowrap"
+                  className="flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium rounded-lg bg-[#FFFDF8] text-[#6E4E16] border border-[#C4963E]/45 hover:bg-[#FAF6EE] transition-all cursor-pointer whitespace-nowrap"
                   title={isTwoTierOpen ? "Thu gọn bố cục 2 tầng" : "Mở rộng bố cục 2 tầng"}
                 >
                   <span>{isTwoTierOpen ? "Thu Gọn" : "Mở Rộng"}</span>
@@ -5297,10 +5297,10 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
 
             {/* Thanh Hướng Dẫn Tương Tác Kéo Thả */}
             {isTwoTierOpen && (
-              <div className="px-2.5 py-1.5 rounded-lg bg-[#1E140C] border border-[#432F1A] text-[9.5px] text-[#C4B49F] flex items-center justify-between gap-2 flex-wrap">
+              <div className="px-2.5 py-1.5 rounded-lg bg-[#FFFDF8] border border-[#C4963E]/45 text-[9.5px] text-[#5C4D3C] flex items-center justify-between gap-2 flex-wrap">
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-amber-400 font-bold flex items-center gap-1">
-                    <Move className="w-3 h-3 text-amber-400" />
+                  <span className="text-[#92400E] font-bold flex items-center gap-1">
+                    <Move className="w-3 h-3 text-[#92400E]" />
                     <span>Kéo Thả Vị Trí:</span>
                   </span>
                   <span>
@@ -5308,7 +5308,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                   </span>
                 </div>
                 {hasCustomPositions && (
-                  <span className="text-[8.5px] px-1.5 py-0.2 rounded bg-amber-950 text-amber-300 border border-amber-600 font-mono shrink-0">
+                  <span className="text-[8.5px] px-1.5 py-0.2 rounded bg-[#FEF3C7] text-[#78350F] border border-amber-600 font-mono shrink-0">
                     Đang tùy biến vị trí
                   </span>
                 )}
@@ -5319,11 +5319,11 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
               <>
                 {/* THANH HÀNH ĐỘNG NHANH KẾT NỐI NHIỀU Ô 2 TẦNG (KHI CHỌN TỪ 2 Ô TRỞ LÊN) */}
                 {twoTierSelectedNodes.length >= 2 && (
-                  <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-r from-[#291A0E] via-[#211409] to-[#180E06] border-2 border-amber-500/80 shadow-2xl space-y-2 animate-in fade-in slide-in-from-top-1">
+                  <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-r from-[#FFFDF8] via-[#FFFDF8] to-[#FFFDF8] border-2 border-amber-500/80 shadow-2xl space-y-2 animate-in fade-in slide-in-from-top-1">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="text-[11px] font-black text-amber-300 flex items-center gap-1">
-                          <Network className="w-4 h-4 text-amber-400" />
+                        <span className="text-[11px] font-black text-[#78350F] flex items-center gap-1">
+                          <Network className="w-4 h-4 text-[#92400E]" />
                           <span>KẾT NỐI NHIỀU Ô 2 TẦNG ({twoTierSelectedNodes.length} ô đang chọn):</span>
                         </span>
                         {twoTierSelectedNodes.map((k, idx) => {
@@ -5331,7 +5331,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                           return (
                             <span
                               key={`tt-quick-sel-pill-${k}`}
-                              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#170E08] border border-amber-600/60 text-[10px] text-amber-200 font-semibold"
+                              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#FFFDF8] border border-amber-600/60 text-[10px] text-[#78350F] font-semibold"
                             >
                               <span className="w-3.5 h-3.5 rounded-full bg-amber-400 text-stone-950 font-black text-[8px] flex items-center justify-center">
                                 {idx + 1}
@@ -5342,7 +5342,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                               <button
                                 type="button"
                                 onClick={() => handleTwoTierToggleNode(k)}
-                                className="text-stone-400 hover:text-rose-400 ml-0.5 cursor-pointer text-[9px]"
+                                className="text-stone-400 hover:text-[#991B1B] ml-0.5 cursor-pointer text-[9px]"
                                 title="Bỏ chọn ô này"
                               >
                                 ✕
@@ -5356,9 +5356,9 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                         <button
                           type="button"
                           onClick={() => setTwoTierShowArrowCreator(!twoTierShowArrowCreator)}
-                          className="px-2 py-1 text-[10px] font-bold rounded-lg bg-[#302012] hover:bg-[#422D1A] text-amber-200 border border-amber-600/60 transition-all cursor-pointer flex items-center gap-1"
+                          className="px-2 py-1 text-[10px] font-bold rounded-lg bg-[#FAF6EE] hover:bg-[#FAF6EE] text-[#78350F] border border-amber-600/60 transition-all cursor-pointer flex items-center gap-1"
                         >
-                          <Sparkles className="w-3 h-3 text-amber-400" />
+                          <Sparkles className="w-3 h-3 text-[#92400E]" />
                           <span>{twoTierShowArrowCreator ? "Thu Gọn Tùy Chỉnh" : "Tùy Chỉnh Nhãn / Màu"}</span>
                         </button>
                         <button
@@ -5367,7 +5367,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                             setTwoTierSelectedNodes([]);
                             setTwoTierShowArrowCreator(false);
                           }}
-                          className="px-2 py-1 text-[10px] text-stone-400 hover:text-rose-300 transition-colors cursor-pointer"
+                          className="px-2 py-1 text-[10px] text-stone-400 hover:text-[#991B1B] transition-colors cursor-pointer"
                         >
                           ✕ Bỏ chọn
                         </button>
@@ -5375,8 +5375,8 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                     </div>
 
                     {/* CÁC CHẾ ĐỘ NỐI NHIỀU Ô NHANH CHÓNG */}
-                    <div className="flex items-center gap-1.5 flex-wrap pt-0.5 border-t border-[#382617]">
-                      <span className="text-[10px] text-[#A89882] font-semibold mr-1">Chế độ nối:</span>
+                    <div className="flex items-center gap-1.5 flex-wrap pt-0.5 border-t border-[#C4963E]/45">
+                      <span className="text-[10px] text-[#5C4D3C] font-semibold mr-1">Chế độ nối:</span>
 
                       <button
                         type="button"
@@ -5431,7 +5431,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                       <button
                         type="button"
                         onClick={() => handleTwoTierConnectMultiple("first_to_last")}
-                        className="px-2 py-1 rounded-lg bg-[#2A1D11] hover:bg-[#3D2918] text-amber-200 border border-amber-600/60 text-[10.5px] font-semibold transition-all cursor-pointer active:scale-95 flex items-center gap-1"
+                        className="px-2 py-1 rounded-lg bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#78350F] border border-amber-600/60 text-[10.5px] font-semibold transition-all cursor-pointer active:scale-95 flex items-center gap-1"
                         title="Chỉ tạo 1 đường dẫn giữa ô đầu và ô cuối"
                       >
                         <span>➕ Nối Cặp Đầu - Cuối</span>
@@ -5442,10 +5442,10 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
 
                 {/* BẢNG TẠO MŨI TÊN & ĐƯỜNG DẪN 2 TẦNG (KHI CHỌN HOẶC MỞ THỦ CÔNG) */}
                 {twoTierShowArrowCreator && (
-                  <div className="p-2.5 sm:p-3 rounded-xl bg-[#1A1209] border-2 border-amber-500/80 shadow-2xl space-y-2.5 animate-in fade-in">
-                    <div className="flex items-center justify-between border-b border-[#3E2C1B] pb-1.5">
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-amber-300">
-                        <Sparkles className="w-4 h-4 text-amber-400" />
+                  <div className="p-2.5 sm:p-3 rounded-xl bg-[#FFFDF8] border-2 border-amber-500/80 shadow-2xl space-y-2.5 animate-in fade-in">
+                    <div className="flex items-center justify-between border-b border-[#C4963E]/45 pb-1.5">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-[#78350F]">
+                        <Sparkles className="w-4 h-4 text-[#92400E]" />
                         <span>
                           {twoTierSelectedNodes.length >= 2
                             ? `Tùy Chỉnh & Kết Nối ${twoTierSelectedNodes.length} Ô Bố Cục 2 Tầng`
@@ -5458,7 +5458,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                           setTwoTierShowArrowCreator(false);
                           setTwoTierSelectedNodes([]);
                         }}
-                        className="text-[#8C7D6B] hover:text-white p-0.5 cursor-pointer"
+                        className="text-[#5C4D3C] hover:text-white p-0.5 cursor-pointer"
                         title="Đóng"
                       >
                         <X className="w-4 h-4" />
@@ -5467,11 +5467,11 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] text-[#A89882] font-semibold w-16 shrink-0">Từ ô (Gốc):</span>
+                        <span className="text-[10px] text-[#5C4D3C] font-semibold w-16 shrink-0">Từ ô (Gốc):</span>
                         <select
                           value={twoTierNewArrowFrom}
                           onChange={(e) => setTwoTierNewArrowFrom(e.target.value)}
-                          className="flex-1 px-2 py-1 rounded bg-[#25180D] border border-[#48331E] text-amber-100 text-xs focus:outline-none focus:border-amber-400"
+                          className="flex-1 px-2 py-1 rounded bg-[#FFFDF8] border border-[#C4963E]/45 text-[#1C1813] text-xs focus:outline-none focus:border-amber-400"
                         >
                           <option value="">-- Chọn ô bắt đầu --</option>
                           {twoTierAllNodesList.map((n) => (
@@ -5483,11 +5483,11 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                       </div>
 
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] text-[#A89882] font-semibold w-16 shrink-0">Đến ô (Đích):</span>
+                        <span className="text-[10px] text-[#5C4D3C] font-semibold w-16 shrink-0">Đến ô (Đích):</span>
                         <select
                           value={twoTierNewArrowTo}
                           onChange={(e) => setTwoTierNewArrowTo(e.target.value)}
-                          className="flex-1 px-2 py-1 rounded bg-[#25180D] border border-[#48331E] text-amber-100 text-xs focus:outline-none focus:border-amber-400"
+                          className="flex-1 px-2 py-1 rounded bg-[#FFFDF8] border border-[#C4963E]/45 text-[#1C1813] text-xs focus:outline-none focus:border-amber-400"
                         >
                           <option value="">-- Chọn ô kết thúc --</option>
                           {twoTierAllNodesList.map((n) => (
@@ -5499,9 +5499,9 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                       </div>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1 border-t border-[#332212]">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1 border-t border-[#C4963E]/45">
                       <div className="flex items-center gap-1">
-                        <span className="text-[10px] text-[#A89882] font-semibold mr-1">Chiều mũi tên:</span>
+                        <span className="text-[10px] text-[#5C4D3C] font-semibold mr-1">Chiều mũi tên:</span>
                         {[
                           { key: "forward", label: "➔ Xuôi", icon: <ArrowRight className="w-3 h-3" /> },
                           { key: "backward", label: "⬅ Ngược", icon: <ArrowLeft className="w-3 h-3" /> },
@@ -5515,7 +5515,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                             className={`px-2 py-1 text-[10px] font-bold rounded-md border flex items-center gap-1 cursor-pointer transition-all ${
                               twoTierNewArrowDirection === d.key
                                 ? "bg-amber-500 text-stone-950 border-amber-300 shadow-sm"
-                                : "bg-[#251A0F] text-[#C4B49F] border-[#44301D] hover:bg-[#322314]"
+                                : "bg-[#FFFDF8] text-[#5C4D3C] border-[#C4963E]/45 hover:bg-[#FAF6EE]"
                             }`}
                           >
                             {d.icon}
@@ -5525,7 +5525,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                       </div>
 
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] text-[#A89882] font-semibold">Màu sắc:</span>
+                        <span className="text-[10px] text-[#5C4D3C] font-semibold">Màu sắc:</span>
                         {[
                           { name: "Vàng", color: "#F59E0B" },
                           { name: "Lục", color: "#10B981" },
@@ -5553,7 +5553,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
 
                     <div className="space-y-1.5 pt-1">
                       <div className="flex items-center gap-1 flex-wrap">
-                        <span className="text-[10px] text-[#A89882] font-semibold mr-1">Gợi ý nhãn nhanh:</span>
+                        <span className="text-[10px] text-[#5C4D3C] font-semibold mr-1">Gợi ý nhãn nhanh:</span>
                         {[
                           { text: "Tam Hợp", color: "#8B5CF6" },
                           { text: "Tam Hội", color: "#3B82F6" },
@@ -5576,7 +5576,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                               setTwoTierNewArrowLabel(preset.text);
                               setTwoTierNewArrowColor(preset.color);
                             }}
-                            className="px-2 py-0.5 text-[9.5px] rounded bg-[#24170E] hover:bg-[#352214] border border-[#44301D] text-[#D8C7B0] hover:text-amber-200 transition-colors cursor-pointer"
+                            className="px-2 py-0.5 text-[9.5px] rounded bg-[#FFFDF8] hover:bg-[#FAF6EE] border border-[#C4963E]/45 text-[#5C4D3C] hover:text-[#78350F] transition-colors cursor-pointer"
                           >
                             {preset.text}
                           </button>
@@ -5589,7 +5589,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                           value={twoTierNewArrowLabel}
                           onChange={(e) => setTwoTierNewArrowLabel(e.target.value)}
                           placeholder="Nhập nhãn mũi tên (ví dụ: Tam Hợp Thủy Cục, Xung Đối Diện, Củng Khí...)"
-                          className="flex-1 px-2.5 py-1.5 rounded-lg bg-[#24170E] border border-[#4D3620] text-amber-100 text-xs font-semibold focus:outline-none focus:border-amber-400 placeholder:text-stone-600"
+                          className="flex-1 px-2.5 py-1.5 rounded-lg bg-[#FFFDF8] border border-[#C4963E]/45 text-[#1C1813] text-xs font-semibold focus:outline-none focus:border-amber-400 placeholder:text-stone-600"
                         />
 
                         <button
@@ -5749,7 +5749,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                 cy={ctrlY}
                                 r={isHovered || isEditing ? "8" : "5.5"}
                                 fill={color}
-                                stroke="#160E08"
+                                stroke="#FFFDF8"
                                 strokeWidth="2"
                                 className="filter drop-shadow-md transition-transform hover:scale-125"
                               />
@@ -5777,7 +5777,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                   cy={startY}
                                   r="5"
                                   fill={color}
-                                  stroke="#160E08"
+                                  stroke="#FFFDF8"
                                   strokeWidth="1.5"
                                   className="transition-transform hover:scale-150 drop-shadow"
                                 />
@@ -5796,7 +5796,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                   cy={endY}
                                   r="5"
                                   fill={color}
-                                  stroke="#160E08"
+                                  stroke="#FFFDF8"
                                   strokeWidth="1.5"
                                   className="transition-transform hover:scale-150 drop-shadow"
                                 />
@@ -5869,11 +5869,11 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                           {isEditingThis ? (
                             <div
                               onClick={(e) => e.stopPropagation()}
-                              className="p-2 sm:p-2.5 rounded-xl bg-[#1C130A] border-2 border-amber-400 shadow-2xl space-y-2 min-w-[220px] sm:min-w-[260px] text-xs animate-in zoom-in-95"
+                              className="p-2 sm:p-2.5 rounded-xl bg-[#FFFDF8] border-2 border-amber-400 shadow-2xl space-y-2 min-w-[220px] sm:min-w-[260px] text-xs animate-in zoom-in-95"
                             >
-                              <div className="flex items-center justify-between pb-1 border-b border-[#3E2B1A]">
-                                <span className="text-[10px] font-bold text-amber-300 flex items-center gap-1">
-                                  <Edit3 className="w-3.5 h-3.5 text-amber-400" />
+                              <div className="flex items-center justify-between pb-1 border-b border-[#C4963E]/45">
+                                <span className="text-[10px] font-bold text-[#78350F] flex items-center gap-1">
+                                  <Edit3 className="w-3.5 h-3.5 text-[#92400E]" />
                                   <span>Sửa nội dung mũi tên 2 tầng</span>
                                 </span>
                                 <button
@@ -5897,7 +5897,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                     if (e.key === "Escape") setTwoTierEditingArrowId(null);
                                   }}
                                   placeholder="Nhập nhãn ghi chú..."
-                                  className="w-full px-2 py-1 rounded bg-[#27190E] border border-[#53391F] text-amber-100 text-xs font-semibold focus:outline-none focus:border-amber-400"
+                                  className="w-full px-2 py-1 rounded bg-[#FFFDF8] border border-[#C4963E]/45 text-[#1C1813] text-xs font-semibold focus:outline-none focus:border-amber-400"
                                 />
                               </div>
 
@@ -5920,7 +5920,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                     key={item}
                                     type="button"
                                     onClick={() => setTwoTierEditingArrowLabel(item)}
-                                    className="px-1.5 py-0.5 rounded bg-[#2D1D10] hover:bg-[#3D2918] border border-[#4E341C] text-stone-300 hover:text-amber-200 cursor-pointer"
+                                    className="px-1.5 py-0.5 rounded bg-[#FAF6EE] hover:bg-[#FAF6EE] border border-[#C4963E]/45 text-[#5C4D3C] hover:text-[#78350F] cursor-pointer"
                                   >
                                     {item}
                                   </button>
@@ -5967,7 +5967,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                       className={`px-1 py-0.5 text-[9px] rounded border cursor-pointer font-bold ${
                                         twoTierEditingArrowDirection === dir.key
                                           ? "bg-amber-500 text-stone-950 border-amber-300"
-                                          : "bg-[#25180D] text-[#A89882] border-[#442E19]"
+                                          : "bg-[#FFFDF8] text-[#5C4D3C] border-[#C4963E]/45"
                                       }`}
                                       title={dir.title}
                                     >
@@ -5978,14 +5978,14 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                               </div>
 
                               {/* BỘ NÚT TINH CHỈNH VỊ TRÍ MŨI TÊN, ĐƯỜNG CONG VÀ GHI CHÚ */}
-                              <div className="pt-1.5 border-t border-[#3E2B1A] space-y-1.5 text-[10px]">
-                                <div className="flex items-center justify-between text-[#D6B97A] font-semibold text-[9.5px]">
+                              <div className="pt-1.5 border-t border-[#C4963E]/45 space-y-1.5 text-[10px]">
+                                <div className="flex items-center justify-between text-[#6E4E16] font-semibold text-[9.5px]">
                                   <span>📐 Tinh chỉnh vị trí (Nudge):</span>
                                   {hasCustomOffset && (
                                     <button
                                       type="button"
                                       onClick={() => handleTwoTierResetArrowOffsets(a.id)}
-                                      className="text-[9px] text-[#A89882] hover:text-amber-300 flex items-center gap-0.5 cursor-pointer"
+                                      className="text-[9px] text-[#5C4D3C] hover:text-[#78350F] flex items-center gap-0.5 cursor-pointer"
                                       title="Đặt lại vị trí gốc"
                                     >
                                       <RotateCcw className="w-2.5 h-2.5" />
@@ -5995,13 +5995,13 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                 </div>
 
                                 {/* Dịch chuyển toàn bộ mũi tên */}
-                                <div className="flex items-center justify-between bg-[#140D07] px-1.5 py-1 rounded border border-[#3A2818]">
-                                  <span className="text-[#A89882] text-[9px]">Dịch mũi tên:</span>
+                                <div className="flex items-center justify-between bg-[#FFFDF8] px-1.5 py-1 rounded border border-[#C4963E]/45">
+                                  <span className="text-[#5C4D3C] text-[9px]">Dịch mũi tên:</span>
                                   <div className="flex items-center gap-1">
                                     <button
                                       type="button"
                                       onClick={() => handleTwoTierNudgeArrow(a.id, "arrow", 0, -8)}
-                                      className="px-1.5 py-0.5 rounded bg-[#25170D] hover:bg-amber-900/60 border border-[#48311D] text-amber-200 text-[9px] cursor-pointer"
+                                      className="px-1.5 py-0.5 rounded bg-[#FFFDF8] hover:bg-[#FEF3C7] border border-[#C4963E]/45 text-[#78350F] text-[9px] cursor-pointer"
                                       title="Dịch mũi tên lên trên"
                                     >
                                       ↑ Lên
@@ -6009,7 +6009,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                     <button
                                       type="button"
                                       onClick={() => handleTwoTierNudgeArrow(a.id, "arrow", 0, 8)}
-                                      className="px-1.5 py-0.5 rounded bg-[#25170D] hover:bg-amber-900/60 border border-[#48311D] text-amber-200 text-[9px] cursor-pointer"
+                                      className="px-1.5 py-0.5 rounded bg-[#FFFDF8] hover:bg-[#FEF3C7] border border-[#C4963E]/45 text-[#78350F] text-[9px] cursor-pointer"
                                       title="Dịch mũi tên xuống dưới"
                                     >
                                       ↓ Xuống
@@ -6017,7 +6017,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                     <button
                                       type="button"
                                       onClick={() => handleTwoTierNudgeArrow(a.id, "arrow", -10, 0)}
-                                      className="px-1.5 py-0.5 rounded bg-[#25170D] hover:bg-amber-900/60 border border-[#48311D] text-amber-200 text-[9px] cursor-pointer"
+                                      className="px-1.5 py-0.5 rounded bg-[#FFFDF8] hover:bg-[#FEF3C7] border border-[#C4963E]/45 text-[#78350F] text-[9px] cursor-pointer"
                                       title="Dịch mũi tên sang trái"
                                     >
                                       ← Trái
@@ -6025,7 +6025,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                     <button
                                       type="button"
                                       onClick={() => handleTwoTierNudgeArrow(a.id, "arrow", 10, 0)}
-                                      className="px-1.5 py-0.5 rounded bg-[#25170D] hover:bg-amber-900/60 border border-[#48311D] text-amber-200 text-[9px] cursor-pointer"
+                                      className="px-1.5 py-0.5 rounded bg-[#FFFDF8] hover:bg-[#FEF3C7] border border-[#C4963E]/45 text-[#78350F] text-[9px] cursor-pointer"
                                       title="Dịch mũi tên sang phải"
                                     >
                                       → Phải
@@ -6034,13 +6034,13 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                 </div>
 
                                 {/* Uốn cong đường dẫn */}
-                                <div className="flex items-center justify-between bg-[#140D07] px-1.5 py-1 rounded border border-[#3A2818]">
-                                  <span className="text-[#A89882] text-[9px]">Uốn cong đường:</span>
+                                <div className="flex items-center justify-between bg-[#FFFDF8] px-1.5 py-1 rounded border border-[#C4963E]/45">
+                                  <span className="text-[#5C4D3C] text-[9px]">Uốn cong đường:</span>
                                   <div className="flex items-center gap-1">
                                     <button
                                       type="button"
                                       onClick={() => handleTwoTierNudgeArrow(a.id, "curve", 0, -10)}
-                                      className="px-2 py-0.5 rounded bg-[#25170D] hover:bg-amber-900/60 border border-[#48311D] text-amber-200 text-[9px] cursor-pointer"
+                                      className="px-2 py-0.5 rounded bg-[#FFFDF8] hover:bg-[#FEF3C7] border border-[#C4963E]/45 text-[#78350F] text-[9px] cursor-pointer"
                                       title="Uốn cong đường dẫn lên trên"
                                     >
                                       ⤴ Uốn Lên
@@ -6048,7 +6048,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                     <button
                                       type="button"
                                       onClick={() => handleTwoTierNudgeArrow(a.id, "curve", 0, 10)}
-                                      className="px-2 py-0.5 rounded bg-[#25170D] hover:bg-amber-900/60 border border-[#48311D] text-amber-200 text-[9px] cursor-pointer"
+                                      className="px-2 py-0.5 rounded bg-[#FFFDF8] hover:bg-[#FEF3C7] border border-[#C4963E]/45 text-[#78350F] text-[9px] cursor-pointer"
                                       title="Uốn cong đường dẫn xuống dưới"
                                     >
                                       ⤵ Uốn Xuống
@@ -6057,13 +6057,13 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                 </div>
 
                                 {/* Dịch chuyển ghi chú */}
-                                <div className="flex items-center justify-between bg-[#140D07] px-1.5 py-1 rounded border border-[#3A2818]">
-                                  <span className="text-[#A89882] text-[9px]">Dịch ghi chú:</span>
+                                <div className="flex items-center justify-between bg-[#FFFDF8] px-1.5 py-1 rounded border border-[#C4963E]/45">
+                                  <span className="text-[#5C4D3C] text-[9px]">Dịch ghi chú:</span>
                                   <div className="flex items-center gap-1">
                                     <button
                                       type="button"
                                       onClick={() => handleTwoTierNudgeArrow(a.id, "badge", 0, -8)}
-                                      className="px-1.5 py-0.5 rounded bg-[#25170D] hover:bg-amber-900/60 border border-[#48311D] text-amber-200 text-[9px] cursor-pointer"
+                                      className="px-1.5 py-0.5 rounded bg-[#FFFDF8] hover:bg-[#FEF3C7] border border-[#C4963E]/45 text-[#78350F] text-[9px] cursor-pointer"
                                       title="Dịch ghi chú lên"
                                     >
                                       ↑ Lên
@@ -6071,7 +6071,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                     <button
                                       type="button"
                                       onClick={() => handleTwoTierNudgeArrow(a.id, "badge", 0, 8)}
-                                      className="px-1.5 py-0.5 rounded bg-[#25170D] hover:bg-amber-900/60 border border-[#48311D] text-amber-200 text-[9px] cursor-pointer"
+                                      className="px-1.5 py-0.5 rounded bg-[#FFFDF8] hover:bg-[#FEF3C7] border border-[#C4963E]/45 text-[#78350F] text-[9px] cursor-pointer"
                                       title="Dịch ghi chú xuống"
                                     >
                                       ↓ Xuống
@@ -6079,7 +6079,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                     <button
                                       type="button"
                                       onClick={() => handleTwoTierNudgeArrow(a.id, "badge", -10, 0)}
-                                      className="px-1.5 py-0.5 rounded bg-[#25170D] hover:bg-amber-900/60 border border-[#48311D] text-amber-200 text-[9px] cursor-pointer"
+                                      className="px-1.5 py-0.5 rounded bg-[#FFFDF8] hover:bg-[#FEF3C7] border border-[#C4963E]/45 text-[#78350F] text-[9px] cursor-pointer"
                                       title="Dịch ghi chú sang trái"
                                     >
                                       ← Trái
@@ -6087,7 +6087,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                     <button
                                       type="button"
                                       onClick={() => handleTwoTierNudgeArrow(a.id, "badge", 10, 0)}
-                                      className="px-1.5 py-0.5 rounded bg-[#25170D] hover:bg-amber-900/60 border border-[#48311D] text-amber-200 text-[9px] cursor-pointer"
+                                      className="px-1.5 py-0.5 rounded bg-[#FFFDF8] hover:bg-[#FEF3C7] border border-[#C4963E]/45 text-[#78350F] text-[9px] cursor-pointer"
                                       title="Dịch ghi chú sang phải"
                                     >
                                       → Phải
@@ -6101,12 +6101,12 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                               </div>
 
                               {/* Các nút hành động */}
-                              <div className="flex items-center justify-between pt-1 border-t border-[#3E2B1A]">
+                              <div className="flex items-center justify-between pt-1 border-t border-[#C4963E]/45">
                                 {hasCustomOffset && (
                                   <button
                                     type="button"
                                     onClick={() => handleTwoTierResetArrowOffsets(a.id)}
-                                    className="text-[9.5px] text-[#A89882] hover:text-amber-300 flex items-center gap-1 cursor-pointer"
+                                    className="text-[9.5px] text-[#5C4D3C] hover:text-[#78350F] flex items-center gap-1 cursor-pointer"
                                     title="Đặt lại vị trí ghi chú và đường uốn cong về gốc"
                                   >
                                     <RotateCcw className="w-3 h-3" />
@@ -6140,7 +6140,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                   : "hover:scale-105"
                               }`}
                               style={{
-                                backgroundColor: "#160E08F5",
+                                backgroundColor: "#FFFDF8F5",
                                 borderColor: color,
                                 color: color,
                               }}
@@ -6161,7 +6161,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                   e.stopPropagation();
                                   handleTwoTierStartEditArrow(a);
                                 }}
-                                className="opacity-60 hover:opacity-100 hover:text-amber-300 p-0.5 cursor-pointer ml-0.5 transition-colors"
+                                className="opacity-60 hover:opacity-100 hover:text-[#78350F] p-0.5 cursor-pointer ml-0.5 transition-colors"
                                 title="Sửa nội dung ghi chú"
                               >
                                 <Edit3 className="w-2.5 h-2.5" />
@@ -6175,7 +6175,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                     e.stopPropagation();
                                     handleTwoTierResetArrowOffsets(a.id);
                                   }}
-                                  className="opacity-60 hover:opacity-100 hover:text-blue-300 p-0.5 cursor-pointer transition-colors"
+                                  className="opacity-60 hover:opacity-100 hover:text-[#1E3A8A] p-0.5 cursor-pointer transition-colors"
                                   title="Đặt lại vị trí mặc định"
                                 >
                                   <RotateCcw className="w-2.5 h-2.5" />
@@ -6189,7 +6189,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                   e.stopPropagation();
                                   setTwoTierArrows((prev) => prev.filter((item) => item.id !== a.id));
                                 }}
-                                className="opacity-60 hover:opacity-100 hover:text-rose-400 p-0.5 cursor-pointer transition-colors"
+                                className="opacity-60 hover:opacity-100 hover:text-[#991B1B] p-0.5 cursor-pointer transition-colors"
                                 title="Xóa mũi tên này"
                               >
                                 <X className="w-2.5 h-2.5" />
@@ -6202,13 +6202,13 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
 
                   {/* ---------------- 0. CHI CỦNG Ở TẦNG TRÊN (ĐƯỢC ĐƯA LÊN TRÊN CÙNG) ---------------- */}
                   {cungOriginSummary.length > 0 && (
-                    <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-b from-[#261331] via-[#1B0D23] to-[#120818] border-2 border-purple-500/80 shadow-lg space-y-1.5">
+                    <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-b from-[#FFFDF8] via-[#FFFDF8] to-[#FFFDF8] border-2 border-purple-500/80 shadow-lg space-y-1.5">
                       <div className="flex items-center justify-between text-[9.5px] sm:text-[10px]">
-                        <span className="font-bold text-purple-300 flex items-center gap-1.5 uppercase tracking-wider font-mono">
-                          <Sparkles className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
+                        <span className="font-bold text-[#6B21A8] flex items-center gap-1.5 uppercase tracking-wider font-mono">
+                          <Sparkles className="w-3.5 h-3.5 text-[#7E22CE] animate-pulse" />
                           <span>🏛️ Củng Sẵn Ở Nguyên Cục (Đưa Lên Trên Cùng)</span>
                         </span>
-                        <span className="text-[8.5px] px-2 py-0.2 rounded-full bg-purple-950/90 text-purple-200 border border-purple-500/70 font-mono">
+                        <span className="text-[8.5px] px-2 py-0.2 rounded-full bg-[#F3E8FF]/90 text-[#6B21A8] border border-purple-500/70 font-mono">
                           Hư Thần Củng Khí Nguyên Cục
                         </span>
                       </div>
@@ -6239,8 +6239,8 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                   : ""
                               } ${
                                 isLost
-                                  ? "bg-gradient-to-b from-[#381616] via-[#260e0e] to-[#1a0808] border-rose-500/80 shadow-md shadow-rose-950/50 ring-1 ring-rose-500/60"
-                                  : "bg-gradient-to-b from-[#381647] via-[#260E32] to-[#17081E] border-purple-400/90 shadow-md shadow-purple-900/40 ring-1 ring-purple-500/50"
+                                  ? "bg-gradient-to-b from-[#FAF6EE] via-[#FFFDF8] to-[#FFFDF8] border-rose-500/80 shadow-md shadow-rose-950/50 ring-1 ring-rose-500/60"
+                                  : "bg-gradient-to-b from-[#FAF6EE] via-[#FFFDF8] to-[#FFFDF8] border-purple-400/90 shadow-md shadow-purple-900/40 ring-1 ring-purple-500/50"
                               }`}
                               title={
                                 isLost
@@ -6254,16 +6254,11 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                 </span>
                               )}
 
-                              {/* VẠCH GẠCH ĐỎ NỔI BẬT NẾU CỦNG BỊ MẤT */}
+                              {/* NHÃN BÁO CỦNG BỊ MẤT */}
                               {isLost && (
-                                <>
-                                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 overflow-hidden rounded-lg">
-                                    <div className="w-[140%] h-[2.5px] bg-rose-500 rotate-[-30deg] shadow-[0_0_8px_rgba(244,63,94,1)]" />
-                                  </div>
-                                  <span className="absolute -top-1.5 -right-1 text-[6.5px] px-1 py-0.2 rounded font-black bg-rose-950 text-rose-300 border border-rose-500 leading-none z-20">
-                                    MẤT
-                                  </span>
-                                </>
+                                <span className="absolute -top-1.5 -right-1 text-[7px] px-1.5 py-0.5 rounded-full font-bold bg-[#FEE2E2] text-[#991B1B] border border-[#DC2626]/60 leading-none z-20">
+                                  Đã Phá
+                                </span>
                               )}
 
                               {showTableEmoji && (
@@ -6282,15 +6277,15 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                           : `${sizeCfg.chiClasses} py-1 my-0.5 text-base sm:text-lg`
                                       } ${
                                         isLost
-                                          ? "line-through decoration-rose-500 decoration-2 text-rose-300 font-black"
-                                          : "text-purple-100"
+                                          ? "line-through decoration-rose-500 decoration-2 text-[#991B1B] font-black"
+                                          : "text-[#6B21A8]"
                                       }`}
                                     >
                                       ({s.cungChi})
                                     </span>
                                     {showTwoTierTamAnPhu && cungTamAn?.tuongName && (
                                       <span
-                                        className={`font-serif font-bold text-[#E6D3A3] bg-[#291A0E]/95 px-1 py-0.2 rounded border border-amber-600/60 truncate max-w-full leading-tight shadow-xs ${sizeCfg.tamAnClasses} select-none my-0.5`}
+                                        className={`font-serif font-bold text-[#6E4E16] bg-[#FFFDF8]/95 px-1 py-0.2 rounded border border-amber-600/60 truncate max-w-full leading-tight shadow-xs ${sizeCfg.tamAnClasses} select-none my-0.5`}
                                         title={cungTamAn.fullLine ? `Tâm Ấn Phú: ${cungTamAn.fullLine}` : `Tâm Ấn: 《${cungTamAn.tuongName}》`}
                                       >
                                         《{cungTamAn.tuongName}》
@@ -6310,11 +6305,11 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                   <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5 items-start">
                     {/* CỘT TRÁI: CÁNH TẢ (KẾ BÊN TRÁI CHỮ ĐỐI DIỆN) */}
                     <div className="space-y-1 sm:space-y-1.5">
-                      <div className="flex items-center justify-between pb-0.5 border-b border-[#4D3620] text-center">
-                        <span className="text-[8px] sm:text-[9.5px] font-bold text-[#C9A55A] flex items-center gap-0.5 sm:gap-1 truncate">
+                      <div className="flex items-center justify-between pb-0.5 border-b border-[#C4963E]/45 text-center">
+                        <span className="text-[8px] sm:text-[9.5px] font-bold text-[#6E4E16] flex items-center gap-0.5 sm:gap-1 truncate">
                           <span>⬅️ Cánh Tả (Trái)</span>
                         </span>
-                        <span className="text-[7.5px] sm:text-[8px] text-[#8C7D6B] font-mono shrink-0">{displayedTopLeft.length}</span>
+                        <span className="text-[7.5px] sm:text-[8px] text-[#5C4D3C] font-mono shrink-0">{displayedTopLeft.length}</span>
                       </div>
                       <BaziTwoTierDropZone
                         zoneKey="top_left"
@@ -6369,12 +6364,12 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
 
                     {/* CỘT GIỮA: ĐỐI DIỆN TRỰC DIỆN ĐỊA CHI LƯU NIÊN (CHỨA ĐỊA CHI CÓ XUNG • HÌNH • HẠI) */}
                     <div className="space-y-1 sm:space-y-1.5 flex flex-col items-center">
-                      <div className="w-full flex items-center justify-between pb-0.5 border-b border-[#4D3620] text-center">
-                        <span className="text-[8px] sm:text-[9.5px] font-bold text-rose-300 flex items-center gap-0.5 sm:gap-1 truncate">
+                      <div className="w-full flex items-center justify-between pb-0.5 border-b border-[#C4963E]/45 text-center">
+                        <span className="text-[8px] sm:text-[9.5px] font-bold text-[#991B1B] flex items-center gap-0.5 sm:gap-1 truncate">
                           <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse shrink-0" />
                           <span className="truncate">Đối Diện Lưu Niên</span>
                         </span>
-                        <span className="text-[7.5px] sm:text-[8px] text-rose-400 font-mono shrink-0">{displayedTopOppose.length}</span>
+                        <span className="text-[7.5px] sm:text-[8px] text-[#991B1B] font-mono shrink-0">{displayedTopOppose.length}</span>
                       </div>
 
                       <BaziTwoTierDropZone
@@ -6431,11 +6426,11 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
 
                     {/* CỘT PHẢI: CÁNH HỮU (BÊN PHẢI CHỮ ĐỐI DIỆN) */}
                     <div className="space-y-1 sm:space-y-1.5">
-                      <div className="flex items-center justify-between pb-0.5 border-b border-[#4D3620] text-center">
-                        <span className="text-[8px] sm:text-[9.5px] font-bold text-[#C9A55A] flex items-center gap-0.5 sm:gap-1 truncate">
+                      <div className="flex items-center justify-between pb-0.5 border-b border-[#C4963E]/45 text-center">
+                        <span className="text-[8px] sm:text-[9.5px] font-bold text-[#6E4E16] flex items-center gap-0.5 sm:gap-1 truncate">
                           <span>➡️ Cánh Hữu (Phải)</span>
                         </span>
-                        <span className="text-[7.5px] sm:text-[8px] text-[#8C7D6B] font-mono shrink-0">
+                        <span className="text-[7.5px] sm:text-[8px] text-[#5C4D3C] font-mono shrink-0">
                           {displayedTopRight.length}
                         </span>
                       </div>
@@ -6493,11 +6488,11 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                   </div>
 
                   {/* ---------------- 2. KHỐI ĐỊA CHI LƯU NIÊN (CHỮ MỚI) & CÁC CHI KÉO XUỐNG TRÁI / PHẢI ---------------- */}
-                  <div className="p-3 sm:p-4 rounded-2xl bg-gradient-to-b from-[#25180D] via-[#1E1209] to-[#180E07] border-2 border-[#7D5A2F] shadow-xl space-y-3.5">
+                  <div className="p-3 sm:p-4 rounded-2xl bg-gradient-to-b from-[#FFFDF8] via-[#FFFDF8] to-[#FFFDF8] border-2 border-[#C4963E]/45 shadow-xl space-y-3.5">
                     <div className="flex items-center justify-center gap-2">
                       <div className="h-[1.5px] flex-1 bg-gradient-to-r from-transparent via-[#C6923C] to-transparent" />
-                      <span className="text-[10.5px] sm:text-[11px] font-bold text-[#D6B97A] uppercase tracking-wider flex items-center gap-1.5">
-                        <ArrowUpDown className="w-4 h-4 text-amber-400" />
+                      <span className="text-[10.5px] sm:text-[11px] font-bold text-[#6E4E16] uppercase tracking-wider flex items-center gap-1.5">
+                        <ArrowUpDown className="w-4 h-4 text-[#92400E]" />
                         <span>Trục Phân Tầng: Địa Chi Lưu Niên {selectedYear} ⟷ Chi Bị Kéo Xuống Ở Trái & Phải</span>
                       </span>
                       <div className="h-[1.5px] flex-1 bg-gradient-to-r from-transparent via-[#C6923C] to-transparent" />
@@ -6527,14 +6522,14 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                             {Array.from(groupsMap.entries()).map(([gKey, gData]) => (
                               <div
                                 key={`cluster-${zone}-${gKey}`}
-                                className="w-full p-1.5 rounded-xl bg-gradient-to-r from-amber-950/70 via-[#26170D] to-amber-950/70 border border-amber-500/60 shadow-md space-y-1"
+                                className="w-full p-1.5 rounded-xl bg-[#FAF6EE] border border-amber-500/60 shadow-md space-y-1"
                               >
-                                <div className="flex items-center justify-between pb-0.5 border-b border-amber-600/40 text-[8.5px] sm:text-[9.5px] font-bold text-amber-300">
+                                <div className="flex items-center justify-between pb-0.5 border-b border-amber-600/40 text-[8.5px] sm:text-[9.5px] font-bold text-[#78350F]">
                                   <span className="flex items-center gap-1 truncate">
-                                    <Sparkles className="w-3 h-3 text-amber-400 shrink-0 animate-pulse" />
+                                    <Sparkles className="w-3 h-3 text-[#92400E] shrink-0 animate-pulse" />
                                     <span className="truncate">Cụm {gData.groupName}</span>
                                   </span>
-                                  <span className="text-[7.5px] px-1.5 py-0.2 rounded bg-amber-900/80 text-amber-200 border border-amber-600/60 font-mono shrink-0">
+                                  <span className="text-[7.5px] px-1.5 py-0.2 rounded bg-[#FEF3C7] text-[#78350F] border border-amber-600/60 font-mono shrink-0">
                                     Chung 1 Cụm
                                   </span>
                                 </div>
@@ -6632,12 +6627,12 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                         <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5 items-start">
                           {/* CỘT TRÁI: CÁC CHI BỊ KÉO XUỐNG BÊN TRÁI (CÁNH TẢ) */}
                           <div className="space-y-1 sm:space-y-1.5">
-                            <div className="flex items-center justify-between pb-0.5 border-b border-[#4D3620] text-center">
-                              <span className="text-[8px] sm:text-[9.5px] font-bold text-emerald-300 flex items-center gap-0.5 sm:gap-1 truncate">
-                                <ArrowDown className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-400 shrink-0" />
+                            <div className="flex items-center justify-between pb-0.5 border-b border-[#C4963E]/45 text-center">
+                              <span className="text-[8px] sm:text-[9.5px] font-bold text-[#14532D] flex items-center gap-0.5 sm:gap-1 truncate">
+                                <ArrowDown className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#15803D] shrink-0" />
                                 <span className="truncate">Cánh Tả (Trái)</span>
                               </span>
-                              <span className="text-[7.5px] sm:text-[8px] text-[#8C7D6B] font-mono shrink-0">{displayedBottomLeft.length}</span>
+                              <span className="text-[7.5px] sm:text-[8px] text-[#5C4D3C] font-mono shrink-0">{displayedBottomLeft.length}</span>
                             </div>
                             <BaziTwoTierDropZone
                               zoneKey="bottom_left"
@@ -6655,11 +6650,11 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
 
                           {/* CỘT GIỮA: ĐỊA CHI LƯU NIÊN & CHI TRÙNG NẰM CHUNG 1 Ô (ĐÃ BỎ Ô ĐẶT DƯỚI) */}
                           <div className="space-y-1 sm:space-y-1.5 flex flex-col items-center">
-                            <div className="w-full flex items-center justify-center pb-0.5 border-b border-[#4D3620] text-center">
-                              <span className="text-[8px] sm:text-[9.5px] font-bold text-amber-300 truncate flex items-center justify-center gap-1 w-full">
+                            <div className="w-full flex items-center justify-center pb-0.5 border-b border-[#C4963E]/45 text-center">
+                              <span className="text-[8px] sm:text-[9.5px] font-bold text-[#78350F] truncate flex items-center justify-center gap-1 w-full">
                                 <span>Lưu Niên {selectedYear}</span>
                                 {displayedMiddleSame.length > 0 && (
-                                  <span className="text-[7.5px] px-1 py-0.2 rounded bg-amber-900/80 text-amber-200 border border-amber-600/60 font-mono">
+                                  <span className="text-[7.5px] px-1 py-0.2 rounded bg-[#FEF3C7] text-[#78350F] border border-amber-600/60 font-mono">
                                     Trùng {displayedMiddleSame.length} Chi
                                   </span>
                                 )}
@@ -6677,7 +6672,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                               emptyLabel={`Chung ô ${selectedLuuNienChi}`}
                               className="w-full"
                             >
-                              <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-1.5 p-1 rounded-xl bg-gradient-to-b from-[#221509] to-[#170E06] border border-[#5A3F22] shadow-inner min-h-[52px]">
+                              <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-1.5 p-1 rounded-xl bg-gradient-to-b from-[#FFFDF8] to-[#FFFDF8] border border-[#C4963E]/45 shadow-inner min-h-[52px]">
                                 {/* THẺ ĐỊA CHI LƯU NIÊN */}
                                 {(() => {
                                   const isLuuNienSelected = twoTierSelectedNodes.includes("twoTier-luunien");
@@ -6688,7 +6683,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                         twoTierNodeRefs.current["twoTier-luunien"] = el;
                                       }}
                                       onClick={() => handleTwoTierToggleNode("twoTier-luunien")}
-                                      className={`shrink-0 bg-gradient-to-b from-[#3E2914] via-[#2A1B0C] to-[#1C1208] border-2 border-[#C9A55A] text-center flex flex-col items-center justify-center shadow-md shadow-amber-600/30 ring-1 ring-amber-400/50 select-none relative cursor-pointer hover:scale-[1.05] transition-all ${
+                                      className={`shrink-0 bg-gradient-to-b from-[#FAF6EE] via-[#FFFDF8] to-[#FFFDF8] border-2 border-[#B8862D] text-center flex flex-col items-center justify-center shadow-md shadow-amber-600/30 ring-1 ring-amber-400/50 select-none relative cursor-pointer hover:scale-[1.05] transition-all ${
                                         isLuuNienSelected
                                           ? "!border-amber-400 ring-2 ring-amber-400 scale-[1.04] shadow-lg shadow-amber-500/30 z-10"
                                           : ""
@@ -6704,7 +6699,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                           {luuNienIdx + 1}
                                         </span>
                                       )}
-                                      <span className={`text-amber-300 font-bold uppercase tracking-tighter leading-none mb-0.5 ${sizeCfg.badgeClasses}`}>
+                                      <span className={`text-[#78350F] font-bold uppercase tracking-tighter leading-none mb-0.5 ${sizeCfg.badgeClasses}`}>
                                         Lưu Niên
                                       </span>
                                       {branchRatings[selectedLuuNienChi] && (
@@ -6721,7 +6716,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                           {targetChiData?.emoji || "⭐"}
                                         </span>
                                       )}
-                                      <span className={`font-serif font-bold text-amber-200 leading-none select-none ${
+                                      <span className={`font-serif font-bold text-[#78350F] leading-none select-none ${
                                         showTableEmoji ? sizeCfg.chiClasses : `${sizeCfg.chiClasses} py-1 my-0.5 text-base sm:text-lg`
                                       }`}>
                                         {selectedLuuNienChi}
@@ -6730,7 +6725,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                         const lnTamAn = getTamAnPhuInfoForChi(selectedLuuNienChi);
                                         return lnTamAn?.tuongName ? (
                                           <span
-                                            className={`font-serif font-bold text-[#E6D3A3] bg-[#291A0E]/95 px-1 py-0.2 rounded border border-amber-600/60 truncate max-w-full leading-tight shadow-xs ${sizeCfg.tamAnClasses} select-none my-0.5`}
+                                            className={`font-serif font-bold text-[#6E4E16] bg-[#FFFDF8]/95 px-1 py-0.2 rounded border border-amber-600/60 truncate max-w-full leading-tight shadow-xs ${sizeCfg.tamAnClasses} select-none my-0.5`}
                                             title={lnTamAn.fullLine ? `Tâm Ấn Phú: ${lnTamAn.fullLine}` : `Tâm Ấn: 《${lnTamAn.tuongName}》`}
                                           >
                                             《{lnTamAn.tuongName}》
@@ -6785,12 +6780,12 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
 
                           {/* CỘT PHẢI: CÁC CHI BỊ KÉO XUỐNG BÊN PHẢI (CÁNH HỮU) */}
                           <div className="space-y-1 sm:space-y-1.5">
-                            <div className="flex items-center justify-between pb-0.5 border-b border-[#4D3620] text-center">
-                              <span className="text-[8px] sm:text-[9.5px] font-bold text-emerald-300 flex items-center gap-0.5 sm:gap-1 truncate">
-                                <ArrowDown className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-400 shrink-0" />
+                            <div className="flex items-center justify-between pb-0.5 border-b border-[#C4963E]/45 text-center">
+                              <span className="text-[8px] sm:text-[9.5px] font-bold text-[#14532D] flex items-center gap-0.5 sm:gap-1 truncate">
+                                <ArrowDown className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#15803D] shrink-0" />
                                 <span className="truncate">Cánh Hữu (Phải)</span>
                               </span>
-                              <span className="text-[7.5px] sm:text-[8px] text-[#8C7D6B] font-mono shrink-0">{displayedBottomRight.length} Chi</span>
+                              <span className="text-[7.5px] sm:text-[8px] text-[#5C4D3C] font-mono shrink-0">{displayedBottomRight.length} Chi</span>
                             </div>
                             <BaziTwoTierDropZone
                               zoneKey="bottom_right"
@@ -6810,13 +6805,13 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                     })()}
 
                     {/* ---------------- 3. ĐỊA CHI ĐƯỢC CỦNG (Ở DƯỚI CÙNG - MÀU KHÁC BIỆT & ĐÓNG MỞ NGOẶC) ---------------- */}
-                    <div className="pt-2 border-t-2 border-[#543A1E] space-y-1.5">
+                    <div className="pt-2 border-t-2 border-[#C4963E]/45 space-y-1.5">
                       <div className="flex items-center justify-between text-[9.5px] sm:text-[10px]">
-                        <span className="font-bold text-purple-300 flex items-center gap-1.5 uppercase tracking-wider font-mono">
-                          <Sparkles className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
+                        <span className="font-bold text-[#6B21A8] flex items-center gap-1.5 uppercase tracking-wider font-mono">
+                          <Sparkles className="w-3.5 h-3.5 text-[#7E22CE] animate-pulse" />
                           <span>Địa Chi Được Củng (Ở Dưới Cùng)</span>
                         </span>
-                        <span className="text-[8.5px] px-2 py-0.2 rounded-full bg-purple-950/90 text-purple-200 border border-purple-500/70 font-mono">
+                        <span className="text-[8.5px] px-2 py-0.2 rounded-full bg-[#F3E8FF]/90 text-[#6B21A8] border border-purple-500/70 font-mono">
                           Hư Thần Củng Khí • Đóng Mở Ngoặc ( )
                         </span>
                       </div>
@@ -6835,7 +6830,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                   twoTierNodeRefs.current[nodeKey] = el;
                                 }}
                                 onClick={() => handleTwoTierToggleNode(nodeKey)}
-                                className={`relative shrink-0 bg-gradient-to-b from-[#381647] via-[#260E32] to-[#17081E] border-2 border-purple-400/90 shadow-md shadow-purple-900/40 ring-1 ring-purple-500/50 text-center flex flex-col items-center justify-center select-none transition-all cursor-pointer hover:scale-[1.05] ${
+                                className={`relative shrink-0 bg-gradient-to-b from-[#FAF6EE] via-[#FFFDF8] to-[#FFFDF8] border-2 border-purple-400/90 shadow-md shadow-purple-900/40 ring-1 ring-purple-500/50 text-center flex flex-col items-center justify-center select-none transition-all cursor-pointer hover:scale-[1.05] ${
                                   isSelected
                                     ? "!border-amber-400 ring-2 ring-amber-400 scale-[1.04] shadow-lg shadow-amber-500/30 z-10"
                                     : ""
@@ -6852,7 +6847,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                     {cData?.emoji || "⭐"}
                                   </span>
                                 )}
-                                <span className={`font-serif font-bold text-purple-100 leading-none select-none ${
+                                <span className={`font-serif font-bold text-[#6B21A8] leading-none select-none ${
                                   showTableEmoji ? sizeCfg.chiClasses : `${sizeCfg.chiClasses} py-1 my-0.5 text-base sm:text-lg`
                                 }`}>
                                   ({cung.cungChi})
@@ -6861,7 +6856,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                   const cTamAn = getTamAnPhuInfoForChi(cung.cungChi);
                                   return cTamAn?.tuongName ? (
                                     <span
-                                      className={`font-serif font-bold text-[#E6D3A3] bg-[#291A0E]/95 px-1 py-0.2 rounded border border-amber-600/60 truncate max-w-full leading-tight shadow-xs ${sizeCfg.tamAnClasses} select-none my-0.5`}
+                                      className={`font-serif font-bold text-[#6E4E16] bg-[#FFFDF8]/95 px-1 py-0.2 rounded border border-amber-600/60 truncate max-w-full leading-tight shadow-xs ${sizeCfg.tamAnClasses} select-none my-0.5`}
                                       title={cTamAn.fullLine ? `Tâm Ấn Phú: ${cTamAn.fullLine}` : `Tâm Ấn: 《${cTamAn.tuongName}》`}
                                     >
                                       《{cTamAn.tuongName}》
@@ -6873,7 +6868,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                           })}
                         </div>
                       ) : (
-                        <div className="p-1.5 rounded-lg bg-[#1D0F24]/50 border border-dashed border-purple-700/40 text-center text-purple-300/70 text-[9px] italic flex items-center justify-center min-h-[38px]">
+                        <div className="p-1.5 rounded-lg bg-[#FFFDF8]/50 border border-dashed border-purple-700/40 text-center text-[#6B21A8]/70 text-[9px] italic flex items-center justify-center min-h-[38px]">
                           <span>Chưa có Địa Chi nào được củng sinh ra ở dưới cùng.</span>
                         </div>
                       )}
@@ -6882,25 +6877,25 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                 </div>
 
                 {/* THANH ĐIỀU KHIỂN & QUẢN LÝ MŨI TÊN / ĐƯỜNG DẪN TRONG PHÂN TRỤC 2 TẦNG */}
-                <div className="pt-2 border-t border-[#2C1D10] flex flex-col gap-2">
+                <div className="pt-2 border-t border-[#C4963E]/45 flex flex-col gap-2">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-[11px] font-bold text-[#D6B97A] flex items-center gap-1.5">
-                        <MousePointerClick className="w-3.5 h-3.5 text-amber-400" />
+                      <span className="text-[11px] font-bold text-[#6E4E16] flex items-center gap-1.5">
+                        <MousePointerClick className="w-3.5 h-3.5 text-[#92400E]" />
                         <span>Mũi tên 2 Tầng ({twoTierArrows.length}):</span>
                       </span>
                       {twoTierSelectedNodes.length >= 2 && (
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-950 text-amber-300 border border-amber-600/70 font-semibold animate-pulse">
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#FEF3C7] text-[#78350F] border border-amber-600/70 font-semibold animate-pulse">
                           🎯 Đang chọn {twoTierSelectedNodes.length} ô. Dùng thanh nối nhanh bên trên hoặc bấm thêm ô khác!
                         </span>
                       )}
                       {twoTierSelectedNodes.length === 1 && (
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-950 text-amber-300 border border-amber-600/70 font-semibold animate-pulse">
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#FEF3C7] text-[#78350F] border border-amber-600/70 font-semibold animate-pulse">
                           🎯 Đang chọn {getTwoTierNodeInfo(twoTierSelectedNodes[0])?.name}. Bấm thêm các chữ khác để kết nối!
                         </span>
                       )}
                       {twoTierSelectedNodes.length === 0 && (
-                        <span className="text-[10px] text-[#8C7D6B] italic">
+                        <span className="text-[10px] text-[#5C4D3C] italic">
                           (Bấm vào bất kỳ thẻ Địa Chi nào trên bố cục 2 tầng để chọn và tạo mũi tên dẫn kết nối)
                         </span>
                       )}
@@ -6913,8 +6908,8 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                         onClick={() => setTwoTierShowArrows(!twoTierShowArrows)}
                         className={`px-2 py-1 text-[10px] font-semibold rounded-lg border transition-all cursor-pointer flex items-center gap-1 ${
                           twoTierShowArrows
-                            ? "bg-[#251A0F] text-amber-300 border-amber-600/50 hover:bg-[#342416]"
-                            : "bg-[#1B130B] text-stone-500 border-stone-800 hover:text-stone-300"
+                            ? "bg-[#FFFDF8] text-[#78350F] border-amber-600/50 hover:bg-[#FAF6EE]"
+                            : "bg-[#FFFDF8] text-[#5C4D3C] border-[#D8C8A8] hover:text-[#1C1813]"
                         }`}
                         title={twoTierShowArrows ? "Tạm ẩn mũi tên để nhìn thoáng" : "Hiện lại mũi tên"}
                       >
@@ -6925,7 +6920,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                       <button
                         type="button"
                         onClick={handleSelectTwoTierAll}
-                        className="px-2 py-1 text-[10px] font-semibold rounded-lg bg-[#271E15] hover:bg-[#382B1E] text-amber-200 border border-[#523F27] hover:border-amber-500 transition-all cursor-pointer"
+                        className="px-2 py-1 text-[10px] font-semibold rounded-lg bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#78350F] border border-[#C4963E]/45 hover:border-amber-500 transition-all cursor-pointer"
                         title="Chọn tất cả các ô trong 2 tầng để nối mạng lưới"
                       >
                         <span>Chọn Hết</span>
@@ -6934,7 +6929,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                       <button
                         type="button"
                         onClick={handleSelectTwoTierTop}
-                        className="px-2 py-1 text-[10px] font-semibold rounded-lg bg-[#271E15] hover:bg-[#382B1E] text-emerald-200 border border-[#523F27] hover:border-emerald-500 transition-all cursor-pointer"
+                        className="px-2 py-1 text-[10px] font-semibold rounded-lg bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#14532D] border border-[#C4963E]/45 hover:border-emerald-500 transition-all cursor-pointer"
                         title="Chọn các ô Thượng Tầng (Tầng Trên)"
                       >
                         <span>Tầng Trên</span>
@@ -6943,7 +6938,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                       <button
                         type="button"
                         onClick={handleSelectTwoTierBottom}
-                        className="px-2 py-1 text-[10px] font-semibold rounded-lg bg-[#271E15] hover:bg-[#382B1E] text-cyan-200 border border-[#523F27] hover:border-cyan-500 transition-all cursor-pointer"
+                        className="px-2 py-1 text-[10px] font-semibold rounded-lg bg-[#FFFDF8] hover:bg-[#FAF6EE] text-cyan-200 border border-[#C4963E]/45 hover:border-cyan-500 transition-all cursor-pointer"
                         title="Chọn các ô Hạ Tầng (Tầng Dưới)"
                       >
                         <span>Tầng Dưới</span>
@@ -6952,7 +6947,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                       <button
                         type="button"
                         onClick={handleSelectTwoTierOppose}
-                        className="px-2 py-1 text-[10px] font-semibold rounded-lg bg-[#271E15] hover:bg-[#382B1E] text-rose-200 border border-[#523F27] hover:border-rose-500 transition-all cursor-pointer"
+                        className="px-2 py-1 text-[10px] font-semibold rounded-lg bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#991B1B] border border-[#C4963E]/45 hover:border-rose-500 transition-all cursor-pointer"
                         title="Chọn các ô Đối Diện và Chi Lưu Niên"
                       >
                         <span>Đối Diện + Lưu Niên</span>
@@ -6973,9 +6968,9 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                           }
                           setTwoTierShowArrowCreator(!twoTierShowArrowCreator);
                         }}
-                        className="flex items-center gap-1 px-2.5 py-1 text-[10.5px] font-semibold rounded-lg bg-[#271E15] hover:bg-[#382B1E] text-amber-200 border border-[#523F27] hover:border-amber-500 transition-all cursor-pointer"
+                        className="flex items-center gap-1 px-2.5 py-1 text-[10.5px] font-semibold rounded-lg bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#78350F] border border-[#C4963E]/45 hover:border-amber-500 transition-all cursor-pointer"
                       >
-                        <Plus className="w-3 h-3 text-amber-400" />
+                        <Plus className="w-3 h-3 text-[#92400E]" />
                         <span>{twoTierShowArrowCreator ? "Đóng Tạo Mũi Tên" : "Thêm Mũi Tên Thủ Công"}</span>
                       </button>
 
@@ -6983,10 +6978,10 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                         <button
                           type="button"
                           onClick={() => setTwoTierArrows([])}
-                          className="flex items-center gap-1 px-2 py-1 text-[10.5px] font-semibold rounded-lg bg-[#2A1512] hover:bg-[#3D1A16] text-rose-300 border border-rose-900/60 hover:border-rose-500 transition-all cursor-pointer"
+                          className="flex items-center gap-1 px-2 py-1 text-[10.5px] font-semibold rounded-lg bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#991B1B] border border-rose-900/60 hover:border-rose-500 transition-all cursor-pointer"
                           title="Xóa tất cả mũi tên đã tạo ở bố cục 2 tầng"
                         >
-                          <Trash2 className="w-3 h-3 text-rose-400" />
+                          <Trash2 className="w-3 h-3 text-[#991B1B]" />
                           <span>Xóa Hết ({twoTierArrows.length})</span>
                         </button>
                       )}
@@ -6998,7 +6993,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                             setTwoTierSelectedNodes([]);
                             setTwoTierShowArrowCreator(false);
                           }}
-                          className="text-[10.5px] px-2 py-1 text-[#8C7D6B] hover:text-white transition-colors cursor-pointer"
+                          className="text-[10.5px] px-2 py-1 text-[#5C4D3C] hover:text-white transition-colors cursor-pointer"
                         >
                           Bỏ chọn
                         </button>
@@ -7009,7 +7004,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                   {/* DANH SÁCH CÁC MŨI TÊN ĐÃ TẠO TRONG 2 TẦNG */}
                   {twoTierArrows.length > 0 && (
                     <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
-                      <span className="text-[10px] text-[#A89882] font-semibold">Đã tạo ({twoTierArrows.length}):</span>
+                      <span className="text-[10px] text-[#5C4D3C] font-semibold">Đã tạo ({twoTierArrows.length}):</span>
                       {twoTierArrows.map((a) => {
                         const fromInfo = getTwoTierNodeInfo(a.fromKey);
                         const toInfo = getTwoTierNodeInfo(a.toKey);
@@ -7027,7 +7022,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                             key={`tt-chip-${a.id}`}
                             onMouseEnter={() => setTwoTierHoveredArrowId(a.id)}
                             onMouseLeave={() => setTwoTierHoveredArrowId((cur) => (cur === a.id ? null : cur))}
-                            className={`flex items-center gap-1 px-2 py-0.5 rounded-lg border text-[10px] font-medium shadow-sm transition-all bg-[#1D140C] ${
+                            className={`flex items-center gap-1 px-2 py-0.5 rounded-lg border text-[10px] font-medium shadow-sm transition-all bg-[#FFFDF8] ${
                               twoTierHoveredArrowId === a.id ? "ring-1 ring-amber-400 scale-105" : ""
                             }`}
                             style={{ borderColor: a.color || "#F59E0B" }}
@@ -7035,13 +7030,13 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                             <span style={{ color: a.color || "#F59E0B" }} className="font-bold">
                               {fromInfo?.value || a.fromKey} {dirSymbol} {toInfo?.value || a.toKey}:
                             </span>
-                            <span className="text-[#F5EAD4] font-semibold">{a.label}</span>
+                            <span className="text-[#1C1813] font-semibold">{a.label}</span>
 
                             {/* Nút sửa nội dung và vị trí mũi tên */}
                             <button
                               type="button"
                               onClick={() => handleTwoTierStartEditArrow(a)}
-                              className="text-amber-400 hover:text-white p-0.5 rounded cursor-pointer transition-colors ml-0.5"
+                              className="text-[#92400E] hover:text-white p-0.5 rounded cursor-pointer transition-colors ml-0.5"
                               title="Sửa nội dung và vị trí mũi tên"
                             >
                               <Edit3 className="w-3 h-3" />
@@ -7059,7 +7054,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                               <button
                                 type="button"
                                 onClick={() => handleTwoTierResetArrowOffsets(a.id)}
-                                className="text-blue-300 hover:text-white p-0.5 rounded cursor-pointer transition-colors"
+                                className="text-[#1E3A8A] hover:text-white p-0.5 rounded cursor-pointer transition-colors"
                                 title="Đặt lại vị trí gốc"
                               >
                                 <RotateCcw className="w-2.5 h-2.5" />
@@ -7070,7 +7065,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                             <button
                               type="button"
                               onClick={() => setTwoTierArrows((prev) => prev.filter((item) => item.id !== a.id))}
-                              className="text-[#8C7D6B] hover:text-rose-400 p-0.5 rounded cursor-pointer transition-colors"
+                              className="text-[#5C4D3C] hover:text-[#991B1B] p-0.5 rounded cursor-pointer transition-colors"
                               title="Xóa mũi tên"
                             >
                               <X className="w-3 h-3" />
@@ -7088,38 +7083,38 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
           {/* =================================================================
               KHU VỰC LUẬN CỦNG: CÒN GÌ - MẤT GÌ - MỚI THÊM GÌ (3 CỘT ĐỐI CHIẾU)
               ================================================================= */}
-          <div className="p-2.5 sm:p-3.5 rounded-xl bg-[#171109] border border-[#3A2817] space-y-2.5">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-1.5 border-b border-[#2C1D10]">
-              <span className="font-bold text-[#D6B97A] flex items-center gap-1.5 text-[10.5px] sm:text-[11px] uppercase tracking-wider">
-                <Zap className="w-3.5 h-3.5 text-amber-400" />
+          <div className="p-2.5 sm:p-3.5 rounded-xl bg-[#FFFDF8] border border-[#C4963E]/45 space-y-2.5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-1.5 border-b border-[#C4963E]/45">
+              <span className="font-bold text-[#6E4E16] flex items-center gap-1.5 text-[10.5px] sm:text-[11px] uppercase tracking-wider">
+                <Zap className="w-3.5 h-3.5 text-[#92400E]" />
                 <span>Biến Động Củng Khí: Nguyên Cục + Hành Vận ⟷ Lưu Niên ({selectedYear})</span>
               </span>
-              <span className="text-[9px] text-[#8C7D6B] font-mono">
+              <span className="text-[9px] text-[#5C4D3C] font-mono">
                 5 Trụ ban đầu: {initialCungList.length} Củng (
-                <span className="text-amber-300 font-bold">{intactCungList.length} Còn</span> •{" "}
-                <span className="text-rose-400 font-bold">{lostCungList.length} Mất</span>) •{" "}
-                <span className="text-emerald-400 font-bold">+{newCungList.length} Mới</span>
+                <span className="text-[#78350F] font-bold">{intactCungList.length} Còn</span> •{" "}
+                <span className="text-[#991B1B] font-bold">{lostCungList.length} Mất</span>) •{" "}
+                <span className="text-[#15803D] font-bold">+{newCungList.length} Mới</span>
               </span>
             </div>
 
-            <div className="text-[10px] text-[#A89882] leading-relaxed">
-              • <strong className="text-amber-300">Còn Gì</strong>: Các cặp củng giữa Nguyên Cục và Hành Vận mà 2 chi không bị chia cắt phân tầng khi Lưu Niên {selectedYear} tới.
+            <div className="text-[10px] text-[#5C4D3C] leading-relaxed">
+              • <strong className="text-[#78350F]">Còn Gì</strong>: Các cặp củng giữa Nguyên Cục và Hành Vận mà 2 chi không bị chia cắt phân tầng khi Lưu Niên {selectedYear} tới.
               <br />
-              • <strong className="text-rose-400">Mất Gì</strong>: Khi một chi trong cặp củng bị hợp kéo xuống tầng dưới cùng Lưu Niên <strong className="text-amber-300">{selectedLuuNienChi}</strong>, thế kẹp củng ban đầu bị phá vỡ.
+              • <strong className="text-[#991B1B]">Mất Gì</strong>: Khi một chi trong cặp củng bị hợp kéo xuống tầng dưới cùng Lưu Niên <strong className="text-[#78350F]">{selectedLuuNienChi}</strong>, thế kẹp củng ban đầu bị phá vỡ.
               <br />
-              • <strong className="text-emerald-400">Mới Thêm Gì</strong>: Tại tầng dưới, <strong className="text-amber-300">Lưu Niên {selectedLuuNienChi}</strong> kết hợp với các Chi hợp kéo xuống tạo thành tổ hợp Tam Hợp / Tam Hội cục mới sinh ra củng.
+              • <strong className="text-[#15803D]">Mới Thêm Gì</strong>: Tại tầng dưới, <strong className="text-[#78350F]">Lưu Niên {selectedLuuNienChi}</strong> kết hợp với các Chi hợp kéo xuống tạo thành tổ hợp Tam Hợp / Tam Hội cục mới sinh ra củng.
             </div>
 
             {/* 3 CỘT GHI CHÚ KẾ BÊN: CÒN GÌ - MẤT GÌ - MỚI THÊM GÌ */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
               {/* CỘT 1: CỦNG CÒN LẠI (BẢO TOÀN) */}
-              <div className="p-2 rounded-lg bg-gradient-to-b from-[#241C10] to-[#17120A] border border-amber-600/70 space-y-1.5 shadow-sm">
+              <div className="p-2 rounded-lg bg-gradient-to-b from-[#FFFDF8] to-[#FFFDF8] border border-amber-600/70 space-y-1.5 shadow-sm">
                 <div className="flex items-center justify-between text-[10.5px]">
-                  <span className="font-bold text-amber-300 flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="font-bold text-[#78350F] flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#92400E]" />
                     <span>Củng 5 Trụ Còn Lại:</span>
                   </span>
-                  <span className="text-[8.5px] px-1.5 py-0.2 rounded bg-amber-950 text-amber-200 border border-amber-700/60 font-semibold font-mono">
+                  <span className="text-[8.5px] px-1.5 py-0.2 rounded bg-[#FEF3C7] text-[#78350F] border border-amber-700/60 font-semibold font-mono">
                     {intactCungList.length} Cục
                   </span>
                 </div>
@@ -7129,24 +7124,24 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                     {intactCungList.map((item, idx) => (
                       <div
                         key={`intact-thucthi-${idx}`}
-                        className="p-1.5 rounded bg-[#2E2214] border border-amber-700/60 flex flex-col gap-0.5 text-[9.5px]"
+                        className="p-1.5 rounded bg-[#FAF6EE] border border-amber-700/60 flex flex-col gap-0.5 text-[9.5px]"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-amber-200">
-                            🛡️ Còn củng: <strong className="text-amber-300 font-serif text-xs">[{item.cungChi}]</strong>
+                          <span className="font-bold text-[#78350F]">
+                            🛡️ Còn củng: <strong className="text-[#78350F] font-serif text-xs">[{item.cungChi}]</strong>
                           </span>
-                          <span className="text-[8px] px-1.5 py-0.2 rounded bg-amber-950 text-amber-300 border border-amber-800/80 font-mono">
+                          <span className="text-[8px] px-1.5 py-0.2 rounded bg-[#FEF3C7] text-[#78350F] border border-amber-800/80 font-mono">
                             {item.groupName}
                           </span>
                         </div>
-                        <div className="text-[8.5px] text-[#E0D2B8] leading-snug">
+                        <div className="text-[8.5px] text-[#1C1813] leading-snug">
                           {item.reason}
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="p-2 rounded bg-[#1B140B] border border-dashed border-amber-900/50 text-center text-[#9E8D7A] text-[9.5px] italic">
+                  <div className="p-2 rounded bg-[#FFFDF8] border border-dashed border-amber-900/50 text-center text-[#5C4D3C] text-[9.5px] italic">
                     {initialCungList.length === 0
                       ? "Nguyên Cục và Hành Vận ban đầu không có cặp củng kẹp."
                       : "Tất cả các cục củng đều đã bị phân tách khi Lưu Niên tới."}
@@ -7155,13 +7150,13 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
               </div>
 
               {/* CỘT 2: CỦNG MẤT ĐI (PHÁ CỤC CỦNG) */}
-              <div className="p-2 rounded-lg bg-gradient-to-b from-[#241211] to-[#180C0B] border border-rose-800/70 space-y-1.5 shadow-sm">
+              <div className="p-2 rounded-lg bg-gradient-to-b from-[#FFFDF8] to-[#FFFDF8] border border-rose-800/70 space-y-1.5 shadow-sm">
                 <div className="flex items-center justify-between text-[10.5px]">
-                  <span className="font-bold text-rose-300 flex items-center gap-1">
-                    <XCircle className="w-3.5 h-3.5 text-rose-400" />
+                  <span className="font-bold text-[#991B1B] flex items-center gap-1">
+                    <XCircle className="w-3.5 h-3.5 text-[#991B1B]" />
                     <span>Củng Bị Lưu Niên Phá:</span>
                   </span>
-                  <span className="text-[8.5px] px-1.5 py-0.2 rounded bg-rose-950 text-rose-200 border border-rose-700/60 font-semibold font-mono">
+                  <span className="text-[8.5px] px-1.5 py-0.2 rounded bg-[#FEE2E2] text-[#991B1B] border border-rose-700/60 font-semibold font-mono">
                     {lostCungList.length} Cục
                   </span>
                 </div>
@@ -7171,37 +7166,37 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                     {lostCungList.map((item, idx) => (
                       <div
                         key={`lost-thucthi-${idx}`}
-                        className="p-1.5 rounded bg-[#2D1412] border border-rose-700/60 flex flex-col gap-0.5 text-[9.5px]"
+                        className="p-1.5 rounded bg-[#FFFDF8] border border-rose-700/60 flex flex-col gap-0.5 text-[9.5px]"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-rose-200">
-                            🔴 Mất củng: <strong className="text-rose-300 font-serif text-xs">[{item.cungChi}]</strong>
+                          <span className="font-bold text-[#991B1B]">
+                            🔴 Mất củng: <strong className="text-[#991B1B] font-serif text-xs">[{item.cungChi}]</strong>
                           </span>
-                          <span className="text-[8px] px-1.5 py-0.2 rounded bg-rose-950 text-rose-300 border border-rose-800/80 font-mono">
+                          <span className="text-[8px] px-1.5 py-0.2 rounded bg-[#FEE2E2] text-[#991B1B] border border-rose-800/80 font-mono">
                             {item.groupName}
                           </span>
                         </div>
-                        <div className="text-[8.5px] text-[#E0B8B5] leading-snug">
+                        <div className="text-[8.5px] text-[#5C4D3C] leading-snug">
                           {item.reason}
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="p-2 rounded bg-[#1C0E0D] border border-dashed border-rose-900/50 text-center text-[#9E7D7A] text-[9.5px] italic">
+                  <div className="p-2 rounded bg-[#FFFDF8] border border-dashed border-rose-900/50 text-center text-[#5C4D3C] text-[9.5px] italic">
                     Không có cục củng nào bị phá vỡ khi xét Lưu Niên {selectedYear} ({selectedLuuNienChi}).
                   </div>
                 )}
               </div>
 
               {/* CỘT 3: CỦNG MỚI THÊM VÀO TẠI TẦNG DƯỚI */}
-              <div className="p-2 rounded-lg bg-gradient-to-b from-[#112417] to-[#0A180F] border border-emerald-800/70 space-y-1.5 shadow-sm">
+              <div className="p-2 rounded-lg bg-gradient-to-b from-[#FFFDF8] to-[#FFFDF8] border border-emerald-800/70 space-y-1.5 shadow-sm">
                 <div className="flex items-center justify-between text-[10.5px]">
-                  <span className="font-bold text-emerald-300 flex items-center gap-1">
-                    <PlusCircle className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="font-bold text-[#14532D] flex items-center gap-1">
+                    <PlusCircle className="w-3.5 h-3.5 text-[#15803D]" />
                     <span>Lưu Niên Sinh Củng Mới:</span>
                   </span>
-                  <span className="text-[8.5px] px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-200 border border-emerald-700/60 font-semibold font-mono">
+                  <span className="text-[8.5px] px-1.5 py-0.2 rounded bg-[#DCFCE7] text-[#14532D] border border-[#16A34A]/45 font-semibold font-mono">
                     {newCungList.length} Cục
                   </span>
                 </div>
@@ -7211,24 +7206,24 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                     {newCungList.map((item, idx) => (
                       <div
                         key={`new-thucthi-${idx}`}
-                        className="p-1.5 rounded bg-[#132D1D] border border-emerald-700/60 flex flex-col gap-0.5 text-[9.5px]"
+                        className="p-1.5 rounded bg-[#FAF6EE] border border-[#16A34A]/45 flex flex-col gap-0.5 text-[9.5px]"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-emerald-200">
-                            🟢 Mới củng: <strong className="text-emerald-300 font-serif text-xs">[{item.cungChi}]</strong>
+                          <span className="font-bold text-[#14532D]">
+                            🟢 Mới củng: <strong className="text-[#14532D] font-serif text-xs">[{item.cungChi}]</strong>
                           </span>
-                          <span className="text-[8px] px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-300 border border-emerald-800/80 font-mono">
+                          <span className="text-[8px] px-1.5 py-0.2 rounded bg-[#DCFCE7] text-[#14532D] border border-emerald-800/80 font-mono">
                             {item.groupName}
                           </span>
                         </div>
-                        <div className="text-[8.5px] text-[#A8D4B7] leading-snug">
+                        <div className="text-[8.5px] text-[#5C4D3C] leading-snug">
                           {item.desc} (với {item.withBranch})
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="p-2 rounded bg-[#0D1C13] border border-dashed border-emerald-900/50 text-center text-[#7A9E86] text-[9.5px] italic">
+                  <div className="p-2 rounded bg-[#FFFDF8] border border-dashed border-emerald-900/50 text-center text-[#5C4D3C] text-[9.5px] italic">
                     Tại tầng dưới chưa hội đủ cặp để Lưu Niên sinh thêm chữ củng mới.
                   </div>
                 )}
@@ -7241,15 +7236,15 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
               - Định dạng tinh gọn chính xác:
                 Dần - Hợi - Thiên Tướng - tên tâm ấn phú và con mắt xem
               ================================================================= */}
-          <div className="p-2.5 sm:p-3.5 rounded-xl bg-gradient-to-b from-[#1E150B] via-[#171008] to-[#120B05] border border-[#5A4026] space-y-2.5 shadow-lg">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-1.5 border-b border-[#3E2B18]">
+          <div className="p-2.5 sm:p-3.5 rounded-xl bg-gradient-to-b from-[#FFFDF8] via-[#FFFDF8] to-[#FFFDF8] border border-[#C4963E]/45 space-y-2.5 shadow-lg">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-1.5 border-b border-[#C4963E]/45">
               <div className="flex items-center gap-1.5">
-                <BookOpen className="w-4 h-4 text-amber-400" />
-                <span className="font-bold text-[#D6B97A] text-[11px] sm:text-xs uppercase tracking-wider font-serif">
+                <BookOpen className="w-4 h-4 text-[#92400E]" />
+                <span className="font-bold text-[#6E4E16] text-[11px] sm:text-xs uppercase tracking-wider font-serif">
                   12 ĐỊA CHI LỤC HỢP • THIÊN TƯỚNG THIÊN BÀN • TÂM ẤN PHÚ (心印賦)
                 </span>
               </div>
-              <span className="text-[9.5px] text-[#A89882] font-mono">
+              <span className="text-[9.5px] text-[#5C4D3C] font-mono">
                 Sao chép trực tiếp từ Bàn Lục Nhâm bên dưới (Độc lập với Bát Tự Thực Thi Thiên)
               </span>
             </div>
@@ -7260,19 +7255,19 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                 return (
                   <div
                     key={`tamanphu-12line-${row.branch}-${idx}`}
-                    className="p-2 sm:p-2.5 rounded-lg bg-[#20160D]/90 hover:bg-[#2A1D11] border border-[#44301D] hover:border-[#C9A55A]/60 transition-all shadow-sm flex items-center justify-between gap-2"
+                    className="p-2 sm:p-2.5 rounded-lg bg-[#FFFDF8]/90 hover:bg-[#FFFDF8] border border-[#C4963E]/45 hover:border-[#B8862D] transition-all shadow-sm flex items-center justify-between gap-2"
                   >
                     {/* Dần - Hợi - Thiên Tướng - Tên Tâm Ấn Phú */}
                     <div className="flex items-center flex-wrap gap-1.5 sm:gap-2 text-xs sm:text-sm font-serif">
-                      <span className="font-black text-amber-200">
+                      <span className="font-black text-[#78350F]">
                         {row.branch} - {row.lucHopBranch}
                       </span>
-                      <span className="text-[#8C7D6B] font-sans font-light">-</span>
-                      <span className={`font-bold ${row.generalColor || "text-amber-300"}`}>
+                      <span className="text-[#5C4D3C] font-sans font-light">-</span>
+                      <span className={`font-bold ${row.generalColor || "text-[#78350F]"}`}>
                         {row.generalName}
                       </span>
-                      <span className="text-[#8C7D6B] font-sans font-light">-</span>
-                      <span className="font-bold text-[#E6D3A3]">
+                      <span className="text-[#5C4D3C] font-sans font-light">-</span>
+                      <span className="font-bold text-[#6E4E16]">
                         {row.tuongName}
                         {row.tuongChinese ? ` (${row.tuongChinese})` : ""}
                       </span>
@@ -7282,7 +7277,7 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                     <button
                       type="button"
                       onClick={() => setSelectedTamAnPhuItem(row)}
-                      className="p-1 sm:p-1.5 rounded-lg text-amber-300 hover:text-[#18130E] hover:bg-[#C9A55A] border border-[#523A22] hover:border-[#C9A55A] transition-all cursor-pointer shadow-sm shrink-0 active:scale-95"
+                      className="p-1 sm:p-1.5 rounded-lg text-[#78350F] hover:text-[#18130E] hover:bg-[#C9A55A] border border-[#C4963E]/45 hover:border-[#B8862D] transition-all cursor-pointer shadow-sm shrink-0 active:scale-95"
                       title={`Xem chi tiết khẩu quyết 《${row.tuongName}》`}
                     >
                       <Eye className="w-4 h-4" />
@@ -7302,38 +7297,38 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
           onClick={() => setSelectedTamAnPhuItem(null)}
         >
           <div
-            className="relative w-full max-w-lg bg-gradient-to-b from-[#22160C] via-[#1A1109] to-[#120B06] border-2 border-[#C9A55A] rounded-2xl shadow-[0_0_35px_rgba(212,175,55,0.3)] p-4 sm:p-6 text-[#F5EAD4] space-y-4 max-h-[92vh] overflow-y-auto scrollbar-thin"
+            className="relative w-full max-w-lg bg-gradient-to-b from-[#FFFDF8] via-[#FFFDF8] to-[#FFFDF8] border-2 border-[#B8862D] rounded-2xl shadow-[0_0_35px_rgba(212,175,55,0.3)] p-4 sm:p-6 text-[#1C1813] space-y-4 max-h-[92vh] overflow-y-auto scrollbar-thin"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Nút đóng */}
             <button
               type="button"
               onClick={() => setSelectedTamAnPhuItem(null)}
-              className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-[#322013] hover:bg-[#4A301D] text-[#D8C7B0] hover:text-white flex items-center justify-center border border-[#6B4E2B] transition-colors cursor-pointer z-10"
+              className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-[#FAF6EE] hover:bg-[#FAF6EE] text-[#5C4D3C] hover:text-white flex items-center justify-center border border-[#C4963E]/45 transition-colors cursor-pointer z-10"
               title="Đóng cửa sổ"
             >
               <X className="w-4 h-4" />
             </button>
 
             {/* Header */}
-            <div className="text-center pb-3 border-b border-[#44301D]">
+            <div className="text-center pb-3 border-b border-[#C4963E]/45">
               <div className="flex items-center justify-center gap-2">
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-600/50 font-bold font-mono">
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-[#78350F] border border-amber-600/50 font-bold font-mono">
                   Lục Hợp: {selectedTamAnPhuItem.branch} ─ {selectedTamAnPhuItem.lucHopBranch}
                 </span>
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#2A1D11] text-[#C4B49F] border border-[#523A22] font-medium">
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#FFFDF8] text-[#5C4D3C] border border-[#C4963E]/45 font-medium">
                   Thiên Bàn {selectedTamAnPhuItem.skyBranchName}
                 </span>
               </div>
-              <h3 className="text-2xl font-serif font-black text-[#F5EAD4] mt-2 tracking-wide">
+              <h3 className="text-2xl font-serif font-black text-[#1C1813] mt-2 tracking-wide">
                 Thiên Tướng {selectedTamAnPhuItem.generalName}{" "}
                 {selectedTamAnPhuItem.generalChinese && (
-                  <span className="text-base text-amber-400 font-normal font-serif">
+                  <span className="text-base text-[#92400E] font-normal font-serif">
                     ({selectedTamAnPhuItem.generalChinese})
                   </span>
                 )}
               </h3>
-              <p className="text-xs text-[#C9A55A] font-semibold mt-1">
+              <p className="text-xs text-[#6E4E16] font-semibold mt-1">
                 Tượng Thần Tâm Ấn Phú: 《{selectedTamAnPhuItem.tuongName}》
                 {selectedTamAnPhuItem.tuongChinese ? ` (${selectedTamAnPhuItem.tuongChinese})` : ""}
               </p>
@@ -7341,15 +7336,15 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
 
             {/* Khái Lược Bản Chất Thiên Tướng (Từ Bảng Chuẩn) */}
             {selectedTamAnPhuItem.generalOverview && (
-              <div className="p-3 rounded-xl bg-[#1A1109] border border-[#4A321D] space-y-1">
-                <div className="text-[10px] font-bold text-amber-400 uppercase tracking-wider">
+              <div className="p-3 rounded-xl bg-[#FFFDF8] border border-[#C4963E]/45 space-y-1">
+                <div className="text-[10px] font-bold text-[#92400E] uppercase tracking-wider">
                   Bản chất Thiên Tướng:
                 </div>
-                <div className="text-xs text-[#EAD8C3] leading-relaxed">
+                <div className="text-xs text-[#5C4D3C] leading-relaxed">
                   {selectedTamAnPhuItem.generalOverview}
                 </div>
                 {selectedTamAnPhuItem.generalNotes && (
-                  <div className="text-[11px] text-amber-300/90 italic pt-1 border-t border-[#3A2818]">
+                  <div className="text-[11px] text-[#78350F] italic pt-1 border-t border-[#C4963E]/45">
                     📌 {selectedTamAnPhuItem.generalNotes}
                   </div>
                 )}
@@ -7357,32 +7352,32 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
             )}
 
             {/* Khẩu Quyết Tâm Ấn Phú Chuẩn (Không Lấy Thông Tin Bên Ngoài) */}
-            <div className="p-3.5 rounded-xl bg-[#1B120A] border border-[#5A4026] space-y-2">
-              <div className="text-xs font-bold text-amber-300 flex items-center gap-1.5 uppercase tracking-wider">
-                <BookOpen className="w-3.5 h-3.5 text-amber-400" />
+            <div className="p-3.5 rounded-xl bg-[#FFFDF8] border border-[#C4963E]/45 space-y-2">
+              <div className="text-xs font-bold text-[#78350F] flex items-center gap-1.5 uppercase tracking-wider">
+                <BookOpen className="w-3.5 h-3.5 text-[#92400E]" />
                 <span>Khẩu Quyết 《Tâm Ấn Phú》:</span>
               </div>
-              <div className="text-sm font-serif font-bold text-[#FFE6A3] bg-[#26180E] p-2.5 rounded-lg border border-amber-700/60 leading-relaxed shadow-inner">
+              <div className="text-sm font-serif font-bold text-[#1C1813] bg-[#FFFDF8] p-2.5 rounded-lg border border-amber-700/60 leading-relaxed shadow-inner">
                 {selectedTamAnPhuItem.fullLine}
               </div>
             </div>
 
             {/* Diễn Giải Ý Nghĩa Chiêm Đoán (Từ Bảng Chuẩn) */}
             {selectedTamAnPhuItem.meaning && (
-              <div className="p-3 rounded-xl bg-[#170E08] border border-[#3A2818] text-xs text-[#C4B49F] leading-relaxed space-y-1">
-                <div className="text-[10px] font-bold text-amber-400 uppercase tracking-wider">
+              <div className="p-3 rounded-xl bg-[#FFFDF8] border border-[#C4963E]/45 text-xs text-[#5C4D3C] leading-relaxed space-y-1">
+                <div className="text-[10px] font-bold text-[#92400E] uppercase tracking-wider">
                   Ý nghĩa chiêm đoán:
                 </div>
-                <div className="text-[#E2D2BC] leading-relaxed">{selectedTamAnPhuItem.meaning}</div>
+                <div className="text-[#1C1813] leading-relaxed">{selectedTamAnPhuItem.meaning}</div>
               </div>
             )}
 
             {/* Footer */}
-            <div className="flex items-center justify-end pt-2 border-t border-[#44301D]">
+            <div className="flex items-center justify-end pt-2 border-t border-[#C4963E]/45">
               <button
                 type="button"
                 onClick={() => setSelectedTamAnPhuItem(null)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-[#A89882] hover:text-white bg-[#20140B] hover:bg-[#2C1D11] border border-[#44301D] transition-colors cursor-pointer"
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-[#5C4D3C] hover:text-white bg-[#FFFDF8] hover:bg-[#FAF6EE] border border-[#C4963E]/45 transition-colors cursor-pointer"
               >
                 Đóng
               </button>
@@ -7398,41 +7393,41 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
           onClick={() => setPreviewJiazi(null)}
         >
           <div
-            className="relative w-full max-w-lg bg-gradient-to-b from-[#22160C] via-[#1A1109] to-[#120B06] border-2 border-[#C9A55A] rounded-2xl shadow-[0_0_35px_rgba(212,175,55,0.3)] p-4 sm:p-6 text-[#F5EAD4] space-y-4 max-h-[92vh] overflow-y-auto scrollbar-thin"
+            className="relative w-full max-w-lg bg-gradient-to-b from-[#FFFDF8] via-[#FFFDF8] to-[#FFFDF8] border-2 border-[#B8862D] rounded-2xl shadow-[0_0_35px_rgba(212,175,55,0.3)] p-4 sm:p-6 text-[#1C1813] space-y-4 max-h-[92vh] overflow-y-auto scrollbar-thin"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Nút đóng */}
             <button
               type="button"
               onClick={() => setPreviewJiazi(null)}
-              className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-[#322013] hover:bg-[#4A301D] text-[#D8C7B0] hover:text-white flex items-center justify-center border border-[#6B4E2B] transition-colors cursor-pointer z-10"
+              className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-[#FAF6EE] hover:bg-[#FAF6EE] text-[#5C4D3C] hover:text-white flex items-center justify-center border border-[#C4963E]/45 transition-colors cursor-pointer z-10"
               title="Đóng cửa sổ"
             >
               <X className="w-4 h-4" />
             </button>
 
             {/* Tiêu đề & Thông tin cơ bản */}
-            <div className="text-center pb-3 border-b border-[#44301D]">
+            <div className="text-center pb-3 border-b border-[#C4963E]/45">
               <div className="flex items-center justify-center gap-2">
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-600/50 font-bold font-mono">
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-[#78350F] border border-amber-600/50 font-bold font-mono">
                   Hoa Giáp #{previewJiazi.order}
                 </span>
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#2A1D11] text-[#C4B49F] border border-[#523A22] font-medium">
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#FFFDF8] text-[#5C4D3C] border border-[#C4963E]/45 font-medium">
                   {previewJiazi.branchGroup}
                 </span>
               </div>
-              <h3 className="text-2xl sm:text-3xl font-serif font-black text-[#F5EAD4] mt-1.5 tracking-wider">
+              <h3 className="text-2xl sm:text-3xl font-serif font-black text-[#1C1813] mt-1.5 tracking-wider">
                 {previewJiazi.name}{" "}
-                <span className="text-lg text-amber-400 font-normal font-serif">({previewJiazi.chinese})</span>
+                <span className="text-lg text-[#92400E] font-normal font-serif">({previewJiazi.chinese})</span>
               </h3>
-              <p className="text-xs sm:text-sm text-[#C9A55A] font-semibold mt-1">
+              <p className="text-xs sm:text-sm text-[#6E4E16] font-semibold mt-1">
                 Nạp Âm: {previewJiazi.elementNapAm} • {previewJiazi.soundSymbolism?.element || ""}
               </p>
             </div>
 
             {/* Khối Ảnh Thẻ Bài Hoa Giáp */}
             <div className="flex flex-col items-center justify-center my-2">
-              <div className="relative w-44 sm:w-56 aspect-[3/4] rounded-xl overflow-hidden border-2 border-[#8C6D3B] shadow-[0_10px_25px_rgba(0,0,0,0.7)] bg-[#140D07] flex items-center justify-center">
+              <div className="relative w-44 sm:w-56 aspect-[3/4] rounded-xl overflow-hidden border-2 border-[#8C6D3B] shadow-[0_10px_25px_rgba(0,0,0,0.7)] bg-[#FFFDF8] flex items-center justify-center">
                 {jiaziImages[previewJiazi.id] ? (
                   <img
                     src={jiaziImages[previewJiazi.id]}
@@ -7440,12 +7435,12 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                     className="w-full h-full object-contain"
                   />
                 ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center bg-gradient-to-b from-[#2A1D11] to-[#140D07]">
-                    <Sparkles className="w-10 h-10 text-amber-400 mb-2 animate-pulse" />
-                    <span className="text-lg font-serif font-bold text-amber-300">
+                  <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center bg-gradient-to-b from-[#FFFDF8] to-[#FFFDF8]">
+                    <Sparkles className="w-10 h-10 text-[#92400E] mb-2 animate-pulse" />
+                    <span className="text-lg font-serif font-bold text-[#78350F]">
                       #{previewJiazi.order} {previewJiazi.name}
                     </span>
-                    <span className="text-xs text-[#A89882] mt-1">{previewJiazi.elementNapAm}</span>
+                    <span className="text-xs text-[#5C4D3C] mt-1">{previewJiazi.elementNapAm}</span>
                     <span className="text-[10px] text-amber-500/80 mt-3 italic">Thẻ bài 60 Hoa Giáp</span>
                   </div>
                 )}
@@ -7454,17 +7449,17 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
 
             {/* Thông tin Quẻ Kinh Dịch tương ứng */}
             {previewJiazi.hexagramLink && (
-              <div className="p-3 rounded-xl bg-[#1B120A] border border-[#5A4026] flex items-center justify-between gap-3 shadow-inner">
+              <div className="p-3 rounded-xl bg-[#FFFDF8] border border-[#C4963E]/45 flex items-center justify-between gap-3 shadow-inner">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <span className="text-xl text-[#C9A55A]">☯</span>
+                  <span className="text-xl text-[#6E4E16]">☯</span>
                   <div className="min-w-0">
-                    <div className="text-[11px] text-[#A89882]">Quẻ Kinh Dịch phối hợp:</div>
-                    <div className="text-sm font-serif font-bold text-amber-300 truncate">
+                    <div className="text-[11px] text-[#5C4D3C]">Quẻ Kinh Dịch phối hợp:</div>
+                    <div className="text-sm font-serif font-bold text-[#78350F] truncate">
                       #{previewJiazi.hexagramLink.hexagramNumber} {previewJiazi.hexagramLink.hexagramName}
                     </div>
                   </div>
                 </div>
-                <span className="text-[10px] px-2 py-1 rounded bg-[#2D1D10] text-amber-200 border border-[#523A22] shrink-0 font-medium">
+                <span className="text-[10px] px-2 py-1 rounded bg-[#FAF6EE] text-[#78350F] border border-[#C4963E]/45 shrink-0 font-medium">
                   Phối Lục Hào
                 </span>
               </div>
@@ -7472,8 +7467,8 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
 
             {/* Diễn giải / Ý nghĩa */}
             {previewJiazi.summary && (
-              <div className="p-3 rounded-xl bg-[#170E08] border border-[#3A2818] text-xs text-[#C4B49F] leading-relaxed max-h-32 overflow-y-auto scrollbar-thin">
-                <div className="text-[10px] font-bold text-amber-400 uppercase tracking-wider mb-1">
+              <div className="p-3 rounded-xl bg-[#FFFDF8] border border-[#C4963E]/45 text-xs text-[#5C4D3C] leading-relaxed max-h-32 overflow-y-auto scrollbar-thin">
+                <div className="text-[10px] font-bold text-[#92400E] uppercase tracking-wider mb-1">
                   Tổng quan ý nghĩa:
                 </div>
                 {previewJiazi.summary}
@@ -7481,11 +7476,11 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
             )}
 
             {/* Nút hành động */}
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#44301D]">
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#C4963E]/45">
               <button
                 type="button"
                 onClick={() => setPreviewJiazi(null)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-[#A89882] hover:text-white bg-[#20140B] hover:bg-[#2C1D11] border border-[#44301D] transition-colors cursor-pointer"
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-[#5C4D3C] hover:text-white bg-[#FFFDF8] hover:bg-[#FAF6EE] border border-[#C4963E]/45 transition-colors cursor-pointer"
               >
                 Đóng
               </button>

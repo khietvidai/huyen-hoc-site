@@ -69,23 +69,23 @@ export const JiaziHexagramTable: React.FC<JiaziHexagramTableProps> = ({
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-[#1C1712] via-[#241D16] to-[#1C1712] border border-[#423424] rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
-        <div className="absolute -top-6 -right-6 text-9xl font-serif font-bold text-[#C9A55A]/5 select-none pointer-events-none">
+      <div className="bg-gradient-to-r from-[#1C1712] via-[#241D16] to-[#1C1712] border border-[#D8C8A8] rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+        <div className="absolute -top-6 -right-6 text-9xl font-serif font-bold text-[#78350F]/5 select-none pointer-events-none">
           易
         </div>
         <div className="relative z-10">
           <div className="flex items-center gap-2 mb-2">
-            <span className="px-3 py-1 rounded-full bg-[#2E2419] border border-[#54402A] text-xs font-bold text-[#D6B97A] flex items-center gap-1.5">
-              <Compass className="w-3.5 h-3.5 text-[#D6B97A]" />
+            <span className="px-3 py-1 rounded-full bg-[#FFFDF8] border border-[#D8C8A8] text-xs font-bold text-[#78350F] flex items-center gap-1.5">
+              <Compass className="w-3.5 h-3.5 text-[#78350F]" />
               BẢNG ĐỐI ỨNG CHÍNH THỐNG
             </span>
-            <span className="text-xs text-[#A89882]">60 Hoa Giáp ↔ 60 Quẻ Dịch Chu Kỳ Tiêu Trưởng</span>
+            <span className="text-xs text-[#5C4D3C]">60 Hoa Giáp ↔ 60 Quẻ Dịch Chu Kỳ Tiêu Trưởng</span>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#F5EAD4]">
+          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#1C1813]">
             Liên Kết 60 Hoa Giáp & Quẻ Kinh Dịch
           </h2>
-          <p className="mt-2 text-sm text-[#C4B39B] max-w-3xl leading-relaxed">
+          <p className="mt-2 text-sm text-[#3D3326] max-w-3xl leading-relaxed">
             Hệ thống đối ứng giữa <strong>Lục Thập Hoa Giáp</strong> và <strong>60 Quẻ Dịch</strong> theo quy luật Tiên Thiên Chu Kỳ Vận Khí. Mỗi Can Chi tương ứng với một quẻ tượng chỉ định trạng thái âm dương tiêu trưởng, phản ánh sự biến dịch tinh vi của càn khôn vũ trụ.
           </p>
 
@@ -98,7 +98,7 @@ export const JiaziHexagramTable: React.FC<JiaziHexagramTableProps> = ({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Tìm Can Chi (Giáp Tý, Nhâm Tuất...), quẻ (Phục, Truân, Tỷ...)"
-                className="w-full pl-10 pr-4 py-2 text-sm bg-[#120F0C] border border-[#3E3022] rounded-xl text-[#F5EAD4] placeholder-[#766552] focus:outline-none focus:border-[#D6B97A] transition-colors"
+                className="w-full pl-10 pr-4 py-2 text-sm bg-[#FFFDF8] border border-[#D8C8A8] rounded-xl text-[#1C1813] placeholder-[#766552] focus:outline-none focus:border-[#D6B97A] transition-colors"
               />
             </div>
 
@@ -113,7 +113,7 @@ export const JiaziHexagramTable: React.FC<JiaziHexagramTableProps> = ({
                     className={`px-3 py-1.5 rounded-xl text-xs whitespace-nowrap transition-all cursor-pointer font-medium border ${
                       isActive
                         ? "bg-[#C9A55A] text-[#12100E] border-[#F5EAD4] font-bold shadow-md"
-                        : "bg-[#1A1510] text-[#A89882] border-[#362A1D] hover:text-[#F5EAD4] hover:bg-[#251D15]"
+                        : "bg-[#FFFDF8] text-[#5C4D3C] border-[#D8C8A8] hover:text-[#1C1813] hover:bg-[#FFFDF8]"
                     }`}
                   >
                     {group.label}
@@ -128,9 +128,9 @@ export const JiaziHexagramTable: React.FC<JiaziHexagramTableProps> = ({
       {/* Main Grid: Left Table (7 cols) + Right Detail Inspector (5 cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Table Area (lg:col-span-7) */}
-        <div className="lg:col-span-7 bg-[#17130F] border border-[#382B1D] rounded-3xl overflow-hidden shadow-xl">
-          <div className="p-4 border-b border-[#2C2115] flex items-center justify-between bg-[#1C1712]">
-            <div className="text-xs font-bold text-[#D6B97A] flex items-center gap-1.5">
+        <div className="lg:col-span-7 bg-[#FFFDF8] border border-[#D8C8A8] rounded-3xl overflow-hidden shadow-xl">
+          <div className="p-4 border-b border-[#D8C8A8] flex items-center justify-between bg-[#FFFDF8]">
+            <div className="text-xs font-bold text-[#78350F] flex items-center gap-1.5">
               <Layers className="w-4 h-4" />
               <span>DANH SÁCH ĐỐI ỨNG ({filteredLinks.length} / 60)</span>
             </div>
@@ -141,7 +141,7 @@ export const JiaziHexagramTable: React.FC<JiaziHexagramTableProps> = ({
 
           <div className="overflow-x-auto max-h-[640px] overflow-y-auto">
             <table className="w-full text-left text-xs text-[#DDD0BE]">
-              <thead className="bg-[#14100D] text-[#A89882] uppercase text-[10px] tracking-wider sticky top-0 z-10 border-b border-[#2C2115]">
+              <thead className="bg-[#FFFDF8] text-[#5C4D3C] uppercase text-[10px] tracking-wider sticky top-0 z-10 border-b border-[#D8C8A8]">
                 <tr>
                   <th className="py-3 px-3 text-center w-10">STT</th>
                   <th className="py-3 px-3">Hoa Giáp</th>
@@ -162,22 +162,22 @@ export const JiaziHexagramTable: React.FC<JiaziHexagramTableProps> = ({
                       onClick={() => setSelectedDetail(item)}
                       className={`cursor-pointer transition-colors ${
                         isSelected
-                          ? "bg-[#2D2216] text-[#FFF8EB]"
-                          : "hover:bg-[#1E1812]"
+                          ? "bg-[#FFFDF8] text-[#1C1813]"
+                          : "hover:bg-[#FFFDF8]"
                       }`}
                     >
                       <td className="py-2.5 px-3 text-center font-mono text-[#8C7D6B]">
                         #{item.order.toString().padStart(2, "0")}
                       </td>
                       <td className="py-2.5 px-3">
-                        <div className="font-serif font-bold text-[#F5EAD4]">
+                        <div className="font-serif font-bold text-[#1C1813]">
                           {item.jiaziName}
                         </div>
                       </td>
                       <td className="py-2.5 px-3 text-center">
                         <div className="inline-flex items-center justify-center">
                           {hexImage ? (
-                            <div className="w-8 h-12 rounded-md overflow-hidden border border-[#6B5438] shadow-sm bg-[#18130E] hover:scale-110 transition-transform">
+                            <div className="w-8 h-12 rounded-md overflow-hidden border border-[#D8C8A8] shadow-sm bg-[#FFFDF8] hover:scale-110 transition-transform">
                               <img
                                 src={hexImage}
                                 alt={item.hexagramName}
@@ -185,8 +185,8 @@ export const JiaziHexagramTable: React.FC<JiaziHexagramTableProps> = ({
                               />
                             </div>
                           ) : (
-                            <div className="w-8 h-12 rounded-md border border-[#483724] bg-gradient-to-b from-[#261E15] to-[#14100C] flex flex-col items-center justify-center shadow-inner hover:border-[#C9A55A] transition-colors">
-                              <span className="text-sm font-serif text-[#D6B97A] leading-none select-none">
+                            <div className="w-8 h-12 rounded-md border border-[#D8C8A8] bg-gradient-to-b from-[#261E15] to-[#14100C] flex flex-col items-center justify-center shadow-inner hover:border-[#C9A55A] transition-colors">
+                              <span className="text-sm font-serif text-[#78350F] leading-none select-none">
                                 {item.symbol}
                               </span>
                               <span className="text-[8px] font-mono text-[#8C7D6B] mt-0.5 leading-none">
@@ -198,10 +198,10 @@ export const JiaziHexagramTable: React.FC<JiaziHexagramTableProps> = ({
                       </td>
                       <td className="py-2.5 px-3">
                         <div className="flex items-center gap-1.5">
-                          <span className="font-serif font-bold text-[#D6B97A]">
+                          <span className="font-serif font-bold text-[#78350F]">
                             {item.hexagramName}
                           </span>
-                          <span className="text-[10px] text-[#A89882] font-serif">
+                          <span className="text-[10px] text-[#5C4D3C] font-serif">
                             ({item.hexagramHanzi})
                           </span>
                         </div>
@@ -210,11 +210,11 @@ export const JiaziHexagramTable: React.FC<JiaziHexagramTableProps> = ({
                         </div>
                       </td>
                       <td className="py-2.5 px-3 text-center">
-                        <span className="text-xl font-serif text-[#D6B97A] select-none">
+                        <span className="text-xl font-serif text-[#78350F] select-none">
                           {item.symbol}
                         </span>
                       </td>
-                      <td className="py-2.5 px-3 text-[11px] text-[#A89882]">
+                      <td className="py-2.5 px-3 text-[11px] text-[#5C4D3C]">
                         <span className="text-[#DDD0BE]">{item.upperTrigram}</span> /{" "}
                         <span className="text-[#C89B3C] font-semibold">{item.lowerTrigram}</span>
                       </td>
@@ -236,28 +236,28 @@ export const JiaziHexagramTable: React.FC<JiaziHexagramTableProps> = ({
 
           return (
             <div className="lg:col-span-5 space-y-4 sticky top-6">
-              <div className="bg-[#1C1712] border-2 border-[#54402A] rounded-3xl p-6 shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 text-8xl font-serif text-[#D6B97A]/10 select-none pointer-events-none">
+              <div className="bg-[#FFFDF8] border-2 border-[#D8C8A8] rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-4 text-8xl font-serif text-[#78350F]/10 select-none pointer-events-none">
                   {selectedDetail.symbol}
                 </div>
 
                 <div className="relative z-10">
-                  <div className="flex items-center justify-between gap-2 border-b border-[#2C2115] pb-3 mb-4">
+                  <div className="flex items-center justify-between gap-2 border-b border-[#D8C8A8] pb-3 mb-4">
                     <div className="flex items-center gap-2">
-                      <span className="px-2.5 py-0.5 rounded-lg bg-[#2E2419] border border-[#52402B] text-xs font-mono font-bold text-[#D6B97A]">
+                      <span className="px-2.5 py-0.5 rounded-lg bg-[#FFFDF8] border border-[#D8C8A8] text-xs font-mono font-bold text-[#78350F]">
                         #{selectedDetail.order.toString().padStart(2, "0")} / 60
                       </span>
-                      <span className="text-sm font-serif font-bold text-[#F5EAD4]">
+                      <span className="text-sm font-serif font-bold text-[#1C1813]">
                         {selectedDetail.jiaziName}
                       </span>
                     </div>
-                    <span className="text-xs text-[#D6B97A] font-mono bg-[#291F14] px-2.5 py-0.5 rounded-full border border-[#483724]">
+                    <span className="text-xs text-[#78350F] font-mono bg-[#FFFDF8] px-2.5 py-0.5 rounded-full border border-[#D8C8A8]">
                       Quẻ Dịch #{selectedDetail.hexagramNumber}
                     </span>
                   </div>
 
                   {/* Hexagram Hero with Card Art */}
-                  <div className="bg-[#14100D] border border-[#3A2D1F] p-4 rounded-2xl mb-4 flex flex-col sm:flex-row items-center gap-4">
+                  <div className="bg-[#FFFDF8] border border-[#D8C8A8] p-4 rounded-2xl mb-4 flex flex-col sm:flex-row items-center gap-4">
                     <div className="shrink-0 flex flex-col items-center">
                       {selectedHexagram ? (
                         <CardVisual
@@ -268,13 +268,13 @@ export const JiaziHexagramTable: React.FC<JiaziHexagramTableProps> = ({
                           enableZoomModal={true}
                         />
                       ) : (
-                        <div className="w-20 h-28 rounded-xl bg-[#281F15] border border-[#503E2A] flex items-center justify-center text-4xl text-[#D6B97A] shadow-inner">
+                        <div className="w-20 h-28 rounded-xl bg-[#FFFDF8] border border-[#D8C8A8] flex items-center justify-center text-4xl text-[#78350F] shadow-inner">
                           {selectedDetail.symbol}
                         </div>
                       )}
                       <div className="mt-1.5 text-center">
                         {hexImage ? (
-                          <span className="text-[10px] text-amber-300 font-mono flex items-center gap-1">
+                          <span className="text-[10px] text-[#78350F] font-mono flex items-center gap-1">
                             <Sparkles className="w-2.5 h-2.5" /> Hình quẻ riêng
                           </span>
                         ) : (
@@ -285,21 +285,21 @@ export const JiaziHexagramTable: React.FC<JiaziHexagramTableProps> = ({
                       </div>
                     </div>
                     <div className="flex-1 min-w-0 text-center sm:text-left">
-                      <div className="text-[11px] font-mono text-[#C9A55A] font-semibold">
+                      <div className="text-[11px] font-mono text-[#78350F] font-semibold">
                         QUẺ KINH DỊCH #{selectedDetail.hexagramNumber}
                       </div>
-                      <h3 className="text-lg font-serif font-bold text-[#F5EAD4] flex items-center justify-center sm:justify-start gap-2 mt-0.5">
+                      <h3 className="text-lg font-serif font-bold text-[#1C1813] flex items-center justify-center sm:justify-start gap-2 mt-0.5">
                         <span>{selectedDetail.hexagramName}</span>
                         <span className="text-sm text-[#C89B3C] font-normal font-serif">
                           {selectedDetail.hexagramHanzi}
                         </span>
                       </h3>
-                      <div className="text-xs text-[#A89882] mt-1.5 flex items-center justify-center sm:justify-start gap-2">
+                      <div className="text-xs text-[#5C4D3C] mt-1.5 flex items-center justify-center sm:justify-start gap-2">
                         <span>Thượng: <strong className="text-[#DDD0BE]">{selectedDetail.upperTrigram}</strong></span>
                         <span>•</span>
-                        <span>Hạ: <strong className="text-[#D6B97A]">{selectedDetail.lowerTrigram}</strong></span>
+                        <span>Hạ: <strong className="text-[#78350F]">{selectedDetail.lowerTrigram}</strong></span>
                       </div>
-                      <div className="mt-2.5 text-xs text-[#C4B39B] italic bg-[#1A140F] p-2.5 rounded-xl border border-[#2E2217] leading-relaxed">
+                      <div className="mt-2.5 text-xs text-[#3D3326] italic bg-[#FFFDF8] p-2.5 rounded-xl border border-[#D8C8A8] leading-relaxed">
                         "{selectedDetail.natureMeaning}"
                       </div>
                     </div>
@@ -307,8 +307,8 @@ export const JiaziHexagramTable: React.FC<JiaziHexagramTableProps> = ({
 
                 {/* Nature & Essence */}
                 <div className="space-y-3 text-xs">
-                  <div className="bg-[#17130E] border border-[#332618] p-3.5 rounded-xl">
-                    <div className="font-bold text-[#D6B97A] mb-1 flex items-center gap-1.5">
+                  <div className="bg-[#FFFDF8] border border-[#D8C8A8] p-3.5 rounded-xl">
+                    <div className="font-bold text-[#78350F] mb-1 flex items-center gap-1.5">
                       <Sparkles className="w-3.5 h-3.5" />
                       <span>TƯỢNG QUẺ & KHÍ VẬN:</span>
                     </div>
@@ -317,19 +317,19 @@ export const JiaziHexagramTable: React.FC<JiaziHexagramTableProps> = ({
                     </p>
                   </div>
 
-                  <div className="bg-[#17130E] border border-[#332618] p-3.5 rounded-xl">
+                  <div className="bg-[#FFFDF8] border border-[#D8C8A8] p-3.5 rounded-xl">
                     <div className="font-bold text-[#C89B3C] mb-1 flex items-center gap-1.5">
                       <Compass className="w-3.5 h-3.5" />
                       <span>LUẬN GIẢI MỐI TƯƠNG LIÊN CAN CHI & QUẺ DỊCH:</span>
                     </div>
-                    <p className="text-[#C4B39B] leading-relaxed">
+                    <p className="text-[#3D3326] leading-relaxed">
                       {selectedDetail.linkAnalysis}
                     </p>
                   </div>
                 </div>
 
                 {/* Action Buttons */}
-                <div className="mt-5 pt-4 border-t border-[#2C2115] flex items-center gap-2 flex-wrap">
+                <div className="mt-5 pt-4 border-t border-[#D8C8A8] flex items-center gap-2 flex-wrap">
                   {onSelectJiazi && (
                     <button
                       type="button"
@@ -342,9 +342,9 @@ export const JiaziHexagramTable: React.FC<JiaziHexagramTableProps> = ({
                           .replace(/\s+/g, "_");
                         onSelectJiazi(id);
                       }}
-                      className="flex-1 flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-bold bg-[#291F14] hover:bg-[#382B1D] text-[#FFE394] border border-[#52412B] rounded-xl transition-all cursor-pointer shadow-sm active:scale-95"
+                      className="flex-1 flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-bold bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#FFE394] border border-[#D8C8A8] rounded-xl transition-all cursor-pointer shadow-sm active:scale-95"
                     >
-                      <Layers className="w-3.5 h-3.5 text-[#D6B97A]" />
+                      <Layers className="w-3.5 h-3.5 text-[#78350F]" />
                       <span>Xem Can Chi {selectedDetail.jiaziName}</span>
                     </button>
                   )}

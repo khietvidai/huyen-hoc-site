@@ -63,18 +63,18 @@ export const BaziTwoTierDropZone: React.FC<BaziTwoTierDropZoneProps> = ({
         children
       ) : (
         <div
-          className={`p-1 sm:p-1.5 rounded-lg border border-dashed flex flex-col items-center justify-center text-center min-h-[38px] sm:min-h-[42px] transition-all cursor-pointer ${
+          className={`p-1.5 sm:p-2 rounded-lg border border-dashed flex flex-col items-center justify-center text-center min-h-[42px] sm:min-h-[48px] transition-all cursor-pointer ${
             isOver
-              ? "border-amber-400 bg-amber-500/20 text-amber-200"
-              : "border-[#4A3520]/70 bg-[#160E07]/40 text-[#8C7D6B] hover:border-amber-500/50 hover:bg-[#1E130A]"
+              ? "border-[#C4963E] bg-[#FAF0D7] text-[#78350F]"
+              : "border-[#D8C8A8] bg-[#FAF6EE]/60 text-[#6E5D47] hover:border-[#C4963E] hover:bg-[#FAF6EE]"
           }`}
         >
-          <div className="flex items-center gap-1 text-[9px] font-semibold text-amber-300/80">
-            <PlusCircle className="w-2.5 h-2.5 text-amber-400 shrink-0" />
+          <div className="flex items-center gap-1 text-[9.5px] font-semibold text-[#78350F]">
+            <PlusCircle className="w-2.5 h-2.5 text-[#92400E] shrink-0" />
             <span>{emptyLabel}</span>
           </div>
           {emptyDesc && (
-            <p className="text-[7.5px] text-[#A89882] mt-0.5 truncate max-w-xs">
+            <p className="text-[8px] text-[#5C4D3C] mt-0.5 truncate max-w-xs">
               {emptyDesc}
             </p>
           )}
