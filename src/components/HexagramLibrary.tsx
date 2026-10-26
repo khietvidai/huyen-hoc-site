@@ -71,40 +71,48 @@ export const HexagramLibrary: React.FC<HexagramLibraryProps> = ({
 
   return (
     <div className="w-full max-w-5xl mx-auto space-y-6">
-      {/* Top filter bar */}
-      <div className="bg-[#171512] border border-[#3A3225] rounded-2xl p-5 shadow-xl">
+      {/* Top filter bar (Sớ Điệp Giấy Tuyên Thành Hoàng Gia) */}
+      <div
+        className="rounded-3xl p-5 sm:p-6 relative overflow-hidden"
+        style={{
+          background: "linear-gradient(180deg, #FDFBF7 0%, #F5EFE2 100%)",
+          border: "1px solid rgba(196, 150, 62, 0.52)",
+          boxShadow:
+            "0 14px 36px -8px rgba(92, 74, 44, 0.12), 0 2px 6px rgba(92, 74, 44, 0.05), inset 0 0 0 3px #FDFBF7, inset 0 0 0 4px rgba(196, 150, 62, 0.22)",
+        }}
+      >
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mb-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8C7D69]" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8C6D3B]" />
             <input
               type="text"
               placeholder="Tra cứu tên quẻ (Càn, Khôn, Thái...), số quẻ (1..64) hoặc từ khóa ý nghĩa..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-[#12100E] border border-[#382F22] focus:border-[#C89B3C] rounded-xl pl-9 pr-4 py-2 text-xs sm:text-sm text-[#F0E4D0] outline-none"
+              className="w-full bg-[#F4EEE2] border border-[#C4963E]/50 focus:bg-[#FFFDF9] focus:border-[#C4963E] rounded-xl pl-9 pr-4 py-2.5 text-xs sm:text-sm text-[#1C1610] placeholder-[#7D6B55] shadow-inner outline-none transition"
             />
           </div>
 
-          <div className="text-xs text-[#9E907D] flex items-center gap-1">
+          <div className="text-xs text-[#6B5B47] flex items-center gap-1">
             <span>Hiển thị:</span>
-            <strong className="text-[#EAD8B1] font-mono">{filteredHexagrams.length}</strong> / 64 Quẻ
+            <strong className="text-[#7A5416] font-mono font-bold">{filteredHexagrams.length}</strong> / 64 Quẻ
           </div>
         </div>
 
         {/* Trigram / Cung Filter */}
-        <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#292219]">
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-[#C4963E]/25">
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-xs text-[#8C7D69] flex items-center gap-1 mr-1">
-              <Filter className="w-3.5 h-3.5 text-[#C9A55A]" /> Cung / Bát quái:
+            <span className="text-xs text-[#6B5B47] font-semibold flex items-center gap-1 mr-1">
+              <Filter className="w-3.5 h-3.5 text-[#9E7326]" /> Cung / Bát quái:
             </span>
             {trigramsList.map((tri) => (
               <button
                 key={tri.id}
                 onClick={() => setSelectedTrigram(tri.id)}
-                className={`px-2.5 py-1 text-xs rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                className={`px-3 py-1 text-xs rounded-full transition-all cursor-pointer flex items-center gap-1 ${
                   selectedTrigram === tri.id
-                    ? "bg-[#C89B3C] text-[#121110] font-bold shadow-md"
-                    : "bg-[#201B15] text-[#9E907D] hover:text-white border border-[#2F271E]"
+                    ? "bg-[#1C1610] text-[#F5E6C4] border border-[#D4AF37] font-bold shadow-md"
+                    : "bg-[#FDFBF7] text-[#4A3B28] hover:text-[#1C1610] hover:border-[#C4963E] border border-[#C4963E]/40 shadow-2xs"
                 }`}
               >
                 <span className="font-mono text-xs">{tri.symbol}</span>
@@ -114,14 +122,14 @@ export const HexagramLibrary: React.FC<HexagramLibraryProps> = ({
           </div>
 
           {selectedTrigram !== "Tất cả" && (
-            <div className="flex items-center gap-1 text-[10px] bg-[#14100C] border border-[#332617] rounded-lg p-0.5">
+            <div className="flex items-center gap-1 text-[10px] bg-[#F4EEE2] border border-[#C4963E]/40 rounded-lg p-0.5">
               <button
                 type="button"
                 onClick={() => setCungFilterMode("contains")}
                 className={`px-2 py-0.5 rounded text-[10px] transition-all cursor-pointer ${
                   cungFilterMode === "contains"
-                    ? "bg-[#C89B3C] text-[#120F0C] font-bold"
-                    : "text-[#9E8E79] hover:text-white"
+                    ? "bg-[#1C1610] text-[#F5E6C4] font-bold"
+                    : "text-[#6B5B47] hover:text-[#1C1610]"
                 }`}
               >
                 Chứa quái
@@ -131,8 +139,8 @@ export const HexagramLibrary: React.FC<HexagramLibraryProps> = ({
                 onClick={() => setCungFilterMode("palace")}
                 className={`px-2 py-0.5 rounded text-[10px] transition-all cursor-pointer ${
                   cungFilterMode === "palace"
-                    ? "bg-[#C89B3C] text-[#120F0C] font-bold"
-                    : "text-[#9E8E79] hover:text-white"
+                    ? "bg-[#1C1610] text-[#F5E6C4] font-bold"
+                    : "text-[#6B5B47] hover:text-[#1C1610]"
                 }`}
               >
                 8 Cung Kinh Phòng
@@ -150,15 +158,20 @@ export const HexagramLibrary: React.FC<HexagramLibraryProps> = ({
             <div
               key={hex.number}
               onClick={() => onSelectHexagram(hex)}
-              className="group bg-[#171512] border border-[#332A1F] hover:border-[#C9A55A] rounded-xl p-4 shadow-lg hover:shadow-2xl transition-all cursor-pointer flex flex-col justify-between"
+              className="group rounded-2xl p-4 transition-all cursor-pointer flex flex-col justify-between hover:-translate-y-0.5"
+              style={{
+                background: "linear-gradient(180deg, #FDFBF7 0%, #F5EFE2 100%)",
+                border: "1px solid rgba(196, 150, 62, 0.44)",
+                boxShadow: "0 8px 24px -8px rgba(92, 74, 44, 0.12), inset 0 0 0 2px #FDFBF7",
+              }}
             >
               <div>
                 {/* Header */}
                 <div className="flex items-center justify-between text-xs mb-3">
-                  <span className="font-mono text-[#C9A55A] font-bold">
+                  <span className="font-mono text-[#8A611C] font-bold">
                     #{hex.number.toString().padStart(2, "0")}
                   </span>
-                  <span className="text-[11px] text-[#A89882] font-serif">
+                  <span className="text-[11px] text-[#6B5B47] font-serif">
                     {hex.element}
                   </span>
                 </div>
@@ -175,17 +188,17 @@ export const HexagramLibrary: React.FC<HexagramLibraryProps> = ({
                     />
                   </div>
                   <div className="min-w-0">
-                    <h4 className="font-serif font-bold text-base text-[#F5EAD4] group-hover:text-[#C9A55A] transition-colors truncate">
+                    <h4 className="font-serif font-bold text-base text-[#1C1610] group-hover:text-[#8A611C] transition-colors truncate">
                       {hex.name}
                     </h4>
-                    <p className="text-xs text-[#A89882] font-serif truncate">
+                    <p className="text-xs text-[#514536] font-serif truncate">
                       {hex.hanzi} • {hex.vietnameseName}
                     </p>
-                    <div className="text-[11px] text-[#7A6D5B] mt-1">
+                    <div className="text-[11px] text-[#7D6B55] mt-1">
                       {hex.upperTrigram} / {hex.lowerTrigram} • {hex.element}
                     </div>
                     {customImage && (
-                      <span className="inline-flex items-center gap-1 text-[10px] text-amber-300/90 font-mono mt-1">
+                      <span className="inline-flex items-center gap-1 text-[10px] text-amber-800 font-mono mt-1">
                         <Sparkles className="w-2.5 h-2.5" /> Ảnh riêng
                       </span>
                     )}
@@ -193,12 +206,12 @@ export const HexagramLibrary: React.FC<HexagramLibraryProps> = ({
                 </div>
 
                 {/* Snippet */}
-                <p className="text-xs text-[#8C7D6A] line-clamp-2 italic mb-3">
+                <p className="text-xs text-[#514536] line-clamp-2 italic mb-3">
                   "{hex.judgment}"
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-[#241D16] flex items-center justify-between text-[11px] text-[#C9A55A] font-medium group-hover:translate-x-0.5 transition-transform">
+              <div className="pt-2 border-t border-[#C4963E]/25 flex items-center justify-between text-[11px] text-[#8A611C] font-semibold group-hover:translate-x-0.5 transition-transform">
                 <span>Xem chi tiết quẻ</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>
