@@ -1013,12 +1013,13 @@ async function formatSpreadForAI(
     const trans = cardsList[1];
     const isSameHex = pri?.hexNumber !== undefined && trans?.hexNumber !== undefined && pri.hexNumber === trans.hexNumber;
     const yaos = isSameHex ? [] : cardsList.slice(2).filter((c) => !c.id.endsWith("-tinh"));
+    const totalThapLaCards = yaos.length > 0 ? 2 + yaos.length : 2;
 
     const priHex = HEXAGRAMS.find((h) => h.number === pri?.hexNumber) || HEXAGRAMS[0];
     const transHex = HEXAGRAMS.find((h) => h.number === trans?.hexNumber) || HEXAGRAMS[1];
 
     const lines: string[] = [];
-    lines.push(`=== BẢNG LUẬN GIẢI THÁP LA KINH DỊCH (周易塔羅${bakhKhoaNotice}) ===`);
+    lines.push(`=== BẢNG LUẬN GIẢI THÁP LA KINH DỊCH (${totalThapLaCards} LÁ · 周易塔羅${bakhKhoaNotice}) ===`);
     if (cleanedQuestion) {
       lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
       lines.push(`"${cleanedQuestion}"\n`);
@@ -1032,18 +1033,19 @@ async function formatSpreadForAI(
       lines.push(`"${cleanedAnswer}"\n`);
     }
     if (yaos.length > 0) {
-      lines.push(`Cấu trúc: Quẻ Chủ & Quẻ Biến song song Trên - Dưới • Dải Hào Động (Bộ 384 Lá) kế bên Quẻ Chủ`);
-      lines.push(`Thứ tự đọc chiêm bốc: 1. Bản Quái (Quẻ Chủ) ➔ 2. Hào Động (Bước Ngoặt) ➔ 3. Biến Quái (Quẻ Biến)\n`);
+      lines.push(`Cấu trúc (${totalThapLaCards} lá bài): Quẻ Chủ & Quẻ Biến song song Trên - Dưới • ${yaos.length} lá Hào Động (Bộ 384 Lá) kế bên Quẻ Chủ`);
+      lines.push(`Thứ tự đọc & đồng bộ từng lá bài (từ Lá 1 đến Lá ${totalThapLaCards}): Lá 1: Bản Quái (Quẻ Chủ) ➔ Lá 2..Lá ${1 + yaos.length}: Lần lượt ${yaos.length} lá Hào Động (từ Hào Sơ lên Hào Lục) ➔ Lá ${totalThapLaCards}: Biến Quái (Quẻ Biến)\n`);
     } else {
-      lines.push(`Cấu trúc: Quẻ Chủ & Quẻ Biến cùng 1 quẻ (Quẻ Tĩnh • Không có hào động)`);
-      lines.push(`Thứ tự đọc chiêm bốc: 1. Bản Quái (Quẻ Chủ) ➔ 2. Biến Quái (Đồng Quẻ Chủ)\n`);
+      lines.push(`Cấu trúc (2 lá bài): Quẻ Chủ & Quẻ Biến cùng 1 quẻ (Quẻ Tĩnh • Không có hào động)`);
+      lines.push(`Thứ tự đọc & đồng bộ từng lá bài: Lá 1: Bản Quái (Quẻ Chủ) ➔ Lá 2: Biến Quái (Đồng Quẻ Chủ)\n`);
     }
 
     if (!includeFullBakhKhoa) {
       // ── THÔNG TIN CƠ BẢN (KHI NHẤN NHẸ / BỐC QUẺ BÌNH THƯỜNG) ──
       if (pri) {
         lines.push(`----------------------------------------`);
-        lines.push(`【1. BẢN QUÁI (QUẺ CHỦ) — LÁ TRÊN SONG SONG】`);
+        lines.push(`【Lá 1 / ${totalThapLaCards} · BẢN QUÁI (QUẺ CHỦ) — LÁ TRÊN SONG SONG】`);
+        lines.push(`▶ Vị trí Lá 1 [Quẻ Chủ (Bản Quái)]: Định vị hiện trạng và bức tranh nền tảng tổng quan`);
         lines.push(`• Quẻ tượng: ${pri.symbol}`);
         lines.push(`• Tên: ${pri.name}`);
         lines.push(`• Ý nghĩa: ${pri.sub}`);
@@ -1053,9 +1055,10 @@ async function formatSpreadForAI(
 
       if (yaos.length > 0) {
         lines.push(`----------------------------------------`);
-        lines.push(`【2. HÀO ĐỘNG (BỘ 384 LÁ BÀI HÀO TỪ) — KẾ BÊN QUẺ CHỦ】`);
+        lines.push(`【CÁC LÁ HÀO ĐỘNG (LÁ 2 ĐẾN LÁ ${1 + yaos.length}) — BỘ 384 LÁ BÀI HÀO TỪ KẾ BÊN QUẺ CHỦ】`);
         yaos.forEach((y, idx) => {
-          lines.push(`▶ Hào Động thứ ${idx + 1}: ${y.name}`);
+          const cardNum = idx + 2;
+          lines.push(`▶ Vị trí Lá ${cardNum} [Hào Động thứ ${idx + 1}]: ${y.name}`);
           lines.push(`• Quẻ tượng: ${y.symbol}`);
           lines.push(`• Tên: ${y.name}`);
           lines.push(`• Ý nghĩa: ${y.sub}`);
@@ -1066,7 +1069,8 @@ async function formatSpreadForAI(
 
       if (trans) {
         lines.push(`----------------------------------------`);
-        lines.push(`【${yaos.length > 0 ? "3" : "2"}. BIẾN QUÁI (QUẺ BIẾN) — LÁ DƯỚI SONG SONG】`);
+        lines.push(`【Lá ${totalThapLaCards} / ${totalThapLaCards} · BIẾN QUÁI (QUẺ BIẾN) — LÁ DƯỚI SONG SONG】`);
+        lines.push(`▶ Vị trí Lá ${totalThapLaCards} [Quẻ Biến (Biến Quái)]: Định hướng xu thế phát triển và kết quả chuyển dịch`);
         lines.push(`• Quẻ tượng: ${trans.symbol}`);
         lines.push(`• Tên: ${trans.name}`);
         lines.push(`• Ý nghĩa: ${trans.sub}`);
@@ -1077,7 +1081,8 @@ async function formatSpreadForAI(
       // ── TOÀN BỘ BÁCH KHOA CHUYÊN SÂU (KHI ĐẮC PHÁP KÍNH THIÊN • ĐỊA • NHÂN) ──
       if (pri) {
         lines.push(`----------------------------------------`);
-        lines.push(`【1. BẢN QUÁI (QUẺ CHỦ) — LÁ TRÊN SONG SONG】`);
+        lines.push(`【Lá 1 / ${totalThapLaCards} · BẢN QUÁI (QUẺ CHỦ) — LÁ TRÊN SONG SONG】`);
+        lines.push(`▶ Vị trí Lá 1 [Quẻ Chủ (Bản Quái)]: Định vị hiện trạng và bức tranh nền tảng tổng quan`);
         lines.push(`• Văn Bản Trọng Tâm: Thoán Từ (Quái Từ), Đại Tượng Truyện`);
         lines.push(`• Ý Nghĩa Thực Tiễn Trong Đời Sống: Định vị bối cảnh: Nhận diện bản chất loại hoàn cảnh thực tại bạn đang đối mặt`);
         lines.push(`• Quẻ số: #${priHex.number} - ${priHex.name} (${priHex.hanzi || priHex.name}) [${priHex.symbol}]`);
@@ -1108,19 +1113,20 @@ async function formatSpreadForAI(
 
       if (yaos.length > 0) {
         lines.push(`----------------------------------------`);
-        lines.push(`【2. HÀO ĐỘNG (BỘ 384 LÁ BÀI HÀO TỪ) — KẾ BÊN QUẺ CHỦ】`);
+        lines.push(`【CÁC LÁ HÀO ĐỘNG (LÁ 2 ĐẾN LÁ ${1 + yaos.length}) — BỘ 384 LÁ BÀI HÀO TỪ KẾ BÊN QUẺ CHỦ】`);
         lines.push(`• Văn Bản Trọng Tâm: Hào Từ của chính hào biến động`);
         lines.push(`• Ý Nghĩa Thực Tiễn Trong Đời Sống: Lời khuyên then chốt: Trọng tâm hành động và biến số mấu chốt bạn cần lưu tâm`);
-        lines.push(`• Số lượng hào biến động: ${yaos.length} hào (Sắp xếp theo thứ tự từ Hào Sơ ➔ Hào Lục)`);
+        lines.push(`• Số lượng hào biến động: ${yaos.length} hào (Sắp xếp theo thứ tự từ Hào Sơ ➔ Hào Lục, tương ứng từ Lá 2 đến Lá ${1 + yaos.length})`);
         lines.push("");
 
         yaos.forEach((y, idx) => {
+          const cardNum = idx + 2;
           const lineNum = y.yaoNumber || (idx + 1);
           const lineMeaning = priHex.lineMeanings?.find((m) => m.line === lineNum);
           const isYangToYin = (priHex.lines?.[lineNum - 1] === 1);
           const yaoArticle = articles[idx + 2];
 
-          lines.push(`▶ Hào Động thứ ${idx + 1}: ${y.name}`);
+          lines.push(`▶ Vị trí Lá ${cardNum} [Hào Động thứ ${idx + 1}]: ${y.name}`);
           lines.push(`  - Biến chuyển: ${isYangToYin ? "⚊ Dương biến sang ⚏ Âm" : "⚏ Âm biến sang ⚊ Dương"}`);
           lines.push(`  - Hào Từ: "${lineMeaning?.text || y.desc}"`);
           lines.push(`  - Lời khuyên then chốt: ${lineMeaning?.meaning || y.sub}`);
@@ -1144,7 +1150,8 @@ async function formatSpreadForAI(
 
       if (trans) {
         lines.push(`----------------------------------------`);
-        lines.push(`【${yaos.length > 0 ? "3" : "2"}. BIẾN QUÁI (QUẺ BIẾN) — LÁ DƯỚI SONG SONG】`);
+        lines.push(`【Lá ${totalThapLaCards} / ${totalThapLaCards} · BIẾN QUÁI (QUẺ BIẾN) — LÁ DƯỚI SONG SONG】`);
+        lines.push(`▶ Vị trí Lá ${totalThapLaCards} [Quẻ Biến (Biến Quái)]: Định hướng xu thế phát triển và kết quả chuyển dịch`);
         lines.push(`• Văn Bản Trọng Tâm: Quái Từ của Quẻ Biến (Thoán Từ, Đại Tượng Truyện)`);
         lines.push(`• Ý Nghĩa Thực Tiễn Trong Đời Sống: Định hướng tương lai: Xu thế phát triển tiếp theo sau khi sự chuyển hóa hoàn tất`);
         lines.push(`• Quẻ số: #${transHex.number} - ${transHex.name} (${transHex.hanzi || transHex.name}) [${transHex.symbol}]`);
@@ -1175,21 +1182,21 @@ async function formatSpreadForAI(
     }
 
     lines.push(`========================================`);
-    lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI (THEO PHƯƠNG PHÁP THÁP LA KINH DỊCH)]:`);
+    lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI (THEO PHƯƠNG PHÁP THÁP LA KINH DỊCH · ĐỦ ${totalThapLaCards} LÁ BÀI)]:`);
     if (cleanedQuestion) {
       lines.push(`▶ Trọng tâm giải đáp: Tập trung luận giải và tháo gỡ dứt khoát câu hỏi/tâm niệm: "${cleanedQuestion}"`);
     }
     if (yaos.length > 0) {
-      lines.push(`Xin hãy phân tích trải bài Tháp La Kinh Dịch theo đúng 3 tầng thứ tự và ý nghĩa thực tiễn trong đời sống:`);
-      lines.push(`1. BẢN QUÁI (Định vị bối cảnh): Dựa vào Thoán Từ (Quái Từ), Đại Tượng Truyện và Luận giải chuyên sâu, nhận diện bản chất loại hoàn cảnh thực tại đương số đang đối mặt. Cục diện đang ở đâu? Cơ hội và trở lực tiềm ẩn xung quanh là gì?`);
-      lines.push(`2. HÀO ĐỘNG (Lời khuyên then chốt): Dựa vào Hào Từ của chính các hào biến động (phân tích tuần tự từ Hào Sơ lên Hào Lục). Đâu là trọng tâm hành động và biến số mấu chốt đương số cần lưu tâm? Chỉ rõ việc nên làm, việc cần tránh và thời điểm chuyển hóa quyết định.`);
-      lines.push(`3. BIẾN QUÁI (Định hướng tương lai): Dựa vào Quái Từ của Quẻ Biến, dự báo xu thế phát triển tiếp theo sau khi sự chuyển hóa hoàn tất. Đưa ra chiến lược tổng thể và tâm thế sáng suốt nhất để đương số chủ động kiến tạo cát tường.`);
+      lines.push(`Xin hãy phân tích trải bài Tháp La Kinh Dịch (${totalThapLaCards} lá bài) theo đúng thứ tự từng lá bài từ Lá 1 đến Lá ${totalThapLaCards}:`);
+      lines.push(`1. Lá 1 - BẢN QUÁI (Quẻ Chủ · Định vị bối cảnh): Dựa vào Thoán Từ (Quái Từ), Đại Tượng Truyện và Luận giải chuyên sâu, nhận diện bản chất loại hoàn cảnh thực tại đương số đang đối mặt.`);
+      lines.push(`2. Lá 2 đến Lá ${1 + yaos.length} - TỪNG LÁ HÀO ĐỘNG (Lời khuyên then chốt): Phân tích TÁCH BIỆT TỪNG LÁ HÀO ĐỘNG theo đúng thứ tự từ Hào Sơ lên Hào Lục (Lá 2, ${yaos.length > 1 ? `Lá 3, ..., Lá ${1 + yaos.length}` : "Hào Động 1"}). Tuyệt đối không gộp chung các hào động!`);
+      lines.push(`3. Lá ${totalThapLaCards} - BIẾN QUÁI (Quẻ Biến · Định hướng tương lai): Dựa vào Quái Từ của Quẻ Biến, dự báo xu thế phát triển tiếp theo sau khi sự chuyển hóa hoàn tất.`);
       if (cleanedQuestion) {
         lines.push(`4. Đúc kết lời đáp trực tiếp cho việc đương số đang tâm niệm hỏi.`);
       }
     } else {
-      lines.push(`Xin hãy phân tích trải bài Tháp La Kinh Dịch (Quẻ Tĩnh - Quẻ Chủ và Quẻ Biến cùng 1 quẻ, không có hào động):`);
-      lines.push(`1. BẢN QUÁI & BIẾN QUÁI ĐỒNG NHẤT (Định vị bối cảnh & Định hướng tương lai): Dựa vào Thoán Từ (Quái Từ) và Đại Tượng Truyện, phân tích sâu sắc bản chất cục diện hiện tại và phương châm dĩ bất biến ứng vạn biến.`);
+      lines.push(`Xin hãy phân tích trải bài Tháp La Kinh Dịch (2 lá bài · Quẻ Tĩnh - Quẻ Chủ và Quẻ Biến cùng 1 quẻ, không có hào động):`);
+      lines.push(`1. Lá 1 (Bản Quái) & Lá 2 (Biến Quái đồng nhất): Dựa vào Thoán Từ (Quái Từ) và Đại Tượng Truyện, phân tích sâu sắc bản chất cục diện hiện tại và phương châm dĩ bất biến ứng vạn biến.`);
       if (cleanedQuestion) {
         lines.push(`2. Đúc kết lời đáp trực tiếp cho việc đương số đang tâm niệm hỏi.`);
       }
@@ -3199,11 +3206,18 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             dataUrl = canvas.toDataURL("image/jpeg", 0.92);
           }
 
-          // Kết xuất riêng từng lá bài theo đúng thứ tự cung vị 1 -> N (idx = 0 .. cards.length - 1) để Video 9:16 đồng bộ 100%
+          // Kết xuất riêng từng lá bài theo đúng thứ tự đọc 1 -> N (riêng Tháp La: Quẻ Chủ -> các Hào Động -> Quẻ Biến) để Video 9:16 đồng bộ 100%
           try {
-            const orderedByIdx = [...slotMetas].sort((a, b) => a.idx - b.idx);
+            const orderedByIdx = [...slotMetas].sort((a, b) => {
+              if (mode === "thap_la" && slotMetas.length > 2) {
+                const rank = (idx: number) => (idx === 0 ? 0 : idx === 1 ? 999 : idx);
+                return rank(a.idx) - rank(b.idx);
+              }
+              return a.idx - b.idx;
+            });
             const perCardUrls: string[] = [];
-            for (const item of orderedByIdx) {
+            for (let seqIdx = 0; seqIdx < orderedByIdx.length; seqIdx++) {
+              const item = orderedByIdx[seqIdx];
               const img = loadedImages[item.idx];
               const cw = Math.max(240, Math.round(item.unscaledW * 1.45));
               const ch = Math.max(368, Math.round(item.unscaledH * 1.45));
@@ -3235,8 +3249,10 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
               // Nhãn vị trí cung vị phía trên lá bài
               const posTitle =
-                item.card.positionLabel ||
-                `Lá ${item.idx + 1} · ${item.card.name}`;
+                mode === "thap_la"
+                  ? `Lá ${seqIdx + 1} · ${item.card.positionLabel || item.card.name}`
+                  : item.card.positionLabel ||
+                    `Lá ${item.idx + 1} · ${item.card.name}`;
               cCtx.save();
               cCtx.font = "bold 15px 'Lora', Georgia, serif";
               const mText = cCtx.measureText(posTitle);
@@ -4133,6 +4149,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         image_base64: capturedPng || snapshotImageUrl || "",
         card_images_base64: directHomeCardImgsRef.current,
         hexagram_text: aiText,
+        cards_order_version: 2,
       };
 
       let res: Response | null = null;
