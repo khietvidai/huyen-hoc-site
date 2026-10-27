@@ -1984,6 +1984,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const [isCapturingSnapshot, setIsCapturingSnapshot] = useState(false);
   const [snapshotImageUrl, setSnapshotImageUrl] = useState<string | null>(null);
   const [isSnapshotModalOpen, setIsSnapshotModalOpen] = useState(false);
+  const directHomeCardImgsRef = useRef<string[]>([]);
 
   /* ══════════════════════════════════════════════════════════════════
      YILORE CARD SCROLL & TILT PHYSICS ENGINE (DYNAMIC MULTI-MODE)
@@ -2836,9 +2837,12 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
   }, [isRitualCompleted, userIntentQuestion]);
 
   /* ── Chụp hình tự động căn trọn vẹn toàn bộ các lá bài đang trải trận ── */
-  const handleCaptureCardsSnapshot = useCallback(async () => {
-    if (isCapturingSnapshot) return;
-    setIsCapturingSnapshot(true);
+  const handleCaptureCardsSnapshot = useCallback(async (opts?: { silent?: boolean } | React.MouseEvent): Promise<string | null> => {
+    const isSilent = Boolean(opts && typeof opts === "object" && "silent" in opts && opts.silent);
+    if (isCapturingSnapshot && !isSilent) return null;
+    if (!isSilent) {
+      setIsCapturingSnapshot(true);
+    }
 
     try {
       // 1. Force các lá bài bung mở toàn phần ở chế độ xòe rộng (f = 1, sX = 0, sY = 0)
@@ -3194,6 +3198,119 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           if (!dataUrl || dataUrl === "data:," || dataUrl.length < 200) {
             dataUrl = canvas.toDataURL("image/jpeg", 0.92);
           }
+
+          // Kết xuất riêng từng lá bài theo đúng thứ tự cung vị 1 -> N (idx = 0 .. cards.length - 1) để Video 9:16 đồng bộ 100%
+          try {
+            const orderedByIdx = [...slotMetas].sort((a, b) => a.idx - b.idx);
+            const perCardUrls: string[] = [];
+            for (const item of orderedByIdx) {
+              const img = loadedImages[item.idx];
+              const cw = Math.max(240, Math.round(item.unscaledW * 1.45));
+              const ch = Math.max(368, Math.round(item.unscaledH * 1.45));
+              const padC = 28;
+              const badgeSpace = 44;
+              const singleW = cw + padC * 2;
+              const singleH = ch + padC * 2 + badgeSpace;
+
+              const cCanvas = document.createElement("canvas");
+              cCanvas.width = singleW;
+              cCanvas.height = singleH;
+              const cCtx = cCanvas.getContext("2d");
+              if (!cCtx) continue;
+
+              cCtx.fillStyle = "#F6F3EB";
+              cCtx.fillRect(0, 0, singleW, singleH);
+              cCtx.strokeStyle = "rgba(180, 145, 70, 0.14)";
+              cCtx.lineWidth = 1;
+              cCtx.beginPath();
+              for (let gx = 0; gx <= singleW; gx += 48) {
+                cCtx.moveTo(gx + 0.5, 0);
+                cCtx.lineTo(gx + 0.5, singleH);
+              }
+              for (let gy = 0; gy <= singleH; gy += 48) {
+                cCtx.moveTo(0, gy + 0.5);
+                cCtx.lineTo(singleW, gy + 0.5);
+              }
+              cCtx.stroke();
+
+              // Nhãn vị trí cung vị phía trên lá bài
+              const posTitle =
+                item.card.positionLabel ||
+                `Lá ${item.idx + 1} · ${item.card.name}`;
+              cCtx.save();
+              cCtx.font = "bold 15px 'Lora', Georgia, serif";
+              const mText = cCtx.measureText(posTitle);
+              const bW = Math.min(singleW - 16, mText.width + 28);
+              const bH = 30;
+              const bX = (singleW - bW) / 2;
+              const bY = 14;
+              drawRoundRect(cCtx, bX, bY, bW, bH, 15);
+              cCtx.fillStyle = "rgba(24, 24, 27, 0.94)";
+              cCtx.fill();
+              cCtx.strokeStyle = "rgba(212, 175, 55, 0.75)";
+              cCtx.lineWidth = 1.4;
+              cCtx.stroke();
+              cCtx.fillStyle = "#FDE68A";
+              cCtx.textAlign = "center";
+              cCtx.textBaseline = "middle";
+              cCtx.fillText(posTitle, singleW / 2, bY + bH / 2 + 0.5);
+              cCtx.restore();
+
+              // Vẽ thân lá bài
+              const cardX = padC;
+              const cardY = badgeSpace + 12;
+              cCtx.save();
+              cCtx.shadowColor = "rgba(0, 0, 0, 0.28)";
+              cCtx.shadowBlur = 20;
+              cCtx.shadowOffsetY = 8;
+              drawRoundRect(cCtx, cardX, cardY, cw, ch, 18);
+              cCtx.fillStyle = "#1E1B16";
+              cCtx.fill();
+              cCtx.restore();
+
+              cCtx.save();
+              drawRoundRect(cCtx, cardX, cardY, cw, ch, 18);
+              cCtx.clip();
+              if (img && img.naturalWidth > 0 && img.naturalHeight > 0) {
+                const iRatio = img.naturalWidth / img.naturalHeight;
+                const bRatio = cw / ch;
+                let dw = cw;
+                let dh = ch;
+                if (item.card.type === "yao") {
+                  cCtx.fillStyle = "#09090B";
+                  cCtx.fillRect(cardX, cardY, cw, ch);
+                  if (iRatio > bRatio) dh = cw / iRatio;
+                  else dw = ch * iRatio;
+                } else {
+                  if (iRatio > bRatio) dw = ch * iRatio;
+                  else dh = cw / iRatio;
+                }
+                cCtx.drawImage(
+                  img,
+                  cardX + (cw - dw) / 2,
+                  cardY + (ch - dh) / 2,
+                  dw,
+                  dh
+                );
+              }
+              cCtx.restore();
+
+              drawRoundRect(cCtx, cardX + 0.5, cardY + 0.5, cw - 1, ch - 1, 18);
+              cCtx.strokeStyle = "rgba(212, 175, 55, 0.65)";
+              cCtx.lineWidth = 1.6;
+              cCtx.stroke();
+
+              const cUrl = cCanvas.toDataURL("image/png");
+              if (cUrl && cUrl.length > 200) {
+                perCardUrls.push(cUrl);
+              }
+            }
+            if (perCardUrls.length === cards.length) {
+              directHomeCardImgsRef.current = perCardUrls;
+            }
+          } catch (perCardErr) {
+            console.warn("Không thể tạo ảnh rời từng lá:", perCardErr);
+          }
         }
       } catch (canvasErr) {
         console.warn("Canvas 2D snapshot fallback sang html-to-image:", canvasErr);
@@ -3301,23 +3418,780 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       const dateStr = new Date().toISOString().slice(0, 10);
       const filename = `trai-bai-iching-tarot-${modeSlug}-${dateStr}.png`;
 
-      downloadDataUrlAsPng(dataUrl, filename);
       setSnapshotImageUrl(dataUrl);
-      setIsSnapshotModalOpen(true);
-      setCopiedToast("Đã chụp hình toàn bộ thẻ bài thành công!");
-      setTimeout(() => setCopiedToast(null), 3500);
+      if (!isSilent) {
+        downloadDataUrlAsPng(dataUrl, filename);
+        setIsSnapshotModalOpen(true);
+        setCopiedToast("Đã chụp hình toàn bộ thẻ bài thành công!");
+        setTimeout(() => setCopiedToast(null), 3500);
+      }
+      return dataUrl;
     } catch (err) {
       console.error("Lỗi khi chụp hình thẻ bài:", err);
-      setCopiedToast("Chưa thể chụp ảnh thẻ bài, vui lòng thử lại!");
-      setTimeout(() => setCopiedToast(null), 3500);
+      if (!isSilent) {
+        setCopiedToast("Chưa thể chụp ảnh thẻ bài, vui lòng thử lại!");
+        setTimeout(() => setCopiedToast(null), 3500);
+      }
+      return null;
     } finally {
       // 7. Khôi phục lại trạng thái vị trí cuộn ban đầu
       if (requestTickRef.current) {
         requestTickRef.current();
       }
-      setIsCapturingSnapshot(false);
+      if (!isSilent) {
+        setIsCapturingSnapshot(false);
+      }
     }
   }, [cards, mode, isCard2Reversed, isCapturingSnapshot]);
+
+  /* ── TÍCH HỢP MẪU 2: LUẬN TRỰC TIẾP & VIDEO 9:16 NGAY TẠI TRANG CHỦ (CHẠY NGẦM + DỰ BÁO ETA + THÔNG BÁO ĐA KÊNH) ── */
+  const [directHomeVoice, setDirectHomeVoice] = useState<string>("vi-VN-NamMinhNeural");
+  const [isDirectHomeRunning, setIsDirectHomeRunning] = useState<boolean>(false);
+  const [directHomePercent, setDirectHomePercent] = useState<number>(0);
+  const [directHomeStage, setDirectHomeStage] = useState<string>("");
+  const [directHomeMessage, setDirectHomeMessage] = useState<string>(
+    "Sẵn sàng tự chụp thẻ bài & luận giải trực tiếp ngay trên trang chủ"
+  );
+  const [directHomeElapsed, setDirectHomeElapsed] = useState<number>(0);
+  const [directHomeEtaRemaining, setDirectHomeEtaRemaining] = useState<number>(0);
+  const [directHomeEtaText, setDirectHomeEtaText] = useState<string>("");
+  const [directHomeEstimatedTotal, setDirectHomeEstimatedTotal] = useState<number>(65);
+  const [directHomeReadyBanner, setDirectHomeReadyBanner] = useState<{
+    hexagramTitle: string;
+    duration?: number;
+    videoUrl?: string;
+    totalTime?: number;
+  } | null>(null);
+  const [isBgPillMinimized, setIsBgPillMinimized] = useState<boolean>(false);
+  const [directHomeCapturedImg, setDirectHomeCapturedImg] = useState<string>("");
+  const [directHomeRawAIText, setDirectHomeRawAIText] = useState<string>("");
+  const [directHomeResult, setDirectHomeResult] = useState<{
+    question?: string;
+    hexagram_title?: string;
+    hook?: string;
+    summary_advice?: string;
+    full_interpretation?: string;
+    video_script?: string;
+    video_url?: string;
+    audio_url?: string;
+    image_url?: string;
+    duration?: number;
+    total_time?: number;
+  } | null>(null);
+  const [isDirectResultModalOpen, setIsDirectResultModalOpen] = useState<boolean>(false);
+  const [directResultActiveTab, setDirectResultActiveTab] = useState<"interp" | "script" | "raw">("interp");
+  const [showPhoneVideoMode, setShowPhoneVideoMode] = useState<boolean>(true);
+  const [dragonIdleAct, setDragonIdleAct] = useState<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7>(0);
+  const [dragonAutoFullAct, setDragonAutoFullAct] = useState<6 | 7>(6);
+  const [isDragonAutoCycle, setIsDragonAutoCycle] = useState<boolean>(false);
+  const [isDragonSendingFinale, setIsDragonSendingFinale] = useState<boolean>(false);
+  const [isRecordingVoiceQ, setIsRecordingVoiceQ] = useState<boolean>(false);
+  const [isTranscribingVoiceQ, setIsTranscribingVoiceQ] = useState<boolean>(false);
+  const [voiceRecordSec, setVoiceRecordSec] = useState<number>(0);
+  const speechRecRef = useRef<any>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const voiceStreamRef = useRef<MediaStream | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const voiceTimerRef = useRef<number | null>(null);
+  const webSpeechBrokenRef = useRef<boolean>(false);
+  const liveSpeechTextRef = useRef<string>("");
+  const voiceBaseTextRef = useRef<string>("");
+  const dragonVideoRef = useRef<HTMLVideoElement | null>(null);
+  const directHomePollRef = useRef<number | null>(null);
+  const directHomeWorkerRef = useRef<Worker | null>(null);
+  const titleBlinkRef = useRef<number | null>(null);
+  const lastNotifiedJobIdRef = useRef<string>(
+    typeof window !== "undefined" ? localStorage.getItem("cuunhi_home_notified_job_id") || "" : ""
+  );
+
+  const formatSecondsMMSS = useCallback((sec?: number) => {
+    const s = Math.max(0, Math.round(sec || 0));
+    const m = Math.floor(s / 60);
+    const r = s % 60;
+    return `${m < 10 ? "0" : ""}${m}:${r < 10 ? "0" : ""}${r}`;
+  }, []);
+
+  const playGoldenChime432Hz = useCallback(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const AudioCtx = (window as any).AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const now = ctx.currentTime;
+      [432, 648, 864].forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, now + idx * 0.12);
+        gain.gain.setValueAtTime(0.001, now + idx * 0.12);
+        gain.gain.exponentialRampToValueAtTime(0.18 / (idx + 1), now + idx * 0.12 + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.12 + 2.4);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + idx * 0.12);
+        osc.stop(now + idx * 0.12 + 2.5);
+      });
+    } catch {}
+  }, []);
+
+  const stopDirectHomePolling = useCallback(() => {
+    if (directHomePollRef.current) {
+      window.clearInterval(directHomePollRef.current);
+      directHomePollRef.current = null;
+    }
+    if (directHomeWorkerRef.current) {
+      try {
+        directHomeWorkerRef.current.terminate();
+      } catch {}
+      directHomeWorkerRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const origTitle = "Cửu Nhị · Mệnh Lý, Phong Thủy & Kinh Dịch";
+    const clearTitleBlink = () => {
+      if (titleBlinkRef.current) {
+        window.clearInterval(titleBlinkRef.current);
+        titleBlinkRef.current = null;
+      }
+      document.title = origTitle;
+    };
+    window.addEventListener("focus", clearTitleBlink);
+    return () => {
+      window.removeEventListener("focus", clearTitleBlink);
+    };
+  }, []);
+
+  const isDragonWorking =
+    isDirectHomeRunning ||
+    isDragonSendingFinale ||
+    isCapturingSnapshot ||
+    isRecordingVoiceQ ||
+    isTranscribingVoiceQ;
+
+  const activeDragonAct: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 =
+    isDirectHomeRunning || isCapturingSnapshot ? dragonAutoFullAct : 0;
+
+  const DRAGON_VIDEO_MAP: Record<
+    0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
+    { src: string; badge: string; shortLabel: string; fileLabel: string; sub: string; quote: string }
+  > = {
+    0: {
+      src: "/videos/canh_ngu_1_lien_tiep.mp4",
+      badge: "💤 Cảnh Ngủ 1 Liên Tiếp: Tiểu Long Đang Ngủ",
+      shortLabel: "💤 Cảnh Ngủ 1 Liên Tiếp",
+      fileLabel: "cảnh ngủ 1 liên tiếp.mp4 (10s)",
+      sub: "💤 Tiểu Long Cửu Nhị đang chạy hoạt ảnh cảnh ngủ 1 liên tiếp...",
+      quote: "Khò khò... Tiểu Long Cửu Nhị đang nằm ngủ ngon lành bên thư án (cảnh ngủ 1 liên tiếp). Bấm Tự Động Hóa Toàn Bộ để đánh thức Tiểu Long dậy luận quẻ!",
+    },
+    1: {
+      src: "/videos/canh_1.mp4",
+      badge: "📖 Cảnh 1/7: Mò Đọc Sách",
+      shortLabel: "1.📖 Cảnh 1",
+      fileLabel: "cảnh 1.mp4 (10s)",
+      sub: "Tiểu Long cầm kính lúp vàng mò đọc từng dòng sách cổ Chu Dịch...",
+      quote: "Tiểu Long Cửu Nhị đang cầm kính lúp mò đọc từng dòng sách cổ Kinh Dịch. Bấm Tự Động Hóa Toàn Bộ để bắt đầu!",
+    },
+    2: {
+      src: "/videos/canh_2.mp4",
+      badge: "✍️ Cảnh 2/7: Ghi Chép Sớ",
+      shortLabel: "2.✍️ Cảnh 2",
+      fileLabel: "cảnh 2.mp4 (10s)",
+      sub: "Tiểu Long cầm bút lông chấm mực hí hoáy ghi chép Thoán Từ...",
+      quote: "Đọc sách xong, Tiểu Long cầm bút lông hí hoáy ghi chép Thoán Từ và lời bàn thiên cơ lên trang giấy...",
+    },
+    3: {
+      src: "/videos/canh_3.mp4",
+      badge: "🔍 Cảnh 3/7: Soi Quẻ & Luận",
+      shortLabel: "3.🔍 Cảnh 3",
+      fileLabel: "cảnh 3.mp4 (20s)",
+      sub: "Tiểu Long đeo kính tròn soi quẻ Bát Quái phát sáng rực rỡ...",
+      quote: "Tiểu Long đeo kính tròn học giả, reo vui khi tìm ra thông điệp huyền cơ từ các quái tượng Bát Quái!",
+    },
+    4: {
+      src: "/videos/canh_4.mp4",
+      badge: "💻 Cảnh 4/7: Chép & Đánh Máy",
+      shortLabel: "4.💻 Cảnh 4",
+      fileLabel: "cảnh 4.mp4 (30s)",
+      sub: "Tiểu Long hoàn tất bản chép & gõ máy tính dựng Video 9:16...",
+      quote: "Tiểu Long chuyển từ bàn viết sang chiếc Laptop Bát Quái, hai tay gõ phím lạch cạch để dựng Video 9:16...",
+    },
+    5: {
+      src: "/videos/canh_cuoi.mp4",
+      badge: "✉️ Cảnh Cuối: Rút Thư Gửi!",
+      shortLabel: "5.✉️ Cuối",
+      fileLabel: "cảnh cuối.mp4 (10s)",
+      sub: "Ở máy tính cuối cùng, Tiểu Long rút lá thư Ấn Chu Sa đưa đi gửi!",
+      quote: "Ở máy tính cuối cùng, phong thư vàng kim đóng Ấn Chu Sa bay ra từ laptop để Tiểu Long gửi tới tay bạn!",
+    },
+    6: {
+      src: "/videos/full.mp4",
+      badge: "🎬 Full 1: Trọn Bộ (40s)",
+      shortLabel: "6.🎬 Full 1",
+      fileLabel: "full.mp4 (40s)",
+      sub: "Phát trọn bộ hoạt ảnh Tiểu Long Cửu Nhị (Bản Full 1 · 40s)...",
+      quote: "Trọn bộ hành trình Tiểu Long Cửu Nhị (Full 1): Đọc sách cổ → Ghi chép Thoán Từ → Gõ máy tính → Gửi thư!",
+    },
+    7: {
+      src: "/videos/full_2.mp4",
+      badge: "🌟 Full 2: Trọn Bộ 2 (40s)",
+      shortLabel: "7.🌟 Full 2",
+      fileLabel: "full 2.mp4 (40s)",
+      sub: "Phát trọn bộ hoạt ảnh Tiểu Long Cửu Nhị (Bản Full 2 · 40s)...",
+      quote: "Trọn bộ hành trình Tiểu Long Cửu Nhị (Full 2): Mở Laptop Bát Quái → Soi cổ thư → Chép sớ → Gõ máy & Gửi thư!",
+    },
+  };
+
+  const startDirectHomeBackgroundPolling = useCallback(() => {
+    stopDirectHomePolling();
+
+    const pollOnce = async () => {
+      try {
+        let stRes: Response | null = null;
+        try {
+          stRes = await fetch("http://localhost:8000/api/direct_home/status");
+        } catch {
+          stRes = await fetch("/api/direct_home/status");
+        }
+        if (!stRes || !stRes.ok) return;
+        const stData = await stRes.json();
+
+        if (stData.status === "running") {
+          setIsDirectHomeRunning(true);
+          if (typeof stData.percent === "number" && stData.percent > 0) {
+            setDirectHomePercent((prev) => Math.max(prev > 40 ? 40 : prev, stData.percent));
+          }
+          if (typeof stData.elapsed_seconds === "number") {
+            setDirectHomeElapsed(stData.elapsed_seconds);
+          }
+          if (typeof stData.eta_remaining_seconds === "number") {
+            setDirectHomeEtaRemaining(stData.eta_remaining_seconds);
+          }
+          if (stData.eta_text) {
+            setDirectHomeEtaText(stData.eta_text);
+          }
+          if (typeof stData.estimated_total_seconds === "number") {
+            setDirectHomeEstimatedTotal(stData.estimated_total_seconds);
+          }
+          if (stData.message) {
+            setDirectHomeStage(stData.message);
+            setDirectHomeMessage(stData.message);
+          }
+          if (typeof document !== "undefined") {
+            const remLabel = stData.eta_text || `~${stData.eta_remaining_seconds || 30}s`;
+            document.title = `⏳ ${stData.percent || 50}% (${remLabel}) · Đang tạo Video Kinh Dịch...`;
+          }
+        } else if (stData.status === "completed" && stData.result) {
+          stopDirectHomePolling();
+          const cacheBuster = Date.now();
+          const syncedResult = {
+            ...stData.result,
+            video_url: stData.result.video_url ? `${stData.result.video_url}?t=${cacheBuster}` : undefined,
+            audio_url: stData.result.audio_url ? `${stData.result.audio_url}?t=${cacheBuster}` : undefined,
+            image_url: stData.result.image_url ? `${stData.result.image_url}?t=${cacheBuster}` : undefined,
+          };
+          setDirectHomePercent(100);
+          setDirectHomeEtaRemaining(0);
+          setDirectHomeEtaText("Đã hoàn tất");
+          if (typeof stData.elapsed_seconds === "number") {
+            setDirectHomeElapsed(stData.elapsed_seconds);
+          }
+
+          const jobId = stData.job_id || `${stData.result.video_url || ""}`;
+          const isNewCompletion = !jobId || jobId !== lastNotifiedJobIdRef.current;
+
+          if (isNewCompletion) {
+            if (jobId) {
+              lastNotifiedJobIdRef.current = jobId;
+              try {
+                localStorage.setItem("cuunhi_home_notified_job_id", jobId);
+              } catch {}
+            }
+            playGoldenChime432Hz();
+            const hexTitle = stData.result.hexagram_title || "Quẻ Kinh Dịch";
+            const dur = stData.result.duration;
+            setDirectHomeReadyBanner({
+              hexagramTitle: hexTitle,
+              duration: dur,
+              videoUrl: syncedResult.video_url,
+              totalTime: stData.elapsed_seconds || stData.result.total_time,
+            });
+
+            if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
+              try {
+                const notif = new Notification("🎬 Video Kinh Dịch 9:16 đã hoàn tất!", {
+                  body: `${hexTitle} (${dur ? `${dur}s` : "Full HD"}) đã dựng xong. Bấm để xem & tải ngay!`,
+                  tag: "cuunhi-home-video-done",
+                });
+                notif.onclick = () => {
+                  window.focus();
+                  notif.close();
+                  const el = document.getElementById("direct-home-phone-mockup");
+                  if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+                };
+              } catch {}
+            }
+
+            if (typeof document !== "undefined" && document.hidden) {
+              if (titleBlinkRef.current) window.clearInterval(titleBlinkRef.current);
+              let toggle = false;
+              titleBlinkRef.current = window.setInterval(() => {
+                document.title = toggle
+                  ? `🔔 (1) VIDEO ĐÃ XONG! · ${hexTitle}`
+                  : "Cửu Nhị · Mệnh Lý, Phong Thủy & Kinh Dịch";
+                toggle = !toggle;
+              }, 1000);
+            } else if (typeof document !== "undefined") {
+              document.title = "Cửu Nhị · Mệnh Lý, Phong Thủy & Kinh Dịch";
+            }
+
+            setIsDragonSendingFinale(false);
+            setIsDirectHomeRunning(false);
+            setDirectHomeResult(syncedResult);
+            setDirectHomeStage("Hoàn tất 100%! Video 9:16 đã đồng bộ chuẩn xác với từng lá bài trong quẻ.");
+            setDirectHomeMessage("Hoàn tất 100%! Video 9:16 đã đồng bộ chuẩn xác với từng lá bài trong quẻ.");
+            setShowPhoneVideoMode(true);
+            setCopiedToast("✨ Tự động hóa hoàn tất! Video 9:16 đã sẵn sàng phát & tải xuống!");
+            window.setTimeout(() => setCopiedToast(null), 5000);
+          } else {
+            setIsDirectHomeRunning(false);
+            setDirectHomeResult(syncedResult);
+            setShowPhoneVideoMode(true);
+          }
+        } else if (stData.status === "error") {
+          stopDirectHomePolling();
+          if (typeof document !== "undefined") {
+            document.title = "Cửu Nhị · Mệnh Lý, Phong Thủy & Kinh Dịch";
+          }
+          setIsDirectHomeRunning(false);
+          setDirectHomeStage(stData.error || "Lỗi khi xử lý tự động hóa.");
+          setCopiedToast("⚠️ " + (stData.error || "Có lỗi khi xử lý tự động hóa"));
+          setTimeout(() => setCopiedToast(null), 4000);
+        }
+      } catch {}
+    };
+
+    pollOnce();
+    try {
+      const blob = new Blob(["setInterval(function(){ postMessage('tick'); }, 1000);"], {
+        type: "application/javascript",
+      });
+      const worker = new Worker(URL.createObjectURL(blob));
+      worker.onmessage = () => {
+        pollOnce();
+      };
+      directHomeWorkerRef.current = worker;
+    } catch {
+      directHomePollRef.current = window.setInterval(pollOnce, 1000);
+    }
+  }, [stopDirectHomePolling, playGoldenChime432Hz]);
+
+  // Tự động kiểm tra và khôi phục tiến trình chạy ngầm nếu người dùng F5 tải lại trang hoặc quay lại từ mục khác
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const stRes = await fetch("http://localhost:8000/api/direct_home/status");
+        if (!stRes.ok || !mounted) return;
+        const stData = await stRes.json();
+        if (stData.status === "running") {
+          setIsDirectHomeRunning(true);
+          setDirectHomePercent(stData.percent || 25);
+          setDirectHomeElapsed(stData.elapsed_seconds || 0);
+          setDirectHomeEtaRemaining(stData.eta_remaining_seconds || 45);
+          setDirectHomeEtaText(stData.eta_text || "~45 giây");
+          setDirectHomeMessage(stData.message || "Đang tiếp tục tiến trình tạo Video 9:16 chạy ngầm...");
+          startDirectHomeBackgroundPolling();
+        }
+      } catch {}
+    })();
+    return () => {
+      mounted = false;
+      stopDirectHomePolling();
+    };
+  }, [startDirectHomeBackgroundPolling, stopDirectHomePolling]);
+
+  // Khi người dùng bốc quẻ mới hoặc đổi trận pháp trên trang chủ, tự động đồng bộ lại màn hình điện thoại theo quẻ mới
+  const cardsSignature = cards.map((c) => `${c.id}:${c.hexNumber}:${c.yaoNumber || 0}`).join("|") + `|${mode}|${isCard2Reversed}`;
+  const prevCardsSigRef = useRef<string>(cardsSignature);
+  useEffect(() => {
+    if (prevCardsSigRef.current !== cardsSignature) {
+      prevCardsSigRef.current = cardsSignature;
+      if (!isDirectHomeRunning) {
+        setDirectHomeCapturedImg("");
+        setDirectHomeResult(null);
+        setShowPhoneVideoMode(false);
+        setDirectHomePercent(0);
+        setDirectHomeMessage("Đã cập nhật quẻ mới trên Trang Chủ · Nhấn Tự Động Hóa Toàn Bộ để luận giải & dựng Video 9:16");
+      }
+    }
+  }, [cardsSignature, isDirectHomeRunning]);
+
+  const stopVoiceQuestionRecording = useCallback(() => {
+    setIsRecordingVoiceQ(false);
+    if (voiceTimerRef.current) {
+      window.clearInterval(voiceTimerRef.current);
+      voiceTimerRef.current = null;
+    }
+    if (speechRecRef.current) {
+      const rec = speechRecRef.current;
+      speechRecRef.current = null;
+      try {
+        rec.stop();
+      } catch {}
+    }
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+      try {
+        mediaRecorderRef.current.stop();
+      } catch {}
+    } else if (voiceStreamRef.current) {
+      try {
+        voiceStreamRef.current.getTracks().forEach((t) => t.stop());
+      } catch {}
+      voiceStreamRef.current = null;
+    }
+  }, []);
+
+  const handleToggleVoiceQuestion = useCallback(async () => {
+    if (typeof window === "undefined" || isTranscribingVoiceQ) return;
+
+    if (isRecordingVoiceQ) {
+      stopVoiceQuestionRecording();
+      return;
+    }
+
+    const baseText = userIntentQuestion.trim() ? userIntentQuestion.trim() + " " : "";
+    voiceBaseTextRef.current = baseText;
+    liveSpeechTextRef.current = "";
+    setVoiceRecordSec(0);
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setCopiedToast("⚠️ Trình duyệt không hỗ trợ truy cập Microphone.");
+      setTimeout(() => setCopiedToast(null), 3500);
+      return;
+    }
+
+    let stream: MediaStream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+      });
+      voiceStreamRef.current = stream;
+    } catch {
+      setCopiedToast("⚠️ Không thể truy cập Microphone. Vui lòng cấp quyền micro cho trình duyệt.");
+      setTimeout(() => setCopiedToast(null), 3500);
+      return;
+    }
+
+    try {
+      audioChunksRef.current = [];
+      let chosenMime = "";
+      if (typeof MediaRecorder !== "undefined") {
+        for (const mt of ["audio/webm;codecs=opus", "audio/webm", "audio/ogg;codecs=opus", "audio/mp4"]) {
+          try {
+            if (MediaRecorder.isTypeSupported(mt)) {
+              chosenMime = mt;
+              break;
+            }
+          } catch {}
+        }
+      }
+
+      const recorder = chosenMime
+        ? new MediaRecorder(stream, { mimeType: chosenMime })
+        : new MediaRecorder(stream);
+      mediaRecorderRef.current = recorder;
+
+      recorder.onstart = () => {
+        setIsRecordingVoiceQ(true);
+        setVoiceRecordSec(0);
+        setCopiedToast("🎙️ Đang thu âm câu hỏi tiếng Việt... Nói xong hãy bấm lại nút mic");
+        if (voiceTimerRef.current) window.clearInterval(voiceTimerRef.current);
+        voiceTimerRef.current = window.setInterval(() => {
+          setVoiceRecordSec((prev) => {
+            if (prev + 1 >= 60) {
+              stopVoiceQuestionRecording();
+            }
+            return prev + 1;
+          });
+        }, 1000);
+      };
+
+      recorder.ondataavailable = (e: BlobEvent) => {
+        if (e.data && e.data.size > 0) {
+          audioChunksRef.current.push(e.data);
+        }
+      };
+
+      recorder.onstop = async () => {
+        if (voiceTimerRef.current) {
+          window.clearInterval(voiceTimerRef.current);
+          voiceTimerRef.current = null;
+        }
+        if (voiceStreamRef.current) {
+          try {
+            voiceStreamRef.current.getTracks().forEach((t) => t.stop());
+          } catch {}
+          voiceStreamRef.current = null;
+        }
+
+        const blobType = recorder.mimeType || chosenMime || "audio/webm";
+        const audioBlob = new Blob(audioChunksRef.current, { type: blobType });
+        if (audioBlob.size < 300) {
+          setIsRecordingVoiceQ(false);
+          setIsTranscribingVoiceQ(false);
+          return;
+        }
+
+        setIsRecordingVoiceQ(false);
+        setIsTranscribingVoiceQ(true);
+        setCopiedToast("⚡ Đang nhận diện giọng nói thành văn bản tiếng Việt...");
+
+        try {
+          let res: Response | null = null;
+          try {
+            res = await fetch("http://localhost:8000/api/transcribe", {
+              method: "POST",
+              headers: { "Content-Type": blobType },
+              body: audioBlob,
+            });
+          } catch {
+            res = await fetch("/api/transcribe", {
+              method: "POST",
+              headers: { "Content-Type": blobType },
+              body: audioBlob,
+            });
+          }
+
+          const data = await res.json();
+          if (data && data.success && data.text && data.text.trim()) {
+            const finalQuestion = voiceBaseTextRef.current + data.text.trim();
+            handleQuestionChange(finalQuestion);
+            setCopiedToast("✓ Đã điền câu hỏi bằng giọng nói!");
+            setTimeout(() => setCopiedToast(null), 2500);
+          } else if (liveSpeechTextRef.current.trim()) {
+            handleQuestionChange(voiceBaseTextRef.current + liveSpeechTextRef.current.trim());
+            setCopiedToast("✓ Đã điền câu hỏi bằng giọng nói!");
+            setTimeout(() => setCopiedToast(null), 2500);
+          } else {
+            setCopiedToast("⚠️ " + (data?.error || "Không nghe rõ câu hỏi. Vui lòng nói to, rõ hơn vào micro."));
+            setTimeout(() => setCopiedToast(null), 3800);
+          }
+        } catch {
+          if (liveSpeechTextRef.current.trim()) {
+            handleQuestionChange(voiceBaseTextRef.current + liveSpeechTextRef.current.trim());
+            setCopiedToast("✓ Đã điền câu hỏi bằng giọng nói!");
+            setTimeout(() => setCopiedToast(null), 2500);
+          } else {
+            setCopiedToast("⚠️ Lỗi kết nối dịch vụ nhận diện giọng nói.");
+            setTimeout(() => setCopiedToast(null), 3500);
+          }
+        } finally {
+          setIsTranscribingVoiceQ(false);
+        }
+      };
+
+      recorder.start(250);
+    } catch {
+      try {
+        stream.getTracks().forEach((t) => t.stop());
+      } catch {}
+      voiceStreamRef.current = null;
+      setIsRecordingVoiceQ(false);
+      return;
+    }
+
+    // Optional live interim preview via Web Speech API (isolated so its errors never interrupt MediaRecorder)
+    const SpeechRec = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (SpeechRec && !webSpeechBrokenRef.current) {
+      try {
+        const rec = new SpeechRec();
+        rec.lang = "vi-VN";
+        rec.continuous = true;
+        rec.interimResults = true;
+        let finalTranscript = "";
+
+        rec.onresult = (ev: any) => {
+          let interimTranscript = "";
+          for (let i = ev.resultIndex; i < ev.results.length; i++) {
+            const r = ev.results[i];
+            if (r.isFinal) {
+              finalTranscript += r[0].transcript + " ";
+            } else {
+              interimTranscript += r[0].transcript;
+            }
+          }
+          const combined = (finalTranscript + interimTranscript).trim();
+          liveSpeechTextRef.current = combined;
+          if (combined) {
+            handleQuestionChange(voiceBaseTextRef.current + combined);
+          }
+        };
+
+        rec.onerror = (ev: any) => {
+          if (ev?.error === "network" || ev?.error === "service-not-allowed" || ev?.error === "not-allowed") {
+            webSpeechBrokenRef.current = true;
+          }
+          try {
+            rec.stop();
+          } catch {}
+          if (speechRecRef.current === rec) {
+            speechRecRef.current = null;
+          }
+        };
+
+        rec.onend = () => {
+          if (speechRecRef.current === rec) {
+            speechRecRef.current = null;
+          }
+        };
+
+        speechRecRef.current = rec;
+        rec.start();
+      } catch {
+        speechRecRef.current = null;
+      }
+    }
+  }, [isRecordingVoiceQ, isTranscribingVoiceQ, userIntentQuestion, handleQuestionChange, stopVoiceQuestionRecording]);
+
+  const resolveMediaUrl = useCallback((relOrAbs?: string) => {
+    if (!relOrAbs) return "";
+    if (relOrAbs.startsWith("http://") || relOrAbs.startsWith("https://") || relOrAbs.startsWith("data:")) {
+      return relOrAbs;
+    }
+    return `http://localhost:8000${relOrAbs.startsWith("/") ? "" : "/"}${relOrAbs}`;
+  }, []);
+
+  const handleStartDirectHomeAutomation = useCallback(async () => {
+    if (isDirectHomeRunning) return;
+
+    if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "default") {
+      try {
+        Notification.requestPermission();
+      } catch {}
+    }
+
+    const initEstSec = Math.round(1.5 + (14 + 2 * cards.length) + (13 + 2.5 * cards.length) + (22 + 5.5 * cards.length));
+    setDragonAutoFullAct(6);
+    setIsDirectHomeRunning(true);
+    setIsBgPillMinimized(false);
+    setDirectHomeReadyBanner(null);
+    setDirectHomeResult(null);
+    setShowPhoneVideoMode(false);
+    setDirectHomePercent(12);
+    setDirectHomeElapsed(0);
+    setDirectHomeEstimatedTotal(initEstSec);
+    setDirectHomeEtaRemaining(initEstSec);
+    setDirectHomeEtaText(`~${Math.floor(initEstSec / 60)} phút ${initEstSec % 60} giây`);
+    setDirectHomeStage("Đang tự động chụp hình thẻ bài từ Trang Chủ...");
+    setDirectHomeMessage("Bước 1/4: Tự động chụp hình trải bài đang hiển thị trên Trang Chủ...");
+
+    try {
+      // 1. Tự động lấy hình chụp trực tiếp từ trang chủ đang hiển thị (kèm từng lá bài 1 -> N)
+      directHomeCardImgsRef.current = [];
+      const capturedPng = await handleCaptureCardsSnapshot({ silent: true });
+      if (capturedPng) {
+        setDirectHomeCapturedImg(capturedPng);
+      }
+
+      // 2. Tự động lấy nội dung "Chép cho AI" trực tiếp từ trang chủ đang hiển thị
+      setDirectHomePercent(24);
+      setDirectHomeStage("Đang trích xuất 'Chép Cho AI' từ Trang Chủ...");
+      setDirectHomeMessage("Bước 2/4: Đã chụp xong thẻ bài! Đang gửi tiến trình xuống chạy ngầm...");
+
+      const aiText = await formatSpreadForAI(
+        cards,
+        mode,
+        isCard2Reversed,
+        isRitualCompleted,
+        userIntentQuestion,
+        hexagramPrediction,
+        userCustomAnswer
+      );
+      setDirectHomeRawAIText(aiText);
+      await copyToClipboard(aiText);
+      setCopiedAI(true);
+      setTimeout(() => setCopiedAI(false), 2500);
+
+      // 3. Gửi trực tiếp sang Engine Luận Trực Tiếp & Render Video 9:16 chạy ngầm
+      setDirectHomePercent(32);
+      setDirectHomeStage("Đã kích hoạt chạy ngầm! Đại Sư Gemini đang luận giải & thu âm...");
+      setDirectHomeMessage("Đang chạy ngầm trên máy chủ: Bạn có thể tự do lướt web hoặc chuyển tab, xong sẽ tự báo chuông!");
+
+      const effectiveQuestion =
+        userIntentQuestion.trim() ||
+        `Luận giải trải bài ${cards.map((c) => c.name).join(" • ")} trên trang chủ`;
+
+      const payload = {
+        question: effectiveQuestion,
+        voice: directHomeVoice,
+        image_base64: capturedPng || snapshotImageUrl || "",
+        card_images_base64: directHomeCardImgsRef.current,
+        hexagram_text: aiText,
+      };
+
+      let res: Response | null = null;
+      try {
+        res = await fetch("http://localhost:8000/api/direct_home/run", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      } catch {
+        res = await fetch("/api/direct_home/run", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      }
+
+      if (!res || !res.ok) {
+        const errData = res ? await res.json().catch(() => ({})) : {};
+        throw new Error(errData.error || "Không thể khởi chạy tiến trình Tự Động Hóa Toàn Bộ.");
+      }
+
+      const startData = await res.json().catch(() => ({}));
+      if (startData.eta_text) {
+        setDirectHomeEtaText(startData.eta_text);
+      }
+      if (typeof startData.estimated_total_seconds === "number") {
+        setDirectHomeEstimatedTotal(startData.estimated_total_seconds);
+        setDirectHomeEtaRemaining(Math.round(startData.estimated_total_seconds));
+      }
+
+      setCopiedToast(
+        `🟢 Đã chụp thẻ bài & chuyển sang chạy ngầm! Dự báo hoàn tất: ${startData.eta_text || "~1 phút 15 giây"}`
+      );
+      window.setTimeout(() => setCopiedToast(null), 4000);
+
+      // 4. Theo dõi tiến trình bằng Web Worker không bị khóa khi chuyển tab
+      startDirectHomeBackgroundPolling();
+    } catch (err: any) {
+      console.error("DirectHomeAutomation Error:", err);
+      setIsDirectHomeRunning(false);
+      setDirectHomeStage(err?.message || "Lỗi kết nối máy chủ Luận Trực Tiếp.");
+      setCopiedToast("⚠️ " + (err?.message || "Lỗi khi chạy Tự Động Hóa Toàn Bộ"));
+      setTimeout(() => setCopiedToast(null), 4000);
+    }
+  }, [
+    isDirectHomeRunning,
+    handleCaptureCardsSnapshot,
+    cards,
+    mode,
+    isCard2Reversed,
+    isRitualCompleted,
+    userIntentQuestion,
+    hexagramPrediction,
+    userCustomAnswer,
+    directHomeVoice,
+    snapshotImageUrl,
+    startDirectHomeBackgroundPolling,
+  ]);
 
   /* ── Chuyển chế độ và cuộn mượt xuống khu vực trải bài ── */
   const handleSwitchModeAndScroll = useCallback(
@@ -4213,20 +5087,44 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                       </span>
                       <span>Hương Án Khởi Niệm · Câu Hỏi Chiêm Bốc</span>
                     </label>
-                    {userIntentQuestion.trim() ? (
+                    <div className="flex items-center gap-2">
                       <button
                         type="button"
-                        onClick={() => handleQuestionChange("")}
-                        className="text-[11px] text-[#7D6E57] hover:text-[#9E2A2B] font-semibold transition cursor-pointer flex items-center gap-1"
-                        title="Xóa nội dung câu hỏi"
+                        onClick={handleToggleVoiceQuestion}
+                        disabled={isTranscribingVoiceQ}
+                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold transition cursor-pointer border ${
+                          isTranscribingVoiceQ
+                            ? "bg-amber-100 text-amber-900 border-amber-400 opacity-85 cursor-wait"
+                            : isRecordingVoiceQ
+                            ? "bg-[#9E2A2B] text-amber-50 border-[#D4AF37] animate-pulse"
+                            : "bg-[#FAF3E3] hover:bg-[#EFE4CC] text-[#6E4E16] border-[#C4963E]/45"
+                        }`}
+                        title="Nhập câu hỏi bằng giọng nói tiếng Việt"
                       >
-                        ✕ Xóa
+                        <span>{isTranscribingVoiceQ ? "⏳" : isRecordingVoiceQ ? "🔴" : "🎙️"}</span>
+                        <span>
+                          {isTranscribingVoiceQ
+                            ? "Đang dịch..."
+                            : isRecordingVoiceQ
+                            ? `Đang nghe (${formatSecondsMMSS(voiceRecordSec)}) · Bấm để xong`
+                            : "Nói câu hỏi"}
+                        </span>
                       </button>
-                    ) : (
-                      <span className="hidden sm:inline text-[11px] italic text-[#8A7960] font-serif">
-                        “Tâm tĩnh tắc linh”
-                      </span>
-                    )}
+                      {userIntentQuestion.trim() ? (
+                        <button
+                          type="button"
+                          onClick={() => handleQuestionChange("")}
+                          className="text-[11px] text-[#7D6E57] hover:text-[#9E2A2B] font-semibold transition cursor-pointer flex items-center gap-1"
+                          title="Xóa nội dung câu hỏi"
+                        >
+                          ✕ Xóa
+                        </button>
+                      ) : (
+                        <span className="hidden sm:inline text-[11px] italic text-[#8A7960] font-serif">
+                          “Tâm tĩnh tắc linh”
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   <textarea
@@ -4414,6 +5312,112 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                       )}
                     </button>
                   </div>
+
+                  {/* CỤM 4: NÚT TỰ ĐỘNG HÓA TOÀN BỘ (LUẬN TRỰC TIẾP & VIDEO 9:16 - MẪU 2) */}
+                  <div className="relative w-full flex flex-col gap-2">
+                    <button
+                      type="button"
+                      id="btn-direct-home-auto-all"
+                      disabled={isDirectHomeRunning}
+                      onClick={handleStartDirectHomeAutomation}
+                      className={`inline-flex flex-col items-center justify-center gap-0.5 w-full px-4 py-2.5 rounded-xl text-xs sm:text-sm font-serif font-bold transition cursor-pointer shadow-md active:scale-[0.99] select-none border ${
+                        isDirectHomeRunning
+                          ? "bg-[#5C1A1B] text-[#F3E5AB] border-[#D4AF37] opacity-90 cursor-wait"
+                          : "text-[#FFF8E7] border-[#E5C158] hover:brightness-110"
+                      }`}
+                      style={{
+                        background: isDirectHomeRunning
+                          ? "linear-gradient(135deg, #5C1A1B 0%, #3E1011 100%)"
+                          : "linear-gradient(135deg, #8B1E22 0%, #631316 55%, #4A0E10 100%)",
+                        boxShadow:
+                          "0 10px 26px -4px rgba(139, 30, 34, 0.42), inset 0 1px 0 rgba(243, 229, 171, 0.45)",
+                      }}
+                      title="Tự động chụp hình thẻ bài từ trang chủ, tự lấy nội dung Chép cho AI & câu hỏi từ trang chủ để luận giải Gemini và dựng Video 9:16"
+                    >
+                      <span className="inline-flex items-center gap-2 tracking-wide">
+                        <span className="text-base">{isDirectHomeRunning ? "⏳" : "🚀"}</span>
+                        <span>
+                          {isDirectHomeRunning
+                            ? `ĐANG TỰ ĐỘNG HÓA TRỰC TIẾP (${directHomePercent}%)`
+                            : "BẮT ĐẦU TỰ ĐỘNG HÓA TOÀN BỘ (LUẬN TRỰC TIẾP & VIDEO 9:16)"}
+                        </span>
+                      </span>
+                      <span className="text-[10px] font-sans font-normal text-[#F3E5AB]/90 tracking-normal">
+                        (Tự Chụp Thẻ Bài Trang Chủ + Tự Chép Quẻ & Câu Hỏi + Luận Giải AI + Dựng Video Dọc 9:16)
+                      </span>
+                    </button>
+
+                    {/* Thanh chọn Giọng Đọc & Tiến Trình Tự Động Hóa (0% -> 100%) */}
+                    <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 rounded-xl bg-[#FAF4E6]/95 border border-[#C4963E]/40 px-3 py-1.5 shadow-2xs">
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <span className="text-xs">🎙️</span>
+                        <select
+                          aria-label="Chọn giọng đọc thuyết minh"
+                          value={directHomeVoice}
+                          onChange={(e) => setDirectHomeVoice(e.target.value)}
+                          disabled={isDirectHomeRunning}
+                          className="bg-transparent text-[11px] font-serif font-bold text-[#4A3B28] focus:outline-none cursor-pointer pr-1"
+                        >
+                          <option value="vi-VN-NamMinhNeural">Giọng Nam Minh (Trầm ấm)</option>
+                          <option value="vi-VN-HoaiMyNeural">Giọng Hoài My (Truyền cảm)</option>
+                        </select>
+                      </div>
+
+                      <div className="flex-1 flex items-center gap-2 min-w-[140px]">
+                        <div className="flex-1 h-2 rounded-full bg-[#E6DAC3] overflow-hidden border border-[#C4963E]/30">
+                          <div
+                            className="h-full transition-all duration-300 rounded-full"
+                            style={{
+                              width: `${Math.max(4, directHomePercent)}%`,
+                              background: "linear-gradient(90deg, #B8862D 0%, #D4AF37 50%, #9E2A2B 100%)",
+                            }}
+                          />
+                        </div>
+                        <span className="text-[10px] font-bold text-[#6E4E16] shrink-0">
+                          {directHomePercent}%
+                        </span>
+                      </div>
+                    </div>
+
+                    {(isDirectHomeRunning || directHomeResult?.total_time) && (
+                      <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-[#231B12]/95 border border-[#D4AF37]/45 px-2.5 py-1.5 text-[10.5px] text-[#F3E5AB] shadow-xs">
+                        <div className="flex items-center gap-1.5">
+                          <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                          <span>
+                            ⏱ Đã chạy: <strong>{formatSecondsMMSS(directHomeElapsed)}</strong>
+                          </span>
+                        </div>
+                        <div className="font-bold text-emerald-300">
+                          {isDirectHomeRunning
+                            ? `⏳ Dự kiến còn: ${directHomeEtaText || `~${directHomeEtaRemaining || 45} giây`} (Tổng ~${formatSecondsMMSS(directHomeEstimatedTotal)})`
+                            : `✅ Đã hoàn tất trong ${formatSecondsMMSS(directHomeElapsed || directHomeResult?.total_time || 0)}!`}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between text-[10px] text-[#6E5D47] px-1">
+                      <span className="truncate font-medium">
+                        ✦ {directHomeMessage}
+                      </span>
+                      {directHomeResult?.full_interpretation && (
+                        <button
+                          type="button"
+                          onClick={() => setIsDirectResultModalOpen(true)}
+                          className="text-[#9E2A2B] font-bold underline hover:text-[#6E4E16] shrink-0 ml-2 cursor-pointer"
+                        >
+                          Xem bản luận đầy đủ →
+                        </button>
+                      )}
+                    </div>
+                    {isDirectHomeRunning && (
+                      <div className="text-[9.5px] text-[#7A5C2E] bg-[#FDF8EC] border border-[#D4AF37]/35 rounded-lg px-2.5 py-1 flex items-center gap-1.5">
+                        <span>🔔</span>
+                        <span>
+                          <strong>Chế độ chạy ngầm:</strong> Bạn có thể tự do cuộn trang, đọc sách hoặc chuyển sang tab khác. Khi dựng xong Video hệ thống sẽ đổ chuông 432Hz & báo hiệu!
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -4531,19 +5535,399 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               </div>
             </div>
 
-            {/* Cột phải: ĐIỂM NEO LÁ BÀI (Xấp bài sẽ gom lại và trượt xuống yên vị tại đây trên Desktop) */}
-            <div className="hidden lg:flex justify-end items-center">
-              <div className="relative flex items-center justify-center w-full min-h-[380px] sm:min-h-[460px] lg:min-h-[520px] max-w-[540px]">
+            {/* Cột phải: MẪU 2 — MÀN HÌNH ĐIỆN THOẠI 9:16 TINH GỌN + 3 NÚT TẢI + NÚT XEM KẾT QUẢ LUẬN GIẢI TRỰC TIẾP TỪ TRANG CHỦ */}
+            <div className="flex flex-col items-center lg:items-end justify-end lg:self-end mt-6 lg:mt-0 lg:pb-1">
+              {/* Giữ nguyên neo vật lý ẩn để không ảnh hưởng engine cuộn bài */}
+              <div
+                ref={featuresAnchorRef}
+                id="features-card-anchor"
+                className="hidden pointer-events-none"
+                aria-hidden="true"
+              />
+
+              <div className="w-full max-w-[360px] flex flex-col items-center gap-3">
+                {/* KHUNG ĐIỆN THOẠI DỌC 9:16 (MẪU 2 - TINH GỌN ĐIỆN THOẠI) */}
                 <div
-                  ref={featuresAnchorRef}
-                  id="features-card-anchor"
-                  className="pointer-events-none h-56 w-36 shrink-0 rounded-2xl sm:h-[272px] sm:w-44 md:h-72 md:w-48 opacity-0"
-                  aria-hidden="true"
-                />
+                  id="direct-home-phone-mockup"
+                  className="relative w-[308px] sm:w-[336px] rounded-[42px] p-[9px] transition-all duration-300"
+                  style={{
+                    background: "linear-gradient(145deg, #3A2C1E 0%, #17120D 50%, #2C2116 100%)",
+                    border: "2px solid rgba(212, 175, 55, 0.85)",
+                    boxShadow:
+                      "0 26px 60px -12px rgba(24, 18, 12, 0.55), 0 0 28px rgba(212, 175, 55, 0.22), inset 0 1px 1px rgba(255, 248, 220, 0.35)",
+                  }}
+                >
+                  {/* Loa thoại / Dynamic Island */}
+                  <div className="absolute top-[14px] left-1/2 -translate-x-1/2 z-30 h-4 w-24 rounded-full bg-[#090705] border border-[#D4AF37]/30 flex items-center justify-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#2A241D]" />
+                    <span className="w-8 h-1 rounded-full bg-[#231D16]" />
+                  </div>
+
+                  {/* Màn hình 9:16 bên trong */}
+                  <div
+                    className="relative w-full aspect-[9/16] rounded-[33px] overflow-hidden flex flex-col justify-between text-[#F5E6C4]"
+                    style={{
+                      background:
+                        "radial-gradient(circle at 50% 22%, rgba(158, 42, 43, 0.28) 0%, rgba(20, 15, 10, 0.96) 65%, #0D0A07 100%)",
+                      border: "1px solid rgba(212, 175, 55, 0.32)",
+                    }}
+                  >
+                    {/* Thanh trạng thái trên cùng của điện thoại */}
+                    <div className="pt-6 px-3.5 pb-1.5 flex items-center justify-between text-[10px] text-[#E5C158]/90 border-b border-[#D4AF37]/20 bg-black/30 backdrop-blur-xs z-20">
+                      <span className="font-mono font-bold">9:41</span>
+                      <span className="font-serif font-bold tracking-[0.12em] text-[9px] uppercase text-[#F3E5AB] truncate">
+                        ☯ CỬU NHỊ · LUẬN GIẢI TRỰC TIẾP
+                      </span>
+                      <span className="text-[9px] font-semibold text-emerald-400">● LIVE</span>
+                    </div>
+
+                    {/* Nút chuyển đổi giữa Video MP4 thực tế và Hoạt ảnh Tiểu Long */}
+                    {directHomeResult?.video_url && !isDragonSendingFinale && (
+                      <div className="px-3 pt-1.5 flex justify-end z-20">
+                        <button
+                          type="button"
+                          onClick={() => setShowPhoneVideoMode((v) => !v)}
+                          className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#1C1610]/90 text-[#F3E5AB] border border-[#D4AF37]/70 hover:brightness-110 cursor-pointer shadow-xs"
+                        >
+                          {showPhoneVideoMode ? "🐉 Xem Rồng Nhỏ" : "🎬 Xem Video MP4"}
+                        </button>
+                      </div>
+                    )}
+
+                    {/* NỘI DUNG CHÍNH TRONG MÀN HÌNH 9:16 */}
+                    {directHomeResult?.video_url && showPhoneVideoMode && !isDragonSendingFinale ? (
+                      <div className="flex-1 relative flex items-center justify-center bg-black overflow-hidden">
+                        <video
+                          key={resolveMediaUrl(directHomeResult.video_url)}
+                          src={resolveMediaUrl(directHomeResult.video_url)}
+                          controls
+                          autoPlay
+                          loop
+                          playsInline
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex-1 flex flex-col justify-between p-2.5 overflow-hidden">
+                        <style>{`
+                          @keyframes cuunhiArtBob {
+                            0%, 100% { transform: scale(1.03) translateY(0px); }
+                            50% { transform: scale(1.06) translateY(-3px); }
+                          }
+                          @keyframes cuunhiFloatGlyph {
+                            0% { opacity: 0; transform: translateY(8px) scale(0.7); }
+                            35% { opacity: 1; }
+                            100% { opacity: 0; transform: translateY(-26px) scale(1.15); }
+                          }
+                          @keyframes cuunhiLensSweep {
+                            0%, 100% { transform: translate(-10px, 0px) scale(0.95); opacity: 0.45; }
+                            50% { transform: translate(12px, -3px) scale(1.12); opacity: 0.85; }
+                          }
+                          @keyframes cuunhiBrushSpark {
+                            0%, 100% { transform: translate(-12px, 2px) scale(0.9); opacity: 0.6; }
+                            50% { transform: translate(14px, -2px) scale(1.15); opacity: 1; }
+                          }
+                          @keyframes cuunhiScreenGlow {
+                            0%, 100% { opacity: 0.35; transform: scale(0.98); }
+                            50% { opacity: 0.85; transform: scale(1.06); }
+                          }
+                          @keyframes cuunhiPullSendLetter {
+                            0% { opacity: 0; transform: translate(-18px, 24px) scale(0.35) rotate(-8deg); }
+                            25% { opacity: 1; transform: translate(-6px, 4px) scale(0.92) rotate(-4deg); }
+                            55% { opacity: 1; transform: translate(8px, -12px) scale(1.08) rotate(6deg); }
+                            82% { opacity: 1; transform: translate(42px, -44px) scale(1.12) rotate(16deg); }
+                            100% { opacity: 0; transform: translate(78px, -74px) scale(0.45) rotate(24deg); }
+                          }
+                        `}</style>
+
+                        {/* 1. SÂN KHẤU HOẠT ẢNH TIỂU LONG CỬU NHỊ */}
+                        <div className="flex flex-col items-center gap-1.5">
+                          <div className="w-full rounded-xl overflow-hidden border border-[#D4AF37]/60 bg-gradient-to-b from-[#1E160E] via-[#140F0A] to-[#0D0A07] p-1.5 shadow-inner relative">
+                            {/* Khung Video Hoạt Ảnh */}
+                            <div className="w-full h-[214px] rounded-lg overflow-hidden relative border border-[#D4AF37]/45 bg-[#0E0A07] shadow-md">
+                              <video
+                                ref={dragonVideoRef}
+                                key={DRAGON_VIDEO_MAP[activeDragonAct].src}
+                                src={DRAGON_VIDEO_MAP[activeDragonAct].src}
+                                autoPlay
+                                loop={activeDragonAct === 0}
+                                muted
+                                playsInline
+                                onEnded={(e) => {
+                                  if (isDirectHomeRunning || isCapturingSnapshot) {
+                                    setDragonAutoFullAct((prev) => (prev === 6 ? 7 : 6));
+                                  } else {
+                                    const v = e.currentTarget;
+                                    v.currentTime = 0;
+                                    v.play().catch(() => {});
+                                  }
+                                }}
+                                className="w-full h-full object-cover object-center"
+                              />
+                            </div>
+                          </div>
+
+                          {/* Tên Quẻ & Trạng thái đồng bộ từ Trang Chủ */}
+                          <div className="text-center px-1">
+                            <div className="text-[10.5px] font-serif font-bold text-[#F3E5AB] tracking-wide line-clamp-1">
+                              {directHomeResult?.hexagram_title ||
+                                cards.map((c) => c.name).slice(0, 3).join(" · ")}
+                            </div>
+                            <div className="text-[8.5px] text-[#C4A66A] line-clamp-1">
+                              {DRAGON_VIDEO_MAP[activeDragonAct].sub}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* 2. Phần giữa: Hộp Phụ Đề Vàng Kim (Luận Giải Trực Tiếp) */}
+                        <div
+                          className="my-1 rounded-xl p-2 border border-[#D4AF37]/50 bg-[#1B140E]/90 shadow-md flex flex-col gap-0.5"
+                          style={{
+                            boxShadow: "inset 0 0 18px rgba(212, 175, 55, 0.10)",
+                          }}
+                        >
+                          <div className="flex items-center justify-between text-[8.5px] font-bold uppercase tracking-wider text-[#E5C158]">
+                            <span>✦ Lời Bàn Cửu Nhị Đại Sư</span>
+                            <span>{isDirectHomeRunning ? `${directHomePercent}%` : "9:16 HD"}</span>
+                          </div>
+                          <p className="text-[10px] font-serif leading-relaxed text-[#FFF8E7] line-clamp-3 italic">
+                            {isDirectHomeRunning || isDragonSendingFinale
+                              ? `“${directHomeMessage}”`
+                              : directHomeResult?.video_script
+                              ? `“${directHomeResult.video_script.slice(0, 160)}...”`
+                              : `“${DRAGON_VIDEO_MAP[activeDragonAct].quote}”`}
+                          </p>
+                        </div>
+
+                        {/* 3. Phần dưới: Sóng Âm Vàng Kim & Trình Phát Audio */}
+                        <div className="rounded-xl bg-black/45 border border-[#D4AF37]/30 px-2.5 py-1.5 flex flex-col gap-1">
+                          <div className="flex items-end justify-center gap-[3px] h-4 px-2">
+                            {[35, 65, 45, 85, 55, 95, 70, 40, 80, 60, 90, 50, 75, 45, 85, 60, 40, 70, 50, 35].map(
+                              (h, idx) => (
+                                <span
+                                  key={idx}
+                                  className={`w-[3px] rounded-full transition-all duration-300 ${
+                                    isDirectHomeRunning ? "animate-pulse bg-[#E5C158]" : "bg-[#D4AF37]/80"
+                                  }`}
+                                  style={{ height: `${Math.max(20, h)}%` }}
+                                />
+                              )
+                            )}
+                          </div>
+
+                          {directHomeResult?.audio_url ? (
+                            <audio
+                              controls
+                              src={resolveMediaUrl(directHomeResult.audio_url)}
+                              className="w-full h-7 opacity-95"
+                            />
+                          ) : (
+                            <div className="flex items-center justify-between text-[9.5px] text-[#D4AF37]">
+                              <span className="font-mono">🐉 4 Hồi Tiểu Long</span>
+                              <button
+                                type="button"
+                                onClick={handleStartDirectHomeAutomation}
+                                disabled={isDirectHomeRunning}
+                                className="px-2.5 py-0.5 rounded-full bg-[#D4AF37] text-[#1C1610] font-bold hover:brightness-110 cursor-pointer"
+                              >
+                                {isDirectHomeRunning ? "Đang tạo..." : "▶ Tạo & Phát Ngay"}
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Thanh Home Bar dưới đáy điện thoại */}
+                    <div className="py-1.5 flex justify-center bg-black/40">
+                      <div className="w-24 h-1 rounded-full bg-[#D4AF37]/50" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* HÀNG 3 NÚT TẢI VÀNG KIM DƯỚI ĐIỆN THOẠI (MẪU 2) */}
+                <div className="w-[308px] sm:w-[336px] grid grid-cols-3 gap-1.5">
+                  <a
+                    href={
+                      directHomeResult?.video_url
+                        ? resolveMediaUrl(directHomeResult.video_url)
+                        : "#direct-home-phone-mockup"
+                    }
+                    download={directHomeResult?.video_url ? "iching_tarot_9_16.mp4" : undefined}
+                    onClick={(e) => {
+                      if (!directHomeResult?.video_url) {
+                        e.preventDefault();
+                        handleStartDirectHomeAutomation();
+                      }
+                    }}
+                    className="inline-flex items-center justify-center gap-1 px-1.5 py-2 rounded-xl text-[10.5px] font-serif font-bold text-[#1C1610] transition hover:brightness-105 shadow-sm text-center cursor-pointer"
+                    style={{
+                      background: "linear-gradient(180deg, #F5E3A9 0%, #D4AF37 100%)",
+                      border: "1px solid #8C6618",
+                    }}
+                    title="Tải xuống Video dọc 9:16 MP4"
+                  >
+                    <span>⬇</span>
+                    <span className="truncate">Tải Video MP4</span>
+                  </a>
+
+                  <a
+                    href={
+                      directHomeResult?.audio_url
+                        ? resolveMediaUrl(directHomeResult.audio_url)
+                        : "#direct-home-phone-mockup"
+                    }
+                    download={directHomeResult?.audio_url ? "iching_tarot_voice.mp3" : undefined}
+                    onClick={(e) => {
+                      if (!directHomeResult?.audio_url) {
+                        e.preventDefault();
+                        handleStartDirectHomeAutomation();
+                      }
+                    }}
+                    className="inline-flex items-center justify-center gap-1 px-1.5 py-2 rounded-xl text-[10.5px] font-serif font-bold text-[#4A3B28] bg-[#FDFBF7] hover:bg-[#F5E8C7] transition shadow-sm text-center cursor-pointer border border-[#C4963E]/70"
+                    title="Tải xuống file giọng đọc thuyết minh MP3"
+                  >
+                    <span>🎵</span>
+                    <span className="truncate">Tải Audio</span>
+                  </a>
+
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (directHomeCapturedImg) {
+                        downloadDataUrlAsPng(directHomeCapturedImg, "que-kinh-dich-trang-chu.png");
+                      } else {
+                        await handleCaptureCardsSnapshot({ silent: false });
+                      }
+                    }}
+                    className="inline-flex items-center justify-center gap-1 px-1.5 py-2 rounded-xl text-[10.5px] font-serif font-bold text-[#4A3B28] bg-[#FDFBF7] hover:bg-[#F5E8C7] transition shadow-sm text-center cursor-pointer border border-[#C4963E]/70"
+                    title="Tải xuống hình chụp thẻ bài Kinh Dịch từ trang chủ"
+                  >
+                    <span>🖼️</span>
+                    <span className="truncate">Tải Ảnh Quẻ</span>
+                  </button>
+                </div>
+
+                {/* NÚT XEM KẾT QUẢ LUẬN GIẢI TRỰC TIẾP TỪ TRANG CHỦ (MẪU 2) */}
+                <button
+                  type="button"
+                  id="btn-open-direct-home-result"
+                  onClick={() => setIsDirectResultModalOpen(true)}
+                  className="w-[308px] sm:w-[336px] inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-serif font-bold text-[#5C3D0E] transition hover:brightness-105 cursor-pointer shadow-sm"
+                  style={{
+                    background: "linear-gradient(180deg, #FFFDF9 0%, #F4E8CE 100%)",
+                    border: "1px solid rgba(196, 150, 62, 0.75)",
+                    boxShadow: "0 8px 20px -6px rgba(110, 90, 55, 0.18)",
+                  }}
+                >
+                  <span>📖</span>
+                  <span>Kết Quả Luận Giải Trực Tiếp Từ Trang Chủ</span>
+                </button>
               </div>
             </div>
           </div>
         </div>
+
+        {/* MODAL XEM CHI TIẾT KẾT QUẢ LUẬN GIẢI TRỰC TIẾP TỪ TRANG CHỦ */}
+        {isDirectResultModalOpen && (
+          <div className="fixed inset-0 z-[260] flex items-center justify-center bg-black/70 backdrop-blur-xs p-4">
+            <div className="relative w-full max-w-3xl max-h-[88vh] rounded-2xl border-2 border-[#D4AF37] bg-[#FDFBF7] text-[#231C14] shadow-2xl flex flex-col overflow-hidden">
+              <div
+                className="px-5 py-3.5 flex items-center justify-between border-b border-[#C4963E]/40"
+                style={{
+                  background: "linear-gradient(135deg, #2A2118 0%, #1C1610 100%)",
+                }}
+              >
+                <div className="flex items-center gap-2 text-[#F3E5AB] font-serif font-bold text-sm sm:text-base">
+                  <span>☯</span>
+                  <span>Bản Luận Giải Trực Tiếp Từ Trang Chủ · Cửu Nhị Đại Sư</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsDirectResultModalOpen(false)}
+                  className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-[#F3E5AB] flex items-center justify-center font-bold cursor-pointer"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Tabs */}
+              <div className="flex items-center gap-2 px-5 pt-3 pb-2 bg-[#F6EFE2] border-b border-[#C4963E]/30 text-xs font-serif font-bold">
+                <button
+                  type="button"
+                  onClick={() => setDirectResultActiveTab("interp")}
+                  className={`px-3.5 py-1.5 rounded-lg cursor-pointer transition ${
+                    directResultActiveTab === "interp"
+                      ? "bg-[#8B1E22] text-[#FFF8E7] shadow-xs"
+                      : "bg-white/80 text-[#5C3D0E] hover:bg-white"
+                  }`}
+                >
+                  📜 Luận Giải Chi Tiết (4 Phần)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDirectResultActiveTab("script")}
+                  className={`px-3.5 py-1.5 rounded-lg cursor-pointer transition ${
+                    directResultActiveTab === "script"
+                      ? "bg-[#8B1E22] text-[#FFF8E7] shadow-xs"
+                      : "bg-white/80 text-[#5C3D0E] hover:bg-white"
+                  }`}
+                >
+                  🎙️ Kịch Bản Thuyết Minh Video 9:16
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDirectResultActiveTab("raw")}
+                  className={`px-3.5 py-1.5 rounded-lg cursor-pointer transition ${
+                    directResultActiveTab === "raw"
+                      ? "bg-[#8B1E22] text-[#FFF8E7] shadow-xs"
+                      : "bg-white/80 text-[#5C3D0E] hover:bg-white"
+                  }`}
+                >
+                  ⚡ Nội Dung “Chép Cho AI” Từ Trang Chủ
+                </button>
+              </div>
+
+              {/* Body */}
+              <div className="p-5 overflow-y-auto flex-1 font-serif text-sm leading-relaxed whitespace-pre-wrap text-[#231C14]">
+                {directResultActiveTab === "interp" &&
+                  (directHomeResult?.full_interpretation ||
+                    "Chưa có bản luận giải. Hãy nhấn nút “🚀 BẮT ĐẦU TỰ ĐỘNG HÓA TOÀN BỘ” để hệ thống tự chụp hình thẻ bài và luận giải trực tiếp từ trang chủ.")}
+                {directResultActiveTab === "script" &&
+                  (directHomeResult?.video_script ||
+                    "Chưa có kịch bản giọng đọc. Hãy nhấn nút “🚀 BẮT ĐẦU TỰ ĐỘNG HÓA TOÀN BỘ” để tạo kịch bản và video 9:16.")}
+                {directResultActiveTab === "raw" &&
+                  (directHomeRawAIText ||
+                    "Nhấn “🚀 BẮT ĐẦU TỰ ĐỘNG HÓA TOÀN BỘ” để tự động trích xuất toàn bộ nội dung Chép cho AI từ trang chủ.")}
+              </div>
+
+              <div className="px-5 py-3 bg-[#F6EFE2] border-t border-[#C4963E]/30 flex flex-wrap items-center justify-between gap-2">
+                <span className="text-xs text-[#6E5D47]">
+                  {directHomeResult?.hexagram_title
+                    ? `Quẻ đã luận: ${directHomeResult.hexagram_title}`
+                    : "Nguồn dữ liệu: Trực tiếp từ bàn bài đang hiển thị trên Trang Chủ"}
+                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleStartDirectHomeAutomation}
+                    disabled={isDirectHomeRunning}
+                    className="px-4 py-1.5 rounded-lg bg-[#8B1E22] text-[#FFF8E7] text-xs font-serif font-bold hover:brightness-110 cursor-pointer"
+                  >
+                    {isDirectHomeRunning ? `Đang chạy (${directHomePercent}%)...` : "🚀 Luận Giải & Dựng Video Mới"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsDirectResultModalOpen(false)}
+                    className="px-4 py-1.5 rounded-lg bg-[#2A2118] text-[#F3E5AB] text-xs font-serif font-bold hover:brightness-110 cursor-pointer"
+                  >
+                    Đóng
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
 
       {/* ══════════════════════════════════════════════════════════════════
@@ -5175,6 +6559,129 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         title="Ảnh Toàn Bộ Thẻ Bài Trải Trận"
         filename={`trai-bai-iching-tarot-${new Date().toISOString().slice(0, 10)}.png`}
       />
+
+      {/* Floating Background Video Progress Pill & Completion Notification Card */}
+      {isDirectHomeRunning && (
+        <div
+          className="fixed bottom-5 right-5 z-[295] max-w-xs sm:max-w-sm rounded-2xl border border-[#D4AF37]/70 bg-[#16120D]/95 text-[#F3E5AB] shadow-2xl backdrop-blur-md p-3.5 transition-all"
+          style={{
+            boxShadow: "0 16px 40px rgba(0,0,0,0.75), 0 0 20px rgba(212, 175, 55, 0.22)",
+          }}
+        >
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/50 text-xs animate-spin">
+                ☯
+              </span>
+              <div className="text-xs font-serif font-bold text-[#F5E3A9]">
+                Đang Tạo Video Ngầm ({directHomePercent}%)
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsBgPillMinimized((v) => !v)}
+              className="text-[10px] px-2 py-0.5 rounded bg-white/10 hover:bg-white/20 text-[#E5C158] cursor-pointer"
+              title={isBgPillMinimized ? "Mở rộng chi tiết" : "Thu gọn"}
+            >
+              {isBgPillMinimized ? "Mở rộng ▲" : "Thu gọn ▼"}
+            </button>
+          </div>
+
+          <div className="mt-2 h-2 w-full rounded-full bg-black/60 overflow-hidden border border-[#D4AF37]/35">
+            <div
+              className="h-full rounded-full transition-all duration-300"
+              style={{
+                width: `${Math.max(5, directHomePercent)}%`,
+                background: "linear-gradient(90deg, #D4AF37 0%, #34D399 100%)",
+              }}
+            />
+          </div>
+
+          <div className="mt-1.5 flex items-center justify-between text-[11px]">
+            <span className="text-[#C4A66A]">⏱ Đã chạy: {formatSecondsMMSS(directHomeElapsed)}</span>
+            <span className="font-bold text-emerald-400">
+              ⏳ Còn: {directHomeEtaText || `~${directHomeEtaRemaining || 40} giây`}
+            </span>
+          </div>
+
+          {!isBgPillMinimized && (
+            <>
+              <div className="mt-1.5 text-[10.5px] text-[#E8E2D5]/90 line-clamp-2">
+                {directHomeStage || directHomeMessage}
+              </div>
+              <div className="mt-1.5 pt-1.5 border-t border-[#D4AF37]/20 flex items-center justify-between text-[9.5px] text-[#C4A66A]">
+                <span>🔔 Xong sẽ đổ chuông & báo hiệu</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const el = document.getElementById("direct-home-phone-mockup");
+                    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+                  }}
+                  className="text-[#F5E3A9] underline font-semibold hover:text-white cursor-pointer"
+                >
+                  Tới khung Video ↑
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {!isDirectHomeRunning && directHomeReadyBanner && (
+        <div
+          className="fixed bottom-5 right-5 z-[295] max-w-xs sm:max-w-sm rounded-2xl border-2 border-[#D4AF37] bg-[#19130D]/95 text-[#FFF8E7] shadow-2xl backdrop-blur-md p-4 transition-all"
+          style={{
+            boxShadow: "0 18px 45px rgba(0,0,0,0.85), 0 0 28px rgba(212, 175, 55, 0.38)",
+          }}
+        >
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">🎬</span>
+              <div>
+                <div className="text-xs font-serif font-bold text-[#F5E3A9] uppercase tracking-wider">
+                  Video 9:16 Đã Hoàn Tất!
+                </div>
+                <div className="text-[11px] text-emerald-300 font-semibold">
+                  {directHomeReadyBanner.hexagramTitle}
+                  {directHomeReadyBanner.duration ? ` · ${directHomeReadyBanner.duration}s` : ""}
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setDirectHomeReadyBanner(null)}
+              className="text-xs text-[#C4A66A] hover:text-white px-1.5 py-0.5 cursor-pointer"
+              title="Đóng thông báo"
+            >
+              ✕
+            </button>
+          </div>
+
+          <div className="mt-3 flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setShowPhoneVideoMode(true);
+                const el = document.getElementById("direct-home-phone-mockup");
+                if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+                setDirectHomeReadyBanner(null);
+              }}
+              className="flex-1 py-1.5 px-3 rounded-xl text-xs font-serif font-bold text-[#1C1610] bg-[#D4AF37] hover:brightness-110 transition cursor-pointer text-center"
+            >
+              ▶ Xem Video Ngay
+            </button>
+            {directHomeReadyBanner.videoUrl && (
+              <a
+                href={resolveMediaUrl(directHomeReadyBanner.videoUrl)}
+                download="iching_tarot_9_16.mp4"
+                className="py-1.5 px-3 rounded-xl text-xs font-serif font-bold text-[#F5E3A9] border border-[#D4AF37]/70 bg-white/5 hover:bg-white/15 transition text-center"
+              >
+                ⬇ Tải MP4
+              </a>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Toast thông báo đã sao chép cho AI */}
       {copiedToast && (

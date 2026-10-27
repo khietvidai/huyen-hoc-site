@@ -1824,6 +1824,71 @@ app.use("/vi/blog", express.static(path.join(publicDir, "vi", "blog")));
 app.use("/vi/hexagram", express.static(path.join(publicDir, "vi", "hexagram")));
 app.use("/hexagram", express.static(path.join(publicDir, "hexagram")));
 
+// Mount media directories from Giaiquekinhdich (Luận Trực Tiếp & Video 9:16)
+const giaiQueOutDir = "C:\\Users\\Admin\\Downloads\\Giaiquekinhdich\\output";
+if (fs.existsSync(giaiQueOutDir)) {
+  app.use("/media/videos", express.static(path.join(giaiQueOutDir, "videos")));
+  app.use("/media/audio", express.static(path.join(giaiQueOutDir, "audio")));
+  app.use("/media/images", express.static(path.join(giaiQueOutDir, "images")));
+  app.use("/media/podcasts", express.static(path.join(giaiQueOutDir, "podcasts")));
+}
+
+// Proxy API Luận Trực Tiếp Trang Chủ sang Giaiquekinhdich FastAPI (port 8000)
+app.post("/api/direct_home/run", async (req: Request, res: Response) => {
+  try {
+    const upstream = await fetch("http://127.0.0.1:8000/api/direct_home/run", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(req.body || {}),
+    });
+    const data = await upstream.json();
+    return res.status(upstream.status).json(data);
+  } catch (err: any) {
+    return res.status(502).json({
+      error: "Không kết nối được Engine Luận Trực Tiếp (port 8000): " + (err?.message || String(err)),
+    });
+  }
+});
+
+app.get("/api/direct_home/status", async (_req: Request, res: Response) => {
+  try {
+    const upstream = await fetch("http://127.0.0.1:8000/api/direct_home/status");
+    const data = await upstream.json();
+    return res.status(upstream.status).json(data);
+  } catch (err: any) {
+    return res.status(502).json({
+      status: "error",
+      error: "Không kết nối được Engine Luận Trực Tiếp (port 8000): " + (err?.message || String(err)),
+    });
+  }
+});
+
+app.post(
+  "/api/transcribe",
+  express.raw({ type: ["audio/*", "application/octet-stream"], limit: "30mb" }),
+  async (req: Request, res: Response) => {
+    try {
+      const isJson = req.body && typeof req.body === "object" && !Buffer.isBuffer(req.body);
+      const upstream = await fetch("http://127.0.0.1:8000/api/transcribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": isJson
+            ? "application/json"
+            : ((req.headers["content-type"] as string) || "audio/webm"),
+        },
+        body: isJson ? JSON.stringify(req.body) : req.body,
+      });
+      const data = await upstream.json();
+      return res.status(upstream.status).json(data);
+    } catch (err: any) {
+      return res.status(502).json({
+        success: false,
+        error: "Không kết nối được Engine nhận diện giọng nói (port 8000): " + (err?.message || String(err)),
+      });
+    }
+  }
+);
+
 // Vite or Static file serving
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
