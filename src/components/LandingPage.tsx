@@ -2040,12 +2040,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       }
 
       const s1 = Math.max(120, destinyDocY - originY);
-      const s1_hold = s1 + 400; // Vùng giữ vững vàng trong toàn bộ khu vực phần trắng
-      const s2 = Math.max(s1_hold + 350, featuresDocY - originY);
+      const s1_hold = s1 + 320; // Giữ tại Bàn Trải Bài tới dòng chú thích rồi ngưng, không trượt xuống dưới nữa
 
       const curHeroY = (heroDocY - scrollY) - originY;
       const curDestinyY = (destinyDocY - scrollY) - originY;
-      const curFeaturesY = (featuresDocY - scrollY) - originY;
 
       if (scrollY <= s1) {
         // GIAI ĐOẠN 1: Hero -> Destiny Cards
@@ -2067,64 +2065,30 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           layer.style.visibility = "visible";
         }
       } else if (scrollY <= s1_hold) {
-        // GIAI ĐOẠN 2: Giữ yên vị hoàn toàn tại trung tâm phần trắng (Destiny Cards)
+        // GIAI ĐOẠN 2: Dừng cố định tại khu vực Bàn Trải Bài (Destiny Cards), phía trên dòng chú thích
         tgtX = destinyStageX;
         tgtY = curDestinyY;
         tgtG = 1;
         tgtF = 1;
-        tgtHero = 0;
-        if (layer) {
-          layer.style.opacity = "1";
-          layer.style.visibility = "visible";
-        }
-      } else if (!isDesktop) {
-        // MOBILE: sau Section 2 mờ dần
-        tgtX = destinyStageX;
-        tgtY = curDestinyY;
-        tgtG = 1;
-        tgtF = 1;
-        tgtHero = 0;
-
-        const fadeOut = Math.max(0, Math.min(1, 1 - (scrollY - s1_hold) / 200));
-        if (layer) {
-          layer.style.opacity = fadeOut.toFixed(3);
-          layer.style.visibility = fadeOut <= 0.01 ? "hidden" : "visible";
-          layer.style.pointerEvents = "none";
-        }
-      } else if (scrollY <= s2) {
-        // GIAI ĐOẠN 3: Destiny Cards -> Features (DESKTOP)
-        const p2 = Math.min(1, Math.max(0, (scrollY - s1_hold) / (s2 - s1_hold)));
-        const t2 = smoothstep(p2);
-
-        tgtX = destinyStageX * (1 - t2) + featuresStageX * t2;
-        tgtY = curDestinyY * (1 - t2) + curFeaturesY * t2;
-        tgtG = 1;
-
-        // Khi kéo xuống Section Features: các lá bài gom mượt mà lại thành 1 lá duy nhất
-        tgtF = 1 - smoothstep(p2);
         tgtHero = 0;
         if (layer) {
           layer.style.opacity = "1";
           layer.style.visibility = "visible";
         }
       } else {
-        // GIAI ĐOẠN 4: Đã yên vị tại Features (DESKTOP)
-        tgtX = featuresStageX;
-        tgtY = curFeaturesY;
+        // GIAI ĐOẠN 3: Khi cuộn qua dòng chú thích xuống phần dưới (cả Desktop & Mobile):
+        // Các lá bài ngưng hoàn toàn tại Bàn Trải Bài, không bay theo xuống dưới và ẩn đi
+        tgtX = destinyStageX;
+        tgtY = curDestinyY;
         tgtG = 1;
-        tgtF = 0;
+        tgtF = 1;
         tgtHero = 0;
 
-        if (featuresSecRef.current && layer) {
-          const fRect = featuresSecRef.current.getBoundingClientRect();
-          if (fRect.bottom < window.innerHeight * 0.55) {
-            const fadeOut = Math.max(0, Math.min(1, (fRect.bottom - 40) / (window.innerHeight * 0.45)));
-            layer.style.opacity = fadeOut.toFixed(3);
-            layer.style.visibility = fadeOut <= 0.01 ? "hidden" : "visible";
-          } else {
-            layer.style.opacity = "1";
-            layer.style.visibility = "visible";
-          }
+        const fadeOut = Math.max(0, Math.min(1, 1 - (scrollY - s1_hold) / 180));
+        if (layer) {
+          layer.style.opacity = fadeOut.toFixed(3);
+          layer.style.visibility = fadeOut <= 0.01 ? "hidden" : "visible";
+          layer.style.pointerEvents = "none";
         }
       }
     }
@@ -2207,37 +2171,22 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       fan: { x: number; y: number; rot: number; scale: number; zIndex: number },
       dest: { x: number; y: number; rot: number; scale: number; zIndex: number },
       f: number,
-      heroF: number,
-      isPrimary: boolean
+      _heroF: number,
+      _isPrimary: boolean
     ) {
       if (!slot) return;
 
-      let x: number, y: number, rot: number, sc: number, z: number, op: number;
+      // Nội suy mượt mà giữa Dáng Quạt (Fan ở Hero) và Thế Bài Trải Rộng (Destiny Cards)
+      const x = fan.x * (1 - f) + dest.x * f;
+      const y = fan.y * (1 - f) + dest.y * f;
+      const rot = fan.rot * (1 - f) + dest.rot * f;
+      const sc = fan.scale * (1 - f) + dest.scale * f;
+      const z = f > 0.5 ? dest.zIndex : fan.zIndex;
+      const isHidden = layer?.style.visibility === "hidden" || parseFloat(layer?.style.opacity || "1") < 0.15;
 
-      if (heroF > 0.001) {
-        // Giai đoạn Hero hoặc đang cuộn từ Hero -> Destiny:
-        // Nội suy mượt mà giữa Dáng Quạt (Fan) và Thế Bài Trải Rộng (Destiny)
-        x = fan.x * (1 - f) + dest.x * f;
-        y = fan.y * (1 - f) + dest.y * f;
-        rot = fan.rot * (1 - f) + dest.rot * f;
-        sc = fan.scale * (1 - f) + dest.scale * f;
-        z = f > 0.5 ? dest.zIndex : fan.zIndex;
-        op = 1; // Luôn hiển thị 100% rõ nét tại Hero và trong lúc chuyển cảnh!
-        slot.style.pointerEvents = "auto";
-      } else {
-        // Giai đoạn từ Destiny -> Features (hoặc đã ở Features):
-        // Các lá bài gom lại thành 1 lá duy nhất tại Features
-        x = dest.x * f;
-        y = dest.y * f;
-        rot = dest.rot * f;
-        sc = isPrimary ? (dest.scale + (1.10 - dest.scale) * (1 - f)) : dest.scale;
-        z = dest.zIndex;
-        op = isPrimary ? 1 : Math.max(0, Math.min(1, f));
-        slot.style.pointerEvents = (f > 0.25 || isPrimary) ? "auto" : "none";
-      }
-
+      slot.style.pointerEvents = isHidden ? "none" : "auto";
       slot.style.transform = `perspective(1200px) translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, ${z}px) rotate(${rot.toFixed(1)}deg) scale(${sc.toFixed(3)})`;
-      slot.style.opacity = op.toFixed(3);
+      slot.style.opacity = "1";
       slot.style.zIndex = z.toString();
     }
 
@@ -4334,125 +4283,6 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   </div>
                 </div>
 
-                {/* CỤM 1A: Trận pháp cơ bản (1 Lá, 2 Lá, 3 Lá, 5 Lá) */}
-                <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
-                  <RitualHoldButton
-                    id="hero-mode-1"
-                    active={mode === "1_single"}
-                    onClick={(isRitual) => handleSwitchModeAndScroll("1_single", isRitual)}
-                    className={`flex items-center justify-center px-2 py-2 rounded-xl text-[11px] sm:text-xs transition cursor-pointer ${
-                      mode === "1_single"
-                        ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border border-[#D4AF37] font-bold shadow-[0_6px_16px_rgba(28,22,16,0.24),inset_0_1px_0_rgba(212,175,55,0.35)] scale-[1.02]"
-                        : "bg-[#FAF6EE]/90 hover:bg-[#EFE6D5] text-[#4A3B28] hover:text-[#1C1610] border border-[#C4963E]/30 hover:border-[#C4963E]/65 font-medium shadow-2xs"
-                    }`}
-                    title="Kính Thiên, Kính Địa, Kính Nhân (1 Lá - Đơn Quẻ)"
-                  >
-                    <span className="sm:hidden">1 Lá</span>
-                    <span className="hidden sm:inline">1 Lá · Đơn Quẻ</span>
-                  </RitualHoldButton>
-
-                  <RitualHoldButton
-                    id="hero-mode-2"
-                    active={mode === "1_to_2"}
-                    onClick={(isRitual) => handleSwitchModeAndScroll("1_to_2", isRitual)}
-                    className={`flex items-center justify-center px-2 py-2 rounded-xl text-[11px] sm:text-xs transition cursor-pointer ${
-                      mode === "1_to_2"
-                        ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border border-[#D4AF37] font-bold shadow-[0_6px_16px_rgba(28,22,16,0.24),inset_0_1px_0_rgba(212,175,55,0.35)] scale-[1.02]"
-                        : "bg-[#FAF6EE]/90 hover:bg-[#EFE6D5] text-[#4A3B28] hover:text-[#1C1610] border border-[#C4963E]/30 hover:border-[#C4963E]/65 font-medium shadow-2xs"
-                    }`}
-                    title="Kính Thiên, Kính Địa, Kính Nhân (2 Lá - Âm Dương)"
-                  >
-                    <span className="sm:hidden">2 Lá</span>
-                    <span className="hidden sm:inline">2 Lá · Âm Dương</span>
-                  </RitualHoldButton>
-
-                  <RitualHoldButton
-                    id="hero-mode-3"
-                    active={mode === "1_to_3"}
-                    onClick={(isRitual) => handleSwitchModeAndScroll("1_to_3", isRitual)}
-                    className={`flex items-center justify-center px-2 py-2 rounded-xl text-[11px] sm:text-xs transition cursor-pointer ${
-                      mode === "1_to_3"
-                        ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border border-[#D4AF37] font-bold shadow-[0_6px_16px_rgba(28,22,16,0.24),inset_0_1px_0_rgba(212,175,55,0.35)] scale-[1.02]"
-                        : "bg-[#FAF6EE]/90 hover:bg-[#EFE6D5] text-[#4A3B28] hover:text-[#1C1610] border border-[#C4963E]/30 hover:border-[#C4963E]/65 font-medium shadow-2xs"
-                    }`}
-                    title="Kính Thiên, Kính Địa, Kính Nhân (3 Lá - Tam Tài)"
-                  >
-                    <span className="sm:hidden">3 Lá</span>
-                    <span className="hidden sm:inline">3 Lá · Tam Tài</span>
-                  </RitualHoldButton>
-
-                  <RitualHoldButton
-                    id="hero-mode-5"
-                    active={mode === "3_to_5"}
-                    onClick={(isRitual) => handleSwitchModeAndScroll("3_to_5", isRitual)}
-                    className={`flex items-center justify-center px-2 py-2 rounded-xl text-[11px] sm:text-xs transition cursor-pointer ${
-                      mode === "3_to_5"
-                        ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border border-[#D4AF37] font-bold shadow-[0_6px_16px_rgba(28,22,16,0.24),inset_0_1px_0_rgba(212,175,55,0.35)] scale-[1.02]"
-                        : "bg-[#FAF6EE]/90 hover:bg-[#EFE6D5] text-[#4A3B28] hover:text-[#1C1610] border border-[#C4963E]/30 hover:border-[#C4963E]/65 font-medium shadow-2xs"
-                    }`}
-                    title="Kính Thiên, Kính Địa, Kính Nhân (5 Lá - Ngũ Hành)"
-                  >
-                    <span className="sm:hidden">5 Lá</span>
-                    <span className="hidden sm:inline">5 Lá · Ngũ Hành</span>
-                  </RitualHoldButton>
-                </div>
-
-                {/* CỤM 1B: Đại Trận Pháp (Thất Tinh 7 Lá, Thập Tinh 10 Lá & Tháp La Kinh Dịch) */}
-                <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
-                  <RitualHoldButton
-                    id="hero-mode-that-tinh"
-                    active={mode === "that_tinh"}
-                    onClick={(isRitual) => handleSwitchModeAndScroll("that_tinh", isRitual)}
-                    className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl text-[11px] sm:text-xs transition cursor-pointer ${
-                      mode === "that_tinh"
-                        ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border border-[#D4AF37] font-bold shadow-[0_6px_16px_rgba(28,22,16,0.24),inset_0_1px_0_rgba(212,175,55,0.35)] scale-[1.01]"
-                        : "bg-[#FAF6EE]/90 hover:bg-[#EFE6D5] text-[#4A3B28] hover:text-[#1C1610] border border-[#C4963E]/30 hover:border-[#C4963E]/65 font-medium shadow-2xs"
-                    }`}
-                    title="Trận Pháp Thất Tinh (7 Lá): Khảo sát 7 góc độ toàn diện cuộc sống"
-                  >
-                    <span className={mode === "that_tinh" ? "text-[#D4AF37]" : "text-[#B8862D]"}>✦</span>
-                    <span className="sm:hidden">7 Lá (Thất Tinh)</span>
-                    <span className="hidden sm:inline">Thất Tinh Trận (7 Lá)</span>
-                  </RitualHoldButton>
-
-                  <RitualHoldButton
-                    id="hero-mode-thap-tinh"
-                    active={mode === "thap_tinh"}
-                    onClick={(isRitual) => handleSwitchModeAndScroll("thap_tinh", isRitual)}
-                    className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl text-[11px] sm:text-xs transition cursor-pointer ${
-                      mode === "thap_tinh"
-                        ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border border-[#D4AF37] font-bold shadow-[0_6px_16px_rgba(28,22,16,0.24),inset_0_1px_0_rgba(212,175,55,0.35)] scale-[1.01]"
-                        : "bg-[#FAF6EE]/90 hover:bg-[#EFE6D5] text-[#4A3B28] hover:text-[#1C1610] border border-[#C4963E]/30 hover:border-[#C4963E]/65 font-medium shadow-2xs"
-                    }`}
-                    title="Trận Pháp Thập Tinh (10 Lá): Đỉnh cao Celtic Cross - Lá 2: Xuôi Hỗ Trợ / Ngược Trở Ngại"
-                  >
-                    <span className={mode === "thap_tinh" ? "text-[#D4AF37]" : "text-[#B8862D]"}>۞</span>
-                    <span className="sm:hidden">10 Lá (Thập Tinh)</span>
-                    <span className="hidden sm:inline">Thập Tinh Trận (10 Lá)</span>
-                  </RitualHoldButton>
-                </div>
-
-                {/* Trận pháp Độc Quyền: Tháp La Kinh Dịch */}
-                <div className="w-full">
-                  <RitualHoldButton
-                    id="hero-mode-thap-la"
-                    active={mode === "thap_la"}
-                    onClick={(isRitual) => handleSwitchModeAndScroll("thap_la", isRitual)}
-                    className={`flex items-center justify-center gap-2 w-full px-3.5 py-2.5 rounded-xl text-xs transition cursor-pointer ${
-                      mode === "thap_la"
-                        ? "bg-gradient-to-r from-[#261E16] via-[#18130E] to-[#261E16] text-[#F3E5AB] border-2 border-[#D4AF37] font-bold shadow-[0_8px_22px_rgba(28,22,16,0.28)] scale-[1.01]"
-                        : "bg-gradient-to-r from-[#F5EFE0] via-[#FAF6EC] to-[#F5EFE0] hover:from-[#EFE5CF] hover:to-[#EFE5CF] text-[#2C2218] border border-[#C4963E]/55 font-semibold shadow-2xs"
-                    }`}
-                    title="Tháp La Kinh Dịch: Quẻ Chủ & Quẻ Biến Song Song Trên - Dưới & Dải Hào Từ Biến Dịch (384 Hào)"
-                  >
-                    <span className={mode === "thap_la" ? "text-[#D4AF37] text-sm" : "text-[#996515] text-sm"}>☯</span>
-                    <span className="font-serif tracking-wide">Tháp La Kinh Dịch</span>
-                    <span className={`text-[10px] font-normal hidden xs:inline sm:inline ${mode === "thap_la" ? "text-[#D4AF37]" : "text-[#8C621E]"}`}>
-                      (Bản Quái • 6 Hào Động • Biến Quái)
-                    </span>
-                  </RitualHoldButton>
-                </div>
-
                 {/* Nút Đổi Chiều Lá 2 khi đang ở Thập Tinh Trận */}
                 {mode === "thap_tinh" && (
                   <button
@@ -4471,7 +4301,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 )}
 
                 {/* CỤM 2 & 3: QUẢN TRỊ BÀN QUẺ & NÚT CHÉP TOÀN THƯ AI */}
-                <div className="pt-2 border-t border-[#C4963E]/25 flex flex-col gap-2.5">
+                <div className="flex flex-col gap-2.5">
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2">
                     {/* Nút Khóa / Giữ nguyên */}
                     <RitualHoldButton
