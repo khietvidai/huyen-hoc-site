@@ -2950,11 +2950,12 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         const cx = stageW / 2 + tx;
         const cy = stageH / 2 + ty;
 
-        // Tính khung bao hình học có tính góc xoay và nhãn phía trên lá bài
+        // Tính khung bao hình học có tính góc xoay và nhãn phía trên lá bài (chỉ Trận 7 và Trận 10 có nhãn trên)
         const rad = Math.abs((rotDeg * Math.PI) / 180);
         const halfW = ((unscaledW * Math.cos(rad) + unscaledH * Math.sin(rad)) * sc) / 2;
         const halfH = ((unscaledW * Math.sin(rad) + unscaledH * Math.cos(rad)) * sc) / 2;
-        const topBadgeExtra = card?.positionLabel ? 42 : 12;
+        const hasTopBadge = (mode === "that_tinh" || mode === "thap_tinh") && Boolean(card?.positionLabel);
+        const topBadgeExtra = hasTopBadge ? 42 : 12;
 
         minX = Math.min(minX, cx - halfW - 14);
         maxX = Math.max(maxX, cx + halfW + 14);
@@ -2969,7 +2970,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           maxY = Math.max(maxY, r.bottom - stageRect.top);
         }
 
-        const badge = slot.querySelector("div.absolute") as HTMLElement | null;
+        const badge = hasTopBadge ? (slot.querySelector("div.absolute") as HTMLElement | null) : null;
         if (badge && stageRect.width > 0) {
           const br = badge.getBoundingClientRect();
           if (br.width > 0 && br.height > 0) {
@@ -3175,131 +3176,69 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             ctx.lineWidth = 1.2;
             ctx.stroke();
 
-            // Nhãn chân thẻ bài cho chế độ Tháp La
-            if (mode === "thap_la") {
-              const bottomText =
-                item.idx === 0
-                  ? `[Bản Quái] ${item.card.hanzi || item.card.symbol || ""}`
-                  : item.idx === 1
-                  ? `[Biến Quái] ${item.card.hanzi || item.card.symbol || ""}`
-                  : item.card.yaoNumber && item.card.yaoNumber > 0
-                  ? `[Hào Động ${item.card.yaoNumber}] ${
-                      item.card.hanzi ||
-                      item.card.name
-                        .split("·")[0]
-                        ?.replace(/^Hào\s*\d+:\s*/, "")
-                        .trim() ||
-                      ""
-                    }`
-                  : "Toàn Tĩnh";
-
-              ctx.font = "600 9.5px 'Be Vietnam Pro', sans-serif";
-              const bMetrics = ctx.measureText(bottomText);
-              const bW = Math.min(cw - 12, bMetrics.width + 18);
-              const bH = 18;
-              const bX = -bW / 2;
-              const bY = ch / 2 - bH - 8;
-
-              drawRoundRect(ctx, bX, bY, bW, bH, 9);
-              ctx.fillStyle = "rgba(0, 0, 0, 0.86)";
-              ctx.fill();
-              ctx.strokeStyle = "rgba(245, 158, 11, 0.55)";
-              ctx.lineWidth = 1;
-              ctx.stroke();
-
-              ctx.fillStyle = "#FEF3C7";
-              ctx.textAlign = "center";
-              ctx.textBaseline = "middle";
-              ctx.fillText(bottomText, 0, bY + bH / 2 + 0.5);
-            }
-
             ctx.restore();
           }
 
-          // Lớp 2: Vẽ nhãn vị trí trận pháp phía trên từng lá bài
-          for (const item of sortedMetas) {
-            if (!item.card.positionLabel) continue;
+          // Lớp 2: Vẽ nhãn vị trí trận pháp phía trên từng lá bài (Chỉ áp dụng cho Trận 7 lá và Trận 10 lá)
+          if (mode === "that_tinh" || mode === "thap_tinh") {
+            for (const item of sortedMetas) {
+              if (!item.card.positionLabel) continue;
 
-            let topText = item.card.positionLabel;
-            let pillBg = "rgba(24, 24, 27, 0.92)";
-            let pillBorder = "rgba(120, 113, 108, 0.65)";
-            let pillColor = "#F5F5F4";
+              let topText = item.card.positionLabel;
+              let pillBg = "rgba(24, 24, 27, 0.92)";
+              let pillBorder = "rgba(120, 113, 108, 0.65)";
+              let pillColor = "#F5F5F4";
 
-            if (mode === "thap_la") {
-              if (item.idx === 0) {
-                topText = `Quẻ Chủ: #${item.card.hexNumber} ${item.card.name.replace("Quẻ Chủ: ", "")}`;
+              if (mode === "thap_tinh" && item.idx === 1) {
+                topText = isCard2Reversed ? "2. Ngược: Trở Ngại 🔄" : "2. Xuôi: Hỗ Trợ 🔄";
+                pillBg = isCard2Reversed ? "#4C0519" : "#022C22";
+                pillBorder = isCard2Reversed ? "#F43F5E" : "#10B981";
+                pillColor = isCard2Reversed ? "#FECDD3" : "#A7F3D0";
+              } else if (mode === "thap_tinh" && item.idx === 0) {
+                topText = "1. Tình Huống Hiện Tại";
+                pillBg = "rgba(24, 24, 27, 0.95)";
+                pillBorder = "rgba(217, 119, 6, 0.7)";
+                pillColor = "#FDE68A";
+              } else if (mode === "thap_tinh" && item.idx === 9) {
+                topText = "10. Lá Bài Khuyên Bảo";
                 pillBg = "rgba(69, 26, 3, 0.95)";
                 pillBorder = "rgba(245, 158, 11, 0.85)";
                 pillColor = "#FDE68A";
-              } else if (item.idx === 1) {
-                topText = item.card.name.includes("Đồng Quẻ Chủ")
-                  ? `Quẻ Biến (Đồng Quẻ Chủ): #${item.card.hexNumber}`
-                  : `Quẻ Biến: #${item.card.hexNumber} ${item.card.name.replace("Quẻ Biến: ", "")}`;
-                pillBg = "rgba(2, 44, 34, 0.95)";
-                pillBorder = "rgba(16, 185, 129, 0.85)";
-                pillColor = "#A7F3D0";
-              } else {
-                topText =
-                  item.card.yaoNumber && item.card.yaoNumber > 0
-                    ? `Hào ${item.card.yaoNumber}: ${
-                        item.card.hanzi ||
-                        item.card.name.split("·")[1]?.trim() ||
-                        `Hào ${item.card.yaoNumber}`
-                      }`
-                    : "Quẻ Tĩnh (0 Hào Động)";
-                pillBg = "rgba(24, 24, 27, 0.95)";
-                pillBorder = "rgba(196, 150, 62, 0.85)";
-                pillColor = "#FCD34D";
               }
-            } else if (mode === "thap_tinh" && item.idx === 1) {
-              topText = isCard2Reversed ? "2. Ngược: Trở Ngại 🔄" : "2. Xuôi: Hỗ Trợ 🔄";
-              pillBg = isCard2Reversed ? "#4C0519" : "#022C22";
-              pillBorder = isCard2Reversed ? "#F43F5E" : "#10B981";
-              pillColor = isCard2Reversed ? "#FECDD3" : "#A7F3D0";
-            } else if (mode === "thap_tinh" && item.idx === 0) {
-              topText = "1. Tình Huống Hiện Tại";
-              pillBg = "rgba(24, 24, 27, 0.95)";
-              pillBorder = "rgba(217, 119, 6, 0.7)";
-              pillColor = "#FDE68A";
-            } else if (mode === "thap_tinh" && item.idx === 9) {
-              topText = "10. Lá Bài Khuyên Bảo";
-              pillBg = "rgba(69, 26, 3, 0.95)";
-              pillBorder = "rgba(245, 158, 11, 0.85)";
-              pillColor = "#FDE68A";
+
+              ctx.save();
+              ctx.translate(item.cx - minX + padX, item.cy - minY + padY);
+              ctx.rotate((item.rotDeg * Math.PI) / 180);
+              ctx.scale(item.sc, item.sc);
+
+              ctx.font = "bold 11.5px 'Lora', Georgia, serif";
+              const tMetrics = ctx.measureText(topText);
+              const pW = tMetrics.width + 22;
+              const pH = 24;
+              const pX = -pW / 2;
+              const pY = -item.unscaledH / 2 - pH - 8;
+
+              ctx.save();
+              ctx.shadowColor = "rgba(0, 0, 0, 0.35)";
+              ctx.shadowBlur = 8;
+              ctx.shadowOffsetY = 3;
+              drawRoundRect(ctx, pX, pY, pW, pH, 12);
+              ctx.fillStyle = pillBg;
+              ctx.fill();
+              ctx.restore();
+
+              drawRoundRect(ctx, pX, pY, pW, pH, 12);
+              ctx.strokeStyle = pillBorder;
+              ctx.lineWidth = 1.2;
+              ctx.stroke();
+
+              ctx.fillStyle = pillColor;
+              ctx.textAlign = "center";
+              ctx.textBaseline = "middle";
+              ctx.fillText(topText, 0, pY + pH / 2 + 0.5);
+
+              ctx.restore();
             }
-
-            ctx.save();
-            ctx.translate(item.cx - minX + padX, item.cy - minY + padY);
-            ctx.rotate((item.rotDeg * Math.PI) / 180);
-            ctx.scale(item.sc, item.sc);
-
-            ctx.font = "bold 11.5px 'Lora', Georgia, serif";
-            const tMetrics = ctx.measureText(topText);
-            const pW = tMetrics.width + 22;
-            const pH = 24;
-            const pX = -pW / 2;
-            const pY = -item.unscaledH / 2 - pH - 8;
-
-            ctx.save();
-            ctx.shadowColor = "rgba(0, 0, 0, 0.35)";
-            ctx.shadowBlur = 8;
-            ctx.shadowOffsetY = 3;
-            drawRoundRect(ctx, pX, pY, pW, pH, 12);
-            ctx.fillStyle = pillBg;
-            ctx.fill();
-            ctx.restore();
-
-            drawRoundRect(ctx, pX, pY, pW, pH, 12);
-            ctx.strokeStyle = pillBorder;
-            ctx.lineWidth = 1.2;
-            ctx.stroke();
-
-            ctx.fillStyle = pillColor;
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText(topText, 0, pY + pH / 2 + 0.5);
-
-            ctx.restore();
           }
 
           dataUrl = canvas.toDataURL("image/png");
@@ -4141,30 +4080,12 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 setSelectedCard(card);
               }}
             >
-              {/* Nhãn vị trí trận pháp phía trên lá bài: Hiển thị rõ tên quẻ và hào động của từng lá bài */}
-              {card.positionLabel && (
+              {/* Nhãn vị trí trận pháp phía trên lá bài: Chỉ hiển thị cho Trận 7 lá (that_tinh) và Trận 10 lá (thap_tinh) */}
+              {(mode === "that_tinh" || mode === "thap_tinh") && card.positionLabel && (
                 <div
                   className="absolute -top-7 sm:-top-8 md:-top-9 left-1/2 -translate-x-1/2 whitespace-nowrap text-center z-40 pointer-events-auto select-none"
                 >
-                  {mode === "thap_la" ? (
-                    idx === 0 ? (
-                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-serif font-bold bg-amber-950/95 text-amber-200 border border-amber-500/80 shadow-lg backdrop-blur-sm">
-                        Quẻ Chủ: #{card.hexNumber} {card.name.replace("Quẻ Chủ: ", "")}
-                      </span>
-                    ) : idx === 1 ? (
-                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-serif font-bold bg-emerald-950/95 text-emerald-200 border border-emerald-500/80 shadow-lg backdrop-blur-sm">
-                        {card.name.includes("Đồng Quẻ Chủ")
-                          ? `Quẻ Biến (Đồng Quẻ Chủ): #${card.hexNumber}`
-                          : `Quẻ Biến: #${card.hexNumber} ${card.name.replace("Quẻ Biến: ", "")}`}
-                      </span>
-                    ) : (
-                      <span className="inline-block px-2 py-0.5 rounded-full text-[9.5px] sm:text-[11px] font-serif font-bold bg-zinc-900/95 text-amber-300 border border-[#C4963E]/80 shadow-lg backdrop-blur-sm">
-                        {card.yaoNumber && card.yaoNumber > 0
-                          ? `Hào ${card.yaoNumber}: ${card.hanzi || card.name.split("·")[1]?.trim() || `Hào ${card.yaoNumber}`}`
-                          : "Quẻ Tĩnh (0 Hào Động)"}
-                      </span>
-                    )
-                  ) : mode === "thap_tinh" && idx === 1 ? (
+                  {mode === "thap_tinh" && idx === 1 ? (
                     <button
                       type="button"
                       onClick={(e) => {
@@ -4246,21 +4167,6 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     className="absolute inset-0 pointer-events-none rounded-2xl z-20"
                     style={{ border: "1px solid rgba(196,150,62,0.32)" }}
                   />
-
-                  {/* Nhãn chân thẻ bài (Bottom Badge): Đặt gọn gàng BÊN TRONG thẻ bài (bottom-2 sm:bottom-2.5) để không đè lên nhãn Quẻ Biến hoặc các lá bài phía dưới */}
-                  {mode === "thap_la" && (
-                    <div className="absolute bottom-2 sm:bottom-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap text-center z-30 pointer-events-none select-none">
-                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[8.5px] sm:text-[10px] font-sans font-semibold bg-black/85 text-amber-100/95 border border-amber-500/50 shadow-md backdrop-blur-xs">
-                        {idx === 0
-                          ? `[Bản Quái] ${card.hanzi || card.symbol || ""}`
-                          : idx === 1
-                          ? `[Biến Quái] ${card.hanzi || card.symbol || ""}`
-                          : card.yaoNumber && card.yaoNumber > 0
-                          ? `[Hào Động ${card.yaoNumber}] ${card.hanzi || card.name.split("·")[0]?.replace(/^Hào\s*\d+:\s*/, "").trim() || ""}`
-                          : "Toàn Tĩnh"}
-                      </span>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
