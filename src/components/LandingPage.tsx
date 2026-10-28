@@ -1886,7 +1886,59 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     }, 100);
   }, [handleQuestionChange, handleHexagramPredictionChange, handleCustomAnswerChange]);
 
+  const [showPhoneVideoMode, setShowPhoneVideoMode] = useState<boolean>(true);
+  const getTodayDragonDateKey = useCallback(() => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  }, []);
+  const [dragonWakeState, setDragonWakeState] = useState<"sleeping" | "waking" | "awake">(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const now = new Date();
+        const todayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+        if (localStorage.getItem("cuunhi_dragon_awake_date_v1") === todayKey) {
+          return "awake";
+        }
+      } catch {}
+    }
+    return "sleeping";
+  });
+  const isDragonSleeping = dragonWakeState === "sleeping";
+  const [isDragonUnlocked, setIsDragonUnlocked] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const now = new Date();
+        const todayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+        if (localStorage.getItem("cuunhi_dragon_awake_date_v1") === todayKey) {
+          return true;
+        }
+      } catch {}
+    }
+    return false;
+  });
+  const isDragonLocked = !isDragonUnlocked;
+  const dragonUnlockTimerRef = useRef<number | null>(null);
+  const [dragonIdleAct, setDragonIdleAct] = useState<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7>(0);
+  const [dragonAutoFullAct, setDragonAutoFullAct] = useState<6 | 7>(6);
+  const [isPlayingCopyFullClips, setIsPlayingCopyFullClips] = useState<boolean>(false);
+  const [isDragonAutoCycle, setIsDragonAutoCycle] = useState<boolean>(false);
+  const [isDragonSendingFinale, setIsDragonSendingFinale] = useState<boolean>(false);
+  const dragonVideoRef = useRef<HTMLVideoElement | null>(null);
+
+  const triggerDragonFullAnimations = useCallback(() => {
+    if (!isDragonUnlocked) return;
+    setDragonWakeState("awake");
+    setShowPhoneVideoMode(false);
+    setDragonAutoFullAct(6);
+    setIsPlayingCopyFullClips(true);
+    if (dragonVideoRef.current) {
+      dragonVideoRef.current.currentTime = 0;
+      dragonVideoRef.current.play().catch(() => {});
+    }
+  }, [isDragonUnlocked]);
+
   const handleCopySavedSpreadForAI = useCallback(async (item: SavedSpreadItem) => {
+    triggerDragonFullAnimations();
     const text = await formatSpreadForAI(
       item.cards,
       item.mode as SpreadMode,
@@ -1901,7 +1953,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       setCopiedToast(`📋 Đã chép quẻ "${item.spreadTitle}" (kèm câu hỏi & đáp án) cho AI!`);
       setTimeout(() => setCopiedToast(null), 3000);
     }
-  }, []);
+  }, [triggerDragonFullAnimations]);
 
   const handleLoadTempSpread = useCallback((item: TempSpreadItem) => {
     if (item.mode && SPREAD_MODES.includes(item.mode as SpreadMode)) {
@@ -1967,6 +2019,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   }, [reloadSavedSpreads, reloadTempSpreads]);
 
   const handleCopyTempSpreadForAI = useCallback(async (item: TempSpreadItem) => {
+    triggerDragonFullAnimations();
     const text = await formatSpreadForAI(
       item.cards,
       item.mode as SpreadMode,
@@ -1981,7 +2034,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       setCopiedToast(`📋 Đã chép quẻ tạm "${item.spreadTitle}" cho AI!`);
       setTimeout(() => setCopiedToast(null), 3000);
     }
-  }, []);
+  }, [triggerDragonFullAnimations]);
 
   /* Trigger tick ref for recalculating physics */
   const requestTickRef = useRef<() => void>(() => {});
@@ -2746,6 +2799,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
   /* ── Sao chép toàn bộ trải bài cho AI (Đầy đủ thông tin từ Hexagram & Bách khoa) ── */
   const handleCopyCardsForAI = useCallback(async () => {
+    if (isDragonLocked) {
+      setCopiedToast("🔒 Cửu Nhị Tiểu Long còn đang ngủ! Hãy bấm nút “Gọi Cửu Nhị Tiểu Long Dậy” và chờ 5 giây để mở khóa.");
+      setTimeout(() => setCopiedToast(null), 3500);
+      return;
+    }
+    triggerDragonFullAnimations();
     const hasQuestion = !!userIntentQuestion.trim();
     const hasPrediction = !!hexagramPrediction.trim();
     const hasAnswer = !!userCustomAnswer.trim();
@@ -2777,10 +2836,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       setTimeout(() => setCopiedAI(false), 2500);
       setTimeout(() => setCopiedToast(null), 3500);
     }
-  }, [cards, mode, isCard2Reversed, isRitualCompleted, userIntentQuestion, userCustomAnswer]);
+  }, [isDragonLocked, cards, mode, isCard2Reversed, isRitualCompleted, userIntentQuestion, userCustomAnswer, triggerDragonFullAnimations]);
 
   /* ── Sao chép 1 lá bài đơn lẻ cho AI (Thông tin cơ bản hoặc 100% bách khoa khi đắc pháp) ── */
   const handleCopySingleCardForAI = useCallback(async (card: DynamicCardItem) => {
+    triggerDragonFullAnimations();
     const cleanedQuestion = userIntentQuestion.trim();
     const questionHeader = cleanedQuestion
       ? `【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:\n"${cleanedQuestion}"\n\n`
@@ -2841,7 +2901,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       setTimeout(() => setCopiedSingle(false), 2200);
       setTimeout(() => setCopiedToast(null), 3200);
     }
-  }, [isRitualCompleted, userIntentQuestion]);
+  }, [isRitualCompleted, userIntentQuestion, triggerDragonFullAnimations]);
 
   /* ── Chụp hình tự động căn trọn vẹn toàn bộ các lá bài đang trải trận ── */
   const handleCaptureCardsSnapshot = useCallback(async (opts?: { silent?: boolean } | React.MouseEvent): Promise<string | null> => {
@@ -3496,11 +3556,6 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
   } | null>(null);
   const [isDirectResultModalOpen, setIsDirectResultModalOpen] = useState<boolean>(false);
   const [directResultActiveTab, setDirectResultActiveTab] = useState<"interp" | "script" | "raw">("interp");
-  const [showPhoneVideoMode, setShowPhoneVideoMode] = useState<boolean>(true);
-  const [dragonIdleAct, setDragonIdleAct] = useState<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7>(0);
-  const [dragonAutoFullAct, setDragonAutoFullAct] = useState<6 | 7>(6);
-  const [isDragonAutoCycle, setIsDragonAutoCycle] = useState<boolean>(false);
-  const [isDragonSendingFinale, setIsDragonSendingFinale] = useState<boolean>(false);
   const [isRecordingVoiceQ, setIsRecordingVoiceQ] = useState<boolean>(false);
   const [isTranscribingVoiceQ, setIsTranscribingVoiceQ] = useState<boolean>(false);
   const [voiceRecordSec, setVoiceRecordSec] = useState<number>(0);
@@ -3512,7 +3567,6 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
   const webSpeechBrokenRef = useRef<boolean>(false);
   const liveSpeechTextRef = useRef<string>("");
   const voiceBaseTextRef = useRef<string>("");
-  const dragonVideoRef = useRef<HTMLVideoElement | null>(null);
   const directHomePollRef = useRef<number | null>(null);
   const directHomeWorkerRef = useRef<Worker | null>(null);
   const titleBlinkRef = useRef<number | null>(null);
@@ -3581,25 +3635,62 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
   const isDragonWorking =
     isDirectHomeRunning ||
+    isPlayingCopyFullClips ||
     isDragonSendingFinale ||
     isCapturingSnapshot ||
     isRecordingVoiceQ ||
     isTranscribingVoiceQ;
 
-  const activeDragonAct: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 =
-    isDirectHomeRunning || isCapturingSnapshot ? dragonAutoFullAct : 0;
+  const activeDragonAct: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 =
+    dragonWakeState === "sleeping"
+      ? 0
+      : dragonWakeState === "waking"
+      ? 8
+      : isDirectHomeRunning || isCapturingSnapshot || isPlayingCopyFullClips
+      ? dragonAutoFullAct
+      : 9;
+
+  const handleWakeUpDragon = useCallback(() => {
+    if (dragonWakeState !== "sleeping") return;
+    try {
+      localStorage.setItem("cuunhi_dragon_awake_date_v1", getTodayDragonDateKey());
+    } catch {}
+    setShowPhoneVideoMode(false);
+    setDragonWakeState("waking");
+    if (dragonUnlockTimerRef.current) {
+      window.clearTimeout(dragonUnlockTimerRef.current);
+    }
+    dragonUnlockTimerRef.current = window.setTimeout(() => {
+      setIsDragonUnlocked(true);
+      dragonUnlockTimerRef.current = null;
+    }, 5000);
+  }, [dragonWakeState, getTodayDragonDateKey]);
+
+  useEffect(() => {
+    return () => {
+      if (dragonUnlockTimerRef.current) {
+        window.clearTimeout(dragonUnlockTimerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (dragonVideoRef.current) {
+      dragonVideoRef.current.play().catch(() => {});
+    }
+  }, [activeDragonAct, dragonWakeState]);
 
   const DRAGON_VIDEO_MAP: Record<
-    0 | 1 | 2 | 3 | 4 | 5 | 6 | 7,
+    0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9,
     { src: string; badge: string; shortLabel: string; fileLabel: string; sub: string; quote: string }
   > = {
     0: {
       src: "/videos/canh_ngu_1_lien_tiep.mp4",
-      badge: "💤 Cảnh Ngủ 1 Liên Tiếp: Tiểu Long Đang Ngủ",
-      shortLabel: "💤 Cảnh Ngủ 1 Liên Tiếp",
+      badge: "💤 Cảnh Đang Ngủ: Cửu Nhị Tiểu Long Đang Ngủ",
+      shortLabel: "💤 Cảnh Đang Ngủ",
       fileLabel: "cảnh ngủ 1 liên tiếp.mp4 (10s)",
-      sub: "💤 Tiểu Long Cửu Nhị đang chạy hoạt ảnh cảnh ngủ 1 liên tiếp...",
-      quote: "Khò khò... Tiểu Long Cửu Nhị đang nằm ngủ ngon lành bên thư án (cảnh ngủ 1 liên tiếp). Bấm Tự Động Hóa Toàn Bộ để đánh thức Tiểu Long dậy luận quẻ!",
+      sub: "💤 Cửu Nhị Tiểu Long đang ngủ say (Lần đầu mở trong ngày)...",
+      quote: "Khò khò... Cửu Nhị Tiểu Long còn đang ngủ say bên thư án. Hãy bấm nút “Gọi Cửu Nhị Tiểu Long Dậy” để đánh thức Rồng con và mở khóa 2 nút Chép Toàn Bộ Cho AI & Tự Động Hóa!",
     },
     1: {
       src: "/videos/canh_1.mp4",
@@ -3656,6 +3747,22 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       fileLabel: "full 2.mp4 (40s)",
       sub: "Phát trọn bộ hoạt ảnh Tiểu Long Cửu Nhị (Bản Full 2 · 40s)...",
       quote: "Trọn bộ hành trình Tiểu Long Cửu Nhị (Full 2): Mở Laptop Bát Quái → Soi cổ thư → Chép sớ → Gõ máy & Gửi thư!",
+    },
+    8: {
+      src: "/videos/canh_thuc.mp4",
+      badge: "🌅 Cảnh Thức: Cửu Nhị Tiểu Long Đang Thức Dậy",
+      shortLabel: "🌅 Cảnh Thức",
+      fileLabel: "Cảnh thức.mp4 (20s)",
+      sub: "🌅 Cửu Nhị Tiểu Long đang thức giấc (Chạy Cảnh Thức ➔ Cảnh Ngồi Không)...",
+      quote: "Oáp... Cửu Nhị Tiểu Long đã nghe tiếng gọi của bạn và đang vươn vai thức dậy chuẩn bị bút nghiên luận giải quẻ Dịch!",
+    },
+    9: {
+      src: "/videos/canh_ngoi_khong.mp4",
+      badge: "🐉 Cảnh Ngồi Không: Cửu Nhị Tiểu Long Đã Thức",
+      shortLabel: "🐉 Cảnh Ngồi Không",
+      fileLabel: "cảnh ngồi không.mp4 (10s)",
+      sub: "🐉 Cửu Nhị Tiểu Long đang ở trạng thái Cảnh Ngồi Không, sẵn sàng làm việc...",
+      quote: "Cửu Nhị Tiểu Long đang ngồi tĩnh tọa bên thư án (Cảnh Ngồi Không). Hai nút Chép Toàn Bộ Cho AI và Tự Động Hóa đã mở khóa sẵn sàng!",
     },
   };
 
@@ -3807,30 +3914,11 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     }
   }, [stopDirectHomePolling, playGoldenChime432Hz]);
 
-  // Tự động kiểm tra và khôi phục tiến trình chạy ngầm nếu người dùng F5 tải lại trang hoặc quay lại từ mục khác
   useEffect(() => {
-    let mounted = true;
-    (async () => {
-      try {
-        const stRes = await fetchDirectHomeApi("/api/direct_home/status").catch(() => null);
-        if (!stRes || !stRes.ok || !mounted) return;
-        const stData = await stRes.json();
-        if (stData.status === "running") {
-          setIsDirectHomeRunning(true);
-          setDirectHomePercent(stData.percent || 25);
-          setDirectHomeElapsed(stData.elapsed_seconds || 0);
-          setDirectHomeEtaRemaining(stData.eta_remaining_seconds || 45);
-          setDirectHomeEtaText(stData.eta_text || "~45 giây");
-          setDirectHomeMessage(stData.message || "Đang tiếp tục tiến trình tạo Video 9:16 chạy ngầm...");
-          startDirectHomeBackgroundPolling();
-        }
-      } catch {}
-    })();
     return () => {
-      mounted = false;
       stopDirectHomePolling();
     };
-  }, [startDirectHomeBackgroundPolling, stopDirectHomePolling]);
+  }, [stopDirectHomePolling]);
 
   // Khi người dùng bốc quẻ mới hoặc đổi trận pháp trên trang chủ, tự động đồng bộ lại màn hình điện thoại theo quẻ mới
   const cardsSignature = cards.map((c) => `${c.id}:${c.hexNumber}:${c.yaoNumber || 0}`).join("|") + `|${mode}|${isCard2Reversed}`;
@@ -4132,6 +4220,11 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
   const handleStartDirectHomeAutomation = useCallback(async () => {
     if (isDirectHomeRunning) return;
+    if (isDragonLocked) {
+      setCopiedToast("🔒 Cửu Nhị Tiểu Long còn đang ngủ! Hãy bấm nút “Gọi Cửu Nhị Tiểu Long Dậy” và chờ 5 giây để mở khóa.");
+      setTimeout(() => setCopiedToast(null), 3500);
+      return;
+    }
 
     if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "default") {
       try {
@@ -4240,6 +4333,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     }
   }, [
     isDirectHomeRunning,
+    dragonWakeState,
     handleCaptureCardsSnapshot,
     cards,
     mode,
@@ -5335,28 +5429,56 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     </button>
                   </div>
 
+                  {/* NÚT GỌI CỬU NHỊ TIỂU LONG DẬY */}
+                  {isDragonSleeping ? (
+                    <div className="relative w-full">
+                      <button
+                        type="button"
+                        id="btn-wake-up-dragon"
+                        onClick={handleWakeUpDragon}
+                        className="inline-flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl text-xs sm:text-sm font-serif font-bold text-[#1C1610] border-2 border-[#FFF8E7] transition cursor-pointer shadow-lg hover:brightness-105 active:scale-[0.99] select-none"
+                        style={{
+                          background: "linear-gradient(135deg, #FFF3B0 0%, #E5C158 45%, #C4963E 100%)",
+                          boxShadow: "0 12px 28px -4px rgba(212, 175, 55, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.9)",
+                        }}
+                      >
+                        <span className="tracking-wide">GỌI CỬU NHỊ TIỂU LONG DẬY</span>
+                      </button>
+                    </div>
+                  ) : null}
+
                   {/* CỤM 3: HERO CTA - CHÉP TOÀN THƯ CHO AI (ĐIỂM NHẤN SƠN MÀI HỔ PHÁCH × VÀNG KIM HOÀNG GIA) */}
                   <div className="relative w-full">
                     <button
                       type="button"
+                      id="btn-copy-all-for-ai"
+                      disabled={isDragonLocked}
                       onClick={handleCopyCardsForAI}
-                      className={`inline-flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl text-xs sm:text-sm font-serif font-bold transition cursor-pointer shadow-md active:scale-[0.99] select-none ${
-                        copiedAI
-                          ? "bg-emerald-700 text-white border border-emerald-400"
-                          : "text-[#F5E6C4] border border-[#D4AF37]/85 hover:brightness-110"
+                      className={`inline-flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl text-xs sm:text-sm font-serif font-bold transition shadow-md select-none ${
+                        isDragonLocked
+                          ? "opacity-55 cursor-not-allowed grayscale-[45%] text-[#A89880] border border-[#8A7960]/60"
+                          : copiedAI
+                          ? "bg-emerald-700 text-white border border-emerald-400 cursor-pointer active:scale-[0.99]"
+                          : "text-[#F5E6C4] border border-[#D4AF37]/85 hover:brightness-110 cursor-pointer active:scale-[0.99]"
                       }`}
                       style={
-                        copiedAI
+                        copiedAI && !isDragonLocked
                           ? undefined
                           : {
-                              background: "linear-gradient(135deg, #2A2118 0%, #1C1610 55%, #261D14 100%)",
+                              background: isDragonLocked
+                                ? "linear-gradient(135deg, #3A332C 0%, #26211C 100%)"
+                                : "linear-gradient(135deg, #2A2118 0%, #1C1610 55%, #261D14 100%)",
                               boxShadow: "0 10px 24px -4px rgba(28, 22, 16, 0.28), inset 0 1px 0 rgba(212, 175, 55, 0.35)",
                             }
                       }
-                      title="Sao chép toàn bộ thông tin các lá bài (kèm câu hỏi & đáp án) để gửi cho AI luận giải"
+                      title={
+                        isDragonLocked
+                          ? "Đang khóa vì Cửu Nhị Tiểu Long còn ngủ/đang thức dậy. Sau khi gọi dậy 5 giây sẽ tự động mở khóa!"
+                          : "Sao chép toàn bộ thông tin các lá bài (kèm câu hỏi & đáp án) để gửi cho AI luận giải"
+                      }
                     >
                       <span className="text-base text-[#E5C158] shrink-0">
-                        {copiedAI ? "✓" : isRitualCompleted ? "✨" : "⚡"}
+                        {isDragonLocked ? "🔒" : copiedAI ? "✓" : isRitualCompleted ? "✨" : "⚡"}
                       </span>
                       <span>
                         {copiedAI
@@ -5365,7 +5487,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                           ? "Chép Toàn Thư Bách Khoa Cho AI (Đắc Pháp)"
                           : "Chép Toàn Bộ Quẻ Bài & Câu Hỏi Cho AI"}
                       </span>
-                      {(userIntentQuestion.trim() || userCustomAnswer.trim()) && !copiedAI && (
+                      {(userIntentQuestion.trim() || userCustomAnswer.trim()) && !copiedAI && !isDragonLocked && (
                         <span className="text-[10px] font-sans font-bold text-[#1C1610] bg-[#F3E5AB] px-2 py-0.5 rounded-full border border-[#D4AF37]">
                           +Kèm Tâm Niệm
                         </span>
@@ -5373,111 +5495,6 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     </button>
                   </div>
 
-                  {/* CỤM 4: NÚT TỰ ĐỘNG HÓA TOÀN BỘ (LUẬN TRỰC TIẾP & VIDEO 9:16 - MẪU 2) */}
-                  <div className="relative w-full flex flex-col gap-2">
-                    <button
-                      type="button"
-                      id="btn-direct-home-auto-all"
-                      disabled={isDirectHomeRunning}
-                      onClick={handleStartDirectHomeAutomation}
-                      className={`inline-flex flex-col items-center justify-center gap-0.5 w-full px-4 py-2.5 rounded-xl text-xs sm:text-sm font-serif font-bold transition cursor-pointer shadow-md active:scale-[0.99] select-none border ${
-                        isDirectHomeRunning
-                          ? "bg-[#5C1A1B] text-[#F3E5AB] border-[#D4AF37] opacity-90 cursor-wait"
-                          : "text-[#FFF8E7] border-[#E5C158] hover:brightness-110"
-                      }`}
-                      style={{
-                        background: isDirectHomeRunning
-                          ? "linear-gradient(135deg, #5C1A1B 0%, #3E1011 100%)"
-                          : "linear-gradient(135deg, #8B1E22 0%, #631316 55%, #4A0E10 100%)",
-                        boxShadow:
-                          "0 10px 26px -4px rgba(139, 30, 34, 0.42), inset 0 1px 0 rgba(243, 229, 171, 0.45)",
-                      }}
-                      title="Tự động chụp hình thẻ bài từ trang chủ, tự lấy nội dung Chép cho AI & câu hỏi từ trang chủ để luận giải Gemini và dựng Video 9:16"
-                    >
-                      <span className="inline-flex items-center gap-2 tracking-wide">
-                        <span className="text-base">{isDirectHomeRunning ? "⏳" : "🚀"}</span>
-                        <span>
-                          {isDirectHomeRunning
-                            ? `ĐANG TỰ ĐỘNG HÓA TRỰC TIẾP (${directHomePercent}%)`
-                            : "BẮT ĐẦU TỰ ĐỘNG HÓA TOÀN BỘ (LUẬN TRỰC TIẾP & VIDEO 9:16)"}
-                        </span>
-                      </span>
-                      <span className="text-[10px] font-sans font-normal text-[#F3E5AB]/90 tracking-normal">
-                        (Tự Chụp Thẻ Bài Trang Chủ + Tự Chép Quẻ & Câu Hỏi + Luận Giải AI + Dựng Video Dọc 9:16)
-                      </span>
-                    </button>
-
-                    {/* Thanh chọn Giọng Đọc & Tiến Trình Tự Động Hóa (0% -> 100%) */}
-                    <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 rounded-xl bg-[#FAF4E6]/95 border border-[#C4963E]/40 px-3 py-1.5 shadow-2xs">
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <span className="text-xs">🎙️</span>
-                        <select
-                          aria-label="Chọn giọng đọc thuyết minh"
-                          value={directHomeVoice}
-                          onChange={(e) => setDirectHomeVoice(e.target.value)}
-                          disabled={isDirectHomeRunning}
-                          className="bg-transparent text-[11px] font-serif font-bold text-[#4A3B28] focus:outline-none cursor-pointer pr-1"
-                        >
-                          <option value="vi-VN-NamMinhNeural">Giọng Nam Minh (Trầm ấm)</option>
-                          <option value="vi-VN-HoaiMyNeural">Giọng Hoài My (Truyền cảm)</option>
-                        </select>
-                      </div>
-
-                      <div className="flex-1 flex items-center gap-2 min-w-[140px]">
-                        <div className="flex-1 h-2 rounded-full bg-[#E6DAC3] overflow-hidden border border-[#C4963E]/30">
-                          <div
-                            className="h-full transition-all duration-300 rounded-full"
-                            style={{
-                              width: `${Math.max(4, directHomePercent)}%`,
-                              background: "linear-gradient(90deg, #B8862D 0%, #D4AF37 50%, #9E2A2B 100%)",
-                            }}
-                          />
-                        </div>
-                        <span className="text-[10px] font-bold text-[#6E4E16] shrink-0">
-                          {directHomePercent}%
-                        </span>
-                      </div>
-                    </div>
-
-                    {(isDirectHomeRunning || directHomeResult?.total_time) && (
-                      <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-[#231B12]/95 border border-[#D4AF37]/45 px-2.5 py-1.5 text-[10.5px] text-[#F3E5AB] shadow-xs">
-                        <div className="flex items-center gap-1.5">
-                          <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                          <span>
-                            ⏱ Đã chạy: <strong>{formatSecondsMMSS(directHomeElapsed)}</strong>
-                          </span>
-                        </div>
-                        <div className="font-bold text-emerald-300">
-                          {isDirectHomeRunning
-                            ? `⏳ Dự kiến còn: ${directHomeEtaText || `~${directHomeEtaRemaining || 45} giây`} (Tổng ~${formatSecondsMMSS(directHomeEstimatedTotal)})`
-                            : `✅ Đã hoàn tất trong ${formatSecondsMMSS(directHomeElapsed || directHomeResult?.total_time || 0)}!`}
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="flex items-center justify-between text-[10px] text-[#6E5D47] px-1">
-                      <span className="truncate font-medium">
-                        ✦ {directHomeMessage}
-                      </span>
-                      {directHomeResult?.full_interpretation && (
-                        <button
-                          type="button"
-                          onClick={() => setIsDirectResultModalOpen(true)}
-                          className="text-[#9E2A2B] font-bold underline hover:text-[#6E4E16] shrink-0 ml-2 cursor-pointer"
-                        >
-                          Xem bản luận đầy đủ →
-                        </button>
-                      )}
-                    </div>
-                    {isDirectHomeRunning && (
-                      <div className="text-[9.5px] text-[#7A5C2E] bg-[#FDF8EC] border border-[#D4AF37]/35 rounded-lg px-2.5 py-1 flex items-center gap-1.5">
-                        <span>🔔</span>
-                        <span>
-                          <strong>Chế độ chạy ngầm:</strong> Bạn có thể tự do cuộn trang, đọc sách hoặc chuyển sang tab khác. Khi dựng xong Video hệ thống sẽ đổ chuông 432Hz & báo hiệu!
-                        </span>
-                      </div>
-                    )}
-                  </div>
                 </div>
               </div>
 
@@ -5710,12 +5727,22 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                                 key={DRAGON_VIDEO_MAP[activeDragonAct].src}
                                 src={DRAGON_VIDEO_MAP[activeDragonAct].src}
                                 autoPlay
-                                loop={activeDragonAct === 0}
+                                loop={activeDragonAct === 0 || activeDragonAct === 9}
                                 muted
                                 playsInline
                                 onEnded={(e) => {
-                                  if (isDirectHomeRunning || isCapturingSnapshot) {
+                                  if (dragonWakeState === "waking") {
+                                    setDragonWakeState("awake");
+                                    setIsDragonUnlocked(true);
+                                  } else if (isDirectHomeRunning || isCapturingSnapshot) {
                                     setDragonAutoFullAct((prev) => (prev === 6 ? 7 : 6));
+                                  } else if (isPlayingCopyFullClips) {
+                                    if (dragonAutoFullAct === 6) {
+                                      setDragonAutoFullAct(7);
+                                    } else {
+                                      setIsPlayingCopyFullClips(false);
+                                      setDragonAutoFullAct(6);
+                                    }
                                   } else {
                                     const v = e.currentTarget;
                                     v.currentTime = 0;
@@ -5783,15 +5810,37 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                             />
                           ) : (
                             <div className="flex items-center justify-between text-[9.5px] text-[#D4AF37]">
-                              <span className="font-mono">🐉 4 Hồi Tiểu Long</span>
-                              <button
-                                type="button"
-                                onClick={handleStartDirectHomeAutomation}
-                                disabled={isDirectHomeRunning}
-                                className="px-2.5 py-0.5 rounded-full bg-[#D4AF37] text-[#1C1610] font-bold hover:brightness-110 cursor-pointer"
-                              >
-                                {isDirectHomeRunning ? "Đang tạo..." : "▶ Tạo & Phát Ngay"}
-                              </button>
+                              <span className="font-mono">
+                                {isDragonSleeping
+                                  ? "💤 Đang ngủ say"
+                                  : dragonWakeState === "waking"
+                                  ? "🌅 Cảnh Thức..."
+                                  : isDirectHomeRunning || isCapturingSnapshot || isPlayingCopyFullClips
+                                  ? `🌟 Hoạt Ảnh Full ${dragonAutoFullAct === 6 ? "1" : "2"}`
+                                  : "🐉 Cảnh Ngồi Không"}
+                              </span>
+                              {isDragonSleeping ? (
+                                <button
+                                  type="button"
+                                  onClick={handleWakeUpDragon}
+                                  className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#FFF3B0] to-[#D4AF37] text-[#1C1610] font-bold hover:brightness-110 cursor-pointer animate-pulse"
+                                >
+                                  🔔 Gọi Tiểu Long Dậy
+                                </button>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={handleStartDirectHomeAutomation}
+                                  disabled={isDirectHomeRunning || isDragonLocked}
+                                  className={`px-2.5 py-0.5 rounded-full font-bold ${
+                                    isDragonLocked
+                                      ? "bg-[#3A332C] text-[#A89880] cursor-not-allowed opacity-60"
+                                      : "bg-[#D4AF37] text-[#1C1610] hover:brightness-110 cursor-pointer"
+                                  }`}
+                                >
+                                  {isDragonLocked ? "🔒 Đang thức dậy..." : isDirectHomeRunning ? "Đang tạo..." : "▶ Tạo & Phát Ngay"}
+                                </button>
+                              )}
                             </div>
                           )}
                         </div>

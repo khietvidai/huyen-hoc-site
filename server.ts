@@ -1819,6 +1819,8 @@ app.post("/api/ngu-che/redraw-batch", async (req: Request, res: Response) => {
 const publicDir = path.join(process.cwd(), "public");
 app.use("/decks", express.static(path.join(publicDir, "decks"), { maxAge: "7d" }));
 app.use("/images/jiazi", express.static(path.join(publicDir, "images", "jiazi"), { maxAge: "7d" }));
+app.use("/images/dragon", express.static(path.join(publicDir, "images", "dragon"), { maxAge: "7d" }));
+app.use("/videos", express.static(path.join(publicDir, "videos"), { maxAge: "7d" }));
 app.use("/assets", express.static(path.join(publicDir, "assets"), { maxAge: "7d" }));
 app.use("/vi/blog", express.static(path.join(publicDir, "vi", "blog")));
 app.use("/vi/hexagram", express.static(path.join(publicDir, "vi", "hexagram")));
@@ -1888,6 +1890,91 @@ app.post(
     }
   }
 );
+
+// Proxy + Fallback cho 3D AI Agent Tiểu Long Cửu Nhị Vấn Đáp Quẻ Dịch trong Điện Thoại ở Trang Chủ
+app.post("/api/dragon_agent/chat", async (req: Request, res: Response) => {
+  try {
+    const upstream = await fetch("http://127.0.0.1:8000/api/dragon_agent/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(req.body || {}),
+    });
+    if (upstream.ok) {
+      const data = await upstream.json();
+      return res.status(200).json(data);
+    }
+  } catch (_err) {
+    // Fallback sang bộ não nội bộ nếu port 8000 chưa bật
+  }
+
+  const body = req.body || {};
+  const userMessage = String(body.user_message || "").trim() || "Xin Tiểu Long giải đáp ý nghĩa quẻ này?";
+  const mainQuestion = String(body.main_question || "").trim() || userMessage;
+  const hexagramText = String(body.hexagram_text || "").trim();
+
+  const lines = hexagramText
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean);
+  let detectedHex = "Quẻ Kinh Dịch Hiện Tại";
+  for (const ln of lines.slice(0, 20)) {
+    if (/QUẺ|LÁ 1|BẢN QUÁI|THÁP LA|TRẬN/i.test(ln)) {
+      detectedHex = ln.replace(/[\u4dc0-\u4dff#*✦☯•=\-\[\]【】]/g, " ").trim().slice(0, 70);
+      if (detectedHex.length > 4) break;
+    }
+  }
+
+  const lowerQ = userMessage.toLowerCase();
+  let poseId = "act1_reading";
+  let poseImg = "/images/dragon/act1_reading.jpg";
+  let poseBadge = "🔍 Soi Kính Lúp Đọc Cổ Thư";
+  let emotion = "focused";
+  let reply = "";
+
+  if (/thời điểm|khi nào|bao giờ|tháng/.test(lowerQ)) {
+    poseId = "daily1_waking_up";
+    poseImg = "/images/dragon/daily1_waking_up.jpg";
+    poseBadge = "🌅 Thức Dậy Đón Vận Hội Mới";
+    emotion = "energetic";
+    reply = `Chào bạn! Tiểu Long Cửu Nhị vừa soi kỹ ${detectedHex} cho câu hỏi “${userMessage}”. Quẻ báo hiệu thời cơ đang chuyển từ tĩnh sang động; giai đoạn vượng khí nhất là khi bạn củng cố xong bước chuẩn bị nền tảng trong thời gian gần tới. Hãy tiến từng bước vững chắc, thuận thời mà hành động ắt gặt hái cát tường!`;
+  } else if (/tài lộc|tiền|kinh doanh|đầu tư|công việc|sự nghiệp/.test(lowerQ)) {
+    poseId = "act3_typing";
+    poseImg = "/images/dragon/act3_typing.jpg";
+    poseBadge = "💻 Gõ Laptop Bát Quái Phân Tích";
+    emotion = "energetic";
+    reply = `Tiểu Long đã gõ máy Bát Quái đối chiếu ${detectedHex} với câu hỏi công việc & tài lộc của bạn! Quẻ khuyên bạn lấy sự chắc chắn và chữ Tín làm gốc (Đắc Trung Chính). Tập trung vào thế mạnh cốt lõi, quản trị chặt dòng tiền và hợp tác cùng quý nhân đồng đạo sẽ mang lại thành quả bền vững.`;
+  } else if (/tình cảm|duyên|yêu|gia đạo|đối tác/.test(lowerQ)) {
+    poseId = "daily6_drinking_tea";
+    poseImg = "/images/dragon/daily6_drinking_tea.jpg";
+    poseBadge = "🍵 Thưởng Trà Đàm Đạo Quý Nhân";
+    emotion = "calm";
+    reply = `Mời bạn dùng chén trà thơm cùng Tiểu Long nhé! Chiếu theo ${detectedHex}, chuyện nhân duyên và sự gắn kết cần nhất chữ Thành cùng sự lắng nghe ấm áp. Khi hai bên cởi mở chia sẻ chân tình, mọi khúc mắc đều được hóa giải êm đẹp.`;
+  } else if (/tránh|kỵ|rủi ro|cẩn thận|hóa giải/.test(lowerQ)) {
+    poseId = "daily7_cleaning";
+    poseImg = "/images/dragon/daily7_cleaning.jpg";
+    poseBadge = "🧹 Quét Dọn Thanh Lọc Chướng Ngại";
+    emotion = "focused";
+    reply = `Tiểu Long cầm chổi lông gà quét sạch mây mù để nhắc bạn điều này trong ${detectedHex}: Điều đại kỵ cần tránh nhất lúc này là tâm lý nóng vội hoặc phân tán sức lực. Chỉ cần giữ tâm tĩnh, rà soát kỹ từng bước thì mọi thử thách đều hóa nhẹ tựa lông hồng!`;
+  } else {
+    reply = `Tiểu Long Cửu Nhị đã lấy kính lúp soi tỏ ${detectedHex} liên quan đến câu hỏi “${mainQuestion}” của bạn! Thông điệp cốt lõi của quẻ là “Thuận Thời Đắc Vị”: hiện tại nội lực của bạn đang tích tụ tốt, hãy giữ tâm chính định, làm chắc từng bước trước mắt và thuận theo dòng chảy tự nhiên thì mưu sự ắt hanh thông.`;
+  }
+
+  return res.json({
+    success: true,
+    reply,
+    pose_id: poseId,
+    pose_img: poseImg,
+    pose_badge: poseBadge,
+    emotion,
+    hexagram_focus: detectedHex,
+    quick_questions: [
+      "Thời điểm nào tốt nhất để hành động theo quẻ này?",
+      "Điều đại kỵ cần tránh nhất trong quẻ này là gì?",
+      "Làm sao để kích hoạt cát khí & quý nhân của quẻ?",
+    ],
+    audio_url: "",
+  });
+});
 
 // Vite or Static file serving
 async function startServer() {
