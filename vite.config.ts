@@ -24,6 +24,8 @@ export default defineConfig(() => {
         '/hexagram': 'http://localhost:3000',
         '/cards': 'http://localhost:3000',
         '/cards_zh': 'http://localhost:3000',
+        '/api': 'http://localhost:8000',
+        '/media': 'http://localhost:8000',
       },
     },
   };

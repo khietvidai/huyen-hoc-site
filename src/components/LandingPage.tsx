@@ -3664,12 +3664,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
     const pollOnce = async () => {
       try {
-        let stRes: Response | null = null;
-        try {
-          stRes = await fetch("http://localhost:8000/api/direct_home/status");
-        } catch {
-          stRes = await fetch("/api/direct_home/status");
-        }
+        const stRes = await fetchDirectHomeApi("/api/direct_home/status").catch(() => null);
         if (!stRes || !stRes.ok) return;
         const stData = await stRes.json();
 
@@ -3797,7 +3792,16 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       worker.onmessage = () => {
         pollOnce();
       };
+      worker.onerror = () => {
+        if (!directHomePollRef.current) {
+          directHomePollRef.current = window.setInterval(pollOnce, 1200);
+        }
+      };
       directHomeWorkerRef.current = worker;
+      // Dự phòng bổ sung thêm timer 2s cho trình duyệt di động khi worker bị hạn chế
+      if (!directHomePollRef.current) {
+        directHomePollRef.current = window.setInterval(pollOnce, 2000);
+      }
     } catch {
       directHomePollRef.current = window.setInterval(pollOnce, 1000);
     }
@@ -3808,8 +3812,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     let mounted = true;
     (async () => {
       try {
-        const stRes = await fetch("http://localhost:8000/api/direct_home/status");
-        if (!stRes.ok || !mounted) return;
+        const stRes = await fetchDirectHomeApi("/api/direct_home/status").catch(() => null);
+        if (!stRes || !stRes.ok || !mounted) return;
         const stData = await stRes.json();
         if (stData.status === "running") {
           setIsDirectHomeRunning(true);
@@ -3969,20 +3973,11 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         setCopiedToast("⚡ Đang nhận diện giọng nói thành văn bản tiếng Việt...");
 
         try {
-          let res: Response | null = null;
-          try {
-            res = await fetch("http://localhost:8000/api/transcribe", {
-              method: "POST",
-              headers: { "Content-Type": blobType },
-              body: audioBlob,
-            });
-          } catch {
-            res = await fetch("/api/transcribe", {
-              method: "POST",
-              headers: { "Content-Type": blobType },
-              body: audioBlob,
-            });
-          }
+          const res = await fetchDirectHomeApi("/api/transcribe", {
+            method: "POST",
+            headers: { "Content-Type": blobType },
+            body: audioBlob,
+          });
 
           const data = await res.json();
           if (data && data.success && data.text && data.text.trim()) {
@@ -4075,12 +4070,64 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     }
   }, [isRecordingVoiceQ, isTranscribingVoiceQ, userIntentQuestion, handleQuestionChange, stopVoiceQuestionRecording]);
 
+  // Helper kết nối an toàn cho cả PC và điện thoại di động (qua LAN IP hoặc proxy)
+  const fetchDirectHomeApi = useCallback(async (endpoint: string, options?: RequestInit): Promise<Response> => {
+    const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+    const candidates: string[] = [];
+
+    // Ưu tiên 1: Đường dẫn tương đối (hoạt động tối ưu trên Express cổng 5168, Vite proxy 5173 và FastAPI 8000)
+    candidates.push(cleanEndpoint);
+
+    // Ưu tiên 2: Khi truy cập từ điện thoại qua IP LAN Wi-Fi (khác localhost), kết nối thẳng tới IP máy chủ cổng 8000
+    if (typeof window !== "undefined" && window.location) {
+      const { protocol, hostname, port } = window.location;
+      if (hostname !== "localhost" && hostname !== "127.0.0.1" && port !== "8000") {
+        candidates.push(`${protocol}//${hostname}:8000${cleanEndpoint}`);
+      }
+    }
+
+    // Ưu tiên 3: Localhost cổng 8000 nếu đang chạy trên trình duyệt máy tính
+    candidates.push(`http://localhost:8000${cleanEndpoint}`);
+
+    let lastError: any = null;
+    for (const url of candidates) {
+      try {
+        const res = await fetch(url, options);
+        if (res.ok) {
+          return res;
+        }
+        if ((res.status === 404 || res.status === 502) && candidates.indexOf(url) < candidates.length - 1) {
+          continue;
+        }
+        return res;
+      } catch (err) {
+        lastError = err;
+      }
+    }
+    throw lastError || new Error(`Không thể kết nối đến máy chủ Luận Trực Tiếp (${cleanEndpoint})`);
+  }, []);
+
   const resolveMediaUrl = useCallback((relOrAbs?: string) => {
     if (!relOrAbs) return "";
     if (relOrAbs.startsWith("http://") || relOrAbs.startsWith("https://") || relOrAbs.startsWith("data:")) {
+      if (typeof window !== "undefined" && window.location && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
+        if (relOrAbs.includes("localhost:8000") || relOrAbs.includes("127.0.0.1:8000")) {
+          return relOrAbs.replace(/(?:localhost|127\.0\.0\.1):8000/, `${window.location.hostname}:8000`);
+        }
+      }
       return relOrAbs;
     }
-    return `http://localhost:8000${relOrAbs.startsWith("/") ? "" : "/"}${relOrAbs}`;
+    const clean = relOrAbs.startsWith("/") ? relOrAbs : `/${relOrAbs}`;
+    if (typeof window !== "undefined" && window.location) {
+      const { protocol, hostname, port } = window.location;
+      if (port === "5168" || port === "8000") {
+        return clean;
+      }
+      if (hostname !== "localhost" && hostname !== "127.0.0.1") {
+        return `${protocol}//${hostname}:8000${clean}`;
+      }
+    }
+    return clean;
   }, []);
 
   const handleStartDirectHomeAutomation = useCallback(async () => {
@@ -4110,9 +4157,14 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     try {
       // 1. Tự động lấy hình chụp trực tiếp từ trang chủ đang hiển thị (kèm từng lá bài 1 -> N)
       directHomeCardImgsRef.current = [];
-      const capturedPng = await handleCaptureCardsSnapshot({ silent: true });
-      if (capturedPng) {
-        setDirectHomeCapturedImg(capturedPng);
+      let capturedPng: string | null = null;
+      try {
+        capturedPng = await handleCaptureCardsSnapshot({ silent: true });
+        if (capturedPng) {
+          setDirectHomeCapturedImg(capturedPng);
+        }
+      } catch (snapErr) {
+        console.warn("Snapshot capture warning (mobile fallback):", snapErr);
       }
 
       // 2. Tự động lấy nội dung "Chép cho AI" trực tiếp từ trang chủ đang hiển thị
@@ -4152,20 +4204,11 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         cards_order_version: 2,
       };
 
-      let res: Response | null = null;
-      try {
-        res = await fetch("http://localhost:8000/api/direct_home/run", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-      } catch {
-        res = await fetch("/api/direct_home/run", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-      }
+      const res = await fetchDirectHomeApi("/api/direct_home/run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
       if (!res || !res.ok) {
         const errData = res ? await res.json().catch(() => ({})) : {};
