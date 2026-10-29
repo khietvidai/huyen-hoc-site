@@ -1960,6 +1960,63 @@ app.post(
 app.all("/api/tts", async (req: Request, res: Response) => {
   try {
     const rawText = String(req.query.text || req.body?.text || "").trim();
+    const voiceParam = String(req.query.voice || req.body?.voice || "voxcpm-namminh").trim();
+    if (rawText && (voiceParam.toLowerCase().startsWith("voxcpm") || !voiceParam.toLowerCase().includes("gtts"))) {
+      try {
+        const cleanedVox = rawText.replace(/[*#_~`>|]/g, " ").replace(/\s+/g, " ").trim();
+        const isFemale = /hoaimy|female/i.test(voiceParam);
+        const isElder = /elder/i.test(voiceParam);
+        const controlPrompt = isFemale
+          ? "Vietnamese female narrator, gentle, clear, warm and expressive voice, natural storytelling pace"
+          : isElder
+          ? "Wise elderly Vietnamese I Ching master, deep resonant baritone voice, slow, solemn, authoritative tone"
+          : "Deep, calm, resonant Vietnamese male narrator voice, authoritative and philosophical, clear articulation";
+        const synthText = cleanedVox.startsWith("...") ? cleanedVox.slice(0, 750) : `... ${cleanedVox.slice(0, 750)}`;
+        const spaceBase = "https://openbmb-voxcpm-demo.hf.space";
+        const callRes = await fetch(`${spaceBase}/gradio_api/call/generate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "User-Agent": "VoxCPM-Client/2.0" },
+          body: JSON.stringify({ data: [synthText, controlPrompt, null, false, "", 2.0, false, false] }),
+        });
+        if (callRes.ok) {
+          const callJson: any = await callRes.json();
+          if (callJson?.event_id) {
+            const sseRes = await fetch(`${spaceBase}/gradio_api/call/generate/${callJson.event_id}`, {
+              headers: { "User-Agent": "VoxCPM-Client/2.0" },
+            });
+            if (sseRes.ok) {
+              const sseText = await sseRes.text();
+              let fileUrl = "";
+              for (const ln of sseText.split(/\r?\n/)) {
+                const s = ln.trim();
+                if (s.startsWith("data:")) {
+                  try {
+                    const arr = JSON.parse(s.slice(5).trim());
+                    if (Array.isArray(arr) && arr[0]) {
+                      fileUrl = arr[0].url || (arr[0].path ? `${spaceBase}/gradio_api/file=${arr[0].path}` : "");
+                      if (fileUrl) break;
+                    }
+                  } catch {}
+                }
+              }
+              if (fileUrl) {
+                const dlRes = await fetch(fileUrl, { headers: { "User-Agent": "VoxCPM-Client/2.0" } });
+                if (dlRes.ok) {
+                  const ab = await dlRes.arrayBuffer();
+                  if (ab.byteLength > 800) {
+                    res.setHeader("Content-Type", "audio/mpeg");
+                    res.setHeader("Cache-Control", "public, max-age=3600");
+                    return res.send(Buffer.from(ab));
+                  }
+                }
+              }
+            }
+          }
+        }
+      } catch (_voxErr) {
+        // Fallback to chunked TTS below
+      }
+    }
     if (!rawText) {
       return res.status(400).json({ error: "Empty text" });
     }

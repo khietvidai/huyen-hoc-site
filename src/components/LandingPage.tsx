@@ -3521,7 +3521,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
   }, [cards, mode, isCard2Reversed, isCapturingSnapshot]);
 
   /* ── TÍCH HỢP MẪU 2: LUẬN TRỰC TIẾP & VIDEO 9:16 NGAY TẠI TRANG CHỦ (CHẠY NGẦM + DỰ BÁO ETA + THÔNG BÁO ĐA KÊNH) ── */
-  const [directHomeVoice, setDirectHomeVoice] = useState<string>("vi-VN-NamMinhNeural");
+  const [directHomeVoice, setDirectHomeVoice] = useState<string>("voxcpm-namminh");
   const [isDirectHomeRunning, setIsDirectHomeRunning] = useState<boolean>(false);
   const [directHomePercent, setDirectHomePercent] = useState<number>(0);
   const [directHomeStage, setDirectHomeStage] = useState<string>("");
@@ -6094,8 +6094,11 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                         className="rounded-xl px-2.5 py-2 text-xs font-serif font-bold text-[#231C14] bg-[#FDFBF7] border border-[#C4963E]/65 focus:outline-none cursor-pointer"
                         title="Chọn giọng đọc thuyết minh Video 9:16"
                       >
-                        <option value="vi-VN-NamMinhNeural">🎙️ Giọng Nam Minh (Trầm ấm)</option>
-                        <option value="vi-VN-HoaiMyNeural">🎙️ Giọng Hoài My (Truyền cảm)</option>
+                        <option value="voxcpm-namminh">🎙️ VoxCPM2 · Đại Sư Nam Minh (48kHz Trầm ấm)</option>
+                        <option value="voxcpm-hoaimy">🎙️ VoxCPM2 · Tiên Cô Hoài My (48kHz Truyền cảm)</option>
+                        <option value="voxcpm-elder">🎙️ VoxCPM2 · Trưởng Lão Cổ Phong (48kHz Uy nghiêm)</option>
+                        <option value="vi-VN-NamMinhNeural">🎙️ Giọng Nam Minh (Edge Neural)</option>
+                        <option value="vi-VN-HoaiMyNeural">🎙️ Giọng Hoài My (Edge Neural)</option>
                       </select>
                     </div>
 

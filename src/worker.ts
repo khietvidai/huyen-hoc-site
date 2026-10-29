@@ -48,6 +48,55 @@ const CORS_HEADERS: Record<string, string> = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
+async function trySynthesizeWithVoxCPM(rawText: string, voiceParam: string): Promise<ArrayBuffer | null> {
+  try {
+    const cleaned = (rawText || "").replace(/[*#_~`>|]/g, " ").replace(/\s+/g, " ").trim();
+    if (!cleaned) return null;
+    const isFemale = /hoaimy|female/i.test(voiceParam);
+    const isElder = /elder/i.test(voiceParam);
+    const controlPrompt = isFemale
+      ? "Vietnamese female narrator, gentle, clear, warm and expressive voice, natural storytelling pace"
+      : isElder
+      ? "Wise elderly Vietnamese I Ching master, deep resonant baritone voice, slow, solemn, authoritative tone"
+      : "Deep, calm, resonant Vietnamese male narrator voice, authoritative and philosophical, clear articulation";
+    const synthText = cleaned.startsWith("...") ? cleaned.slice(0, 750) : `... ${cleaned.slice(0, 750)}`;
+    const spaceBase = "https://openbmb-voxcpm-demo.hf.space";
+    const callRes = await fetch(`${spaceBase}/gradio_api/call/generate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "User-Agent": "VoxCPM-Client/2.0" },
+      body: JSON.stringify({ data: [synthText, controlPrompt, null, false, "", 2.0, false, false] }),
+    });
+    if (!callRes.ok) return null;
+    const callJson: any = await callRes.json();
+    if (!callJson?.event_id) return null;
+    const sseRes = await fetch(`${spaceBase}/gradio_api/call/generate/${callJson.event_id}`, {
+      headers: { "User-Agent": "VoxCPM-Client/2.0" },
+    });
+    if (!sseRes.ok) return null;
+    const sseText = await sseRes.text();
+    let fileUrl = "";
+    for (const ln of sseText.split(/\r?\n/)) {
+      const s = ln.trim();
+      if (s.startsWith("data:")) {
+        try {
+          const arr = JSON.parse(s.slice(5).trim());
+          if (Array.isArray(arr) && arr[0]) {
+            fileUrl = arr[0].url || (arr[0].path ? `${spaceBase}/gradio_api/file=${arr[0].path}` : "");
+            if (fileUrl) break;
+          }
+        } catch {}
+      }
+    }
+    if (!fileUrl) return null;
+    const dlRes = await fetch(fileUrl, { headers: { "User-Agent": "VoxCPM-Client/2.0" } });
+    if (!dlRes.ok) return null;
+    const ab = await dlRes.arrayBuffer();
+    return ab.byteLength > 800 ? ab : null;
+  } catch {
+    return null;
+  }
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
@@ -56,19 +105,33 @@ export default {
       return new Response(null, { status: 204, headers: CORS_HEADERS });
     }
 
-    // Cloud Vietnamese TTS MP3 synthesizer for Direct Home 9:16 Video
+    // Cloud Vietnamese TTS MP3 synthesizer for Direct Home 9:16 Video (VoxCPM2 primary + fallback)
     if (url.pathname === "/api/tts") {
       try {
         let text = url.searchParams.get("text") || "";
-        if (!text && request.method === "POST") {
+        let voice = url.searchParams.get("voice") || "voxcpm-namminh";
+        if (request.method === "POST") {
           const body: any = await request.json().catch(() => ({}));
-          text = body?.text || "";
+          if (!text) text = body?.text || "";
+          if (body?.voice) voice = body.voice;
         }
         const chunks = splitTextForTts(text);
         if (chunks.length === 0) {
           return new Response(JSON.stringify({ error: "Empty text" }), {
             status: 400,
             headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+          });
+        }
+
+        const voxAb = await trySynthesizeWithVoxCPM(text, voice);
+        if (voxAb) {
+          return new Response(voxAb, {
+            status: 200,
+            headers: {
+              ...CORS_HEADERS,
+              "Content-Type": "audio/mpeg",
+              "Cache-Control": "public, max-age=3600",
+            },
           });
         }
 
