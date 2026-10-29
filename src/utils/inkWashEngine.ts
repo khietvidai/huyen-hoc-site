@@ -6,7 +6,7 @@
 //  - WebGL2 3-pass separable Gaussian bleed + grain + deckle edge vignette
 //  - Dynamic client-side Card-to-Ink-Wash decomposer (`wet`, `dry`, `col`)
 //  - Animated Hexagram 6-line brushwork & live Yang<->Yin line transformations
-//  - Hand-carved Cinnabar Vermilion Seal (`可成`, `大吉`, `慎行`)
+//  - Hand-carved Cinnabar Vermilion Seal (`玖貳`, `大吉`, `慎行`)
 // ============================================================================
 
 import { HEXAGRAMS } from "../data/hexagrams";
@@ -278,7 +278,7 @@ export function drawShanShuiRidge(
 }
 
 // ── HAND-CARVED CINNABAR VERMILION SEAL (ZHUWEN / BAIWEN) ──
-export function carveSealCanvas(chars: string = "可成", size: number = 148): HTMLCanvasElement {
+export function carveSealCanvas(chars: string = "玖貳", size: number = 148): HTMLCanvasElement {
   const cv = document.createElement("canvas");
   cv.width = size;
   cv.height = size;
@@ -778,7 +778,7 @@ export function buildInkWashFilmPlan(
 
   const defaultSeal =
     customSealChars?.trim() ||
-    (transformedHex.omen.includes("Cát") ? "可成" : transformedHex.omen.includes("Hung") ? "慎行" : "中正");
+    (transformedHex.omen.includes("Cát") ? "玖貳" : transformedHex.omen.includes("Hung") ? "慎行" : "中正");
 
   shots.push({
     index: orderedCards.length,
@@ -844,7 +844,7 @@ export class InkWashRenderer {
     this.wetCtx = this.wetCv.getContext("2d")!;
     this.dryCtx = this.dryCv.getContext("2d")!;
     this.colCtx = this.colCv.getContext("2d")!;
-    this.sealCv = carveSealCanvas("可成", 148);
+    this.sealCv = carveSealCanvas("玖貳", 148);
     this.resize(canvas.width || 1280, canvas.height || 720);
   }
 

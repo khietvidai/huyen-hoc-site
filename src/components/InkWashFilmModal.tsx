@@ -54,7 +54,7 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
 
   // Editable overrides for question, seal stamp characters, and final conclusion
   const [customQuestion, setCustomQuestion] = useState<string>(question);
-  const [sealChars, setSealChars] = useState<string>("可成");
+  const [sealChars, setSealChars] = useState<string>("玖貳");
   const [customConclusion, setCustomConclusion] = useState<string>("");
 
   // Video recording state
@@ -676,7 +676,7 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
                         Châu Ấn Chu Sa (#B02E22):
                       </label>
                       <div className="flex items-center gap-1.5">
-                        {["可成", "大吉", "慎行", "中正"].map((preset) => (
+                        {["玖貳", "大吉", "慎行", "中正"].map((preset) => (
                           <button
                             key={preset}
                             type="button"
