@@ -29,6 +29,8 @@ import {
   Lock,
   Flame,
   Crown,
+  Heart,
+  QrCode,
 } from "lucide-react";
 import { captureElementToPng } from "../utils/captureHelper";
 import { Hexagram, DoubleCardMode, ThreeCardMode, SpreadType, CustomCardPosition } from "../types";
@@ -1405,19 +1407,32 @@ export const CardDraw: React.FC<CardDrawProps> = ({
               </p>
             </div>
 
-            <button
-              type="button"
-              onClick={() => setShowCardDrawPurification(!showCardDrawPurification)}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-serif text-[#6E4E16] bg-[#FAF6EE] hover:bg-[#EFE6D5] border border-[#C4963E]/45 transition-all cursor-pointer shadow-2xs active:scale-95"
-            >
-              <span>⛩️</span>
-              <span className="font-semibold underline decoration-dotted">
-                Nghi thức Trai Giới Mộc Dục
-              </span>
-              <span className="text-[10px] font-mono text-[#8A7960]">
-                {showCardDrawPurification ? "▲ Ẩn" : "▼ Xem"}
-              </span>
-            </button>
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                type="button"
+                onClick={() => setShowCardDrawPurification(!showCardDrawPurification)}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-serif text-[#6E4E16] bg-[#FAF6EE] hover:bg-[#EFE6D5] border border-[#C4963E]/45 transition-all cursor-pointer shadow-2xs active:scale-95"
+              >
+                <span>⛩️</span>
+                <span className="font-semibold underline decoration-dotted">
+                  Nghi thức Trai Giới Mộc Dục
+                </span>
+                <span className="text-[10px] font-mono text-[#8A7960]">
+                  {showCardDrawPurification ? "▲ Ẩn" : "▼ Xem"}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new CustomEvent("open-donate-modal"))}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-serif font-bold text-amber-300 bg-amber-950/40 hover:bg-amber-900/60 border border-amber-600/50 hover:border-amber-400 transition-all cursor-pointer shadow-2xs active:scale-95"
+                title="Quét mã QR donate ủng hộ dự án"
+              >
+                <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-500/20" />
+                <span>Donate ủng hộ</span>
+                <QrCode className="w-3 h-3 text-amber-400" />
+              </button>
+            </div>
           </div>
 
           {showCardDrawPurification && (
@@ -3378,6 +3393,17 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   <span className={`w-1.5 h-1.5 rounded-full transition-all ${quickDrawStep >= 3 ? "bg-[#14100B]" : "bg-[#14100B]/35"}`} />
                 </div>
               </button>
+
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new CustomEvent("open-donate-modal"))}
+                className="flex items-center gap-1.5 px-3 py-2 text-xs font-serif font-bold rounded-xl border border-amber-600/60 bg-amber-950/40 hover:bg-amber-900/60 text-amber-300 hover:text-amber-200 transition-all cursor-pointer shadow-sm active:scale-95 group"
+                title="Quét mã QR donate ủng hộ dự án"
+              >
+                <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-500/20 group-hover:scale-110 transition-transform" />
+                <span>Donate ủng hộ</span>
+                <QrCode className="w-3.5 h-3.5 text-amber-400" />
+              </button>
             </div>
 
             {(() => {
@@ -3626,6 +3652,17 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   <span className={`w-1.5 h-1.5 rounded-full transition-all ${quickDrawStep >= 2 ? "bg-[#14100B]" : "bg-[#14100B]/35"}`} />
                   <span className={`w-1.5 h-1.5 rounded-full transition-all ${quickDrawStep >= 3 ? "bg-[#14100B]" : "bg-[#14100B]/35"}`} />
                 </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new CustomEvent("open-donate-modal"))}
+                className="flex items-center gap-1.5 px-3 py-2 text-xs font-serif font-bold rounded-xl border border-amber-600/60 bg-amber-950/40 hover:bg-amber-900/60 text-amber-300 hover:text-amber-200 transition-all cursor-pointer shadow-sm active:scale-95 group"
+                title="Quét mã QR donate ủng hộ dự án"
+              >
+                <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-500/20 group-hover:scale-110 transition-transform" />
+                <span>Donate ủng hộ</span>
+                <QrCode className="w-3.5 h-3.5 text-amber-400" />
               </button>
             </div>
 

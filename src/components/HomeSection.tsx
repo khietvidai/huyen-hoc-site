@@ -25,6 +25,8 @@ import {
   Award,
   Share2,
   Crown,
+  Heart,
+  QrCode,
 } from "lucide-react";
 import { NavTab } from "./Header";
 import { BrandMark, LuopanRing } from "./BrandMark";
@@ -44,6 +46,7 @@ export interface HomeSectionProps {
   onSelectHexagram?: (hexNumber: number) => void;
   currentUser?: AppUser | null;
   onOpenAuthModal?: (mode?: "login" | "register" | "upgrade") => void;
+  onOpenDonateModal?: () => void;
 }
 
 type SpreadCategory = "summary" | "1_card" | "2_card" | "3_card" | "advanced" | "examples";
@@ -56,6 +59,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
   onSelectHexagram,
   currentUser = null,
   onOpenAuthModal,
+  onOpenDonateModal,
 }) => {
   const isRegistered = true;
   const isVip = true;
@@ -153,7 +157,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
           </p>
 
           <div
-            className="royal-reveal mt-9 flex items-center justify-center"
+            className="royal-reveal mt-9 flex flex-col items-center justify-center gap-3"
             style={{ animationDelay: "300ms" }}
           >
             <button
@@ -164,6 +168,24 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
               <Layers className="w-4 h-4 text-gold-300" />
               <span>Bắt Đầu Bốc Quẻ Ngay</span>
               <ArrowDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform text-gold-300" />
+            </button>
+
+            {/* Nút Donate ủng hộ dự án ở ngay dưới chỗ nút bốc quẻ */}
+            <button
+              type="button"
+              onClick={() => {
+                if (onOpenDonateModal) {
+                  onOpenDonateModal();
+                } else {
+                  window.dispatchEvent(new CustomEvent("open-donate-modal"));
+                }
+              }}
+              className="inline-flex items-center gap-2 px-5 py-2 text-xs sm:text-sm font-serif font-bold text-amber-300 bg-amber-950/50 hover:bg-amber-900/70 border border-amber-600/50 hover:border-amber-400 rounded-full transition-all cursor-pointer shadow-md hover:shadow-amber-900/30 active:scale-95 group"
+              title="Quét mã QR donate ủng hộ dự án"
+            >
+              <Heart className="w-4 h-4 text-rose-400 fill-rose-500/30 group-hover:scale-110 transition-transform" />
+              <span>Donate ủng hộ dự án</span>
+              <QrCode className="w-3.5 h-3.5 text-amber-400 group-hover:text-amber-200" />
             </button>
           </div>
 
@@ -743,6 +765,23 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
               <Layers className="w-4 h-4" />
               <span>Vào Bàn Bốc Quẻ I Ching Tarot</span>
               <ArrowRight className="w-4 h-4" />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                if (onOpenDonateModal) {
+                  onOpenDonateModal();
+                } else {
+                  window.dispatchEvent(new CustomEvent("open-donate-modal"));
+                }
+              }}
+              className="royal-btn-ghost w-full sm:w-auto cursor-pointer !border-amber-600/60 !text-amber-300 hover:!border-amber-400 flex items-center justify-center gap-2"
+              title="Quét mã QR donate ủng hộ dự án"
+            >
+              <Heart className="w-4 h-4 text-rose-400 fill-rose-500/20" />
+              <span>Donate Ủng Hộ Dự Án</span>
+              <QrCode className="w-3.5 h-3.5 text-amber-400" />
             </button>
 
             <button

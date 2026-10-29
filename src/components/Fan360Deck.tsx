@@ -13,6 +13,8 @@ import {
   Check,
   HelpCircle,
   Shuffle,
+  Heart,
+  QrCode,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Hexagram } from "../types";
@@ -552,6 +554,17 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
             <span className={`w-1.5 h-1.5 rounded-full transition-all ${quickDrawStep >= 2 ? "bg-[#14100B]" : "bg-[#14100B]/35"}`} />
             <span className={`w-1.5 h-1.5 rounded-full transition-all ${quickDrawStep >= 3 ? "bg-[#14100B]" : "bg-[#14100B]/35"}`} />
           </div>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => window.dispatchEvent(new CustomEvent("open-donate-modal"))}
+          className="flex items-center gap-1.5 px-3 py-2 text-xs font-serif font-bold rounded-xl border border-amber-600/60 bg-amber-950/40 hover:bg-amber-900/60 text-amber-300 hover:text-amber-200 transition-all cursor-pointer shadow-sm active:scale-95 group"
+          title="Quét mã QR donate ủng hộ dự án"
+        >
+          <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-500/20 group-hover:scale-110 transition-transform" />
+          <span>Donate ủng hộ</span>
+          <QrCode className="w-3.5 h-3.5 text-amber-400" />
         </button>
       </div>
 

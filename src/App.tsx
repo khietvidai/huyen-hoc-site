@@ -59,6 +59,7 @@ import { DailyHexagramWidget } from "./components/DailyHexagramWidget";
 import { GoogleWorkspaceModal, WorkspaceTab, DivinationReadingData } from "./components/GoogleWorkspaceModal";
 import { AuthModal } from "./components/AuthModal";
 import { AdminManagementModal } from "./components/AdminManagementModal";
+import { DonateModal } from "./components/DonateModal";
 import { AuthService, AppUser } from "./services/authService";
 import {
   cardImageStore,
@@ -313,6 +314,7 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState<AppUser | null>(() => AuthService.getCurrentUser());
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isAdminModalOpen, setIsAdminModalOpen] = useState<boolean>(false);
+  const [isDonateModalOpen, setIsDonateModalOpen] = useState<boolean>(false);
   const [authModalMode, setAuthModalMode] = useState<"login" | "register" | "upgrade">("login");
 
   useEffect(() => {
@@ -467,9 +469,12 @@ export default function App() {
         console.error(err);
       }
     };
+    const handleOpenDonate = () => setIsDonateModalOpen(true);
+    window.addEventListener("open-donate-modal", handleOpenDonate);
     window.addEventListener("storage", handleHistoryUpdate);
     window.addEventListener("divination_history_updated", handleHistoryUpdate);
     return () => {
+      window.removeEventListener("open-donate-modal", handleOpenDonate);
       window.removeEventListener("storage", handleHistoryUpdate);
       window.removeEventListener("divination_history_updated", handleHistoryUpdate);
     };
@@ -1298,6 +1303,7 @@ export default function App() {
             cardImages={cardImages}
             cardVideos={cardVideos}
             currentUser={currentUser}
+            onOpenDonateModal={() => setIsDonateModalOpen(true)}
             onOpenAuthModal={(mode) => {
               setAuthModalMode(mode || "register");
               setIsAuthModalOpen(true);
@@ -1329,6 +1335,7 @@ export default function App() {
             cardImages={cardImages}
             historyCount={history.length}
             currentUser={currentUser}
+            onOpenDonateModal={() => setIsDonateModalOpen(true)}
             onOpenAuthModal={(mode) => {
               setAuthModalMode(mode || "register");
               setIsAuthModalOpen(true);
@@ -2860,6 +2867,12 @@ export default function App() {
         onClose={() => setIsAdminModalOpen(false)}
         currentUser={currentUser}
         onShowToast={showToast}
+      />
+
+      {/* Modal Donate Ủng Hộ Dự Án */}
+      <DonateModal
+        isOpen={isDonateModalOpen}
+        onClose={() => setIsDonateModalOpen(false)}
       />
     </div>
   );
