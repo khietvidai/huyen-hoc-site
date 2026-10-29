@@ -432,13 +432,14 @@ export const ImperialPageShell: React.FC<ImperialPageShellProps> = ({
             {/* Hàng 1: Các phân hệ chính */}
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
               {navItems.map((item, idx) => {
+                const tabVal = currentTab as string;
                 const isActive =
                   item.id === "manual" && item.sub
-                    ? (currentTab === "manual" || currentTab === "decks") &&
-                      (currentTab === "decks"
+                    ? (tabVal === "manual" || tabVal === "decks") &&
+                      (tabVal === "decks"
                         ? item.sub === "decks"
                         : manualSubTab === item.sub)
-                    : currentTab === item.id;
+                    : tabVal === item.id;
 
                 return (
                   <button

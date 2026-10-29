@@ -648,7 +648,7 @@ export async function synthesizeEdgeNeuralChunk(
         if (rawData instanceof ArrayBuffer) {
           buf = rawData;
         } else if (ArrayBuffer.isView(rawData)) {
-          buf = rawData.buffer.slice(rawData.byteOffset, rawData.byteOffset + rawData.byteLength);
+          buf = rawData.buffer.slice(rawData.byteOffset, rawData.byteOffset + rawData.byteLength) as ArrayBuffer;
         }
 
         if (buf) {

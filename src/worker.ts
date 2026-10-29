@@ -100,7 +100,7 @@ export default {
             }
           );
           if (voxMp3 && voxMp3.byteLength > 800) {
-            return new Response(voxMp3.buffer, {
+            return new Response(voxMp3 as BodyInit, {
               status: 200,
               headers: {
                 ...CORS_HEADERS,

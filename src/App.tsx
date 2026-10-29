@@ -1335,7 +1335,6 @@ export default function App() {
             cardImages={cardImages}
             historyCount={history.length}
             currentUser={currentUser}
-            onOpenDonateModal={() => setIsDonateModalOpen(true)}
             onOpenAuthModal={(mode) => {
               setAuthModalMode(mode || "register");
               setIsAuthModalOpen(true);

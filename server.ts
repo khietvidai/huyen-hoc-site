@@ -4,6 +4,7 @@ import fs from "fs";
 import { execSync, spawn, ChildProcess } from "child_process";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
+// @ts-ignore
 import WebSocket from "ws";
 import dotenv from "dotenv";
 import { BOOK_HEXAGRAMS } from "./src/data/bookHexagrams";
@@ -1600,7 +1601,7 @@ async function braveGeminiRestore(origDataUrl: string): Promise<string | null> {
       ws = new WebSocket(page.webSocketDebuggerUrl);
       await new Promise<void>((resolve, reject) => {
         ws!.once("open", () => resolve());
-        ws!.once("error", (err) => reject(err));
+        ws!.once("error", (err: any) => reject(err));
       });
 
       let msgId = 1;

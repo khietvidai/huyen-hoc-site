@@ -34,7 +34,11 @@ export const DonateModal: React.FC<DonateModalProps> = ({ isOpen, onClose }) => 
   const PHONE_NUMBER = "0902853305";
   const FORMATTED_PHONE = "0902.853.305";
   const ACCOUNT_HOLDER = "VƯƠNG THẾ ĐẠT";
-  const QR_IMAGE_URL = "/images/donate-qr.png";
+  
+  const baseUrl = import.meta.env.BASE_URL || "./";
+  const cleanBase = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
+  const QR_IMAGE_URL = `${cleanBase}images/donate-qr.png`;
+  const FALLBACK_QR_URL = `${cleanBase}donate-qr.png`;
 
   const handleCopyPhone = () => {
     try {
@@ -107,6 +111,13 @@ export const DonateModal: React.FC<DonateModalProps> = ({ isOpen, onClose }) => 
               <div className="rounded-xl overflow-hidden bg-white shadow-inner">
                 <img
                   src={QR_IMAGE_URL}
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (!target.dataset.triedFallback) {
+                      target.dataset.triedFallback = "true";
+                      target.src = FALLBACK_QR_URL;
+                    }
+                  }}
                   alt={`Mã QR Donate - ${ACCOUNT_HOLDER}`}
                   className="w-full h-auto block select-none"
                   loading="eager"
