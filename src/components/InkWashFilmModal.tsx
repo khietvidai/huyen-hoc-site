@@ -49,10 +49,10 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [isMuted, setIsMuted] = useState<boolean>(false);
-  const [isVoiceEnabled, setIsVoiceEnabled] = useState<boolean>(true);
+  const [isVoiceEnabled, setIsVoiceEnabled] = useState<boolean>(false);
   const [isDecomposing, setIsDecomposing] = useState<boolean>(false);
 
-  // Editable overrides for question, seal stamp characters, and final conclusion
+  // Editable overrides for question, seal stamp characters ("玖貳"), and final conclusion
   const [customQuestion, setCustomQuestion] = useState<string>(question);
   const [sealChars, setSealChars] = useState<string>("玖貳");
   const [customConclusion, setCustomConclusion] = useState<string>("");
@@ -69,6 +69,7 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
   const decomposedMapRef = useRef<Map<string, DecomposedCardInk>>(new Map());
   const rafRef = useRef<number | null>(null);
   const lastFrameTsRef = useRef<number | null>(null);
+  const timeRef = useRef<number>(0);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
 
@@ -112,7 +113,6 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
     ).finally(() => {
       if (!cancelled) {
         setIsDecomposing(false);
-        // Render initial frame at t = 1.2s so preview looks rich immediately
         if (rendererRef.current) {
           rendererRef.current.renderFrame(
             Math.min(1.2, filmPlan.totalDurationSec),
@@ -150,12 +150,12 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
           rendererRef.current = new InkWashRenderer(canvasRef.current);
         }
         rendererRef.current.resize(W, H);
-        rendererRef.current.renderFrame(currentTime, filmPlan, decomposedMapRef.current);
+        rendererRef.current.renderFrame(timeRef.current, filmPlan, decomposedMapRef.current);
       }
     }, 40);
 
     return () => window.clearTimeout(timer);
-  }, [isOpen, aspect]);
+  }, [isOpen, aspect, filmPlan]);
 
   // Re-render current frame when scrubbing or editing while paused
   useEffect(() => {
@@ -163,7 +163,7 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
     rendererRef.current.renderFrame(currentTime, filmPlan, decomposedMapRef.current);
   }, [currentTime, filmPlan, isOpen, isPlaying]);
 
-  // Main requestAnimationFrame playback loop
+  // Main requestAnimationFrame playback loop (strictly outside React state updater to prevent double-ticking)
   useEffect(() => {
     if (!isOpen || !isPlaying || activeTab !== "live") {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
@@ -171,42 +171,47 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
       return;
     }
 
+    const shotStarts = filmPlan.shots.map((s) => s.startSec);
+
     const step = (ts: number) => {
       if (lastFrameTsRef.current === null) {
         lastFrameTsRef.current = ts;
       }
-      const dt = Math.min(0.1, (ts - lastFrameTsRef.current) / 1000);
+      const dt = Math.min(0.08, (ts - lastFrameTsRef.current) / 1000);
       lastFrameTsRef.current = ts;
 
-      setCurrentTime((prev) => {
-        const next = prev + dt;
-        if (next >= filmPlan.totalDurationSec) {
-          // End of film reached
-          setIsPlaying(false);
-          if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
-            try {
-              mediaRecorderRef.current.stop();
-            } catch {}
-          }
-          if (rendererRef.current) {
-            rendererRef.current.renderFrame(
-              filmPlan.totalDurationSec - 0.05,
-              filmPlan,
-              decomposedMapRef.current
-            );
-          }
-          return filmPlan.totalDurationSec;
-        }
-
-        if (rendererRef.current) {
-          rendererRef.current.renderFrame(next, filmPlan, decomposedMapRef.current);
-        }
+      const next = timeRef.current + dt;
+      if (next >= filmPlan.totalDurationSec) {
+        timeRef.current = filmPlan.totalDurationSec;
+        setCurrentTime(filmPlan.totalDurationSec);
+        setIsPlaying(false);
         if (audioRef.current) {
-          const shotStarts = filmPlan.shots.map((s) => s.startSec);
-          audioRef.current.tick(next, shotStarts, filmPlan.sealTimeSec, filmPlan.narrationCues);
+          audioRef.current.stopAll();
         }
-        return next;
-      });
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
+          try {
+            mediaRecorderRef.current.stop();
+          } catch {}
+        }
+        if (rendererRef.current) {
+          rendererRef.current.renderFrame(
+            filmPlan.totalDurationSec - 0.05,
+            filmPlan,
+            decomposedMapRef.current
+          );
+        }
+        return;
+      }
+
+      timeRef.current = next;
+      setCurrentTime(next);
+
+      if (rendererRef.current) {
+        rendererRef.current.renderFrame(next, filmPlan, decomposedMapRef.current);
+      }
+      if (audioRef.current) {
+        audioRef.current.tick(next, shotStarts, filmPlan.sealTimeSec, filmPlan.narrationCues);
+      }
 
       rafRef.current = requestAnimationFrame(step);
     };
@@ -227,20 +232,25 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
       setIsPlaying(false);
       audioRef.current.stopAll();
     } else {
-      if (currentTime >= filmPlan.totalDurationSec - 0.2) {
+      if (timeRef.current >= filmPlan.totalDurationSec - 0.2) {
+        timeRef.current = 0;
         setCurrentTime(0);
         audioRef.current.resetTimeline();
       }
+      audioRef.current.startBgmAt(timeRef.current);
       setIsPlaying(true);
     }
-  }, [isPlaying, currentTime, filmPlan.totalDurationSec]);
+  }, [isPlaying, filmPlan.totalDurationSec]);
 
   const handleRestart = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.init();
-      audioRef.current.resetTimeline();
+    if (!audioRef.current) {
+      audioRef.current = new InkWashAudioEngine();
     }
+    audioRef.current.init();
+    audioRef.current.resetTimeline();
+    timeRef.current = 0;
     setCurrentTime(0);
+    audioRef.current.startBgmAt(0);
     setIsPlaying(true);
   }, []);
 
@@ -328,7 +338,6 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
         const url = URL.createObjectURL(blob);
         setRecordedVideoUrl(url);
 
-        // Auto trigger download
         const a = document.createElement("a");
         a.href = url;
         a.download = `phim-thuy-mac-kinh-dich-${aspect.replace(":", "x")}.${ext}`;
@@ -339,7 +348,9 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
 
       mediaRecorderRef.current = recorder;
       setIsRecordingVideo(true);
+      timeRef.current = 0;
       setCurrentTime(0);
+      audioRef.current.startBgmAt(0);
       recorder.start(250);
       setIsPlaying(true);
     } catch (err) {
@@ -376,7 +387,7 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
               <h3 className="font-serif font-bold text-sm sm:text-base text-[#F5EAD4] flex items-center gap-2">
                 <span>Xưởng Phim Thủy Mặc Chu Dịch (水墨周易)</span>
                 <span className="hidden md:inline-block text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#2A2016] text-[#E5C158] border border-[#C4963E]/50">
-                  WebGL2 · Cổ Cầm &amp; Tiêu Trúc · Giấy Tuyên Thành
+                  WebGL2 · Cổ Cầm &amp; Tiêu Trúc Studio · Ấn 玖貳
                 </span>
               </h3>
             </div>
@@ -517,7 +528,11 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
                     value={currentTime}
                     onChange={(e) => {
                       const val = parseFloat(e.target.value);
+                      timeRef.current = val;
                       setCurrentTime(val);
+                      if (audioRef.current && isPlaying) {
+                        audioRef.current.startBgmAt(val);
+                      }
                       if (rendererRef.current) {
                         rendererRef.current.renderFrame(val, filmPlan, decomposedMapRef.current);
                       }
@@ -566,7 +581,7 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
                           ? "bg-[#241C14] text-[#F3E5AB] border-[#C4963E]/60"
                           : "bg-[#18130E] text-[#7D6E57] border-[#2E2318]"
                       }`}
-                      title="Bật/tắt giọng đọc thuyết minh tự động (đã chuẩn hóa phát âm Lá bài số một, số hai...)"
+                      title="Bật/tắt giọng đọc trình duyệt (chỉ đọc khi máy có giọng Tiếng Việt bản địa)"
                     >
                       {isVoiceEnabled ? <Mic className="w-3.5 h-3.5 text-emerald-400" /> : <MicOff className="w-3.5 h-3.5" />}
                       <span>Giọng Đọc</span>
@@ -628,10 +643,15 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
                         key={s.index}
                         type="button"
                         onClick={() => {
-                          setCurrentTime(s.startSec + 0.2);
+                          const targetT = s.startSec + 0.2;
+                          timeRef.current = targetT;
+                          setCurrentTime(targetT);
+                          if (audioRef.current && isPlaying) {
+                            audioRef.current.startBgmAt(targetT);
+                          }
                           if (rendererRef.current) {
                             rendererRef.current.renderFrame(
-                              s.startSec + 0.2,
+                              targetT,
                               filmPlan,
                               decomposedMapRef.current
                             );
@@ -737,7 +757,7 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
                 Tháp La Kinh Dịch (4 Lá): Trạch Hỏa Cách (䷰) ➔ Hào 3 &amp; Hào 6 ➔ Thiên Lôi Vô Vọng (䷘)
               </h4>
               <p className="text-xs text-[#A89880] font-serif">
-                Tâm niệm: “Phiên bản này đã được chưa?” — Đã chuẩn hóa phát âm “Lá bài số một, số hai, số ba, số bốn” &amp; nhạc nền Cổ Cầm + Tiêu Trúc.
+                Tâm niệm: “Phiên bản này đã được chưa?” — Đã chuẩn hóa phát âm “Lá bài số một, số hai, số ba, số bốn” &amp; nhạc nền Cổ Cầm + Tiêu Trúc liền mạch.
               </p>
             </div>
 
