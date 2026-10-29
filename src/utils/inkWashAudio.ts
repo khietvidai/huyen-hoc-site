@@ -47,9 +47,26 @@ export class InkWashAudioEngine {
 
   private isMuted: boolean = false;
   private isVoiceEnabled: boolean = true; // Default true: pure Vietnamese narration enabled
+  private ambientVolume: number = 0.16; // Default 16%: gentle, subtle ambient Guqin & chimes
+  private voiceVolume: number = 1.15; // Default 115%: clear, prominent Vietnamese narration
   private voiceProfile: string = "nam_tram_am"; // Default: Giọng test_vi_design.wav (Nam Trầm Ấm Đọc Quẻ Kinh Dịch)
   private triggeredEvents: Set<string> = new Set();
   private lastTimeSec: number = -1;
+
+  constructor() {
+    try {
+      if (typeof window !== "undefined" && window.localStorage) {
+        const savedAmb = window.localStorage.getItem("cuunhi_inkwash_ambient_vol");
+        if (savedAmb !== null && !Number.isNaN(parseFloat(savedAmb))) {
+          this.ambientVolume = Math.max(0, Math.min(1, parseFloat(savedAmb)));
+        }
+        const savedVo = window.localStorage.getItem("cuunhi_inkwash_voice_vol");
+        if (savedVo !== null && !Number.isNaN(parseFloat(savedVo))) {
+          this.voiceVolume = Math.max(0, Math.min(1.5, parseFloat(savedVo)));
+        }
+      }
+    } catch {}
+  }
 
   // Pure pentatonic harmonic frequencies (D - F - G - A - C)
   private static readonly PENTATONIC_HZ = [
@@ -85,9 +102,9 @@ export class InkWashAudioEngine {
       this.voiceGain = this.ctx.createGain();
 
       this.masterGain.gain.value = this.isMuted ? 0 : 0.92;
-      this.musicGain.gain.value = 0.72;
-      this.sfxGain.gain.value = 0.42;
-      this.voiceGain.gain.value = 1.12;
+      this.musicGain.gain.value = this.ambientVolume * 0.65;
+      this.sfxGain.gain.value = this.ambientVolume * 0.45;
+      this.voiceGain.gain.value = this.voiceVolume;
 
       // Warm Baritone EQ on voice bus (Trầm ấm đọc quẻ Kinh Dịch - test_vi_design.wav)
       const warmthEq = this.ctx.createBiquadFilter();
@@ -360,11 +377,53 @@ export class InkWashAudioEngine {
       this.activeVoiceSource = null;
     }
     if (this.musicGain && this.ctx) {
-      this.musicGain.gain.setTargetAtTime(0.72, this.ctx.currentTime, 0.25);
+      this.musicGain.gain.setTargetAtTime(this.ambientVolume * 0.65, this.ctx.currentTime, 0.25);
     }
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
+  }
+
+  public setAmbientVolume(vol0to1: number): void {
+    const clamped = Math.max(0, Math.min(1, vol0to1));
+    this.ambientVolume = clamped;
+    try {
+      if (typeof window !== "undefined" && window.localStorage) {
+        window.localStorage.setItem("cuunhi_inkwash_ambient_vol", String(clamped));
+      }
+    } catch {}
+    if (this.ctx) {
+      const isSpeaking = this.activeVoiceSource !== null || this.queuedVoiceBuffers.length > 0;
+      const targetMusic = clamped <= 0.005 ? 0 : clamped * (isSpeaking ? 0.28 : 0.65);
+      const targetSfx = clamped <= 0.005 ? 0 : clamped * 0.45;
+      if (this.musicGain) {
+        this.musicGain.gain.setTargetAtTime(targetMusic, this.ctx.currentTime, 0.06);
+      }
+      if (this.sfxGain) {
+        this.sfxGain.gain.setTargetAtTime(targetSfx, this.ctx.currentTime, 0.06);
+      }
+    }
+  }
+
+  public getAmbientVolume(): number {
+    return this.ambientVolume;
+  }
+
+  public setVoiceVolume(vol0to15: number): void {
+    const clamped = Math.max(0, Math.min(1.5, vol0to15));
+    this.voiceVolume = clamped;
+    try {
+      if (typeof window !== "undefined" && window.localStorage) {
+        window.localStorage.setItem("cuunhi_inkwash_voice_vol", String(clamped));
+      }
+    } catch {}
+    if (this.voiceGain && this.ctx) {
+      this.voiceGain.gain.setTargetAtTime(clamped, this.ctx.currentTime, 0.06);
+    }
+  }
+
+  public getVoiceVolume(): number {
+    return this.voiceVolume;
   }
 
   public getMediaStream(): MediaStream | null {
@@ -511,7 +570,8 @@ export class InkWashAudioEngine {
 
     // Smoothly duck background Guqin music so Vietnamese voice is crystal-clear
     if (this.musicGain) {
-      this.musicGain.gain.setTargetAtTime(0.24, ctx.currentTime, 0.12);
+      const duckedMusic = this.ambientVolume <= 0.005 ? 0 : this.ambientVolume * 0.28;
+      this.musicGain.gain.setTargetAtTime(duckedMusic, ctx.currentTime, 0.12);
     }
 
     const src = ctx.createBufferSource();
@@ -530,7 +590,8 @@ export class InkWashAudioEngine {
             }
           }, 280);
         } else if (this.musicGain && this.ctx) {
-          this.musicGain.gain.setTargetAtTime(0.72, this.ctx.currentTime, 0.4);
+          const normalMusic = this.ambientVolume <= 0.005 ? 0 : this.ambientVolume * 0.65;
+          this.musicGain.gain.setTargetAtTime(normalMusic, this.ctx.currentTime, 0.4);
         }
       }
     };

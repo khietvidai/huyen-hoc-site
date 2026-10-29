@@ -60,6 +60,24 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState<boolean>(true);
   const [inkWashVoice, setInkWashVoice] = useState<string>("nam_tram_am");
+  const [ambientVolume, setAmbientVolume] = useState<number>(() => {
+    try {
+      const saved = window.localStorage.getItem("cuunhi_inkwash_ambient_vol");
+      if (saved !== null && !Number.isNaN(parseFloat(saved))) {
+        return Math.max(0, Math.min(1, parseFloat(saved)));
+      }
+    } catch {}
+    return 0.16; // Mặc định 16%: tiếng môi trường / nhạc nền dịu nhẹ
+  });
+  const [voiceVolume, setVoiceVolume] = useState<number>(() => {
+    try {
+      const saved = window.localStorage.getItem("cuunhi_inkwash_voice_vol");
+      if (saved !== null && !Number.isNaN(parseFloat(saved))) {
+        return Math.max(0, Math.min(1.5, parseFloat(saved)));
+      }
+    } catch {}
+    return 1.15; // Mặc định 115%: giọng đọc rõ ràng nổi bật
+  });
   const [isDecomposing, setIsDecomposing] = useState<boolean>(false);
 
   // Editable overrides for question, seal stamp characters ("玖貳"), and final conclusion
@@ -846,6 +864,91 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
                         </>
                       )}
                     </button>
+                  </div>
+                </div>
+
+                {/* Ambient / Background Sound & Voice Volume Mixer Bar */}
+                <div className="mt-2 px-3 py-2 rounded-xl bg-[#16110B] border border-[#3A2D1E] grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-serif">
+                  {/* Ambient / Environment Volume Control */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-[#C8B89E] whitespace-nowrap font-semibold flex items-center gap-1">
+                      <Volume2 className="w-3.5 h-3.5 text-[#D4AF37]" />
+                      <span>Tiếng môi trường / Nhạc nền:</span>
+                    </span>
+                    <input
+                      type="range"
+                      min={0}
+                      max={1}
+                      step={0.02}
+                      value={ambientVolume}
+                      onChange={(e) => {
+                        const val = parseFloat(e.target.value);
+                        setAmbientVolume(val);
+                        if (!audioRef.current) {
+                          audioRef.current = new InkWashAudioEngine();
+                        }
+                        audioRef.current.setAmbientVolume(val);
+                      }}
+                      className="flex-1 accent-[#D4AF37] h-1.5 bg-[#2E2318] rounded-lg cursor-pointer"
+                      title="Điều chỉnh độ lớn tiếng môi trường, nhạc Cổ Cầm & chuông"
+                    />
+                    <span className="text-[11px] font-mono text-[#E5C158] w-9 text-right">
+                      {Math.round(ambientVolume * 100)}%
+                    </span>
+                    <div className="flex items-center gap-1">
+                      {[
+                        { label: "Tắt", val: 0 },
+                        { label: "Nhẹ", val: 0.14 },
+                        { label: "Vừa", val: 0.3 },
+                      ].map((p) => (
+                        <button
+                          key={p.label}
+                          type="button"
+                          onClick={() => {
+                            setAmbientVolume(p.val);
+                            if (!audioRef.current) {
+                              audioRef.current = new InkWashAudioEngine();
+                            }
+                            audioRef.current.setAmbientVolume(p.val);
+                          }}
+                          className={`px-1.5 py-0.5 rounded text-[10px] border cursor-pointer transition ${
+                            Math.abs(ambientVolume - p.val) < 0.03
+                              ? "bg-[#9E2A2B] text-white border-[#D4AF37]"
+                              : "bg-[#241C14] text-[#B8A68E] border-[#3E3022] hover:text-white"
+                          }`}
+                        >
+                          {p.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Voice Narration Volume Control */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-[#C8B89E] whitespace-nowrap font-semibold flex items-center gap-1">
+                      <Mic className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Âm lượng Giọng Đọc:</span>
+                    </span>
+                    <input
+                      type="range"
+                      min={0}
+                      max={1.5}
+                      step={0.05}
+                      value={voiceVolume}
+                      onChange={(e) => {
+                        const val = parseFloat(e.target.value);
+                        setVoiceVolume(val);
+                        if (!audioRef.current) {
+                          audioRef.current = new InkWashAudioEngine();
+                        }
+                        audioRef.current.setVoiceVolume(val);
+                      }}
+                      className="flex-1 accent-emerald-500 h-1.5 bg-[#2E2318] rounded-lg cursor-pointer"
+                      title="Điều chỉnh độ lớn giọng đọc Tiếng Việt"
+                    />
+                    <span className="text-[11px] font-mono text-emerald-300 w-10 text-right">
+                      {Math.round(voiceVolume * 100)}%
+                    </span>
                   </div>
                 </div>
               </div>
