@@ -114,7 +114,7 @@ export default {
               "Deep, warm, calm Vietnamese male narrator, resonant baritone voice, steady philosophical I Ching reading pace",
             async () => {
               if (!env.ASSETS) return null;
-              const assetUrl = new URL("/assets/ref-nam-tram-am.wav", url.origin);
+              const assetUrl = new URL("/assets/test_vi_design.wav", url.origin);
               const assetRes = await env.ASSETS.fetch(new Request(assetUrl.toString()));
               if (!assetRes.ok) return null;
               return new Uint8Array(await assetRes.arrayBuffer());
@@ -126,7 +126,7 @@ export default {
               headers: {
                 ...CORS_HEADERS,
                 "Content-Type": "audio/mpeg",
-                "X-TTS-Engine": "voxcpm2-nam-tram-am",
+                "X-TTS-Engine": "voxcpm2-test-vi-design",
                 "Cache-Control": "public, max-age=3600",
               },
             });

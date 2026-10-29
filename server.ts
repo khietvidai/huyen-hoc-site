@@ -2012,14 +2012,14 @@ app.all("/api/tts", async (req: Request, res: Response) => {
         profile.voxControl ||
           "Deep, warm, calm Vietnamese male narrator, resonant baritone voice, steady philosophical I Ching reading pace",
         async () => {
-          const refPath = path.join(process.cwd(), "public", "assets", "ref-nam-tram-am.wav");
+          const refPath = path.join(process.cwd(), "public", "assets", "test_vi_design.wav");
           if (!fs.existsSync(refPath)) return null;
           return new Uint8Array(fs.readFileSync(refPath));
         }
       );
       if (voxMp3 && voxMp3.byteLength > 800) {
         res.setHeader("Content-Type", "audio/mpeg");
-        res.setHeader("X-TTS-Engine", "voxcpm2-nam-tram-am");
+        res.setHeader("X-TTS-Engine", "voxcpm2-test-vi-design");
         res.setHeader("Cache-Control", "public, max-age=3600");
         return res.send(Buffer.from(voxMp3));
       }

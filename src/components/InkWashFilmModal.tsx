@@ -810,7 +810,7 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
                       className="px-2 py-1.5 rounded-xl text-xs font-serif font-bold bg-[#241C14] text-[#F3E5AB] border border-[#C4963E]/60 focus:outline-none cursor-pointer"
                       title="Chọn giọng đọc Tiếng Việt đọc quẻ Kinh Dịch"
                     >
-                      <option value="nam_tram_am">🎙️ Nam Trầm Ấm (Tiếng Việt)</option>
+                      <option value="nam_tram_am">🎙️ Nam Trầm Ấm (Giọng test_vi_design · Thủy Mặc)</option>
                       <option value="namminh_elder">🧙‍♂️ Dịch Sư Trưởng Lão (Tiếng Việt)</option>
                       <option value="vi-VN-HoaiMyNeural">🎙️ Nữ Hoài My (Tiếng Việt)</option>
                     </select>
