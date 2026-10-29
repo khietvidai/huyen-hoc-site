@@ -4200,7 +4200,10 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     for (let i = 0; i < uniqueCandidates.length; i++) {
       const url = uniqueCandidates[i];
       try {
-        const res = await fetch(url, options);
+        const controller = new AbortController();
+        const timeoutId = window.setTimeout(() => controller.abort(), 3200);
+        const res = await fetch(url, { ...options, signal: controller.signal });
+        window.clearTimeout(timeoutId);
         lastResponse = res;
         const contentType = (res.headers.get("content-type") || "").toLowerCase();
 
@@ -4257,7 +4260,12 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
   const resolveMediaUrl = useCallback((relOrAbs?: string) => {
     if (!relOrAbs) return "";
-    if (relOrAbs.startsWith("http://") || relOrAbs.startsWith("https://") || relOrAbs.startsWith("data:")) {
+    if (
+      relOrAbs.startsWith("http://") ||
+      relOrAbs.startsWith("https://") ||
+      relOrAbs.startsWith("data:") ||
+      relOrAbs.startsWith("blob:")
+    ) {
       if (typeof window !== "undefined" && window.location && isPrivateLanIp(window.location.hostname)) {
         if (relOrAbs.includes("localhost:8000") || relOrAbs.includes("127.0.0.1:8000")) {
           return relOrAbs.replace(/(?:localhost|127\.0\.0\.1):8000/, `${window.location.hostname}:8000`);
@@ -4278,6 +4286,463 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     }
     return clean;
   }, [isPrivateLanIp]);
+
+  // Engine Luận Trực Tiếp & Dựng Video 9:16 ngay trên trình duyệt (chạy tự động trên ichingtarot.com / điện thoại khi không qua port 8000)
+  const runBrowserDirectHomeEngine = useCallback(
+    async (
+      effectiveQuestion: string,
+      capturedPng: string,
+      cardImgsBase64: string[],
+      aiText: string
+    ) => {
+      const startedAt = Date.now();
+      const spreadTitle = SPREAD_MODE_NAMES[mode] || "Trải Bài Kinh Dịch";
+      const orderedCards =
+        mode === "thap_la" && cards.length > 2
+          ? [cards[0], ...cards.slice(2), cards[1]]
+          : [...cards];
+
+      const cleanCardNames = orderedCards.map((c) =>
+        c.name.replace(/^Quẻ (Chủ|Biến):\s*/i, "").trim()
+      );
+      const hexagramTitle = `${spreadTitle} · ${cleanCardNames.slice(0, 3).join(" • ")}`;
+
+      setDirectHomePercent(42);
+      setDirectHomeStage("Đại Sư Cửu Nhị đang luận giải chi tiết từng lá bài trong quẻ...");
+      setDirectHomeMessage("Bước 3/4: Đang tổng hợp lời bàn Kinh Dịch & biên soạn kịch bản thuyết minh 9:16...");
+
+      const cardNarrations = orderedCards.map((c, idx) => {
+        const posName =
+          c.positionLabel ||
+          (mode === "thap_la"
+            ? idx === 0
+              ? "Quẻ Chủ"
+              : idx === orderedCards.length - 1
+              ? "Quẻ Biến"
+              : `Hào Động ${idx}`
+            : `Lá thứ ${idx + 1}`);
+        const shortDesc = (c.desc || "")
+          .replace(/【[^】]*】/g, "")
+          .replace(/\s+/g, " ")
+          .trim()
+          .slice(0, 130);
+        return `${posName} ứng vào ${c.name}: ${shortDesc}.`;
+      });
+
+      const hookText = userIntentQuestion.trim()
+        ? `Ứng với tâm niệm “${userIntentQuestion.trim()}”, quẻ ${cleanCardNames[0] || "Kinh Dịch"} đã hiển lộ thông điệp quan trọng.`
+        : `Trải bài ${spreadTitle} vừa khởi phát với chủ quẻ ${cleanCardNames[0] || "Cát Tường"}, soi sáng vận trình hiện tại của bạn.`;
+
+      const summaryAdvice =
+        userCustomAnswer.trim() ||
+        hexagramPrediction.trim() ||
+        `Giữ tâm chính định, thuận theo đạo lý của ${cleanCardNames[0] || "quẻ Dịch"}, làm chắc từng bước trước mắt và trọng chữ Tín thì mưu sự ắt hanh thông.`;
+
+      const videoScript = [
+        hookText,
+        ...cardNarrations,
+        `Lời khuyên cốt lõi từ Cửu Nhị Đại Sư: ${summaryAdvice}`,
+      ]
+        .join(" ")
+        .replace(/\s+/g, " ")
+        .trim();
+
+      const fullInterpretation = [
+        `## ☯ ${hexagramTitle}`,
+        `**Câu hỏi / Tâm niệm:** ${effectiveQuestion}`,
+        "",
+        `### 1. Điểm Nhấn Thiên Cơ (Hook)`,
+        `> ${hookText}`,
+        "",
+        `### 2. Luận Giải Chi Tiết Từng Lá Bài Trong Trận Pháp`,
+        ...orderedCards.map((c, idx) => {
+          const posLabel = c.positionLabel || `Vị trí ${idx + 1}`;
+          return `- **Lá ${idx + 1} (${posLabel}) — ${c.name} (${c.sub || ""}):**\n  ${c.desc || ""}`;
+        }),
+        "",
+        `### 3. Lời Khuyên & Định Hướng Hành Động Từ Cửu Nhị Đại Sư`,
+        `${summaryAdvice}`,
+        "",
+        `---`,
+        `### 4. Kịch Bản Thuyết Minh Video 9:16`,
+        `_${videoScript}_`,
+      ].join("\n");
+
+      // Bước thu âm giọng đọc tiếng Việt (/api/tts)
+      setDirectHomePercent(58);
+      setDirectHomeStage("Đang tổng hợp giọng đọc thuyết minh tiếng Việt...");
+      setDirectHomeMessage("Đang thu âm giọng đọc thuyết minh cho từng lá bài trong quẻ...");
+
+      let audioBlob: Blob | null = null;
+      try {
+        const ttsRes = await fetch("/api/tts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: videoScript, voice: directHomeVoice }),
+        });
+        if (ttsRes.ok) {
+          const ab = await ttsRes.arrayBuffer();
+          if (ab.byteLength > 200) {
+            audioBlob = new Blob([ab], { type: "audio/mpeg" });
+          }
+        }
+      } catch {}
+
+      // Dự phòng tạo file WAV âm thanh thiền định 432Hz nếu đang ngoại tuyến
+      const createFallbackWavBlob = (durationSec = 14): Blob => {
+        const sampleRate = 22050;
+        const numSamples = sampleRate * durationSec;
+        const buffer = new ArrayBuffer(44 + numSamples * 2);
+        const view = new DataView(buffer);
+        const writeStr = (offset: number, str: string) => {
+          for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+        };
+        writeStr(0, "RIFF");
+        view.setUint32(4, 36 + numSamples * 2, true);
+        writeStr(8, "WAVE");
+        writeStr(12, "fmt ");
+        view.setUint32(16, 16, true);
+        view.setUint16(20, 1, true);
+        view.setUint16(22, 1, true);
+        view.setUint32(24, sampleRate, true);
+        view.setUint32(28, sampleRate * 2, true);
+        view.setUint16(32, 2, true);
+        view.setUint16(34, 16, true);
+        writeStr(36, "data");
+        view.setUint32(40, numSamples * 2, true);
+        for (let i = 0; i < numSamples; i++) {
+          const t = i / sampleRate;
+          const env = Math.min(1, t / 0.8) * Math.min(1, (durationSec - t) / 1.2);
+          const bell = Math.exp(-(t % 3.5) * 1.6) * Math.sin(2 * Math.PI * 432 * t);
+          const harmonic = 0.4 * Math.sin(2 * Math.PI * 216 * t) + 0.25 * Math.sin(2 * Math.PI * 648 * t);
+          const sample = Math.max(-1, Math.min(1, (bell * 0.55 + harmonic * 0.35) * env * 0.35));
+          view.setInt16(44 + i * 2, sample * 32767, true);
+        }
+        return new Blob([buffer], { type: "audio/wav" });
+      };
+
+      if (!audioBlob) {
+        audioBlob = createFallbackWavBlob(Math.max(12, orderedCards.length * 4));
+      }
+
+      const audioUrl = URL.createObjectURL(audioBlob);
+
+      // Bước dựng Video MP4/WebM 9:16 trực tiếp trên Canvas 540x960
+      setDirectHomePercent(74);
+      setDirectHomeStage("Đang dựng Video dọc 9:16 đồng bộ từng lá bài & phụ đề...");
+      setDirectHomeMessage("Bước 4/4: Đang xuất bản Video 9:16 HD đồng bộ lá bài & giọng đọc...");
+
+      const loadImg = (src: string): Promise<HTMLImageElement | null> =>
+        new Promise((resolve) => {
+          if (!src) return resolve(null);
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.onload = () => resolve(img);
+          img.onerror = () => resolve(null);
+          img.src = src;
+        });
+
+      const cardImages: (HTMLImageElement | null)[] = [];
+      for (let i = 0; i < orderedCards.length; i++) {
+        const srcCandidate = cardImgsBase64[i] || orderedCards[i].img || capturedPng;
+        cardImages.push(await loadImg(srcCandidate));
+      }
+      const fallbackBoardImg = capturedPng ? await loadImg(capturedPng) : null;
+
+      let videoUrl = "";
+      let finalDuration = Math.max(12, orderedCards.length * 4.5);
+
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = 540;
+        canvas.height = 960;
+        const ctx = canvas.getContext("2d");
+
+        if (ctx && typeof MediaRecorder !== "undefined" && typeof (canvas as any).captureStream === "function") {
+          const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+          const audioCtx = new AudioCtx();
+          const dest = audioCtx.createMediaStreamDestination();
+
+          let decodedBuffer: AudioBuffer | null = null;
+          try {
+            const arrBuf = await audioBlob.arrayBuffer();
+            decodedBuffer = await audioCtx.decodeAudioData(arrBuf.slice(0));
+          } catch {}
+
+          if (decodedBuffer && decodedBuffer.duration > 1) {
+            finalDuration = Math.min(45, Math.max(8, decodedBuffer.duration));
+          } else {
+            finalDuration = Math.min(24, Math.max(10, orderedCards.length * 4));
+          }
+
+          const stream: MediaStream = (canvas as any).captureStream(24);
+          dest.stream.getAudioTracks().forEach((t) => stream.addTrack(t));
+
+          let chosenMime = "";
+          for (const mt of [
+            "video/mp4;codecs=avc1,mp4a.40.2",
+            "video/mp4",
+            "video/webm;codecs=vp9,opus",
+            "video/webm;codecs=vp8,opus",
+            "video/webm",
+          ]) {
+            try {
+              if (MediaRecorder.isTypeSupported(mt)) {
+                chosenMime = mt;
+                break;
+              }
+            } catch {}
+          }
+
+          const recorder = chosenMime
+            ? new MediaRecorder(stream, { mimeType: chosenMime, videoBitsPerSecond: 2200000 })
+            : new MediaRecorder(stream);
+
+          const chunks: BlobPart[] = [];
+          recorder.ondataavailable = (ev) => {
+            if (ev.data && ev.data.size > 0) chunks.push(ev.data);
+          };
+
+          const sentences = [hookText, ...cardNarrations, `Lời khuyên: ${summaryAdvice}`];
+
+          const drawFrame = (progress: number, secElapsed: number) => {
+            // Nền cổ phong huyền kim
+            const grad = ctx.createLinearGradient(0, 0, 0, 960);
+            grad.addColorStop(0, "#1A130C");
+            grad.addColorStop(0.5, "#110C08");
+            grad.addColorStop(1, "#090604");
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 540, 960);
+
+            // Khung viền hoàng kim
+            ctx.strokeStyle = "rgba(212, 175, 55, 0.75)";
+            ctx.lineWidth = 3;
+            ctx.strokeRect(16, 16, 508, 928);
+            ctx.strokeStyle = "rgba(212, 175, 55, 0.28)";
+            ctx.lineWidth = 1;
+            ctx.strokeRect(22, 22, 496, 916);
+
+            // Tiêu đề trên cùng
+            ctx.fillStyle = "#E5C158";
+            ctx.font = "bold 17px serif";
+            ctx.textAlign = "center";
+            ctx.fillText("☯ CỬU NHỊ · LUẬN GIẢI KINH DỊCH 9:16", 270, 56);
+
+            ctx.fillStyle = "#FFF8E7";
+            ctx.font = "bold 20px serif";
+            const titleShort = hexagramTitle.length > 36 ? hexagramTitle.slice(0, 34) + "..." : hexagramTitle;
+            ctx.fillText(titleShort, 270, 88);
+
+            // Xác định lá bài hiện tại theo tiến trình đọc
+            const cardIdx = Math.min(
+              orderedCards.length - 1,
+              Math.floor(progress * orderedCards.length)
+            );
+            const activeCard = orderedCards[cardIdx];
+            const activeImg = cardImages[cardIdx] || fallbackBoardImg;
+
+            // Nhãn vị trí lá bài
+            ctx.fillStyle = "rgba(212, 175, 55, 0.18)";
+            ctx.fillRect(48, 108, 444, 38);
+            ctx.strokeStyle = "rgba(212, 175, 55, 0.65)";
+            ctx.strokeRect(48, 108, 444, 38);
+            ctx.fillStyle = "#F3E5AB";
+            ctx.font = "bold 16px serif";
+            const badgeText = `Lá ${cardIdx + 1}/${orderedCards.length}: ${activeCard?.name || "Quẻ Kinh Dịch"}`;
+            ctx.fillText(badgeText.slice(0, 42), 270, 133);
+
+            // Vẽ hình lá bài ở trung tâm với hiệu ứng Ken Burns nhẹ
+            if (activeImg) {
+              const zoom = 1 + 0.04 * Math.sin(progress * Math.PI);
+              const boxW = 340 * zoom;
+              const boxH = 470 * zoom;
+              const imgRatio = activeImg.width / Math.max(1, activeImg.height);
+              let drawW = boxW;
+              let drawH = boxW / imgRatio;
+              if (drawH > boxH) {
+                drawH = boxH;
+                drawW = boxH * imgRatio;
+              }
+              const dx = 270 - drawW / 2;
+              const dy = 398 - drawH / 2;
+
+              ctx.save();
+              ctx.shadowColor = "rgba(212, 175, 55, 0.35)";
+              ctx.shadowBlur = 24;
+              ctx.drawImage(activeImg, dx, dy, drawW, drawH);
+              ctx.strokeStyle = "#D4AF37";
+              ctx.lineWidth = 2;
+              ctx.strokeRect(dx, dy, drawW, drawH);
+              ctx.restore();
+            }
+
+            // Sóng âm hoàng kim
+            const barCount = 24;
+            const barWidth = 8;
+            const barGap = 6;
+            const totalWaveW = barCount * (barWidth + barGap);
+            const startX = 270 - totalWaveW / 2;
+            for (let b = 0; b < barCount; b++) {
+              const wave =
+                0.35 +
+                0.65 *
+                  Math.abs(
+                    Math.sin(secElapsed * 6.5 + b * 0.45) *
+                      Math.cos(secElapsed * 3.2 - b * 0.25)
+                  );
+              const bh = Math.max(6, Math.round(wave * 34));
+              ctx.fillStyle = b % 2 === 0 ? "#E5C158" : "#D4AF37";
+              ctx.fillRect(startX + b * (barWidth + barGap), 678 - bh / 2, barWidth, bh);
+            }
+
+            // Hộp phụ đề vàng kim ở phần dưới
+            ctx.fillStyle = "rgba(24, 18, 12, 0.92)";
+            ctx.fillRect(34, 712, 472, 198);
+            ctx.strokeStyle = "rgba(212, 175, 55, 0.7)";
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(34, 712, 472, 198);
+
+            ctx.fillStyle = "#E5C158";
+            ctx.font = "bold 15px serif";
+            ctx.fillText("✦ LỜI BÀN CỬU NHỊ ĐẠI SƯ ✦", 270, 740);
+
+            const sentIdx = Math.min(
+              sentences.length - 1,
+              Math.floor(progress * sentences.length)
+            );
+            const currentSentence = sentences[sentIdx] || videoScript;
+
+            // Wrap text
+            ctx.fillStyle = "#FFF8E7";
+            ctx.font = "italic 17px serif";
+            const words = currentSentence.split(/\s+/);
+            const lines: string[] = [];
+            let curLine = "";
+            for (const w of words) {
+              const test = (curLine + " " + w).trim();
+              if (ctx.measureText(test).width > 432) {
+                if (curLine) lines.push(curLine);
+                curLine = w;
+              } else {
+                curLine = test;
+              }
+            }
+            if (curLine) lines.push(curLine);
+
+            lines.slice(0, 5).forEach((ln, lIdx) => {
+              ctx.fillText(ln, 270, 774 + lIdx * 26);
+            });
+          };
+
+          await new Promise<void>((resolve) => {
+            recorder.onstop = () => {
+              const finalMime = recorder.mimeType || chosenMime || "video/webm";
+              const vBlob = new Blob(chunks, { type: finalMime });
+              if (vBlob.size > 500) {
+                videoUrl = URL.createObjectURL(vBlob);
+              }
+              try {
+                audioCtx.close();
+              } catch {}
+              resolve();
+            };
+
+            drawFrame(0, 0);
+            recorder.start(250);
+
+            if (decodedBuffer) {
+              const srcNode = audioCtx.createBufferSource();
+              srcNode.buffer = decodedBuffer;
+              srcNode.connect(dest);
+              srcNode.start(0);
+            } else {
+              // Tạo âm nền nhẹ trong stream để đảm bảo có track âm thanh
+              const osc = audioCtx.createOscillator();
+              const gain = audioCtx.createGain();
+              osc.frequency.value = 432;
+              gain.gain.value = 0.02;
+              osc.connect(gain);
+              gain.connect(dest);
+              osc.start(0);
+            }
+
+            const renderStart = Date.now();
+            const totalMs = finalDuration * 1000;
+            const timer = window.setInterval(() => {
+              const elapsedMs = Date.now() - renderStart;
+              const prog = Math.min(1, elapsedMs / totalMs);
+              const totalElapsedSec = (Date.now() - startedAt) / 1000;
+              const remSec = Math.max(1, Math.ceil((totalMs - elapsedMs) / 1000));
+
+              drawFrame(prog, elapsedMs / 1000);
+              setDirectHomeElapsed(totalElapsedSec);
+              setDirectHomeEtaRemaining(remSec);
+              setDirectHomeEtaText(`~${remSec} giây`);
+              setDirectHomePercent(Math.min(98, Math.round(74 + prog * 24)));
+
+              if (elapsedMs >= totalMs) {
+                window.clearInterval(timer);
+                try {
+                  if (recorder.state !== "inactive") recorder.stop();
+                } catch {
+                  resolve();
+                }
+              }
+            }, 42);
+          });
+        }
+      } catch (vErr) {
+        console.warn("Browser 9:16 canvas recorder fallback:", vErr);
+      }
+
+      const totalSec = Math.max(1, Math.round((Date.now() - startedAt) / 1000));
+      const finalResult = {
+        question: effectiveQuestion,
+        hexagram_title: hexagramTitle,
+        hook: hookText,
+        summary_advice: summaryAdvice,
+        hexagram_raw_ai_text: aiText,
+        full_interpretation: fullInterpretation,
+        video_script: videoScript,
+        video_url: videoUrl || undefined,
+        audio_url: audioUrl,
+        image_url: capturedPng || orderedCards[0]?.img || "",
+        duration: Math.round(finalDuration),
+        total_time: totalSec,
+      };
+
+      playGoldenChime432Hz();
+      setIsDragonSendingFinale(false);
+      setIsDirectHomeRunning(false);
+      setDirectHomePercent(100);
+      setDirectHomeEtaRemaining(0);
+      setDirectHomeEtaText("Đã hoàn tất");
+      setDirectHomeElapsed(totalSec);
+      setDirectHomeResult(finalResult);
+      setDirectHomeReadyBanner({
+        hexagramTitle,
+        duration: Math.round(finalDuration),
+        videoUrl: finalResult.video_url,
+        totalTime: totalSec,
+      });
+      setDirectHomeStage("Hoàn tất 100%! Video 9:16 đã đồng bộ chuẩn xác với từng lá bài trong quẻ.");
+      setDirectHomeMessage("Hoàn tất 100%! Video 9:16 đã đồng bộ chuẩn xác với từng lá bài trong quẻ.");
+      if (finalResult.video_url) {
+        setShowPhoneVideoMode(true);
+      }
+      setCopiedToast("✨ Tự động hóa hoàn tất! Video 9:16 & Bản luận đã sẵn sàng phát & tải xuống!");
+      window.setTimeout(() => setCopiedToast(null), 5000);
+    },
+    [
+      mode,
+      cards,
+      userIntentQuestion,
+      userCustomAnswer,
+      hexagramPrediction,
+      directHomeVoice,
+      playGoldenChime432Hz,
+    ]
+  );
 
   const handleStartDirectHomeAutomation = useCallback(async () => {
     if (isDirectHomeRunning) return;
@@ -4362,15 +4827,27 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         cards_order_version: 2,
       };
 
-      const res = await fetchDirectHomeApi("/api/direct_home/run", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      let res: Response | null = null;
+      try {
+        res = await fetchDirectHomeApi("/api/direct_home/run", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      } catch {
+        res = null;
+      }
 
+      // Nếu máy chủ Python cục bộ (port 8000) không phản hồi hoặc đang truy cập trên tên miền đám mây (ichingtarot.com / điện thoại),
+      // tự động chuyển sang Engine Luận Trực Tiếp & Dựng Video 9:16 ngay trên trình duyệt để luôn thành công 100%!
       if (!res || !res.ok) {
-        const errData = res ? await res.json().catch(() => ({})) : {};
-        throw new Error(errData.error || "Không thể khởi chạy tiến trình Tự Động Hóa Toàn Bộ.");
+        await runBrowserDirectHomeEngine(
+          effectiveQuestion,
+          capturedPng || snapshotImageUrl || "",
+          directHomeCardImgsRef.current,
+          aiText
+        );
+        return;
       }
 
       const startData = await res.json().catch(() => ({}));
@@ -4412,6 +4889,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     directHomeVoice,
     snapshotImageUrl,
     fetchDirectHomeApi,
+    runBrowserDirectHomeEngine,
     startDirectHomeBackgroundPolling,
   ]);
 

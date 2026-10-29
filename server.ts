@@ -1956,6 +1956,56 @@ app.post(
   }
 );
 
+// API Tổng hợp giọng đọc tiếng Việt (MP3) phục vụ tạo Video 9:16 trực tiếp trên trình duyệt
+app.all("/api/tts", async (req: Request, res: Response) => {
+  try {
+    const rawText = String(req.query.text || req.body?.text || "").trim();
+    if (!rawText) {
+      return res.status(400).json({ error: "Empty text" });
+    }
+    const cleaned = rawText.replace(/[*#_~`>|]/g, " ").replace(/\s+/g, " ").trim();
+    const parts = cleaned.split(/(?<=[.!?…。；;:\n])\s+|(?=[,，])\s*/);
+    const chunks: string[] = [];
+    let cur = "";
+    for (const p of parts) {
+      const t = p.trim();
+      if (!t) continue;
+      if ((cur + " " + t).trim().length <= 175) {
+        cur = (cur + " " + t).trim();
+      } else {
+        if (cur) chunks.push(cur);
+        cur = t.slice(0, 175);
+      }
+    }
+    if (cur) chunks.push(cur);
+
+    const buffers: Buffer[] = [];
+    for (const chunk of chunks.slice(0, 24)) {
+      const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=vi&client=tw-ob&q=${encodeURIComponent(chunk)}`;
+      const r = await fetch(ttsUrl, {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36",
+          Referer: "https://translate.google.com/",
+        },
+      });
+      if (r.ok) {
+        const ab = await r.arrayBuffer();
+        if (ab.byteLength > 0) buffers.push(Buffer.from(ab));
+      }
+    }
+
+    if (buffers.length === 0) {
+      return res.status(502).json({ error: "TTS upstream empty" });
+    }
+    const merged = Buffer.concat(buffers);
+    res.setHeader("Content-Type", "audio/mpeg");
+    res.setHeader("Cache-Control", "public, max-age=3600");
+    return res.send(merged);
+  } catch (err: any) {
+    return res.status(500).json({ error: err?.message || "TTS error" });
+  }
+});
+
 // Proxy + Fallback cho 3D AI Agent Tiểu Long Cửu Nhị Vấn Đáp Quẻ Dịch trong Điện Thoại ở Trang Chủ
 app.post("/api/dragon_agent/chat", async (req: Request, res: Response) => {
   try {
