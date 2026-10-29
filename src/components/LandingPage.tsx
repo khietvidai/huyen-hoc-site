@@ -6058,115 +6058,6 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                       )}
                     </button>
                   </div>
-
-                  {/* CỤM 4: TỰ ĐỘNG HÓA TOÀN BỘ (LUẬN GIẢI TRỰC TIẾP TỪ TRANG CHỦ & DỰNG VIDEO 9:16) */}
-                  <div className="pt-2.5 border-t border-[#C4963E]/30 space-y-2">
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                      <button
-                        type="button"
-                        id="btn-direct-home-auto-all"
-                        onClick={handleStartDirectHomeAutomation}
-                        disabled={isDirectHomeRunning || isDragonLocked}
-                        className={`flex-1 min-w-0 h-11 inline-flex items-center justify-center gap-2 px-3.5 rounded-xl text-xs sm:text-[13px] font-serif font-bold tracking-wide transition-all duration-200 ${
-                          isDragonLocked
-                            ? "text-[#A89880] border border-[#8C7A65]/45 opacity-60 cursor-not-allowed"
-                            : isDirectHomeRunning
-                            ? "bg-amber-900/90 text-[#FFF8E7] border border-[#D4AF37] cursor-wait animate-pulse"
-                            : "text-[#1C1610] hover:brightness-105 cursor-pointer active:scale-[0.99]"
-                        }`}
-                        style={
-                          isDragonLocked
-                            ? {
-                                background: "linear-gradient(135deg, #3A332C 0%, #26211C 100%)",
-                                boxShadow: "inset 0 1px 0 rgba(212, 175, 55, 0.15)",
-                              }
-                            : isDirectHomeRunning
-                            ? undefined
-                            : {
-                                background: "linear-gradient(135deg, #FFF3B0 0%, #E5C158 45%, #D4AF37 100%)",
-                                border: "1.5px solid #8C6618",
-                                boxShadow:
-                                  "0 10px 24px -4px rgba(180, 130, 30, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.75)",
-                              }
-                        }
-                        title={
-                          isDragonLocked
-                            ? "Đang khóa vì Cửu Nhị Tiểu Long còn ngủ/đang thức dậy. Sau khi gọi dậy 5 giây sẽ tự động mở khóa!"
-                            : "Tự động chụp thẻ bài & trích xuất Chép Cho AI trực tiếp từ trang chủ để Đại Sư Gemini luận giải, thu âm và dựng Video dọc 9:16"
-                        }
-                      >
-                        <span className="text-base shrink-0">
-                          {isDragonLocked ? "🔒" : isDirectHomeRunning ? "⏳" : "🚀"}
-                        </span>
-                        <span className="truncate">
-                          {isDirectHomeRunning
-                            ? `Đang Chạy Ngầm (${directHomePercent}%) — Còn ${directHomeEtaRemaining}s`
-                            : "Tự Động Luận Giải & Dựng Video 9:16"}
-                        </span>
-                      </button>
-
-                      <select
-                        value={directHomeVoice}
-                        onChange={(e) => setDirectHomeVoice(e.target.value)}
-                        disabled={isDirectHomeRunning}
-                        className="w-full sm:w-[210px] shrink-0 h-11 rounded-xl px-2.5 text-xs font-serif font-bold text-[#231C14] bg-[#FDFBF7] border border-[#C4963E]/65 focus:outline-none cursor-pointer truncate"
-                        title="Chọn giọng đọc thuyết minh Video 9:16"
-                      >
-                        <option value="vi-VN-NamMinhNeural">🎙️ Giọng Nam Minh (Trầm ấm)</option>
-                        <option value="vi-VN-HoaiMyNeural">🎙️ Giọng Hoài My (Truyền cảm)</option>
-                        <option value="namminh_elder">🧙‍♂️ Dịch Sư Trưởng Lão (Uy nghiêm)</option>
-                      </select>
-                    </div>
-
-                    {/* Thanh tiến độ 0-100% + Thời gian đã chạy / Dự báo hoàn tất (ETA) */}
-                    <div className="space-y-1.5">
-                      <div className="w-full h-2 rounded-full bg-[#E8DCC4] overflow-hidden border border-[#C4963E]/40">
-                        <div
-                          className="h-full transition-all duration-500 rounded-full"
-                          style={{
-                            width: `${Math.max(4, directHomePercent)}%`,
-                            background: "linear-gradient(90deg, #9E2A2B 0%, #D4AF37 55%, #1E7E48 100%)",
-                          }}
-                        />
-                      </div>
-
-                      {(isDirectHomeRunning || directHomeElapsed > 0) && (
-                        <div className="flex flex-wrap items-center justify-between gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#231C14] text-[#F5E6C4] border border-[#D4AF37]/50 text-[10.5px]">
-                          <div className="flex items-center gap-1.5 font-semibold">
-                            <span className={isDirectHomeRunning ? "animate-spin inline-block" : ""}>
-                              {isDirectHomeRunning ? "⚙️" : "✅"}
-                            </span>
-                            <span>
-                              {isDirectHomeRunning
-                                ? "Đang chạy ngầm (Có thể chuyển tab thoải mái)"
-                                : "Đã hoàn tất tiến trình chạy ngầm"}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2 font-mono text-[10px]">
-                            <span className="text-[#E5C158]">⏱ Đã chạy: {directHomeElapsed.toFixed(0)}s</span>
-                            <span className="text-[#C4963E]">|</span>
-                            <span className="text-emerald-300 font-bold">
-                              {isDirectHomeRunning ? `Dự báo xong: ${directHomeEtaText}` : "Hoàn tất 100%"}
-                            </span>
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="flex items-center justify-between gap-2 text-[11px] text-[#5C4930]">
-                        <span className="truncate font-medium">• {directHomeMessage}</span>
-                        {directHomeResult && (
-                          <button
-                            type="button"
-                            onClick={() => setIsDirectResultModalOpen(true)}
-                            className="shrink-0 font-bold text-[#9E2A2B] hover:underline cursor-pointer"
-                          >
-                            Xem bản luận đầy đủ →
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
                 </div>
               </div>
 
@@ -6390,10 +6281,10 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                         `}</style>
 
                         {/* 1. SÂN KHẤU HOẠT ẢNH TIỂU LONG CỬU NHỊ */}
-                        <div className="flex flex-col items-center gap-1.5">
-                          <div className="w-full rounded-xl overflow-hidden border border-[#D4AF37]/60 bg-gradient-to-b from-[#1E160E] via-[#140F0A] to-[#0D0A07] p-1.5 shadow-inner relative">
+                        <div className="flex-1 flex flex-col items-center gap-1.5 min-h-0">
+                          <div className="w-full flex-1 flex flex-col rounded-xl overflow-hidden border border-[#D4AF37]/60 bg-gradient-to-b from-[#1E160E] via-[#140F0A] to-[#0D0A07] p-1.5 shadow-inner relative">
                             {/* Khung Video Hoạt Ảnh */}
-                            <div className="w-full h-[214px] rounded-lg overflow-hidden relative border border-[#D4AF37]/45 bg-[#0E0A07] shadow-md">
+                            <div className="w-full flex-1 min-h-[214px] rounded-lg overflow-hidden relative border border-[#D4AF37]/45 bg-[#0E0A07] shadow-md">
                               <video
                                 ref={dragonVideoRef}
                                 key={DRAGON_VIDEO_MAP[activeDragonAct].src}
@@ -6457,76 +6348,6 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                               : `“${DRAGON_VIDEO_MAP[activeDragonAct].quote}”`}
                           </p>
                         </div>
-
-                        {/* 3. Phần dưới: Sóng Âm Vàng Kim & Trình Phát Audio */}
-                        <div className="rounded-xl bg-black/45 border border-[#D4AF37]/30 px-2.5 py-1.5 flex flex-col gap-1">
-                          <div className="flex items-end justify-center gap-[3px] h-4 px-2">
-                            {[35, 65, 45, 85, 55, 95, 70, 40, 80, 60, 90, 50, 75, 45, 85, 60, 40, 70, 50, 35].map(
-                              (h, idx) => (
-                                <span
-                                  key={idx}
-                                  className={`w-[3px] rounded-full transition-all duration-300 ${
-                                    isDirectHomeRunning ? "animate-pulse bg-[#E5C158]" : "bg-[#D4AF37]/80"
-                                  }`}
-                                  style={{ height: `${Math.max(20, h)}%` }}
-                                />
-                              )
-                            )}
-                          </div>
-
-                          {directHomeResult?.audio_url ? (
-                            <div className="flex items-center gap-1.5">
-                              <audio
-                                controls
-                                src={resolveMediaUrl(directHomeResult.audio_url)}
-                                className="flex-1 h-7 opacity-95 min-w-0"
-                              />
-                              <button
-                                type="button"
-                                onClick={handleStartDirectHomeAutomation}
-                                disabled={isDirectHomeRunning || isDragonLocked}
-                                className="shrink-0 px-2 py-1 rounded-full bg-[#D4AF37] text-[#1C1610] text-[9px] font-bold hover:brightness-110 cursor-pointer"
-                                title="Tạo lại Video 9:16 mới cho quẻ hiện tại"
-                              >
-                                🔄 Tạo lại
-                              </button>
-                            </div>
-                          ) : (
-                            <div className="flex items-center justify-between text-[9.5px] text-[#D4AF37]">
-                              <span className="font-mono">
-                                {isDragonSleeping
-                                  ? "💤 Đang ngủ say"
-                                  : dragonWakeState === "waking"
-                                  ? "🌅 Cảnh Thức..."
-                                  : isDirectHomeRunning || isCapturingSnapshot || isPlayingCopyFullClips
-                                  ? `🌟 Hoạt Ảnh Full ${dragonAutoFullAct === 6 ? "1" : "2"}`
-                                  : "🐉 Cảnh Ngồi Không"}
-                              </span>
-                              {isDragonSleeping ? (
-                                <button
-                                  type="button"
-                                  onClick={handleWakeUpDragon}
-                                  className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#FFF3B0] to-[#D4AF37] text-[#1C1610] font-bold hover:brightness-110 cursor-pointer animate-pulse"
-                                >
-                                  🔔 Gọi Tiểu Long Dậy
-                                </button>
-                              ) : (
-                                <button
-                                  type="button"
-                                  onClick={handleStartDirectHomeAutomation}
-                                  disabled={isDirectHomeRunning || isDragonLocked}
-                                  className={`px-2.5 py-0.5 rounded-full font-bold ${
-                                    isDragonLocked
-                                      ? "bg-[#3A332C] text-[#A89880] cursor-not-allowed opacity-60"
-                                      : "bg-[#D4AF37] text-[#1C1610] hover:brightness-110 cursor-pointer"
-                                  }`}
-                                >
-                                  {isDragonLocked ? "🔒 Đang thức dậy..." : isDirectHomeRunning ? "Đang tạo..." : "▶ Tạo & Phát Ngay"}
-                                </button>
-                              )}
-                            </div>
-                          )}
-                        </div>
                       </div>
                     )}
 
@@ -6536,85 +6357,6 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     </div>
                   </div>
                 </div>
-
-                {/* HÀNG 3 NÚT TẢI VÀNG KIM DƯỚI ĐIỆN THOẠI (MẪU 2) */}
-                <div className="w-[308px] sm:w-[336px] grid grid-cols-3 gap-1.5">
-                  <a
-                    href={
-                      directHomeResult?.video_url
-                        ? resolveMediaUrl(directHomeResult.video_url)
-                        : "#direct-home-phone-mockup"
-                    }
-                    download={directHomeResult?.video_url ? "iching_tarot_9_16.mp4" : undefined}
-                    onClick={(e) => {
-                      if (!directHomeResult?.video_url) {
-                        e.preventDefault();
-                        handleStartDirectHomeAutomation();
-                      }
-                    }}
-                    className="inline-flex items-center justify-center gap-1 px-1.5 py-2 rounded-xl text-[10.5px] font-serif font-bold text-[#1C1610] transition hover:brightness-105 shadow-sm text-center cursor-pointer"
-                    style={{
-                      background: "linear-gradient(180deg, #F5E3A9 0%, #D4AF37 100%)",
-                      border: "1px solid #8C6618",
-                    }}
-                    title="Tải xuống Video dọc 9:16 MP4"
-                  >
-                    <span>⬇</span>
-                    <span className="truncate">Tải Video MP4</span>
-                  </a>
-
-                  <a
-                    href={
-                      directHomeResult?.audio_url
-                        ? resolveMediaUrl(directHomeResult.audio_url)
-                        : "#direct-home-phone-mockup"
-                    }
-                    download={directHomeResult?.audio_url ? "iching_tarot_voice.mp3" : undefined}
-                    onClick={(e) => {
-                      if (!directHomeResult?.audio_url) {
-                        e.preventDefault();
-                        handleStartDirectHomeAutomation();
-                      }
-                    }}
-                    className="inline-flex items-center justify-center gap-1 px-1.5 py-2 rounded-xl text-[10.5px] font-serif font-bold text-[#4A3B28] bg-[#FDFBF7] hover:bg-[#F5E8C7] transition shadow-sm text-center cursor-pointer border border-[#C4963E]/70"
-                    title="Tải xuống file giọng đọc thuyết minh MP3"
-                  >
-                    <span>🎵</span>
-                    <span className="truncate">Tải Audio</span>
-                  </a>
-
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      if (directHomeCapturedImg) {
-                        downloadDataUrlAsPng(directHomeCapturedImg, "que-kinh-dich-trang-chu.png");
-                      } else {
-                        await handleCaptureCardsSnapshot({ silent: false });
-                      }
-                    }}
-                    className="inline-flex items-center justify-center gap-1 px-1.5 py-2 rounded-xl text-[10.5px] font-serif font-bold text-[#4A3B28] bg-[#FDFBF7] hover:bg-[#F5E8C7] transition shadow-sm text-center cursor-pointer border border-[#C4963E]/70"
-                    title="Tải xuống hình chụp thẻ bài Kinh Dịch từ trang chủ"
-                  >
-                    <span>🖼️</span>
-                    <span className="truncate">Tải Ảnh Quẻ</span>
-                  </button>
-                </div>
-
-                {/* NÚT XEM KẾT QUẢ LUẬN GIẢI TRỰC TIẾP TỪ TRANG CHỦ (MẪU 2) */}
-                <button
-                  type="button"
-                  id="btn-open-direct-home-result"
-                  onClick={() => setIsDirectResultModalOpen(true)}
-                  className="w-[308px] sm:w-[336px] inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-serif font-bold text-[#5C3D0E] transition hover:brightness-105 cursor-pointer shadow-sm"
-                  style={{
-                    background: "linear-gradient(180deg, #FFFDF9 0%, #F4E8CE 100%)",
-                    border: "1px solid rgba(196, 150, 62, 0.75)",
-                    boxShadow: "0 8px 20px -6px rgba(110, 90, 55, 0.18)",
-                  }}
-                >
-                  <span>📖</span>
-                  <span>Kết Quả Luận Giải Trực Tiếp Từ Trang Chủ</span>
-                </button>
 
                 {/* NÚT MỞ XƯỞNG PHIM THỦY MẶC CHU DỊCH (16:9 & 9:16) */}
                 <button
