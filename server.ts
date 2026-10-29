@@ -7,6 +7,11 @@ import { GoogleGenAI } from "@google/genai";
 import WebSocket from "ws";
 import dotenv from "dotenv";
 import { BOOK_HEXAGRAMS } from "./src/data/bookHexagrams";
+import {
+  resolveVietnameseVoiceProfile,
+  synthesizeEdgeNeuralChunk,
+  synthesizeVoxCpmAnchored,
+} from "./src/utils/edgeNeuralTts";
 
 dotenv.config();
 
@@ -1974,10 +1979,11 @@ app.post(
   }
 );
 
-// API Tổng hợp giọng đọc tiếng Việt (MP3) phục vụ tạo Video 9:16 trực tiếp trên trình duyệt
+// API Tổng hợp giọng đọc tiếng Việt (MP3) phục vụ tạo Video 9:16 & Phim Thủy Mặc (Giọng Nam Trầm Ấm Đọc Quẻ Kinh Dịch)
 app.all("/api/tts", async (req: Request, res: Response) => {
   try {
     const rawText = String(req.query.text || req.body?.text || "").trim();
+    const voiceParam = String(req.query.voice || req.body?.voice || "nam_tram_am").trim();
     if (!rawText) {
       return res.status(400).json({ error: "Empty text" });
     }
@@ -1996,7 +2002,70 @@ app.all("/api/tts", async (req: Request, res: Response) => {
       .replace(/[*#_~`>|䷀-䷿⚊⚏☰☱☲☳☴☵☶☷➔•·]/g, " ")
       .replace(/\s+/g, " ")
       .trim();
+
+    const profile = resolveVietnameseVoiceProfile(voiceParam);
+
+    // 1. Optional VoxCPM2 48kHz Anchored Vietnamese Male Voice Cloning
+    if (profile.useVoxCpm) {
+      const voxMp3 = await synthesizeVoxCpmAnchored(
+        cleaned,
+        profile.voxControl ||
+          "Deep, warm, calm Vietnamese male narrator, resonant baritone voice, steady philosophical I Ching reading pace",
+        async () => {
+          const refPath = path.join(process.cwd(), "public", "assets", "ref-nam-tram-am.wav");
+          if (!fs.existsSync(refPath)) return null;
+          return new Uint8Array(fs.readFileSync(refPath));
+        }
+      );
+      if (voxMp3 && voxMp3.byteLength > 800) {
+        res.setHeader("Content-Type", "audio/mpeg");
+        res.setHeader("X-TTS-Engine", "voxcpm2-nam-tram-am");
+        res.setHeader("Cache-Control", "public, max-age=3600");
+        return res.send(Buffer.from(voxMp3));
+      }
+    }
+
+    // 2. Primary: Genuine Microsoft Edge Neural TTS (vi-VN-NamMinhNeural Trầm Ấm -6Hz / Trưởng Lão -10Hz)
     const parts = cleaned.split(/(?<=[.!?…。；;:\n])\s+|(?=[,，])\s*/);
+    const neuralChunks: string[] = [];
+    let nCur = "";
+    for (const p of parts) {
+      const t = p.trim();
+      if (!t) continue;
+      if ((nCur + " " + t).trim().length <= 950) {
+        nCur = (nCur + " " + t).trim();
+      } else {
+        if (nCur) neuralChunks.push(nCur);
+        nCur = t.slice(0, 950);
+      }
+    }
+    if (nCur) neuralChunks.push(nCur);
+
+    const neuralBuffers: Buffer[] = [];
+    let neuralOk = true;
+    for (const nChunk of neuralChunks.slice(0, 12)) {
+      const audio = await synthesizeEdgeNeuralChunk(
+        nChunk,
+        profile,
+        (url, headers) => new WebSocket(url, { headers })
+      );
+      if (audio && audio.byteLength > 200) {
+        neuralBuffers.push(Buffer.from(audio));
+      } else {
+        neuralOk = false;
+        break;
+      }
+    }
+
+    if (neuralOk && neuralBuffers.length > 0) {
+      const mergedNeural = Buffer.concat(neuralBuffers);
+      res.setHeader("Content-Type", "audio/mpeg");
+      res.setHeader("X-TTS-Engine", `edge-neural-${profile.edgeVoice}`);
+      res.setHeader("Cache-Control", "public, max-age=3600");
+      return res.send(mergedNeural);
+    }
+
+    // 3. Fallback: Chunked Google TTS
     const chunks: string[] = [];
     let cur = "";
     for (const p of parts) {

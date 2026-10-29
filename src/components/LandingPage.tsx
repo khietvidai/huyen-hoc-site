@@ -3522,7 +3522,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
   }, [cards, mode, isCard2Reversed, isCapturingSnapshot]);
 
   /* ── TÍCH HỢP MẪU 2: LUẬN TRỰC TIẾP & VIDEO 9:16 NGAY TẠI TRANG CHỦ (CHẠY NGẦM + DỰ BÁO ETA + THÔNG BÁO ĐA KÊNH) ── */
-  const [directHomeVoice, setDirectHomeVoice] = useState<string>("vi-VN-NamMinhNeural");
+  const [directHomeVoice, setDirectHomeVoice] = useState<string>("nam_tram_am");
   const [isDirectHomeRunning, setIsDirectHomeRunning] = useState<boolean>(false);
   const [directHomePercent, setDirectHomePercent] = useState<number>(0);
   const [directHomeStage, setDirectHomeStage] = useState<string>("");

@@ -1,11 +1,17 @@
+import {
+  resolveVietnameseVoiceProfile,
+  synthesizeEdgeNeuralChunk,
+  synthesizeVoxCpmAnchored,
+} from "./utils/edgeNeuralTts";
+
 export interface Env {
   ASSETS: {
     fetch: (request: Request) => Promise<Response>;
   };
 }
 
-function splitTextForTts(rawText: string, maxLen = 175): string[] {
-  const cleaned = (rawText || "")
+function cleanTextForVietnameseTts(rawText: string): string {
+  return (rawText || "")
     .replace(/\bLá\s*(\d+)\b/gi, (_m, d) => {
       const map: Record<string, string> = {
         "1": "Lá bài số một",
@@ -20,6 +26,10 @@ function splitTextForTts(rawText: string, maxLen = 175): string[] {
     .replace(/[*#_~`>|䷀-䷿⚊⚏☰☱☲☳☴☵☶☷➔•·]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function splitTextForTts(rawText: string, maxLen = 175): string[] {
+  const cleaned = cleanTextForVietnameseTts(rawText);
   if (!cleaned) return [];
 
   const rawSentences = cleaned.split(/(?<=[.!?…。；;:\n])\s+|(?=[,，])\s*/);
@@ -67,22 +77,91 @@ export default {
       return new Response(null, { status: 204, headers: CORS_HEADERS });
     }
 
-    // Cloud Vietnamese TTS MP3 synthesizer (100% pure Vietnamese tl=vi)
+    // Cloud Vietnamese TTS MP3 synthesizer (Warm Deep Male I Ching Master voice primary)
     if (url.pathname === "/api/tts") {
       try {
         let text = url.searchParams.get("text") || "";
+        let voice = url.searchParams.get("voice") || "nam_tram_am";
         if (request.method === "POST") {
           const body: any = await request.json().catch(() => ({}));
           if (!text) text = body?.text || "";
+          if (body?.voice) voice = String(body.voice);
         }
-        const chunks = splitTextForTts(text);
-        if (chunks.length === 0) {
+
+        const cleaned = cleanTextForVietnameseTts(text);
+        if (!cleaned) {
           return new Response(JSON.stringify({ error: "Empty text" }), {
             status: 400,
             headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
           });
         }
 
+        const profile = resolveVietnameseVoiceProfile(voice);
+
+        // 1. Optional VoxCPM2 48kHz Anchored Vietnamese Male Voice Cloning
+        if (profile.useVoxCpm) {
+          const voxMp3 = await synthesizeVoxCpmAnchored(
+            cleaned,
+            profile.voxControl ||
+              "Deep, warm, calm Vietnamese male narrator, resonant baritone voice, steady philosophical I Ching reading pace",
+            async () => {
+              if (!env.ASSETS) return null;
+              const assetUrl = new URL("/assets/ref-nam-tram-am.wav", url.origin);
+              const assetRes = await env.ASSETS.fetch(new Request(assetUrl.toString()));
+              if (!assetRes.ok) return null;
+              return new Uint8Array(await assetRes.arrayBuffer());
+            }
+          );
+          if (voxMp3 && voxMp3.byteLength > 800) {
+            return new Response(voxMp3.buffer, {
+              status: 200,
+              headers: {
+                ...CORS_HEADERS,
+                "Content-Type": "audio/mpeg",
+                "X-TTS-Engine": "voxcpm2-nam-tram-am",
+                "Cache-Control": "public, max-age=3600",
+              },
+            });
+          }
+        }
+
+        // 2. Primary: Genuine Microsoft Edge Neural TTS (vi-VN-NamMinhNeural Trầm Ấm -6Hz / Trưởng Lão -10Hz)
+        const neuralChunks = splitTextForTts(cleaned, 950);
+        const neuralBuffers: Uint8Array[] = [];
+        let neuralTotal = 0;
+        let neuralOk = true;
+
+        for (const nChunk of neuralChunks) {
+          const audio = await synthesizeEdgeNeuralChunk(nChunk, profile);
+          if (audio && audio.byteLength > 200) {
+            neuralBuffers.push(audio);
+            neuralTotal += audio.byteLength;
+          } else {
+            neuralOk = false;
+            break;
+          }
+        }
+
+        if (neuralOk && neuralTotal > 200) {
+          const mergedNeural = new Uint8Array(neuralTotal);
+          let off = 0;
+          for (const b of neuralBuffers) {
+            mergedNeural.set(b, off);
+            off += b.byteLength;
+          }
+          return new Response(mergedNeural.buffer, {
+            status: 200,
+            headers: {
+              ...CORS_HEADERS,
+              "Content-Type": "audio/mpeg",
+              "X-TTS-Engine": `edge-neural-${profile.edgeVoice}`,
+              "Cache-Control": "public, max-age=3600",
+            },
+          });
+        }
+
+        // 3. Fallback: Chunked Vietnamese TTS
+        const chunks = splitTextForTts(cleaned, 175);
         const buffers: Uint8Array[] = [];
         let totalLength = 0;
 
@@ -129,6 +208,7 @@ export default {
           headers: {
             ...CORS_HEADERS,
             "Content-Type": "audio/mpeg",
+            "X-TTS-Engine": "fallback-vi",
             "Cache-Control": "public, max-age=3600",
           },
         });

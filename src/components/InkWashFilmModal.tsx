@@ -59,6 +59,7 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState<boolean>(true);
+  const [inkWashVoice, setInkWashVoice] = useState<string>("nam_tram_am");
   const [isDecomposing, setIsDecomposing] = useState<boolean>(false);
 
   // Editable overrides for question, seal stamp characters ("玖貳"), and final conclusion
@@ -788,6 +789,27 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
                       {isVoiceEnabled ? <Mic className="w-3.5 h-3.5 text-emerald-400" /> : <MicOff className="w-3.5 h-3.5" />}
                       <span>Giọng Việt</span>
                     </button>
+
+                    <select
+                      value={inkWashVoice}
+                      onChange={async (e) => {
+                        const v = e.target.value;
+                        setInkWashVoice(v);
+                        if (audioRef.current) {
+                          audioRef.current.setVoiceProfile(v);
+                          const measured = await audioRef.current.preloadAndMeasureCues(filmPlan.narrationCues);
+                          setMeasuredCueDurations(measured);
+                        }
+                      }}
+                      disabled={isRunningPipeline || isRecordingVideo}
+                      className="px-2 py-1.5 rounded-xl text-xs font-serif font-bold bg-[#241C14] text-[#F3E5AB] border border-[#C4963E]/60 focus:outline-none cursor-pointer"
+                      title="Chọn giọng nam trầm ấm đọc quẻ Kinh Dịch"
+                    >
+                      <option value="nam_tram_am">🎙️ Nam Trầm Ấm (Kinh Dịch)</option>
+                      <option value="voxcpm-nam-tram-am">🔥 VoxCPM2 · Nam Trầm Ấm 48kHz</option>
+                      <option value="namminh_elder">🧙‍♂️ Dịch Sư Trưởng Lão</option>
+                      <option value="vi-VN-HoaiMyNeural">🎙️ Nữ Hoài My</option>
+                    </select>
                   </div>
 
                   {/* Export Buttons: Record Video & Capture PNG */}
