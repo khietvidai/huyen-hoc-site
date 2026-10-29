@@ -4473,9 +4473,9 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           } catch {}
 
           if (decodedBuffer && decodedBuffer.duration > 1) {
-            finalDuration = Math.min(45, Math.max(8, decodedBuffer.duration));
+            finalDuration = Math.max(12, decodedBuffer.duration + 3.0);
           } else {
-            finalDuration = Math.min(24, Math.max(10, orderedCards.length * 4));
+            finalDuration = Math.max(16, orderedCards.length * 6.5);
           }
 
           const stream: MediaStream = (canvas as any).captureStream(24);

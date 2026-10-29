@@ -309,6 +309,22 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
 
       const next = timeRef.current + dt;
       if (next >= filmPlan.totalDurationSec) {
+        const voiceStillSpeaking = audioRef.current ? audioRef.current.isVoiceSpeaking() : false;
+        if (voiceStillSpeaking) {
+          // Hold on final frame while AI voice finishes reading the remaining syllables
+          timeRef.current = filmPlan.totalDurationSec - 0.05;
+          setCurrentTime(filmPlan.totalDurationSec - 0.05);
+          if (rendererRef.current) {
+            rendererRef.current.renderFrame(
+              filmPlan.totalDurationSec - 0.05,
+              filmPlan,
+              decomposedMapRef.current
+            );
+          }
+          rafRef.current = requestAnimationFrame(step);
+          return;
+        }
+
         timeRef.current = filmPlan.totalDurationSec;
         setCurrentTime(filmPlan.totalDurationSec);
         setIsPlaying(false);

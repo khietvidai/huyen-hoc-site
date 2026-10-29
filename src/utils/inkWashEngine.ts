@@ -1111,12 +1111,12 @@ export function buildInkWashFilmPlan(
       );
     }
 
-    // Estimate initial duration from word count (~3.1 words/sec) so even before TTS preload it has ample room
+    // Estimate initial duration from word count (~2.15 words/sec) so even before TTS preload it has ample room to read every word completely
     const words1 = cue1Text.split(/\s+/).filter(Boolean).length;
     const words2 = cue2Text.split(/\s+/).filter(Boolean).length;
-    const dur1 = Math.max(4.0, words1 / 3.0 + 0.7);
-    const dur2 = Math.max(4.8, words2 / 3.0 + 0.8);
-    const dur = Math.max(9.5, 0.4 + dur1 + 0.35 + dur2 + 0.6);
+    const dur1 = Math.max(4.8, words1 / 2.15 + 1.4);
+    const dur2 = Math.max(5.8, words2 / 2.15 + 1.6);
+    const dur = Math.max(11.8, 0.5 + dur1 + 0.8 + dur2 + 1.8);
 
     const startSec = cursor;
     const endSec = cursor + dur;
@@ -1131,10 +1131,10 @@ export function buildInkWashFilmPlan(
       cardIndex: idx,
     });
 
-    const cue1Start = startSec + 0.35;
+    const cue1Start = startSec + 0.5;
     const cue1End = cue1Start + dur1;
-    const cue2Start = cue1End + 0.35;
-    const cue2End = Math.min(endSec - 0.25, cue2Start + dur2);
+    const cue2Start = cue1End + 0.8;
+    const cue2End = Math.min(endSec - 0.8, cue2Start + dur2);
 
     narrationCues.push({
       id: `card_${cardNum}_a`,
@@ -1175,13 +1175,13 @@ export function buildInkWashFilmPlan(
 
   const fWordsA = finalCueA.split(/\s+/).filter(Boolean).length;
   const fWordsB = autoConclusion.split(/\s+/).filter(Boolean).length;
-  const fDurA = Math.max(4.0, fWordsA / 3.0 + 0.7);
-  const fDurB = Math.max(5.2, fWordsB / 3.0 + 0.9);
-  const finalDur = Math.max(10.0, 0.4 + fDurA + 0.35 + fDurB + 0.8);
+  const fDurA = Math.max(5.0, fWordsA / 2.15 + 1.5);
+  const fDurB = Math.max(6.5, fWordsB / 2.15 + 1.8);
+  const finalDur = Math.max(14.5, 0.5 + fDurA + 0.85 + fDurB + 3.2);
 
   const finalStart = cursor;
   const finalEnd = finalStart + finalDur;
-  const sealTimeSec = finalStart + Math.min(3.2, fDurA * 0.75);
+  const sealTimeSec = finalStart + Math.min(3.6, fDurA * 0.72);
 
   shots.push({
     index: orderedCards.length,
@@ -1191,10 +1191,10 @@ export function buildInkWashFilmPlan(
     endSec: finalEnd,
   });
 
-  const fCue1Start = finalStart + 0.35;
+  const fCue1Start = finalStart + 0.5;
   const fCue1End = fCue1Start + fDurA;
-  const fCue2Start = fCue1End + 0.35;
-  const fCue2End = Math.min(finalEnd - 0.3, fCue2Start + fDurB);
+  const fCue2Start = fCue1End + 0.85;
+  const fCue2End = Math.min(finalEnd - 1.2, fCue2Start + fDurB);
 
   narrationCues.push({
     id: "final_verdict_a",
@@ -1245,15 +1245,18 @@ export function syncFilmPlanWithAudioDurations(
     const origCueA = plan.narrationCues.find((c) => c.id === cueAId);
     const origCueB = plan.narrationCues.find((c) => c.id === cueBId);
 
-    const durA = audioDurations.get(cueAId) || (origCueA ? origCueA.endSec - origCueA.startSec : 4.2);
-    const durB = audioDurations.get(cueBId) || (origCueB ? origCueB.endSec - origCueB.startSec : 5.0);
+    const durA = audioDurations.get(cueAId) || (origCueA ? origCueA.endSec - origCueA.startSec : 5.2);
+    const durB = audioDurations.get(cueBId) || (origCueB ? origCueB.endSec - origCueB.startSec : 6.4);
 
     const startSec = cursor;
-    const cueAStart = startSec + 0.35;
+    const cueAStart = startSec + 0.5;
     const cueAEnd = cueAStart + durA;
-    const cueBStart = cueAEnd + 0.4;
+    const cueBStart = cueAEnd + 0.85;
     const cueBEnd = cueBStart + durB;
-    const shotDur = Math.max(9.0, cueBEnd - startSec + 0.75);
+    // Extra tail breathing room (+1.8s per card shot, +3.5s on final shot) so AI voice always finishes 100% cleanly
+    const tailBufferSec = isFinal ? 3.5 : 1.8;
+    const minShotSec = isFinal ? 13.5 : 11.2;
+    const shotDur = Math.max(minShotSec, cueBEnd - startSec + tailBufferSec);
     const endSec = startSec + shotDur;
     cursor = endSec;
 

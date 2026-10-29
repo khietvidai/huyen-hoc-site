@@ -3,8 +3,8 @@
 // Plays the studio-mastered Guqin & Xiao score (/assets/ink-wash-guqin-score.mp3)
 // + pure harmonic Tibetan/Guqin chimes (zero white-noise static, zero clipping)
 // + 100% genuine Vietnamese Cloud TTS narration (/api/tts -> AudioBuffer)
-//   with exact audio-duration measurement so every AI-summarized cue is read
-//   100% in full without ever cutting off mid-sentence.
+//   with sequential queueing and exact audio-duration measurement so every
+//   AI-summarized cue is read 100% in full without ever cutting off mid-sentence.
 // ============================================================================
 
 export interface InkWashNarrationCue {
@@ -32,6 +32,8 @@ export class InkWashAudioEngine {
   private voiceBuffers: Map<string, AudioBuffer> = new Map();
   private voiceLoadingPromises: Map<string, Promise<AudioBuffer | null>> = new Map();
   private activeVoiceSource: AudioBufferSourceNode | null = null;
+  private queuedVoiceBuffers: AudioBuffer[] = [];
+  private lastVoiceEndedAtMs: number = 0;
 
   private isMuted: boolean = false;
   private isVoiceEnabled: boolean = true; // Default true: pure Vietnamese narration enabled
@@ -153,7 +155,7 @@ export class InkWashAudioEngine {
     await this.preloadAndMeasureCues(cues);
   }
 
-  // Preload all cues and return exact duration (in seconds) of each cue id so timeline never cuts off speech
+  // Preload all cues and return generous duration (in seconds) of each cue id so timeline never cuts off speech
   public async preloadAndMeasureCues(cues: InkWashNarrationCue[]): Promise<Map<string, number>> {
     this.init();
     const durations = new Map<string, number>();
@@ -162,21 +164,41 @@ export class InkWashAudioEngine {
       cues.map(async (cue) => {
         const clean = InkWashAudioEngine.sanitizeVietnameseForSpeech(cue.speakText || cue.text);
         if (!clean) {
-          durations.set(cue.id, 3.0);
+          durations.set(cue.id, 3.8);
           return;
         }
         const buf = await this.fetchAndDecodeSingleVoice(clean);
         if (buf && buf.duration > 0.5) {
-          durations.set(cue.id, buf.duration);
+          // Add +0.6s breathing cushion to the measured audio buffer duration
+          durations.set(cue.id, buf.duration + 0.6);
         } else {
-          // Estimate duration from Vietnamese word count (~3.2 words/sec + 0.8s margin)
+          // Generous Vietnamese speech rate estimation (~2.2 words/sec + 1.8s margin)
           const wordCount = clean.split(/\s+/).filter(Boolean).length;
-          durations.set(cue.id, Math.max(3.6, wordCount / 3.1 + 0.8));
+          durations.set(cue.id, Math.max(4.8, wordCount / 2.2 + 1.8));
         }
       })
     );
 
     return durations;
+  }
+
+  // Check if AI voice is currently speaking or has queued buffers or just finished within the last 1.2s tail
+  public isVoiceSpeaking(): boolean {
+    if (!this.isVoiceEnabled || this.isMuted) return false;
+    if (this.activeVoiceSource !== null || this.queuedVoiceBuffers.length > 0) {
+      return true;
+    }
+    if (
+      typeof window !== "undefined" &&
+      "speechSynthesis" in window &&
+      window.speechSynthesis.speaking
+    ) {
+      return true;
+    }
+    if (this.lastVoiceEndedAtMs > 0 && performance.now() - this.lastVoiceEndedAtMs < 1200) {
+      return true;
+    }
+    return false;
   }
 
   public startBgmAt(offsetSec: number = 0): void {
@@ -210,8 +232,11 @@ export class InkWashAudioEngine {
   }
 
   public stopVoiceOnly(): void {
+    this.queuedVoiceBuffers = [];
+    this.lastVoiceEndedAtMs = 0;
     if (this.activeVoiceSource) {
       try {
+        this.activeVoiceSource.onended = null;
         this.activeVoiceSource.stop();
         this.activeVoiceSource.disconnect();
       } catch {}
@@ -329,7 +354,7 @@ export class InkWashAudioEngine {
     });
   }
 
-  // ── VIETNAMESE SPEECH NARRATION (CLOUD /API/TTS MP3 + BGM DUCKING) ──
+  // ── VIETNAMESE SPEECH NARRATION (CLOUD /API/TTS MP3 + SEQUENTIAL QUEUEING + BGM DUCKING) ──
   public static sanitizeVietnameseForSpeech(raw: string): string {
     return raw
       .replace(/\bLá\s*(\d+)\b/gi, (_m, d) => {
@@ -356,7 +381,11 @@ export class InkWashAudioEngine {
     const ctx = this.init();
     if (!this.voiceGain || this.isMuted || !this.isVoiceEnabled) return;
 
-    this.stopVoiceOnly();
+    // Never cut off an actively speaking sentence! Queue it to play right after current finishes.
+    if (this.activeVoiceSource) {
+      this.queuedVoiceBuffers.push(buf);
+      return;
+    }
 
     // Smoothly duck background Guqin music so Vietnamese voice is crystal-clear
     if (this.musicGain) {
@@ -369,8 +398,17 @@ export class InkWashAudioEngine {
     src.onended = () => {
       if (this.activeVoiceSource === src) {
         this.activeVoiceSource = null;
-        if (this.musicGain && this.ctx) {
-          this.musicGain.gain.setTargetAtTime(0.72, this.ctx.currentTime, 0.35);
+        this.lastVoiceEndedAtMs = performance.now();
+
+        if (this.queuedVoiceBuffers.length > 0 && this.isVoiceEnabled && !this.isMuted) {
+          const nextBuf = this.queuedVoiceBuffers.shift()!;
+          window.setTimeout(() => {
+            if (this.isVoiceEnabled && !this.isMuted) {
+              this.playDecodedVoiceBuffer(nextBuf);
+            }
+          }, 280);
+        } else if (this.musicGain && this.ctx) {
+          this.musicGain.gain.setTargetAtTime(0.72, this.ctx.currentTime, 0.4);
         }
       }
     };
@@ -413,6 +451,7 @@ export class InkWashAudioEngine {
 
     if (timeSec < this.lastTimeSec - 0.3) {
       this.triggeredEvents.clear();
+      this.stopVoiceOnly();
       if (this.bgmBuffer) {
         this.startBgmAt(timeSec);
       }
@@ -452,7 +491,7 @@ export class InkWashAudioEngine {
     if (this.isVoiceEnabled) {
       narrationCues.forEach((cue) => {
         const cueKey = `cue_${cue.id}`;
-        if (timeSec >= cue.startSec && timeSec < cue.startSec + 0.4 && !this.triggeredEvents.has(cueKey)) {
+        if (timeSec >= cue.startSec && timeSec < cue.startSec + 0.45 && !this.triggeredEvents.has(cueKey)) {
           this.triggeredEvents.add(cueKey);
           this.speakCue(cue.speakText || cue.text);
         }
