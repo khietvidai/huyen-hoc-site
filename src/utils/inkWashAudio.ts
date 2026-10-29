@@ -9,6 +9,7 @@
 // ============================================================================
 
 import {
+  convertNumbersToVietnameseWords,
   ensureVoxCpmRefUploaded,
   resolveVietnameseVoiceProfile,
   synthesizeVoxCpmAnchored,
@@ -530,32 +531,9 @@ export class InkWashAudioEngine {
     });
   }
 
-  // ── VIETNAMESE SPEECH NARRATION (CLOUD /API/TTS MP3 + SEQUENTIAL QUEUEING + BGM DUCKING, ZERO HANZI) ──
+  // ── VIETNAMESE SPEECH NARRATION (CLOUD /API/TTS MP3 + SEQUENTIAL QUEUEING + BGM DUCKING, ZERO HANZI, ZERO ENGLISH DIGITS) ──
   public static sanitizeVietnameseForSpeech(raw: string): string {
-    return (raw || "")
-      // Strip all Chinese characters (Hanzi / CJK) so Vietnamese TTS never tries to read Chinese glyphs
-      .replace(/[\u2E80-\u2EFF\u3000-\u303F\u3400-\u4DBF\u4DC0-\u4DFF\u4E00-\u9FFF\uF900-\uFAFF\uFF00-\uFFEF]+/g, " ")
-      .replace(/\(\s*[-·•,;:]*\s*\)/g, " ")
-      .replace(/\[\s*[-·•,;:]*\s*\]/g, " ")
-      .replace(/\bLá\s*(\d+)\b/gi, (_m, d) => {
-        const map: Record<string, string> = {
-          "1": "Lá bài số một",
-          "2": "Lá bài số hai",
-          "3": "Lá bài số ba",
-          "4": "Lá bài số bốn",
-          "5": "Lá bài số năm",
-          "6": "Lá bài số sáu",
-          "7": "Lá bài số bảy",
-          "8": "Lá bài số tám",
-          "9": "Lá bài số chín",
-          "10": "Lá bài số mười",
-        };
-        return map[d] || `Lá bài số ${d}`;
-      })
-      .replace(/[䷀-䷿⚊⚏☰☱☲☳☴☵☶☷➔•·|#*~_`]/g, " ")
-      .replace(/\s+([,.;:!?])/g, "$1")
-      .replace(/\s+/g, " ")
-      .trim();
+    return convertNumbersToVietnameseWords(raw);
   }
 
   private playDecodedVoiceBuffer(buf: AudioBuffer): void {

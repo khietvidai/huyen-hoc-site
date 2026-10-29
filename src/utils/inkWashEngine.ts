@@ -1,3 +1,4 @@
+import { convertNumbersToVietnameseWords } from "./edgeNeuralTts";
 // ============================================================================
 // CHINESE INK WASH (THỦY MẶC CHU DỊCH · 水墨周易) — WEBGL2 & CANVAS 2D ENGINE
 // Ported from Lemo-Opuscar `ink-wash` architecture for ichingtarot.com.
@@ -1161,14 +1162,14 @@ export function buildInkWashFilmPlan(
       startSec: cue1Start,
       endSec: cue1End,
       text: cue1Text,
-      speakText: cue1Text,
+      speakText: convertNumbersToVietnameseWords(cue1Text),
     });
     narrationCues.push({
       id: `card_${cardNum}_b`,
       startSec: cue2Start,
       endSec: cue2End,
       text: cue2Text,
-      speakText: cue2Text,
+      speakText: convertNumbersToVietnameseWords(cue2Text),
     });
   });
 
@@ -1223,14 +1224,14 @@ export function buildInkWashFilmPlan(
     startSec: fCue1Start,
     endSec: fCue1End,
     text: finalCueA,
-    speakText: finalCueA,
+    speakText: convertNumbersToVietnameseWords(finalCueA),
   });
   narrationCues.push({
     id: "final_verdict_b",
     startSec: fCue2Start,
     endSec: fCue2End,
     text: autoConclusion,
-    speakText: autoConclusion,
+    speakText: convertNumbersToVietnameseWords(autoConclusion),
   });
 
   return {

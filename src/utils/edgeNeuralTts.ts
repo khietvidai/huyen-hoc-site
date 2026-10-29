@@ -18,6 +18,171 @@ let cachedRefGradioPath: string | null = null;
 let cachedRefExpireAt = 0;
 let pendingRefUploadPromise: Promise<string | null> | null = null;
 
+const VI_DIGITS = [
+  "không",
+  "một",
+  "hai",
+  "ba",
+  "bốn",
+  "năm",
+  "sáu",
+  "bảy",
+  "tám",
+  "chín",
+];
+
+function readThreeDigitsVi(num: number, showZeroHundred: boolean): string {
+  const h = Math.floor(num / 100);
+  const rem = num % 100;
+  const t = Math.floor(rem / 10);
+  const u = rem % 10;
+  const parts: string[] = [];
+
+  if (h > 0 || showZeroHundred) {
+    parts.push(`${VI_DIGITS[h]} trăm`);
+  }
+
+  if (t === 0 && u > 0) {
+    if (h > 0 || showZeroHundred) {
+      parts.push("linh", VI_DIGITS[u]);
+    } else {
+      parts.push(VI_DIGITS[u]);
+    }
+  } else if (t === 1) {
+    parts.push("mười");
+    if (u === 5) parts.push("lăm");
+    else if (u > 0) parts.push(VI_DIGITS[u]);
+  } else if (t > 1) {
+    parts.push(`${VI_DIGITS[t]} mươi`);
+    if (u === 1) parts.push("mốt");
+    else if (u === 4) parts.push("bốn");
+    else if (u === 5) parts.push("lăm");
+    else if (u > 0) parts.push(VI_DIGITS[u]);
+  }
+
+  return parts.join(" ");
+}
+
+/**
+ * Converts a non-negative integer into natural Vietnamese spoken words
+ * so TTS engines (especially VoxCPM2) never read digits 1, 2, 3, 4... in English.
+ */
+export function numberToVietnameseWords(n: number): string {
+  if (!Number.isFinite(n) || n < 0) return "";
+  const intVal = Math.floor(n);
+  if (intVal === 0) return "không";
+  if (intVal >= 1_000_000_000_000) {
+    return String(intVal)
+      .split("")
+      .map((d) => VI_DIGITS[Number(d)] || "")
+      .join(" ");
+  }
+
+  const units = ["", "nghìn", "triệu", "tỷ"];
+  const groups: number[] = [];
+  let temp = intVal;
+  while (temp > 0) {
+    groups.push(temp % 1000);
+    temp = Math.floor(temp / 1000);
+  }
+
+  const parts: string[] = [];
+  for (let i = groups.length - 1; i >= 0; i--) {
+    const grp = groups[i];
+    if (grp === 0) continue;
+    const showZeroHundred = i < groups.length - 1;
+    const grpWords = readThreeDigitsVi(grp, showZeroHundred);
+    const unitLabel = units[i] || "";
+    parts.push(unitLabel ? `${grpWords} ${unitLabel}` : grpWords);
+  }
+
+  return parts.join(" ").replace(/\s+/g, " ").trim();
+}
+
+/**
+ * Converts all numbers, ordinals, card/yao indices, percentages, and ratios in a Vietnamese string
+ * into 100% Vietnamese words (zero Arabic digits 0-9 remaining), preventing VoxCPM2 or multilingual
+ * TTS from ever reading numbers as "one, two, three, four...".
+ */
+export function convertNumbersToVietnameseWords(raw: string): string {
+  if (!raw) return "";
+  let s = raw;
+
+  // 1. Strip Hanzi / CJK characters and empty brackets
+  s = s
+    .replace(
+      /[\u2E80-\u2EFF\u3000-\u303F\u3400-\u4DBF\u4DC0-\u4DFF\u4E00-\u9FFF\uF900-\uFAFF\uFF00-\uFFEF]+/g,
+      " "
+    )
+    .replace(/\(\s*[-·•,;:]*\s*\)/g, " ")
+    .replace(/\[\s*[-·•,;:]*\s*\]/g, " ")
+    .replace(/【\s*[-·•,;:]*\s*】/g, " ");
+
+  // 2. Specific I Ching & Card ordinal patterns
+  s = s.replace(/\bLá\s*(?:bài\s*)?(?:số\s*)?(\d+)\b/gi, (_m, d) => {
+    return `Lá bài số ${numberToVietnameseWords(Number(d))}`;
+  });
+  s = s.replace(/\bHào\s*Động\s*(?:thứ\s*|số\s*)?(\d+)\b/gi, (_m, d) => {
+    const num = Number(d);
+    if (num === 1) return "Hào động thứ nhất";
+    if (num === 4) return "Hào động thứ tư";
+    return `Hào động thứ ${numberToVietnameseWords(num)}`;
+  });
+  s = s.replace(/\bHào\s*(?:số\s*)?(\d+)\b/gi, (_m, d) => {
+    return `Hào số ${numberToVietnameseWords(Number(d))}`;
+  });
+  s = s.replace(/\bQuẻ\s*(?:số\s*)?#?(\d+)\b/gi, (_m, d) => {
+    return `Quẻ số ${numberToVietnameseWords(Number(d))}`;
+  });
+  s = s.replace(/\b(thứ|Thứ)\s+1\b/g, "$1 nhất");
+  s = s.replace(/\b(thứ|Thứ)\s+4\b/g, "$1 tư");
+  s = s.replace(/\b(thứ|Thứ)\s+(\d+)\b/g, (_m, prefix, d) => {
+    return `${prefix} ${numberToVietnameseWords(Number(d))}`;
+  });
+
+  // 3. Numbered list items like "1. ", "2. ", "3. ", "4. " -> "một, ", "hai, "...
+  s = s.replace(/(?:^|(?<=[.!?;\n]))\s*(\d+)\.\s+/g, (_m, d) => {
+    return ` ${numberToVietnameseWords(Number(d))}, `;
+  });
+  s = s.replace(/\s+(\d+)\.\s+(?=[A-ZÀÁẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬĐÈÉẺẼẸÊẾỀỂỄỆÌÍỈĨỊÒÓỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÙÚỦŨỤƯỨỪỬỮỰỲÝỶỸỴ])/g, (_m, d) => {
+    return `. ${numberToVietnameseWords(Number(d))}, `;
+  });
+
+  // 4. Percentages: "100%" -> "một trăm phần trăm", "12,5%" -> "mười hai phẩy năm phần trăm"
+  s = s.replace(/(\d+)[.,](\d+)\s*%/g, (_m, a, b) => {
+    return `${numberToVietnameseWords(Number(a))} phẩy ${numberToVietnameseWords(Number(b))} phần trăm`;
+  });
+  s = s.replace(/(\d+)\s*%/g, (_m, a) => {
+    return `${numberToVietnameseWords(Number(a))} phần trăm`;
+  });
+
+  // 5. Fractions / steps: "Bước 1/4" or "1/4" -> "một trên bốn"
+  s = s.replace(/\b(\d+)\s*\/\s*(\d+)\b/g, (_m, a, b) => {
+    return `${numberToVietnameseWords(Number(a))} trên ${numberToVietnameseWords(Number(b))}`;
+  });
+
+  // 6. Numeric ranges: "1-4" or "1 - 4" -> "một đến bốn"
+  s = s.replace(/\b(\d+)\s*[-–—]\s*(\d+)\b/g, (_m, a, b) => {
+    return `${numberToVietnameseWords(Number(a))} đến ${numberToVietnameseWords(Number(b))}`;
+  });
+
+  // 7. Decimals: "2,5" or "2.5" -> "hai phẩy năm"
+  s = s.replace(/\b(\d+)[.,](\d+)\b/g, (_m, a, b) => {
+    return `${numberToVietnameseWords(Number(a))} phẩy ${numberToVietnameseWords(Number(b))}`;
+  });
+
+  // 8. Any remaining integer sequences (e.g., "1, 2, 3, 4", "4 lá", "64 quẻ", "384 hào")
+  s = s.replace(/\d+/g, (m) => {
+    return ` ${numberToVietnameseWords(Number(m))} `;
+  });
+
+  return s
+    .replace(/[䷀-䷿⚊⚏☰☱☲☳☴☵☶☷➔•·|#*~_`]/g, " ")
+    .replace(/\s+([,.;:!?])/g, "$1")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 /**
  * Resolves the tuning profile for Vietnamese voices on ichingtarot.com.
  * - "nam_tram_am" / "test_vi_design" / "voxcpm-nam-tram-am":
@@ -208,9 +373,8 @@ export async function ensureVoxCpmRefUploaded(
  * Synthesizes Vietnamese speech via OpenBMB VoxCPM2 (Controllable Voice Cloning)
  * anchored to `test_vi_design.wav` (`ref-nam-tram-am.wav`).
  *
- * Supports both call signatures:
- * 1) `synthesizeVoxCpmAnchored(text, controlInstruction, loadRefWavFn)` -> returns `Uint8Array | null`
- * 2) `synthesizeVoxCpmAnchored(text, refAudioBytes, controlInstruction, timeoutMs)` -> returns `Uint8Array | null`
+ * Automatically normalizes all digits 0-9 into Vietnamese words so VoxCPM2 never
+ * pronounces numbers in English.
  */
 export async function synthesizeVoxCpmAnchored(
   text: string,
@@ -218,6 +382,9 @@ export async function synthesizeVoxCpmAnchored(
   arg3?: string | (() => Promise<Uint8Array | null>),
   timeoutMs = 15000
 ): Promise<Uint8Array | null> {
+  const spokenViText = convertNumbersToVietnameseWords(text);
+  if (!spokenViText) return null;
+
   let controlInstruction =
     "Deep, calm, resonant Vietnamese male narrator voice, authoritative and philosophical, clear articulation";
   let refSource:
@@ -254,14 +421,14 @@ export async function synthesizeVoxCpmAnchored(
 
     const payload = {
       data: [
-        text,
+        spokenViText,
         controlInstruction,
         refData,
         false, // ultimate_clone = false -> Controllable Voice Cloning using test_vi_design.wav timbre
         "",
         2.0, // cfg_value
         12, // steps
-        false, // normalize
+        false, // normalize = false (digits already converted to pure Vietnamese words)
         false, // denoise (preserve warm bass)
       ],
     };
@@ -336,6 +503,9 @@ export async function synthesizeEdgeNeuralChunk(
   profileOrVoice?: VoiceTuningProfile | string | null,
   customWsFactory?: (url: string, headers: Record<string, string>) => any
 ): Promise<Uint8Array | null> {
+  const spokenViText = convertNumbersToVietnameseWords(text);
+  if (!spokenViText) return null;
+
   const baseProfile =
     typeof profileOrVoice === "object" && profileOrVoice !== null
       ? profileOrVoice
@@ -448,7 +618,7 @@ export async function synthesizeEdgeNeuralChunk(
           `<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='vi-VN'>` +
           `<voice name='${voice}'>` +
           `<prosody pitch='${pitch}' rate='${rate}' volume='${volume}'>` +
-          `${escapeXml(text)}` +
+          `${escapeXml(spokenViText)}` +
           `</prosody>` +
           `</voice>` +
           `</speak>`;
