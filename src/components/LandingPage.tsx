@@ -4158,47 +4158,107 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     }
   }, [isRecordingVoiceQ, isTranscribingVoiceQ, userIntentQuestion, handleQuestionChange, stopVoiceQuestionRecording]);
 
-  // Helper kết nối an toàn cho cả PC và điện thoại di động (qua LAN IP hoặc proxy)
+  // Helper kiểm tra IP nội bộ LAN (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
+  const isPrivateLanIp = useCallback((host: string) => {
+    return /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[0-1])\.)/.test(host);
+  }, []);
+
+  // Helper kết nối an toàn cho cả PC, điện thoại di động (qua LAN IP) và tên miền thật (ichingtarot.com)
   const fetchDirectHomeApi = useCallback(async (endpoint: string, options?: RequestInit): Promise<Response> => {
     const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
     const candidates: string[] = [];
 
-    // Ưu tiên 1: Đường dẫn tương đối (hoạt động tối ưu trên Express cổng 5168, Vite proxy 5173 và FastAPI 8000)
-    candidates.push(cleanEndpoint);
-
-    // Ưu tiên 2: Khi truy cập từ điện thoại qua IP LAN Wi-Fi (khác localhost), kết nối thẳng tới IP máy chủ cổng 8000
     if (typeof window !== "undefined" && window.location) {
       const { protocol, hostname, port } = window.location;
-      if (hostname !== "localhost" && hostname !== "127.0.0.1" && port !== "8000") {
-        candidates.push(`${protocol}//${hostname}:8000${cleanEndpoint}`);
+      const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
+      const isLan = isPrivateLanIp(hostname);
+
+      if (isLocalhost || isLan) {
+        // Đang chạy nội bộ (localhost hoặc LAN Wi-Fi): ưu tiên đường dẫn tương đối nếu cổng 5168/5173/8000
+        candidates.push(cleanEndpoint);
+        if (isLan && port !== "8000") {
+          candidates.push(`${protocol}//${hostname}:8000${cleanEndpoint}`);
+        }
+        candidates.push(`http://localhost:8000${cleanEndpoint}`);
+        candidates.push(`http://127.0.0.1:8000${cleanEndpoint}`);
+      } else {
+        // Đang mở trên tên miền công khai (ví dụ ichingtarot.com):
+        // Gọi thẳng xuống máy chủ Engine Luận Trực Tiếp cục bộ (localhost:8000) trước để tránh SPA fallback trả về HTML hoặc treo port 8000 trên tên miền
+        candidates.push(`http://localhost:8000${cleanEndpoint}`);
+        candidates.push(`http://127.0.0.1:8000${cleanEndpoint}`);
+        candidates.push(cleanEndpoint);
       }
+    } else {
+      candidates.push(cleanEndpoint);
+      candidates.push(`http://localhost:8000${cleanEndpoint}`);
     }
 
-    // Ưu tiên 3: Localhost cổng 8000 nếu đang chạy trên trình duyệt máy tính
-    candidates.push(`http://localhost:8000${cleanEndpoint}`);
-
+    const uniqueCandidates = Array.from(new Set(candidates));
     let lastError: any = null;
-    for (const url of candidates) {
+    let lastResponse: Response | null = null;
+
+    for (let i = 0; i < uniqueCandidates.length; i++) {
+      const url = uniqueCandidates[i];
       try {
         const res = await fetch(url, options);
+        lastResponse = res;
+        const contentType = (res.headers.get("content-type") || "").toLowerCase();
+
+        // Nếu máy chủ tĩnh (Cloudflare SPA / Vite) trả về text/html cho API endpoint, bỏ qua để thử ứng viên tiếp theo
+        if (contentType.includes("text/html")) {
+          continue;
+        }
+
         if (res.ok) {
           return res;
         }
-        if ((res.status === 404 || res.status === 502) && candidates.indexOf(url) < candidates.length - 1) {
+
+        // Nếu gặp lỗi định tuyến / proxy (404, 405, 502, 503, 504) thì thử tiếp ứng viên sau
+        if ([404, 405, 502, 503, 504].includes(res.status) && i < uniqueCandidates.length - 1) {
           continue;
         }
+
         return res;
       } catch (err) {
         lastError = err;
       }
     }
-    throw lastError || new Error(`Không thể kết nối đến máy chủ Luận Trực Tiếp (${cleanEndpoint})`);
-  }, []);
+
+    if (lastResponse && !(lastResponse.headers.get("content-type") || "").toLowerCase().includes("text/html")) {
+      return lastResponse;
+    }
+    throw lastError || new Error(`Không thể kết nối đến máy chủ Luận Trực Tiếp & Tạo Video (port 8000).`);
+  }, [isPrivateLanIp]);
+
+  // Tự động kiểm tra trạng thái chạy ngầm khi vừa mở hoặc tải lại trang
+  useEffect(() => {
+    let mounted = true;
+    fetchDirectHomeApi("/api/direct_home/status")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (!mounted || !data) return;
+        if (data.status === "running") {
+          setIsDirectHomeRunning(true);
+          setDirectHomePercent(data.percent || 15);
+          setDirectHomeStage(data.stage || "Đang xử lý ngầm...");
+          setDirectHomeMessage(data.message || "Đang luận giải & tạo video 9:16...");
+          if (typeof data.elapsed_seconds === "number") setDirectHomeElapsed(data.elapsed_seconds);
+          if (typeof data.estimated_total_seconds === "number") setDirectHomeEstimatedTotal(data.estimated_total_seconds);
+          if (typeof data.eta_remaining_seconds === "number") setDirectHomeEtaRemaining(data.eta_remaining_seconds);
+          if (data.eta_text) setDirectHomeEtaText(data.eta_text);
+          startDirectHomeBackgroundPolling();
+        }
+      })
+      .catch(() => {});
+    return () => {
+      mounted = false;
+    };
+  }, [fetchDirectHomeApi, startDirectHomeBackgroundPolling]);
 
   const resolveMediaUrl = useCallback((relOrAbs?: string) => {
     if (!relOrAbs) return "";
     if (relOrAbs.startsWith("http://") || relOrAbs.startsWith("https://") || relOrAbs.startsWith("data:")) {
-      if (typeof window !== "undefined" && window.location && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
+      if (typeof window !== "undefined" && window.location && isPrivateLanIp(window.location.hostname)) {
         if (relOrAbs.includes("localhost:8000") || relOrAbs.includes("127.0.0.1:8000")) {
           return relOrAbs.replace(/(?:localhost|127\.0\.0\.1):8000/, `${window.location.hostname}:8000`);
         }
@@ -4208,15 +4268,16 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     const clean = relOrAbs.startsWith("/") ? relOrAbs : `/${relOrAbs}`;
     if (typeof window !== "undefined" && window.location) {
       const { protocol, hostname, port } = window.location;
-      if (port === "5168" || port === "8000") {
+      if (port === "5168" || port === "5173" || port === "8000") {
         return clean;
       }
-      if (hostname !== "localhost" && hostname !== "127.0.0.1") {
+      if (isPrivateLanIp(hostname)) {
         return `${protocol}//${hostname}:8000${clean}`;
       }
+      return `http://localhost:8000${clean}`;
     }
     return clean;
-  }, []);
+  }, [isPrivateLanIp]);
 
   const handleStartDirectHomeAutomation = useCallback(async () => {
     if (isDirectHomeRunning) return;
@@ -4224,6 +4285,10 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       setCopiedToast("🔒 Cửu Nhị Tiểu Long còn đang ngủ! Hãy bấm nút “Gọi Cửu Nhị Tiểu Long Dậy” và chờ 5 giây để mở khóa.");
       setTimeout(() => setCopiedToast(null), 3500);
       return;
+    }
+
+    if (dragonWakeState === "waking") {
+      setDragonWakeState("awake");
     }
 
     if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "default") {
@@ -4333,6 +4398,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     }
   }, [
     isDirectHomeRunning,
+    isDragonLocked,
+    isDragonUnlocked,
     dragonWakeState,
     handleCaptureCardsSnapshot,
     cards,
@@ -4344,6 +4411,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     userCustomAnswer,
     directHomeVoice,
     snapshotImageUrl,
+    fetchDirectHomeApi,
     startDirectHomeBackgroundPolling,
   ]);
 
@@ -5495,6 +5563,113 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     </button>
                   </div>
 
+                  {/* CỤM 4: TỰ ĐỘNG HÓA TOÀN BỘ (LUẬN GIẢI TRỰC TIẾP TỪ TRANG CHỦ & DỰNG VIDEO 9:16) */}
+                  <div className="pt-2.5 border-t border-[#C4963E]/30 space-y-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <button
+                        type="button"
+                        id="btn-direct-home-auto-all"
+                        onClick={handleStartDirectHomeAutomation}
+                        disabled={isDirectHomeRunning || isDragonLocked}
+                        className={`flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-serif font-bold tracking-wide transition-all duration-200 ${
+                          isDragonLocked
+                            ? "text-[#A89880] border border-[#8C7A65]/45 opacity-60 cursor-not-allowed"
+                            : isDirectHomeRunning
+                            ? "bg-amber-900/90 text-[#FFF8E7] border border-[#D4AF37] cursor-wait animate-pulse"
+                            : "text-[#1C1610] hover:brightness-105 cursor-pointer active:scale-[0.99]"
+                        }`}
+                        style={
+                          isDragonLocked
+                            ? {
+                                background: "linear-gradient(135deg, #3A332C 0%, #26211C 100%)",
+                                boxShadow: "inset 0 1px 0 rgba(212, 175, 55, 0.15)",
+                              }
+                            : isDirectHomeRunning
+                            ? undefined
+                            : {
+                                background: "linear-gradient(135deg, #FFF3B0 0%, #E5C158 45%, #D4AF37 100%)",
+                                border: "1.5px solid #8C6618",
+                                boxShadow:
+                                  "0 10px 24px -4px rgba(180, 130, 30, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.75)",
+                              }
+                        }
+                        title={
+                          isDragonLocked
+                            ? "Đang khóa vì Cửu Nhị Tiểu Long còn ngủ/đang thức dậy. Sau khi gọi dậy 5 giây sẽ tự động mở khóa!"
+                            : "Tự động chụp thẻ bài & trích xuất Chép Cho AI trực tiếp từ trang chủ để Đại Sư Gemini luận giải, thu âm và dựng Video dọc 9:16"
+                        }
+                      >
+                        <span className="text-base shrink-0">
+                          {isDragonLocked ? "🔒" : isDirectHomeRunning ? "⏳" : "🚀"}
+                        </span>
+                        <span>
+                          {isDirectHomeRunning
+                            ? `Đang Chạy Ngầm (${directHomePercent}%) — Còn ${directHomeEtaRemaining}s`
+                            : "BẮT ĐẦU TỰ ĐỘNG HÓA TOÀN BỘ (LUẬN TRỰC TIẾP & VIDEO 9:16)"}
+                        </span>
+                      </button>
+
+                      <select
+                        value={directHomeVoice}
+                        onChange={(e) => setDirectHomeVoice(e.target.value)}
+                        disabled={isDirectHomeRunning}
+                        className="rounded-xl px-2.5 py-2 text-xs font-serif font-bold text-[#231C14] bg-[#FDFBF7] border border-[#C4963E]/65 focus:outline-none cursor-pointer"
+                        title="Chọn giọng đọc thuyết minh Video 9:16"
+                      >
+                        <option value="vi-VN-NamMinhNeural">🎙️ Giọng Nam Minh (Trầm ấm)</option>
+                        <option value="vi-VN-HoaiMyNeural">🎙️ Giọng Hoài My (Truyền cảm)</option>
+                      </select>
+                    </div>
+
+                    {/* Thanh tiến độ 0-100% + Thời gian đã chạy / Dự báo hoàn tất (ETA) */}
+                    <div className="space-y-1.5">
+                      <div className="w-full h-2 rounded-full bg-[#E8DCC4] overflow-hidden border border-[#C4963E]/40">
+                        <div
+                          className="h-full transition-all duration-500 rounded-full"
+                          style={{
+                            width: `${Math.max(4, directHomePercent)}%`,
+                            background: "linear-gradient(90deg, #9E2A2B 0%, #D4AF37 55%, #1E7E48 100%)",
+                          }}
+                        />
+                      </div>
+
+                      {(isDirectHomeRunning || directHomeElapsed > 0) && (
+                        <div className="flex flex-wrap items-center justify-between gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#231C14] text-[#F5E6C4] border border-[#D4AF37]/50 text-[10.5px]">
+                          <div className="flex items-center gap-1.5 font-semibold">
+                            <span className={isDirectHomeRunning ? "animate-spin inline-block" : ""}>
+                              {isDirectHomeRunning ? "⚙️" : "✅"}
+                            </span>
+                            <span>
+                              {isDirectHomeRunning
+                                ? "Đang chạy ngầm (Có thể chuyển tab thoải mái)"
+                                : "Đã hoàn tất tiến trình chạy ngầm"}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2 font-mono text-[10px]">
+                            <span className="text-[#E5C158]">⏱ Đã chạy: {directHomeElapsed.toFixed(0)}s</span>
+                            <span className="text-[#C4963E]">|</span>
+                            <span className="text-emerald-300 font-bold">
+                              {isDirectHomeRunning ? `Dự báo xong: ${directHomeEtaText}` : "Hoàn tất 100%"}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="flex items-center justify-between gap-2 text-[11px] text-[#5C4930]">
+                        <span className="truncate font-medium">• {directHomeMessage}</span>
+                        {directHomeResult && (
+                          <button
+                            type="button"
+                            onClick={() => setIsDirectResultModalOpen(true)}
+                            className="shrink-0 font-bold text-[#9E2A2B] hover:underline cursor-pointer"
+                          >
+                            Xem bản luận đầy đủ →
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
               </div>
 
@@ -5803,11 +5978,22 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                           </div>
 
                           {directHomeResult?.audio_url ? (
-                            <audio
-                              controls
-                              src={resolveMediaUrl(directHomeResult.audio_url)}
-                              className="w-full h-7 opacity-95"
-                            />
+                            <div className="flex items-center gap-1.5">
+                              <audio
+                                controls
+                                src={resolveMediaUrl(directHomeResult.audio_url)}
+                                className="flex-1 h-7 opacity-95 min-w-0"
+                              />
+                              <button
+                                type="button"
+                                onClick={handleStartDirectHomeAutomation}
+                                disabled={isDirectHomeRunning || isDragonLocked}
+                                className="shrink-0 px-2 py-1 rounded-full bg-[#D4AF37] text-[#1C1610] text-[9px] font-bold hover:brightness-110 cursor-pointer"
+                                title="Tạo lại Video 9:16 mới cho quẻ hiện tại"
+                              >
+                                🔄 Tạo lại
+                              </button>
+                            </div>
                           ) : (
                             <div className="flex items-center justify-between text-[9.5px] text-[#D4AF37]">
                               <span className="font-mono">

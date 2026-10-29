@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import path from "path";
 import fs from "fs";
-import { execSync } from "child_process";
+import { execSync, spawn, ChildProcess } from "child_process";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import WebSocket from "ws";
@@ -1827,7 +1827,8 @@ app.use("/vi/hexagram", express.static(path.join(publicDir, "vi", "hexagram")));
 app.use("/hexagram", express.static(path.join(publicDir, "hexagram")));
 
 // Mount media directories from Giaiquekinhdich (Luận Trực Tiếp & Video 9:16)
-const giaiQueOutDir = "C:\\Users\\Admin\\Downloads\\Giaiquekinhdich\\output";
+const giaiQueDir = "C:\\Users\\Admin\\Downloads\\Giaiquekinhdich";
+const giaiQueOutDir = path.join(giaiQueDir, "output");
 if (fs.existsSync(giaiQueOutDir)) {
   app.use("/media/videos", express.static(path.join(giaiQueOutDir, "videos")));
   app.use("/media/audio", express.static(path.join(giaiQueOutDir, "audio")));
@@ -1835,10 +1836,74 @@ if (fs.existsSync(giaiQueOutDir)) {
   app.use("/media/podcasts", express.static(path.join(giaiQueOutDir, "podcasts")));
 }
 
+let giaiQueProc: ChildProcess | null = null;
+let giaiQueBootPromise: Promise<boolean> | null = null;
+
+async function isGiaiQueHealthy(): Promise<boolean> {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 1500);
+    const r = await fetch("http://127.0.0.1:8000/api/config", { signal: ctrl.signal });
+    clearTimeout(t);
+    return r.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function ensureGiaiQueBackendRunning(): Promise<boolean> {
+  if (await isGiaiQueHealthy()) return true;
+  if (giaiQueBootPromise) return giaiQueBootPromise;
+
+  giaiQueBootPromise = (async () => {
+    try {
+      const webAppPy = path.join(giaiQueDir, "web_app.py");
+      if (!fs.existsSync(webAppPy)) return false;
+
+      console.log("[Giaiquekinhdich] Đang tự động khởi chạy Engine Video (port 8000)...");
+      giaiQueProc = spawn("python", ["web_app.py"], {
+        cwd: giaiQueDir,
+        stdio: "ignore",
+        detached: true,
+        windowsHide: true,
+      });
+      giaiQueProc.unref();
+
+      for (let i = 0; i < 16; i++) {
+        await new Promise((r) => setTimeout(r, 500));
+        if (await isGiaiQueHealthy()) {
+          console.log("[Giaiquekinhdich] Engine Luận Trực Tiếp & Video 9:16 đã sẵn sàng tại port 8000!");
+          return true;
+        }
+      }
+      return await isGiaiQueHealthy();
+    } catch (e) {
+      console.warn("[Giaiquekinhdich] Không thể tự khởi chạy web_app.py:", e);
+      return false;
+    } finally {
+      giaiQueBootPromise = null;
+    }
+  })();
+
+  return giaiQueBootPromise;
+}
+
+async function fetchGiaiQueWithAutoStart(url: string, init?: RequestInit): Promise<globalThis.Response> {
+  try {
+    return await fetch(url, init);
+  } catch (err) {
+    const ready = await ensureGiaiQueBackendRunning();
+    if (ready) {
+      return await fetch(url, init);
+    }
+    throw err;
+  }
+}
+
 // Proxy API Luận Trực Tiếp Trang Chủ sang Giaiquekinhdich FastAPI (port 8000)
 app.post("/api/direct_home/run", async (req: Request, res: Response) => {
   try {
-    const upstream = await fetch("http://127.0.0.1:8000/api/direct_home/run", {
+    const upstream = await fetchGiaiQueWithAutoStart("http://127.0.0.1:8000/api/direct_home/run", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(req.body || {}),
@@ -1854,7 +1919,7 @@ app.post("/api/direct_home/run", async (req: Request, res: Response) => {
 
 app.get("/api/direct_home/status", async (_req: Request, res: Response) => {
   try {
-    const upstream = await fetch("http://127.0.0.1:8000/api/direct_home/status");
+    const upstream = await fetchGiaiQueWithAutoStart("http://127.0.0.1:8000/api/direct_home/status");
     const data = await upstream.json();
     return res.status(upstream.status).json(data);
   } catch (err: any) {
@@ -1871,7 +1936,7 @@ app.post(
   async (req: Request, res: Response) => {
     try {
       const isJson = req.body && typeof req.body === "object" && !Buffer.isBuffer(req.body);
-      const upstream = await fetch("http://127.0.0.1:8000/api/transcribe", {
+      const upstream = await fetchGiaiQueWithAutoStart("http://127.0.0.1:8000/api/transcribe", {
         method: "POST",
         headers: {
           "Content-Type": isJson
@@ -1994,6 +2059,7 @@ async function startServer() {
 
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server Kinh Dịch đang chạy tại: http://localhost:${PORT}`);
+    ensureGiaiQueBackendRunning().catch(() => {});
   });
 }
 
