@@ -2,12 +2,17 @@
 // CHINESE INK WASH (THỦY MẶC CHU DỊCH · 水墨周易) — STUDIO WEB AUDIO ENGINE
 // Plays the studio-mastered Guqin & Xiao score (/assets/ink-wash-guqin-score.mp3)
 // + pure harmonic Tibetan/Guqin chimes (zero white-noise static, zero clipping)
-// + 100% genuine Vietnamese Cloud TTS narration (/api/tts -> AudioBuffer)
+// + 100% genuine Vietnamese Cloud TTS narration anchored to test_vi_design.wav
+//   (VoxCPM2 Controllable Voice Cloning + /api/tts fallback -> AudioBuffer)
 //   with sequential queueing and exact audio-duration measurement so every
 //   AI-summarized cue is read 100% in full without ever cutting off mid-sentence.
 // ============================================================================
 
-import { resolveVietnameseVoiceProfile, synthesizeVoxCpmAnchored } from "./edgeNeuralTts";
+import {
+  ensureVoxCpmRefUploaded,
+  resolveVietnameseVoiceProfile,
+  synthesizeVoxCpmAnchored,
+} from "./edgeNeuralTts";
 
 export interface InkWashNarrationCue {
   id: string;
@@ -31,6 +36,9 @@ export class InkWashAudioEngine {
   private bgmLoading: boolean = false;
   private isPlayingBgm: boolean = false;
 
+  private refVoiceBytes: Uint8Array | null = null;
+  private refVoiceLoadingPromise: Promise<Uint8Array | null> | null = null;
+
   private voiceBuffers: Map<string, AudioBuffer> = new Map();
   private voiceLoadingPromises: Map<string, Promise<AudioBuffer | null>> = new Map();
   private activeVoiceSource: AudioBufferSourceNode | null = null;
@@ -39,7 +47,7 @@ export class InkWashAudioEngine {
 
   private isMuted: boolean = false;
   private isVoiceEnabled: boolean = true; // Default true: pure Vietnamese narration enabled
-  private voiceProfile: string = "nam_tram_am"; // Default: Giọng Nam Trầm Ấm Đọc Quẻ Kinh Dịch
+  private voiceProfile: string = "nam_tram_am"; // Default: Giọng test_vi_design.wav (Nam Trầm Ấm Đọc Quẻ Kinh Dịch)
   private triggeredEvents: Set<string> = new Set();
   private lastTimeSec: number = -1;
 
@@ -81,7 +89,7 @@ export class InkWashAudioEngine {
       this.sfxGain.gain.value = 0.42;
       this.voiceGain.gain.value = 1.12;
 
-      // Warm Baritone EQ on voice bus (Trầm ấm đọc quẻ Kinh Dịch)
+      // Warm Baritone EQ on voice bus (Trầm ấm đọc quẻ Kinh Dịch - test_vi_design.wav)
       const warmthEq = this.ctx.createBiquadFilter();
       warmthEq.type = "lowshelf";
       warmthEq.frequency.value = 145;
@@ -109,6 +117,7 @@ export class InkWashAudioEngine {
       }
 
       this.preloadStudioScore();
+      this.loadRefVoiceBytes();
     }
 
     if (this.ctx.state === "suspended") {
@@ -131,6 +140,37 @@ export class InkWashAudioEngine {
     } finally {
       this.bgmLoading = false;
     }
+  }
+
+  /**
+   * Loads the reference voice sample `/assets/test_vi_design.wav` (or `/assets/ref-nam-tram-am.wav`)
+   * so all Ink Wash Film cues clone the exact timbre of `test_vi_design.wav`.
+   */
+  private async loadRefVoiceBytes(): Promise<Uint8Array | null> {
+    if (this.refVoiceBytes) return this.refVoiceBytes;
+    if (this.refVoiceLoadingPromise) return this.refVoiceLoadingPromise;
+
+    this.refVoiceLoadingPromise = (async () => {
+      for (const url of ["/assets/test_vi_design.wav", "/assets/ref-nam-tram-am.wav"]) {
+        try {
+          const res = await fetch(url);
+          if (res.ok) {
+            const ab = await res.arrayBuffer();
+            if (ab.byteLength > 1024) {
+              this.refVoiceBytes = new Uint8Array(ab);
+              return this.refVoiceBytes;
+            }
+          }
+        } catch {
+          // Try next path
+        }
+      }
+      return null;
+    })().finally(() => {
+      this.refVoiceLoadingPromise = null;
+    });
+
+    return this.refVoiceLoadingPromise;
   }
 
   public setVoiceProfile(voice: string): void {
@@ -159,8 +199,35 @@ export class InkWashAudioEngine {
     }
 
     const p = (async () => {
+      const profile = resolveVietnameseVoiceProfile(this.voiceProfile);
+
+      // 1. Primary: VoxCPM2 Controllable Voice Cloning using test_vi_design.wav
+      if (profile.useVoxCpm) {
+        try {
+          const refBytes = await this.loadRefVoiceBytes();
+          const voxAudio = await synthesizeVoxCpmAnchored(
+            clean,
+            refBytes,
+            profile.voxControl ||
+              "Deep, calm, resonant Vietnamese male narrator voice, authoritative and philosophical, clear articulation",
+            16000
+          );
+          if (voxAudio && voxAudio.byteLength > 512) {
+            const copyBuf = voxAudio.buffer.slice(
+              voxAudio.byteOffset,
+              voxAudio.byteOffset + voxAudio.byteLength
+            ) as ArrayBuffer;
+            const decoded = await ctx.decodeAudioData(copyBuf);
+            this.voiceBuffers.set(cacheKey, decoded);
+            return decoded;
+          }
+        } catch {
+          // Fall through to /api/tts endpoint
+        }
+      }
+
+      // 2. Fallback: /api/tts server/worker endpoint (VoxCPM2 test_vi_design.wav -> Edge Neural vi-VN-NamMinhNeural -6Hz)
       try {
-        // Call /api/tts (100% pure Vietnamese Edge Neural vi-VN-NamMinhNeural / vi-VN-HoaiMyNeural or Google tl=vi)
         const res = await fetch(
           `/api/tts?text=${encodeURIComponent(clean)}&voice=${encodeURIComponent(this.voiceProfile)}`
         );
@@ -194,12 +261,26 @@ export class InkWashAudioEngine {
     this.init();
     const durations = new Map<string, number>();
 
-    await Promise.all(
-      cues.map(async (cue) => {
+    // Ensure test_vi_design.wav is uploaded once before synthesizing cues
+    const profile = resolveVietnameseVoiceProfile(this.voiceProfile);
+    if (profile.useVoxCpm) {
+      const refBytes = await this.loadRefVoiceBytes();
+      if (refBytes) {
+        await ensureVoxCpmRefUploaded(refBytes);
+      }
+    }
+
+    // Controlled concurrency (2 workers) so VoxCPM2 Gradio Space processes every cue reliably
+    const queue = [...cues];
+    const concurrency = profile.useVoxCpm ? 2 : 4;
+    const workers = Array.from({ length: Math.min(concurrency, queue.length) }, async () => {
+      while (queue.length > 0) {
+        const cue = queue.shift();
+        if (!cue) break;
         const clean = InkWashAudioEngine.sanitizeVietnameseForSpeech(cue.speakText || cue.text);
         if (!clean) {
           durations.set(cue.id, 3.8);
-          return;
+          continue;
         }
         const buf = await this.fetchAndDecodeSingleVoice(clean);
         if (buf && buf.duration > 0.5) {
@@ -210,8 +291,10 @@ export class InkWashAudioEngine {
           const wordCount = clean.split(/\s+/).filter(Boolean).length;
           durations.set(cue.id, Math.max(4.8, wordCount / 2.2 + 1.8));
         }
-      })
-    );
+      }
+    });
+
+    await Promise.all(workers);
 
     return durations;
   }
@@ -466,7 +549,7 @@ export class InkWashAudioEngine {
       return;
     }
 
-    // Fetch from /api/tts on demand if not yet preloaded
+    // Fetch on demand if not yet preloaded
     this.fetchAndDecodeSingleVoice(clean)
       .then((decoded) => {
         if (decoded && this.isVoiceEnabled && !this.isMuted) {
