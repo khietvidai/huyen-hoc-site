@@ -7378,6 +7378,22 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         spreadMode={mode}
         question={userIntentQuestion}
         defaultTab={inkWashModalTab}
+        onTriggerCopyAllForAI={async () => {
+          const aiText = await formatSpreadForAI(
+            cards,
+            mode,
+            isCard2Reversed,
+            isRitualCompleted,
+            userIntentQuestion,
+            hexagramPrediction,
+            userCustomAnswer
+          );
+          setDirectHomeRawAIText(aiText);
+          await copyToClipboard(aiText);
+          setCopiedAI(true);
+          setTimeout(() => setCopiedAI(false), 2500);
+          return aiText;
+        }}
       />
 
       {/* Floating Background Video Progress Pill & Completion Notification Card */}

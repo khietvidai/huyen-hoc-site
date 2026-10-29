@@ -3,7 +3,8 @@
 // Plays the studio-mastered Guqin & Xiao score (/assets/ink-wash-guqin-score.mp3)
 // + pure harmonic Tibetan/Guqin chimes (zero white-noise static, zero clipping)
 // + 100% genuine Vietnamese Cloud TTS narration (/api/tts -> AudioBuffer)
-//   with automatic BGM ducking and MediaStreamAudioDestinationNode export.
+//   with exact audio-duration measurement so every AI-summarized cue is read
+//   100% in full without ever cutting off mid-sentence.
 // ============================================================================
 
 export interface InkWashNarrationCue {
@@ -29,7 +30,7 @@ export class InkWashAudioEngine {
   private isPlayingBgm: boolean = false;
 
   private voiceBuffers: Map<string, AudioBuffer> = new Map();
-  private voiceLoadingSet: Set<string> = new Set();
+  private voiceLoadingPromises: Map<string, Promise<AudioBuffer | null>> = new Map();
   private activeVoiceSource: AudioBufferSourceNode | null = null;
 
   private isMuted: boolean = false;
@@ -70,10 +71,10 @@ export class InkWashAudioEngine {
       this.sfxGain = this.ctx.createGain();
       this.voiceGain = this.ctx.createGain();
 
-      this.masterGain.gain.value = this.isMuted ? 0 : 0.90;
+      this.masterGain.gain.value = this.isMuted ? 0 : 0.92;
       this.musicGain.gain.value = 0.72;
       this.sfxGain.gain.value = 0.42;
-      this.voiceGain.gain.value = 1.05;
+      this.voiceGain.gain.value = 1.08;
 
       this.musicGain.connect(this.compressor);
       this.sfxGain.connect(this.compressor);
@@ -113,34 +114,69 @@ export class InkWashAudioEngine {
     }
   }
 
-  // Preload Vietnamese TTS audio buffers for all narration cues so playback & video recording have zero lag
-  public async preloadNarrationCues(cues: InkWashNarrationCue[]): Promise<void> {
+  private fetchAndDecodeSingleVoice(clean: string): Promise<AudioBuffer | null> {
     const ctx = this.init();
-    for (const cue of cues) {
-      const clean = InkWashAudioEngine.sanitizeVietnameseForSpeech(cue.speakText || cue.text);
-      if (!clean) continue;
-      if (this.voiceBuffers.has(clean) || this.voiceLoadingSet.has(clean)) continue;
-      this.voiceLoadingSet.add(clean);
-
-      (async () => {
-        try {
-          const res = await fetch(
-            `/api/tts?text=${encodeURIComponent(clean)}&voice=vi-VN-NamMinhNeural`
-          );
-          if (res.ok) {
-            const ab = await res.arrayBuffer();
-            if (ab.byteLength > 256) {
-              const decoded = await ctx.decodeAudioData(ab.slice(0));
-              this.voiceBuffers.set(clean, decoded);
-            }
-          }
-        } catch {
-          // Will fallback to speechSynthesis or retry on demand
-        } finally {
-          this.voiceLoadingSet.delete(clean);
-        }
-      })();
+    if (this.voiceBuffers.has(clean)) {
+      return Promise.resolve(this.voiceBuffers.get(clean)!);
     }
+    if (this.voiceLoadingPromises.has(clean)) {
+      return this.voiceLoadingPromises.get(clean)!;
+    }
+
+    const p = (async () => {
+      try {
+        const res = await fetch(
+          `/api/tts?text=${encodeURIComponent(clean)}&voice=vi-VN-NamMinhNeural`
+        );
+        if (res.ok) {
+          const ab = await res.arrayBuffer();
+          if (ab.byteLength > 256) {
+            const decoded = await ctx.decodeAudioData(ab.slice(0));
+            this.voiceBuffers.set(clean, decoded);
+            return decoded;
+          }
+        }
+      } catch {
+        // Fallback estimation if offline
+      } finally {
+        this.voiceLoadingPromises.delete(clean);
+      }
+      return null;
+    })();
+
+    this.voiceLoadingPromises.set(clean, p);
+    return p;
+  }
+
+  // Preload Vietnamese TTS audio buffers for all narration cues
+  public async preloadNarrationCues(cues: InkWashNarrationCue[]): Promise<void> {
+    await this.preloadAndMeasureCues(cues);
+  }
+
+  // Preload all cues and return exact duration (in seconds) of each cue id so timeline never cuts off speech
+  public async preloadAndMeasureCues(cues: InkWashNarrationCue[]): Promise<Map<string, number>> {
+    this.init();
+    const durations = new Map<string, number>();
+
+    await Promise.all(
+      cues.map(async (cue) => {
+        const clean = InkWashAudioEngine.sanitizeVietnameseForSpeech(cue.speakText || cue.text);
+        if (!clean) {
+          durations.set(cue.id, 3.0);
+          return;
+        }
+        const buf = await this.fetchAndDecodeSingleVoice(clean);
+        if (buf && buf.duration > 0.5) {
+          durations.set(cue.id, buf.duration);
+        } else {
+          // Estimate duration from Vietnamese word count (~3.2 words/sec + 0.8s margin)
+          const wordCount = clean.split(/\s+/).filter(Boolean).length;
+          durations.set(cue.id, Math.max(3.6, wordCount / 3.1 + 0.8));
+        }
+      })
+    );
+
+    return durations;
   }
 
   public startBgmAt(offsetSec: number = 0): void {
@@ -197,7 +233,7 @@ export class InkWashAudioEngine {
   public setMuted(muted: boolean): void {
     this.isMuted = muted;
     if (this.masterGain && this.ctx) {
-      this.masterGain.gain.setTargetAtTime(muted ? 0 : 0.90, this.ctx.currentTime, 0.05);
+      this.masterGain.gain.setTargetAtTime(muted ? 0 : 0.92, this.ctx.currentTime, 0.05);
     }
     if (muted) {
       this.stopVoiceOnly();
@@ -311,7 +347,7 @@ export class InkWashAudioEngine {
         };
         return map[d] || `Lá bài số ${d}`;
       })
-      .replace(/[䷀-䷿⚊⚏☰☱☲☳☴☵☶☷➔•·|]/g, " ")
+      .replace(/[䷀-䷿⚊⚏☰☱☲☳☴☵☶☷➔•·|#*~_`]/g, " ")
       .replace(/\s+/g, " ")
       .trim();
   }
@@ -324,7 +360,7 @@ export class InkWashAudioEngine {
 
     // Smoothly duck background Guqin music so Vietnamese voice is crystal-clear
     if (this.musicGain) {
-      this.musicGain.gain.setTargetAtTime(0.26, ctx.currentTime, 0.12);
+      this.musicGain.gain.setTargetAtTime(0.24, ctx.currentTime, 0.12);
     }
 
     const src = ctx.createBufferSource();
@@ -354,39 +390,13 @@ export class InkWashAudioEngine {
     }
 
     // Fetch from /api/tts on demand if not yet preloaded
-    const ctx = this.init();
-    fetch(`/api/tts?text=${encodeURIComponent(clean)}&voice=vi-VN-NamMinhNeural`)
-      .then((res) => (res.ok ? res.arrayBuffer() : Promise.reject(new Error("TTS HTTP error"))))
-      .then((ab) => {
-        if (ab.byteLength <= 256) throw new Error("Empty TTS buffer");
-        return ctx.decodeAudioData(ab.slice(0));
-      })
+    this.fetchAndDecodeSingleVoice(clean)
       .then((decoded) => {
-        this.voiceBuffers.set(clean, decoded);
-        if (this.isVoiceEnabled && !this.isMuted) {
+        if (decoded && this.isVoiceEnabled && !this.isMuted) {
           this.playDecodedVoiceBuffer(decoded);
         }
       })
-      .catch(() => {
-        // Fallback to native Vietnamese browser voice if available
-        if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-        try {
-          const voices = window.speechSynthesis.getVoices();
-          const viVoice =
-            voices.find((v) => v.lang.toLowerCase().includes("vi") && v.name.toLowerCase().includes("nam")) ||
-            voices.find((v) => v.lang.toLowerCase().includes("vi")) ||
-            null;
-          if (!viVoice) return;
-          window.speechSynthesis.cancel();
-          const utter = new SpeechSynthesisUtterance(clean);
-          utter.voice = viVoice;
-          utter.lang = "vi-VN";
-          utter.rate = 1.0;
-          utter.pitch = 0.96;
-          utter.volume = 0.95;
-          window.speechSynthesis.speak(utter);
-        } catch {}
-      });
+      .catch(() => {});
   }
 
   // ── FRAME-SYNCHRONIZED TIMELINE TICK ──
@@ -412,7 +422,7 @@ export class InkWashAudioEngine {
     // 1. Subtle harmonic chime on shot transitions
     shotStartTimes.forEach((st, idx) => {
       const key = `shot_${idx}`;
-      if (timeSec >= st && timeSec < st + 0.3 && !this.triggeredEvents.has(key)) {
+      if (timeSec >= st && timeSec < st + 0.35 && !this.triggeredEvents.has(key)) {
         this.triggeredEvents.add(key);
         const noteHz = InkWashAudioEngine.PENTATONIC_HZ[(idx * 2) % InkWashAudioEngine.PENTATONIC_HZ.length];
         this.playSilkHarmonicNote(noteHz, 3.0, this.bgmBuffer ? 0.08 : 0.18);
@@ -442,7 +452,7 @@ export class InkWashAudioEngine {
     if (this.isVoiceEnabled) {
       narrationCues.forEach((cue) => {
         const cueKey = `cue_${cue.id}`;
-        if (timeSec >= cue.startSec && timeSec < cue.startSec + 0.35 && !this.triggeredEvents.has(cueKey)) {
+        if (timeSec >= cue.startSec && timeSec < cue.startSec + 0.4 && !this.triggeredEvents.has(cueKey)) {
           this.triggeredEvents.add(cueKey);
           this.speakCue(cue.speakText || cue.text);
         }

@@ -1930,6 +1930,24 @@ app.get("/api/direct_home/status", async (_req: Request, res: Response) => {
   }
 });
 
+// Proxy API Giải Quẻ & Tóm Tắt Giữ Ý Chính cho Xưởng Phim Thủy Mặc sang Giaiquekinhdich (port 8000)
+app.post("/api/ink_wash/ai_interpret", async (req: Request, res: Response) => {
+  try {
+    const upstream = await fetchGiaiQueWithAutoStart("http://127.0.0.1:8000/api/ink_wash/ai_interpret", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(req.body || {}),
+    });
+    const data = await upstream.json();
+    return res.status(upstream.status).json(data);
+  } catch (err: any) {
+    return res.status(502).json({
+      success: false,
+      error: "Không kết nối được Engine AI Giải Quẻ (port 8000): " + (err?.message || String(err)),
+    });
+  }
+});
+
 app.post(
   "/api/transcribe",
   express.raw({ type: ["audio/*", "application/octet-stream"], limit: "30mb" }),

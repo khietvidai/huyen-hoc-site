@@ -16,12 +16,19 @@ import {
   MicOff,
   Check,
   Loader2,
+  Copy,
+  FileText,
 } from "lucide-react";
 import {
   InkWashCardInput,
   DecomposedCardInk,
+  InkWashAISummaryData,
+  InkWashFilmPlan,
   decomposeCardToInkLayers,
+  buildFullAIPromptForInkWash,
+  interpretAndSummarizeSpreadWithAI,
   buildInkWashFilmPlan,
+  syncFilmPlanWithAudioDurations,
   InkWashRenderer,
 } from "../utils/inkWashEngine";
 import { InkWashAudioEngine } from "../utils/inkWashAudio";
@@ -34,6 +41,7 @@ interface InkWashFilmModalProps {
   spreadMode?: string;
   question?: string;
   defaultTab?: "live" | "sample";
+  onTriggerCopyAllForAI?: () => Promise<string | void> | string | void;
 }
 
 export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
@@ -43,6 +51,7 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
   spreadMode = "thap_la",
   question = "",
   defaultTab = "live",
+  onTriggerCopyAllForAI,
 }) => {
   const [activeTab, setActiveTab] = useState<"live" | "sample">(defaultTab);
   const [aspect, setAspect] = useState<"16:9" | "9:16">("16:9");
@@ -57,6 +66,18 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
   const [sealChars, setSealChars] = useState<string>("玖貳");
   const [customConclusion, setCustomConclusion] = useState<string>("");
 
+  // 4-Step Automated Pipeline State:
+  // Step 1: Chép Toàn Bộ Cho AI -> Step 2: Quăng vào AI giải quẻ -> Step 3: Tóm tắt giữ ý chính -> Step 4: Đem về đọc đầy đủ thông tin Xưởng Phim Thủy Mặc
+  const [pipelineStep, setPipelineStep] = useState<0 | 1 | 2 | 3 | 4>(0);
+  const [pipelineStatusText, setPipelineStatusText] = useState<string>(
+    "Chưa chạy quy trình Chép Cho AI ➔ AI Giải Quẻ ➔ Tóm Tắt Giữ Ý Chính"
+  );
+  const [isRunningPipeline, setIsRunningPipeline] = useState<boolean>(false);
+  const [aiSummaryData, setAiSummaryData] = useState<InkWashAISummaryData | null>(null);
+  const [audioDurationsMap, setAudioDurationsMap] = useState<Map<string, number>>(new Map());
+  const [infoViewTab, setInfoViewTab] = useState<"summary" | "ai_full" | "copied_prompt">("summary");
+  const [copiedPromptFeedback, setCopiedPromptFeedback] = useState<boolean>(false);
+
   // Video recording state
   const [isRecordingVideo, setIsRecordingVideo] = useState<boolean>(false);
   const [recordedVideoUrl, setRecordedVideoUrl] = useState<string | null>(null);
@@ -68,10 +89,11 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
   const audioRef = useRef<InkWashAudioEngine | null>(null);
   const decomposedMapRef = useRef<Map<string, DecomposedCardInk>>(new Map());
   const rafRef = useRef<number | null>(null);
-  const lastFrameTsRef = useRef<number | null>(null);
+  const lastFrameRef = useRef<number | null>(null);
   const timeRef = useRef<number>(0);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
+  const lastPreparedSigRef = useRef<string>("");
 
   useEffect(() => {
     if (question) {
@@ -85,16 +107,121 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
     }
   }, [isOpen, defaultTab]);
 
-  // Build film plan whenever cards, mode, or custom text changes
-  const filmPlan = useMemo(() => {
+  // Build base film plan whenever cards, mode, AI summary, or custom text changes
+  const baseFilmPlan = useMemo(() => {
     return buildInkWashFilmPlan(
       cards,
       spreadMode,
       customQuestion || question,
       sealChars,
-      customConclusion
+      customConclusion,
+      aiSummaryData
     );
-  }, [cards, spreadMode, customQuestion, question, sealChars, customConclusion]);
+  }, [cards, spreadMode, customQuestion, question, sealChars, customConclusion, aiSummaryData]);
+
+  // Synchronize film plan shot & cue timings with actual Vietnamese TTS audio durations so 100% of every sentence is read in full
+  const filmPlan: InkWashFilmPlan = useMemo(() => {
+    if (audioDurationsMap.size > 0) {
+      return syncFilmPlanWithAudioDurations(baseFilmPlan, audioDurationsMap);
+    }
+    return baseFilmPlan;
+  }, [baseFilmPlan, audioDurationsMap]);
+
+  // Execute the 4-step workflow:
+  // 1. Nhấn vào "Chép Toàn Bộ Cho AI"
+  // 2. Quăng vào cho AI giải quẻ
+  // 3. Tóm tắt quẻ đó lại giữ ý chính
+  // 4. Đem về đọc đầy đủ thông tin trong Xưởng Phim Thủy Mặc
+  const runFourStepAIPipeline = useCallback(async (): Promise<InkWashFilmPlan> => {
+    if (!audioRef.current) {
+      audioRef.current = new InkWashAudioEngine();
+    }
+    audioRef.current.init();
+
+    const effectiveQ = (customQuestion || question || "").trim() || "Xin chỉ điểm vận trình và lời khuyên hành động tối ưu?";
+    setIsRunningPipeline(true);
+
+    try {
+      // BƯỚC 1: Nhấn vào "Chép Toàn Bộ Cho AI"
+      setPipelineStep(1);
+      setPipelineStatusText("Bước 1/4: Đang nhấn 'Chép Toàn Bộ Cho AI' để lấy toàn văn dữ liệu quẻ & tâm niệm...");
+      let externalCopied = "";
+      if (onTriggerCopyAllForAI) {
+        try {
+          const res = await onTriggerCopyAllForAI();
+          if (typeof res === "string" && res.trim().length > 30) {
+            externalCopied = res.trim();
+          }
+        } catch {}
+      }
+      const fullPromptText =
+        externalCopied || buildFullAIPromptForInkWash(cards, spreadMode, effectiveQ);
+      try {
+        if (navigator?.clipboard?.writeText) {
+          await navigator.clipboard.writeText(fullPromptText);
+        }
+      } catch {}
+      await new Promise((r) => setTimeout(r, 180));
+
+      // BƯỚC 2: Quăng vào cho AI giải quẻ
+      setPipelineStep(2);
+      setPipelineStatusText("Bước 2/4: Đang gửi bản 'Chép Toàn Bộ Cho AI' vào AI giải quẻ toàn diện...");
+      const summaryResult = await interpretAndSummarizeSpreadWithAI(
+        cards,
+        spreadMode,
+        effectiveQ,
+        fullPromptText
+      );
+
+      // BƯỚC 3: Tóm tắt quẻ lại giữ ý chính
+      setPipelineStep(3);
+      setPipelineStatusText("Bước 3/4: Đang tóm tắt quẻ giữ trọn ý chính cho từng lá bài & lời kết Châu Ấn 玖貳...");
+      setAiSummaryData(summaryResult);
+      if (!customConclusion.trim()) {
+        setCustomConclusion(summaryResult.conclusionCueB);
+      }
+      await new Promise((r) => setTimeout(r, 150));
+
+      // BƯỚC 4: Đem về đọc đầy đủ thông tin trong Xưởng Phim Thủy Mặc (đo thời lượng TTS thực tế từng câu)
+      setPipelineStep(4);
+      setPipelineStatusText("Bước 4/4: Đang nạp giọng đọc Tiếng Việt đầy đủ 100% thông tin vào Xưởng Phim Thủy Mặc...");
+      const planWithSummary = buildInkWashFilmPlan(
+        cards,
+        spreadMode,
+        effectiveQ,
+        sealChars,
+        customConclusion.trim() || summaryResult.conclusionCueB,
+        summaryResult
+      );
+      const measuredDurations = await audioRef.current.preloadAndMeasureCues(
+        planWithSummary.narrationCues
+      );
+      setAudioDurationsMap(new Map(measuredDurations));
+
+      const syncedPlan = syncFilmPlanWithAudioDurations(planWithSummary, measuredDurations);
+      const sig = `${cards.map((c) => `${c.id}_${c.hexNumber}_${c.yaoNumber || 0}`).join("|")}__${effectiveQ}`;
+      lastPreparedSigRef.current = sig;
+
+      setPipelineStatusText(
+        `Hoàn tất 4 bước! Đã tóm tắt giữ ý chính & đồng bộ đầy đủ giọng đọc Tiếng Việt (${Math.round(
+          syncedPlan.totalDurationSec
+        )}s).`
+      );
+      return syncedPlan;
+    } finally {
+      setIsRunningPipeline(false);
+    }
+  }, [cards, spreadMode, customQuestion, question, sealChars, customConclusion, onTriggerCopyAllForAI]);
+
+  // Automatically run the 4-step pipeline when the modal opens on a new spread
+  useEffect(() => {
+    if (!isOpen || cards.length === 0) return;
+    const effectiveQ = (customQuestion || question || "").trim() || "Xin chỉ điểm vận trình và lời khuyên hành động tối ưu?";
+    const sig = `${cards.map((c) => `${c.id}_${c.hexNumber}_${c.yaoNumber || 0}`).join("|")}__${effectiveQ}`;
+    if (lastPreparedSigRef.current !== sig && !isRunningPipeline) {
+      runFourStepAIPipeline().catch(() => {});
+    }
+  }, [isOpen, cards, customQuestion, question, isRunningPipeline, runFourStepAIPipeline]);
 
   // Decompose all card images into wet, dry, and vermilion ink-wash layers
   useEffect(() => {
@@ -141,7 +268,6 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
     if (!audioRef.current) {
       audioRef.current = new InkWashAudioEngine();
     }
-    audioRef.current.preloadNarrationCues(filmPlan.narrationCues);
 
     const timer = window.setTimeout(() => {
       if (canvasRef.current) {
@@ -168,18 +294,18 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
   useEffect(() => {
     if (!isOpen || !isPlaying || activeTab !== "live") {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      lastFrameTsRef.current = null;
+      lastFrameRef.current = null;
       return;
     }
 
     const shotStarts = filmPlan.shots.map((s) => s.startSec);
 
     const step = (ts: number) => {
-      if (lastFrameTsRef.current === null) {
-        lastFrameTsRef.current = ts;
+      if (lastFrameRef.current === null) {
+        lastFrameRef.current = ts;
       }
-      const dt = Math.min(0.08, (ts - lastFrameTsRef.current) / 1000);
-      lastFrameTsRef.current = ts;
+      const dt = Math.min(0.08, (ts - lastFrameRef.current) / 1000);
+      lastFrameRef.current = ts;
 
       const next = timeRef.current + dt;
       if (next >= filmPlan.totalDurationSec) {
@@ -223,7 +349,7 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
     };
   }, [isOpen, isPlaying, activeTab, filmPlan]);
 
-  const handleTogglePlay = useCallback(() => {
+  const handleTogglePlay = useCallback(async () => {
     if (!audioRef.current) {
       audioRef.current = new InkWashAudioEngine();
     }
@@ -232,28 +358,45 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
     if (isPlaying) {
       setIsPlaying(false);
       audioRef.current.stopAll();
-    } else {
-      if (timeRef.current >= filmPlan.totalDurationSec - 0.2) {
-        timeRef.current = 0;
-        setCurrentTime(0);
-        audioRef.current.resetTimeline();
-      }
-      audioRef.current.startBgmAt(timeRef.current);
-      setIsPlaying(true);
+      return;
     }
-  }, [isPlaying, filmPlan.totalDurationSec]);
 
-  const handleRestart = useCallback(() => {
+    // Ensure the 4-step pipeline (Chép Cho AI -> AI Giải Quẻ -> Tóm Tắt Giữ Ý Chính -> Nạp Giọng Đọc Đầy Đủ) has completed before playing
+    const effectiveQ = (customQuestion || question || "").trim() || "Xin chỉ điểm vận trình và lời khuyên hành động tối ưu?";
+    const sig = `${cards.map((c) => `${c.id}_${c.hexNumber}_${c.yaoNumber || 0}`).join("|")}__${effectiveQ}`;
+    let activePlan = filmPlan;
+    if (lastPreparedSigRef.current !== sig || !aiSummaryData) {
+      activePlan = await runFourStepAIPipeline();
+    }
+
+    if (timeRef.current >= activePlan.totalDurationSec - 0.2) {
+      timeRef.current = 0;
+      setCurrentTime(0);
+      audioRef.current.resetTimeline();
+    }
+    audioRef.current.startBgmAt(timeRef.current);
+    setIsPlaying(true);
+  }, [isPlaying, filmPlan, customQuestion, question, cards, aiSummaryData, runFourStepAIPipeline]);
+
+  const handleRestart = useCallback(async () => {
     if (!audioRef.current) {
       audioRef.current = new InkWashAudioEngine();
     }
     audioRef.current.init();
+    audioRef.current.stopAll();
+
+    const effectiveQ = (customQuestion || question || "").trim() || "Xin chỉ điểm vận trình và lời khuyên hành động tối ưu?";
+    const sig = `${cards.map((c) => `${c.id}_${c.hexNumber}_${c.yaoNumber || 0}`).join("|")}__${effectiveQ}`;
+    if (lastPreparedSigRef.current !== sig || !aiSummaryData) {
+      await runFourStepAIPipeline();
+    }
+
     audioRef.current.resetTimeline();
     timeRef.current = 0;
     setCurrentTime(0);
     audioRef.current.startBgmAt(0);
     setIsPlaying(true);
-  }, []);
+  }, [customQuestion, question, cards, aiSummaryData, runFourStepAIPipeline]);
 
   const handleToggleMute = () => {
     const next = !isMuted;
@@ -276,21 +419,28 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
     setTimeout(() => setSnapshotSaved(false), 2500);
   };
 
-  // Record full video from 0:00 to end using MediaRecorder + Web Audio stream
-  const handleStartRecordVideo = () => {
-    if (!canvasRef.current || isRecordingVideo) return;
+  // Before exporting/running video:
+  // Always execute Step 1 (Chép Toàn Bộ Cho AI) -> Step 2 (Quăng vào AI giải quẻ) -> Step 3 (Tóm tắt giữ ý chính) -> Step 4 (Đem về đọc đầy đủ thông tin Xưởng Phim Thủy Mặc),
+  // then record from 0:00 to the end of the full narration!
+  const handleStartRecordVideo = async () => {
+    if (!canvasRef.current || isRecordingVideo || isRunningPipeline) return;
     if (!audioRef.current) {
       audioRef.current = new InkWashAudioEngine();
     }
     audioRef.current.init();
-    audioRef.current.resetTimeline();
+    audioRef.current.stopAll();
+    setIsPlaying(false);
 
     if (recordedVideoUrl) {
       URL.revokeObjectURL(recordedVideoUrl);
       setRecordedVideoUrl(null);
     }
 
+    // Run the 4-step pipeline first so the video reads 100% of the AI-summarized spread
+    await runFourStepAIPipeline();
+
     try {
+      audioRef.current.resetTimeline();
       const canvasStream = canvasRef.current.captureStream(24);
       const audioStream = audioRef.current.getMediaStream();
       const tracks: MediaStreamTrack[] = [...canvasStream.getVideoTracks()];
@@ -388,7 +538,7 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
               <h3 className="font-serif font-bold text-sm sm:text-base text-[#F5EAD4] flex items-center gap-2">
                 <span>Xưởng Phim Thủy Mặc Chu Dịch (水墨周易)</span>
                 <span className="hidden md:inline-block text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#2A2016] text-[#E5C158] border border-[#C4963E]/50">
-                  WebGL2 · Cổ Cầm &amp; Tiêu Trúc Studio · Ấn 玖貳
+                  Chép Cho AI ➔ AI Giải Quẻ ➔ Tóm Tắt Giữ Ý Chính ➔ Đọc Đầy Đủ · Ấn 玖貳
                 </span>
               </h3>
             </div>
@@ -440,8 +590,8 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
         {activeTab === "live" ? (
           <div className="flex-1 overflow-y-auto grid grid-cols-1 lg:grid-cols-12 gap-4 p-4">
             {/* LEFT / CENTER: XUAN-PAPER FILM STAGE */}
-            <div className="lg:col-span-8 flex flex-col items-center justify-between bg-[#0E0B08] rounded-2xl border border-[#34281B] p-3 sm:p-4 shadow-inner">
-              {/* Top Stage Controls: Aspect Ratio & Decomposition Status */}
+            <div className="lg:col-span-7 flex flex-col items-center justify-between bg-[#0E0B08] rounded-2xl border border-[#34281B] p-3 sm:p-4 shadow-inner">
+              {/* Top Stage Controls: Aspect Ratio & 4-Step Pipeline Status */}
               <div className="w-full flex items-center justify-between gap-2 mb-2.5 flex-wrap">
                 <div className="flex items-center gap-1.5">
                   <button
@@ -449,70 +599,103 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
                     onClick={() => setAspect("16:9")}
                     className={`px-2.5 py-1 rounded-lg text-xs font-serif font-bold flex items-center gap-1 cursor-pointer border transition ${
                       aspect === "16:9"
-                        ? "bg-[#2A2016] text-[#F3E5AB] border-[#D4AF37]"
-                        : "bg-[#18130E] text-[#9E8C74] border-[#2E2318]"
+                        ? "bg-[#2C2015] text-[#F3E5AB] border-[#D4AF37]"
+                        : "bg-[#16120D] text-[#9E8C74] border-[#2E2318]"
                     }`}
                   >
                     <Monitor className="w-3.5 h-3.5" />
-                    <span>16:9 Ngang (Cinema)</span>
+                    <span>Ngang 16:9 (1280×720)</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setAspect("9:16")}
                     className={`px-2.5 py-1 rounded-lg text-xs font-serif font-bold flex items-center gap-1 cursor-pointer border transition ${
                       aspect === "9:16"
-                        ? "bg-[#2A2016] text-[#F3E5AB] border-[#D4AF37]"
-                        : "bg-[#18130E] text-[#9E8C74] border-[#2E2318]"
+                        ? "bg-[#2C2015] text-[#F3E5AB] border-[#D4AF37]"
+                        : "bg-[#16120D] text-[#9E8C74] border-[#2E2318]"
                     }`}
                   >
                     <Smartphone className="w-3.5 h-3.5" />
-                    <span>9:16 Dọc (TikTok/Reels)</span>
+                    <span>Dọc 9:16 (TikTok / Shorts)</span>
                   </button>
                 </div>
 
-                {isDecomposing ? (
-                  <span className="inline-flex items-center gap-1.5 text-xs text-[#E5C158] font-serif">
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    <span>Đang tách 3 lớp mực Tuyên Thành (Ướt · Khô · Chu Sa)...</span>
-                  </span>
-                ) : (
-                  <span className="text-[11px] text-[#A89880] font-serif">
-                    ✦ Đã chuyển hóa {cards.length} lá bài sang họa pháp Thủy Mặc
-                  </span>
-                )}
+                <div className="flex items-center gap-2 text-[11px] font-serif">
+                  {isDecomposing || isRunningPipeline ? (
+                    <span className="inline-flex items-center gap-1.5 text-amber-300 bg-amber-950/60 px-2.5 py-0.5 rounded-full border border-amber-600/40">
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      <span>
+                        {isRunningPipeline
+                          ? `Đang xử lý Bước ${pipelineStep}/4...`
+                          : "Đang tách lớp mực tàu & chu sa..."}
+                      </span>
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 text-emerald-300 bg-emerald-950/50 px-2.5 py-0.5 rounded-full border border-emerald-600/40">
+                      <Check className="w-3 h-3" />
+                      <span>Đã tóm tắt AI &amp; đồng bộ đầy đủ {cards.length} lá bài</span>
+                    </span>
+                  )}
+                </div>
               </div>
 
-              {/* Canvas Viewport */}
-              <div className="relative w-full flex-1 flex items-center justify-center overflow-hidden min-h-[280px] sm:min-h-[380px]">
-                <canvas
-                  ref={canvasRef}
-                  width={aspect === "16:9" ? 1280 : 720}
-                  height={aspect === "16:9" ? 720 : 1280}
-                  onClick={handleTogglePlay}
-                  className={`rounded-xl shadow-[0_14px_45px_rgba(0,0,0,0.85)] border border-[#C4963E]/50 cursor-pointer transition-all ${
+              {/* 4-Step Pipeline Progress Strip */}
+              <div className="w-full mb-2.5 px-3 py-2 rounded-xl bg-[#17120C] border border-[#C4963E]/45 flex flex-col gap-1.5">
+                <div className="grid grid-cols-4 gap-1 text-[10px] font-serif font-bold">
+                  {[
+                    { id: 1, label: "1. Chép Toàn Bộ Cho AI" },
+                    { id: 2, label: "2. Quăng Vào AI Giải Quẻ" },
+                    { id: 3, label: "3. Tóm Tắt Giữ Ý Chính" },
+                    { id: 4, label: "4. Đọc Đầy Đủ Thủy Mặc" },
+                  ].map((st) => {
+                    const done = pipelineStep >= st.id && !isRunningPipeline;
+                    const active = isRunningPipeline && pipelineStep === st.id;
+                    return (
+                      <div
+                        key={st.id}
+                        className={`px-2 py-1 rounded-lg border text-center truncate transition ${
+                          done
+                            ? "bg-emerald-950/60 text-emerald-200 border-emerald-600/50"
+                            : active
+                            ? "bg-amber-900/70 text-amber-100 border-amber-400 animate-pulse"
+                            : "bg-[#110D09] text-[#8A7960] border-[#2C2217]"
+                        }`}
+                      >
+                        {done ? "✓ " : active ? "⏳ " : ""}
+                        {st.label}
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="text-[11px] text-[#E5C158] font-serif truncate">
+                  ✦ {pipelineStatusText}
+                </div>
+              </div>
+
+              {/* Canvas Viewport Container */}
+              <div className="relative w-full flex-1 flex items-center justify-center overflow-hidden py-1">
+                <div
+                  className={`relative rounded-xl overflow-hidden border-2 border-[#C4963E]/75 shadow-[0_15px_50px_rgba(0,0,0,0.85)] bg-[#EAE3D2] ${
                     aspect === "16:9"
-                      ? "w-full max-h-[54vh] aspect-video object-contain"
-                      : "h-[54vh] aspect-[9/16] object-contain"
+                      ? "w-full aspect-video max-h-[50vh]"
+                      : "h-[50vh] aspect-[9/16]"
                   }`}
-                />
+                >
+                  <canvas
+                    ref={canvasRef}
+                    width={aspect === "16:9" ? 1280 : 720}
+                    height={aspect === "16:9" ? 720 : 1280}
+                    className="w-full h-full object-contain block"
+                  />
 
-                {!isPlaying && (
-                  <button
-                    type="button"
-                    onClick={handleTogglePlay}
-                    className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-[#16120D]/85 hover:bg-[#9E2A2B] text-[#F3E5AB] border-2 border-[#D4AF37] flex items-center justify-center shadow-[0_0_30px_rgba(212,175,55,0.45)] transition transform hover:scale-105 cursor-pointer"
-                    title="Phát phim Thủy Mặc"
-                  >
-                    <Play className="w-7 h-7 fill-current ml-0.5" />
-                  </button>
-                )}
-
-                {isRecordingVideo && (
-                  <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-[#9E2A2B] text-white text-xs font-bold border border-[#D4AF37] flex items-center gap-1.5 animate-pulse shadow-lg">
-                    <span className="w-2 h-2 rounded-full bg-white" />
-                    <span>ĐANG GHI VIDEO ({Math.round((currentTime / filmPlan.totalDurationSec) * 100)}%)</span>
-                  </div>
-                )}
+                  {/* Recording Badge Overlay */}
+                  {isRecordingVideo && (
+                    <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-rose-900/90 border border-rose-400 text-white text-xs font-bold flex items-center gap-1.5 animate-pulse shadow-lg">
+                      <span className="w-2 h-2 rounded-full bg-rose-300" />
+                      <span>ĐANG GHI VIDEO ({formatTime(currentTime)})</span>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Timeline Scrubber & Transport Controls */}
@@ -550,16 +733,18 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
                     <button
                       type="button"
                       onClick={handleTogglePlay}
-                      className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B8862D] text-[#16120D] font-serif font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm hover:brightness-110"
+                      disabled={isRunningPipeline}
+                      className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B8862D] text-[#16120D] font-serif font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm hover:brightness-110 disabled:opacity-60"
                     >
                       {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-                      <span>{isPlaying ? "Tạm Dừng" : "Phát Phim"}</span>
+                      <span>{isPlaying ? "Tạm Dừng" : "Phát Phim Đầy Đủ"}</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={handleRestart}
-                      className="p-1.5 rounded-xl bg-[#241C14] hover:bg-[#33281C] text-[#E5C158] border border-[#3E3022] cursor-pointer"
+                      disabled={isRunningPipeline}
+                      className="p-1.5 rounded-xl bg-[#241C14] hover:bg-[#33281C] text-[#E5C158] border border-[#3E3022] cursor-pointer disabled:opacity-60"
                       title="Phát lại từ đầu"
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
@@ -603,8 +788,9 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
                     <button
                       type="button"
                       onClick={handleStartRecordVideo}
-                      disabled={isRecordingVideo}
+                      disabled={isRecordingVideo || isRunningPipeline}
                       className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#9E2A2B] to-[#7D1D1E] hover:brightness-110 disabled:opacity-60 text-[#FFF8E7] border border-[#D4AF37] text-xs font-serif font-bold flex items-center gap-1.5 cursor-pointer shadow-md"
+                      title="Tự động Chép Toàn Bộ Cho AI -> AI Giải Quẻ -> Tóm Tắt Giữ Ý Chính -> Đọc Đầy Đủ & Xuất Video"
                     >
                       {isRecordingVideo ? (
                         <>
@@ -623,86 +809,220 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
               </div>
             </div>
 
-            {/* RIGHT PANEL: SHOT CHAPTERS, CUSTOM SEAL & VERDICT EDITOR */}
-            <div className="lg:col-span-4 flex flex-col justify-between gap-3 bg-[#1B150F] rounded-2xl border border-[#34281B] p-4">
+            {/* RIGHT PANEL: 4-STEP AI PIPELINE TRIGGER, FULL SCRIPT READER & SHOT CHAPTERS */}
+            <div className="lg:col-span-5 flex flex-col justify-between gap-3 bg-[#1B150F] rounded-2xl border border-[#34281B] p-4">
               <div className="space-y-3">
-                <div className="border-b border-[#34281B] pb-2 flex items-center justify-between">
-                  <span className="text-xs font-serif font-bold uppercase tracking-wider text-[#E5C158]">
-                    📜 Phân Cảnh Thủy Mặc ({filmPlan.shots.length} Cảnh)
-                  </span>
-                  <span className="text-[11px] text-[#A89880] font-mono">
-                    24 fps · 墨分五色
-                  </span>
-                </div>
+                {/* Primary CTA to re-trigger the 4-step pipeline anytime */}
+                <button
+                  type="button"
+                  onClick={() => runFourStepAIPipeline()}
+                  disabled={isRunningPipeline || isRecordingVideo}
+                  className="w-full py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E5C158] to-[#C4963E] text-[#16120D] font-serif font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:brightness-105 cursor-pointer disabled:opacity-60"
+                >
+                  {isRunningPipeline ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Đang Chép Cho AI ➔ Giải Quẻ ➔ Tóm Tắt &amp; Đồng Bộ Giọng...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4" />
+                      <span>⚡ Chép Toàn Bộ Cho AI ➔ AI Giải Quẻ ➔ Tóm Tắt &amp; Đọc Thủy Mặc</span>
+                    </>
+                  )}
+                </button>
 
-                {/* Clickable Shot List */}
-                <div className="space-y-1.5 max-h-[210px] overflow-y-auto pr-1">
-                  {filmPlan.shots.map((s) => {
-                    const isActive = currentTime >= s.startSec && currentTime < s.endSec;
-                    return (
+                {/* 3-Tab Viewer: Tóm Tắt Đọc Thủy Mặc | Bài Giải AI Đầy Đủ | Bản Chép Cho AI */}
+                <div className="bg-[#120E0A] rounded-xl border border-[#34281B] p-2.5 space-y-2">
+                  <div className="flex items-center justify-between gap-1 border-b border-[#2C2217] pb-1.5">
+                    <div className="flex items-center gap-1">
                       <button
-                        key={s.index}
                         type="button"
-                        onClick={() => {
-                          const targetT = s.startSec + 0.2;
-                          timeRef.current = targetT;
-                          setCurrentTime(targetT);
-                          if (audioRef.current && isPlaying) {
-                            audioRef.current.startBgmAt(targetT);
-                          }
-                          if (rendererRef.current) {
-                            rendererRef.current.renderFrame(
-                              targetT,
-                              filmPlan,
-                              decomposedMapRef.current
-                            );
-                          }
-                        }}
-                        className={`w-full text-left p-2.5 rounded-xl border transition cursor-pointer flex items-center justify-between gap-2 ${
-                          isActive
-                            ? "bg-[#2C2015] border-[#D4AF37] text-[#FFF8E7] shadow-sm"
-                            : "bg-[#14100B] hover:bg-[#211911] border-[#2C2217] text-[#C8B89E]"
+                        onClick={() => setInfoViewTab("summary")}
+                        className={`px-2.5 py-1 rounded-lg text-[11px] font-serif font-bold cursor-pointer transition ${
+                          infoViewTab === "summary"
+                            ? "bg-[#9E2A2B] text-[#FFF8E7] border border-[#D4AF37]/60"
+                            : "text-[#A89880] hover:text-white"
                         }`}
                       >
-                        <div className="min-w-0">
-                          <div className="text-xs font-serif font-bold truncate">{s.title}</div>
-                          <div className="text-[10.5px] text-[#C4963E] truncate">{s.subtitle}</div>
-                        </div>
-                        <span className="text-[10px] font-mono text-[#A89880] shrink-0">
-                          {formatTime(s.startSec)}
-                        </span>
+                        1. Tóm Tắt Đọc Thủy Mặc
                       </button>
-                    );
-                  })}
+                      <button
+                        type="button"
+                        onClick={() => setInfoViewTab("ai_full")}
+                        className={`px-2.5 py-1 rounded-lg text-[11px] font-serif font-bold cursor-pointer transition ${
+                          infoViewTab === "ai_full"
+                            ? "bg-[#9E2A2B] text-[#FFF8E7] border border-[#D4AF37]/60"
+                            : "text-[#A89880] hover:text-white"
+                        }`}
+                      >
+                        2. Bài AI Giải Quẻ
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setInfoViewTab("copied_prompt")}
+                        className={`px-2.5 py-1 rounded-lg text-[11px] font-serif font-bold cursor-pointer transition ${
+                          infoViewTab === "copied_prompt"
+                            ? "bg-[#9E2A2B] text-[#FFF8E7] border border-[#D4AF37]/60"
+                            : "text-[#A89880] hover:text-white"
+                        }`}
+                      >
+                        3. Bản Chép Cho AI
+                      </button>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const textToCopy =
+                          infoViewTab === "summary"
+                            ? aiSummaryData?.fullSpokenSummaryText || ""
+                            : infoViewTab === "ai_full"
+                            ? aiSummaryData?.fullAiInterpretation || ""
+                            : aiSummaryData?.copiedPromptText || "";
+                        if (textToCopy && navigator?.clipboard?.writeText) {
+                          navigator.clipboard.writeText(textToCopy);
+                          setCopiedPromptFeedback(true);
+                          setTimeout(() => setCopiedPromptFeedback(false), 2000);
+                        }
+                      }}
+                      className="px-2 py-0.5 rounded bg-[#241C14] hover:bg-[#33281C] text-[#E5C158] border border-[#3E3022] text-[10px] font-serif flex items-center gap-1 cursor-pointer"
+                      title="Sao chép nội dung đang xem"
+                    >
+                      {copiedPromptFeedback ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                      <span>{copiedPromptFeedback ? "Đã chép" : "Chép"}</span>
+                    </button>
+                  </div>
+
+                  {/* Content of the selected tab */}
+                  <div className="max-h-[200px] overflow-y-auto pr-1 text-xs font-serif leading-relaxed text-[#E6D7B8] space-y-2">
+                    {infoViewTab === "summary" && (
+                      <>
+                        {aiSummaryData ? (
+                          <div className="space-y-2">
+                            {aiSummaryData.cardSummaries.map((cs) => (
+                              <div
+                                key={cs.cardNumber}
+                                className="p-2 rounded-lg bg-[#1A140E] border border-[#34281B]"
+                              >
+                                <div className="text-[11px] font-bold text-[#E5C158] mb-0.5">
+                                  ✦ Lá {cs.cardNumber} ({cs.roleLabel}) — {cs.cardTitle}
+                                </div>
+                                <p className="text-[11.5px] text-[#F5EAD4]">{cs.cueA}</p>
+                                <p className="text-[11.5px] text-[#D8C8A8] mt-1">{cs.cueB}</p>
+                              </div>
+                            ))}
+                            <div className="p-2 rounded-lg bg-[#241811] border border-[#C4963E]/50">
+                              <div className="text-[11px] font-bold text-[#F3E5AB] mb-0.5">
+                                印 Châu Ấn Đúc Kết ({sealChars}) — Trả Lời Tâm Niệm
+                              </div>
+                              <p className="text-[11.5px] text-[#F5EAD4]">{aiSummaryData.conclusionCueA}</p>
+                              <p className="text-[11.5px] text-emerald-200 mt-1 font-semibold">
+                                {customConclusion || aiSummaryData.conclusionCueB}
+                              </p>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="text-[#A89880] italic py-4 text-center">
+                            Đang tự động Chép Toàn Bộ Cho AI ➔ Giải Quẻ ➔ Tóm Tắt Giữ Ý Chính...
+                          </div>
+                        )}
+                      </>
+                    )}
+
+                    {infoViewTab === "ai_full" && (
+                      <pre className="whitespace-pre-wrap font-serif text-[11.5px] text-[#E6D7B8] leading-relaxed">
+                        {aiSummaryData?.fullAiInterpretation || "Đang tổng hợp bài giải quẻ từ AI..."}
+                      </pre>
+                    )}
+
+                    {infoViewTab === "copied_prompt" && (
+                      <pre className="whitespace-pre-wrap font-mono text-[10.5px] text-[#C8B89E] leading-relaxed">
+                        {aiSummaryData?.copiedPromptText || "Đang trích xuất dữ liệu Chép Toàn Bộ Cho AI..."}
+                      </pre>
+                    )}
+                  </div>
+                </div>
+
+                {/* Clickable Shot List with Synchronized Durations */}
+                <div className="border-t border-[#34281B] pt-2">
+                  <div className="pb-1.5 flex items-center justify-between">
+                    <span className="text-xs font-serif font-bold uppercase tracking-wider text-[#E5C158] flex items-center gap-1.5">
+                      <FileText className="w-3.5 h-3.5" />
+                      <span>Phân Cảnh Thủy Mặc ({filmPlan.shots.length} Cảnh · {formatTime(filmPlan.totalDurationSec)})</span>
+                    </span>
+                    <span className="text-[10.5px] text-emerald-300 font-serif">
+                      Đọc đủ 100% ý chính
+                    </span>
+                  </div>
+
+                  <div className="space-y-1.5 max-h-[145px] overflow-y-auto pr-1">
+                    {filmPlan.shots.map((s) => {
+                      const isActive = currentTime >= s.startSec && currentTime < s.endSec;
+                      return (
+                        <button
+                          key={s.index}
+                          type="button"
+                          onClick={() => {
+                            const targetT = s.startSec + 0.15;
+                            timeRef.current = targetT;
+                            setCurrentTime(targetT);
+                            if (audioRef.current && isPlaying) {
+                              audioRef.current.startBgmAt(targetT);
+                            }
+                            if (rendererRef.current) {
+                              rendererRef.current.renderFrame(
+                                targetT,
+                                filmPlan,
+                                decomposedMapRef.current
+                              );
+                            }
+                          }}
+                          className={`w-full text-left p-2 rounded-xl border transition cursor-pointer flex items-center justify-between gap-2 ${
+                            isActive
+                              ? "bg-[#2C2015] border-[#D4AF37] text-[#FFF8E7] shadow-sm"
+                              : "bg-[#14100B] hover:bg-[#211911] border-[#2C2217] text-[#C8B89E]"
+                          }`}
+                        >
+                          <div className="min-w-0">
+                            <div className="text-xs font-serif font-bold truncate">{s.title}</div>
+                            <div className="text-[10px] text-[#C4963E] truncate">{s.subtitle}</div>
+                          </div>
+                          <span className="text-[10px] font-mono text-[#E5C158] shrink-0">
+                            {formatTime(s.startSec)} – {formatTime(s.endSec)}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 {/* Custom Question & Cinnabar Seal Editor */}
-                <div className="pt-2 border-t border-[#34281B] space-y-2.5">
-                  <div>
-                    <label className="block text-[11px] font-serif font-bold text-[#E5C158] mb-1">
-                      Câu Hỏi Tâm Niệm (Hiện Ở Cảnh Kết &amp; Châu Ấn):
-                    </label>
-                    <input
-                      type="text"
-                      value={customQuestion}
-                      onChange={(e) => setCustomQuestion(e.target.value)}
-                      placeholder="VD: Phiên bản này đã được chưa?..."
-                      className="w-full px-3 py-1.5 rounded-lg bg-[#110D09] border border-[#3E3022] focus:border-[#D4AF37] text-xs text-[#F5EAD4] font-serif outline-none"
-                    />
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1">
+                <div className="pt-2 border-t border-[#34281B] space-y-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 items-end">
+                    <div className="sm:col-span-7">
                       <label className="block text-[11px] font-serif font-bold text-[#E5C158] mb-1">
-                        Châu Ấn Chu Sa (#B02E22):
+                        Câu Hỏi Tâm Niệm:
                       </label>
-                      <div className="flex items-center gap-1.5">
+                      <input
+                        type="text"
+                        value={customQuestion}
+                        onChange={(e) => setCustomQuestion(e.target.value)}
+                        placeholder="VD: Phiên bản này đã được chưa?..."
+                        className="w-full px-2.5 py-1.5 rounded-lg bg-[#110D09] border border-[#3E3022] focus:border-[#D4AF37] text-xs text-[#F5EAD4] font-serif outline-none"
+                      />
+                    </div>
+                    <div className="sm:col-span-5">
+                      <label className="block text-[11px] font-serif font-bold text-[#E5C158] mb-1">
+                        Châu Ấn (#B02E22):
+                      </label>
+                      <div className="flex items-center gap-1">
                         {["玖貳", "大吉", "慎行", "中正"].map((preset) => (
                           <button
                             key={preset}
                             type="button"
                             onClick={() => setSealChars(preset)}
-                            className={`px-2.5 py-1 rounded-lg text-xs font-serif font-bold border cursor-pointer ${
+                            className={`px-2 py-1 rounded-lg text-xs font-serif font-bold border cursor-pointer ${
                               sealChars === preset
                                 ? "bg-[#9E2A2B] text-white border-[#D4AF37]"
                                 : "bg-[#120E0A] text-[#C8B89E] border-[#34281B]"
@@ -717,14 +1037,14 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
 
                   <div>
                     <label className="block text-[11px] font-serif font-bold text-[#E5C158] mb-1">
-                      Lời Đúc Kết Cuối Phim (Tùy chỉnh):
+                      Lời Đúc Kết Cuối Phim (Tự động tóm tắt từ AI hoặc tùy chỉnh):
                     </label>
                     <textarea
                       rows={2}
                       value={customConclusion}
                       onChange={(e) => setCustomConclusion(e.target.value)}
-                      placeholder="Để trống sẽ tự động đúc kết từ Thoán Từ & Hào Động..."
-                      className="w-full px-3 py-1.5 rounded-lg bg-[#110D09] border border-[#3E3022] focus:border-[#D4AF37] text-xs text-[#F5EAD4] font-serif outline-none resize-none"
+                      placeholder="Tự động điền từ bước Tóm Tắt Giữ Ý Chính của AI..."
+                      className="w-full px-2.5 py-1.5 rounded-lg bg-[#110D09] border border-[#3E3022] focus:border-[#D4AF37] text-xs text-[#F5EAD4] font-serif outline-none resize-none"
                     />
                   </div>
                 </div>
@@ -734,7 +1054,7 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
               {recordedVideoUrl && (
                 <div className="p-2.5 rounded-xl bg-emerald-950/60 border border-emerald-500/50 flex items-center justify-between gap-2">
                   <span className="text-xs text-emerald-200 font-serif">
-                    ✓ Đã kết xuất xong Video Thủy Mặc!
+                    ✓ Đã kết xuất xong Video Thủy Mặc (đọc đầy đủ ý chính)!
                   </span>
                   <a
                     href={recordedVideoUrl}

@@ -994,6 +994,9 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
           onClose={() => setIsInkWashModalOpen(false)}
           spreadMode="thap_la"
           question={question}
+          onTriggerCopyAllForAI={async () => {
+            await handleCopyForAI();
+          }}
           cards={([
             {
               id: `thapla-pri-${primaryHex.number}`,

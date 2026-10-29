@@ -41,6 +41,23 @@ export interface InkWashShotInfo {
   cardIndex?: number;
 }
 
+export interface InkWashCardSummaryCue {
+  cardNumber: number;
+  cardTitle: string;
+  roleLabel: string;
+  cueA: string;
+  cueB: string;
+}
+
+export interface InkWashAISummaryData {
+  copiedPromptText: string;
+  fullAiInterpretation: string;
+  cardSummaries: InkWashCardSummaryCue[];
+  conclusionCueA: string;
+  conclusionCueB: string;
+  fullSpokenSummaryText: string;
+}
+
 export interface InkWashFilmPlan {
   totalDurationSec: number;
   shots: InkWashShotInfo[];
@@ -53,6 +70,7 @@ export interface InkWashFilmPlan {
   changingLines: number[];
   question: string;
   conclusionText: string;
+  aiSummary?: InkWashAISummaryData;
 }
 
 // ── DETERMINISTIC PRNG & VALUE NOISE (FROM LEMO-OPUSCAR INK.JS) ──
@@ -661,18 +679,8 @@ export function drawAnimatedHexagram(
   }
 }
 
-// ── BUILD STRUCTURED FILM PLAN FROM ANY DRAWN CARDS ──
-export function buildInkWashFilmPlan(
-  rawCards: InkWashCardInput[],
-  mode: string,
-  question: string,
-  customSealChars?: string,
-  customConclusion?: string
-): InkWashFilmPlan {
-  const cleanQ = question.trim() || "Xin chỉ điểm vận trình và lời khuyên hành động?";
-
-  // Arrange cards in Tháp La reading order if mode is thap_la:
-  // [Quẻ Chủ (cards[0]), ...Hào Động (cards.slice(2)), Quẻ Biến (cards[1])]
+// ── HELPER: ORDER CARDS FOR THÁP LA OR STANDARD SPREAD ──
+export function getOrderedInkWashCards(rawCards: InkWashCardInput[], mode: string) {
   let orderedCards: InkWashCardInput[] = [];
   let primaryHex = HEXAGRAMS.find((h) => h.number === rawCards[0]?.hexNumber) || HEXAGRAMS[48];
   let transformedHex = primaryHex;
@@ -681,13 +689,12 @@ export function buildInkWashFilmPlan(
   if ((mode === "thap_la" || mode === "thapla") && rawCards.length >= 2) {
     const priCard = rawCards[0];
     const transCard = rawCards[1];
-    const yaoCards = rawCards.slice(2);
+    const yaoCards = rawCards.slice(2).filter((c) => !c.id.endsWith("-tinh"));
     primaryHex = HEXAGRAMS.find((h) => h.number === priCard.hexNumber) || HEXAGRAMS[0];
     transformedHex = HEXAGRAMS.find((h) => h.number === transCard.hexNumber) || primaryHex;
     changingLines = yaoCards
       .map((y) => y.yaoNumber || 0)
       .filter((n) => n >= 1 && n <= 6);
-
     orderedCards = [priCard, ...yaoCards, transCard];
   } else {
     orderedCards = rawCards.length > 0 ? [...rawCards] : [];
@@ -701,6 +708,361 @@ export function buildInkWashFilmPlan(
     }
   }
 
+  return { orderedCards, primaryHex, transformedHex, changingLines };
+}
+
+// ── STEP 1: NHẤN "CHÉP TOÀN BỘ CHO AI" (XUẤT TOÀN VĂN DỮ LIỆU QUẺ & CÂU HỎI TÂM NIỆM) ──
+export function buildFullAIPromptForInkWash(
+  rawCards: InkWashCardInput[],
+  mode: string,
+  question: string
+): string {
+  const cleanQ = question.trim() || "Xin chỉ điểm vận trình và lời khuyên hành động tối ưu?";
+  const { orderedCards, primaryHex, transformedHex, changingLines } = getOrderedInkWashCards(rawCards, mode);
+  const totalCards = orderedCards.length;
+  const isThapLa = mode === "thap_la" || mode === "thapla";
+
+  const lines: string[] = [];
+  if (isThapLa) {
+    lines.push(`=== BẢNG LUẬN GIẢI THÁP LA KINH DỊCH (${totalCards} LÁ · 周易塔羅) ===`);
+  } else {
+    lines.push(`=== BẢNG LUẬN GIẢI TRẢI BÀI KINH DỊCH (${totalCards} LÁ · 周易塔羅) ===`);
+  }
+  lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
+  lines.push(`"${cleanQ}"\n`);
+
+  if (isThapLa && changingLines.length > 0) {
+    lines.push(
+      `Cấu trúc (${totalCards} lá bài): Quẻ Chủ & Quẻ Biến song song Trên - Dưới • ${changingLines.length} lá Hào Động (Bộ 384 Lá) kế bên Quẻ Chủ`
+    );
+    lines.push(
+      `Thứ tự đọc & đồng bộ từng lá bài (từ Lá 1 đến Lá ${totalCards}): Lá 1: Bản Quái (Quẻ Chủ) ➔ Lá 2..Lá ${
+        totalCards - 1
+      }: Lần lượt ${changingLines.length} lá Hào Động (từ Hào Sơ lên Hào Lục) ➔ Lá ${totalCards}: Biến Quái (Quẻ Biến)\n`
+    );
+  } else {
+    lines.push(
+      `Thứ tự đọc & đồng bộ từng lá bài: Từ Lá 1 đến Lá ${totalCards} theo đúng trình tự trải bài.\n`
+    );
+  }
+
+  orderedCards.forEach((c, idx) => {
+    const cardNum = idx + 1;
+    const hexObj = HEXAGRAMS.find((h) => h.number === c.hexNumber) || primaryHex;
+    lines.push(`----------------------------------------`);
+    if (isThapLa && idx === 0) {
+      lines.push(`【Lá 1 / ${totalCards} · BẢN QUÁI (QUẺ CHỦ) — LÁ TRÊN SONG SONG】`);
+      lines.push(`▶ Vị trí Lá 1 [Quẻ Chủ (Bản Quái)]: Định vị hiện trạng và bức tranh nền tảng tổng quan`);
+    } else if (isThapLa && idx === totalCards - 1 && totalCards > 1) {
+      lines.push(`【Lá ${totalCards} / ${totalCards} · BIẾN QUÁI (QUẺ BIẾN) — LÁ DƯỚI SONG SONG】`);
+      lines.push(`▶ Vị trí Lá ${totalCards} [Quẻ Biến (Biến Quái)]: Định hướng xu thế phát triển và kết quả chuyển dịch`);
+    } else if (c.type === "yao" && c.yaoNumber) {
+      lines.push(`▶ Vị trí Lá ${cardNum} [Hào Động thứ ${idx}]: Hào ${c.yaoNumber}: ${c.name}`);
+    } else {
+      lines.push(`▶ Vị trí Lá ${cardNum} [${c.positionLabel || `Lá ${cardNum}`}]: ${c.name}`);
+    }
+    lines.push(`• Quẻ tượng: ${c.symbol || hexObj.symbol}`);
+    lines.push(`• Tên: ${c.name}`);
+    lines.push(`• Ý nghĩa: ${c.sub}`);
+    if (c.type === "yao" && c.yaoNumber) {
+      const lm = hexObj.lineMeanings?.find((m) => m.line === c.yaoNumber);
+      if (lm) {
+        lines.push(`• Hào từ: "${lm.text}"`);
+        lines.push(`• Lời giải Hào động: ${lm.meaning} ${lm.detailedExplanation || ""}`);
+      } else {
+        lines.push(`• Lời giải: ${c.desc}`);
+      }
+    } else {
+      lines.push(`• Thoán từ: "${hexObj.judgment}" | Đại Tượng: "${hexObj.image}"`);
+      lines.push(`• Lời giải: ${c.desc || hexObj.overview || hexObj.advice}`);
+    }
+    lines.push("");
+  });
+
+  lines.push(`========================================`);
+  lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI (ĐỦ ${totalCards} LÁ BÀI)]:`);
+  lines.push(`▶ Trọng tâm giải đáp: Tập trung luận giải và tháo gỡ dứt khoát câu hỏi/tâm niệm: "${cleanQ}"`);
+  lines.push(`1. Phân tích tuần tự từng lá bài từ Lá 1 đến Lá ${totalCards}, tuyệt đối không gộp chung hay bỏ sót lá nào.`);
+  lines.push(`2. Chỉ rõ bản chất thực tại (Bản Quái), biến số mấu chốt ở từng Hào Động (việc nên làm & điều cần tránh), và xu thế tương lai (Biến Quái).`);
+  lines.push(`3. Đúc kết lời đáp trực tiếp cho câu hỏi tâm niệm của đương số.`);
+
+  return lines.join("\n");
+}
+
+// Helper: Clean sentence without mid-word truncation
+function cleanSentenceKeepEssence(raw: string, maxWords: number = 46): string {
+  const cleaned = (raw || "")
+    .replace(/【[^】]*】/g, " ")
+    .replace(/[*#_~`>|]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!cleaned) return "";
+  const sentences = cleaned
+    .split(/(?<=[.!?…。；;])\s+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  let acc = "";
+  for (const s of sentences) {
+    const candidate = acc ? `${acc} ${s}` : s;
+    const words = candidate.split(/\s+/);
+    if (words.length <= maxWords) {
+      acc = candidate;
+    } else {
+      if (!acc) {
+        acc = words.slice(0, maxWords).join(" ") + ".";
+      }
+      break;
+    }
+  }
+  if (!acc) acc = cleaned;
+  if (!/[.!?…]$/.test(acc)) acc += ".";
+  return acc;
+}
+
+const ORDINAL_VI_NAMES = [
+  "một",
+  "hai",
+  "ba",
+  "bốn",
+  "năm",
+  "sáu",
+  "bảy",
+  "tám",
+  "chín",
+  "mười",
+  "mười một",
+  "mười hai",
+];
+
+// ── STEP 2 & 3: QUĂNG VÀO CHO AI GIẢI QUẺ ➔ TÓM TẮT QUẺ GIỮ Ý CHÍNH ──
+export async function interpretAndSummarizeSpreadWithAI(
+  rawCards: InkWashCardInput[],
+  mode: string,
+  question: string,
+  existingCopiedPrompt?: string
+): Promise<InkWashAISummaryData> {
+  const cleanQ = question.trim() || "Xin chỉ điểm vận trình và lời khuyên hành động tối ưu?";
+  const copiedPromptText =
+    existingCopiedPrompt && existingCopiedPrompt.trim().length > 40
+      ? existingCopiedPrompt.trim()
+      : buildFullAIPromptForInkWash(rawCards, mode, cleanQ);
+
+  const { orderedCards, primaryHex, transformedHex, changingLines } = getOrderedInkWashCards(rawCards, mode);
+  const totalCards = orderedCards.length;
+  const isThapLa = mode === "thap_la" || mode === "thapla";
+
+  // Try calling backend AI Interpreter (/api/ink_wash/ai_interpret) if available
+  let backendData: {
+    full_interpretation?: string;
+    concise_script?: string;
+    card_summaries?: string[];
+    outro_summary?: string;
+    summary_advice?: string;
+  } | null = null;
+
+  const endpoints = [
+    "/api/ink_wash/ai_interpret",
+    "http://localhost:8000/api/ink_wash/ai_interpret",
+    "http://127.0.0.1:8000/api/ink_wash/ai_interpret",
+  ];
+
+  for (const url of endpoints) {
+    try {
+      const ctrl = new AbortController();
+      const timer = window.setTimeout(() => ctrl.abort(), 6500);
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          question: cleanQ,
+          hexagram_text: copiedPromptText,
+          num_cards: totalCards,
+        }),
+        signal: ctrl.signal,
+      });
+      window.clearTimeout(timer);
+      const ct = (res.headers.get("content-type") || "").toLowerCase();
+      if (res.ok && ct.includes("application/json")) {
+        const json = await res.json();
+        if (json && json.success) {
+          backendData = json;
+          break;
+        }
+      }
+    } catch {
+      // Fallback to built-in deep I Ching AI synthesis below
+    }
+  }
+
+  // Build structured per-card AI interpretation & core-essence summary (giữ trọn ý chính 100%)
+  const fullInterpParts: string[] = [];
+  fullInterpParts.push(`## ☯ LUẬN GIẢI QUẺ DỊCH TOÀN DIỆN (${totalCards} LÁ BÀI)`);
+  fullInterpParts.push(`**Câu hỏi / Tâm niệm:** "${cleanQ}"\n`);
+
+  const cardSummaries: InkWashCardSummaryCue[] = [];
+
+  orderedCards.forEach((card, idx) => {
+    const cardNum = idx + 1;
+    const ordVi = ORDINAL_VI_NAMES[idx] || String(cardNum);
+    const hexObj = HEXAGRAMS.find((h) => h.number === card.hexNumber) || primaryHex;
+
+    let roleLabel = card.positionLabel || `Lá ${cardNum}`;
+    if (isThapLa) {
+      if (idx === 0) roleLabel = "Bản Quái · Định Vị Bối Cảnh";
+      else if (idx === totalCards - 1 && totalCards > 1) roleLabel = "Biến Quái · Định Hướng Tương Lai";
+      else roleLabel = `Hào Động ${idx} · Hào ${card.yaoNumber || idx}`;
+    }
+
+    let cueA = "";
+    let cueB = "";
+    let detailedSection = "";
+
+    // Extract detailed philosophy & advice from card.desc and HEXAGRAMS
+    const rawDesc = (card.desc || "").replace(/【[^】]*】/g, " ").replace(/\s+/g, " ").trim();
+
+    if (idx === 0) {
+      const cleanHexName = hexObj.name.replace(/^Quẻ\s*(Chủ|Biến):\s*/i, "").trim();
+      cueA = `Lá bài số ${ordVi}, ${roleLabel}, ứng vào Quẻ ${cleanHexName} (${hexObj.hanzi || ""}) trả lời cho câu hỏi "${cleanQ}".`;
+
+      const judgmentEssence = hexObj.judgment
+        ? `Thoán từ chỉ rõ: ${cleanSentenceKeepEssence(hexObj.judgment, 24)}`
+        : "";
+      const overviewEssence = cleanSentenceKeepEssence(
+        hexObj.overview || hexObj.advice || rawDesc,
+        30
+      );
+      const backendCardTxt = backendData?.card_summaries?.[idx];
+      cueB = backendCardTxt
+        ? cleanSentenceKeepEssence(backendCardTxt, 44)
+        : `${judgmentEssence} ${overviewEssence}`.trim();
+
+      detailedSection = [
+        `### ${cardNum}. Lá ${cardNum} (${roleLabel}) — Quẻ #${hexObj.number} ${cleanHexName} (${hexObj.hanzi || ""})`,
+        `- **Thoán Từ:** "${hexObj.judgment}"`,
+        `- **Đại Tượng Truyện:** "${hexObj.image}"`,
+        `- **Luận giải chuyên sâu:** ${rawDesc || hexObj.overview || ""}`,
+        `- **Ý chính tóm tắt:** ${cueB}`,
+      ].join("\n");
+    } else if (card.type === "yao" && card.yaoNumber) {
+      const lm = hexObj.lineMeanings?.find((m) => m.line === card.yaoNumber);
+      const isYang = hexObj.lines[card.yaoNumber - 1] === 1;
+      const yaoTransition = isYang ? "Dương biến Âm" : "Âm biến Dương";
+      const yaoTitle = lm?.name || `Hào ${card.yaoNumber}`;
+      const yaoQuote = lm?.text ? cleanSentenceKeepEssence(lm.text, 22) : card.name;
+
+      cueA = `Lá bài số ${ordVi}, ${roleLabel} (${yaoTitle}, ${yaoTransition}): ${yaoQuote}`;
+
+      // Extract key action & caution from card.desc ("Ứng dụng thực tiễn:" / "Cần tránh:") or lm.meaning
+      const backendCardTxt = backendData?.card_summaries?.[idx];
+      if (backendCardTxt) {
+        cueB = cleanSentenceKeepEssence(backendCardTxt, 44);
+      } else {
+        const meaningBase = cleanSentenceKeepEssence(lm?.meaning || rawDesc, 26);
+        const appMatch = rawDesc.match(/Ứng dụng thực tiễn:\s*([^.|]+(?:\.[^.|]+)?)/i);
+        const avoidMatch = rawDesc.match(/Cần tránh:\s*([^.|]+)/i);
+        const actionExtra = appMatch
+          ? `Lời khuyên: ${appMatch[1].trim()}.`
+          : avoidMatch
+          ? `Cần tránh: ${avoidMatch[1].trim()}.`
+          : "";
+        cueB = cleanSentenceKeepEssence(`${meaningBase} ${actionExtra}`.trim(), 44);
+      }
+
+      detailedSection = [
+        `### ${cardNum}. Lá ${cardNum} (${roleLabel}) — ${card.name} (${yaoTransition})`,
+        `- **Hào Từ:** "${lm?.text || ""}"`,
+        `- **Phân tích biến số mấu chốt:** ${rawDesc || lm?.meaning || ""}`,
+        `- **Ý chính tóm tắt:** ${cueB}`,
+      ].join("\n");
+    } else {
+      const cleanHexName = hexObj.name.replace(/^Quẻ\s*(Chủ|Biến):\s*/i, "").trim();
+      cueA = `Lá bài số ${ordVi}, ${roleLabel}, chuyển hóa thành Quẻ ${cleanHexName} (${hexObj.hanzi || ""}).`;
+
+      const backendCardTxt = backendData?.card_summaries?.[idx];
+      if (backendCardTxt) {
+        cueB = cleanSentenceKeepEssence(backendCardTxt, 44);
+      } else {
+        const jText = hexObj.judgment ? cleanSentenceKeepEssence(hexObj.judgment, 20) : "";
+        const advText = cleanSentenceKeepEssence(hexObj.advice || hexObj.overview || rawDesc, 28);
+        cueB = `${jText} ${advText}`.trim();
+      }
+
+      detailedSection = [
+        `### ${cardNum}. Lá ${cardNum} (${roleLabel}) — Quẻ #${hexObj.number} ${cleanHexName} (${hexObj.hanzi || ""})`,
+        `- **Quái Từ:** "${hexObj.judgment}"`,
+        `- **Đại Tượng Truyện:** "${hexObj.image}"`,
+        `- **Định hướng tương lai:** ${rawDesc || hexObj.overview || hexObj.advice || ""}`,
+        `- **Ý chính tóm tắt:** ${cueB}`,
+      ].join("\n");
+    }
+
+    fullInterpParts.push(detailedSection + "\n");
+    cardSummaries.push({
+      cardNumber: cardNum,
+      cardTitle: card.name,
+      roleLabel,
+      cueA,
+      cueB,
+    });
+  });
+
+  // Final Conclusion answering the user's question directly
+  const priClean = primaryHex.name.replace(/^Quẻ\s*(Chủ|Biến):\s*/i, "").trim();
+  const transClean = transformedHex.name.replace(/^Quẻ\s*(Chủ|Biến):\s*/i, "").trim();
+  const yaoSummaryPhrase =
+    changingLines.length > 0
+      ? `trải qua biến chuyển ở ${changingLines.map((l) => `Hào ${l}`).join(" và ")}`
+      : "giữ thế tĩnh định";
+
+  const conclusionCueA = `Toàn cảnh ${totalCards} lá bài khép lại. Châu ấn Cửu Nhị chính thức hạ xuống, đúc kết lời giải cho câu hỏi "${cleanQ}".`;
+
+  const backendOutro = backendData?.outro_summary || backendData?.summary_advice;
+  const conclusionCueB = backendOutro
+    ? cleanSentenceKeepEssence(
+        `Tóm lại, từ quẻ ${priClean} ${yaoSummaryPhrase} tiến tới ${transClean}: ${backendOutro}`,
+        48
+      )
+    : cleanSentenceKeepEssence(
+        `Tóm lại, từ quẻ ${priClean} ${yaoSummaryPhrase} tiến tới ${transClean}: Công việc đã đi đúng hướng nhưng cần rà soát kỹ lưỡng, giữ tâm chân chính vô vọng, ổn định cục diện và không nóng vội thì đại sự ắt thành công viên mãn.`,
+        48
+      );
+
+  fullInterpParts.push(`### ${totalCards + 1}. ĐÚC KẾT TRẢ LỜI TRỰC TIẾP & KIM CHỈ NAM HÀNH ĐỘNG`);
+  fullInterpParts.push(`- **Châu Ấn Cửu Nhị (玖貳):** ${conclusionCueA}`);
+  fullInterpParts.push(`- **Kết luận giữ ý chính:** ${conclusionCueB}`);
+
+  const fullAiInterpretation =
+    backendData?.full_interpretation && backendData.full_interpretation.trim().length > 80
+      ? backendData.full_interpretation.trim()
+      : fullInterpParts.join("\n");
+
+  const fullSpokenSummaryText = [
+    ...cardSummaries.map((cs) => `${cs.cueA} ${cs.cueB}`),
+    `${conclusionCueA} ${conclusionCueB}`,
+  ].join(" ");
+
+  return {
+    copiedPromptText,
+    fullAiInterpretation,
+    cardSummaries,
+    conclusionCueA,
+    conclusionCueB,
+    fullSpokenSummaryText,
+  };
+}
+
+// ── BUILD STRUCTURED FILM PLAN FROM ANY DRAWN CARDS (WITH OPTIONAL AI SUMMARY) ──
+export function buildInkWashFilmPlan(
+  rawCards: InkWashCardInput[],
+  mode: string,
+  question: string,
+  customSealChars?: string,
+  customConclusion?: string,
+  aiSummary?: InkWashAISummaryData | null
+): InkWashFilmPlan {
+  const cleanQ = question.trim() || "Xin chỉ điểm vận trình và lời khuyên hành động?";
+  const { orderedCards, primaryHex, transformedHex, changingLines } = getOrderedInkWashCards(rawCards, mode);
+
   const shots: InkWashShotInfo[] = [];
   const narrationCues: InkWashNarrationCue[] = [];
   let cursor = 0;
@@ -709,18 +1071,56 @@ export function buildInkWashFilmPlan(
 
   orderedCards.forEach((card, idx) => {
     const cardNum = idx + 1;
-    const dur = idx === 0 ? 9.5 : card.type === "yao" ? 9.0 : 8.5;
-    const startSec = cursor;
-    const endSec = cursor + dur;
-    cursor = endSec;
-
+    const ordVi = ORDINAL_VI_NAMES[idx] || String(cardNum);
     const hexObj = HEXAGRAMS.find((h) => h.number === card.hexNumber) || primaryHex;
     let roleLabel = card.positionLabel || `Lá ${cardNum}`;
     if (mode === "thap_la" || mode === "thapla") {
       if (idx === 0) roleLabel = "Bản Quái · Định Vị Bối Cảnh";
-      else if (idx === orderedCards.length - 1) roleLabel = "Biến Quái · Định Hướng Tương Lai";
+      else if (idx === orderedCards.length - 1 && orderedCards.length > 1)
+        roleLabel = "Biến Quái · Định Hướng Tương Lai";
       else roleLabel = `Hào Động ${idx} · Hào ${card.yaoNumber || idx}`;
     }
+
+    const aiCard = aiSummary?.cardSummaries?.[idx];
+    let cue1Text = "";
+    let cue2Text = "";
+
+    if (aiCard) {
+      cue1Text = aiCard.cueA;
+      cue2Text = aiCard.cueB;
+    } else if (idx === 0) {
+      const cleanHexName = hexObj.name.replace(/^Quẻ\s*(Chủ|Biến):\s*/i, "").trim();
+      cue1Text = `Lá bài số ${ordVi}, ${roleLabel}: Quẻ ${cleanHexName} (${hexObj.hanzi || ""}).`;
+      cue2Text = cleanSentenceKeepEssence(
+        `${hexObj.judgment || ""} ${hexObj.overview || hexObj.advice || card.desc}`,
+        42
+      );
+    } else if (card.type === "yao" && card.yaoNumber) {
+      const lm = hexObj.lineMeanings?.find((m) => m.line === card.yaoNumber);
+      const isYang = hexObj.lines[card.yaoNumber - 1] === 1;
+      cue1Text = `Lá bài số ${ordVi}, Hào ${card.yaoNumber} (${
+        isYang ? "Dương biến Âm" : "Âm biến Dương"
+      }): ${cleanSentenceKeepEssence(lm?.text || card.name, 22)}`;
+      cue2Text = cleanSentenceKeepEssence(lm?.meaning || card.desc, 42);
+    } else {
+      const cleanHexName = hexObj.name.replace(/^Quẻ\s*(Chủ|Biến):\s*/i, "").trim();
+      cue1Text = `Lá bài số ${ordVi}, ${roleLabel}: Quẻ ${cleanHexName} (${hexObj.hanzi || ""}).`;
+      cue2Text = cleanSentenceKeepEssence(
+        `${hexObj.judgment || ""} ${hexObj.advice || hexObj.overview || card.desc}`,
+        42
+      );
+    }
+
+    // Estimate initial duration from word count (~3.1 words/sec) so even before TTS preload it has ample room
+    const words1 = cue1Text.split(/\s+/).filter(Boolean).length;
+    const words2 = cue2Text.split(/\s+/).filter(Boolean).length;
+    const dur1 = Math.max(4.0, words1 / 3.0 + 0.7);
+    const dur2 = Math.max(4.8, words2 / 3.0 + 0.8);
+    const dur = Math.max(9.5, 0.4 + dur1 + 0.35 + dur2 + 0.6);
+
+    const startSec = cursor;
+    const endSec = cursor + dur;
+    cursor = endSec;
 
     shots.push({
       index: idx,
@@ -731,54 +1131,57 @@ export function buildInkWashFilmPlan(
       cardIndex: idx,
     });
 
-    // Build concise poetic subtitle + speech cue (using "Lá bài số..." to prevent TTS bug)
-    let cue1Text = "";
-    let cue2Text = "";
-
-    if (idx === 0) {
-      cue1Text = `Lá ${cardNum} · ${roleLabel}: ${hexObj.name} (${hexObj.hanzi || ""}).`;
-      cue2Text = `${hexObj.judgment || hexObj.overview || card.desc}`.slice(0, 145);
-    } else if (card.type === "yao" && card.yaoNumber) {
-      const lm = hexObj.lineMeanings?.find((m) => m.line === card.yaoNumber);
-      const isYang = hexObj.lines[card.yaoNumber - 1] === 1;
-      cue1Text = `Lá ${cardNum} · Hào ${card.yaoNumber} (${isYang ? "Dương biến Âm" : "Âm biến Dương"}): ${lm?.text || card.name}.`;
-      cue2Text = `${lm?.meaning || card.desc}`.slice(0, 145);
-    } else {
-      cue1Text = `Lá ${cardNum} · ${roleLabel}: ${hexObj.name} (${hexObj.hanzi || ""}).`;
-      cue2Text = `${hexObj.advice || hexObj.overview || hexObj.judgment || card.desc}`.slice(0, 145);
-    }
+    const cue1Start = startSec + 0.35;
+    const cue1End = cue1Start + dur1;
+    const cue2Start = cue1End + 0.35;
+    const cue2End = Math.min(endSec - 0.25, cue2Start + dur2);
 
     narrationCues.push({
       id: `card_${cardNum}_a`,
-      startSec: startSec + 0.5,
-      endSec: startSec + dur * 0.46,
+      startSec: cue1Start,
+      endSec: cue1End,
       text: cue1Text,
-      speakText: cue1Text.replace(/^Lá\s+(\d+)/, `Lá bài số $1`),
+      speakText: cue1Text,
     });
     narrationCues.push({
       id: `card_${cardNum}_b`,
-      startSec: startSec + dur * 0.48,
-      endSec: endSec - 0.3,
+      startSec: cue2Start,
+      endSec: cue2End,
       text: cue2Text,
       speakText: cue2Text,
     });
   });
 
   // Final Shot: Full Spread Overview & Cinnabar Vermilion Seal Verdict
-  const finalStart = cursor;
-  const finalDur = 9.0;
-  const finalEnd = finalStart + finalDur;
-  const sealTimeSec = finalStart + 3.2;
-
-  const autoConclusion =
-    customConclusion?.trim() ||
-    `Đúc kết cho câu hỏi "${cleanQ}": Từ ${primaryHex.name} chuyển sang ${transformedHex.name}, ${
-      transformedHex.advice || primaryHex.advice || "hãy giữ tâm trung chính,审thời độ thế, chuẩn bị thấu đáo ắt thành công đại cát."
-    }`;
-
   const defaultSeal =
     customSealChars?.trim() ||
     (transformedHex.omen.includes("Cát") ? "玖貳" : transformedHex.omen.includes("Hung") ? "慎行" : "中正");
+
+  const finalCueA =
+    aiSummary?.conclusionCueA ||
+    `Toàn cảnh ${orderedCards.length} lá bài khép lại. Châu ấn Cửu Nhị chính thức hạ xuống, giải đáp câu hỏi "${cleanQ}".`;
+
+  const autoConclusion =
+    customConclusion?.trim() ||
+    aiSummary?.conclusionCueB ||
+    cleanSentenceKeepEssence(
+      `Tóm lại, từ ${primaryHex.name} chuyển sang ${transformedHex.name}: ${
+        transformedHex.advice ||
+        primaryHex.advice ||
+        "Hãy giữ tâm trung chính, rà soát kỹ lưỡng các bước chuyển mình, ổn định cục diện ắt thành công đại cát."
+      }`,
+      48
+    );
+
+  const fWordsA = finalCueA.split(/\s+/).filter(Boolean).length;
+  const fWordsB = autoConclusion.split(/\s+/).filter(Boolean).length;
+  const fDurA = Math.max(4.0, fWordsA / 3.0 + 0.7);
+  const fDurB = Math.max(5.2, fWordsB / 3.0 + 0.9);
+  const finalDur = Math.max(10.0, 0.4 + fDurA + 0.35 + fDurB + 0.8);
+
+  const finalStart = cursor;
+  const finalEnd = finalStart + finalDur;
+  const sealTimeSec = finalStart + Math.min(3.2, fDurA * 0.75);
 
   shots.push({
     index: orderedCards.length,
@@ -788,19 +1191,24 @@ export function buildInkWashFilmPlan(
     endSec: finalEnd,
   });
 
+  const fCue1Start = finalStart + 0.35;
+  const fCue1End = fCue1Start + fDurA;
+  const fCue2Start = fCue1End + 0.35;
+  const fCue2End = Math.min(finalEnd - 0.3, fCue2Start + fDurB);
+
   narrationCues.push({
     id: "final_verdict_a",
-    startSec: finalStart + 0.4,
-    endSec: finalStart + 4.2,
-    text: `Toàn cảnh ${orderedCards.length} lá bài khép lại. Châu ấn "${defaultSeal}" chính thức hạ xuống.`,
-    speakText: `Toàn cảnh ${orderedCards.length} lá bài khép lại. Châu ấn chính thức hạ xuống.`,
+    startSec: fCue1Start,
+    endSec: fCue1End,
+    text: finalCueA,
+    speakText: finalCueA,
   });
   narrationCues.push({
     id: "final_verdict_b",
-    startSec: finalStart + 4.4,
-    endSec: finalEnd - 0.3,
-    text: autoConclusion.slice(0, 165),
-    speakText: autoConclusion.slice(0, 165),
+    startSec: fCue2Start,
+    endSec: fCue2End,
+    text: autoConclusion,
+    speakText: autoConclusion,
   });
 
   return {
@@ -815,6 +1223,72 @@ export function buildInkWashFilmPlan(
     changingLines,
     question: cleanQ,
     conclusionText: autoConclusion,
+    aiSummary: aiSummary || undefined,
+  };
+}
+
+// ── STEP 4: SYNC FILM PLAN TIMELINE TO EXACT MEASURED VIETNAMESE TTS AUDIO DURATIONS ──
+export function syncFilmPlanWithAudioDurations(
+  plan: InkWashFilmPlan,
+  audioDurations: Map<string, number>
+): InkWashFilmPlan {
+  const newShots: InkWashShotInfo[] = [];
+  const newCues: InkWashNarrationCue[] = [];
+  let cursor = 0;
+  let newSealTimeSec = plan.sealTimeSec;
+
+  plan.shots.forEach((shot, sIdx) => {
+    const isFinal = shot.cardIndex === undefined;
+    const cueAId = isFinal ? "final_verdict_a" : `card_${sIdx + 1}_a`;
+    const cueBId = isFinal ? "final_verdict_b" : `card_${sIdx + 1}_b`;
+
+    const origCueA = plan.narrationCues.find((c) => c.id === cueAId);
+    const origCueB = plan.narrationCues.find((c) => c.id === cueBId);
+
+    const durA = audioDurations.get(cueAId) || (origCueA ? origCueA.endSec - origCueA.startSec : 4.2);
+    const durB = audioDurations.get(cueBId) || (origCueB ? origCueB.endSec - origCueB.startSec : 5.0);
+
+    const startSec = cursor;
+    const cueAStart = startSec + 0.35;
+    const cueAEnd = cueAStart + durA;
+    const cueBStart = cueAEnd + 0.4;
+    const cueBEnd = cueBStart + durB;
+    const shotDur = Math.max(9.0, cueBEnd - startSec + 0.75);
+    const endSec = startSec + shotDur;
+    cursor = endSec;
+
+    if (isFinal) {
+      newSealTimeSec = startSec + Math.min(2.8, durA * 0.65);
+    }
+
+    newShots.push({
+      ...shot,
+      startSec,
+      endSec,
+    });
+
+    if (origCueA) {
+      newCues.push({
+        ...origCueA,
+        startSec: cueAStart,
+        endSec: cueAEnd,
+      });
+    }
+    if (origCueB) {
+      newCues.push({
+        ...origCueB,
+        startSec: cueBStart,
+        endSec: cueBEnd,
+      });
+    }
+  });
+
+  return {
+    ...plan,
+    totalDurationSec: cursor,
+    shots: newShots,
+    narrationCues: newCues,
+    sealTimeSec: newSealTimeSec,
   };
 }
 
@@ -1163,7 +1637,7 @@ export class InkWashRenderer {
     ctx.save();
     ctx.globalAlpha = alpha;
 
-    const fontSize = Math.round(isPortrait ? W * 0.034 : H * 0.033);
+    const fontSize = Math.round(isPortrait ? W * 0.030 : H * 0.029);
     ctx.font = `600 ${fontSize}px "Noto Serif", Georgia, serif`;
     const maxW = W * 0.84;
 
