@@ -1999,7 +1999,7 @@ app.all("/api/tts", async (req: Request, res: Response) => {
         };
         return map[d] || `Lá bài số ${d}`;
       })
-      .replace(/[*#_~`>|䷀-䷿⚊⚏☰☱☲☳☴☵☶☷➔•·]/g, " ")
+      .replace(/[\u2E80-\u2EFF\u3000-\u303F\u3400-\u4DBF\u4DC0-\u4DFF\u4E00-\u9FFF\uF900-\uFAFF\uFF00-\uFFEF*#_~`>|䷀-䷿⚊⚏☰☱☲☳☴☵☶☷➔•·]+/g, " ").replace(/\(\s*[-·•,;:]*\s*\)/g, " ")
       .replace(/\s+/g, " ")
       .trim();
 

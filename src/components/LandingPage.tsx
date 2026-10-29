@@ -4325,7 +4325,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               : `Hào Động ${idx}`
             : `Lá thứ ${idx + 1}`);
         const shortDesc = (c.desc || "")
-          .replace(/【[^】]*】/g, "")
+          .replace(/【[^】]*】/g, "").replace(/[\u2E80-\u2EFF\u3000-\u303F\u3400-\u4DBF\u4DC0-\u4DFF\u4E00-\u9FFF\uF900-\uFAFF\uFF00-\uFFEF]+/g, " ").replace(/\(\s*[-·•,;:]*\s*\)/g, " ")
           .replace(/\s+/g, " ")
           .trim()
           .slice(0, 130);
@@ -4527,12 +4527,12 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
             // Tiêu đề trên cùng
             ctx.fillStyle = "#E5C158";
-            ctx.font = "bold 17px serif";
+            ctx.font = '700 16px "Be Vietnam Pro", "Segoe UI", Arial, sans-serif';
             ctx.textAlign = "center";
             ctx.fillText("☯ CỬU NHỊ · LUẬN GIẢI KINH DỊCH 9:16", 270, 56);
 
             ctx.fillStyle = "#FFF8E7";
-            ctx.font = "bold 20px serif";
+            ctx.font = '700 19px "Lora", "Be Vietnam Pro", "Segoe UI", serif';
             const titleShort = hexagramTitle.length > 36 ? hexagramTitle.slice(0, 34) + "..." : hexagramTitle;
             ctx.fillText(titleShort, 270, 88);
 
@@ -4550,7 +4550,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             ctx.strokeStyle = "rgba(212, 175, 55, 0.65)";
             ctx.strokeRect(48, 108, 444, 38);
             ctx.fillStyle = "#F3E5AB";
-            ctx.font = "bold 16px serif";
+            ctx.font = '700 15px "Be Vietnam Pro", "Segoe UI", Arial, sans-serif';
             const badgeText = `Lá ${cardIdx + 1}/${orderedCards.length}: ${activeCard?.name || "Quẻ Kinh Dịch"}`;
             ctx.fillText(badgeText.slice(0, 42), 270, 133);
 
@@ -4606,7 +4606,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             ctx.strokeRect(34, 712, 472, 198);
 
             ctx.fillStyle = "#E5C158";
-            ctx.font = "bold 15px serif";
+            ctx.font = '700 14px "Be Vietnam Pro", "Segoe UI", Arial, sans-serif';
             ctx.fillText("✦ LỜI BÀN CỬU NHỊ ĐẠI SƯ ✦", 270, 740);
 
             const sentIdx = Math.min(
@@ -4617,7 +4617,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
             // Wrap text
             ctx.fillStyle = "#FFF8E7";
-            ctx.font = "italic 17px serif";
+            ctx.font = '500 16px "Be Vietnam Pro", "Segoe UI", Arial, sans-serif';
             const words = currentSentence.split(/\s+/);
             const lines: string[] = [];
             let curLine = "";
