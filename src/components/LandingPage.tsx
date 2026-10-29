@@ -9,7 +9,7 @@
  * - Interactive modals: Card Detail Inspector, Coin Toss Divination Studio, Life Config Thermal Receipt
  */
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { Camera, Bookmark, FolderOpen, Clock, Film } from "lucide-react";
+import { Camera, Bookmark, FolderOpen, Clock } from "lucide-react";
 import { InkWashFilmModal } from "./InkWashFilmModal";
 import { SaveSpreadDialog } from "./SaveSpreadDialog";
 import { SavedSpreadsModal } from "./SavedSpreadsModal";
@@ -1685,6 +1685,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
   /* Nội dung tâm niệm / Câu hỏi cho AI (Mặc định mỗi lần vào web sẽ luôn reset về chưa điền chữ) */
   const [userIntentQuestion, setUserIntentQuestion] = useState<string>("");
+  /* Trạng thái đã nhấn nút "Chép Toàn Bộ Quẻ Bài & Câu Hỏi Cho AI" khi đã có câu hỏi */
+  const [hasCopiedWithQuestion, setHasCopiedWithQuestion] = useState<boolean>(false);
 
   useEffect(() => {
     try {
@@ -1694,6 +1696,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
   const handleQuestionChange = useCallback((val: string) => {
     setUserIntentQuestion(val);
+    if (!val.trim()) {
+      setHasCopiedWithQuestion(false);
+    }
     if (currentTempSpreadIdRef.current) {
       updateTempSpreadItem(currentTempSpreadIdRef.current, { question: val });
     }
@@ -1918,6 +1923,27 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     return false;
   });
   const isDragonLocked = !isDragonUnlocked;
+  const isInkWashStudioLocked = isDragonLocked || !userIntentQuestion.trim() || !hasCopiedWithQuestion;
+
+  const handleOpenInkWashStudio = useCallback(() => {
+    if (isDragonLocked) {
+      setCopiedToast("🔒 Cửu Nhị Tiểu Long còn đang ngủ! Hãy bấm “Gọi Cửu Nhị Tiểu Long Dậy” và chờ 5 giây để mở khóa.");
+      setTimeout(() => setCopiedToast(null), 3500);
+      return;
+    }
+    if (!userIntentQuestion.trim()) {
+      setCopiedToast("🔒 Chưa có câu hỏi! Vui lòng nhập câu hỏi vào Hương Án Khởi Niệm rồi nhấn “Chép Toàn Bộ Quẻ Bài & Câu Hỏi Cho AI” trước khi mở Xưởng Phim Thủy Mặc.");
+      setTimeout(() => setCopiedToast(null), 3500);
+      return;
+    }
+    if (!hasCopiedWithQuestion) {
+      setCopiedToast("🔒 Vui lòng nhấn nút “Chép Toàn Bộ Quẻ Bài & Câu Hỏi Cho AI” (khi đã có câu hỏi) trước khi mở Xưởng Phim Thủy Mặc!");
+      setTimeout(() => setCopiedToast(null), 3500);
+      return;
+    }
+    setInkWashModalTab("live");
+    setIsInkWashModalOpen(true);
+  }, [isDragonLocked, userIntentQuestion, hasCopiedWithQuestion]);
   const dragonUnlockTimerRef = useRef<number | null>(null);
   const [dragonIdleAct, setDragonIdleAct] = useState<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7>(0);
   const [dragonAutoFullAct, setDragonAutoFullAct] = useState<6 | 7>(6);
@@ -2818,6 +2844,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     const ok = await copyToClipboard(text);
     if (ok) {
       setCopiedAI(true);
+      if (hasQuestion) {
+        setHasCopiedWithQuestion(true);
+      }
       const suffix = (hasQuestion && hasAnswer)
         ? " (kèm Câu hỏi & Đáp án)"
         : hasQuestion
@@ -4970,7 +4999,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     });
   }, []);
 
-  /* ── Nhấn Bắt đầu Bốc Quẻ: Random bốc các trận pháp khác nhau và cuộn mượt xuống khu vực trải bài ── */
+  /* ── Nhấn Bắt đầu Bốc Quẻ: Random bốc các trận pháp khác nhau và cuộn mượt xuống ô Hương Án Khởi Niệm · Câu Hỏi Chiêm Bốc ── */
   const handleStartDivinationOrShuffle = useCallback((isRitual: boolean = false) => {
     // Nếu đang bật giữ nguyên bài: Giữ nguyên các lá bài, chỉ cập nhật trạng thái đắc pháp Tam Kính và cuộn xuống
     if (isKeepCards) {
@@ -4981,7 +5010,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         setCopiedToast("🔒 Đang giữ bài: Giữ nguyên các lá bài hiện tại.");
       }
       setTimeout(() => setCopiedToast(null), 3500);
-      const sec = document.getElementById("destiny-cards");
+      const sec = document.getElementById("huong-an-khoi-niem") || document.getElementById("user-intent-question-input");
       if (sec) {
         sec.scrollIntoView({ behavior: "smooth", block: "start" });
       }
@@ -5010,7 +5039,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       if (requestTickRef.current) requestTickRef.current();
     }, 50);
 
-    const sec = document.getElementById("destiny-cards");
+    const sec = document.getElementById("huong-an-khoi-niem") || document.getElementById("user-intent-question-input");
     if (sec) {
       sec.scrollIntoView({ behavior: "smooth", block: "start" });
     }
@@ -5132,21 +5161,6 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         </div>
 
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-          {/* Nút mở Xưởng Phim Thủy Mặc Chu Dịch */}
-          <button
-            type="button"
-            onClick={() => {
-              setInkWashModalTab("live");
-              setIsInkWashModalOpen(true);
-            }}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#FFF8E7] transition px-3 py-1.5 rounded-full bg-gradient-to-r from-[#9E2A2B] to-[#7D1D1E] hover:brightness-110 border border-[#D4AF37]/80 cursor-pointer shadow-xs active:scale-95"
-            title="Mở Xưởng Phim Thủy Mặc Chu Dịch (WebGL2 · Cổ Cầm & Tiêu Trúc · Xuất Video MP4/WebM)"
-          >
-            <Film className="w-3.5 h-3.5 text-[#E5C158]" />
-            <span className="hidden xs:inline sm:inline">Phim Thủy Mặc</span>
-            <span className="xs:hidden sm:hidden">Thủy Mặc</span>
-          </button>
-
           {/* Nút chụp hình thẻ bài: Tự động căn chỉnh & chụp trọn vẹn toàn bộ trải bài */}
           <button
             type="button"
@@ -5260,7 +5274,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
               {/* Dải nút hành động Desktop: Đồng bộ 100% chung 1 phong cách Glassmorphism sang trọng */}
               <div className="hidden lg:flex w-full lg:w-auto flex-col items-start relative z-[55] mt-2">
-                {/* Hàng 1: Bắt Đầu Bốc Quẻ + 64 Quẻ Kinh Dịch (Kính mờ cao cấp, chữ trắng sáng đồng bộ) */}
+                {/* Hàng 1: Bắt Đầu Bốc Quẻ + Liên Hệ Zalo (Kính mờ cao cấp, chữ trắng sáng đồng bộ) */}
                 <div className="flex w-full max-w-xl flex-row items-stretch gap-3 lg:w-auto">
                   {/* Nút Bắt Đầu Bốc Quẻ */}
                   <RitualHoldButton
@@ -5280,20 +5294,22 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     <span className="truncate">Bắt Đầu Bốc Quẻ</span>
                   </RitualHoldButton>
 
-                  {/* Nút 64 Quẻ Kinh Dịch */}
-                  <button
-                    type="button"
-                    onClick={() => window.open(getHexagramsUrl(), "_blank", "noopener,noreferrer")}
-                    className="flex min-w-0 flex-1 items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-base md:px-7 md:py-4 md:text-lg lg:flex-none lg:w-auto text-white font-semibold cursor-pointer transition hover:scale-[1.02] hover:bg-white/15 active:scale-[0.98] shadow-xl"
+                  {/* Nút Liên Hệ Zalo */}
+                  <a
+                    href="https://zalo.me/0902853305"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex min-w-0 flex-1 items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-base md:px-7 md:py-4 md:text-lg lg:flex-none lg:w-auto text-white font-semibold cursor-pointer transition hover:scale-[1.02] hover:bg-white/15 active:scale-[0.98] shadow-xl no-underline"
                     style={{
                       background: "rgba(255,255,255,0.1)",
                       border: "1px solid rgba(255,255,255,0.38)",
                       backdropFilter: "blur(8px)",
                     }}
+                    title="Liên hệ Zalo tư vấn trực tiếp: 090 285 3305"
                   >
-                    <span className="text-xl">📖</span>
-                    <span className="truncate">64 Quẻ Kinh Dịch</span>
-                  </button>
+                    <span className="text-xl">💬</span>
+                    <span className="truncate">Liên Hệ Zalo</span>
+                  </a>
                 </div>
               </div>
 
@@ -5322,7 +5338,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
             {/* Dải nút hành động Mobile (Khung tâm niệm ở trên + Bắt Đầu Bốc Quẻ Tam Kính + Giữ nguyên & Chép cho AI ở dưới) */}
             <div id="hero-mobile-actions" className="flex w-full max-w-xl shrink-0 flex-col items-center gap-2 pointer-events-auto max-lg:pt-1 lg:hidden relative z-[55]">
-              {/* Hàng 1: Bắt Đầu Bốc Quẻ + 64 Quẻ (Đồng bộ Glassmorphism trên mobile) */}
+              {/* Hàng 1: Bắt Đầu Bốc Quẻ + Liên Hệ Zalo (Đồng bộ Glassmorphism trên mobile) */}
               <div className="flex w-full max-w-xl flex-row items-stretch gap-2">
                 <RitualHoldButton
                   id="btn-hero-mobile-start-divination"
@@ -5341,19 +5357,21 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   <span className="truncate">Bắt Đầu Bốc Quẻ</span>
                 </RitualHoldButton>
 
-                <button
-                  type="button"
-                  onClick={() => window.open(getHexagramsUrl(), "_blank", "noopener,noreferrer")}
-                  className="flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-2xl px-3 py-3 text-sm font-semibold sm:gap-2 sm:px-6 sm:py-3.5 sm:text-base text-white cursor-pointer transition hover:bg-white/15 active:scale-[0.98]"
+                <a
+                  href="https://zalo.me/0902853305"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-2xl px-3 py-3 text-sm font-semibold sm:gap-2 sm:px-6 sm:py-3.5 sm:text-base text-white cursor-pointer transition hover:bg-white/15 active:scale-[0.98] no-underline"
                   style={{
                     background: "rgba(255,255,255,0.1)",
                     border: "1px solid rgba(255,255,255,0.38)",
                     backdropFilter: "blur(8px)",
                   }}
+                  title="Liên hệ Zalo tư vấn trực tiếp: 090 285 3305"
                 >
-                  <span className="text-base sm:text-lg">📖</span>
-                  <span className="truncate">64 Quẻ</span>
-                </button>
+                  <span className="text-base sm:text-lg">💬</span>
+                  <span className="truncate">Liên Hệ Zalo</span>
+                </a>
               </div>
             </div>
 
@@ -5786,7 +5804,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               </div>
 
               {/* MODULE 1: HƯƠNG ÁN KHỞI NIỆM (TRỤC LỤA GIẤY TUYÊN THÀNH VIỀN KÉP CHỈ VÀNG ĐỒNG BỘ TRANG CHỦ) */}
-              <div className="mt-6 max-w-xl">
+              <div id="huong-an-khoi-niem" className="mt-6 max-w-xl scroll-mt-24">
                 <div
                   className="relative rounded-2xl border border-[#C4963E]/45 p-4 sm:p-5 backdrop-blur-md transition-all duration-300 focus-within:border-[#C4963E] focus-within:shadow-[0_16px_38px_-6px_rgba(196,150,62,0.22),inset_0_0_0_3px_#FDFBF7,inset_0_0_0_4px_rgba(196,150,62,0.32)]"
                   style={{
@@ -6056,6 +6074,45 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                           +Kèm Tâm Niệm
                         </span>
                       )}
+                    </button>
+                  </div>
+
+                  {/* NÚT MỞ XƯỞNG PHIM THỦY MẶC CHU DỊCH (16:9 & 9:16) - ĐẶT DƯỚI CHÉP CHO AI, KHÓA KHI CHƯA NHẤN CHÉP CÓ CÂU HỎI */}
+                  <div className="relative w-full">
+                    <button
+                      type="button"
+                      id="btn-open-ink-wash-studio"
+                      disabled={isInkWashStudioLocked}
+                      onClick={handleOpenInkWashStudio}
+                      className={`w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs sm:text-sm font-serif font-bold transition shadow-md select-none ${
+                        isInkWashStudioLocked
+                          ? "opacity-55 cursor-not-allowed grayscale-[45%] text-[#A89880] border border-[#8A7960]/60"
+                          : "text-[#FFF8E7] hover:brightness-110 cursor-pointer active:scale-[0.99]"
+                      }`}
+                      style={
+                        isInkWashStudioLocked
+                          ? {
+                              background: "linear-gradient(135deg, #3A332C 0%, #26211C 100%)",
+                              boxShadow: "0 10px 24px -4px rgba(28, 22, 16, 0.28), inset 0 1px 0 rgba(212, 175, 55, 0.2)",
+                            }
+                          : {
+                              background: "linear-gradient(135deg, #8B1E22 0%, #5E1417 55%, #7A1A1D 100%)",
+                              border: "1px solid rgba(212, 175, 55, 0.85)",
+                              boxShadow: "0 10px 24px -4px rgba(139, 30, 34, 0.35), inset 0 1px 0 rgba(243, 229, 171, 0.35)",
+                            }
+                      }
+                      title={
+                        isDragonLocked
+                          ? "Đang khóa vì Cửu Nhị Tiểu Long còn ngủ/đang thức dậy."
+                          : !userIntentQuestion.trim()
+                          ? "Không thể mở khi chưa nhập câu hỏi và nhấn 'Chép Toàn Bộ Quẻ Bài & Câu Hỏi Cho AI'"
+                          : !hasCopiedWithQuestion
+                          ? "Vui lòng nhấn 'Chép Toàn Bộ Quẻ Bài & Câu Hỏi Cho AI' ở trên trước khi mở Xưởng Phim Thủy Mặc"
+                          : "Mở Xưởng Phim Thủy Mặc Chu Dịch (16:9 & 9:16 · Xuất Clip)"
+                      }
+                    >
+                      <span>{isInkWashStudioLocked ? "🔒" : "🖌️"}</span>
+                      <span>Xưởng Phim Thủy Mặc (16:9 &amp; 9:16 · Xuất Clip)</span>
                     </button>
                   </div>
                 </div>
@@ -6357,24 +6414,6 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     </div>
                   </div>
                 </div>
-
-                {/* NÚT MỞ XƯỞNG PHIM THỦY MẶC CHU DỊCH (16:9 & 9:16) */}
-                <button
-                  type="button"
-                  id="btn-open-ink-wash-studio"
-                  onClick={() => {
-                    setInkWashModalTab("live");
-                    setIsInkWashModalOpen(true);
-                  }}
-                  className="w-[308px] sm:w-[336px] inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-serif font-bold text-[#FFF8E7] transition hover:brightness-110 cursor-pointer shadow-md"
-                  style={{
-                    background: "linear-gradient(135deg, #8B1E22 0%, #5E1417 55%, #7A1A1D 100%)",
-                    border: "1px solid rgba(212, 175, 55, 0.85)",
-                  }}
-                >
-                  <span>🖌️</span>
-                  <span>Xưởng Phim Thủy Mặc (16:9 &amp; 9:16 · Xuất Clip)</span>
-                </button>
               </div>
             </div>
           </div>

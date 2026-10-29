@@ -17,6 +17,7 @@ import {
 
 export interface InkWashNarrationCue {
   id: string;
+  shotIndex?: number;
   startSec: number;
   endSec: number;
   text: string;

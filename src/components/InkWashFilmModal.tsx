@@ -85,11 +85,22 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
   const [sealChars, setSealChars] = useState<string>("玖貳");
   const [customConclusion, setCustomConclusion] = useState<string>("");
 
+  // Pipeline Mode Option:
+  // false = Qua Bước 3 Tóm Tắt Giữ Ý Chính (Bước 1 ➔ 2 ➔ 3 ➔ 4)
+  // true  = Từ Bước 2 sang Bước 4 luôn, KHÔNG qua Tóm Tắt (Bước 1 ➔ 2 ➔ 4 · Đọc Nguyên Văn Giải Quẻ)
+  const [skipSummary, setSkipSummary] = useState<boolean>(() => {
+    try {
+      return window.localStorage.getItem("cuunhi_inkwash_skip_summary") === "1";
+    } catch {
+      return false;
+    }
+  });
+
   // 4-Step Automated Pipeline State:
-  // Step 1: Chép Toàn Bộ Cho AI -> Step 2: Quăng vào AI giải quẻ -> Step 3: Tóm tắt giữ ý chính -> Step 4: Đem về đọc đầy đủ thông tin Xưởng Phim Thủy Mặc
+  // Step 1: Chép Toàn Bộ Cho AI -> Step 2: Quăng vào AI giải quẻ -> (Step 3: Tóm tắt giữ ý chính HOẶC Bỏ qua sang thẳng Bước 4) -> Step 4: Đem về đọc đầy đủ thông tin Xưởng Phim Thủy Mặc
   const [pipelineStep, setPipelineStep] = useState<0 | 1 | 2 | 3 | 4>(0);
   const [pipelineStatusText, setPipelineStatusText] = useState<string>(
-    "Chưa chạy quy trình Chép Cho AI ➔ AI Giải Quẻ ➔ Tóm Tắt Giữ Ý Chính"
+    "Chưa chạy quy trình Chép Cho AI ➔ AI Giải Quẻ ➔ Đọc Thủy Mặc"
   );
   const [isRunningPipeline, setIsRunningPipeline] = useState<boolean>(false);
   const [aiSummaryData, setAiSummaryData] = useState<InkWashAISummaryData | null>(null);
@@ -126,7 +137,7 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
     }
   }, [isOpen, defaultTab]);
 
-  // Build base film plan whenever cards, mode, AI summary, or custom text changes
+  // Build base film plan whenever cards, mode, AI summary, skipSummary, or custom text changes
   const baseFilmPlan = useMemo(() => {
     return buildInkWashFilmPlan(
       cards,
@@ -134,9 +145,10 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
       customQuestion || question,
       sealChars,
       customConclusion,
-      aiSummaryData
+      aiSummaryData,
+      skipSummary
     );
-  }, [cards, spreadMode, customQuestion, question, sealChars, customConclusion, aiSummaryData]);
+  }, [cards, spreadMode, customQuestion, question, sealChars, customConclusion, aiSummaryData, skipSummary]);
 
   // Synchronize film plan shot & cue timings with actual Vietnamese TTS audio durations so 100% of every sentence is read in full
   const filmPlan: InkWashFilmPlan = useMemo(() => {
@@ -146,101 +158,158 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
     return baseFilmPlan;
   }, [baseFilmPlan, audioDurationsMap]);
 
-  // Execute the 4-step workflow:
-  // 1. Nhấn vào "Chép Toàn Bộ Cho AI"
-  // 2. Quăng vào cho AI giải quẻ
-  // 3. Tóm tắt quẻ đó lại giữ ý chính
-  // 4. Đem về đọc đầy đủ thông tin trong Xưởng Phim Thủy Mặc
-  const runFourStepAIPipeline = useCallback(async (): Promise<InkWashFilmPlan> => {
-    if (!audioRef.current) {
-      audioRef.current = new InkWashAudioEngine();
-    }
-    audioRef.current.init();
+  // Execute the workflow:
+  // Option A (useSkip = false): Bước 1 (Chép Toàn Bộ Cho AI) ➔ Bước 2 (AI Giải Quẻ) ➔ Bước 3 (Tóm Tắt Giữ Ý Chính) ➔ Bước 4 (Đọc Thủy Mặc)
+  // Option B (useSkip = true) : Bước 1 (Chép Toàn Bộ Cho AI) ➔ Bước 2 (AI Giải Quẻ) ➔ Sang thẳng Bước 4 luôn (Không qua Tóm tắt · Đọc nguyên văn giải quẻ)
+  const runFourStepAIPipeline = useCallback(
+    async (overrideSkipSummary?: boolean): Promise<InkWashFilmPlan> => {
+      const useSkip =
+        typeof overrideSkipSummary === "boolean" ? overrideSkipSummary : skipSummary;
 
-    const effectiveQ = (customQuestion || question || "").trim() || "Xin chỉ điểm vận trình và lời khuyên hành động tối ưu?";
-    setIsRunningPipeline(true);
+      if (typeof overrideSkipSummary === "boolean" && overrideSkipSummary !== skipSummary) {
+        setSkipSummary(overrideSkipSummary);
+      }
+      try {
+        window.localStorage.setItem("cuunhi_inkwash_skip_summary", useSkip ? "1" : "0");
+      } catch {}
 
-    try {
-      // BƯỚC 1: Nhấn vào "Chép Toàn Bộ Cho AI"
-      setPipelineStep(1);
-      setPipelineStatusText("Bước 1/4: Đang nhấn 'Chép Toàn Bộ Cho AI' để lấy toàn văn dữ liệu quẻ & tâm niệm...");
-      let externalCopied = "";
-      if (onTriggerCopyAllForAI) {
+      if (!audioRef.current) {
+        audioRef.current = new InkWashAudioEngine();
+      }
+      audioRef.current.init();
+      audioRef.current.stopAll();
+      setIsPlaying(false);
+
+      const effectiveQ =
+        (customQuestion || question || "").trim() ||
+        "Xin chỉ điểm vận trình và lời khuyên hành động tối ưu?";
+      setIsRunningPipeline(true);
+
+      try {
+        // BƯỚC 1: Nhấn vào "Chép Toàn Bộ Cho AI"
+        setPipelineStep(1);
+        setPipelineStatusText(
+          "Bước 1/4: Đang nhấn 'Chép Toàn Bộ Cho AI' để lấy toàn văn dữ liệu quẻ & tâm niệm..."
+        );
+        let externalCopied = "";
+        if (onTriggerCopyAllForAI) {
+          try {
+            const res = await onTriggerCopyAllForAI();
+            if (typeof res === "string" && res.trim().length > 30) {
+              externalCopied = res.trim();
+            }
+          } catch {}
+        }
+        const fullPromptText =
+          externalCopied || buildFullAIPromptForInkWash(cards, spreadMode, effectiveQ);
         try {
-          const res = await onTriggerCopyAllForAI();
-          if (typeof res === "string" && res.trim().length > 30) {
-            externalCopied = res.trim();
+          if (navigator?.clipboard?.writeText) {
+            await navigator.clipboard.writeText(fullPromptText);
           }
         } catch {}
-      }
-      const fullPromptText =
-        externalCopied || buildFullAIPromptForInkWash(cards, spreadMode, effectiveQ);
-      try {
-        if (navigator?.clipboard?.writeText) {
-          await navigator.clipboard.writeText(fullPromptText);
+        await new Promise((r) => setTimeout(r, 160));
+
+        // BƯỚC 2: Quăng vào cho AI giải quẻ
+        setPipelineStep(2);
+        setPipelineStatusText(
+          useSkip
+            ? "Bước 2/4: Đang gửi bản 'Chép Toàn Bộ Cho AI' vào AI giải quẻ (chế độ từ Bước 2 sang Bước 4 luôn, không qua tóm tắt)..."
+            : "Bước 2/4: Đang gửi bản 'Chép Toàn Bộ Cho AI' vào AI giải quẻ toàn diện..."
+        );
+        const summaryResult = await interpretAndSummarizeSpreadWithAI(
+          cards,
+          spreadMode,
+          effectiveQ,
+          fullPromptText,
+          useSkip
+        );
+        setAiSummaryData(summaryResult);
+
+        const targetConclusion = useSkip
+          ? summaryResult.fullConclusionCueB || summaryResult.conclusionCueB
+          : summaryResult.conclusionCueB;
+
+        if (!useSkip) {
+          // BƯỚC 3: Tóm tắt quẻ lại giữ ý chính
+          setPipelineStep(3);
+          setPipelineStatusText(
+            "Bước 3/4: Đang tóm tắt quẻ giữ trọn ý chính cho từng lá bài & lời kết Châu Ấn 玖貳..."
+          );
+          setCustomConclusion(targetConclusion);
+          await new Promise((r) => setTimeout(r, 150));
+        } else {
+          // BỎ QUA BƯỚC 3: Từ Bước 2 nhảy thẳng sang Bước 4 luôn không qua tóm tắt!
+          setCustomConclusion(targetConclusion);
+          await new Promise((r) => setTimeout(r, 90));
         }
-      } catch {}
-      await new Promise((r) => setTimeout(r, 180));
 
-      // BƯỚC 2: Quăng vào cho AI giải quẻ
-      setPipelineStep(2);
-      setPipelineStatusText("Bước 2/4: Đang gửi bản 'Chép Toàn Bộ Cho AI' vào AI giải quẻ toàn diện...");
-      const summaryResult = await interpretAndSummarizeSpreadWithAI(
-        cards,
-        spreadMode,
-        effectiveQ,
-        fullPromptText
-      );
+        // BƯỚC 4: Đem về đọc đầy đủ thông tin trong Xưởng Phim Thủy Mặc (đo thời lượng TTS thực tế từng câu)
+        setPipelineStep(4);
+        setPipelineStatusText(
+          useSkip
+            ? "Bước 4/4 (Từ Bước 2 sang Bước 4 luôn · Không qua tóm tắt): Đang nạp nguyên văn bài giải quẻ vào giọng đọc Thủy Mặc..."
+            : "Bước 4/4: Đang nạp giọng đọc Tiếng Việt đầy đủ 100% thông tin vào Xưởng Phim Thủy Mặc..."
+        );
+        const planForStep4 = buildInkWashFilmPlan(
+          cards,
+          spreadMode,
+          effectiveQ,
+          sealChars,
+          targetConclusion,
+          summaryResult,
+          useSkip
+        );
+        const measuredDurations = await audioRef.current.preloadAndMeasureCues(
+          planForStep4.narrationCues
+        );
+        setAudioDurationsMap(new Map(measuredDurations));
 
-      // BƯỚC 3: Tóm tắt quẻ lại giữ ý chính
-      setPipelineStep(3);
-      setPipelineStatusText("Bước 3/4: Đang tóm tắt quẻ giữ trọn ý chính cho từng lá bài & lời kết Châu Ấn 玖貳...");
-      setAiSummaryData(summaryResult);
-      if (!customConclusion.trim()) {
-        setCustomConclusion(summaryResult.conclusionCueB);
+        const syncedPlan = syncFilmPlanWithAudioDurations(planForStep4, measuredDurations);
+        const sig = `${cards
+          .map((c) => `${c.id}_${c.hexNumber}_${c.yaoNumber || 0}`)
+          .join("|")}__${effectiveQ}__skip:${useSkip ? 1 : 0}`;
+        lastPreparedSigRef.current = sig;
+        timeRef.current = 0;
+        setCurrentTime(0);
+
+        setPipelineStatusText(
+          useSkip
+            ? `Hoàn tất (Bước 2 ➔ Bước 4 luôn, không qua tóm tắt)! Đọc nguyên văn ${
+                syncedPlan.narrationCues.length
+              } câu thoại (${Math.round(syncedPlan.totalDurationSec)}s).`
+            : `Hoàn tất 4 bước (Có tóm tắt giữ ý chính)! Đã đồng bộ đầy đủ giọng đọc Tiếng Việt (${Math.round(
+                syncedPlan.totalDurationSec
+              )}s).`
+        );
+        return syncedPlan;
+      } finally {
+        setIsRunningPipeline(false);
       }
-      await new Promise((r) => setTimeout(r, 150));
+    },
+    [
+      cards,
+      spreadMode,
+      customQuestion,
+      question,
+      sealChars,
+      skipSummary,
+      onTriggerCopyAllForAI,
+    ]
+  );
 
-      // BƯỚC 4: Đem về đọc đầy đủ thông tin trong Xưởng Phim Thủy Mặc (đo thời lượng TTS thực tế từng câu)
-      setPipelineStep(4);
-      setPipelineStatusText("Bước 4/4: Đang nạp giọng đọc Tiếng Việt đầy đủ 100% thông tin vào Xưởng Phim Thủy Mặc...");
-      const planWithSummary = buildInkWashFilmPlan(
-        cards,
-        spreadMode,
-        effectiveQ,
-        sealChars,
-        customConclusion.trim() || summaryResult.conclusionCueB,
-        summaryResult
-      );
-      const measuredDurations = await audioRef.current.preloadAndMeasureCues(
-        planWithSummary.narrationCues
-      );
-      setAudioDurationsMap(new Map(measuredDurations));
-
-      const syncedPlan = syncFilmPlanWithAudioDurations(planWithSummary, measuredDurations);
-      const sig = `${cards.map((c) => `${c.id}_${c.hexNumber}_${c.yaoNumber || 0}`).join("|")}__${effectiveQ}`;
-      lastPreparedSigRef.current = sig;
-
-      setPipelineStatusText(
-        `Hoàn tất 4 bước! Đã tóm tắt giữ ý chính & đồng bộ đầy đủ giọng đọc Tiếng Việt (${Math.round(
-          syncedPlan.totalDurationSec
-        )}s).`
-      );
-      return syncedPlan;
-    } finally {
-      setIsRunningPipeline(false);
-    }
-  }, [cards, spreadMode, customQuestion, question, sealChars, customConclusion, onTriggerCopyAllForAI]);
-
-  // Automatically run the 4-step pipeline when the modal opens on a new spread
+  // Automatically run the pipeline when the modal opens on a new spread
   useEffect(() => {
     if (!isOpen || cards.length === 0) return;
-    const effectiveQ = (customQuestion || question || "").trim() || "Xin chỉ điểm vận trình và lời khuyên hành động tối ưu?";
-    const sig = `${cards.map((c) => `${c.id}_${c.hexNumber}_${c.yaoNumber || 0}`).join("|")}__${effectiveQ}`;
+    const effectiveQ =
+      (customQuestion || question || "").trim() ||
+      "Xin chỉ điểm vận trình và lời khuyên hành động tối ưu?";
+    const sig = `${cards
+      .map((c) => `${c.id}_${c.hexNumber}_${c.yaoNumber || 0}`)
+      .join("|")}__${effectiveQ}__skip:${skipSummary ? 1 : 0}`;
     if (lastPreparedSigRef.current !== sig && !isRunningPipeline) {
-      runFourStepAIPipeline().catch(() => {});
+      runFourStepAIPipeline(skipSummary).catch(() => {});
     }
-  }, [isOpen, cards, customQuestion, question, isRunningPipeline, runFourStepAIPipeline]);
+  }, [isOpen, cards, customQuestion, question, skipSummary, isRunningPipeline, runFourStepAIPipeline]);
 
   // Decompose all card images into wet, dry, and vermilion ink-wash layers
   useEffect(() => {
@@ -401,12 +470,12 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
       return;
     }
 
-    // Ensure the 4-step pipeline (Chép Cho AI -> AI Giải Quẻ -> Tóm Tắt Giữ Ý Chính -> Nạp Giọng Đọc Đầy Đủ) has completed before playing
+    // Ensure the pipeline has completed for the selected mode (1->2->3->4 or 1->2->4 direct) before playing
     const effectiveQ = (customQuestion || question || "").trim() || "Xin chỉ điểm vận trình và lời khuyên hành động tối ưu?";
-    const sig = `${cards.map((c) => `${c.id}_${c.hexNumber}_${c.yaoNumber || 0}`).join("|")}__${effectiveQ}`;
+    const sig = `${cards.map((c) => `${c.id}_${c.hexNumber}_${c.yaoNumber || 0}`).join("|")}__${effectiveQ}__skip:${skipSummary ? 1 : 0}`;
     let activePlan = filmPlan;
     if (lastPreparedSigRef.current !== sig || !aiSummaryData) {
-      activePlan = await runFourStepAIPipeline();
+      activePlan = await runFourStepAIPipeline(skipSummary);
     }
 
     if (timeRef.current >= activePlan.totalDurationSec - 0.2) {
@@ -416,7 +485,7 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
     }
     audioRef.current.startBgmAt(timeRef.current);
     setIsPlaying(true);
-  }, [isPlaying, filmPlan, customQuestion, question, cards, aiSummaryData, runFourStepAIPipeline]);
+  }, [isPlaying, filmPlan, customQuestion, question, cards, skipSummary, aiSummaryData, runFourStepAIPipeline]);
 
   const handleRestart = useCallback(async () => {
     if (!audioRef.current) {
@@ -426,9 +495,9 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
     audioRef.current.stopAll();
 
     const effectiveQ = (customQuestion || question || "").trim() || "Xin chỉ điểm vận trình và lời khuyên hành động tối ưu?";
-    const sig = `${cards.map((c) => `${c.id}_${c.hexNumber}_${c.yaoNumber || 0}`).join("|")}__${effectiveQ}`;
+    const sig = `${cards.map((c) => `${c.id}_${c.hexNumber}_${c.yaoNumber || 0}`).join("|")}__${effectiveQ}__skip:${skipSummary ? 1 : 0}`;
     if (lastPreparedSigRef.current !== sig || !aiSummaryData) {
-      await runFourStepAIPipeline();
+      await runFourStepAIPipeline(skipSummary);
     }
 
     audioRef.current.resetTimeline();
@@ -578,7 +647,9 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
               <h3 className="font-serif font-bold text-sm sm:text-base text-[#F5EAD4] flex items-center gap-2">
                 <span>Xưởng Phim Thủy Mặc Chu Dịch (水墨周易)</span>
                 <span className="hidden md:inline-block text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#2A2016] text-[#E5C158] border border-[#C4963E]/50">
-                  Chép Cho AI ➔ AI Giải Quẻ ➔ Tóm Tắt Giữ Ý Chính ➔ Đọc Đầy Đủ · Ấn 玖貳
+                  {skipSummary
+                    ? "Chép Cho AI ➔ AI Giải Quẻ ➔ Bước 2 Sang Bước 4 Luôn (Không Qua Tóm Tắt) · Ấn 玖貳"
+                    : "Chép Cho AI ➔ AI Giải Quẻ ➔ Tóm Tắt Giữ Ý Chính ➔ Đọc Đầy Đủ · Ấn 玖貳"}
                 </span>
               </h3>
             </div>
@@ -666,42 +737,110 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
                       <Loader2 className="w-3 h-3 animate-spin" />
                       <span>
                         {isRunningPipeline
-                          ? `Đang xử lý Bước ${pipelineStep}/4...`
+                          ? skipSummary && pipelineStep === 4
+                            ? "Đang chuyển thẳng Bước 2 ➔ Bước 4 (Không tóm tắt)..."
+                            : `Đang xử lý Bước ${pipelineStep}/4...`
                           : "Đang tách lớp mực tàu & chu sa..."}
                       </span>
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-1 text-emerald-300 bg-emerald-950/50 px-2.5 py-0.5 rounded-full border border-emerald-600/40">
                       <Check className="w-3 h-3" />
-                      <span>Đã tóm tắt AI &amp; đồng bộ đầy đủ {cards.length} lá bài</span>
+                      <span>
+                        {skipSummary
+                          ? `Đã nạp nguyên văn Bước 2 ➔ 4 (${cards.length} lá bài)`
+                          : `Đã tóm tắt AI & đồng bộ đầy đủ ${cards.length} lá bài`}
+                      </span>
                     </span>
                   )}
                 </div>
               </div>
 
-              {/* 4-Step Pipeline Progress Strip */}
+              {/* 4-Step Pipeline Progress Strip + 2 Pipeline Mode Selector */}
               <div className="w-full mb-2.5 px-3 py-2 rounded-xl bg-[#17120C] border border-[#C4963E]/45 flex flex-col gap-1.5">
+                {/* 2-Option Selector: Qua Bước 3 Tóm Tắt vs Từ Bước 2 Sang Bước 4 Luôn (Không Qua Tóm Tắt) */}
+                <div className="flex items-center justify-between gap-1.5 flex-wrap pb-1 border-b border-[#2C2217]">
+                  <span className="text-[10.5px] font-serif font-bold text-[#E5C158]">
+                    Chế độ luồng đọc Thủy Mặc:
+                  </span>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <button
+                      type="button"
+                      disabled={isRunningPipeline || isRecordingVideo}
+                      onClick={() => {
+                        if (skipSummary) {
+                          runFourStepAIPipeline(false);
+                        }
+                      }}
+                      className={`px-2.5 py-1 rounded-lg text-[10.5px] font-serif font-bold border transition cursor-pointer disabled:opacity-60 ${
+                        !skipSummary
+                          ? "bg-gradient-to-r from-[#D4AF37] to-[#B8862D] text-[#16120D] border-[#F3E5AB] shadow-sm"
+                          : "bg-[#110D09] text-[#B8A68E] border-[#34281B] hover:text-white"
+                      }`}
+                      title="Bước 1 ➔ Bước 2 ➔ Bước 3 (Tóm tắt giữ ý chính) ➔ Bước 4 (Đọc Thủy Mặc)"
+                    >
+                      ✓ 1 ➔ 2 ➔ 3 ➔ 4: Qua Tóm Tắt Giữ Ý Chính
+                    </button>
+                    <button
+                      type="button"
+                      disabled={isRunningPipeline || isRecordingVideo}
+                      onClick={() => {
+                        if (!skipSummary) {
+                          runFourStepAIPipeline(true);
+                        }
+                      }}
+                      className={`px-2.5 py-1 rounded-lg text-[10.5px] font-serif font-bold border transition cursor-pointer disabled:opacity-60 ${
+                        skipSummary
+                          ? "bg-gradient-to-r from-[#9E2A2B] to-[#7D1D1E] text-[#FFF8E7] border-[#D4AF37] shadow-sm"
+                          : "bg-[#110D09] text-[#B8A68E] border-[#34281B] hover:text-white"
+                      }`}
+                      title="Từ Bước 2 nhảy thẳng sang Bước 4 luôn, bỏ qua Bước 3 Tóm tắt, đọc nguyên văn bài giải quẻ"
+                    >
+                      ⚡ Bước 2 ➔ Bước 4 Luôn (Không Qua Tóm Tắt)
+                    </button>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-4 gap-1 text-[10px] font-serif font-bold">
                   {[
                     { id: 1, label: "1. Chép Toàn Bộ Cho AI" },
                     { id: 2, label: "2. Quăng Vào AI Giải Quẻ" },
-                    { id: 3, label: "3. Tóm Tắt Giữ Ý Chính" },
-                    { id: 4, label: "4. Đọc Đầy Đủ Thủy Mặc" },
+                    {
+                      id: 3,
+                      label: skipSummary
+                        ? "3. Bỏ Qua Tóm Tắt (2➔4)"
+                        : "3. Tóm Tắt Giữ Ý Chính",
+                    },
+                    {
+                      id: 4,
+                      label: skipSummary
+                        ? "4. Đọc Nguyên Văn Thủy Mặc"
+                        : "4. Đọc Đầy Đủ Thủy Mặc",
+                    },
                   ].map((st) => {
-                    const done = pipelineStep >= st.id && !isRunningPipeline;
-                    const active = isRunningPipeline && pipelineStep === st.id;
+                    const isSkippedStep3 = skipSummary && st.id === 3;
+                    const done = !isSkippedStep3 && pipelineStep >= st.id && !isRunningPipeline;
+                    const active = !isSkippedStep3 && isRunningPipeline && pipelineStep === st.id;
                     return (
                       <div
                         key={st.id}
                         className={`px-2 py-1 rounded-lg border text-center truncate transition ${
-                          done
+                          isSkippedStep3
+                            ? "bg-[#22151C] text-amber-300/90 border-dashed border-amber-500/50"
+                            : done
                             ? "bg-emerald-950/60 text-emerald-200 border-emerald-600/50"
                             : active
                             ? "bg-amber-900/70 text-amber-100 border-amber-400 animate-pulse"
                             : "bg-[#110D09] text-[#8A7960] border-[#2C2217]"
                         }`}
                       >
-                        {done ? "✓ " : active ? "⏳ " : ""}
+                        {isSkippedStep3
+                          ? "⏭ "
+                          : done
+                          ? "✓ "
+                          : active
+                          ? "⏳ "
+                          : ""}
                         {st.label}
                       </div>
                     );
@@ -957,27 +1096,58 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
             {/* RIGHT PANEL: 4-STEP AI PIPELINE TRIGGER, FULL SCRIPT READER & SHOT CHAPTERS */}
             <div className="lg:col-span-5 flex flex-col justify-between gap-3 bg-[#1B150F] rounded-2xl border border-[#34281B] p-4">
               <div className="space-y-3">
-                {/* Primary CTA to re-trigger the 4-step pipeline anytime */}
-                <button
-                  type="button"
-                  onClick={() => runFourStepAIPipeline()}
-                  disabled={isRunningPipeline || isRecordingVideo}
-                  className="w-full py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E5C158] to-[#C4963E] text-[#16120D] font-serif font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:brightness-105 cursor-pointer disabled:opacity-60"
-                >
-                  {isRunningPipeline ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Đang Chép Cho AI ➔ Giải Quẻ ➔ Tóm Tắt &amp; Đồng Bộ Giọng...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-4 h-4" />
-                      <span>⚡ Chép Toàn Bộ Cho AI ➔ AI Giải Quẻ ➔ Tóm Tắt &amp; Đọc Thủy Mặc</span>
-                    </>
-                  )}
-                </button>
+                {/* Dual Pipeline CTA Buttons: Option 1 (1->2->3->4 Qua Tóm Tắt) vs Option 2 (Bước 2 -> Bước 4 Luôn Không Qua Tóm Tắt) */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => runFourStepAIPipeline(false)}
+                    disabled={isRunningPipeline || isRecordingVideo}
+                    className={`py-2 px-3 rounded-xl font-serif font-bold text-[11.5px] flex items-center justify-center gap-1.5 shadow-md transition cursor-pointer disabled:opacity-60 border ${
+                      !skipSummary
+                        ? "bg-gradient-to-r from-[#D4AF37] via-[#E5C158] to-[#C4963E] text-[#16120D] border-[#FFF8E7]"
+                        : "bg-[#221A12] hover:bg-[#2E2318] text-[#E5C158] border-[#C4963E]/50"
+                    }`}
+                    title="Chạy đủ 4 bước: Chép Toàn Bộ Cho AI ➔ AI Giải Quẻ ➔ Tóm Tắt Giữ Ý Chính ➔ Đọc Thủy Mặc"
+                  >
+                    {isRunningPipeline && !skipSummary ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
+                        <span className="truncate">Đang Tóm Tắt (1➔2➔3➔4)...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                        <span className="truncate">1➔2➔3➔4: Qua Tóm Tắt Ý Chính</span>
+                      </>
+                    )}
+                  </button>
 
-                {/* 3-Tab Viewer: Tóm Tắt Đọc Thủy Mặc | Bài Giải AI Đầy Đủ | Bản Chép Cho AI */}
+                  <button
+                    type="button"
+                    onClick={() => runFourStepAIPipeline(true)}
+                    disabled={isRunningPipeline || isRecordingVideo}
+                    className={`py-2 px-3 rounded-xl font-serif font-bold text-[11.5px] flex items-center justify-center gap-1.5 shadow-md transition cursor-pointer disabled:opacity-60 border ${
+                      skipSummary
+                        ? "bg-gradient-to-r from-[#9E2A2B] via-[#B83234] to-[#7D1D1E] text-[#FFF8E7] border-[#D4AF37]"
+                        : "bg-[#221A12] hover:bg-[#2E2318] text-[#F3E5AB] border-[#9E2A2B]/60"
+                    }`}
+                    title="Từ Bước 2 sang Bước 4 luôn, không qua Bước 3 tóm tắt — đem nguyên văn bài giải quẻ về đọc Thủy Mặc"
+                  >
+                    {isRunningPipeline && skipSummary ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
+                        <span className="truncate">Đang Nạp Thẳng (Bước 2➔4)...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Film className="w-3.5 h-3.5 shrink-0 text-[#E5C158]" />
+                        <span className="truncate">⚡ Bước 2 ➔ 4 Luôn (Không Tóm Tắt)</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {/* 3-Tab Viewer: Kịch Bản Đọc Thủy Mặc | Bài Giải AI Đầy Đủ | Bản Chép Cho AI */}
                 <div className="bg-[#120E0A] rounded-xl border border-[#34281B] p-2.5 space-y-2">
                   <div className="flex items-center justify-between gap-1 border-b border-[#2C2217] pb-1.5">
                     <div className="flex items-center gap-1">
@@ -990,7 +1160,9 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
                             : "text-[#A89880] hover:text-white"
                         }`}
                       >
-                        1. Tóm Tắt Đọc Thủy Mặc
+                        {skipSummary
+                          ? "1. Nguyên Văn Đọc Thủy Mặc (2➔4)"
+                          : "1. Tóm Tắt Đọc Thủy Mặc (1➔3➔4)"}
                       </button>
                       <button
                         type="button"
@@ -1021,7 +1193,11 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
                       onClick={() => {
                         const textToCopy =
                           infoViewTab === "summary"
-                            ? aiSummaryData?.fullSpokenSummaryText || ""
+                            ? skipSummary
+                              ? aiSummaryData?.fullSpokenDirectText ||
+                                aiSummaryData?.fullSpokenSummaryText ||
+                                ""
+                              : aiSummaryData?.fullSpokenSummaryText || ""
                             : infoViewTab === "ai_full"
                             ? aiSummaryData?.fullAiInterpretation || ""
                             : aiSummaryData?.copiedPromptText || "";
@@ -1050,26 +1226,46 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
                                 key={cs.cardNumber}
                                 className="p-2 rounded-lg bg-[#1A140E] border border-[#34281B]"
                               >
-                                <div className="text-[11px] font-bold text-[#E5C158] mb-0.5">
-                                  ✦ Lá {cs.cardNumber} ({cs.roleLabel}) — {cs.cardTitle}
+                                <div className="flex items-center justify-between gap-2 mb-0.5">
+                                  <span className="text-[11px] font-bold text-[#E5C158]">
+                                    ✦ Lá {cs.cardNumber} ({cs.roleLabel}) — {cs.cardTitle}
+                                  </span>
+                                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-[#281E14] text-amber-300 border border-[#C4963E]/40">
+                                    {skipSummary
+                                      ? `Nguyên văn 2➔4 (${cs.fullSubCues?.length || 2} đoạn đọc)`
+                                      : "Tóm tắt ý chính"}
+                                  </span>
                                 </div>
-                                <p className="text-[11.5px] text-[#F5EAD4]">{cs.cueA}</p>
-                                <p className="text-[11.5px] text-[#D8C8A8] mt-1">{cs.cueB}</p>
+                                <p className="text-[11.5px] text-[#F5EAD4]">
+                                  {skipSummary ? cs.fullCueA || cs.cueA : cs.cueA}
+                                </p>
+                                <p className="text-[11.5px] text-[#D8C8A8] mt-1">
+                                  {skipSummary ? cs.fullCueB || cs.cueB : cs.cueB}
+                                </p>
                               </div>
                             ))}
                             <div className="p-2 rounded-lg bg-[#241811] border border-[#C4963E]/50">
                               <div className="text-[11px] font-bold text-[#F3E5AB] mb-0.5">
                                 印 Châu Ấn Đúc Kết ({sealChars}) — Trả Lời Tâm Niệm
                               </div>
-                              <p className="text-[11.5px] text-[#F5EAD4]">{aiSummaryData.conclusionCueA}</p>
+                              <p className="text-[11.5px] text-[#F5EAD4]">
+                                {skipSummary
+                                  ? aiSummaryData.fullConclusionCueA || aiSummaryData.conclusionCueA
+                                  : aiSummaryData.conclusionCueA}
+                              </p>
                               <p className="text-[11.5px] text-emerald-200 mt-1 font-semibold">
-                                {customConclusion || aiSummaryData.conclusionCueB}
+                                {customConclusion ||
+                                  (skipSummary
+                                    ? aiSummaryData.fullConclusionCueB || aiSummaryData.conclusionCueB
+                                    : aiSummaryData.conclusionCueB)}
                               </p>
                             </div>
                           </div>
                         ) : (
                           <div className="text-[#A89880] italic py-4 text-center">
-                            Đang tự động Chép Toàn Bộ Cho AI ➔ Giải Quẻ ➔ Tóm Tắt Giữ Ý Chính...
+                            {skipSummary
+                              ? "Đang tự động Chép Toàn Bộ Cho AI ➔ Giải Quẻ ➔ Nạp Thẳng Bước 4 (Không qua tóm tắt)..."
+                              : "Đang tự động Chép Toàn Bộ Cho AI ➔ Giải Quẻ ➔ Tóm Tắt Giữ Ý Chính..."}
                           </div>
                         )}
                       </>
@@ -1097,7 +1293,9 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
                       <span>Phân Cảnh Thủy Mặc ({filmPlan.shots.length} Cảnh · {formatTime(filmPlan.totalDurationSec)})</span>
                     </span>
                     <span className="text-[10.5px] text-emerald-300 font-serif">
-                      Đọc đủ 100% ý chính
+                      {skipSummary
+                        ? `Đọc nguyên văn 2➔4 (${filmPlan.narrationCues.length} câu thoại)`
+                        : "Đọc đủ 100% ý chính"}
                     </span>
                   </div>
 
