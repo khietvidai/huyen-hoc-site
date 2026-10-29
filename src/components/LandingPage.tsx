@@ -6061,13 +6061,13 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
                   {/* CỤM 4: TỰ ĐỘNG HÓA TOÀN BỘ (LUẬN GIẢI TRỰC TIẾP TỪ TRANG CHỦ & DỰNG VIDEO 9:16) */}
                   <div className="pt-2.5 border-t border-[#C4963E]/30 space-y-2">
-                    <div className="flex flex-col sm:flex-row gap-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                       <button
                         type="button"
                         id="btn-direct-home-auto-all"
                         onClick={handleStartDirectHomeAutomation}
                         disabled={isDirectHomeRunning || isDragonLocked}
-                        className={`flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-serif font-bold tracking-wide transition-all duration-200 ${
+                        className={`flex-1 min-w-0 h-11 inline-flex items-center justify-center gap-2 px-3.5 rounded-xl text-xs sm:text-[13px] font-serif font-bold tracking-wide transition-all duration-200 ${
                           isDragonLocked
                             ? "text-[#A89880] border border-[#8C7A65]/45 opacity-60 cursor-not-allowed"
                             : isDirectHomeRunning
@@ -6098,10 +6098,10 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                         <span className="text-base shrink-0">
                           {isDragonLocked ? "🔒" : isDirectHomeRunning ? "⏳" : "🚀"}
                         </span>
-                        <span>
+                        <span className="truncate">
                           {isDirectHomeRunning
                             ? `Đang Chạy Ngầm (${directHomePercent}%) — Còn ${directHomeEtaRemaining}s`
-                            : "BẮT ĐẦU TỰ ĐỘNG HÓA TOÀN BỘ (LUẬN TRỰC TIẾP & VIDEO 9:16)"}
+                            : "Tự Động Luận Giải & Dựng Video 9:16"}
                         </span>
                       </button>
 
@@ -6109,12 +6109,12 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                         value={directHomeVoice}
                         onChange={(e) => setDirectHomeVoice(e.target.value)}
                         disabled={isDirectHomeRunning}
-                        className="rounded-xl px-2.5 py-2 text-xs font-serif font-bold text-[#231C14] bg-[#FDFBF7] border border-[#C4963E]/65 focus:outline-none cursor-pointer"
+                        className="w-full sm:w-[210px] shrink-0 h-11 rounded-xl px-2.5 text-xs font-serif font-bold text-[#231C14] bg-[#FDFBF7] border border-[#C4963E]/65 focus:outline-none cursor-pointer truncate"
                         title="Chọn giọng đọc thuyết minh Video 9:16"
                       >
-                        <option value="vi-VN-NamMinhNeural">🎙️ Giọng Nam Minh Tiếng Việt (Trầm ấm · Chuẩn)</option>
-                        <option value="vi-VN-HoaiMyNeural">🎙️ Giọng Hoài My Tiếng Việt (Truyền cảm · Chuẩn)</option>
-                        <option value="namminh_elder">🧙‍♂️ Dịch Sư Trưởng Lão Tiếng Việt (Uy nghiêm)</option>
+                        <option value="vi-VN-NamMinhNeural">🎙️ Giọng Nam Minh (Trầm ấm)</option>
+                        <option value="vi-VN-HoaiMyNeural">🎙️ Giọng Hoài My (Truyền cảm)</option>
+                        <option value="namminh_elder">🧙‍♂️ Dịch Sư Trưởng Lão (Uy nghiêm)</option>
                       </select>
                     </div>
 
