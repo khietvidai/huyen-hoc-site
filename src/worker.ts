@@ -109,7 +109,7 @@ export default {
     if (url.pathname === "/api/tts") {
       try {
         let text = url.searchParams.get("text") || "";
-        let voice = url.searchParams.get("voice") || "voxcpm-namminh";
+        let voice = url.searchParams.get("voice") || "voxcpm-elder";
         if (request.method === "POST") {
           const body: any = await request.json().catch(() => ({}));
           if (!text) text = body?.text || "";

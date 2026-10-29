@@ -1960,7 +1960,7 @@ app.post(
 app.all("/api/tts", async (req: Request, res: Response) => {
   try {
     const rawText = String(req.query.text || req.body?.text || "").trim();
-    const voiceParam = String(req.query.voice || req.body?.voice || "voxcpm-namminh").trim();
+    const voiceParam = String(req.query.voice || req.body?.voice || "voxcpm-elder").trim();
     if (rawText && (voiceParam.toLowerCase().startsWith("voxcpm") || !voiceParam.toLowerCase().includes("gtts"))) {
       try {
         const cleanedVox = rawText.replace(/[*#_~`>|]/g, " ").replace(/\s+/g, " ").trim();
