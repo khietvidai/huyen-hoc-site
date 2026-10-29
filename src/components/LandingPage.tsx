@@ -5831,8 +5831,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
         <div className="relative z-10 max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            {/* Cột trái: Văn bản tính năng, Hương Án Khởi Niệm & Cửu Nhị Command Dock */}
-            <div>
+            {/* Cột phải (Desktop) / Cột trên (Mobile): Văn bản tính năng, Hương Án Khởi Niệm & Cửu Nhị Command Dock */}
+            <div className="order-1 lg:order-2">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#16130F]/90 border border-[#C4963E]/50 mb-5 shadow-xs">
                 <span className="text-[#D4AF37] text-xs">☯</span>
                 <span className="text-[11px] font-semibold tracking-[0.22em] uppercase text-[#F3E5AB]">
@@ -6307,8 +6307,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               </div>
             </div>
 
-            {/* Cột phải: MẪU 2 — MÀN HÌNH ĐIỆN THOẠI 9:16 TINH GỌN + 3 NÚT TẢI + NÚT XEM KẾT QUẢ LUẬN GIẢI TRỰC TIẾP TỪ TRANG CHỦ */}
-            <div className="flex flex-col items-center lg:items-end justify-end lg:self-end mt-6 lg:mt-0 lg:pb-1">
+            {/* Cột trái (Desktop) / Cột dưới (Mobile): MẪU 2 — MÀN HÌNH ĐIỆN THOẠI 9:16 TINH GỌN + 3 NÚT TẢI + NÚT XEM KẾT QUẢ LUẬN GIẢI TRỰC TIẾP TỪ TRANG CHỦ */}
+            <div className="order-2 lg:order-1 flex flex-col items-center lg:items-center justify-center lg:self-center mt-6 lg:mt-0 lg:pb-1">
               {/* Giữ nguyên neo vật lý ẩn để không ảnh hưởng engine cuộn bài */}
               <div
                 ref={featuresAnchorRef}
