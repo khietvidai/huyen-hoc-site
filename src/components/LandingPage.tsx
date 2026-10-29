@@ -9,7 +9,8 @@
  * - Interactive modals: Card Detail Inspector, Coin Toss Divination Studio, Life Config Thermal Receipt
  */
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { Camera, Bookmark, FolderOpen, Clock } from "lucide-react";
+import { Camera, Bookmark, FolderOpen, Clock, Film } from "lucide-react";
+import { InkWashFilmModal } from "./InkWashFilmModal";
 import { SaveSpreadDialog } from "./SaveSpreadDialog";
 import { SavedSpreadsModal } from "./SavedSpreadsModal";
 import { TempSpreadsModal } from "./TempSpreadsModal";
@@ -3556,6 +3557,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
   } | null>(null);
   const [isDirectResultModalOpen, setIsDirectResultModalOpen] = useState<boolean>(false);
   const [directResultActiveTab, setDirectResultActiveTab] = useState<"interp" | "script" | "raw">("interp");
+  const [isInkWashModalOpen, setIsInkWashModalOpen] = useState<boolean>(false);
+  const [inkWashModalTab, setInkWashModalTab] = useState<"live" | "sample">("live");
   const [isRecordingVoiceQ, setIsRecordingVoiceQ] = useState<boolean>(false);
   const [isTranscribingVoiceQ, setIsTranscribingVoiceQ] = useState<boolean>(false);
   const [voiceRecordSec, setVoiceRecordSec] = useState<number>(0);
@@ -5129,6 +5132,21 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         </div>
 
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+          {/* Nút mở Xưởng Phim Thủy Mặc Chu Dịch */}
+          <button
+            type="button"
+            onClick={() => {
+              setInkWashModalTab("live");
+              setIsInkWashModalOpen(true);
+            }}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#FFF8E7] transition px-3 py-1.5 rounded-full bg-gradient-to-r from-[#9E2A2B] to-[#7D1D1E] hover:brightness-110 border border-[#D4AF37]/80 cursor-pointer shadow-xs active:scale-95"
+            title="Mở Xưởng Phim Thủy Mặc Chu Dịch (WebGL2 · Cổ Cầm & Tiêu Trúc · Xuất Video MP4/WebM)"
+          >
+            <Film className="w-3.5 h-3.5 text-[#E5C158]" />
+            <span className="hidden xs:inline sm:inline">Phim Thủy Mặc</span>
+            <span className="xs:hidden sm:hidden">Thủy Mặc</span>
+          </button>
+
           {/* Nút chụp hình thẻ bài: Tự động căn chỉnh & chụp trọn vẹn toàn bộ trải bài */}
           <button
             type="button"
@@ -6599,6 +6617,24 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   <span>📖</span>
                   <span>Kết Quả Luận Giải Trực Tiếp Từ Trang Chủ</span>
                 </button>
+
+                {/* NÚT MỞ XƯỞNG PHIM THỦY MẶC CHU DỊCH (16:9 & 9:16) */}
+                <button
+                  type="button"
+                  id="btn-open-ink-wash-studio"
+                  onClick={() => {
+                    setInkWashModalTab("live");
+                    setIsInkWashModalOpen(true);
+                  }}
+                  className="w-[308px] sm:w-[336px] inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-serif font-bold text-[#FFF8E7] transition hover:brightness-110 cursor-pointer shadow-md"
+                  style={{
+                    background: "linear-gradient(135deg, #8B1E22 0%, #5E1417 55%, #7A1A1D 100%)",
+                    border: "1px solid rgba(212, 175, 55, 0.85)",
+                  }}
+                >
+                  <span>🖌️</span>
+                  <span>Xưởng Phim Thủy Mặc (16:9 &amp; 9:16 · Xuất Clip)</span>
+                </button>
               </div>
             </div>
           </div>
@@ -7334,6 +7370,16 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         imageUrl={snapshotImageUrl}
         title="Ảnh Toàn Bộ Thẻ Bài Trải Trận"
         filename={`trai-bai-iching-tarot-${new Date().toISOString().slice(0, 10)}.png`}
+      />
+
+      {/* Modal Xưởng Phim Thủy Mặc Chu Dịch */}
+      <InkWashFilmModal
+        isOpen={isInkWashModalOpen}
+        onClose={() => setIsInkWashModalOpen(false)}
+        cards={cards}
+        spreadMode={mode}
+        question={userIntentQuestion}
+        defaultTab={inkWashModalTab}
       />
 
       {/* Floating Background Video Progress Pill & Completion Notification Card */}

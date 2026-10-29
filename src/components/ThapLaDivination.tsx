@@ -27,6 +27,8 @@ import { HEXAGRAMS, getTransformedHexagram } from "../data/hexagrams";
 import { CardVisual } from "./CardVisual";
 import { captureElementToPng } from "../utils/captureHelper";
 import { ExportImageModal } from "./ExportImageModal";
+import { InkWashFilmModal } from "./InkWashFilmModal";
+import { InkWashCardInput } from "../utils/inkWashEngine";
 import { XuanBaguaStage, JadeCommandPanel, CardTwoSidedModal } from "./XuanBaguaStage";
 import { zenAudio } from "../utils/zenAudio";
 
@@ -84,6 +86,7 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
 
   // Export ảnh modal
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [isInkWashModalOpen, setIsInkWashModalOpen] = useState(false);
   const [exportDataUrl, setExportDataUrl] = useState<string | null>(null);
   const [isCapturing, setIsCapturing] = useState(false);
   const spreadAreaRef = useRef<HTMLDivElement>(null);
@@ -410,6 +413,16 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
               >
                 <Camera className="w-3.5 h-3.5 text-[#E2C275]" />
                 <span>{isCapturing ? "Đang chụp..." : "Xuất Ảnh (PNG)"}</span>
+              </button>
+            )}
+            {step === "drawn" && (
+              <button
+                type="button"
+                onClick={() => setIsInkWashModalOpen(true)}
+                className="px-3.5 py-2 rounded-xl text-xs font-serif font-bold bg-[#1C1610] text-[#F3E5AB] border border-[#D4AF37] hover:brightness-110 flex items-center gap-1.5 cursor-pointer shadow-sm"
+              >
+                <span>🖌️</span>
+                <span>Phim Thủy Mặc</span>
               </button>
             )}
           </div>
@@ -973,6 +986,58 @@ export const ThapLaDivination: React.FC<ThapLaDivinationProps> = ({
         positionTitle={inspectingTwoSidedCard?.positionTitle}
         onOpenFullDetail={onNavigateToDetail}
       />
+
+      {/* Modal Xưởng Phim Thủy Mặc Chu Dịch */}
+      {primaryHex && transformedHex && (
+        <InkWashFilmModal
+          isOpen={isInkWashModalOpen}
+          onClose={() => setIsInkWashModalOpen(false)}
+          spreadMode="thap_la"
+          question={question}
+          cards={([
+            {
+              id: `thapla-pri-${primaryHex.number}`,
+              type: "hexagram",
+              hexNumber: primaryHex.number,
+              symbol: primaryHex.symbol,
+              hanzi: primaryHex.hanzi,
+              name: `Quẻ Chủ: ${primaryHex.name}`,
+              sub: `Bản Quái (#${primaryHex.number})`,
+              desc: primaryHex.overview || primaryHex.judgment,
+              img: `/assets/oss/${primaryHex.number}/${primaryHex.number}a.webp`,
+              positionLabel: "Quẻ Chủ (Bản Quái)",
+            },
+            {
+              id: `thapla-trans-${transformedHex.number}`,
+              type: "hexagram",
+              hexNumber: transformedHex.number,
+              symbol: transformedHex.symbol,
+              hanzi: transformedHex.hanzi,
+              name: `Quẻ Biến: ${transformedHex.name}`,
+              sub: `Biến Quái (#${transformedHex.number})`,
+              desc: transformedHex.overview || transformedHex.judgment,
+              img: `/assets/oss/${transformedHex.number}/${transformedHex.number}a.webp`,
+              positionLabel: "Quẻ Biến (Biến Quái)",
+            },
+            ...changingLines.map((ln) => {
+              const lm = primaryHex.lineMeanings?.find((m) => m.line === ln);
+              return {
+                id: `thapla-yao-${primaryHex.number}-${ln}`,
+                type: "yao" as const,
+                hexNumber: primaryHex.number,
+                yaoNumber: ln,
+                symbol: primaryHex.symbol,
+                hanzi: lm?.name || `Hào ${ln}`,
+                name: `Hào ${ln}: ${primaryHex.name} · ${lm?.name || ""}`,
+                sub: `Hào Động ${ln}`,
+                desc: lm?.meaning || lm?.text || "",
+                img: `/assets/oss/${primaryHex.number}/${primaryHex.number}-${ln}a.webp`,
+                positionLabel: `Hào Động ${ln}`,
+              };
+            }),
+          ]) as InkWashCardInput[]}
+        />
+      )}
 
       {/* Modal xuất ảnh PNG */}
       {isExportModalOpen && exportDataUrl && (
