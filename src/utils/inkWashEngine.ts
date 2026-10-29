@@ -789,13 +789,25 @@ export function buildFullAIPromptForInkWash(
   return lines.join("\n");
 }
 
-// Helper: Clean sentence without mid-word truncation
-function cleanSentenceKeepEssence(raw: string, maxWords: number = 46): string {
-  const cleaned = (raw || "")
-    .replace(/【[^】]*】/g, " ")
-    .replace(/[*#_~`>|]/g, " ")
+// Helper: Strip all Chinese characters (Hanzi / CJK) and empty brackets so subtitles and Vietnamese TTS never read Chinese text
+export function stripHanziAndCleanVi(raw: string): string {
+  return (raw || "")
+    .replace(/[\u2E80-\u2EFF\u3000-\u303F\u3400-\u4DBF\u4DC0-\u4DFF\u4E00-\u9FFF\uF900-\uFAFF\uFF00-\uFFEF]+/g, " ")
+    .replace(/\(\s*[-·•,;:]*\s*\)/g, " ")
+    .replace(/\[\s*[-·•,;:]*\s*\]/g, " ")
+    .replace(/【\s*[-·•,;:]*\s*】/g, " ")
+    .replace(/\s+([,.;:!?])/g, "$1")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+// Helper: Clean sentence without mid-word truncation (and 100% free of Chinese characters)
+function cleanSentenceKeepEssence(raw: string, maxWords: number = 46): string {
+  const cleaned = stripHanziAndCleanVi(
+    (raw || "")
+      .replace(/【[^】]*】/g, " ")
+      .replace(/[*#_~`>|]/g, " ")
+  );
   if (!cleaned) return "";
   const sentences = cleaned
     .split(/(?<=[.!?…。；;])\s+/)
@@ -921,8 +933,10 @@ export async function interpretAndSummarizeSpreadWithAI(
     const rawDesc = (card.desc || "").replace(/【[^】]*】/g, " ").replace(/\s+/g, " ").trim();
 
     if (idx === 0) {
-      const cleanHexName = hexObj.name.replace(/^Quẻ\s*(Chủ|Biến):\s*/i, "").trim();
-      cueA = `Lá bài số ${ordVi}, ${roleLabel}, ứng vào Quẻ ${cleanHexName} (${hexObj.hanzi || ""}) trả lời cho câu hỏi "${cleanQ}".`;
+      const cleanHexName = stripHanziAndCleanVi(hexObj.name.replace(/^Quẻ\s*(Chủ|Biến):\s*/i, ""));
+      cueA = stripHanziAndCleanVi(
+        `Lá bài số ${ordVi}, ${roleLabel}, ứng vào Quẻ ${cleanHexName} trả lời cho câu hỏi "${cleanQ}".`
+      );
 
       const judgmentEssence = hexObj.judgment
         ? `Thoán từ chỉ rõ: ${cleanSentenceKeepEssence(hexObj.judgment, 24)}`
@@ -934,23 +948,25 @@ export async function interpretAndSummarizeSpreadWithAI(
       const backendCardTxt = backendData?.card_summaries?.[idx];
       cueB = backendCardTxt
         ? cleanSentenceKeepEssence(backendCardTxt, 44)
-        : `${judgmentEssence} ${overviewEssence}`.trim();
+        : stripHanziAndCleanVi(`${judgmentEssence} ${overviewEssence}`);
 
       detailedSection = [
-        `### ${cardNum}. Lá ${cardNum} (${roleLabel}) — Quẻ #${hexObj.number} ${cleanHexName} (${hexObj.hanzi || ""})`,
-        `- **Thoán Từ:** "${hexObj.judgment}"`,
-        `- **Đại Tượng Truyện:** "${hexObj.image}"`,
-        `- **Luận giải chuyên sâu:** ${rawDesc || hexObj.overview || ""}`,
+        `### ${cardNum}. Lá ${cardNum} (${roleLabel}) — Quẻ #${hexObj.number} ${cleanHexName}`,
+        `- **Thoán Từ:** "${stripHanziAndCleanVi(hexObj.judgment)}"`,
+        `- **Đại Tượng Truyện:** "${stripHanziAndCleanVi(hexObj.image)}"`,
+        `- **Luận giải chuyên sâu:** ${stripHanziAndCleanVi(rawDesc || hexObj.overview || "")}`,
         `- **Ý chính tóm tắt:** ${cueB}`,
       ].join("\n");
     } else if (card.type === "yao" && card.yaoNumber) {
       const lm = hexObj.lineMeanings?.find((m) => m.line === card.yaoNumber);
       const isYang = hexObj.lines[card.yaoNumber - 1] === 1;
       const yaoTransition = isYang ? "Dương biến Âm" : "Âm biến Dương";
-      const yaoTitle = lm?.name || `Hào ${card.yaoNumber}`;
-      const yaoQuote = lm?.text ? cleanSentenceKeepEssence(lm.text, 22) : card.name;
+      const yaoTitle = stripHanziAndCleanVi(lm?.name || `Hào ${card.yaoNumber}`);
+      const yaoQuote = lm?.text ? cleanSentenceKeepEssence(lm.text, 22) : stripHanziAndCleanVi(card.name);
 
-      cueA = `Lá bài số ${ordVi}, ${roleLabel} (${yaoTitle}, ${yaoTransition}): ${yaoQuote}`;
+      cueA = stripHanziAndCleanVi(
+        `Lá bài số ${ordVi}, ${roleLabel} (${yaoTitle}, ${yaoTransition}): ${yaoQuote}`
+      );
 
       // Extract key action & caution from card.desc ("Ứng dụng thực tiễn:" / "Cần tránh:") or lm.meaning
       const backendCardTxt = backendData?.card_summaries?.[idx];
@@ -969,14 +985,16 @@ export async function interpretAndSummarizeSpreadWithAI(
       }
 
       detailedSection = [
-        `### ${cardNum}. Lá ${cardNum} (${roleLabel}) — ${card.name} (${yaoTransition})`,
-        `- **Hào Từ:** "${lm?.text || ""}"`,
-        `- **Phân tích biến số mấu chốt:** ${rawDesc || lm?.meaning || ""}`,
+        `### ${cardNum}. Lá ${cardNum} (${roleLabel}) — ${stripHanziAndCleanVi(card.name)} (${yaoTransition})`,
+        `- **Hào Từ:** "${stripHanziAndCleanVi(lm?.text || "")}"`,
+        `- **Phân tích biến số mấu chốt:** ${stripHanziAndCleanVi(rawDesc || lm?.meaning || "")}`,
         `- **Ý chính tóm tắt:** ${cueB}`,
       ].join("\n");
     } else {
-      const cleanHexName = hexObj.name.replace(/^Quẻ\s*(Chủ|Biến):\s*/i, "").trim();
-      cueA = `Lá bài số ${ordVi}, ${roleLabel}, chuyển hóa thành Quẻ ${cleanHexName} (${hexObj.hanzi || ""}).`;
+      const cleanHexName = stripHanziAndCleanVi(hexObj.name.replace(/^Quẻ\s*(Chủ|Biến):\s*/i, ""));
+      cueA = stripHanziAndCleanVi(
+        `Lá bài số ${ordVi}, ${roleLabel}, chuyển hóa thành Quẻ ${cleanHexName}.`
+      );
 
       const backendCardTxt = backendData?.card_summaries?.[idx];
       if (backendCardTxt) {
@@ -984,14 +1002,14 @@ export async function interpretAndSummarizeSpreadWithAI(
       } else {
         const jText = hexObj.judgment ? cleanSentenceKeepEssence(hexObj.judgment, 20) : "";
         const advText = cleanSentenceKeepEssence(hexObj.advice || hexObj.overview || rawDesc, 28);
-        cueB = `${jText} ${advText}`.trim();
+        cueB = stripHanziAndCleanVi(`${jText} ${advText}`);
       }
 
       detailedSection = [
-        `### ${cardNum}. Lá ${cardNum} (${roleLabel}) — Quẻ #${hexObj.number} ${cleanHexName} (${hexObj.hanzi || ""})`,
-        `- **Quái Từ:** "${hexObj.judgment}"`,
-        `- **Đại Tượng Truyện:** "${hexObj.image}"`,
-        `- **Định hướng tương lai:** ${rawDesc || hexObj.overview || hexObj.advice || ""}`,
+        `### ${cardNum}. Lá ${cardNum} (${roleLabel}) — Quẻ #${hexObj.number} ${cleanHexName}`,
+        `- **Quái Từ:** "${stripHanziAndCleanVi(hexObj.judgment)}"`,
+        `- **Đại Tượng Truyện:** "${stripHanziAndCleanVi(hexObj.image)}"`,
+        `- **Định hướng tương lai:** ${stripHanziAndCleanVi(rawDesc || hexObj.overview || hexObj.advice || "")}`,
         `- **Ý chính tóm tắt:** ${cueB}`,
       ].join("\n");
     }
@@ -1086,11 +1104,11 @@ export function buildInkWashFilmPlan(
     let cue2Text = "";
 
     if (aiCard) {
-      cue1Text = aiCard.cueA;
-      cue2Text = aiCard.cueB;
+      cue1Text = stripHanziAndCleanVi(aiCard.cueA);
+      cue2Text = stripHanziAndCleanVi(aiCard.cueB);
     } else if (idx === 0) {
-      const cleanHexName = hexObj.name.replace(/^Quẻ\s*(Chủ|Biến):\s*/i, "").trim();
-      cue1Text = `Lá bài số ${ordVi}, ${roleLabel}: Quẻ ${cleanHexName} (${hexObj.hanzi || ""}).`;
+      const cleanHexName = stripHanziAndCleanVi(hexObj.name.replace(/^Quẻ\s*(Chủ|Biến):\s*/i, ""));
+      cue1Text = stripHanziAndCleanVi(`Lá bài số ${ordVi}, ${roleLabel}: Quẻ ${cleanHexName}.`);
       cue2Text = cleanSentenceKeepEssence(
         `${hexObj.judgment || ""} ${hexObj.overview || hexObj.advice || card.desc}`,
         42
@@ -1098,13 +1116,15 @@ export function buildInkWashFilmPlan(
     } else if (card.type === "yao" && card.yaoNumber) {
       const lm = hexObj.lineMeanings?.find((m) => m.line === card.yaoNumber);
       const isYang = hexObj.lines[card.yaoNumber - 1] === 1;
-      cue1Text = `Lá bài số ${ordVi}, Hào ${card.yaoNumber} (${
-        isYang ? "Dương biến Âm" : "Âm biến Dương"
-      }): ${cleanSentenceKeepEssence(lm?.text || card.name, 22)}`;
+      cue1Text = stripHanziAndCleanVi(
+        `Lá bài số ${ordVi}, Hào ${card.yaoNumber} (${
+          isYang ? "Dương biến Âm" : "Âm biến Dương"
+        }): ${cleanSentenceKeepEssence(lm?.text || card.name, 22)}`
+      );
       cue2Text = cleanSentenceKeepEssence(lm?.meaning || card.desc, 42);
     } else {
-      const cleanHexName = hexObj.name.replace(/^Quẻ\s*(Chủ|Biến):\s*/i, "").trim();
-      cue1Text = `Lá bài số ${ordVi}, ${roleLabel}: Quẻ ${cleanHexName} (${hexObj.hanzi || ""}).`;
+      const cleanHexName = stripHanziAndCleanVi(hexObj.name.replace(/^Quẻ\s*(Chủ|Biến):\s*/i, ""));
+      cue1Text = stripHanziAndCleanVi(`Lá bài số ${ordVi}, ${roleLabel}: Quẻ ${cleanHexName}.`);
       cue2Text = cleanSentenceKeepEssence(
         `${hexObj.judgment || ""} ${hexObj.advice || hexObj.overview || card.desc}`,
         42
@@ -1157,21 +1177,23 @@ export function buildInkWashFilmPlan(
     customSealChars?.trim() ||
     (transformedHex.omen.includes("Cát") ? "玖貳" : transformedHex.omen.includes("Hung") ? "慎行" : "中正");
 
-  const finalCueA =
+  const finalCueA = stripHanziAndCleanVi(
     aiSummary?.conclusionCueA ||
-    `Toàn cảnh ${orderedCards.length} lá bài khép lại. Châu ấn Cửu Nhị chính thức hạ xuống, giải đáp câu hỏi "${cleanQ}".`;
+      `Toàn cảnh ${orderedCards.length} lá bài khép lại. Châu ấn Cửu Nhị chính thức hạ xuống, giải đáp câu hỏi "${cleanQ}".`
+  );
 
-  const autoConclusion =
+  const autoConclusion = stripHanziAndCleanVi(
     customConclusion?.trim() ||
-    aiSummary?.conclusionCueB ||
-    cleanSentenceKeepEssence(
-      `Tóm lại, từ ${primaryHex.name} chuyển sang ${transformedHex.name}: ${
-        transformedHex.advice ||
-        primaryHex.advice ||
-        "Hãy giữ tâm trung chính, rà soát kỹ lưỡng các bước chuyển mình, ổn định cục diện ắt thành công đại cát."
-      }`,
-      48
-    );
+      aiSummary?.conclusionCueB ||
+      cleanSentenceKeepEssence(
+        `Tóm lại, từ ${primaryHex.name} chuyển sang ${transformedHex.name}: ${
+          transformedHex.advice ||
+          primaryHex.advice ||
+          "Hãy giữ tâm trung chính, rà soát kỹ lưỡng các bước chuyển mình, ổn định cục diện ắt thành công đại cát."
+        }`,
+        48
+      )
+  );
 
   const fWordsA = finalCueA.split(/\s+/).filter(Boolean).length;
   const fWordsB = autoConclusion.split(/\s+/).filter(Boolean).length;
@@ -1186,7 +1208,7 @@ export function buildInkWashFilmPlan(
   shots.push({
     index: orderedCards.length,
     title: `${roman[orderedCards.length] || orderedCards.length + 1}. Châu Ấn Kết Luận — Toàn Cảnh Trận Pháp`,
-    subtitle: `Ấn Chu Sa: ${defaultSeal} · Giải Đáp Tâm Niệm`,
+    subtitle: `Ấn Chu Sa Cửu Nhị · Giải Đáp Tâm Niệm`,
     startSec: finalStart,
     endSec: finalEnd,
   });
@@ -1604,23 +1626,34 @@ export class InkWashRenderer {
     this.wetCtx.fillText(hanziWatermark.slice(0, 2), W * 0.5, H * 0.42);
     this.wetCtx.restore();
 
-    // Top-left classical title block
+    // Top-left classical title block (100% Vietnamese font stack, zero CJK glyph mixing)
     this.dryCtx.save();
-    this.dryCtx.globalAlpha = fade * 0.94;
-    const padX = isPortrait ? W * 0.06 : W * 0.055;
-    const padY = isPortrait ? H * 0.065 : H * 0.085;
+    this.dryCtx.globalAlpha = fade * 0.96;
+    const padX = isPortrait ? W * 0.055 : W * 0.05;
+    const padY = isPortrait ? H * 0.062 : H * 0.08;
+    const maxTitleW = W - padX * 2;
 
-    // Vermilion pill tag
+    const cleanSubtitle = stripHanziAndCleanVi(subtitle);
+    const cleanTitle = stripHanziAndCleanVi(title);
+
+    // Vermilion pill tag (using Be Vietnam Pro / Segoe UI for crisp Vietnamese diacritics)
     this.colCtx.save();
-    this.colCtx.globalAlpha = fade * 0.92;
+    this.colCtx.globalAlpha = fade * 0.95;
     this.colCtx.fillStyle = "#B02E22";
-    this.colCtx.font = `bold ${Math.round(Math.min(W, H) * 0.022)}px "Noto Serif", serif`;
-    this.colCtx.fillText(`印 ${badge} · ${subtitle}`, padX, padY);
+    const badgeFontPx = Math.max(13, Math.round(Math.min(W, H) * 0.022));
+    this.colCtx.font = `700 ${badgeFontPx}px "Be Vietnam Pro", "Segoe UI", "Roboto", Arial, sans-serif`;
+    this.colCtx.fillText(`✦ ${badge} · ${cleanSubtitle}`, padX, padY);
     this.colCtx.restore();
 
+    // Main Vietnamese Shot Title (Lora / Be Vietnam Pro / Segoe UI with auto-fit width)
     this.dryCtx.fillStyle = "#1A1510";
-    this.dryCtx.font = `bold ${Math.round(Math.min(W, H) * 0.038)}px "Noto Serif", Georgia, serif`;
-    this.dryCtx.fillText(title, padX, padY + Math.min(W, H) * 0.046);
+    let titleFontPx = Math.max(18, Math.round(Math.min(W, H) * 0.036));
+    this.dryCtx.font = `700 ${titleFontPx}px "Lora", "Be Vietnam Pro", "Segoe UI", "Times New Roman", serif`;
+    while (this.dryCtx.measureText(cleanTitle).width > maxTitleW && titleFontPx > 15) {
+      titleFontPx -= 1;
+      this.dryCtx.font = `700 ${titleFontPx}px "Lora", "Be Vietnam Pro", "Segoe UI", "Times New Roman", serif`;
+    }
+    this.dryCtx.fillText(cleanTitle, padX, padY + Math.min(W, H) * 0.048);
     this.dryCtx.restore();
   }
 
@@ -1633,19 +1666,21 @@ export class InkWashRenderer {
   ): void {
     const dur = Math.max(0.2, cue.endSec - cue.startSec);
     const localT = (timeSec - cue.startSec) / dur;
-    const alpha = smooth(0, 0.12, localT) * (1 - smooth(0.88, 1.0, localT));
+    const alpha = smooth(0, 0.1, localT) * (1 - smooth(0.92, 1.0, localT));
     if (alpha <= 0.01) return;
 
     const ctx = this.outCtx;
     ctx.save();
     ctx.globalAlpha = alpha;
 
-    const fontSize = Math.round(isPortrait ? W * 0.030 : H * 0.029);
-    ctx.font = `600 ${fontSize}px "Noto Serif", Georgia, serif`;
-    const maxW = W * 0.84;
+    const fontSize = Math.max(15, Math.round(isPortrait ? W * 0.031 : H * 0.030));
+    // Pure Vietnamese font stack with full combined diacritic support (ấ, ẩ, ẫ, ậ, ắ, ẳ, ẵ, ặ, ế, ể, ễ, ệ, ố, ổ, ỗ, ộ, ớ, ở, ỡ, ợ, ứ, ử, ữ, ự, đ)
+    ctx.font = `600 ${fontSize}px "Be Vietnam Pro", "Segoe UI", "Lora", "Roboto", Arial, sans-serif`;
+    const maxW = W * 0.86;
 
-    // Wrap text into 1-2 lines
-    const words = cue.text.split(" ");
+    // Strip any accidental Hanzi before rendering subtitle and wrap text cleanly
+    const pureViText = stripHanziAndCleanVi(cue.text);
+    const words = pureViText.split(" ").filter(Boolean);
     const lines: string[] = [];
     let currentLine = "";
     for (const w of words) {
@@ -1659,9 +1694,9 @@ export class InkWashRenderer {
     }
     if (currentLine) lines.push(currentLine);
 
-    const lineH = fontSize * 1.42;
-    const boxH = lines.length * lineH + fontSize * 0.9;
-    const boxY = H - boxH - (isPortrait ? H * 0.055 : H * 0.048);
+    const lineH = fontSize * 1.5;
+    const boxH = lines.length * lineH + fontSize * 0.95;
+    const boxY = H - boxH - (isPortrait ? H * 0.052 : H * 0.045);
 
     // Subtle Xuan-paper frosted backing strip for subtitle legibility
     const grad = ctx.createLinearGradient(0, boxY - 12, 0, boxY + boxH + 12);

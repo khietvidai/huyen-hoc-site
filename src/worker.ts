@@ -12,6 +12,9 @@ export interface Env {
 
 function cleanTextForVietnameseTts(rawText: string): string {
   return (rawText || "")
+    .replace(/[\u2E80-\u2EFF\u3000-\u303F\u3400-\u4DBF\u4DC0-\u4DFF\u4E00-\u9FFF\uF900-\uFAFF\uFF00-\uFFEF]+/g, " ")
+    .replace(/\(\s*[-·•,;:]*\s*\)/g, " ")
+    .replace(/\[\s*[-·•,;:]*\s*\]/g, " ")
     .replace(/\bLá\s*(\d+)\b/gi, (_m, d) => {
       const map: Record<string, string> = {
         "1": "Lá bài số một",
@@ -20,10 +23,15 @@ function cleanTextForVietnameseTts(rawText: string): string {
         "4": "Lá bài số bốn",
         "5": "Lá bài số năm",
         "6": "Lá bài số sáu",
+        "7": "Lá bài số bảy",
+        "8": "Lá bài số tám",
+        "9": "Lá bài số chín",
+        "10": "Lá bài số mười",
       };
       return map[d] || `Lá bài số ${d}`;
     })
     .replace(/[*#_~`>|䷀-䷿⚊⚏☰☱☲☳☴☵☶☷➔•·]/g, " ")
+    .replace(/\s+([,.;:!?])/g, "$1")
     .replace(/\s+/g, " ")
     .trim();
 }

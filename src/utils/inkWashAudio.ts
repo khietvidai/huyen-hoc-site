@@ -160,32 +160,10 @@ export class InkWashAudioEngine {
 
     const p = (async () => {
       try {
-        const profile = resolveVietnameseVoiceProfile(this.voiceProfile);
-        // 1. Call /api/tts (Edge Neural vi-VN-NamMinhNeural Trầm Ấm -6Hz or VoxCPM2 on Worker/Server)
+        // Call /api/tts (100% pure Vietnamese Edge Neural vi-VN-NamMinhNeural / vi-VN-HoaiMyNeural or Google tl=vi)
         const res = await fetch(
           `/api/tts?text=${encodeURIComponent(clean)}&voice=${encodeURIComponent(this.voiceProfile)}`
         );
-        const engineHeader = res.headers.get("X-TTS-Engine") || "";
-        // If user explicitly picked VoxCPM2 or if /api/tts fell back to generic TTS, try direct VoxCPM2 anchored on ref-nam-tram-am.wav
-        if (profile.useVoxCpm || (this.voiceProfile === "nam_tram_am" && engineHeader === "fallback-vi")) {
-          const voxBytes = await synthesizeVoxCpmAnchored(
-            clean,
-            profile.voxControl ||
-              "Deep, warm, calm Vietnamese male narrator, resonant baritone voice, steady philosophical I Ching reading pace",
-            async () => {
-              const r = await fetch("/assets/ref-nam-tram-am.wav");
-              if (!r.ok) return null;
-              return new Uint8Array(await r.arrayBuffer());
-            }
-          );
-          if (voxBytes && voxBytes.byteLength > 800) {
-            const copy = new Uint8Array(voxBytes.byteLength);
-            copy.set(voxBytes);
-            const decoded = await ctx.decodeAudioData(copy.buffer);
-            this.voiceBuffers.set(cacheKey, decoded);
-            return decoded;
-          }
-        }
         if (res.ok) {
           const ab = await res.arrayBuffer();
           if (ab.byteLength > 256) {
@@ -410,9 +388,13 @@ export class InkWashAudioEngine {
     });
   }
 
-  // ── VIETNAMESE SPEECH NARRATION (CLOUD /API/TTS MP3 + SEQUENTIAL QUEUEING + BGM DUCKING) ──
+  // ── VIETNAMESE SPEECH NARRATION (CLOUD /API/TTS MP3 + SEQUENTIAL QUEUEING + BGM DUCKING, ZERO HANZI) ──
   public static sanitizeVietnameseForSpeech(raw: string): string {
-    return raw
+    return (raw || "")
+      // Strip all Chinese characters (Hanzi / CJK) so Vietnamese TTS never tries to read Chinese glyphs
+      .replace(/[\u2E80-\u2EFF\u3000-\u303F\u3400-\u4DBF\u4DC0-\u4DFF\u4E00-\u9FFF\uF900-\uFAFF\uFF00-\uFFEF]+/g, " ")
+      .replace(/\(\s*[-·•,;:]*\s*\)/g, " ")
+      .replace(/\[\s*[-·•,;:]*\s*\]/g, " ")
       .replace(/\bLá\s*(\d+)\b/gi, (_m, d) => {
         const map: Record<string, string> = {
           "1": "Lá bài số một",
@@ -429,6 +411,7 @@ export class InkWashAudioEngine {
         return map[d] || `Lá bài số ${d}`;
       })
       .replace(/[䷀-䷿⚊⚏☰☱☲☳☴☵☶☷➔•·|#*~_`]/g, " ")
+      .replace(/\s+([,.;:!?])/g, "$1")
       .replace(/\s+/g, " ")
       .trim();
   }

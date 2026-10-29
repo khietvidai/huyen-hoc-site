@@ -270,7 +270,12 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
       audioRef.current = new InkWashAudioEngine();
     }
 
-    const timer = window.setTimeout(() => {
+    const timer = window.setTimeout(async () => {
+      try {
+        if (typeof document !== "undefined" && (document as any).fonts?.ready) {
+          await (document as any).fonts.ready;
+        }
+      } catch {}
       if (canvasRef.current) {
         const W = aspect === "16:9" ? 1280 : 720;
         const H = aspect === "16:9" ? 720 : 1280;
@@ -798,17 +803,16 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
                         if (audioRef.current) {
                           audioRef.current.setVoiceProfile(v);
                           const measured = await audioRef.current.preloadAndMeasureCues(filmPlan.narrationCues);
-                          setMeasuredCueDurations(measured);
+                          setAudioDurationsMap(new Map(measured));
                         }
                       }}
                       disabled={isRunningPipeline || isRecordingVideo}
                       className="px-2 py-1.5 rounded-xl text-xs font-serif font-bold bg-[#241C14] text-[#F3E5AB] border border-[#C4963E]/60 focus:outline-none cursor-pointer"
-                      title="Chọn giọng nam trầm ấm đọc quẻ Kinh Dịch"
+                      title="Chọn giọng đọc Tiếng Việt đọc quẻ Kinh Dịch"
                     >
-                      <option value="nam_tram_am">🎙️ Nam Trầm Ấm (Kinh Dịch)</option>
-                      <option value="voxcpm-nam-tram-am">🔥 VoxCPM2 · Nam Trầm Ấm 48kHz</option>
-                      <option value="namminh_elder">🧙‍♂️ Dịch Sư Trưởng Lão</option>
-                      <option value="vi-VN-HoaiMyNeural">🎙️ Nữ Hoài My</option>
+                      <option value="nam_tram_am">🎙️ Nam Trầm Ấm (Tiếng Việt)</option>
+                      <option value="namminh_elder">🧙‍♂️ Dịch Sư Trưởng Lão (Tiếng Việt)</option>
+                      <option value="vi-VN-HoaiMyNeural">🎙️ Nữ Hoài My (Tiếng Việt)</option>
                     </select>
                   </div>
 
