@@ -2,8 +2,8 @@
 // CHINESE INK WASH (THỦY MẶC CHU DỊCH · 水墨周易) — STUDIO WEB AUDIO ENGINE
 // Plays the studio-mastered Guqin & Xiao score (/assets/ink-wash-guqin-score.mp3)
 // + pure harmonic Tibetan/Guqin chimes (zero white-noise static, zero clipping)
-// + verified Vietnamese TTS narration.
-// Routes to both speakers and MediaStreamAudioDestinationNode for video export.
+// + 100% genuine Vietnamese Cloud TTS narration (/api/tts -> AudioBuffer)
+//   with automatic BGM ducking and MediaStreamAudioDestinationNode export.
 // ============================================================================
 
 export interface InkWashNarrationCue {
@@ -20,6 +20,7 @@ export class InkWashAudioEngine {
   private masterGain: GainNode | null = null;
   private musicGain: GainNode | null = null;
   private sfxGain: GainNode | null = null;
+  private voiceGain: GainNode | null = null;
   private streamDest: MediaStreamAudioDestinationNode | null = null;
 
   private bgmBuffer: AudioBuffer | null = null;
@@ -27,8 +28,12 @@ export class InkWashAudioEngine {
   private bgmLoading: boolean = false;
   private isPlayingBgm: boolean = false;
 
+  private voiceBuffers: Map<string, AudioBuffer> = new Map();
+  private voiceLoadingSet: Set<string> = new Set();
+  private activeVoiceSource: AudioBufferSourceNode | null = null;
+
   private isMuted: boolean = false;
-  private isVoiceEnabled: boolean = false; // Default false so music plays pure without SAPI robotic interference
+  private isVoiceEnabled: boolean = true; // Default true: pure Vietnamese narration enabled
   private triggeredEvents: Set<string> = new Set();
   private lastTimeSec: number = -1;
 
@@ -63,13 +68,16 @@ export class InkWashAudioEngine {
       this.masterGain = this.ctx.createGain();
       this.musicGain = this.ctx.createGain();
       this.sfxGain = this.ctx.createGain();
+      this.voiceGain = this.ctx.createGain();
 
-      this.masterGain.gain.value = this.isMuted ? 0 : 0.85;
-      this.musicGain.gain.value = 0.78;
-      this.sfxGain.gain.value = 0.45;
+      this.masterGain.gain.value = this.isMuted ? 0 : 0.90;
+      this.musicGain.gain.value = 0.72;
+      this.sfxGain.gain.value = 0.42;
+      this.voiceGain.gain.value = 1.05;
 
       this.musicGain.connect(this.compressor);
       this.sfxGain.connect(this.compressor);
+      this.voiceGain.connect(this.compressor);
       this.compressor.connect(this.masterGain);
       this.masterGain.connect(this.ctx.destination);
 
@@ -105,6 +113,36 @@ export class InkWashAudioEngine {
     }
   }
 
+  // Preload Vietnamese TTS audio buffers for all narration cues so playback & video recording have zero lag
+  public async preloadNarrationCues(cues: InkWashNarrationCue[]): Promise<void> {
+    const ctx = this.init();
+    for (const cue of cues) {
+      const clean = InkWashAudioEngine.sanitizeVietnameseForSpeech(cue.speakText || cue.text);
+      if (!clean) continue;
+      if (this.voiceBuffers.has(clean) || this.voiceLoadingSet.has(clean)) continue;
+      this.voiceLoadingSet.add(clean);
+
+      (async () => {
+        try {
+          const res = await fetch(
+            `/api/tts?text=${encodeURIComponent(clean)}&voice=vi-VN-NamMinhNeural`
+          );
+          if (res.ok) {
+            const ab = await res.arrayBuffer();
+            if (ab.byteLength > 256) {
+              const decoded = await ctx.decodeAudioData(ab.slice(0));
+              this.voiceBuffers.set(clean, decoded);
+            }
+          }
+        } catch {
+          // Will fallback to speechSynthesis or retry on demand
+        } finally {
+          this.voiceLoadingSet.delete(clean);
+        }
+      })();
+    }
+  }
+
   public startBgmAt(offsetSec: number = 0): void {
     const ctx = this.init();
     this.stopBgmOnly();
@@ -135,6 +173,22 @@ export class InkWashAudioEngine {
     this.isPlayingBgm = false;
   }
 
+  public stopVoiceOnly(): void {
+    if (this.activeVoiceSource) {
+      try {
+        this.activeVoiceSource.stop();
+        this.activeVoiceSource.disconnect();
+      } catch {}
+      this.activeVoiceSource = null;
+    }
+    if (this.musicGain && this.ctx) {
+      this.musicGain.gain.setTargetAtTime(0.72, this.ctx.currentTime, 0.25);
+    }
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+  }
+
   public getMediaStream(): MediaStream | null {
     this.init();
     return this.streamDest ? this.streamDest.stream : null;
@@ -143,26 +197,24 @@ export class InkWashAudioEngine {
   public setMuted(muted: boolean): void {
     this.isMuted = muted;
     if (this.masterGain && this.ctx) {
-      this.masterGain.gain.setTargetAtTime(muted ? 0 : 0.85, this.ctx.currentTime, 0.05);
+      this.masterGain.gain.setTargetAtTime(muted ? 0 : 0.90, this.ctx.currentTime, 0.05);
     }
-    if (muted && typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
+    if (muted) {
+      this.stopVoiceOnly();
     }
   }
 
   public setVoiceEnabled(enabled: boolean): void {
     this.isVoiceEnabled = enabled;
-    if (!enabled && typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
+    if (!enabled) {
+      this.stopVoiceOnly();
     }
   }
 
   public resetTimeline(): void {
     this.triggeredEvents.clear();
     this.lastTimeSec = -1;
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-    }
+    this.stopVoiceOnly();
   }
 
   public stopAll(): void {
@@ -241,7 +293,7 @@ export class InkWashAudioEngine {
     });
   }
 
-  // ── VIETNAMESE SPEECH NARRATION (ONLY WHEN NATIVE VI-VN VOICE IS PRESENT) ──
+  // ── VIETNAMESE SPEECH NARRATION (CLOUD /API/TTS MP3 + BGM DUCKING) ──
   public static sanitizeVietnameseForSpeech(raw: string): string {
     return raw
       .replace(/\bLá\s*(\d+)\b/gi, (_m, d) => {
@@ -264,33 +316,77 @@ export class InkWashAudioEngine {
       .trim();
   }
 
+  private playDecodedVoiceBuffer(buf: AudioBuffer): void {
+    const ctx = this.init();
+    if (!this.voiceGain || this.isMuted || !this.isVoiceEnabled) return;
+
+    this.stopVoiceOnly();
+
+    // Smoothly duck background Guqin music so Vietnamese voice is crystal-clear
+    if (this.musicGain) {
+      this.musicGain.gain.setTargetAtTime(0.26, ctx.currentTime, 0.12);
+    }
+
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.connect(this.voiceGain);
+    src.onended = () => {
+      if (this.activeVoiceSource === src) {
+        this.activeVoiceSource = null;
+        if (this.musicGain && this.ctx) {
+          this.musicGain.gain.setTargetAtTime(0.72, this.ctx.currentTime, 0.35);
+        }
+      }
+    };
+    src.start(0);
+    this.activeVoiceSource = src;
+  }
+
   public speakCue(text: string): void {
     if (!this.isVoiceEnabled || this.isMuted) return;
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    const clean = InkWashAudioEngine.sanitizeVietnameseForSpeech(text);
+    if (!clean) return;
 
-    try {
-      const voices = window.speechSynthesis.getVoices();
-      // Only speak if a real Vietnamese voice is installed (prevents English SAPI from garbling Vietnamese)
-      const viVoice =
-        voices.find((v) => v.lang.toLowerCase().includes("vi") && v.name.toLowerCase().includes("nam")) ||
-        voices.find((v) => v.lang.toLowerCase().includes("vi")) ||
-        null;
-      if (!viVoice) return;
-
-      const clean = InkWashAudioEngine.sanitizeVietnameseForSpeech(text);
-      if (!clean) return;
-
-      window.speechSynthesis.cancel();
-      const utter = new SpeechSynthesisUtterance(clean);
-      utter.voice = viVoice;
-      utter.lang = "vi-VN";
-      utter.rate = 1.0;
-      utter.pitch = 0.96;
-      utter.volume = 0.9;
-      window.speechSynthesis.speak(utter);
-    } catch {
-      // Ignore speech synthesis errors
+    const cached = this.voiceBuffers.get(clean);
+    if (cached) {
+      this.playDecodedVoiceBuffer(cached);
+      return;
     }
+
+    // Fetch from /api/tts on demand if not yet preloaded
+    const ctx = this.init();
+    fetch(`/api/tts?text=${encodeURIComponent(clean)}&voice=vi-VN-NamMinhNeural`)
+      .then((res) => (res.ok ? res.arrayBuffer() : Promise.reject(new Error("TTS HTTP error"))))
+      .then((ab) => {
+        if (ab.byteLength <= 256) throw new Error("Empty TTS buffer");
+        return ctx.decodeAudioData(ab.slice(0));
+      })
+      .then((decoded) => {
+        this.voiceBuffers.set(clean, decoded);
+        if (this.isVoiceEnabled && !this.isMuted) {
+          this.playDecodedVoiceBuffer(decoded);
+        }
+      })
+      .catch(() => {
+        // Fallback to native Vietnamese browser voice if available
+        if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+        try {
+          const voices = window.speechSynthesis.getVoices();
+          const viVoice =
+            voices.find((v) => v.lang.toLowerCase().includes("vi") && v.name.toLowerCase().includes("nam")) ||
+            voices.find((v) => v.lang.toLowerCase().includes("vi")) ||
+            null;
+          if (!viVoice) return;
+          window.speechSynthesis.cancel();
+          const utter = new SpeechSynthesisUtterance(clean);
+          utter.voice = viVoice;
+          utter.lang = "vi-VN";
+          utter.rate = 1.0;
+          utter.pitch = 0.96;
+          utter.volume = 0.95;
+          window.speechSynthesis.speak(utter);
+        } catch {}
+      });
   }
 
   // ── FRAME-SYNCHRONIZED TIMELINE TICK ──
@@ -342,7 +438,7 @@ export class InkWashAudioEngine {
       this.playSealBellChime(0.24);
     }
 
-    // 4. Optional Vietnamese Voice Narration
+    // 4. Vietnamese Voice Narration Cues
     if (this.isVoiceEnabled) {
       narrationCues.forEach((cue) => {
         const cueKey = `cue_${cue.id}`;

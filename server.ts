@@ -1960,67 +1960,24 @@ app.post(
 app.all("/api/tts", async (req: Request, res: Response) => {
   try {
     const rawText = String(req.query.text || req.body?.text || "").trim();
-    const voiceParam = String(req.query.voice || req.body?.voice || "voxcpm-elder").trim();
-    if (rawText && (voiceParam.toLowerCase().startsWith("voxcpm") || !voiceParam.toLowerCase().includes("gtts"))) {
-      try {
-        const cleanedVox = rawText.replace(/[*#_~`>|]/g, " ").replace(/\s+/g, " ").trim();
-        const isFemale = /hoaimy|female/i.test(voiceParam);
-        const isElder = /elder/i.test(voiceParam);
-        const controlPrompt = isFemale
-          ? "Vietnamese female narrator, gentle, clear, warm and expressive voice, natural storytelling pace"
-          : isElder
-          ? "Wise elderly Vietnamese I Ching master, deep resonant baritone voice, slow, solemn, authoritative tone"
-          : "Deep, calm, resonant Vietnamese male narrator voice, authoritative and philosophical, clear articulation";
-        const synthText = cleanedVox.startsWith("...") ? cleanedVox.slice(0, 750) : `... ${cleanedVox.slice(0, 750)}`;
-        const spaceBase = "https://openbmb-voxcpm-demo.hf.space";
-        const callRes = await fetch(`${spaceBase}/gradio_api/call/generate`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "User-Agent": "VoxCPM-Client/2.0" },
-          body: JSON.stringify({ data: [synthText, controlPrompt, null, false, "", 2.0, false, false] }),
-        });
-        if (callRes.ok) {
-          const callJson: any = await callRes.json();
-          if (callJson?.event_id) {
-            const sseRes = await fetch(`${spaceBase}/gradio_api/call/generate/${callJson.event_id}`, {
-              headers: { "User-Agent": "VoxCPM-Client/2.0" },
-            });
-            if (sseRes.ok) {
-              const sseText = await sseRes.text();
-              let fileUrl = "";
-              for (const ln of sseText.split(/\r?\n/)) {
-                const s = ln.trim();
-                if (s.startsWith("data:")) {
-                  try {
-                    const arr = JSON.parse(s.slice(5).trim());
-                    if (Array.isArray(arr) && arr[0]) {
-                      fileUrl = arr[0].url || (arr[0].path ? `${spaceBase}/gradio_api/file=${arr[0].path}` : "");
-                      if (fileUrl) break;
-                    }
-                  } catch {}
-                }
-              }
-              if (fileUrl) {
-                const dlRes = await fetch(fileUrl, { headers: { "User-Agent": "VoxCPM-Client/2.0" } });
-                if (dlRes.ok) {
-                  const ab = await dlRes.arrayBuffer();
-                  if (ab.byteLength > 800) {
-                    res.setHeader("Content-Type", "audio/mpeg");
-                    res.setHeader("Cache-Control", "public, max-age=3600");
-                    return res.send(Buffer.from(ab));
-                  }
-                }
-              }
-            }
-          }
-        }
-      } catch (_voxErr) {
-        // Fallback to chunked TTS below
-      }
-    }
     if (!rawText) {
       return res.status(400).json({ error: "Empty text" });
     }
-    const cleaned = rawText.replace(/[*#_~`>|]/g, " ").replace(/\s+/g, " ").trim();
+    const cleaned = rawText
+      .replace(/\bLá\s*(\d+)\b/gi, (_m, d) => {
+        const map: Record<string, string> = {
+          "1": "Lá bài số một",
+          "2": "Lá bài số hai",
+          "3": "Lá bài số ba",
+          "4": "Lá bài số bốn",
+          "5": "Lá bài số năm",
+          "6": "Lá bài số sáu",
+        };
+        return map[d] || `Lá bài số ${d}`;
+      })
+      .replace(/[*#_~`>|䷀-䷿⚊⚏☰☱☲☳☴☵☶☷➔•·]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
     const parts = cleaned.split(/(?<=[.!?…。；;:\n])\s+|(?=[,，])\s*/);
     const chunks: string[] = [];
     let cur = "";
@@ -2038,16 +1995,24 @@ app.all("/api/tts", async (req: Request, res: Response) => {
 
     const buffers: Buffer[] = [];
     for (const chunk of chunks.slice(0, 24)) {
-      const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=vi&client=tw-ob&q=${encodeURIComponent(chunk)}`;
-      const r = await fetch(ttsUrl, {
-        headers: {
-          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36",
-          Referer: "https://translate.google.com/",
-        },
-      });
-      if (r.ok) {
-        const ab = await r.arrayBuffer();
-        if (ab.byteLength > 0) buffers.push(Buffer.from(ab));
+      const endpoints = [
+        `https://translate.google.com/translate_tts?ie=UTF-8&tl=vi&client=tw-ob&q=${encodeURIComponent(chunk)}`,
+        `https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=vi&q=${encodeURIComponent(chunk)}`,
+      ];
+      for (const ttsUrl of endpoints) {
+        const r = await fetch(ttsUrl, {
+          headers: {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36",
+            Referer: "https://translate.google.com/",
+          },
+        });
+        if (r.ok) {
+          const ab = await r.arrayBuffer();
+          if (ab.byteLength > 0) {
+            buffers.push(Buffer.from(ab));
+            break;
+          }
+        }
       }
     }
 

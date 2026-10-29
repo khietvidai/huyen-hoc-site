@@ -49,7 +49,7 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [isMuted, setIsMuted] = useState<boolean>(false);
-  const [isVoiceEnabled, setIsVoiceEnabled] = useState<boolean>(false);
+  const [isVoiceEnabled, setIsVoiceEnabled] = useState<boolean>(true);
   const [isDecomposing, setIsDecomposing] = useState<boolean>(false);
 
   // Editable overrides for question, seal stamp characters ("玖貳"), and final conclusion
@@ -141,6 +141,7 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
     if (!audioRef.current) {
       audioRef.current = new InkWashAudioEngine();
     }
+    audioRef.current.preloadNarrationCues(filmPlan.narrationCues);
 
     const timer = window.setTimeout(() => {
       if (canvasRef.current) {
@@ -581,10 +582,10 @@ export const InkWashFilmModal: React.FC<InkWashFilmModalProps> = ({
                           ? "bg-[#241C14] text-[#F3E5AB] border-[#C4963E]/60"
                           : "bg-[#18130E] text-[#7D6E57] border-[#2E2318]"
                       }`}
-                      title="Bật/tắt giọng đọc trình duyệt (chỉ đọc khi máy có giọng Tiếng Việt bản địa)"
+                      title="Bật/tắt giọng đọc thuyết minh Tiếng Việt"
                     >
                       {isVoiceEnabled ? <Mic className="w-3.5 h-3.5 text-emerald-400" /> : <MicOff className="w-3.5 h-3.5" />}
-                      <span>Giọng Đọc</span>
+                      <span>Giọng Việt</span>
                     </button>
                   </div>
 
