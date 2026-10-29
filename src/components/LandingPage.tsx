@@ -1647,6 +1647,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   /* Anchors for scroll physics */
   const heroAnchorRef = useRef<HTMLDivElement>(null);
   const destinyAnchorRef = useRef<HTMLDivElement>(null);
+  const bridgeRef = useRef<HTMLDivElement>(null);
+  const destinyTitleRef = useRef<HTMLDivElement>(null);
+  const captionRef = useRef<HTMLDivElement>(null);
   const featuresAnchorRef = useRef<HTMLDivElement>(null);
   const featuresSecRef = useRef<HTMLElement>(null);
 
@@ -2081,8 +2084,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     const stage = stageRef.current;
     if (!layer || !stage) return;
 
-    let curX = 0, curY = 0, curG = 0, curF = 0, curHero = 0;
-    let tgtX = 0, tgtY = 0, tgtG = 0, tgtF = 0, tgtHero = 0;
+    let curX = 0, curY = 0, curG = 0, curF = 0, curHero = 0, curOpacity = 1;
+    let tgtX = 0, tgtY = 0, tgtG = 0, tgtF = 0, tgtHero = 0, tgtOpacity = 1;
     let isAnimating = false;
     let isInitialized = false;
 
@@ -2100,8 +2103,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       let destinyStageX = 0;
       let featuresStageX = isDesktop ? window.innerWidth * 0.23 : 0;
 
-      if (heroAnchorRef.current) {
-        const hr = heroAnchorRef.current.getBoundingClientRect();
+      const hr = heroAnchorRef.current?.getBoundingClientRect();
+      const dr = destinyAnchorRef.current?.getBoundingClientRect();
+      const tr = destinyTitleRef.current?.getBoundingClientRect();
+      const br = bridgeRef.current?.getBoundingClientRect();
+      const cr = captionRef.current?.getBoundingClientRect();
+
+      if (hr) {
         heroDocY = hr.top + scrollY + hr.height / 2;
         heroStageX = (hr.left + hr.width / 2) - originX;
         // Chệch bên góc phải trên desktop để các lá bài xòe quạt gọn gàng thông thoáng, hoàn toàn không che các nút bấm bên trái
@@ -2116,8 +2124,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           heroDocY = Math.max(200, heroDocY - mobileUpwardOffset);
         }
       }
-      if (destinyAnchorRef.current) {
-        const dr = destinyAnchorRef.current.getBoundingClientRect();
+      if (dr) {
         destinyDocY = dr.top + scrollY + dr.height / 2;
         destinyStageX = (dr.left + dr.width / 2) - originX;
       }
@@ -2128,56 +2135,82 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       }
 
       const s1 = Math.max(120, destinyDocY - originY);
-      const s1_hold = s1 + 320; // Giữ tại Bàn Trải Bài tới dòng chú thích rồi ngưng, không trượt xuống dưới nữa
+      // Giữ cố định trên bàn trải bài cho đến khi cuộn qua dòng chú thích
+      let s1_hold = s1 + 340;
+      if (cr) {
+        s1_hold = Math.max(s1 + 80, cr.top + scrollY - originY + 40);
+      }
 
       const curHeroY = (heroDocY - scrollY) - originY;
       const curDestinyY = (destinyDocY - scrollY) - originY;
 
-      if (scrollY <= s1) {
-        // GIAI ĐOẠN 1: Hero -> Destiny Cards
-        const p1 = Math.min(1, Math.max(0, scrollY / s1));
-        const t1 = smoothstep(p1);
+      // ── XÁC ĐỊNH VÙNG CHỮ ĐỂ TẠM ẨN BÀI ("bài đụng tới chỗ có chữ sẽ tạm ẩn") ──
+      // 1. Độ trong suốt Hero:
+      // Ở đầu trang (Hero), các lá bài hiển thị ở dáng quạt bên phải/dưới.
+      // Khi người dùng bắt đầu cuộn xuống, bài đụng tới chỗ có chữ (cầu thủy mặc & tiêu đề): tạm ẩn bài đi.
+      const cardHalfH = isDesktop ? 140 : 110;
+      const heroCardBottomScreen = (heroDocY - scrollY) + cardHalfH;
+      const textTopScreen = br ? br.top : (tr ? tr.top - 100 : window.innerHeight * 0.85);
+      const distToText = textTopScreen - heroCardBottomScreen;
 
-        tgtX = heroStageX * (1 - t1) + destinyStageX * t1;
-        tgtY = curHeroY * (1 - t1) + curDestinyY * t1;
-        tgtG = smoothstep(Math.min(1, p1 / 0.50));
-
-        // Trong khu vực Hero phần màu đen (p1 <= 0.22): giữ nguyên 100% dáng quạt gọn gàng bên phải, không che nút bên trái
-        // Khi cuộn xuống phần trắng (Destiny Cards, p1 > 0.22): các lá bài từ từ mở rộng thành trận pháp trải rộng
-        const spreadProgress = smoothstep(Math.max(0, Math.min(1, (p1 - 0.22) / 0.78)));
-        tgtF = spreadProgress;
-        tgtHero = 1 - spreadProgress;
-
-        if (layer) {
-          layer.style.opacity = "1";
-          layer.style.visibility = "visible";
-        }
-      } else if (scrollY <= s1_hold) {
-        // GIAI ĐOẠN 2: Dừng cố định tại khu vực Bàn Trải Bài (Destiny Cards), phía trên dòng chú thích
-        tgtX = destinyStageX;
-        tgtY = curDestinyY;
-        tgtG = 1;
-        tgtF = 1;
-        tgtHero = 0;
-        if (layer) {
-          layer.style.opacity = "1";
-          layer.style.visibility = "visible";
-        }
+      let heroOpacity = 0;
+      if (scrollY <= 30) {
+        heroOpacity = 1;
+      } else if (distToText > 140) {
+        heroOpacity = 1;
+      } else if (distToText > -20) {
+        heroOpacity = Math.max(0, Math.min(1, (distToText + 20) / 160));
       } else {
-        // GIAI ĐOẠN 3: Khi cuộn qua dòng chú thích xuống phần dưới (cả Desktop & Mobile):
-        // Các lá bài ngưng hoàn toàn tại Bàn Trải Bài, không bay theo xuống dưới và ẩn đi
+        heroOpacity = 0;
+      }
+
+      if (scrollY >= 170) {
+        heroOpacity = 0;
+      }
+
+      // 2. Độ trong suốt Trận Pháp ("xuống tới chỗ trống bên dưới đặt trận pháp full mới hiện ra lại"):
+      // Khi cuộn qua hết khối chữ tiêu đề, tới khu vực vòng tròn Bát Quái / khoảng trống Bàn Trải Bài:
+      const textBottomScreen = tr ? tr.bottom : (destinyDocY - scrollY - 260);
+      const spreadCardTopScreen = curDestinyY + originY - cardHalfH;
+      const spaceCleared = spreadCardTopScreen - textBottomScreen;
+
+      let spreadOpacity = 0;
+      if (scrollY > s1_hold) {
+        // Cuộn qua dòng chú thích xuống dưới: mờ dần và ẩn
+        const fadeOut = Math.max(0, Math.min(1, 1 - (scrollY - s1_hold) / 180));
+        spreadOpacity = smoothstep(fadeOut);
+      } else if (textBottomScreen <= window.innerHeight * 0.28 || spaceCleared >= 40 || scrollY >= s1 - 80) {
+        // Đã vào trọn vẹn khoảng trống bên dưới đặt trận pháp
+        spreadOpacity = 1;
+      } else if (textBottomScreen <= window.innerHeight * 0.65 || spaceCleared >= -80 || scrollY >= s1 - 260) {
+        // Đang tiến dần vào khoảng trống: hiện dần ra mượt mà
+        const p1 = tr
+          ? Math.max(0, Math.min(1, (window.innerHeight * 0.65 - textBottomScreen) / (window.innerHeight * 0.37)))
+          : Math.max(0, Math.min(1, (scrollY - (s1 - 260)) / 180));
+        spreadOpacity = smoothstep(p1);
+      } else {
+        // Đang ở đúng ngay chỗ có chữ: hoàn toàn tạm ẩn!
+        spreadOpacity = 0;
+      }
+
+      // 3. Phân vùng điều khiển:
+      const midScroll = (170 + Math.max(220, s1 - 260)) / 2;
+      const isHeroDominant = scrollY < midScroll;
+
+      if (isHeroDominant) {
+        tgtOpacity = heroOpacity;
+        tgtX = heroStageX;
+        tgtY = curHeroY;
+        tgtG = 0;
+        tgtF = 0; // Dáng quạt bài gọn gàng ở Hero
+        tgtHero = 1;
+      } else {
+        tgtOpacity = spreadOpacity;
         tgtX = destinyStageX;
         tgtY = curDestinyY;
         tgtG = 1;
-        tgtF = 1;
+        tgtF = 1; // Bung mở 100% TRẬN PHÁP FULL tại khoảng trống bên dưới
         tgtHero = 0;
-
-        const fadeOut = Math.max(0, Math.min(1, 1 - (scrollY - s1_hold) / 180));
-        if (layer) {
-          layer.style.opacity = fadeOut.toFixed(3);
-          layer.style.visibility = fadeOut <= 0.01 ? "hidden" : "visible";
-          layer.style.pointerEvents = "none";
-        }
       }
     }
 
@@ -2727,20 +2760,44 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       const dg = tgtG - curG;
       const df = tgtF - curF;
       const dh = tgtHero - curHero;
+      const dop = tgtOpacity - curOpacity;
 
       curX += dx * 0.20;
       curY += dy * 0.20;
       curG += dg * 0.18;
       curF += df * 0.16;
       curHero += dh * 0.16;
+      curOpacity += dop * 0.22;
 
       renderCards(curX, curY, curG, curF, curHero);
+      if (layer) {
+        layer.style.opacity = curOpacity.toFixed(3);
+        layer.style.visibility = curOpacity <= 0.01 ? "hidden" : "visible";
+        layer.style.pointerEvents = curOpacity < 0.2 ? "none" : "auto";
+      }
 
-      if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1 || Math.abs(dg) > 0.005 || Math.abs(df) > 0.005 || Math.abs(dh) > 0.005) {
+      if (
+        Math.abs(dx) > 0.1 ||
+        Math.abs(dy) > 0.1 ||
+        Math.abs(dg) > 0.005 ||
+        Math.abs(df) > 0.005 ||
+        Math.abs(dh) > 0.005 ||
+        Math.abs(dop) > 0.005
+      ) {
         requestAnimationFrame(tick);
       } else {
-        curX = tgtX; curY = tgtY; curG = tgtG; curF = tgtF; curHero = tgtHero;
+        curX = tgtX;
+        curY = tgtY;
+        curG = tgtG;
+        curF = tgtF;
+        curHero = tgtHero;
+        curOpacity = tgtOpacity;
         renderCards(curX, curY, curG, curF, curHero);
+        if (layer) {
+          layer.style.opacity = curOpacity.toFixed(3);
+          layer.style.visibility = curOpacity <= 0.01 ? "hidden" : "visible";
+          layer.style.pointerEvents = curOpacity < 0.2 ? "none" : "auto";
+        }
         isAnimating = false;
       }
     }
@@ -2749,8 +2806,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       calcTargets();
       if (!isInitialized) {
         isInitialized = true;
-        curX = tgtX; curY = tgtY; curG = tgtG; curF = tgtF; curHero = tgtHero;
+        curX = tgtX;
+        curY = tgtY;
+        curG = tgtG;
+        curF = tgtF;
+        curHero = tgtHero;
+        curOpacity = tgtOpacity;
         renderCards(curX, curY, curG, curF, curHero);
+        if (layer) {
+          layer.style.opacity = curOpacity.toFixed(3);
+          layer.style.visibility = curOpacity <= 0.01 ? "hidden" : "visible";
+          layer.style.pointerEvents = curOpacity < 0.2 ? "none" : "auto";
+        }
         return;
       }
       if (!isAnimating) {
@@ -2761,9 +2828,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
     requestTickRef.current = requestTick;
     renderFullSpreadRef.current = () => {
+      curOpacity = 1;
+      tgtOpacity = 1;
+      curF = 1;
+      tgtF = 1;
+      curHero = 0;
+      tgtHero = 0;
       if (layer) {
         layer.style.opacity = "1";
         layer.style.visibility = "visible";
+        layer.style.pointerEvents = "auto";
       }
       renderCards(0, 0, 0, 1, 0);
     };
@@ -5394,6 +5468,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             Chuyển cảnh mượt mà từ Bầu Trời Đêm Huyền Mặc sang Giấy Tuyên Thành
             ══════════════════════════════════════════════════════════════════ */}
         <div
+          ref={bridgeRef}
           aria-hidden="true"
           className="relative w-full h-28 sm:h-36 overflow-hidden pointer-events-none select-none flex items-center justify-center"
           style={{
@@ -5490,7 +5565,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           </div>
 
           {/* Tiêu đề thanh nhã, giữ vị trí tự nhiên phía trên các lá bài để không bao giờ bị lá bài che khuất */}
-          <div className="relative z-[38] mx-auto max-w-4xl px-4 pt-2 pb-4 text-center sm:px-0 sm:pt-4 sm:pb-6">
+          <div ref={destinyTitleRef} className="relative z-[38] mx-auto max-w-4xl px-4 pt-2 pb-4 text-center sm:px-0 sm:pt-4 sm:pb-6">
             <div className="relative">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#16130F] border border-[#C4963E]/70 text-[#F3E5AB] text-xs font-semibold mb-3.5 tracking-widest uppercase shadow-[0_4px_18px_rgba(20,16,10,0.16)]">
                 <span className="text-[#D4AF37]">✦</span>
@@ -5591,7 +5666,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           </div>
 
           {/* Chú thích gợi ý tương tác đặt riêng biệt phía dưới xa, hoàn toàn không chạm hay che vào đáy lá bài */}
-          <div className="relative z-10 mt-6 mb-10 text-center pointer-events-auto">
+          <div ref={captionRef} className="relative z-10 mt-6 mb-10 text-center pointer-events-auto">
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#EFE9DA]/90 border border-[#C4963E]/35 text-xs sm:text-sm text-[#6E5626] font-serif tracking-wide shadow-2xs">
               <span className="text-[#C4963E]">✦</span>
               <span>Nhấp vào từng lá bài để soi Mặt Trước &amp; Mặt Sau, tra cứu Hào Từ &amp; Lời Giải AI</span>
