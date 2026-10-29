@@ -1240,6 +1240,12 @@ export default function App() {
           }}
           onShowToast={showToast}
         />
+
+        {/* Modal Donate Ủng Hộ Dự Án */}
+        <DonateModal
+          isOpen={isDonateModalOpen}
+          onClose={() => setIsDonateModalOpen(false)}
+        />
       </>
     );
   }

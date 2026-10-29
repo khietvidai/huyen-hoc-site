@@ -2303,7 +2303,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       const rot = fan.rot * (1 - f) + dest.rot * f;
       const sc = fan.scale * (1 - f) + dest.scale * f;
       const z = f > 0.5 ? dest.zIndex : fan.zIndex;
-      const isHidden = layer?.style.visibility === "hidden" || parseFloat(layer?.style.opacity || "1") < 0.15;
+      const isHidden = layer?.style.visibility === "hidden" || parseFloat(layer?.style.opacity || "1") < 0.15 || f < 0.05;
 
       slot.style.pointerEvents = isHidden ? "none" : "auto";
       slot.style.transform = `perspective(1200px) translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, ${z}px) rotate(${rot.toFixed(1)}deg) scale(${sc.toFixed(3)})`;
@@ -2773,7 +2773,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       if (layer) {
         layer.style.opacity = curOpacity.toFixed(3);
         layer.style.visibility = curOpacity <= 0.01 ? "hidden" : "visible";
-        layer.style.pointerEvents = curOpacity < 0.2 ? "none" : "auto";
+        layer.style.pointerEvents = "none";
       }
 
       if (
@@ -2796,7 +2796,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         if (layer) {
           layer.style.opacity = curOpacity.toFixed(3);
           layer.style.visibility = curOpacity <= 0.01 ? "hidden" : "visible";
-          layer.style.pointerEvents = curOpacity < 0.2 ? "none" : "auto";
+          layer.style.pointerEvents = "none";
         }
         isAnimating = false;
       }
@@ -2816,7 +2816,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         if (layer) {
           layer.style.opacity = curOpacity.toFixed(3);
           layer.style.visibility = curOpacity <= 0.01 ? "hidden" : "visible";
-          layer.style.pointerEvents = curOpacity < 0.2 ? "none" : "auto";
+          layer.style.pointerEvents = "none";
         }
         return;
       }
@@ -2837,7 +2837,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       if (layer) {
         layer.style.opacity = "1";
         layer.style.visibility = "visible";
-        layer.style.pointerEvents = "auto";
+        layer.style.pointerEvents = "none";
       }
       renderCards(0, 0, 0, 1, 0);
     };
@@ -5262,8 +5262,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       {/* ══════════════════════════════════════════════════════════════════
           2. HERO SECTION – PRESERVED FROM USER SCREENSHOT with CỬU NHỊ LOGO
           ══════════════════════════════════════════════════════════════════ */}
-      <div id="landing-scroll" className="relative isolate w-full">
-        <section aria-label="首屏" className="relative isolate min-h-[100dvh] w-full overflow-x-visible overflow-y-hidden pt-[4.5rem]">
+      <div id="landing-scroll" className="relative isolate z-10 w-full">
+        <section aria-label="首屏" className="relative isolate z-20 min-h-[100dvh] w-full overflow-x-visible overflow-y-hidden pt-[4.5rem]">
           {/* Nền ảnh hero-frame */}
           <div className="pointer-events-none absolute inset-0 z-0">
             <img
@@ -5347,7 +5347,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               </p>
 
               {/* Dải nút hành động Desktop: Đồng bộ 100% chung 1 phong cách Glassmorphism sang trọng */}
-              <div className="hidden lg:flex w-full lg:w-auto flex-col items-start relative z-[55] mt-2">
+              <div className="hidden lg:flex w-full lg:w-auto flex-col items-start relative z-[70] mt-2 pointer-events-auto">
                 {/* Hàng 1: Bắt Đầu Bốc Quẻ + Liên Hệ Zalo (Kính mờ cao cấp, chữ trắng sáng đồng bộ) */}
                 <div className="flex w-full max-w-xl flex-row items-stretch gap-3 lg:w-auto">
                   {/* Nút Bắt Đầu Bốc Quẻ */}
@@ -5385,6 +5385,20 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     <span className="truncate">Liên Hệ Zalo</span>
                   </a>
                 </div>
+
+                {/* Hàng 2: Nút Donate Ủng Hộ Dự Án ngay dưới chỗ nút bốc quẻ */}
+                <div className="mt-3 w-full max-w-xl flex items-center justify-start">
+                  <button
+                    type="button"
+                    onClick={() => window.dispatchEvent(new CustomEvent("open-donate-modal"))}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-serif font-bold text-amber-300 bg-amber-950/60 hover:bg-amber-900/80 border border-amber-600/60 hover:border-amber-400 rounded-full transition-all cursor-pointer shadow-lg hover:shadow-amber-900/30 active:scale-95 group"
+                    title="Quét mã QR donate ủng hộ dự án"
+                  >
+                    <span className="text-rose-400 text-sm animate-pulse">💖</span>
+                    <span>Donate Ủng Hộ Dự Án</span>
+                    <span className="text-amber-400 text-xs">📱</span>
+                  </button>
+                </div>
               </div>
 
               {/* Dải số liệu thống kê (Stats: 64 Quẻ, 384 Hào, 12 Trận Pháp, 9+ Phương Pháp) */}
@@ -5411,7 +5425,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             </div>
 
             {/* Dải nút hành động Mobile (Khung tâm niệm ở trên + Bắt Đầu Bốc Quẻ Tam Kính + Giữ nguyên & Chép cho AI ở dưới) */}
-            <div id="hero-mobile-actions" className="flex w-full max-w-xl shrink-0 flex-col items-center gap-2 pointer-events-auto max-lg:pt-1 lg:hidden relative z-[55]">
+            <div id="hero-mobile-actions" className="flex w-full max-w-xl shrink-0 flex-col items-center gap-2 pointer-events-auto max-lg:pt-1 lg:hidden relative z-[70]">
               {/* Hàng 1: Bắt Đầu Bốc Quẻ + Liên Hệ Zalo (Đồng bộ Glassmorphism trên mobile) */}
               <div className="flex w-full max-w-xl flex-row items-stretch gap-2">
                 <RitualHoldButton
@@ -5447,6 +5461,18 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   <span className="truncate">Liên Hệ Zalo</span>
                 </a>
               </div>
+
+              {/* Hàng 2: Nút Donate Ủng Hộ Dự Án ngay dưới nút bốc quẻ */}
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new CustomEvent("open-donate-modal"))}
+                className="flex items-center justify-center gap-1.5 w-full rounded-2xl px-3 py-2.5 text-xs font-semibold text-amber-300 bg-amber-950/60 hover:bg-amber-900/80 border border-amber-600/60 hover:border-amber-400 transition cursor-pointer shadow-md active:scale-[0.98]"
+                title="Quét mã QR donate ủng hộ dự án"
+              >
+                <span className="text-rose-400">💖</span>
+                <span>Donate Ủng Hộ Dự Án</span>
+                <span className="text-amber-400 text-xs">📱</span>
+              </button>
             </div>
 
             {/* ── CỘT PHẢI: HERO CARD ANCHOR (Điểm neo cho xấp bài ở Hero - Sắp ở dưới trên mobile) ── */}
@@ -5683,7 +5709,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         ref={layerRef}
         id="cards-stack-layer"
         className="pointer-events-none fixed inset-0 z-[42] flex items-center justify-center overflow-visible"
-        style={{ opacity: 1 }}
+        style={{ opacity: 1, pointerEvents: "none" }}
       >
         <div
           ref={stageRef}
