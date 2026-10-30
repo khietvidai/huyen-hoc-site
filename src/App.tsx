@@ -1172,6 +1172,12 @@ export default function App() {
             <span>{toastMessage}</span>
           </div>
         )}
+
+        {/* Modal Donate Ủng Hộ Dự Án */}
+        <DonateModal
+          isOpen={isDonateModalOpen}
+          onClose={() => setIsDonateModalOpen(false)}
+        />
       </>
     );
   }
@@ -1203,6 +1209,7 @@ export default function App() {
             setCurrentUser(null);
             showToast("Đã đăng xuất tài khoản Cửu Nhị.");
           }}
+          onOpenDonateModal={() => setIsDonateModalOpen(true)}
         />
 
         {/* Toast Notification khi ở Trang Chủ */}
@@ -1276,6 +1283,7 @@ export default function App() {
         onOpenWorkspace={(tab) => handleOpenWorkspace(tab || "docs")}
         onOpenDailyHexagram={() => setIsDailyHexagramOpen(true)}
         currentUser={currentUser}
+        onOpenDonateModal={() => setIsDonateModalOpen(true)}
         onOpenAuthModal={(mode) => {
           setAuthModalMode(mode || "login");
           setIsAuthModalOpen(true);

@@ -25,6 +25,8 @@ import {
   Lock,
   Coins,
   FileText,
+  Heart,
+  QrCode,
 } from "lucide-react";
 import { NavTab } from "./Header";
 import { BrandMark, LuopanRing } from "./BrandMark";
@@ -902,6 +904,18 @@ ${!isMember ? `- Quyền lợi Hội Viên sau khi đăng ký: ${selectedConsult
                   <MessageSquare className="w-4 h-4 shrink-0" />
                   <span>{isMember ? "Gia Hạn / Liên Hệ Qua Zalo" : "Đăng Ký Hội Viên Qua Zalo"}</span>
                 </a>
+
+                {/* Nút Tùy Hỷ Công Đức / Donate */}
+                <button
+                  type="button"
+                  onClick={() => window.dispatchEvent(new CustomEvent("open-donate-modal"))}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-serif font-bold text-amber-300 hover:text-amber-200 bg-amber-950/40 hover:bg-amber-900/60 border border-amber-600/50 hover:border-amber-400 transition-all cursor-pointer shadow-xs active:scale-95 group"
+                  title="Quét mã QR phát tâm công đức / donate ủng hộ dự án Cửu Nhị"
+                >
+                  <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-500/20 group-hover:scale-110 transition-transform" />
+                  <span>Tùy Hỷ Công Đức · Donate Ủng Hộ</span>
+                  <QrCode className="w-3.5 h-3.5 text-amber-400" />
+                </button>
               </div>
             </div>
           </div>

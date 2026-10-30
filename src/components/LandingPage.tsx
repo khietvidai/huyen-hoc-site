@@ -9,8 +9,7 @@
  * - Interactive modals: Card Detail Inspector, Coin Toss Divination Studio, Life Config Thermal Receipt
  */
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { Camera, Bookmark, FolderOpen, Clock } from "lucide-react";
-import { InkWashFilmModal } from "./InkWashFilmModal";
+import { Camera, Bookmark, FolderOpen, Clock, Heart, QrCode } from "lucide-react";
 import { SaveSpreadDialog } from "./SaveSpreadDialog";
 import { SavedSpreadsModal } from "./SavedSpreadsModal";
 import { TempSpreadsModal } from "./TempSpreadsModal";
@@ -39,6 +38,7 @@ export interface LandingPageProps {
   onEnterApp: (tab?: NavTab, method?: string) => void;
   onOpenAuthModal?: (mode?: "login" | "register" | "upgrade") => void;
   onLogout?: () => void;
+  onOpenDonateModal?: () => void;
 }
 
 const getHexagramsUrl = () => "/vi/hexagram";
@@ -1626,6 +1626,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   onEnterApp,
   onOpenAuthModal,
   onLogout,
+  onOpenDonateModal,
 }) => {
   /* Spread mode state (random initial mode from 1, 1->2, 1->3, 3->5) */
   const [mode, setMode] = useState<SpreadMode>(() => SPREAD_MODES[Math.floor(Math.random() * SPREAD_MODES.length)]);
@@ -1926,27 +1927,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     return false;
   });
   const isDragonLocked = !isDragonUnlocked;
-  const isInkWashStudioLocked = isDragonLocked || !userIntentQuestion.trim() || !hasCopiedWithQuestion;
-
-  const handleOpenInkWashStudio = useCallback(() => {
-    if (isDragonLocked) {
-      setCopiedToast("🔒 Cửu Nhị Tiểu Long còn đang ngủ! Hãy bấm “Gọi Cửu Nhị Tiểu Long Dậy” và chờ 5 giây để mở khóa.");
-      setTimeout(() => setCopiedToast(null), 3500);
-      return;
-    }
-    if (!userIntentQuestion.trim()) {
-      setCopiedToast("🔒 Chưa có câu hỏi! Vui lòng nhập câu hỏi vào Hương Án Khởi Niệm rồi nhấn “Chép Toàn Bộ Quẻ Bài & Câu Hỏi Cho AI” trước khi mở Xưởng Phim Thủy Mặc.");
-      setTimeout(() => setCopiedToast(null), 3500);
-      return;
-    }
-    if (!hasCopiedWithQuestion) {
-      setCopiedToast("🔒 Vui lòng nhấn nút “Chép Toàn Bộ Quẻ Bài & Câu Hỏi Cho AI” (khi đã có câu hỏi) trước khi mở Xưởng Phim Thủy Mặc!");
-      setTimeout(() => setCopiedToast(null), 3500);
-      return;
-    }
-    setInkWashModalTab("live");
-    setIsInkWashModalOpen(true);
-  }, [isDragonLocked, userIntentQuestion, hasCopiedWithQuestion]);
   const dragonUnlockTimerRef = useRef<number | null>(null);
   const [dragonIdleAct, setDragonIdleAct] = useState<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7>(0);
   const [dragonAutoFullAct, setDragonAutoFullAct] = useState<6 | 7>(6);
@@ -3660,8 +3640,6 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
   } | null>(null);
   const [isDirectResultModalOpen, setIsDirectResultModalOpen] = useState<boolean>(false);
   const [directResultActiveTab, setDirectResultActiveTab] = useState<"interp" | "script" | "raw">("interp");
-  const [isInkWashModalOpen, setIsInkWashModalOpen] = useState<boolean>(false);
-  const [inkWashModalTab, setInkWashModalTab] = useState<"live" | "sample">("live");
   const [isRecordingVoiceQ, setIsRecordingVoiceQ] = useState<boolean>(false);
   const [isTranscribingVoiceQ, setIsTranscribingVoiceQ] = useState<boolean>(false);
   const [voiceRecordSec, setVoiceRecordSec] = useState<number>(0);
@@ -5390,13 +5368,16 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 <div className="mt-3 w-full max-w-xl flex items-center justify-start">
                   <button
                     type="button"
-                    onClick={() => window.dispatchEvent(new CustomEvent("open-donate-modal"))}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-serif font-bold text-amber-300 bg-amber-950/60 hover:bg-amber-900/80 border border-amber-600/60 hover:border-amber-400 rounded-full transition-all cursor-pointer shadow-lg hover:shadow-amber-900/30 active:scale-95 group"
-                    title="Quét mã QR donate ủng hộ dự án"
+                    onClick={() => {
+                      if (onOpenDonateModal) onOpenDonateModal();
+                      else window.dispatchEvent(new CustomEvent("open-donate-modal"));
+                    }}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-serif font-bold text-amber-300 hover:text-amber-200 bg-amber-950/60 hover:bg-amber-900/80 border border-amber-600/60 hover:border-amber-400 rounded-full transition-all cursor-pointer shadow-lg hover:shadow-amber-900/30 active:scale-95 group"
+                    title="Quét mã QR donate ủng hộ dự án Cửu Nhị"
                   >
-                    <span className="text-rose-400 text-sm animate-pulse">💖</span>
+                    <Heart className="w-4 h-4 text-rose-400 fill-rose-500/30 group-hover:scale-110 transition-transform" />
                     <span>Donate Ủng Hộ Dự Án</span>
-                    <span className="text-amber-400 text-xs">📱</span>
+                    <QrCode className="w-3.5 h-3.5 text-amber-400 group-hover:text-amber-200" />
                   </button>
                 </div>
               </div>
@@ -5465,13 +5446,16 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               {/* Hàng 2: Nút Donate Ủng Hộ Dự Án ngay dưới nút bốc quẻ */}
               <button
                 type="button"
-                onClick={() => window.dispatchEvent(new CustomEvent("open-donate-modal"))}
-                className="flex items-center justify-center gap-1.5 w-full rounded-2xl px-3 py-2.5 text-xs font-semibold text-amber-300 bg-amber-950/60 hover:bg-amber-900/80 border border-amber-600/60 hover:border-amber-400 transition cursor-pointer shadow-md active:scale-[0.98]"
-                title="Quét mã QR donate ủng hộ dự án"
+                onClick={() => {
+                  if (onOpenDonateModal) onOpenDonateModal();
+                  else window.dispatchEvent(new CustomEvent("open-donate-modal"));
+                }}
+                className="flex items-center justify-center gap-1.5 w-full rounded-2xl px-3 py-2.5 text-xs font-semibold text-amber-300 hover:text-amber-200 bg-amber-950/60 hover:bg-amber-900/80 border border-amber-600/60 hover:border-amber-400 transition cursor-pointer shadow-md active:scale-[0.98]"
+                title="Quét mã QR donate ủng hộ dự án Cửu Nhị"
               >
-                <span className="text-rose-400">💖</span>
+                <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-500/30" />
                 <span>Donate Ủng Hộ Dự Án</span>
-                <span className="text-amber-400 text-xs">📱</span>
+                <QrCode className="w-3.5 h-3.5 text-amber-400" />
               </button>
             </div>
 
@@ -6178,44 +6162,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     </button>
                   </div>
 
-                  {/* NÚT MỞ XƯỞNG PHIM THỦY MẶC CHU DỊCH (16:9 & 9:16) - ĐẶT DƯỚI CHÉP CHO AI, KHÓA KHI CHƯA NHẤN CHÉP CÓ CÂU HỎI */}
-                  <div className="relative w-full">
-                    <button
-                      type="button"
-                      id="btn-open-ink-wash-studio"
-                      disabled={isInkWashStudioLocked}
-                      onClick={handleOpenInkWashStudio}
-                      className={`w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs sm:text-sm font-serif font-bold transition shadow-md select-none ${
-                        isInkWashStudioLocked
-                          ? "opacity-55 cursor-not-allowed grayscale-[45%] text-[#A89880] border border-[#8A7960]/60"
-                          : "text-[#FFF8E7] hover:brightness-110 cursor-pointer active:scale-[0.99]"
-                      }`}
-                      style={
-                        isInkWashStudioLocked
-                          ? {
-                              background: "linear-gradient(135deg, #3A332C 0%, #26211C 100%)",
-                              boxShadow: "0 10px 24px -4px rgba(28, 22, 16, 0.28), inset 0 1px 0 rgba(212, 175, 55, 0.2)",
-                            }
-                          : {
-                              background: "linear-gradient(135deg, #8B1E22 0%, #5E1417 55%, #7A1A1D 100%)",
-                              border: "1px solid rgba(212, 175, 55, 0.85)",
-                              boxShadow: "0 10px 24px -4px rgba(139, 30, 34, 0.35), inset 0 1px 0 rgba(243, 229, 171, 0.35)",
-                            }
-                      }
-                      title={
-                        isDragonLocked
-                          ? "Đang khóa vì Cửu Nhị Tiểu Long còn ngủ/đang thức dậy."
-                          : !userIntentQuestion.trim()
-                          ? "Không thể mở khi chưa nhập câu hỏi và nhấn 'Chép Toàn Bộ Quẻ Bài & Câu Hỏi Cho AI'"
-                          : !hasCopiedWithQuestion
-                          ? "Vui lòng nhấn 'Chép Toàn Bộ Quẻ Bài & Câu Hỏi Cho AI' ở trên trước khi mở Xưởng Phim Thủy Mặc"
-                          : "Mở Xưởng Phim Thủy Mặc Chu Dịch (16:9 & 9:16 · Xuất Clip)"
-                      }
-                    >
-                      <span>{isInkWashStudioLocked ? "🔒" : "🖌️"}</span>
-                      <span>Xưởng Phim Thủy Mặc (16:9 &amp; 9:16 · Xuất Clip)</span>
-                    </button>
-                  </div>
+
                 </div>
               </div>
 
@@ -6239,6 +6186,26 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   <svg viewBox="0 0 24 24" className="w-4 h-4 text-[#996515] transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2.2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                   </svg>
+                </button>
+
+                {/* Nút Donate Ủng Hộ Dự Án */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (onOpenDonateModal) onOpenDonateModal();
+                    else window.dispatchEvent(new CustomEvent("open-donate-modal"));
+                  }}
+                  className="group inline-flex h-11 items-center gap-2 px-4 rounded-full text-amber-900 font-serif text-xs sm:text-sm font-bold cursor-pointer transition-all hover:-translate-y-0.5 active:scale-[0.98]"
+                  style={{
+                    background: "linear-gradient(180deg, #FFFDF8 0%, #F9F0DF 100%)",
+                    border: "1px solid rgba(212, 175, 55, 0.75)",
+                    boxShadow: "0 6px 18px rgba(184, 134, 45, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.9)",
+                  }}
+                  title="Quét mã QR donate ủng hộ dự án Cửu Nhị"
+                >
+                  <Heart className="w-4 h-4 text-rose-500 fill-rose-500/20 group-hover:scale-110 transition-transform" />
+                  <span>Donate Ủng Hộ</span>
+                  <QrCode className="w-3.5 h-3.5 text-amber-600" />
                 </button>
 
                 {/* Ngôn ngữ & Đăng nhập / Tài khoản Cửu Nhị (Đồng bộ vỏ Lụa Tuyên Thành + nút Sơn Mài Hổ Phách, xóa bỏ bg-stone-50 & bg-black) */}
@@ -6647,6 +6614,19 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           </button>
           <button type="button" onClick={() => onEnterApp("pricing")} className="hover:text-white transition cursor-pointer">
             Báo Giá
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              if (onOpenDonateModal) onOpenDonateModal();
+              else window.dispatchEvent(new CustomEvent("open-donate-modal"));
+            }}
+            className="hover:text-amber-300 text-amber-400/90 font-semibold transition cursor-pointer flex items-center gap-1.5"
+            title="Quét mã QR donate ủng hộ dự án Cửu Nhị"
+          >
+            <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-500/30" />
+            <span>Donate Ủng Hộ</span>
+            <QrCode className="w-3.5 h-3.5 text-amber-400" />
           </button>
         </div>
 
@@ -7252,31 +7232,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         filename={`trai-bai-iching-tarot-${new Date().toISOString().slice(0, 10)}.png`}
       />
 
-      {/* Modal Xưởng Phim Thủy Mặc Chu Dịch */}
-      <InkWashFilmModal
-        isOpen={isInkWashModalOpen}
-        onClose={() => setIsInkWashModalOpen(false)}
-        cards={cards}
-        spreadMode={mode}
-        question={userIntentQuestion}
-        defaultTab={inkWashModalTab}
-        onTriggerCopyAllForAI={async () => {
-          const aiText = await formatSpreadForAI(
-            cards,
-            mode,
-            isCard2Reversed,
-            isRitualCompleted,
-            userIntentQuestion,
-            hexagramPrediction,
-            userCustomAnswer
-          );
-          setDirectHomeRawAIText(aiText);
-          await copyToClipboard(aiText);
-          setCopiedAI(true);
-          setTimeout(() => setCopiedAI(false), 2500);
-          return aiText;
-        }}
-      />
+
 
       {/* Floating Background Video Progress Pill & Completion Notification Card */}
       {isDirectHomeRunning && (

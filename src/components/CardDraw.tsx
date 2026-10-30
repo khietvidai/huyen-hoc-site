@@ -4194,13 +4194,24 @@ export const CardDraw: React.FC<CardDrawProps> = ({
             )}
 
             {/* View full reading button */}
-            <div className="text-center mt-6 no-capture">
+            <div className="text-center mt-6 no-capture flex items-center justify-center gap-3 flex-wrap">
               <button
                 onClick={() => processResults(revealedCards)}
                 className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl bg-gradient-to-r from-[#9A1F1A] via-[#B3261E] to-[#8C1D18] text-[#FFFDF8] border-2 border-[#E2C275] font-serif font-bold text-sm sm:text-base shadow-[0_6px_22px_rgba(154,31,26,0.35)] hover:brightness-110 transition-all cursor-pointer"
               >
                 <span>☯ Vào Xem Chi Tiết Luận Giải Quẻ & 6 Hào</span>
                 <ArrowRight className="w-4 h-4 text-[#E2C275]" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new CustomEvent("open-donate-modal"))}
+                className="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl bg-amber-950/60 hover:bg-amber-900/80 text-amber-300 border border-amber-600/60 hover:border-amber-400 font-serif font-bold text-sm shadow-md transition-all cursor-pointer active:scale-95 group"
+                title="Quét mã QR donate ủng hộ dự án"
+              >
+                <Heart className="w-4 h-4 text-rose-400 fill-rose-500/20 group-hover:scale-110 transition-transform" />
+                <span>Donate Ủng Hộ</span>
+                <QrCode className="w-4 h-4 text-amber-400" />
               </button>
             </div>
           </div>

@@ -28,6 +28,8 @@ import {
   Receipt,
   Lock,
   Type,
+  Heart,
+  QrCode,
 } from "lucide-react";
 import { ZenAudioPlayer } from "./ZenAudioPlayer";
 import { BrandLockup } from "./BrandMark";
@@ -82,6 +84,7 @@ interface HeaderProps {
   onLogout?: () => void;
   onOpenAdminModal?: () => void;
   onShowToast?: (msg: string) => void;
+  onOpenDonateModal?: () => void;
 }
 
 interface TabConfig {
@@ -107,6 +110,7 @@ export const Header: React.FC<HeaderProps> = ({
   onLogout,
   onOpenAdminModal,
   onShowToast,
+  onOpenDonateModal,
 }) => {
   const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
   const [isWorkspaceMenuOpen, setIsWorkspaceMenuOpen] = useState(false);
@@ -464,6 +468,24 @@ export const Header: React.FC<HeaderProps> = ({
               </>
             )}
           </div>
+
+          {/* Nút Donate Ủng Hộ */}
+          <button
+            type="button"
+            onClick={() => {
+              if (onOpenDonateModal) {
+                onOpenDonateModal();
+              } else {
+                window.dispatchEvent(new CustomEvent("open-donate-modal"));
+              }
+            }}
+            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 h-8 sm:h-9 text-xs font-serif font-bold text-amber-300 hover:text-amber-200 bg-amber-950/45 hover:bg-amber-900/65 border border-amber-600/50 hover:border-amber-400 rounded-lg transition-all cursor-pointer shadow-xs active:scale-95 select-none group"
+            title="Quét mã QR phát tâm công đức / donate ủng hộ dự án Cửu Nhị"
+          >
+            <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-500/20 group-hover:scale-110 transition-transform" />
+            <span className="hidden sm:inline">Donate</span>
+            <QrCode className="w-3.5 h-3.5 text-amber-400" />
+          </button>
 
           {currentUser?.isAdmin && (
             <button
@@ -826,6 +848,25 @@ export const Header: React.FC<HeaderProps> = ({
                   </span>
                   <span className="text-gold-600">→</span>
                 </a>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsNavMenuOpen(false);
+                    if (onOpenDonateModal) {
+                      onOpenDonateModal();
+                    } else {
+                      window.dispatchEvent(new CustomEvent("open-donate-modal"));
+                    }
+                  }}
+                  className="w-full flex items-center justify-between py-2 text-xs text-amber-300 hover:text-amber-200 transition-colors cursor-pointer text-left group"
+                  title="Quét mã QR donate phát tâm ủng hộ dự án Cửu Nhị"
+                >
+                  <span className="flex items-center gap-2.5">
+                    <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-500/20 group-hover:scale-110 transition-transform" />
+                    <span>Tùy Hỷ Công Đức · Donate Ủng Hộ</span>
+                  </span>
+                  <QrCode className="w-3.5 h-3.5 text-amber-400" />
+                </button>
                 {onOpenWorkspace && (
                   <button
                     type="button"

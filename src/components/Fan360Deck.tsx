@@ -510,7 +510,7 @@ export const Fan360Deck: React.FC<Fan360DeckProps> = ({
       </div>
 
       {/* Quick Action Bar docked right next to the cards */}
-      <div className="flex items-center justify-center gap-3 my-2.5 z-20">
+      <div className="flex items-center justify-center gap-3 my-2.5 z-20 flex-wrap">
         <button
           type="button"
           onClick={onShuffle}
