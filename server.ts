@@ -2427,14 +2427,40 @@ app.post("/api/ink_wash/ai_interpret", async (req: Request, res: Response) => {
     const encFirst = HEXAGRAMS.find((h) => h.number === firstHexNum) || HEXAGRAMS[0];
     const encLast = HEXAGRAMS.find((h) => h.number === lastHexNum) || encFirst;
 
+    const fallbackCardAnalyses = rawCards.map((c, idx) => {
+      const hNum = Number(c?.hexNumber) || firstHexNum;
+      const b = BOOK_HEXAGRAMS.find((x) => x.number === hNum) || bookFirst;
+      const e = HEXAGRAMS.find((x) => x.number === hNum) || encFirst;
+      const posLabel = String(c?.positionLabel || `Lá ${idx + 1}`).trim();
+      const cardTitle = String(c?.name || b.name).trim();
+      const yaoNum = Number(c?.yaoNumber) || 0;
+      const yaoInfo =
+        yaoNum >= 1 && yaoNum <= 6 ? e.lineMeanings?.find((l) => l.line === yaoNum) : undefined;
+      const detail = yaoInfo
+        ? `${yaoInfo.name} (${yaoInfo.text}): ${yaoInfo.meaning}`
+        : `${b.redHeadline} — ${b.destiny}`;
+      return {
+        card_number: idx + 1,
+        card_title: cardTitle,
+        position_label: posLabel,
+        concise_analysis: sanitizeConfidentialityText(
+          `Lá ${idx + 1} (${posLabel} - ${cardTitle}): ${detail}`
+        ),
+      };
+    });
+
     const fallbackConcise = {
       success: true,
       concise_direct: true,
-      hexagram_title: `Quẻ #${bookFirst.number} ${bookFirst.name}`,
+      hexagram_title:
+        rawCards.length > 1
+          ? `Quẻ #${bookFirst.number} ${bookFirst.name} · ${rawCards.length} Lá Bài`
+          : `Quẻ #${bookFirst.number} ${bookFirst.name}`,
       direct_answer: `Trả lời câu hỏi "${rawQuestion}": Quẻ ${bookFirst.name} báo "${bookFirst.redHeadline}" — ${bookFirst.destiny}`,
+      card_analyses: fallbackCardAnalyses,
       key_turning_point:
         rawCards.length > 1
-          ? `Biến số chuyển sang Quẻ ${bookLast.name} ("${bookLast.redHeadline}"): ${encLast.advice || bookLast.destiny}`
+          ? `Mạch biến thiên qua đủ ${rawCards.length} lá bài chuyển về Quẻ ${bookLast.name} ("${bookLast.redHeadline}"): ${encLast.advice || bookLast.destiny}`
           : `Điểm mấu chốt theo Bách Khoa Quẻ ${bookFirst.name}: ${encFirst.advice || bookFirst.bigImage}`,
       final_verdict: huongAnAnswer
         ? `Châu Ấn Cửu Nhị quyết đoán: Hãy thuận theo lời đáp tại Hương Án, giữ tâm trung chính, hành sự thận trọng và đúng thời cơ ắt hanh thông.`
@@ -2445,39 +2471,71 @@ app.post("/api/ink_wash/ai_interpret", async (req: Request, res: Response) => {
     try {
       const cardsSummary = rawCards
         .map((c, idx) => {
-          const b = BOOK_HEXAGRAMS.find((x) => x.number === Number(c?.hexNumber));
-          return `Lá ${idx + 1} (${c?.positionLabel || "Quẻ"}): ${c?.name || b?.name || ""} | Chữ đỏ: "${b?.redHeadline || ""}" | Vận thế: ${b?.destiny || ""}`;
+          const hNum = Number(c?.hexNumber) || firstHexNum;
+          const b = BOOK_HEXAGRAMS.find((x) => x.number === hNum);
+          const e = HEXAGRAMS.find((x) => x.number === hNum);
+          const yaoNum = Number(c?.yaoNumber) || 0;
+          const yaoInfo =
+            yaoNum >= 1 && yaoNum <= 6 ? e?.lineMeanings?.find((l) => l.line === yaoNum) : undefined;
+          return `Lá ${idx + 1} [Vị trí: ${c?.positionLabel || `Lá ${idx + 1}`}]: ${c?.name || b?.name || ""}${yaoInfo ? ` (${yaoInfo.name}: ${yaoInfo.meaning})` : ""} | Chữ đỏ: "${b?.redHeadline || ""}" | Vận thế: ${b?.destiny || ""}`;
         })
         .join("\n");
 
       const { text } = await generateUnifiedAI({
         preferredProvider: "gemini",
-        systemInstruction: `Bạn là Tiểu Long Cửu Nhị tại Cửu Nhị Dịch Quán. Nhiệm vụ của bạn là biên soạn kịch bản thuyết minh VIDEO THỦY MẶC PHIÊN BẢN NGẮN GỌN, SÚC TÍCH NHẤT và TRẢ LỜI TRỰC TIẾP CÂU HỎI DỰA VÀO QUẺ.
+        systemInstruction: `Bạn là Tiểu Long Cửu Nhị tại Cửu Nhị Dịch Quán. Nhiệm vụ của bạn là biên soạn kịch bản thuyết minh VIDEO THỦY MẶC PHIÊN BẢN NGẮN GỌN, SÚC TÍCH NHẤT, TRẢ LỜI TRỰC TIẾP CÂU HỎI và PHÂN TÍCH ĐẦY ĐỦ TẤT CẢ CÁC LÁ BÀI HIỆN RA (${rawCards.length} lá bài).
 Yêu cầu bắt buộc:
 1. Ngắn gọn, cô đọng, đanh thép, đi thẳng vào câu trả lời cho câu hỏi của người dùng dựa trên Quẻ bài và Câu trả lời tại Hương Án Khởi Niệm (nếu có).
-2. Tuyệt đối KHÔNG viết chữ Hán (Hanzi) trong các trường câu trả lời tiếng Việt để giọng đọc thuyết minh chuẩn 100%.
-3. Trả về đúng JSON hợp lệ theo cấu trúc:
+2. BẮT BUỘC phân tích ĐẦY ĐỦ TẤT CẢ ${rawCards.length} lá bài hiện ra trong mảng "card_analyses" (từ Lá 1 đến Lá ${rawCards.length}, không được bỏ sót bất kỳ lá bài nào). Mỗi lá bài viết 1 câu ngắn gọn súc tích (14-24 chữ) gắn trực tiếp với vị trí lá bài và câu hỏi.
+3. Tuyệt đối KHÔNG viết chữ Hán (Hanzi) trong các trường tiếng Việt để giọng đọc thuyết minh chuẩn 100%.
+4. Trả về đúng JSON hợp lệ theo cấu trúc:
 {
-  "hexagram_title": "Tên quẻ ngắn gọn (VD: Quẻ Thuần Càn · Đại Cát)",
-  "direct_answer": "1 câu ngắn gọn (16-24 chữ) trả lời trực tiếp ngay câu hỏi của người dùng dựa vào Quẻ Chủ & Dòng chữ đỏ.",
-  "key_turning_point": "1 câu ngắn gọn (16-24 chữ) chỉ rõ biến số mấu chốt từ Hào động / Quẻ biến (việc nên làm hoặc cần tránh).",
-  "final_verdict": "1 câu kết luận đanh thép (16-24 chữ) khi đóng Châu Ấn Cửu Nhị: chốt hướng hành động cụ thể cho người hỏi.",
+  "hexagram_title": "Tên quẻ chủ & số lá bài (VD: Quẻ Thuần Càn · 3 Lá Bài)",
+  "direct_answer": "1 câu ngắn gọn (16-24 chữ) trả lời trực tiếp ngay câu hỏi của người dùng dựa vào Quẻ Chủ & Hương Án.",
+  "card_analyses": [
+    {
+      "card_number": 1,
+      "card_title": "Tên lá bài 1",
+      "position_label": "Vị trí lá bài 1",
+      "concise_analysis": "1 câu ngắn gọn súc tích (14-24 chữ) phân tích lá bài 1 đối với câu hỏi."
+    }
+  ],
+  "key_turning_point": "1 câu ngắn gọn (14-22 chữ) tổng kết mạch chuyển hóa qua các lá bài.",
+  "final_verdict": "1 câu kết luận đanh thép (16-24 chữ) khi đóng Châu Ấn Cửu Nhị: chốt hướng hành động cụ thể.",
   "seal_chars": "2 chữ ấn triện (chọn 1 trong: 玖貳, 大吉, 中正, 慎行)"
 }`,
         userPrompt: `CÂU HỎI CẦN TRẢ LỜI TRỰC TIẾP: "${rawQuestion}"
-${huongAnAnswer ? `CÂU TRẢ LỜI TẠI HƯƠNG ÁN KHỞI NIỆM: "${huongAnAnswer}"\n` : ""}TRẬN PHÁP: ${spreadTitle}
-CÁC LÁ QUẺ:
+${huongAnAnswer ? `CÂU TRẢ LỜI TẠI HƯƠNG ÁN KHỞI NIỆM: "${huongAnAnswer}"\n` : ""}TRẬN PHÁP: ${spreadTitle} (Tổng cộng ${rawCards.length} lá bài hiện ra)
+DANH SÁCH ĐẦY ĐỦ CÁC LÁ BÀI CẦN PHÂN TÍCH NGẮN GỌN:
 ${cardsSummary || hexagramText.slice(0, 1200)}`,
         jsonMode: true,
         temperature: 0.55,
       });
 
       const parsed = JSON.parse(text);
+      const rawAiCards: any[] = Array.isArray(parsed.card_analyses) ? parsed.card_analyses : [];
+      const mergedCardAnalyses = fallbackCardAnalyses.map((fb, idx) => {
+        const matched =
+          rawAiCards.find((item) => Number(item?.card_number) === idx + 1) || rawAiCards[idx];
+        const aiAnalysis = String(matched?.concise_analysis || "").trim();
+        return {
+          card_number: idx + 1,
+          card_title: sanitizeConfidentialityText(String(matched?.card_title || fb.card_title)),
+          position_label: sanitizeConfidentialityText(
+            String(matched?.position_label || fb.position_label)
+          ),
+          concise_analysis: aiAnalysis
+            ? sanitizeConfidentialityText(aiAnalysis)
+            : fb.concise_analysis,
+        };
+      });
+
       return res.json({
         success: true,
         concise_direct: true,
         hexagram_title: sanitizeConfidentialityText(parsed.hexagram_title || fallbackConcise.hexagram_title),
         direct_answer: sanitizeConfidentialityText(parsed.direct_answer || fallbackConcise.direct_answer),
+        card_analyses: mergedCardAnalyses,
         key_turning_point: sanitizeConfidentialityText(parsed.key_turning_point || fallbackConcise.key_turning_point),
         final_verdict: sanitizeConfidentialityText(parsed.final_verdict || fallbackConcise.final_verdict),
         seal_chars: String(parsed.seal_chars || fallbackConcise.seal_chars).slice(0, 4),

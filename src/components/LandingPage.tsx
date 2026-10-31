@@ -2109,6 +2109,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     question: string;
     hexagram_title: string;
     direct_answer: string;
+    card_analyses: Array<{
+      card_number: number;
+      card_title: string;
+      position_label: string;
+      concise_analysis: string;
+    }>;
     key_turning_point: string;
     final_verdict: string;
     seal_chars: string;
@@ -4752,13 +4758,42 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       const encFirst = HEXAGRAMS.find((h) => h.number === firstCard?.hexNumber) || HEXAGRAMS[0];
       const encLast = HEXAGRAMS.find((h) => h.number === lastCard?.hexNumber) || encFirst;
 
-      let hexTitle = `Quẻ #${bookFirst.number} ${bookFirst.name}`;
+      let hexTitle =
+        orderedCards.length > 1
+          ? `Quẻ #${bookFirst.number} ${bookFirst.name} · Đủ ${orderedCards.length} Lá Bài`
+          : `Quẻ #${bookFirst.number} ${bookFirst.name}`;
       let directAnswer = stripHanziAndCleanVi(
         `Trả lời trực tiếp câu hỏi của bạn: Quẻ ${bookFirst.name} báo "${bookFirst.redHeadline}", ${bookFirst.destiny}`
       );
+      let cardAnalyses: Array<{
+        card_number: number;
+        card_title: string;
+        position_label: string;
+        concise_analysis: string;
+      }> = orderedCards.map((c, idx) => {
+        const b = BOOK_HEXAGRAMS.find((x) => x.number === c.hexNumber) || bookFirst;
+        const e = HEXAGRAMS.find((x) => x.number === c.hexNumber) || encFirst;
+        const posLabel = c.positionLabel || `Lá ${idx + 1}`;
+        const cTitle = stripHanziAndCleanVi(c.name || b.name);
+        const yaoInfo =
+          c.type === "yao" && c.yaoNumber
+            ? e.lineMeanings?.find((l) => l.line === c.yaoNumber)
+            : undefined;
+        const detail = yaoInfo
+          ? `${yaoInfo.name} (${yaoInfo.text}): ${yaoInfo.meaning}`
+          : `${b.redHeadline}, ${b.destiny}`;
+        return {
+          card_number: idx + 1,
+          card_title: cTitle,
+          position_label: posLabel,
+          concise_analysis: stripHanziAndCleanVi(
+            `Lá ${idx + 1} (${posLabel} - ${cTitle}): ${detail}`
+          ),
+        };
+      });
       let keyTurningPoint = stripHanziAndCleanVi(
         orderedCards.length > 1
-          ? `Điểm chuyển mình sang Quẻ ${bookLast.name}: ${encLast.advice || bookLast.destiny}`
+          ? `Mạch biến thiên qua đủ ${orderedCards.length} lá bài chuyển về Quẻ ${bookLast.name}: ${encLast.advice || bookLast.destiny}`
           : `Điểm mấu chốt cần nắm giữ: ${encFirst.advice || bookFirst.bigImage}`
       );
       let finalVerdict = stripHanziAndCleanVi(
@@ -4795,6 +4830,26 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           if (aiJson && aiJson.success) {
             if (aiJson.hexagram_title) hexTitle = stripHanziAndCleanVi(aiJson.hexagram_title);
             if (aiJson.direct_answer) directAnswer = stripHanziAndCleanVi(aiJson.direct_answer);
+            if (Array.isArray(aiJson.card_analyses) && aiJson.card_analyses.length > 0) {
+              cardAnalyses = cardAnalyses.map((fb, idx) => {
+                const matched =
+                  aiJson.card_analyses.find((item: any) => Number(item?.card_number) === idx + 1) ||
+                  aiJson.card_analyses[idx];
+                const aiText = matched?.concise_analysis
+                  ? stripHanziAndCleanVi(String(matched.concise_analysis))
+                  : "";
+                return {
+                  card_number: idx + 1,
+                  card_title: matched?.card_title
+                    ? stripHanziAndCleanVi(String(matched.card_title))
+                    : fb.card_title,
+                  position_label: matched?.position_label
+                    ? stripHanziAndCleanVi(String(matched.position_label))
+                    : fb.position_label,
+                  concise_analysis: aiText || fb.concise_analysis,
+                };
+              });
+            }
             if (aiJson.key_turning_point) keyTurningPoint = stripHanziAndCleanVi(aiJson.key_turning_point);
             if (aiJson.final_verdict) finalVerdict = stripHanziAndCleanVi(aiJson.final_verdict);
             if (aiJson.seal_chars) sealChars = String(aiJson.seal_chars).slice(0, 4);
@@ -4802,14 +4857,22 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         }
       } catch {}
 
-      // BƯỚC 3: Cửu Long chuyển sang Cảnh 2 (Cầm Bút Lông Chấm Mực Tàu Ghi Chép Sớ) — Thu âm giọng đọc tiếng Việt ngắn gọn súc tích
+      // BƯỚC 3: Cửu Long chuyển sang Cảnh 2 (Cầm Bút Lông Chấm Mực Tàu Ghi Chép Sớ) — Thu âm giọng đọc tiếng Việt ngắn gọn súc tích phân tích đủ tất cả lá bài
       setInkWashWorkingAct(2);
       setInkWashExportPercent(58);
       setInkWashExportStage(
-        "✍️ Bước 3/4: Tiểu Long cầm bút lông chấm mực tàu họa cảnh Thủy Mặc & thu âm lời đáp..."
+        `✍️ Bước 3/4: Tiểu Long cầm bút lông họa cảnh Thủy Mặc cho đủ ${orderedCards.length} lá bài & thu âm lời đáp...`
       );
 
-      const conciseSpokenScript = [directAnswer, keyTurningPoint, finalVerdict]
+      // Mỗi phân cảnh lá bài đọc lời phân tích của lá bài đó (Lá 1 mở đầu kèm câu trả lời trực tiếp), phân cảnh cuối đọc Châu Ấn quyết đoán
+      const shotSegmentsText: string[] = orderedCards.map((_, idx) => {
+        const cardLine = cardAnalyses[idx]?.concise_analysis || "";
+        return idx === 0 ? `${directAnswer} ${cardLine}`.trim() : cardLine.trim();
+      });
+      const finalSegmentText = `${keyTurningPoint ? keyTurningPoint + " " : ""}${finalVerdict}`.trim();
+      const allSegmentsText = [...shotSegmentsText, finalSegmentText];
+
+      const conciseSpokenScript = allSegmentsText
         .map((s) => s.trim())
         .filter(Boolean)
         .join(" ");
@@ -4833,7 +4896,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       setInkWashWorkingAct(4);
       setInkWashExportPercent(74);
       setInkWashExportStage(
-        "💻 Bước 4/4: Tiểu Long đang gõ máy tính dựng Video Thủy Mặc 9:16 & đóng Ấn Chu Sa..."
+        `💻 Bước 4/4: Tiểu Long đang dựng Video Thủy Mặc 9:16 phân tích đủ ${orderedCards.length} lá bài & đóng Ấn Chu Sa...`
       );
 
       const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
@@ -4848,73 +4911,77 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         } catch {}
       }
 
+      const fallbackDuration = Math.min(34, Math.max(11.5, orderedCards.length * 3.2 + 4.0));
       const totalDuration =
         decodedVoice && decodedVoice.duration > 2
-          ? Math.max(9.5, Math.min(24, decodedVoice.duration + 2.2))
-          : 11.5;
+          ? Math.max(10.5, Math.min(38, decodedVoice.duration + 2.0))
+          : fallbackDuration;
 
-      // Xây dựng Kịch bản Thủy Mặc Ngắn Gọn 3 Phân Cảnh (1: Quẻ Chủ Trả Lời Trực Tiếp -> 2: Điểm Mấu Chốt -> 3: Châu Ấn Cửu Nhị Quyết Đoán)
-      const shot1End = Number((totalDuration * 0.36).toFixed(2));
-      const shot2End = Number((totalDuration * 0.68).toFixed(2));
-      const pivotCardIdx = orderedCards.length > 1 ? orderedCards.length - 1 : 0;
+      // Xây dựng Kịch bản Thủy Mặc Ngắn Gọn Nhưng Hiển Thị & Phân Tích ĐẦY ĐỦ TẤT CẢ CÁC LÁ BÀI (Lá 1 ... Lá N) + Cảnh Cuối Châu Ấn Cửu Nhị
+      const weights = allSegmentsText.map((txt) => Math.max(24, txt.length));
+      const totalWeight = weights.reduce((acc, w) => acc + w, 0) || 1;
+
+      const dynamicShots: InkWashFilmPlan["shots"] = [];
+      const dynamicCues: InkWashFilmPlan["narrationCues"] = [];
+      let cursorSec = 0;
+
+      orderedCards.forEach((c, idx) => {
+        const b = BOOK_HEXAGRAMS.find((x) => x.number === c.hexNumber) || bookFirst;
+        const ratio = weights[idx] / totalWeight;
+        const dur = Number((totalDuration * ratio).toFixed(2));
+        const startSec = Number(cursorSec.toFixed(2));
+        const endSec = Number(Math.min(totalDuration - 2.0, startSec + Math.max(2.1, dur)).toFixed(2));
+        cursorSec = endSec;
+
+        const posLabel = c.positionLabel || `Lá ${idx + 1}`;
+        const cueText = shotSegmentsText[idx] || cardAnalyses[idx]?.concise_analysis || directAnswer;
+
+        dynamicShots.push({
+          index: idx,
+          title: `Lá ${idx + 1}/${orderedCards.length} (${posLabel}) · ${c.name || b.name}`,
+          subtitle: `${b.redHeadline} · Phân Tích Trực Tiếp`,
+          startSec,
+          endSec,
+          cardIndex: idx,
+        });
+
+        dynamicCues.push({
+          id: `concise_card_${idx + 1}`,
+          shotIndex: idx,
+          startSec: Number((startSec + 0.1).toFixed(2)),
+          endSec: Number(Math.max(startSec + 0.5, endSec - 0.08).toFixed(2)),
+          text: cueText,
+          speakText: cueText,
+        });
+      });
+
+      const finalShotIdx = orderedCards.length;
+      const finalStartSec = Number(Math.min(cursorSec, totalDuration - 2.2).toFixed(2));
+      dynamicShots.push({
+        index: finalShotIdx,
+        title: `Châu Ấn Cửu Nhị Quyết Đoán`,
+        subtitle: `Tổng Kết Đủ ${orderedCards.length} Lá Bài & Chốt Hướng Hành Động`,
+        startSec: finalStartSec,
+        endSec: Number(totalDuration.toFixed(2)),
+      });
+      dynamicCues.push({
+        id: `concise_final`,
+        shotIndex: finalShotIdx,
+        startSec: Number((finalStartSec + 0.1).toFixed(2)),
+        endSec: Number((totalDuration - 0.12).toFixed(2)),
+        text: finalSegmentText,
+        speakText: finalSegmentText,
+      });
+
       const changingYaoList = orderedCards
         .filter((c) => c.type === "yao" && c.yaoNumber)
         .map((c) => c.yaoNumber!);
 
       const concisePlan: InkWashFilmPlan = {
         totalDurationSec: totalDuration,
-        shots: [
-          {
-            index: 0,
-            title: `I. Trả Lời Trực Tiếp · ${firstCard?.name || bookFirst.name}`,
-            subtitle: `Quẻ Chủ · ${bookFirst.redHeadline}`,
-            startSec: 0,
-            endSec: shot1End,
-            cardIndex: 0,
-          },
-          {
-            index: 1,
-            title: `II. Điểm Mấu Chốt · ${lastCard?.name || bookLast.name}`,
-            subtitle: orderedCards.length > 1 ? "Biến Số & Hướng Ứng Xử" : "Tinh Hoa Hào Từ",
-            startSec: shot1End,
-            endSec: shot2End,
-            cardIndex: pivotCardIdx,
-          },
-          {
-            index: 2,
-            title: `III. Châu Ấn Cửu Nhị Quyết Đoán`,
-            subtitle: "Lời Đáp Dứt Khoát Dựa Vào Quẻ",
-            startSec: shot2End,
-            endSec: totalDuration,
-          },
-        ],
-        narrationCues: [
-          {
-            id: "concise_1",
-            shotIndex: 0,
-            startSec: 0.15,
-            endSec: shot1End - 0.1,
-            text: directAnswer,
-            speakText: directAnswer,
-          },
-          {
-            id: "concise_2",
-            shotIndex: 1,
-            startSec: shot1End + 0.1,
-            endSec: shot2End - 0.1,
-            text: keyTurningPoint,
-            speakText: keyTurningPoint,
-          },
-          {
-            id: "concise_3",
-            shotIndex: 2,
-            startSec: shot2End + 0.1,
-            endSec: totalDuration - 0.15,
-            text: finalVerdict,
-            speakText: finalVerdict,
-          },
-        ],
-        sealTimeSec: shot2End + 0.45,
+        shots: dynamicShots,
+        narrationCues: dynamicCues,
+        sealTimeSec: Number((finalStartSec + 0.4).toFixed(2)),
         sealChars,
         orderedCards: orderedCards.map((c) => ({
           id: c.id,
@@ -5080,11 +5147,14 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       const audioUrl = ttsAudioBlob ? URL.createObjectURL(ttsAudioBlob) : undefined;
       playGoldenChime432Hz();
       setInkWashExportPercent(100);
-      setInkWashExportStage("✓ Đã xuất xong Video Thủy Mặc ngắn gọn trả lời trực tiếp câu hỏi!");
+      setInkWashExportStage(
+        `✓ Đã xuất xong Video Thủy Mặc ngắn gọn phân tích đủ ${orderedCards.length} lá bài!`
+      );
       setConciseInkWashResult({
         question: effectiveQuestion,
         hexagram_title: hexTitle,
         direct_answer: directAnswer,
+        card_analyses: cardAnalyses,
         key_turning_point: keyTurningPoint,
         final_verdict: finalVerdict,
         seal_chars: sealChars,
@@ -5094,7 +5164,9 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         duration: Math.round(totalDuration),
       });
       setIsExportingInkWashClip(false);
-      setCopiedToast("🎬 Tiểu Long Cửu Nhị đã xuất xong & đang chiếu Video Thủy Mặc trả lời trực tiếp câu hỏi!");
+      setCopiedToast(
+        `🎬 Tiểu Long Cửu Nhị đã xuất xong Video Thủy Mặc phân tích đầy đủ ${orderedCards.length} lá bài hiện ra!`
+      );
       window.setTimeout(() => setCopiedToast(null), 4200);
     } catch (err: any) {
       console.error("InkWashExport Error:", err);
@@ -5116,7 +5188,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     scrollToHuongAnForChat,
   ]);
 
-  /* ── Bộ hiển thị Màn Chiếu Video Thủy Mặc (Ngắn gọn súc tích · Trả lời trực tiếp câu hỏi · Hoạt ảnh Cửu Long làm việc khi đang dựng clip) ── */
+  /* ── Bộ hiển thị Màn Chiếu Video Thủy Mặc (Ngắn gọn súc tích · Phân tích đủ mọi lá bài · Trả lời trực tiếp câu hỏi · Hoạt ảnh Cửu Long làm việc) ── */
   const renderPhoneThuyMacView = useCallback(
     (isExpandedModal = false) => {
       const hasDivinationQuestion = Boolean(userIntentQuestion.trim());
@@ -5126,7 +5198,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           <div className="rounded-xl px-2.5 py-1.5 bg-[#1A130C] border border-[#D4AF37]/45 flex items-center justify-between gap-2 shrink-0">
             <div className="min-w-0">
               <div className="text-[10px] font-serif font-bold uppercase tracking-wider text-[#E5C158] truncate">
-                墨 Video Thủy Mặc · Trả Lời Trực Tiếp Từ Quẻ
+                墨 Video Thủy Mặc · Phân Tích Đủ {cards.length} Lá Bài
               </div>
               <div className="text-[8.5px] text-[#C4A66A] truncate">
                 {hasDivinationQuestion
@@ -5168,8 +5240,10 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
               <p className="text-[10.5px] leading-relaxed text-[#F5E6C4]">
                 Kính thưa quý bạn! Để nhấn xuất & chiếu{" "}
-                <strong className="text-[#E5C158]">Video Thủy Mặc (Phiên bản ngắn gọn · Trả lời trực tiếp dựa vào quẻ)</strong>, quý bạn cần nhập{" "}
-                <strong className="text-[#FFF3B0]">Câu hỏi chiêm bốc</strong> tại mục{" "}
+                <strong className="text-[#E5C158]">
+                  Video Thủy Mặc (Phiên bản ngắn gọn · Phân tích đầy đủ tất cả {cards.length} lá bài hiện ra)
+                </strong>
+                , quý bạn cần nhập <strong className="text-[#FFF3B0]">Câu hỏi chiêm bốc</strong> tại mục{" "}
                 <strong className="text-[#F3E5AB]">「印 Hương Án Khởi Niệm · Câu Hỏi Chiêm Bốc」</strong> trước. Khi có câu hỏi,{" "}
                 <strong className="text-[#F3E5AB]">Tiểu Long Cửu Nhị</strong> mới chạy hoạt ảnh làm việc và dựng clip Thủy Mặc trả lời thẳng vào vấn đề của quý bạn!
               </p>
@@ -5209,7 +5283,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               <div className="flex items-center justify-between text-[9.5px] font-serif font-bold text-[#F3E5AB] border-b border-[#D4AF37]/25 pb-1.5 shrink-0">
                 <span className="flex items-center gap-1.5">
                   <span className="inline-block animate-spin">⏳</span>
-                  <span>Tiểu Long Cửu Nhị Đang Làm Clip Thủy Mặc...</span>
+                  <span>Tiểu Long Cửu Nhị Đang Làm Clip Thủy Mặc ({cards.length} lá bài)...</span>
                 </span>
                 <span className="px-2 py-0.5 rounded-full bg-[#8B1E22] text-[#FFF8E7] border border-[#D4AF37]/60 text-[8.5px]">
                   {inkWashExportPercent}%
@@ -5284,7 +5358,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               </div>
             </div>
           ) : conciseInkWashResult ? (
-            /* KHI ĐÃ LÀM XONG CLIP: CHIẾU VIDEO THỦY MẶC NGẮN GỌN SÚC TÍCH & TRẢ LỜI TRỰC TIẾP CÂU HỎI DỰA VÀO QUẺ */
+            /* KHI ĐÃ LÀM XONG CLIP: CHIẾU VIDEO THỦY MẶC NGẮN GỌN SÚC TÍCH NHƯNG PHÂN TÍCH ĐẦY ĐỦ TẤT CẢ LÁ BÀI HIỆN RA */
             <div
               className="flex-1 min-h-0 overflow-y-auto rounded-2xl border border-[#D4AF37]/45 bg-[#110C08]/95 p-2 space-y-2 shadow-inner"
               style={{
@@ -5305,7 +5379,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     className={`w-full ${isExpandedModal ? "max-h-[420px]" : "max-h-[285px]"} object-contain bg-[#EAE3D2]`}
                   />
                   <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-[#1C1610]/85 border border-[#D4AF37]/70 text-[8.5px] font-serif font-bold text-[#F3E5AB] pointer-events-none">
-                    墨 Thủy Mặc Ngắn Gọn · {conciseInkWashResult.duration}s
+                    墨 Thủy Mặc · Đủ {conciseInkWashResult.card_analyses?.length || cards.length} Lá · {conciseInkWashResult.duration}s
                   </span>
                 </div>
               )}
@@ -5330,7 +5404,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 </button>
               </div>
 
-              {/* Thẻ tóm tắt Lời Đáp Trực Tiếp Câu Hỏi Dựa Vào Quẻ */}
+              {/* Thẻ tóm tắt Lời Đáp Trực Tiếp & Phân Tích Đầy Đủ Tất Cả Lá Bài Hiện Ra */}
               <div className="rounded-xl p-2.5 border border-[#D4AF37]/40 bg-gradient-to-b from-[#1E160E] to-[#140E09] space-y-1.5 text-[10px] leading-relaxed">
                 <div className="flex items-center justify-between border-b border-[#D4AF37]/25 pb-1">
                   <span className="font-serif font-bold text-[#E5C158] text-[10.5px]">
@@ -5346,9 +5420,30 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 <div className="text-[#FFF8E7]">
                   <strong className="text-emerald-300">1. Trả lời trực tiếp:</strong> {conciseInkWashResult.direct_answer}
                 </div>
-                <div className="text-[#E5D3B3]">
-                  <strong className="text-[#E5C158]">2. Điểm mấu chốt:</strong> {conciseInkWashResult.key_turning_point}
-                </div>
+
+                {/* Danh sách phân tích ngắn gọn đầy đủ tất cả các lá bài hiện ra */}
+                {Array.isArray(conciseInkWashResult.card_analyses) &&
+                  conciseInkWashResult.card_analyses.length > 0 && (
+                    <div className="space-y-1 pt-0.5">
+                      <div className="font-bold text-[#E5C158]">
+                        2. Phân tích đầy đủ {conciseInkWashResult.card_analyses.length} lá bài hiện ra:
+                      </div>
+                      <div className="space-y-1 pl-1">
+                        {conciseInkWashResult.card_analyses.map((ca) => (
+                          <div
+                            key={ca.card_number}
+                            className="p-1.5 rounded-lg bg-[#18110B] border border-[#D4AF37]/25 text-[#E5D3B3]"
+                          >
+                            <span className="font-serif font-bold text-[#FFF3B0]">
+                              • Lá {ca.card_number} ({ca.position_label} · {ca.card_title}):
+                            </span>{" "}
+                            <span>{ca.concise_analysis}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                 <div className="p-2 rounded-lg bg-[#241A10] border border-[#D4AF37]/45 text-[#FFF3B0]">
                   <strong>3. Châu Ấn quyết đoán:</strong> {conciseInkWashResult.final_verdict}
                 </div>
@@ -5359,14 +5454,15 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             <div className="flex-1 min-h-0 flex flex-col justify-between rounded-2xl border border-[#D4AF37]/40 bg-[#130E09] p-3 text-[#FFF8E7]">
               <div className="space-y-2">
                 <div className="text-[11px] font-serif font-bold text-[#E5C158]">
-                  🎬 Xuất Video Thủy Mặc Ngắn Gọn · Trả Lời Trực Tiếp Từ Quẻ
+                  🎬 Xuất Video Thủy Mặc Ngắn Gọn · Phân Tích Đủ {cards.length} Lá Bài
                 </div>
                 <div className="rounded-lg p-2 bg-[#1B140C] border border-emerald-500/40 text-[9.5px] text-[#F3E5AB]">
                   <span className="text-emerald-300 font-bold">✓ Câu hỏi chiêm bốc:</span> “{userIntentQuestion.trim()}”
                 </div>
                 <p className="text-[10.5px] leading-relaxed text-[#E5D3B3]">
                   Khi nhấn nút bên dưới, <strong className="text-[#F3E5AB]">Tiểu Long Cửu Nhị</strong> sẽ chạy hoạt ảnh làm việc (Đọc sách cổ ➔ Soi kính lúp ➔ Chấm mực họa Thủy Mặc ➔ Gõ máy dựng clip ➔ Đóng Ấn Chu Sa) và chiếu ngay{" "}
-                  <strong className="text-[#E5C158]">Video Thủy Mặc (水墨周易)</strong> phiên bản ngắn gọn, súc tích trả lời trực tiếp câu hỏi dựa vào quẻ!
+                  <strong className="text-[#E5C158]">Video Thủy Mặc (水墨周易)</strong> phiên bản ngắn gọn súc tích nhưng phân tích đầy đủ tất cả{" "}
+                  <strong className="text-[#FFF3B0]">{cards.length} lá bài</strong> đang hiện ra!
                 </p>
               </div>
               <button

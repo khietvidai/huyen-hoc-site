@@ -1666,7 +1666,12 @@ export class InkWashRenderer {
 
       // Determine which 6 lines to show and whether a line is actively transforming
       const isLastCard = shot.cardIndex === plan.orderedCards.length - 1 && plan.orderedCards.length > 1;
-      const linesToDraw = isLastCard ? plan.transformedLines : plan.primaryLines;
+      const linesToDraw =
+        hexObj && Array.isArray(hexObj.lines) && hexObj.lines.length === 6
+          ? [...hexObj.lines]
+          : isLastCard
+          ? plan.transformedLines
+          : plan.primaryLines;
       const activeYao = card?.type === "yao" ? card.yaoNumber : undefined;
       const drawProg = smooth(0.02, 0.42, u);
       const transProg = activeYao ? smooth(0.28, 0.72, u) : 0;
@@ -1718,11 +1723,14 @@ export class InkWashRenderer {
       }
 
       // Draw vertical calligraphy & card title header
+      const posBadge = card?.positionLabel
+        ? `LÁ ${shot.cardIndex + 1}/${plan.orderedCards.length} · ${card.positionLabel.toUpperCase()}`
+        : `LÁ BÀI SỐ ${shot.cardIndex + 1}/${plan.orderedCards.length}`;
       this.drawShotCalligraphy(
         W,
         H,
         isPortrait,
-        `LÁ BÀI SỐ ${shot.cardIndex + 1}`,
+        posBadge,
         card?.name || hexObj.name,
         shot.subtitle,
         hexObj.hanzi || card?.symbol || "易",
@@ -1731,22 +1739,42 @@ export class InkWashRenderer {
     } else {
       // ── FINAL SHOT: FULL THÁP LA SPREAD OVERVIEW + VERMILION SEAL STAMP ──
       const count = plan.orderedCards.length;
-      const cols = Math.min(4, Math.max(2, count));
-      const cardW = isPortrait ? W * 0.36 : Math.min(W * 0.18, (W * 0.72) / cols);
+      const pCols = count <= 1 ? 1 : count <= 4 ? 2 : count <= 6 ? 3 : 4;
+      const pRows = Math.max(1, Math.ceil(count / pCols));
+      const cols = Math.min(4, Math.max(1, count));
+      const cardW = isPortrait
+        ? count === 1
+          ? W * 0.4
+          : count === 2
+          ? W * 0.34
+          : count <= 4
+          ? W * 0.29
+          : Math.min(W * 0.23, (W * 0.82) / pCols)
+        : Math.min(W * 0.18, (W * 0.72) / cols);
       const cardH = cardW * (620 / 420);
 
       plan.orderedCards.forEach((c, idx) => {
         const decomp = decomposedMap.get(c.img);
         if (!decomp) return;
-        const appear = easeOut(smooth(0.04 * idx, 0.35 + 0.05 * idx, u));
+        const appear = easeOut(smooth(0.03 * idx, 0.32 + 0.04 * idx, u));
         let cx = W * 0.5;
         let cy = H * 0.42;
 
         if (isPortrait) {
-          const r = Math.floor(idx / 2);
-          const col = idx % 2;
-          cx = W * (col === 0 ? 0.3 : 0.7);
-          cy = H * (0.26 + r * 0.24);
+          const r = Math.floor(idx / pCols);
+          const col = idx % pCols;
+          const itemsInRow = r === pRows - 1 ? count - r * pCols : pCols;
+          const rowSpan = (itemsInRow - 1) * (cardW * 1.16);
+          cx = W * 0.5 - rowSpan * 0.5 + col * (cardW * 1.16);
+          if (pRows === 1) {
+            cy = H * 0.41;
+          } else if (pRows === 2) {
+            cy = H * (0.29 + r * 0.23);
+          } else {
+            const topY = H * 0.24;
+            const botY = H * 0.56;
+            cy = topY + (r / Math.max(1, pRows - 1)) * (botY - topY);
+          }
         } else {
           const totalSpan = (count - 1) * (cardW * 1.12);
           cx = W * 0.45 - totalSpan * 0.5 + idx * (cardW * 1.12);
@@ -1776,7 +1804,7 @@ export class InkWashRenderer {
         W,
         H,
         isPortrait,
-        "CHÂU ẤN ĐÚC KẾT",
+        `CHÂU ẤN ĐÚC KẾT · ĐỦ ${count} LÁ BÀI`,
         plan.question.slice(0, 52),
         shot.subtitle,
         plan.sealChars,
