@@ -7695,63 +7695,6 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                       )}
                     </button>
                   </div>
-
-                  {/* CỤM 4: NÚT KHAI MỞ LUẬN GIẢI & ĐÀM ĐẠO TRỰC TIẾP TRONG ĐIỆN THOẠI TIỂU LONG CỬU NHỊ */}
-                  <div className="relative w-full">
-                    <button
-                      type="button"
-                      id="btn-chat-with-dragon-phone"
-                      onClick={() => {
-                        setShowPhoneVideoMode(false);
-                        setPhoneDisplayTab("chat");
-                        setIsPhoneMockupHighlighted(true);
-                        window.setTimeout(() => setIsPhoneMockupHighlighted(false), 3200);
-                        const phoneEl = document.getElementById("direct-home-phone-mockup");
-                        if (phoneEl) {
-                          phoneEl.scrollIntoView({ behavior: "smooth", block: "center" });
-                        }
-                        if (isHuongAnReadyForChat) {
-                          handleSendPhoneChatMessage();
-                        } else {
-                          setCopiedToast(
-                            "🕯️ Đã chuyển tới màn hình điện thoại Tiểu Long Cửu Nhị! Vui lòng nhập Câu hỏi chiêm bốc để bắt đầu khuyên bảo."
-                          );
-                          window.setTimeout(() => setCopiedToast(null), 3800);
-                          window.setTimeout(() => {
-                            const inlineQ = document.getElementById("phone-inline-question-input") as HTMLInputElement | null;
-                            if (inlineQ) inlineQ.focus();
-                          }, 420);
-                        }
-                      }}
-                      disabled={isPhoneChatLoading}
-                      className="inline-flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl text-xs sm:text-sm font-serif font-bold text-[#FFF8E7] border border-[#D4AF37] transition cursor-pointer shadow-lg hover:brightness-110 active:scale-[0.99] select-none disabled:opacity-60"
-                      style={{
-                        background: isHuongAnReadyForChat
-                          ? "linear-gradient(135deg, #7A1C1C 0%, #4E1010 52%, #2A160D 100%)"
-                          : "linear-gradient(135deg, #4A3723 0%, #2C2014 55%, #1A130C 100%)",
-                        boxShadow: "0 10px 26px -4px rgba(122, 28, 28, 0.45), inset 0 1px 0 rgba(243, 229, 171, 0.45)",
-                      }}
-                      title="Nhấn để nhảy ngay qua màn hình điện thoại Tiểu Long Cửu Nhị trên trang chủ"
-                    >
-                      <span className="text-base shrink-0">{isHuongAnReadyForChat ? "🐉" : "🔒"}</span>
-                      <span>
-                        {isPhoneChatLoading
-                          ? "Tiểu Long Cửu Nhị Đang Dựa Vào Hương Án Khuyên Bảo..."
-                          : isHuongAnReadyForChat
-                          ? "Xin Tiểu Long Cửu Nhị Dựa Vào Hương Án Khuyên Bảo"
-                          : "Mở Chat Tiểu Long (Cần Câu Hỏi Chiêm Bốc)"}
-                      </span>
-                      <span
-                        className={`text-[10px] font-sans font-bold px-2 py-0.5 rounded-full border ${
-                          isHuongAnReadyForChat
-                            ? "text-[#1C1610] bg-[#F3E5AB] border-[#D4AF37]"
-                            : "text-[#F3E5AB] bg-[#3A2B1C] border-[#D4AF37]/60"
-                        }`}
-                      >
-                        {isHuongAnReadyForChat ? "✓ Đã Khai Ấn" : "Chưa Khai Ấn"}
-                      </span>
-                    </button>
-                  </div>
                 </div>
               </div>
 
