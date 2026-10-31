@@ -908,9 +908,17 @@ function generateHexagramPrediction(
     const hexPri = HEXAGRAMS.find((h) => h.number === cPri?.hexNumber);
     const hexRes = HEXAGRAMS.find((h) => h.number === cRes?.hexNumber);
     const omenRes = hexRes?.omen ? `[${hexRes.omen}] ` : "";
+    const allFiveLines = cardsList
+      .map((c, idx) => {
+        const pos = NGU_HANH_POSITIONS[idx]?.label || c.positionLabel || `Lá ${idx + 1}`;
+        const h = HEXAGRAMS.find((x) => x.number === c?.hexNumber);
+        const brief = getHexDomainInsight(h, domain) || c?.desc || c?.sub || "";
+        return `  - Lá ${idx + 1} (${pos} · ${c?.name}): ${brief}`;
+      })
+      .join("\n");
 
     if (isQuestionEmpty) {
-      return `Quẻ Chủ: ${cPri?.name} (${cPri?.sub}) ➔ Kết quả: ${cRes?.name} (${cRes?.sub}). Dự đoán: Vượt qua thử thách chuyển dịch để đạt lối thoát hanh thông.${EMPTY_QUESTION_REMINDER}`;
+      return `Ngũ Hành 5 Lá: ${cardsList.map((c, i) => `Lá ${i + 1}: ${c?.name}`).join(" ➔ ")}. Dự đoán: Vượt qua thử thách chuyển dịch để đạt lối thoát hanh thông.\n${allFiveLines}${EMPTY_QUESTION_REMINDER}`;
     }
 
     const insightPri = getHexDomainInsight(hexPri, domain);
@@ -918,9 +926,11 @@ function generateHexagramPrediction(
     const omenOutlook = getOmenOutlookText(hexRes?.omen);
 
     return `🕊️ Tâm niệm / Câu hỏi: "${cleanedQuestion}"
-• Ngũ Hành chuyển hóa: Quẻ Chủ: ${cPri?.name} (${cPri?.sub}) ➔ Kết quả: ${cRes?.name} ${omenRes}(${cRes?.sub}).
-• Chiêm đoán theo ${domainLabel}: Trọng tâm nằm ở ${cPri?.name} (${insightPri || cPri?.desc}), sau chuỗi chuyển hóa sẽ đúc kết tại ${cRes?.name} (${insightRes || cRes?.desc}).
-• Dự đoán kết quả: Về sự việc này: ${omenOutlook} Bạn sẽ vượt qua các chặng biến động để đạt lối thoát và thành quả hanh thông.
+• Ngũ Hành chuyển hóa (Đủ 5 lá): ${cardsList.map((c, i) => `Lá ${i + 1}: ${c?.name}`).join(" ➔ ")} ${omenRes}.
+• Luận giải chi tiết đủ 5 lá theo ${domainLabel}:
+${allFiveLines}
+• Trọng tâm chuyển hóa: Khởi từ ${cPri?.name} (${insightPri || cPri?.desc}), hội tụ tại ${cRes?.name} (${insightRes || cRes?.desc}).
+• Dự đoán kết quả: Về sự việc này: ${omenOutlook}
 • Phương châm hành động: ${hexRes?.advice || "Giữ vững sơ tâm, biến chuyển linh hoạt theo thời cuộc."}`;
   }
 
@@ -928,24 +938,28 @@ function generateHexagramPrediction(
     const cur = cardsList[1];
     const adv = cardsList[3];
     const res = cardsList[4];
-    const blind = cardsList[6];
-    const hexCur = HEXAGRAMS.find((h) => h.number === cur?.hexNumber);
     const hexAdv = HEXAGRAMS.find((h) => h.number === adv?.hexNumber);
     const hexRes = HEXAGRAMS.find((h) => h.number === res?.hexNumber);
     const omenRes = hexRes?.omen ? `[${hexRes.omen}] ` : "";
+    const allSevenLines = cardsList
+      .map((c, idx) => {
+        const pos = THAT_TINH_POSITIONS[idx]?.label || c.positionLabel || `Lá ${idx + 1}`;
+        const h = HEXAGRAMS.find((x) => x.number === c?.hexNumber);
+        const brief = getHexDomainInsight(h, domain) || c?.desc || c?.sub || "";
+        return `  - Lá ${idx + 1} (${pos} · ${c?.name}): ${brief}`;
+      })
+      .join("\n");
 
     if (isQuestionEmpty) {
-      return `Hiện tại: ${cur?.name} (${cur?.sub}). Lời khuyên gợi ý: ${adv?.name}. Dự đoán kết quả: ${res?.name} (${res?.sub}). Hành động theo minh triết ${adv?.name} để đón cát tránh hung.${EMPTY_QUESTION_REMINDER}`;
+      return `Thất Tinh 7 Lá: Hiện tại: ${cur?.name} | Lời khuyên: ${adv?.name} | Kết quả: ${res?.name}.\n${allSevenLines}${EMPTY_QUESTION_REMINDER}`;
     }
 
-    const insightCur = getHexDomainInsight(hexCur, domain);
     const omenOutlook = getOmenOutlookText(hexRes?.omen);
 
     return `🕊️ Tâm niệm / Câu hỏi: "${cleanedQuestion}"
-• Thất Tinh Bắc Đẩu: Hiện tại: ${cur?.name} ➔ Lá Sách Lược: ${adv?.name} ➔ Kết quả: ${res?.name} ${omenRes}(${res?.sub}).
-• Chiêm đoán theo ${domainLabel}:
-  - Thực trạng bản thân (${cur?.name}): ${insightCur || cur?.desc}
-  - Điểm mù cần khắc phục: ${blind?.name || "Chớ chủ quan nóng vội"}
+• Thất Tinh Bắc Đẩu (Đủ 7 lá): Hiện tại: ${cur?.name} ➔ Lá Sách Lược: ${adv?.name} ➔ Kết quả: ${res?.name} ${omenRes}(${res?.sub}).
+• Luận giải chi tiết đủ 7 lá theo ${domainLabel}:
+${allSevenLines}
 • Dự đoán & Sách lược: Về tâm niệm "${cleanedQuestion}": Chìa khóa hóa giải và bứt phá nằm ở Lá Gợi Ý ${adv?.name}. Nếu hành động chuẩn xác theo minh triết "${hexAdv?.advice || adv?.sub}" thì kết quả ${res?.name} sẽ: ${omenOutlook}
 • Phương châm hành động: Hành động theo minh triết ${adv?.name} để đón cát tránh hung, đạt được kết quả như ý.`;
   }
@@ -959,17 +973,26 @@ function generateHexagramPrediction(
     const hexS8 = HEXAGRAMS.find((h) => h.number === s8?.hexNumber);
     const hexS9 = HEXAGRAMS.find((h) => h.number === s9?.hexNumber);
     const omenS8 = hexS8?.omen ? `[${hexS8.omen}] ` : "";
+    const allTenLines = cardsList
+      .map((c, idx) => {
+        const basePos = THAP_TINH_POSITIONS[idx]?.label || c.positionLabel || `Lá ${idx + 1}`;
+        const pos = idx === 1 ? `2. ${card2Effect}` : basePos;
+        const h = HEXAGRAMS.find((x) => x.number === c?.hexNumber);
+        const brief = getHexDomainInsight(h, domain) || c?.desc || c?.sub || "";
+        return `  - Lá ${idx + 1} (${pos} · ${c?.name}): ${brief}`;
+      })
+      .join("\n");
 
     if (isQuestionEmpty) {
-      return `Tâm điểm: ${s0?.name}. Lực tác động: ${s1?.name} (${card2Effect}). Dự đoán kết quả: ${s8?.name} (${s8?.sub}). Chỉ dẫn then chốt: ${s9?.name} (${s9?.sub}).${EMPTY_QUESTION_REMINDER}`;
+      return `Thập Tinh 10 Lá: Tâm điểm: ${s0?.name} | Lực tác động: ${s1?.name} (${card2Effect}) | Kết quả: ${s8?.name} | Chỉ dẫn: ${s9?.name}.\n${allTenLines}${EMPTY_QUESTION_REMINDER}`;
     }
 
-    const insightS8 = getHexDomainInsight(hexS8, domain);
     const omenOutlook = getOmenOutlookText(hexS8?.omen);
 
     return `🕊️ Tâm niệm / Câu hỏi: "${cleanedQuestion}"
-• Cục diện Thập Tinh: Tâm điểm: ${s0?.name} | Lực tác động: ${s1?.name} (${card2Effect}) ➔ Kết quả: ${s8?.name} ${omenS8}(${s8?.sub}) | Chỉ dẫn: ${s9?.name}.
-• Chiêm đoán theo ${domainLabel}: Sự việc xoay quanh tâm điểm ${s0?.name}, chịu sức ép/trợ lực từ ${s1?.name}. Đích đến sau cùng quy tụ tại ${s8?.name} (${insightS8 || s8?.desc}).
+• Cục diện Thập Tinh (Đủ 10 lá): Tâm điểm: ${s0?.name} | Lực tác động: ${s1?.name} (${card2Effect}) ➔ Kết quả: ${s8?.name} ${omenS8}(${s8?.sub}) | Chỉ dẫn: ${s9?.name}.
+• Luận giải chi tiết đủ 10 lá theo ${domainLabel}:
+${allTenLines}
 • Dự đoán viễn cảnh: Đối với vấn đề "${cleanedQuestion}": ${omenOutlook}
 • Chỉ dẫn then chốt: ${hexS9?.advice || s9?.desc || "Thấu suốt bản chất biến dịch, hành xử cẩn trọng vững vàng."}`;
   }
@@ -4931,15 +4954,30 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         } catch {}
       }
 
-      const fallbackDuration = Math.min(34, Math.max(11.5, orderedCards.length * 3.2 + 4.0));
-      const totalDuration =
-        decodedVoice && decodedVoice.duration > 2
-          ? Math.max(10.5, Math.min(38, decodedVoice.duration + 2.0))
-          : fallbackDuration;
+      // Đảm bảo thời lượng đủ cho TẤT CẢ các lá bài (kể cả trận 7 lá, 10 lá) — tuyệt đối không cắt ở 38s hay kẹp cứng khiến chỉ hiện 1-2 lá đầu
+      const minRequiredDuration = Math.max(12, orderedCards.length * 3.8 + 4.5);
+      const rawTotalDuration =
+        decodedVoice && decodedVoice.duration >= orderedCards.length * 2.2
+          ? Math.max(minRequiredDuration, Math.min(130, decodedVoice.duration + 1.8))
+          : Math.max(
+              minRequiredDuration,
+              decodedVoice && decodedVoice.duration > 2 ? decodedVoice.duration + 2.0 : minRequiredDuration
+            );
 
       // Xây dựng Kịch bản Thủy Mặc Ngắn Gọn Nhưng Hiển Thị & Phân Tích ĐẦY ĐỦ TẤT CẢ CÁC LÁ BÀI (Lá 1 ... Lá N) + Cảnh Cuối Châu Ấn Cửu Nhị
-      const weights = allSegmentsText.map((txt) => Math.max(24, txt.length));
-      const totalWeight = weights.reduce((acc, w) => acc + w, 0) || 1;
+      const cardWeights = shotSegmentsText.map((txt) => Math.max(28, txt.length));
+      const cardsTotalWeight = cardWeights.reduce((acc, w) => acc + w, 0) || 1;
+      const finalWeight = Math.max(28, finalSegmentText.length);
+      const totalAllWeight = cardsTotalWeight + finalWeight;
+
+      const finalShotDuration = Math.max(
+        2.8,
+        Math.min(5.2, Number((rawTotalDuration * (finalWeight / totalAllWeight)).toFixed(2)))
+      );
+      const targetCardsBudget = Math.max(orderedCards.length * 3.0, rawTotalDuration - finalShotDuration);
+      const perCardDurations = cardWeights.map((w) =>
+        Number(Math.max(2.6, (targetCardsBudget * w) / cardsTotalWeight).toFixed(2))
+      );
 
       const dynamicShots: InkWashFilmPlan["shots"] = [];
       const dynamicCues: InkWashFilmPlan["narrationCues"] = [];
@@ -4947,10 +4985,9 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
       orderedCards.forEach((c, idx) => {
         const b = BOOK_HEXAGRAMS.find((x) => x.number === c.hexNumber) || bookFirst;
-        const ratio = weights[idx] / totalWeight;
-        const dur = Number((totalDuration * ratio).toFixed(2));
+        const dur = perCardDurations[idx];
         const startSec = Number(cursorSec.toFixed(2));
-        const endSec = Number(Math.min(totalDuration - 2.0, startSec + Math.max(2.1, dur)).toFixed(2));
+        const endSec = Number((startSec + dur).toFixed(2));
         cursorSec = endSec;
 
         const posLabel = c.positionLabel || `Lá ${idx + 1}`;
@@ -4968,27 +5005,29 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         dynamicCues.push({
           id: `concise_card_${idx + 1}`,
           shotIndex: idx,
-          startSec: Number((startSec + 0.1).toFixed(2)),
-          endSec: Number(Math.max(startSec + 0.5, endSec - 0.08).toFixed(2)),
+          startSec: Number((startSec + 0.08).toFixed(2)),
+          endSec: Number(Math.max(startSec + 0.5, endSec - 0.06).toFixed(2)),
           text: cueText,
           speakText: cueText,
         });
       });
 
       const finalShotIdx = orderedCards.length;
-      const finalStartSec = Number(Math.min(cursorSec, totalDuration - 2.2).toFixed(2));
+      const finalStartSec = Number(cursorSec.toFixed(2));
+      const finalEndSec = Number((finalStartSec + finalShotDuration).toFixed(2));
+      const totalDuration = finalEndSec;
       dynamicShots.push({
         index: finalShotIdx,
         title: `Châu Ấn Cửu Nhị Quyết Đoán`,
         subtitle: `Tổng Kết Đủ ${orderedCards.length} Lá Bài & Chốt Hướng Hành Động`,
         startSec: finalStartSec,
-        endSec: Number(totalDuration.toFixed(2)),
+        endSec: finalEndSec,
       });
       dynamicCues.push({
         id: `concise_final`,
         shotIndex: finalShotIdx,
-        startSec: Number((finalStartSec + 0.1).toFixed(2)),
-        endSec: Number((totalDuration - 0.12).toFixed(2)),
+        startSec: Number((finalStartSec + 0.08).toFixed(2)),
+        endSec: Number((finalEndSec - 0.1).toFixed(2)),
         text: finalSegmentText,
         speakText: finalSegmentText,
       });
@@ -6213,10 +6252,11 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             decodedBuffer = await audioCtx.decodeAudioData(arrBuf.slice(0));
           } catch {}
 
+          const minBrowserDur = Math.max(16, orderedCards.length * 4.2);
           if (decodedBuffer && decodedBuffer.duration > 1) {
-            finalDuration = Math.max(12, decodedBuffer.duration + 3.0);
+            finalDuration = Math.max(minBrowserDur, decodedBuffer.duration + 3.0);
           } else {
-            finalDuration = Math.max(16, orderedCards.length * 6.5);
+            finalDuration = Math.max(minBrowserDur, orderedCards.length * 6.5);
           }
 
           const stream: MediaStream = (canvas as any).captureStream(24);

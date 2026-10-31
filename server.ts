@@ -523,7 +523,7 @@ function generateFallbackQuestionRefinement(rawQuestion: string, category: strin
 }
 
 // Format a card's data based on Sách Thuyết Minh 64 Quẻ Đi Kèm Bộ Bài + Bách Khoa 64 Quẻ Kinh Dịch (384 Hào)
-function getCardManualText(c: any, posLabel?: string): string {
+function getCardManualText(c: any, posLabel?: string, compact: boolean = false): string {
   if (!c) return "";
   const num =
     typeof c.number === "number"
@@ -554,15 +554,17 @@ function getCardManualText(c: any, posLabel?: string): string {
       if (lm) {
         specificYaoLine = `\n  • [Bách Khoa Hào ${yaoNum} (/vi/hexagram/${slug}/yao-${yaoNum}/)]: Hào từ "${lm.text}" — Giải nghĩa: ${lm.meaning}${lm.detailedExplanation ? ` | Chi tiết: ${lm.detailedExplanation}` : ""}`;
       }
-    } else if (Array.isArray(enc.lineMeanings) && enc.lineMeanings.length > 0) {
+    } else if (!compact && Array.isArray(enc.lineMeanings) && enc.lineMeanings.length > 0) {
       const summaryLines = enc.lineMeanings
         .slice(0, 6)
         .map((lm) => `Hào ${lm.line}: ${lm.text} (${lm.meaning})`)
         .join(" | ");
       specificYaoLine = `\n  • [Bách Khoa 6 Hào (/vi/hexagram/${slug}/)]: ${summaryLines}`;
     }
-    const htmlExcerpt = getEncyclopediaHtmlExcerpt(num, yaoNum);
-    encyclopediaSection = `\n  --- DỮ LIỆU BÁCH KHOA 64 QUẺ KINH DỊCH (/vi/hexagram/${slug}/) ---
+    const htmlExcerpt = compact ? "" : getEncyclopediaHtmlExcerpt(num, yaoNum);
+    encyclopediaSection = compact
+      ? `\n  • [Bách Khoa Quẻ #${num}]: Thoán Từ: "${enc.judgment}" | Tổng quan: ${enc.overview} | Lời khuyên: ${enc.advice}${specificYaoLine}`
+      : `\n  --- DỮ LIỆU BÁCH KHOA 64 QUẺ KINH DỊCH (/vi/hexagram/${slug}/) ---
   • Thoán Từ (Quái Từ): "${enc.judgment}"
   • Đại Tượng Truyện: "${enc.image}"
   • Tổng quan Bách Khoa: ${enc.overview}
@@ -575,6 +577,11 @@ function getCardManualText(c: any, posLabel?: string): string {
 
   if (!b) {
     return `${prefix}- Quẻ #${num}: ${c.name || enc?.name || ""}${yaoInfo}${encyclopediaSection}`;
+  }
+  if (compact) {
+    return `${prefix}- Lá bài: Quẻ #${b.number} ${b.name}${yaoNum ? ` — Hào ${yaoNum} (${c.name || ""})` : ""}
+  • Dòng chữ đỏ: "${b.redHeadline}" | Đại tượng: "${b.bigImage}"
+  • Vận Thế: "${b.destiny}" | Tình Cảm: "${b.love}"${yaoInfo}${encyclopediaSection}`;
   }
   return `${prefix}- Lá bài: Quẻ #${b.number} ${b.name} (${b.hanzi})${yaoNum ? ` — Hào ${yaoNum} (${c.name || ""})` : ""}
   • Dòng chữ đỏ in hoa trên lá bài: "${b.redHeadline}"
@@ -679,7 +686,7 @@ async function callDeepSeekChat(options: {
   }
 
   const dsCtrl = new AbortController();
-  const dsTimer = setTimeout(() => dsCtrl.abort(), 11000);
+  const dsTimer = setTimeout(() => dsCtrl.abort(), 26000);
   let res: globalThis.Response;
   try {
     res = await fetch("https://api.deepseek.com/chat/completions", {
@@ -807,9 +814,9 @@ async function generateWithFallback(
   }
 ) {
   const candidateModels = requestParams.preferredModels || [
-    "gemini-3.8-flash",
-    "gemini-3.1-flash-lite",
+    "gemini-2.5-flash",
     "gemini-flash-latest",
+    "gemini-2.0-flash",
   ];
 
   let lastError: any = null;
@@ -823,7 +830,7 @@ async function generateWithFallback(
           config: requestParams.config,
         }),
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error(`Timeout waiting for ${model}`)), 8500)
+          setTimeout(() => reject(new Error(`Timeout waiting for ${model}`)), 24000)
         ),
       ]);
       return response;
@@ -2622,8 +2629,8 @@ app.all("/api/tts", async (req: Request, res: Response) => {
 
     const profile = resolveVietnameseVoiceProfile(voiceParam);
 
-    // 1. Optional VoxCPM2 48kHz Anchored Vietnamese Male Voice Cloning
-    if (profile.useVoxCpm) {
+    // 1. Optional VoxCPM2 48kHz Anchored Vietnamese Male Voice Cloning (chỉ dùng cho câu ngắn <= 220 ký tự để tránh giới hạn 10s của VoxCPM cắt mất các lá bài sau trong trận nhiều lá)
+    if (profile.useVoxCpm && cleaned.length <= 220) {
       const voxMp3 = await synthesizeVoxCpmAnchored(
         cleaned,
         profile.voxControl ||
@@ -2642,7 +2649,7 @@ app.all("/api/tts", async (req: Request, res: Response) => {
       }
     }
 
-    // 2. Primary: Genuine Microsoft Edge Neural TTS (vi-VN-NamMinhNeural Trầm Ấm -6Hz / Trưởng Lão -10Hz)
+    // 2. Primary: Genuine Microsoft Edge Neural TTS (vi-VN-NamMinhNeural Trầm Ấm -6Hz / Trưởng Lão -10Hz — đọc trọn vẹn 100% từ Lá 1 đến Lá 10 không giới hạn độ dài)
     const parts = cleaned.split(/(?<=[.!?…。；;:\n])\s+|(?=[,，])\s*/);
     const neuralChunks: string[] = [];
     let nCur = "";
@@ -2660,7 +2667,7 @@ app.all("/api/tts", async (req: Request, res: Response) => {
 
     const neuralBuffers: Buffer[] = [];
     let neuralOk = true;
-    for (const nChunk of neuralChunks.slice(0, 12)) {
+    for (const nChunk of neuralChunks.slice(0, 36)) {
       const audio = await synthesizeEdgeNeuralChunk(
         nChunk,
         profile,
@@ -2698,7 +2705,7 @@ app.all("/api/tts", async (req: Request, res: Response) => {
     if (cur) chunks.push(cur);
 
     const buffers: Buffer[] = [];
-    for (const chunk of chunks.slice(0, 24)) {
+    for (const chunk of chunks.slice(0, 60)) {
       const endpoints = [
         `https://translate.google.com/translate_tts?ie=UTF-8&tl=vi&client=tw-ob&q=${encodeURIComponent(chunk)}`,
         `https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=vi&q=${encodeURIComponent(chunk)}`,
@@ -2846,6 +2853,7 @@ app.post("/api/dragon_agent/chat", async (req: Request, res: Response) => {
   // 2. Trích xuất dữ liệu chuẩn từ Sách Thuyết Minh 64 Quẻ + Bách Khoa 64 Quẻ Kinh Dịch (384 Hào) + Blog Dịch Học
   const drawnHexNumbers: number[] = [];
   let cardsManualContext = "";
+  const useCompactCardContext = rawCards.length >= 5;
   if (rawCards.length > 0) {
     cardsManualContext = rawCards
       .map((c: any, idx: number) => {
@@ -2862,7 +2870,7 @@ app.post("/api/dragon_agent/chat", async (req: Request, res: Response) => {
         if (spreadMode === "thap_tinh" && idx === 1) {
           posLabel = `Lá 2 (${isCard2Reversed ? "Chiều Ngược - Lực cản / Trở ngại cần hóa giải" : "Chiều Xuôi - Trợ lực / Thuận duyên thúc đẩy"})`;
         }
-        return getCardManualText(c, posLabel);
+        return getCardManualText(c, `Lá ${idx + 1}/${rawCards.length} · ${posLabel}`, useCompactCardContext);
       })
       .join("\n\n");
   }
@@ -2881,16 +2889,16 @@ NGUYÊN TẮC CỐT TỬ BẮT BUỘC TUÂN THỦ:
 2. **DỰA TRỰC TIẾP VÀO CÂU HỎI & CÂU TRẢ LỜI TẠI 「HƯƠNG ÁN KHỞI NIỆM · CÂU HỎI CHIÊM BỐC」 ĐỂ KHUYÊN BẢO**:
    - Quý bạn đã thành tâm khởi niệm tại **Hương Án Khởi Niệm · Câu Hỏi Chiêm Bốc** với câu hỏi: "${mainQuestion}"${huongAnAnswer ? ` và đã có Câu trả lời tại Hương Án:\n     "${huongAnAnswer}"` : "."}
    - Bạn PHẢI lấy **Câu hỏi & Câu trả lời tại Hương Án Khởi Niệm** làm gốc rễ xuyên suốt để phân tích, khuyên bảo, tháo gỡ khúc mắc và chỉ dẫn từng bước hành động cụ thể cho quý bạn.
-3. **LUẬN GIẢI KẾT HỢP SÁCH THUYẾT MINH 64 QUẺ + BÁCH KHOA 64 QUẺ KINH DỊCH (384 HÀO) + BLOG DỊCH HỌC**:
-   - Bám sát các lá bài mà quý bạn đang trải trên trang chủ (${detectedHex}) và câu trả lời tại Hương Án Khởi Niệm, đồng thời giải đáp sâu sắc nếu quý bạn hỏi về bất kỳ quẻ nào trong **Bách Khoa 64 Quẻ Kinh Dịch** hoặc các chuyên khảo trong **Blog Dịch Học & Tâm Lý Học Ứng Dụng**.
+3. **BẮT BUỘC LUẬN GIẢI ĐẦY ĐỦ TẤT CẢ ${rawCards.length || 1} LÁ BÀI HIỆN RA (TỪ LÁ 1 ĐẾN LÁ ${rawCards.length || 1})**:
+   - Bàn trải bài hiện đang có **${rawCards.length || 1} lá bài** (${spreadTitle}). Bạn **BẮT BUỘC phải điểm qua và phân tích đầy đủ tất cả ${rawCards.length || 1} lá bài từ Lá 1 đến Lá ${rawCards.length || 1}** (nêu rõ vị trí từng lá bài, tên quẻ/hào và thông điệp ứng với câu hỏi). Tuyệt đối KHÔNG ĐƯỢC chỉ luận 1-2 lá đầu rồi bỏ sót các lá bài còn lại!
    - Trích dẫn và phân tích tự nhiên, sắc sảo dựa trên 3 nguồn tri thức chính thống:
      • **Sách Thuyết Minh 64 Quẻ Đi Kèm Bộ Bài**: **Dòng chữ đỏ in hoa trên lá bài** (tôn chỉ, kim chỉ nam hành động), **Lời bàn Đại Tượng**, **Dịch nghĩa thơ tượng**, **Vận Thế** và **Tình Cảm**.
      • **Bách Khoa 64 Quẻ Kinh Dịch & 384 Hào Từ**: **Thoán Từ (Quái Từ)**, **Đại Tượng Truyện**, **Tổng quan Bách Khoa**, **Sự nghiệp**, **Tài lộc**, **Tình duyên**, **Sức khỏe**, **Lời khuyên cốt tủy** và **Ý nghĩa chi tiết Hào động / 6 Hào**.
      • **Blog Dịch Học & Tâm Lý Học Ứng Dụng Cửu Nhị**: Khi câu hỏi liên quan đến giấc mơ/rụng răng (Quẻ Bác #23), cách gieo quẻ 3 đồng xu Kim Tiền Quái (Quẻ Nhu #5), lịch sử 3.000 năm Kinh Dịch & nguyên lý Tính Đồng Thời của Carl Jung, lo âu nơi công sở (Quẻ Khốn #47, Quẻ Nhu #5, Quẻ Minh Di #36), vận xui tắc nghẽn / Sao Thủy nghịch hành (Quẻ Kiển #39, Quẻ Bĩ #12), hay sự khác biệt giữa Tarot và Kinh Dịch, hãy lồng ghép tinh hoa từ chuyên khảo Blog tương ứng.
    - Không phán xét định mệnh cực đoan Cát/Hung cố định, mà soi sáng thời thế hiện tại, chỉ rõ cơ hội, điểm cần giữ tĩnh/cẩn trọng và hướng ứng xử Đắc Trung Chính.
 4. **PHONG THÁI TRÌNH BÀY TRÊN MÀN HÌNH ĐIỆN THOẠI**:
-   - Trình bày bằng Markdown rõ ràng, ấm áp, tinh tế, dùng in đậm (**...**) cho các thông điệp trọng tâm và gạch đầu dòng ngắn gọn dễ đọc trên màn hình dọc 9:16.
-   - Độ dài vừa vặn, súc tích (khoảng 160 - 280 chữ), đi thẳng vào trọng tâm câu hỏi và câu trả lời tại Hương Án của quý bạn.
+   - Trình bày bằng Markdown rõ ràng, ấm áp, tinh tế, dùng in đậm (**...**) cho các thông điệp trọng tâm và gạch đầu dòng ngắn gọn cho từng lá bài (Lá 1 ... Lá ${rawCards.length || 1}) dễ đọc trên màn hình dọc 9:16.
+   - Độ dài: ${rawCards.length >= 5 ? `khoảng 300 - ${Math.min(680, rawCards.length * 58)} chữ (đảm bảo mỗi lá bài từ Lá 1 đến Lá ${rawCards.length} đều được phân tích súc tích, rõ ràng)` : "khoảng 180 - 320 chữ"}, đi thẳng vào trọng tâm câu hỏi và câu trả lời tại Hương Án của quý bạn.
 
 THÔNG TIN HƯƠNG ÁN KHỞI NIỆM, TRẬN PHÁP, BÁCH KHOA 64 QUẺ & BLOG DỊCH HỌC TRÊN TRANG CHỦ:
 - Trận pháp: ${spreadTitle}
@@ -2976,16 +2984,18 @@ ${hexagramText ? `\nBẢN TÓM LƯỢC QUẺ TRẢI TRÊN TRANG CHỦ:\n${hexagr
     const book1 = bookHexMap.get(num1);
     const enc1 = encyclopediaHexMap.get(num1);
     const cardDetails = rawCards
-      .slice(0, 4)
       .map((c: any, idx: number) => {
         const n = typeof c.hexNumber === "number" ? c.hexNumber : parseInt(c.hexNumber || c.number, 10) || 1;
         const bk = bookHexMap.get(n);
         const ec = encyclopediaHexMap.get(n);
         const pos = c.positionLabel || `Lá ${idx + 1}`;
+        const yaoNum = Number(c?.yaoNumber) || 0;
+        const yaoInfo =
+          yaoNum >= 1 && yaoNum <= 6 ? ec?.lineMeanings?.find((l) => l.line === yaoNum) : undefined;
         if (bk) {
-          return `• **${pos} — Quẻ #${bk.number} ${bk.name}** (*${bk.redHeadline}*): ${bk.destiny}${ec ? ` | **Bách Khoa**: ${ec.advice}` : ""}`;
+          return `• **Lá ${idx + 1} (${pos}) — Quẻ #${bk.number} ${bk.name}${yaoInfo ? ` · ${yaoInfo.name}` : ""}** (*${bk.redHeadline}*): ${yaoInfo ? yaoInfo.meaning : bk.destiny}${ec?.advice ? ` | **Lời khuyên**: ${ec.advice}` : ""}`;
         }
-        return `• **${pos} — ${c.name || `Quẻ #${n}`}**: ${c.desc || ""}`;
+        return `• **Lá ${idx + 1} (${pos}) — ${c.name || `Quẻ #${n}`}**: ${c.desc || ""}`;
       })
       .join("\n");
 
