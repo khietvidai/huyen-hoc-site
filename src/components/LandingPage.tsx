@@ -31,7 +31,15 @@ import { ExportImageModal } from "./ExportImageModal";
 import { BrandMark } from "./BrandMark";
 import { NavTab } from "./Header";
 import { HEXAGRAMS, getTransformedHexagram } from "../data/hexagrams";
+import { BOOK_HEXAGRAMS } from "../data/bookHexagrams";
 import { AppUser } from "../services/authService";
+import {
+  InkWashRenderer,
+  decomposeCardToInkLayers,
+  DecomposedCardInk,
+  InkWashFilmPlan,
+  stripHanziAndCleanVi,
+} from "../utils/inkWashEngine";
 
 export interface LandingPageProps {
   currentUser?: AppUser | null;
@@ -43,6 +51,122 @@ export interface LandingPageProps {
 
 const getHexagramsUrl = () => "/vi/hexagram";
 const getBlogUrl = () => "/vi/blog/";
+
+export interface HomeBlogMonograph {
+  slug: string;
+  url: string;
+  title: string;
+  shortTitle: string;
+  category: string;
+  cover: string;
+  relatedHexagrams: Array<{ num: number; label: string }>;
+  summary: string;
+  promptQuestion: string;
+}
+
+export const HOME_BLOG_ITEMS: HomeBlogMonograph[] = [
+  {
+    slug: "dream-teeth-falling-iching",
+    url: "/vi/blog/dream-teeth-falling-iching/",
+    title: "Mơ thấy rụng răng là điềm báo gì? — Cuộc đối thoại với tiềm thức về sự mất mát, trật tự lung lay và lúc cần dừng lại tĩnh dưỡng",
+    shortTitle: "Giải mã giấc mơ rụng răng & Quẻ Bác (#23)",
+    category: "Tâm Lý Tiềm Thức & Dịch Lý",
+    cover: "/assets/dream-teeth-falling-cover.webp",
+    relatedHexagrams: [
+      { num: 23, label: "#23 Sơn Địa Bác" },
+      { num: 24, label: "#24 Địa Lôi Phục" },
+      { num: 52, label: "#52 Thuần Cấn" },
+    ],
+    summary:
+      "Răng tượng trưng cho cấu trúc nâng đỡ và sự tự tin. Dưới góc nhìn Quẻ Sơn Địa Bác (#23), giấc mơ rụng răng không phải điềm gở định mệnh mà là tín hiệu tiềm thức báo hiệu bạn đang gồng gánh quá tải, một cấu trúc cũ đang bong tróc ('Bác cực tất Phục'). Lời khuyên cốt tủy là 'Thuận nhi chỉ' — thuận thế dừng lại tĩnh dưỡng, củng cố nền tảng để đón chu kỳ tái sinh.",
+    promptQuestion:
+      "Xin Tiểu Long chia sẻ sâu hơn về chuyên khảo Blog 'Giải mã giấc mơ rụng răng & Quẻ Sơn Địa Bác (#23)' và liên hệ với quẻ đang trải trên trang chủ?",
+  },
+  {
+    slug: "iching-workplace-anxiety",
+    url: "/vi/blog/iching-workplace-anxiety/",
+    title: "Kinh Dịch giúp gì khi lo âu nơi công sở? Ba bài học tiến thoái từ Quẻ Khốn, Quẻ Nhu và Quẻ Minh Di",
+    shortTitle: "Hóa giải lo âu công sở: Khốn • Nhu • Minh Di",
+    category: "Sự Nghiệp & Đạo Tiến Thoái",
+    cover: "/assets/iching-workplace-anxiety-cover.webp",
+    relatedHexagrams: [
+      { num: 47, label: "#47 Trạch Thủy Khốn" },
+      { num: 5, label: "#5 Thủy Thiên Nhu" },
+      { num: 36, label: "#36 Địa Hỏa Minh Di" },
+    ],
+    summary:
+      "Ba chiến lược vượt áp lực công sở từ Chu Dịch: (1) Quẻ Khốn (#47): Khi kiệt sức và 'Hữu ngôn bất tín', đừng biện minh suông mà hãy quay về dưỡng nội lực. (2) Quẻ Nhu (#5): Nghệ thuật chờ đợi chủ động — bảo toàn thể lực, mài sắc kỹ năng đợi thời. (3) Quẻ Minh Di (#36): 'Dụng hối nhi minh' — thu giấu sự sắc sảo bên ngoài, giữ sáng ngọn lửa trí tuệ bên trong.",
+    promptQuestion:
+      "Xin Tiểu Long phân tích 3 bài học tiến thoái nơi công sở từ Blog (Quẻ Khốn #47, Quẻ Nhu #5, Quẻ Minh Di #36) và soi chiếu vào công việc của tôi theo trận pháp hiện tại?",
+  },
+  {
+    slug: "shuini-yijing",
+    url: "/vi/blog/shuini-yijing/",
+    title: "Điện thoại vỡ màn hình, tin nhắn người cũ 'đã xem không trả lời': Ngoài đổ lỗi cho Sao Thủy nghịch hành, Kinh Dịch nhìn nhận chuỗi ngày 'mọi việc bất thuận' như thế nào?",
+    shortTitle: "Hóa giải vận xui, tắc nghẽn & Thủy nghịch",
+    category: "Chuyển Hóa Nghịch Cảnh",
+    cover: "/assets/shuini-yijing-cover.webp",
+    relatedHexagrams: [
+      { num: 39, label: "#39 Thủy Sơn Kiển" },
+      { num: 12, label: "#12 Thiên Địa Bĩ" },
+      { num: 40, label: "#40 Lôi Thủy Giải" },
+    ],
+    summary:
+      "Chuỗi ngày 'mọi việc bất thuận' tương ứng với trạng thái Quẻ Thủy Sơn Kiển (#39 - trước mặt là vực sâu, sau lưng là núi cao) và Quẻ Thiên Địa Bĩ (#12 - giao tiếp đứt gãy). Thay vì đổ lỗi ngoại cảnh, Dịch lý dạy chữ 'Phản thân tu đức' — dừng lại chỉnh đốn tâm thế, tìm về nơi bằng phẳng và người tri kỷ ('Kiển lợi tây nam') để tháo gỡ sang Quẻ Lôi Thủy Giải (#40).",
+    promptQuestion:
+      "Xin Tiểu Long giảng giải góc nhìn Blog về chuỗi ngày bất thuận / Thủy nghịch (Quẻ Kiển #39 & Quẻ Bĩ #12) và cách hóa giải bế tắc dựa trên quẻ đang trải?",
+  },
+  {
+    slug: "iching-beginners-guide",
+    url: "/vi/blog/iching-beginners-guide/",
+    title: "Nhập môn Kinh Dịch từ con số 0: Hiểu rõ nguyên lý xác suất, cách gieo và đọc quẻ 'Kim Tiền Quái' bằng 3 đồng xu",
+    shortTitle: "Nhập môn Kim Tiền Quái (Gieo 3 đồng xu)",
+    category: "Cẩm Nang Nhập Môn",
+    cover: "/assets/iching-beginners-guide-cover.webp",
+    relatedHexagrams: [
+      { num: 1, label: "#1 Thuần Càn" },
+      { num: 2, label: "#2 Thuần Khôn" },
+      { num: 5, label: "#5 Thủy Thiên Nhu" },
+    ],
+    summary:
+      "Giải thích khoa học về phương pháp gieo quẻ 3 đồng xu (Kim Tiền Quái) qua 6 lần tung từ Sơ hào đến Thượng hào: Thiếu Dương (3/8) & Thiếu Âm (3/8) là hào tĩnh; Lão Dương (1/8) & Lão Âm (1/8) là hào động ('Vật cực tất phản' — phát triển đến cực điểm ắt biến đổi sang Biến Quái).",
+    promptQuestion:
+      "Xin Tiểu Long hướng dẫn nguyên lý Kim Tiền Quái, Hào động 'Vật cực tất phản' trong Blog Nhập môn và giải thích cách đọc trận pháp đang trải trên trang chủ?",
+  },
+  {
+    slug: "iching-history-guide",
+    url: "/vi/blog/iching-history-guide/",
+    title: "Ba ngàn năm Kinh Dịch: Từ biểu tượng âm dương, quẻ hào đến tâm lý học và thuật toán hiện đại",
+    shortTitle: "3.000 năm Kinh Dịch & Tâm lý học Carl Jung",
+    category: "Lịch Sử & Triết Học Đông Tây",
+    cover: "/assets/iching-history-guide-cover.webp",
+    relatedHexagrams: [
+      { num: 11, label: "#11 Địa Thiên Thái" },
+      { num: 63, label: "#63 Thủy Hỏa Ký Tế" },
+      { num: 64, label: "#64 Hỏa Thủy Vị Tế" },
+    ],
+    summary:
+      "Hành trình 3.000 năm của Chu Dịch ('Quần kinh chi thủ' qua Nhân canh Tam Thánh: Phục Hy, Chu Văn Vương, Khổng Tử) kết nối với hệ nhị phân (0 và 1) của Leibniz và nguyên lý Tính Đồng Thời (Synchronicity) của Carl Jung: quẻ bài không phải ngẫu nhiên vô nghĩa mà phản chiếu trường tâm thức tại đúng thời khắc khởi niệm.",
+    promptQuestion:
+      "Xin Tiểu Long đàm đạo về nguyên lý Tính Đồng Thời (Synchronicity) trong Blog Lịch sử 3000 năm Kinh Dịch và lý giải vì sao tôi lại hữu duyên gặp các lá bài đang trải hôm nay?",
+  },
+  {
+    slug: "tarot-vs-iching",
+    url: "/vi/blog/tarot-vs-iching/",
+    title: "Tarot và Kinh Dịch khác nhau ở đâu? Hoàn cảnh nào nên chọn công cụ nào?",
+    shortTitle: "So sánh Tarot Phương Tây & Kinh Dịch",
+    category: "Phương Pháp Luận",
+    cover: "/assets/tarot-vs-iching-cover.webp",
+    relatedHexagrams: [
+      { num: 61, label: "#61 Phong Trạch Trung Phu" },
+      { num: 14, label: "#14 Hỏa Thiên Đại Hữu" },
+    ],
+    summary:
+      "Tarot mạnh về hình ảnh nguyên mẫu (Archetypes) giúp phóng chiếu cảm xúc và góc khuất nội tâm; trong khi Kinh Dịch mạnh về cấu trúc Thời - Vị - Trung - Chính (64 Quẻ & 384 Hào), chỉ dẫn chiến lược tiến thoái cụ thể. Bộ bài I Ching Tarot dung hòa trọn vẹn cả trực giác hình ảnh lẫn minh triết Thời - Vị của Chu Dịch.",
+    promptQuestion:
+      "Xin Tiểu Long phân tích sự kết hợp giữa hình ảnh trực giác và đạo Thời - Vị của bộ bài I Ching Tarot trên các lá bài đang trải hiện tại?",
+  },
+];
 
 
 const HEX_SLUGS: Record<number, string> = {
@@ -1689,6 +1813,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
   /* Nội dung tâm niệm / Câu hỏi cho AI (Mặc định mỗi lần vào web sẽ luôn reset về chưa điền chữ) */
   const [userIntentQuestion, setUserIntentQuestion] = useState<string>("");
+  /* Câu trả lời tại Hương Án Khởi Niệm · Câu Hỏi Chiêm Bốc (Căn cứ bắt buộc để mở khóa Chat và để Tiểu Long Cửu Nhị dựa vào khuyên bảo) */
+  const [huongAnAnswer, setHuongAnAnswer] = useState<string>("");
+  const [isHuongAnHighlighted, setIsHuongAnHighlighted] = useState<boolean>(false);
   /* Trạng thái đã nhấn nút "Chép Toàn Bộ Quẻ Bài & Câu Hỏi Cho AI" khi đã có câu hỏi */
   const [hasCopiedWithQuestion, setHasCopiedWithQuestion] = useState<boolean>(false);
 
@@ -1702,6 +1829,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     setUserIntentQuestion(val);
     if (!val.trim()) {
       setHasCopiedWithQuestion(false);
+      setHuongAnAnswer("");
     }
     if (currentTempSpreadIdRef.current) {
       updateTempSpreadItem(currentTempSpreadIdRef.current, { question: val });
@@ -1727,19 +1855,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     }
   }, []);
 
-  const handleRefreshPredictionFromCards = useCallback(() => {
-    const pred = generateHexagramPrediction(cards, mode, isCard2Reversed, userIntentQuestion);
-    handleHexagramPredictionChange(pred);
-    if (userIntentQuestion && userIntentQuestion.trim()) {
-      setCopiedToast("✨ Đã tham khảo tâm niệm & điền gợi ý dự đoán từ quẻ!");
-    } else {
-      setCopiedToast("💡 Đã điền dự đoán từ quẻ. Nhập tâm niệm ở trên để dự đoán sát việc hơn!");
-    }
-    setTimeout(() => setCopiedToast(null), 3000);
-  }, [cards, mode, isCard2Reversed, userIntentQuestion, handleHexagramPredictionChange]);
-
-
-
   /* Đáp án tự điền / Chiêm nghiệm thực tế của người dùng */
   const [userCustomAnswer, setUserCustomAnswer] = useState(() => {
     try {
@@ -1758,6 +1873,53 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       updateTempSpreadItem(currentTempSpreadIdRef.current, { userAnswer: val });
     }
   }, []);
+
+  /* Cửu Long tự động tổng hợp câu trả lời Hương Án ngầm phía sau dựa trên câu hỏi & quẻ đang trải (không hiển thị ra giao diện) */
+  const getAutoHuongAnAnswer = useCallback(() => {
+    const qClean = userIntentQuestion.trim();
+    if (!qClean) return "";
+    const pred = generateHexagramPrediction(cards, mode, isCard2Reversed, qClean);
+    const firstCard = cards[0];
+    const book0 = BOOK_HEXAGRAMS.find((b) => b.number === firstCard?.hexNumber) || BOOK_HEXAGRAMS[0];
+    return [
+      `📕 Tôn chỉ Sách Thuyết Minh (Quẻ #${book0.number} ${book0.name}): "${book0.redHeadline}" — ${book0.destiny}`,
+      pred,
+    ]
+      .filter(Boolean)
+      .join("\n");
+  }, [userIntentQuestion, cards, mode, isCard2Reversed]);
+
+  useEffect(() => {
+    const autoAns = getAutoHuongAnAnswer();
+    setHuongAnAnswer(autoAns);
+  }, [getAutoHuongAnAnswer]);
+
+  const isHuongAnReadyForChat = Boolean(userIntentQuestion.trim());
+
+  const scrollToHuongAnForChat = useCallback(() => {
+    setIsPhoneChatModalExpanded(false);
+    setIsHuongAnHighlighted(true);
+    setTimeout(() => setIsHuongAnHighlighted(false), 3200);
+    const huongAnEl = document.getElementById("huong-an-khoi-niem");
+    if (huongAnEl) {
+      huongAnEl.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    setTimeout(() => {
+      const qInput = document.getElementById("user-intent-question-input") as HTMLTextAreaElement | null;
+      if (qInput) qInput.focus();
+    }, 350);
+  }, []);
+
+  const handleRefreshPredictionFromCards = useCallback(() => {
+    const pred = generateHexagramPrediction(cards, mode, isCard2Reversed, userIntentQuestion);
+    handleHexagramPredictionChange(pred);
+    if (userIntentQuestion && userIntentQuestion.trim()) {
+      setCopiedToast("✨ Đã tham khảo tâm niệm & điền gợi ý dự đoán từ quẻ!");
+    } else {
+      setCopiedToast("💡 Đã điền dự đoán từ quẻ. Nhập tâm niệm ở trên để dự đoán sát việc hơn!");
+    }
+    setTimeout(() => setCopiedToast(null), 3000);
+  }, [cards, mode, isCard2Reversed, userIntentQuestion, handleHexagramPredictionChange]);
 
   /* Quản lý danh sách quẻ đã lưu & Popups */
   const [savedSpreads, setSavedSpreads] = useState<SavedSpreadItem[]>(() => {
@@ -1934,6 +2096,62 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const [isDragonAutoCycle, setIsDragonAutoCycle] = useState<boolean>(false);
   const [isDragonSendingFinale, setIsDragonSendingFinale] = useState<boolean>(false);
   const dragonVideoRef = useRef<HTMLVideoElement | null>(null);
+
+  /* ── Trạng thái Khung Chatbox, Bách Khoa 64 Quẻ, Blog Dịch Học & Video Thủy Mặc trong màn hình điện thoại Cửu Nhị Tiểu Long ── */
+  const [phoneDisplayTab, setPhoneDisplayTab] = useState<"chat" | "bakh_khoa" | "blog" | "thuy_mac" | "stage">("chat");
+  const [isExportingInkWashClip, setIsExportingInkWashClip] = useState<boolean>(false);
+  const [inkWashWorkingAct, setInkWashWorkingAct] = useState<1 | 2 | 3 | 4 | 5>(1);
+  const [inkWashExportPercent, setInkWashExportPercent] = useState<number>(0);
+  const [inkWashExportStage, setInkWashExportStage] = useState<string>(
+    "Tiểu Long Cửu Nhị sẵn sàng xuất Video Thủy Mặc ngắn gọn trả lời trực tiếp câu hỏi từ quẻ"
+  );
+  const [conciseInkWashResult, setConciseInkWashResult] = useState<{
+    question: string;
+    hexagram_title: string;
+    direct_answer: string;
+    key_turning_point: string;
+    final_verdict: string;
+    seal_chars: string;
+    video_url: string;
+    video_ext: string;
+    audio_url?: string;
+    duration: number;
+  } | null>(null);
+  const [selectedPhoneHexNum, setSelectedPhoneHexNum] = useState<number>(() => cards[0]?.hexNumber || 1);
+  const [selectedPhoneYaoNum, setSelectedPhoneYaoNum] = useState<number | null>(() => cards[0]?.yaoNumber || null);
+  useEffect(() => {
+    if (cards.length > 0 && cards[0]?.hexNumber) {
+      setSelectedPhoneHexNum(cards[0].hexNumber);
+      setSelectedPhoneYaoNum(cards[0].yaoNumber || null);
+    }
+  }, [cards]);
+  const [isPhoneChatModalExpanded, setIsPhoneChatModalExpanded] = useState<boolean>(false);
+  const [isPhoneMockupHighlighted, setIsPhoneMockupHighlighted] = useState<boolean>(false);
+  const [phoneChatMessages, setPhoneChatMessages] = useState<
+    Array<{
+      id: string;
+      role: "user" | "assistant";
+      content: string;
+      timestamp: string;
+      poseBadge?: string;
+      hexagramFocus?: string;
+    }>
+  >([]);
+  const [phoneChatInput, setPhoneChatInput] = useState<string>("");
+  const [isPhoneChatLoading, setIsPhoneChatLoading] = useState<boolean>(false);
+  const [phoneChatAct, setPhoneChatAct] = useState<1 | 2 | 3 | 5 | null>(null);
+  const [copiedChatMsgId, setCopiedChatMsgId] = useState<string | null>(null);
+  const [phoneQuickQuestions, setPhoneQuickQuestions] = useState<string[]>([
+    "✨ Luận giải quẻ đang trải",
+    "📚 Phân tích sâu theo Bách Khoa 64 Quẻ & 384 Hào",
+    "📕 Dòng chữ đỏ & Đại tượng khuyên gì?",
+    "📰 Góc nhìn Blog Dịch Học & Tâm Lý Học?",
+    "💼 Công việc & Tài lộc theo quẻ?",
+    "❤️ Tình cảm & Nhân duyên?",
+  ]);
+  const phoneChatScrollRef = useRef<HTMLDivElement | null>(null);
+  const phoneModalChatScrollRef = useRef<HTMLDivElement | null>(null);
+  const phoneChatActTimerRef = useRef<number | null>(null);
 
   const triggerDragonFullAnimations = useCallback(() => {
     if (!isDragonUnlocked) return;
@@ -3719,17 +3937,23 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
   const isDragonWorking =
     isDirectHomeRunning ||
+    isExportingInkWashClip ||
     isPlayingCopyFullClips ||
     isDragonSendingFinale ||
     isCapturingSnapshot ||
     isRecordingVoiceQ ||
-    isTranscribingVoiceQ;
+    isTranscribingVoiceQ ||
+    isPhoneChatLoading;
 
   const activeDragonAct: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 =
     dragonWakeState === "sleeping"
       ? 0
       : dragonWakeState === "waking"
       ? 8
+      : isExportingInkWashClip
+      ? inkWashWorkingAct
+      : phoneChatAct !== null
+      ? phoneChatAct
       : isDirectHomeRunning || isCapturingSnapshot || isPlayingCopyFullClips
       ? dragonAutoFullAct
       : 9;
@@ -3755,8 +3979,612 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       if (dragonUnlockTimerRef.current) {
         window.clearTimeout(dragonUnlockTimerRef.current);
       }
+      if (phoneChatActTimerRef.current) {
+        window.clearTimeout(phoneChatActTimerRef.current);
+      }
     };
   }, []);
+
+  /* ── Tự động cuộn khung chatbox trong màn hình điện thoại Cửu Nhị Tiểu Long xuống tin nhắn mới nhất ── */
+  useEffect(() => {
+    if (phoneChatScrollRef.current) {
+      phoneChatScrollRef.current.scrollTop = phoneChatScrollRef.current.scrollHeight;
+    }
+    if (phoneModalChatScrollRef.current) {
+      phoneModalChatScrollRef.current.scrollTop = phoneModalChatScrollRef.current.scrollHeight;
+    }
+  }, [phoneChatMessages, isPhoneChatLoading, isPhoneChatModalExpanded, phoneDisplayTab]);
+
+  /* ── Hàm gửi câu hỏi đàm đạo & luận giải quẻ trực tiếp cùng Tiểu Long Cửu Nhị trong màn hình điện thoại ── */
+  const handleSendPhoneChatMessage = useCallback(
+    async (customQuestion?: string) => {
+      if (isPhoneChatLoading) return;
+
+      // Bắt buộc phải có Câu hỏi tại "Hương Án Khởi Niệm · Câu Hỏi Chiêm Bốc" trước khi mở Chat (Cửu Long sẽ tự động tổng hợp lời giải Hương Án ngầm phía sau)
+      if (!userIntentQuestion.trim()) {
+        setCopiedToast(
+          "🕯️ Vui lòng nhập Câu hỏi tại 「Hương Án Khởi Niệm · Câu Hỏi Chiêm Bốc」 trước để Tiểu Long Cửu Nhị dựa vào đó khuyên bảo!"
+        );
+        setTimeout(() => setCopiedToast(null), 4000);
+        scrollToHuongAnForChat();
+        return;
+      }
+
+      const autoHuongAn = huongAnAnswer.trim() || getAutoHuongAnAnswer();
+      const spreadName = SPREAD_MODE_NAMES[mode] || "Trận Pháp Kinh Dịch";
+      const cardNamesList = cards.map((c) => c.name.replace(/^Quẻ (Chủ|Biến):\s*/i, "").trim()).join(" • ");
+      const rawInput = typeof customQuestion === "string" ? customQuestion.trim() : phoneChatInput.trim();
+      const effectiveUserMsg =
+        rawInput ||
+        `Xin Tiểu Long Cửu Nhị dựa trực tiếp vào Câu hỏi ("${userIntentQuestion.trim()}") và quẻ đang trải để khuyên bảo thấu đáo cho tôi?`;
+
+      // Nếu Tiểu Long đang ngủ thì tự động đánh thức ngay khi người dùng bắt đầu đàm đạo
+      if (dragonWakeState === "sleeping" || !isDragonUnlocked) {
+        try {
+          localStorage.setItem("cuunhi_dragon_awake_date_v1", getTodayDragonDateKey());
+        } catch {}
+        setDragonWakeState("awake");
+        setIsDragonUnlocked(true);
+      }
+
+      setShowPhoneVideoMode(false);
+      setPhoneDisplayTab("chat");
+
+      const nowStr = new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
+      const userMsgObj = {
+        id: `usr_${Date.now()}`,
+        role: "user" as const,
+        content: effectiveUserMsg,
+        timestamp: nowStr,
+      };
+
+      const updatedHistory = [...phoneChatMessages, userMsgObj];
+      setPhoneChatMessages(updatedHistory);
+      if (typeof customQuestion !== "string") {
+        setPhoneChatInput("");
+      }
+      setIsPhoneChatLoading(true);
+      setPhoneChatAct(1);
+
+      if (phoneChatActTimerRef.current) {
+        window.clearTimeout(phoneChatActTimerRef.current);
+      }
+      phoneChatActTimerRef.current = window.setTimeout(() => {
+        setPhoneChatAct(3);
+      }, 2800);
+
+      try {
+        const aiText = await formatSpreadForAI(
+          cards,
+          mode,
+          isCard2Reversed,
+          true,
+          userIntentQuestion,
+          hexagramPrediction,
+          autoHuongAn || userCustomAnswer
+        );
+
+        const res = await fetch("/api/dragon_agent/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_message: effectiveUserMsg,
+            main_question: userIntentQuestion.trim(),
+            huong_an_answer: autoHuongAn,
+            spread_mode: mode,
+            spread_title: spreadName,
+            is_card2_reversed: mode === "thap_tinh" ? isCard2Reversed : false,
+            is_ritual_completed: isRitualCompleted,
+            cards: cards.map((c, idx) => ({
+              id: c.id,
+              hexNumber: c.hexNumber,
+              yaoNumber: c.yaoNumber,
+              name: c.name,
+              sub: c.sub,
+              desc: c.desc,
+              positionLabel: c.positionLabel || `Lá thứ ${idx + 1}`,
+            })),
+            hexagram_text: aiText,
+            messages: updatedHistory.map((m) => ({
+              role: m.role,
+              content: m.content,
+            })),
+          }),
+        });
+
+        const data = await res.json();
+        const replyText =
+          (data && data.reply && String(data.reply).trim()) ||
+          `Kính chào quý bạn! **Tiểu Long Cửu Nhị** đã dựa trên Câu hỏi tại **Hương Án Khởi Niệm** cùng trận pháp **${spreadName}** (${cardNamesList}) để khuyên bảo: quý bạn hãy giữ tâm chính định, lấy chữ Tín và sự chuẩn bị chu đáo làm gốc, thuận thời mà hành động ắt gặt hái cát tường.`;
+
+        const botMsgObj = {
+          id: `bot_${Date.now()}`,
+          role: "assistant" as const,
+          content: replyText,
+          timestamp: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+          poseBadge: data?.pose_badge || "📜 Chiếu Soi Sách Thuyết Minh",
+          hexagramFocus: data?.hexagram_focus || `${spreadName} · ${cardNamesList}`,
+        };
+
+        setPhoneChatMessages((prev) => [...prev, botMsgObj]);
+        if (Array.isArray(data?.quick_questions) && data.quick_questions.length > 0) {
+          setPhoneQuickQuestions(data.quick_questions);
+        }
+
+        if (phoneChatActTimerRef.current) {
+          window.clearTimeout(phoneChatActTimerRef.current);
+        }
+        setPhoneChatAct(5);
+        phoneChatActTimerRef.current = window.setTimeout(() => {
+          setPhoneChatAct(null);
+        }, 3800);
+      } catch {
+        const fallbackMsg = {
+          id: `bot_${Date.now()}`,
+          role: "assistant" as const,
+          content: `Kính thưa quý bạn! **Tiểu Long Cửu Nhị** vừa đối chiếu Câu hỏi tại **Hương Án Khởi Niệm** của trận pháp **${spreadName}** (${cardNamesList}) cùng **Sách Thuyết Minh 64 Quẻ Đi Kèm Bộ Bài**. Trong thế cục hiện tại, điều cốt yếu nhất là giữ vững nội lực, quan sát kỹ thời thế và tiến từng bước trung chính thì mưu sự ắt hanh thông.`,
+          timestamp: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+          poseBadge: "📜 Chiếu Soi Sách Thuyết Minh",
+          hexagramFocus: `${spreadName} · ${cardNamesList}`,
+        };
+        setPhoneChatMessages((prev) => [...prev, fallbackMsg]);
+        setPhoneChatAct(null);
+      } finally {
+        setIsPhoneChatLoading(false);
+      }
+    },
+    [
+      isPhoneChatLoading,
+      mode,
+      cards,
+      phoneChatInput,
+      userIntentQuestion,
+      huongAnAnswer,
+      getAutoHuongAnAnswer,
+      scrollToHuongAnForChat,
+      dragonWakeState,
+      isDragonUnlocked,
+      getTodayDragonDateKey,
+      phoneChatMessages,
+      isCard2Reversed,
+      isRitualCompleted,
+      hexagramPrediction,
+      userCustomAnswer,
+    ]
+  );
+
+  const handleResetPhoneChat = useCallback(() => {
+    setPhoneChatMessages([]);
+    setPhoneChatInput("");
+    setPhoneChatAct(null);
+    setCopiedToast("✨ Đã làm mới cuộc đàm đạo cùng Tiểu Long Cửu Nhị!");
+    setTimeout(() => setCopiedToast(null), 2500);
+  }, []);
+
+  const handleCopyPhoneChatMsg = useCallback(async (id: string, content: string) => {
+    const ok = await copyToClipboard(content);
+    if (ok) {
+      setCopiedChatMsgId(id);
+      setCopiedToast("📋 Đã sao chép lời luận giải của Tiểu Long Cửu Nhị!");
+      setTimeout(() => {
+        setCopiedChatMsgId(null);
+        setCopiedToast(null);
+      }, 2200);
+    }
+  }, []);
+
+  /* ── Bộ hiển thị Markdown tinh gọn trong màn hình điện thoại Cửu Nhị Tiểu Long ── */
+  const renderPhoneChatMarkdown = useCallback((rawText: string) => {
+    const renderInline = (lineText: string) => {
+      const parts = lineText.split(/(\*\*[^*]+\*\*)/g);
+      return parts.map((part, idx) => {
+        if (part.startsWith("**") && part.endsWith("**") && part.length > 4) {
+          return (
+            <strong key={idx} className="font-bold text-[#F3E5AB]">
+              {part.slice(2, -2)}
+            </strong>
+          );
+        }
+        return <React.Fragment key={idx}>{part}</React.Fragment>;
+      });
+    };
+
+    const lines = (rawText || "").split(/\r?\n/);
+    return (
+      <div className="space-y-1.5 text-[11.5px] sm:text-[12px] leading-relaxed text-[#FFF8E7]">
+        {lines.map((ln, idx) => {
+          const trimmed = ln.trim();
+          if (!trimmed) return <div key={idx} className="h-0.5" />;
+          if (/^#{1,4}\s+/.test(trimmed)) {
+            const headingText = trimmed.replace(/^#{1,4}\s+/, "");
+            return (
+              <div
+                key={idx}
+                className="font-serif font-bold text-[#E5C158] text-[12px] sm:text-[12.5px] pt-1 border-b border-[#D4AF37]/25 pb-0.5"
+              >
+                {renderInline(headingText)}
+              </div>
+            );
+          }
+          if (/^[-•*✦]\s+/.test(trimmed)) {
+            const bulletText = trimmed.replace(/^[-•*✦]\s+/, "");
+            return (
+              <div key={idx} className="flex items-start gap-1.5 pl-0.5">
+                <span className="text-[#E5C158] font-bold shrink-0 mt-0.5">•</span>
+                <div className="flex-1">{renderInline(bulletText)}</div>
+              </div>
+            );
+          }
+          if (trimmed.startsWith(">")) {
+            const quoteText = trimmed.replace(/^>\s*/, "");
+            return (
+              <div
+                key={idx}
+                className="pl-2.5 py-1 border-l-2 border-[#D4AF37] bg-[#281E14]/80 rounded-r-lg italic text-[#F3E5AB]"
+              >
+                {renderInline(quoteText)}
+              </div>
+            );
+          }
+          return (
+            <p key={idx} className="leading-relaxed">
+              {renderInline(trimmed)}
+            </p>
+          );
+        })}
+      </div>
+    );
+  }, []);
+
+  /* ── Bộ hiển thị Bách Khoa 64 Quẻ Kinh Dịch & 384 Hào trực tiếp trong Màn hình điện thoại Cửu Nhị Tiểu Long ── */
+  const renderPhoneBakhKhoaView = useCallback(
+    (isExpandedModal = false) => {
+      const targetHexNum = selectedPhoneHexNum || cards[0]?.hexNumber || 1;
+      const encHex = HEXAGRAMS.find((h) => h.number === targetHexNum) || HEXAGRAMS[0];
+      const bookHex = BOOK_HEXAGRAMS.find((b) => b.number === targetHexNum) || BOOK_HEXAGRAMS[0];
+      const detailUrl = getHexDetailUrl(targetHexNum, selectedPhoneYaoNum || undefined);
+
+      return (
+        <div className="flex-1 min-h-0 flex flex-col overflow-hidden p-2 gap-1.5">
+          {/* 1. Thanh chọn nhanh các lá đang trải trên trang chủ + Dropdown tra cứu trọn bộ 64 Quẻ */}
+          <div className="rounded-xl p-2 bg-[#1A130C] border border-[#D4AF37]/45 space-y-1.5 shrink-0">
+            <div className="flex items-center justify-between gap-1">
+              <span className="text-[9.5px] font-serif font-bold uppercase tracking-wider text-[#E5C158]">
+                📚 Bách Khoa 64 Quẻ & 384 Hào
+              </span>
+              <a
+                href={getHexagramsUrl()}
+                className="text-[9px] font-semibold text-[#F3E5AB] hover:underline"
+              >
+                Toàn thư 64 Quẻ ↗
+              </a>
+            </div>
+
+            {/* Các lá bài đang trải trên trang chủ */}
+            <div className="flex items-center gap-1 overflow-x-auto pb-0.5" style={{ scrollbarWidth: "none" }}>
+              {cards.map((c, idx) => {
+                const isSelected = c.hexNumber === targetHexNum && (c.yaoNumber || null) === selectedPhoneYaoNum;
+                return (
+                  <button
+                    key={c.id + idx}
+                    type="button"
+                    onClick={() => {
+                      setSelectedPhoneHexNum(c.hexNumber);
+                      setSelectedPhoneYaoNum(c.yaoNumber || null);
+                    }}
+                    className={`whitespace-nowrap px-2 py-0.5 rounded-full text-[9px] font-serif font-bold border transition cursor-pointer shrink-0 ${
+                      isSelected
+                        ? "bg-gradient-to-r from-[#D4AF37] to-[#B8862D] text-[#1C1610] border-[#FFF8E7]"
+                        : "bg-[#110C08] text-[#D8C5A0] border-[#D4AF37]/35 hover:text-[#FFF8E7]"
+                    }`}
+                  >
+                    Lá {idx + 1}: #{c.hexNumber} {c.yaoNumber ? `(Hào ${c.yaoNumber})` : ""}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Dropdown tra cứu bất kỳ quẻ nào trong 64 Quẻ Kinh Dịch */}
+            <div className="flex items-center gap-1.5">
+              <select
+                value={targetHexNum}
+                onChange={(e) => {
+                  setSelectedPhoneHexNum(Number(e.target.value));
+                  setSelectedPhoneYaoNum(null);
+                }}
+                aria-label="Chọn quẻ trong Bách Khoa 64 Quẻ Kinh Dịch"
+                className="flex-1 min-w-0 h-7 px-2 rounded-lg text-[10px] font-serif font-semibold bg-[#0F0B07] text-[#F3E5AB] border border-[#D4AF37]/50 focus:outline-none focus:border-[#F3E5AB]"
+              >
+                {BOOK_HEXAGRAMS.map((b) => (
+                  <option key={b.number} value={b.number} className="bg-[#140F0A] text-[#FFF8E7]">
+                    Quẻ #{b.number}: {b.name} ({b.hanzi}) — {b.redHeadline}
+                  </option>
+                ))}
+              </select>
+              <a
+                href={detailUrl}
+                className="h-7 px-2.5 rounded-lg text-[9.5px] font-serif font-bold bg-[#2A1F14] hover:bg-[#3A2B1C] text-[#F3E5AB] border border-[#D4AF37]/45 flex items-center justify-center shrink-0"
+                title="Mở trang Bách Khoa chi tiết của quẻ này"
+              >
+                Chi tiết ↗
+              </a>
+            </div>
+          </div>
+
+          {/* 2. Nội dung Bách Khoa chi tiết của Quẻ đang chọn */}
+          <div
+            className="flex-1 min-h-0 overflow-y-auto rounded-2xl border border-[#D4AF37]/35 bg-[#110C08]/95 p-2.5 space-y-2.5 shadow-inner text-[#FFF8E7]"
+            style={{
+              scrollbarWidth: "thin",
+              scrollbarColor: "rgba(212,175,55,0.4) transparent",
+            }}
+          >
+            {/* Header Quẻ & Dòng chữ đỏ Sách Thuyết Minh */}
+            <div className="rounded-xl p-2.5 border border-[#D4AF37]/50 bg-gradient-to-b from-[#231910] to-[#150F0A] space-y-1.5">
+              <div className="flex items-center justify-between gap-2">
+                <div>
+                  <div className="text-[12px] sm:text-[13px] font-serif font-bold text-[#F3E5AB]">
+                    Quẻ #{bookHex.number}: {bookHex.name} ({bookHex.hanzi})
+                  </div>
+                  <div className="text-[9.5px] text-[#C4A66A]">
+                    {bookHex.structure} · {encHex.vietnameseName} (Hành {encHex.element})
+                  </div>
+                </div>
+                <span className="px-2 py-0.5 rounded-full text-[8.5px] font-bold bg-[#8B1E22] text-[#FFF8E7] border border-[#D4AF37]/60 shrink-0">
+                  Quẻ #{bookHex.number}/64
+                </span>
+              </div>
+
+              <div className="px-2.5 py-1.5 rounded-lg bg-[#6E1418]/90 border border-[#D4AF37]/60 text-[10.5px] font-serif font-bold text-[#FFF8E7] tracking-wide">
+                📕 Dòng chữ đỏ: “{bookHex.redHeadline}”
+              </div>
+
+              <div className="text-[10.5px] leading-relaxed text-[#E5D3B3]">
+                <strong className="text-[#E5C158]">• Thoán Từ (Bách Khoa):</strong> “{encHex.judgment}”
+              </div>
+              <div className="text-[10.5px] leading-relaxed text-[#E5D3B3]">
+                <strong className="text-[#E5C158]">• Đại Tượng Truyện:</strong> “{encHex.image}”
+              </div>
+            </div>
+
+            {/* Tổng quan Bách Khoa & Đại Tượng Sách Thuyết Minh */}
+            <div className="rounded-xl p-2.5 border border-[#D4AF37]/30 bg-[#18120C] space-y-1.5 text-[10.5px] leading-relaxed">
+              <div className="font-serif font-bold text-[#E5C158] text-[11px] border-b border-[#D4AF37]/20 pb-0.5">
+                ✦ Tổng Quan Bách Khoa & Đại Tượng
+              </div>
+              <p className="text-[#F5E6C4]">{encHex.overview}</p>
+              <p className="text-[#D8C5A0] italic">
+                <strong className="text-[#F3E5AB] not-italic">Sách Thuyết Minh bàn:</strong> {bookHex.bigImage}
+              </p>
+              <div className="p-2 rounded-lg bg-[#110C08] border border-[#D4AF37]/25 text-[10px] text-[#E5C158]">
+                <div className="font-semibold">{bookHex.poemHan.replace(/\n/g, " / ")}</div>
+                <div className="text-[#D8C5A0] mt-0.5">→ {bookHex.poemMeaning}</div>
+              </div>
+            </div>
+
+            {/* Luận giải 4 phương diện Bách Khoa */}
+            <div className="rounded-xl p-2.5 border border-[#D4AF37]/30 bg-[#18120C] space-y-1.5 text-[10.5px] leading-relaxed">
+              <div className="font-serif font-bold text-[#E5C158] text-[11px] border-b border-[#D4AF37]/20 pb-0.5">
+                ✦ Chiêm Đoán 4 Phương Diện (Bách Khoa & Sách Thuyết Minh)
+              </div>
+              <div>
+                <strong className="text-[#F3E5AB]">💼 Sự nghiệp & Vận thế:</strong> {encHex.career} ({bookHex.destiny})
+              </div>
+              <div>
+                <strong className="text-[#F3E5AB]">💰 Tài lộc & Mưu sự:</strong> {encHex.wealth}
+              </div>
+              <div>
+                <strong className="text-[#F3E5AB]">❤️ Tình cảm & Gia đạo:</strong> {encHex.love} ({bookHex.love})
+              </div>
+              <div>
+                <strong className="text-[#F3E5AB]">🌿 Sức khỏe:</strong> {encHex.health}
+              </div>
+              <div className="p-2 rounded-lg bg-[#241A10] border border-[#D4AF37]/40 text-[#F3E5AB]">
+                <strong>💡 Lời khuyên cốt tủy:</strong> {encHex.advice}
+              </div>
+            </div>
+
+            {/* 384 Hào Từ: Tra cứu chi tiết 6 Hào của Quẻ */}
+            <div className="rounded-xl p-2.5 border border-[#D4AF37]/35 bg-[#18120C] space-y-2 text-[10.5px] leading-relaxed">
+              <div className="flex items-center justify-between border-b border-[#D4AF37]/20 pb-1">
+                <span className="font-serif font-bold text-[#E5C158] text-[11px]">
+                  ✦ Tinh Hoa 6 Hào Từ ({bookHex.name})
+                </span>
+                {selectedPhoneYaoNum && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPhoneYaoNum(null)}
+                    className="text-[9px] text-[#E5C158] underline cursor-pointer"
+                  >
+                    Xem cả 6 hào
+                  </button>
+                )}
+              </div>
+
+              <div className="flex items-center gap-1 flex-wrap">
+                {[1, 2, 3, 4, 5, 6].map((yn) => (
+                  <button
+                    key={yn}
+                    type="button"
+                    onClick={() => setSelectedPhoneYaoNum((prev) => (prev === yn ? null : yn))}
+                    className={`px-2 py-0.5 rounded-md text-[9px] font-serif font-bold border transition cursor-pointer ${
+                      selectedPhoneYaoNum === yn
+                        ? "bg-[#D4AF37] text-[#1C1610] border-[#FFF8E7]"
+                        : "bg-[#110C08] text-[#D8C5A0] border-[#D4AF37]/35 hover:text-[#FFF8E7]"
+                    }`}
+                  >
+                    Hào {yn}
+                  </button>
+                ))}
+              </div>
+
+              <div className="space-y-1.5">
+                {(encHex.lineMeanings || [])
+                  .slice(0, 6)
+                  .filter((lm) => !selectedPhoneYaoNum || lm.line === selectedPhoneYaoNum)
+                  .map((lm) => (
+                    <div
+                      key={lm.line}
+                      className={`p-2 rounded-lg border ${
+                        selectedPhoneYaoNum === lm.line
+                          ? "bg-[#261B11] border-[#D4AF37]/70"
+                          : "bg-[#120D09] border-[#D4AF37]/25"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="font-serif font-bold text-[#F3E5AB] text-[10.5px]">
+                          Hào {lm.line}: {lm.text}
+                        </span>
+                        <a
+                          href={getHexDetailUrl(bookHex.number, lm.line)}
+                          className="text-[8.5px] text-[#E5C158] hover:underline shrink-0"
+                        >
+                          Bách khoa Hào {lm.line} ↗
+                        </a>
+                      </div>
+                      <div className="text-[#E5D3B3] mt-0.5">{lm.meaning}</div>
+                      {lm.detailedExplanation && (
+                        <div className="text-[9.5px] text-[#BFA882] mt-0.5 italic">{lm.detailedExplanation}</div>
+                      )}
+                    </div>
+                  ))}
+              </div>
+            </div>
+          </div>
+
+          {/* 3. Nút 1 chạm hỏi trực tiếp Tiểu Long Cửu Nhị về Quẻ Bách Khoa này */}
+          <button
+            type="button"
+            disabled={isPhoneChatLoading}
+            onClick={() =>
+              handleSendPhoneChatMessage(
+                `Xin Tiểu Long luận giải chuyên sâu Quẻ #${bookHex.number} ${bookHex.name}${
+                  selectedPhoneYaoNum ? ` (Hào ${selectedPhoneYaoNum})` : ""
+                } theo Bách Khoa 64 Quẻ Kinh Dịch & Sách Thuyết Minh ("${bookHex.redHeadline}") ứng với hoàn cảnh của tôi?`
+              )
+            }
+            className={`${
+              isExpandedModal ? "py-2.5 text-xs" : "py-1.5 text-[10px]"
+            } w-full px-3 rounded-xl font-serif font-bold text-[#1C1610] border border-[#FFF8E7] cursor-pointer transition hover:brightness-105 shadow-sm shrink-0 flex items-center justify-center gap-1.5`}
+            style={{
+              background: "linear-gradient(135deg, #FFF3B0 0%, #E5C158 50%, #C4963E 100%)",
+            }}
+          >
+            <span>🐉</span>
+            <span>
+              Hỏi Tiểu Long Về Quẻ #{bookHex.number} {bookHex.name}
+              {selectedPhoneYaoNum ? ` · Hào ${selectedPhoneYaoNum}` : ""}
+            </span>
+          </button>
+        </div>
+      );
+    },
+    [selectedPhoneHexNum, selectedPhoneYaoNum, cards, isPhoneChatLoading, handleSendPhoneChatMessage]
+  );
+
+  /* ── Bộ hiển thị 6 Chuyên Khảo Blog Dịch Học & Tâm Lý Học Ứng Dụng trực tiếp trong Màn hình điện thoại ── */
+  const renderPhoneBlogView = useCallback(
+    (isExpandedModal = false) => {
+      return (
+        <div className="flex-1 min-h-0 flex flex-col overflow-hidden p-2 gap-1.5">
+          {/* Header Blog */}
+          <div className="rounded-xl px-2.5 py-2 bg-[#1A130C] border border-[#D4AF37]/45 flex items-center justify-between shrink-0">
+            <div>
+              <div className="text-[10px] font-serif font-bold uppercase tracking-wider text-[#E5C158]">
+                📰 Chuyên Khảo Blog Dịch Học & Tâm Lý Học
+              </div>
+              <div className="text-[9px] text-[#C4A66A]">
+                6 chuyên khảo ứng dụng Chu Dịch vào đời sống hiện đại
+              </div>
+            </div>
+            <a
+              href={getBlogUrl()}
+              className="px-2 py-1 rounded-lg text-[9px] font-serif font-bold bg-[#2A1F14] hover:bg-[#3A2B1C] text-[#F3E5AB] border border-[#D4AF37]/45 shrink-0"
+            >
+              Trang Blog ↗
+            </a>
+          </div>
+
+          {/* Danh sách 6 chuyên khảo Blog */}
+          <div
+            className="flex-1 min-h-0 overflow-y-auto rounded-2xl border border-[#D4AF37]/35 bg-[#110C08]/95 p-2.5 space-y-2.5 shadow-inner"
+            style={{
+              scrollbarWidth: "thin",
+              scrollbarColor: "rgba(212,175,55,0.4) transparent",
+            }}
+          >
+            {HOME_BLOG_ITEMS.map((blog) => (
+              <div
+                key={blog.slug}
+                className="rounded-xl p-2.5 border border-[#D4AF37]/40 bg-gradient-to-b from-[#1E160E] to-[#140E09] space-y-2 shadow-sm"
+              >
+                <div className="flex items-start gap-2.5">
+                  <img
+                    src={blog.cover}
+                    alt={blog.shortTitle}
+                    loading="lazy"
+                    className="w-16 h-16 rounded-lg object-cover border border-[#D4AF37]/45 shrink-0 bg-[#0D0A07]"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <span className="inline-block px-1.5 py-0.2 rounded text-[8px] font-bold uppercase tracking-wider bg-[#8B1E22]/85 text-[#F3E5AB] border border-[#D4AF37]/40">
+                      {blog.category}
+                    </span>
+                    <a
+                      href={blog.url}
+                      className="block font-serif font-bold text-[11px] sm:text-[12px] text-[#F3E5AB] hover:underline leading-snug mt-0.5"
+                    >
+                      {blog.title}
+                    </a>
+                  </div>
+                </div>
+
+                <p className="text-[10.5px] leading-relaxed text-[#E5D3B3]">{blog.summary}</p>
+
+                {/* Các quẻ Bách Khoa liên quan trong bài Blog */}
+                <div className="flex items-center gap-1 flex-wrap">
+                  <span className="text-[8.5px] text-[#C4A66A] font-semibold">Quẻ liên hệ:</span>
+                  {blog.relatedHexagrams.map((rh) => (
+                    <button
+                      key={rh.num}
+                      type="button"
+                      onClick={() => {
+                        setSelectedPhoneHexNum(rh.num);
+                        setSelectedPhoneYaoNum(null);
+                        setPhoneDisplayTab("bakh_khoa");
+                      }}
+                      className="px-2 py-0.5 rounded-full text-[8.5px] font-serif font-semibold bg-[#241A10] hover:bg-[#332517] text-[#E5C158] border border-[#D4AF37]/35 cursor-pointer"
+                      title="Xem quẻ này trong thẻ Bách Khoa 64 Quẻ"
+                    >
+                      📚 {rh.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Nút Đàm đạo cùng Tiểu Long & Đọc toàn văn */}
+                <div className="flex items-center gap-1.5 pt-0.5">
+                  <button
+                    type="button"
+                    disabled={isPhoneChatLoading}
+                    onClick={() => handleSendPhoneChatMessage(blog.promptQuestion)}
+                    className="flex-1 py-1.5 px-2.5 rounded-lg text-[9.5px] font-serif font-bold text-[#1C1610] bg-gradient-to-r from-[#F3E5AB] via-[#E5C158] to-[#C4963E] border border-[#FFF8E7]/80 cursor-pointer hover:brightness-105 truncate"
+                  >
+                    🐉 Đàm Đạo Cùng Tiểu Long
+                  </button>
+                  <a
+                    href={blog.url}
+                    className="py-1.5 px-2.5 rounded-lg text-[9.5px] font-serif font-bold text-[#F3E5AB] bg-[#261C12] hover:bg-[#36281A] border border-[#D4AF37]/45 shrink-0"
+                  >
+                    Đọc bài ↗
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    },
+    [isPhoneChatLoading, handleSendPhoneChatMessage]
+  );
 
   useEffect(() => {
     if (dragonVideoRef.current) {
@@ -3849,6 +4677,722 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       quote: "Cửu Nhị Tiểu Long đang ngồi tĩnh tọa bên thư án (Cảnh Ngồi Không). Hai nút Chép Toàn Bộ Cho AI và Tự Động Hóa đã mở khóa sẵn sàng!",
     },
   };
+
+  /* ── Hàm Xuất & Chiếu Video Thủy Mặc (Phiên bản ngắn gọn súc tích · Trả lời trực tiếp câu hỏi dựa vào quẻ · Chạy hoạt ảnh Cửu Long làm việc khi đang dựng clip) ── */
+  const handleExportDragonInkWashVideo = useCallback(async () => {
+    if (isExportingInkWashClip) {
+      setShowPhoneVideoMode(false);
+      setPhoneDisplayTab("thuy_mac");
+      return;
+    }
+
+    // BẮT BUỘC PHẢI CÓ CÂU HỎI CHIÊM BỐC TRƯỚC KHI NHẤN XUẤT & CHIẾU VIDEO THỦY MẶC
+    if (!userIntentQuestion.trim()) {
+      setShowPhoneVideoMode(false);
+      setPhoneDisplayTab("thuy_mac");
+      setCopiedToast(
+        "🕯️ Vui lòng nhập Câu hỏi tại 「Hương Án Khởi Niệm · Câu Hỏi Chiêm Bốc」 trước khi xuất & chiếu Video Thủy Mặc trả lời trực tiếp câu hỏi!"
+      );
+      window.setTimeout(() => setCopiedToast(null), 4000);
+      scrollToHuongAnForChat();
+      return;
+    }
+
+    // Tự động đánh thức Tiểu Long Cửu Nhị nếu đang ngủ
+    if (dragonWakeState === "sleeping" || !isDragonUnlocked) {
+      try {
+        localStorage.setItem("cuunhi_dragon_awake_date_v1", getTodayDragonDateKey());
+      } catch {}
+      setDragonWakeState("awake");
+      setIsDragonUnlocked(true);
+    }
+
+    setShowPhoneVideoMode(false);
+    setPhoneDisplayTab("thuy_mac");
+    setIsExportingInkWashClip(true);
+    setInkWashWorkingAct(1);
+    setInkWashExportPercent(12);
+    setInkWashExportStage(
+      "📖 Bước 1/4: Tiểu Long Cửu Nhị đang đọc Sách Thuyết Minh & bóc tách nét mực Tuyên Thành..."
+    );
+
+    const spreadName = SPREAD_MODE_NAMES[mode] || "Trận Pháp Kinh Dịch";
+    const effectiveQuestion = userIntentQuestion.trim();
+
+    try {
+      // BƯỚC 1: Bóc tách các lá bài thành 3 lớp mực Thủy Mặc (Ướt - Khô - Chu Sa) trong lúc Cửu Long chạy Cảnh 1 (Mò Đọc Sách)
+      const orderedCards =
+        mode === "thap_la" && cards.length > 2
+          ? [cards[0], ...cards.slice(2), cards[1]]
+          : [...cards];
+
+      const decomposedMap = new Map<string, DecomposedCardInk>();
+      await Promise.all([
+        new Promise((r) => setTimeout(r, 950)),
+        ...orderedCards.map(async (c) => {
+          if (!c.img) return;
+          const decomp = await decomposeCardToInkLayers(c.img);
+          if (decomp) {
+            decomposedMap.set(c.img, decomp);
+          }
+        }),
+      ]);
+
+      // BƯỚC 2: Cửu Long chuyển sang Cảnh 3 (Soi Kính Lúp Bát Quái) — Gọi AI đúc kết lời giải ngắn gọn súc tích trả lời trực tiếp câu hỏi
+      setInkWashWorkingAct(3);
+      setInkWashExportPercent(36);
+      setInkWashExportStage(
+        "🔍 Bước 2/4: Tiểu Long đang soi quẻ đúc kết lời đáp ngắn gọn, trả lời trực tiếp câu hỏi..."
+      );
+
+      const firstCard = orderedCards[0];
+      const lastCard = orderedCards[orderedCards.length - 1] || firstCard;
+      const bookFirst = BOOK_HEXAGRAMS.find((b) => b.number === firstCard?.hexNumber) || BOOK_HEXAGRAMS[0];
+      const bookLast = BOOK_HEXAGRAMS.find((b) => b.number === lastCard?.hexNumber) || bookFirst;
+      const encFirst = HEXAGRAMS.find((h) => h.number === firstCard?.hexNumber) || HEXAGRAMS[0];
+      const encLast = HEXAGRAMS.find((h) => h.number === lastCard?.hexNumber) || encFirst;
+
+      let hexTitle = `Quẻ #${bookFirst.number} ${bookFirst.name}`;
+      let directAnswer = stripHanziAndCleanVi(
+        `Trả lời trực tiếp câu hỏi của bạn: Quẻ ${bookFirst.name} báo "${bookFirst.redHeadline}", ${bookFirst.destiny}`
+      );
+      let keyTurningPoint = stripHanziAndCleanVi(
+        orderedCards.length > 1
+          ? `Điểm chuyển mình sang Quẻ ${bookLast.name}: ${encLast.advice || bookLast.destiny}`
+          : `Điểm mấu chốt cần nắm giữ: ${encFirst.advice || bookFirst.bigImage}`
+      );
+      let finalVerdict = stripHanziAndCleanVi(
+        huongAnAnswer.trim()
+          ? `Châu Ấn Cửu Nhị quyết đoán: Hãy thuận theo lời đáp Hương Án, giữ tâm trung chính và hành động đúng thời cơ ắt thành công.`
+          : `Châu Ấn Cửu Nhị quyết đoán: Giữ chữ Tín, làm chắc từng bước theo đạo lý Quẻ ${bookFirst.name} thì mưu sự ắt viên mãn.`
+      );
+      let sealChars = bookLast.redHeadline.includes("Cát")
+        ? "大吉"
+        : bookLast.redHeadline.includes("Hung")
+        ? "慎行"
+        : "玖貳";
+
+      try {
+        const aiRes = await fetch("/api/ink_wash/ai_interpret", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            concise_direct: true,
+            question: effectiveQuestion,
+            huong_an_answer: huongAnAnswer.trim(),
+            spread_title: spreadName,
+            cards: orderedCards.map((c, idx) => ({
+              id: c.id,
+              hexNumber: c.hexNumber,
+              yaoNumber: c.yaoNumber,
+              name: c.name,
+              positionLabel: c.positionLabel || `Lá ${idx + 1}`,
+            })),
+          }),
+        });
+        if (aiRes.ok) {
+          const aiJson = await aiRes.json();
+          if (aiJson && aiJson.success) {
+            if (aiJson.hexagram_title) hexTitle = stripHanziAndCleanVi(aiJson.hexagram_title);
+            if (aiJson.direct_answer) directAnswer = stripHanziAndCleanVi(aiJson.direct_answer);
+            if (aiJson.key_turning_point) keyTurningPoint = stripHanziAndCleanVi(aiJson.key_turning_point);
+            if (aiJson.final_verdict) finalVerdict = stripHanziAndCleanVi(aiJson.final_verdict);
+            if (aiJson.seal_chars) sealChars = String(aiJson.seal_chars).slice(0, 4);
+          }
+        }
+      } catch {}
+
+      // BƯỚC 3: Cửu Long chuyển sang Cảnh 2 (Cầm Bút Lông Chấm Mực Tàu Ghi Chép Sớ) — Thu âm giọng đọc tiếng Việt ngắn gọn súc tích
+      setInkWashWorkingAct(2);
+      setInkWashExportPercent(58);
+      setInkWashExportStage(
+        "✍️ Bước 3/4: Tiểu Long cầm bút lông chấm mực tàu họa cảnh Thủy Mặc & thu âm lời đáp..."
+      );
+
+      const conciseSpokenScript = [directAnswer, keyTurningPoint, finalVerdict]
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .join(" ");
+
+      let ttsAudioBlob: Blob | null = null;
+      try {
+        const ttsRes = await fetch("/api/tts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: conciseSpokenScript, voice: directHomeVoice }),
+        });
+        if (ttsRes.ok) {
+          const ab = await ttsRes.arrayBuffer();
+          if (ab.byteLength > 200) {
+            ttsAudioBlob = new Blob([ab], { type: "audio/mpeg" });
+          }
+        }
+      } catch {}
+
+      // BƯỚC 4: Cửu Long chuyển sang Cảnh 4 (Gõ Máy Tính Dựng Video) ➔ Cảnh 5 (Đóng Ấn Chu Sa Xuất Bản)
+      setInkWashWorkingAct(4);
+      setInkWashExportPercent(74);
+      setInkWashExportStage(
+        "💻 Bước 4/4: Tiểu Long đang gõ máy tính dựng Video Thủy Mặc 9:16 & đóng Ấn Chu Sa..."
+      );
+
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      const audioCtx = new AudioCtx();
+      const dest = audioCtx.createMediaStreamDestination();
+
+      let decodedVoice: AudioBuffer | null = null;
+      if (ttsAudioBlob) {
+        try {
+          const arrBuf = await ttsAudioBlob.arrayBuffer();
+          decodedVoice = await audioCtx.decodeAudioData(arrBuf.slice(0));
+        } catch {}
+      }
+
+      const totalDuration =
+        decodedVoice && decodedVoice.duration > 2
+          ? Math.max(9.5, Math.min(24, decodedVoice.duration + 2.2))
+          : 11.5;
+
+      // Xây dựng Kịch bản Thủy Mặc Ngắn Gọn 3 Phân Cảnh (1: Quẻ Chủ Trả Lời Trực Tiếp -> 2: Điểm Mấu Chốt -> 3: Châu Ấn Cửu Nhị Quyết Đoán)
+      const shot1End = Number((totalDuration * 0.36).toFixed(2));
+      const shot2End = Number((totalDuration * 0.68).toFixed(2));
+      const pivotCardIdx = orderedCards.length > 1 ? orderedCards.length - 1 : 0;
+      const changingYaoList = orderedCards
+        .filter((c) => c.type === "yao" && c.yaoNumber)
+        .map((c) => c.yaoNumber!);
+
+      const concisePlan: InkWashFilmPlan = {
+        totalDurationSec: totalDuration,
+        shots: [
+          {
+            index: 0,
+            title: `I. Trả Lời Trực Tiếp · ${firstCard?.name || bookFirst.name}`,
+            subtitle: `Quẻ Chủ · ${bookFirst.redHeadline}`,
+            startSec: 0,
+            endSec: shot1End,
+            cardIndex: 0,
+          },
+          {
+            index: 1,
+            title: `II. Điểm Mấu Chốt · ${lastCard?.name || bookLast.name}`,
+            subtitle: orderedCards.length > 1 ? "Biến Số & Hướng Ứng Xử" : "Tinh Hoa Hào Từ",
+            startSec: shot1End,
+            endSec: shot2End,
+            cardIndex: pivotCardIdx,
+          },
+          {
+            index: 2,
+            title: `III. Châu Ấn Cửu Nhị Quyết Đoán`,
+            subtitle: "Lời Đáp Dứt Khoát Dựa Vào Quẻ",
+            startSec: shot2End,
+            endSec: totalDuration,
+          },
+        ],
+        narrationCues: [
+          {
+            id: "concise_1",
+            shotIndex: 0,
+            startSec: 0.15,
+            endSec: shot1End - 0.1,
+            text: directAnswer,
+            speakText: directAnswer,
+          },
+          {
+            id: "concise_2",
+            shotIndex: 1,
+            startSec: shot1End + 0.1,
+            endSec: shot2End - 0.1,
+            text: keyTurningPoint,
+            speakText: keyTurningPoint,
+          },
+          {
+            id: "concise_3",
+            shotIndex: 2,
+            startSec: shot2End + 0.1,
+            endSec: totalDuration - 0.15,
+            text: finalVerdict,
+            speakText: finalVerdict,
+          },
+        ],
+        sealTimeSec: shot2End + 0.45,
+        sealChars,
+        orderedCards: orderedCards.map((c) => ({
+          id: c.id,
+          type: c.type,
+          hexNumber: c.hexNumber,
+          yaoNumber: c.yaoNumber,
+          symbol: c.symbol,
+          hanzi: c.hanzi,
+          name: c.name,
+          sub: c.sub,
+          desc: c.desc,
+          img: c.img,
+          positionLabel: c.positionLabel,
+        })),
+        primaryLines: [...(encFirst.lines || [1, 1, 1, 1, 1, 1])],
+        transformedLines: [...(encLast.lines || [1, 1, 1, 1, 1, 1])],
+        changingLines: changingYaoList,
+        question: effectiveQuestion,
+        conclusionText: finalVerdict,
+      };
+
+      const offCanvas = document.createElement("canvas");
+      offCanvas.width = 540;
+      offCanvas.height = 960;
+      const inkRenderer = new InkWashRenderer(offCanvas);
+      inkRenderer.resize(540, 960);
+      const outCtx = offCanvas.getContext("2d");
+
+      let recordedVideoUrl = "";
+      let recordedExt = "webm";
+
+      if (typeof MediaRecorder !== "undefined" && typeof (offCanvas as any).captureStream === "function") {
+        const stream: MediaStream = (offCanvas as any).captureStream(24);
+        dest.stream.getAudioTracks().forEach((t) => stream.addTrack(t));
+
+        let chosenMime = "";
+        for (const mt of [
+          "video/mp4;codecs=avc1.42E01E,mp4a.40.2",
+          "video/mp4",
+          "video/webm;codecs=vp9,opus",
+          "video/webm;codecs=vp8,opus",
+          "video/webm",
+        ]) {
+          try {
+            if (MediaRecorder.isTypeSupported(mt)) {
+              chosenMime = mt;
+              break;
+            }
+          } catch {}
+        }
+        if (chosenMime.includes("mp4")) recordedExt = "mp4";
+
+        const recorder = chosenMime
+          ? new MediaRecorder(stream, { mimeType: chosenMime, videoBitsPerSecond: 3200000 })
+          : new MediaRecorder(stream);
+
+        const chunks: BlobPart[] = [];
+        recorder.ondataavailable = (ev) => {
+          if (ev.data && ev.data.size > 0) chunks.push(ev.data);
+        };
+
+        const renderCustomInkFrame = (sec: number) => {
+          inkRenderer.renderFrame(sec, concisePlan, decomposedMap);
+          if (!outCtx) return;
+
+          // Vẽ thêm khung câu hỏi & dấu hiệu Thủy Mặc Cửu Nhị ngắn gọn trực tiếp trên giấy Tuyên Thành
+          outCtx.save();
+          outCtx.fillStyle = "rgba(26, 20, 14, 0.88)";
+          outCtx.fillRect(24, 14, 492, 34);
+          outCtx.strokeStyle = "rgba(176, 46, 34, 0.75)";
+          outCtx.lineWidth = 1.2;
+          outCtx.strokeRect(24, 14, 492, 34);
+
+          outCtx.fillStyle = "#F3E5AB";
+          outCtx.font = '700 12px "Be Vietnam Pro", "Segoe UI", Arial, sans-serif';
+          outCtx.textAlign = "center";
+          outCtx.textBaseline = "middle";
+          const qShort =
+            effectiveQuestion.length > 52
+              ? `Câu hỏi: “${effectiveQuestion.slice(0, 50)}...”`
+              : `Câu hỏi: “${effectiveQuestion}”`;
+          outCtx.fillText(qShort, 270, 31);
+          outCtx.restore();
+        };
+
+        await new Promise<void>((resolve) => {
+          recorder.onstop = () => {
+            const finalMime = recorder.mimeType || chosenMime || "video/webm";
+            const vBlob = new Blob(chunks, { type: finalMime });
+            if (vBlob.size > 400) {
+              recordedVideoUrl = URL.createObjectURL(vBlob);
+            }
+            try {
+              audioCtx.close();
+            } catch {}
+            resolve();
+          };
+
+          renderCustomInkFrame(0);
+          recorder.start(200);
+
+          // Phát giọng đọc tiếng Việt + tiếng đàn Cổ Cầm (Guqin) ngũ cung dịu nhẹ vào luồng thu video
+          if (decodedVoice) {
+            const vNode = audioCtx.createBufferSource();
+            vNode.buffer = decodedVoice;
+            const vGain = audioCtx.createGain();
+            vGain.gain.value = 1.1;
+            vNode.connect(vGain);
+            vGain.connect(dest);
+            vNode.start(0);
+          }
+
+          // Âm hưởng Cổ Cầm ngũ cung nền nhẹ trong video Thủy Mặc
+          [146.83, 220.0, 293.66, 432.0].forEach((freq, idx) => {
+            try {
+              const osc = audioCtx.createOscillator();
+              const g = audioCtx.createGain();
+              osc.type = "sine";
+              osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 2.2);
+              g.gain.setValueAtTime(0.001, audioCtx.currentTime + idx * 2.2);
+              g.gain.exponentialRampToValueAtTime(0.035, audioCtx.currentTime + idx * 2.2 + 0.3);
+              g.gain.exponentialRampToValueAtTime(0.0005, audioCtx.currentTime + totalDuration);
+              osc.connect(g);
+              g.connect(dest);
+              osc.start(audioCtx.currentTime + idx * 2.2);
+              osc.stop(audioCtx.currentTime + totalDuration);
+            } catch {}
+          });
+
+          const startMs = Date.now();
+          const totalMs = totalDuration * 1000;
+          let switchedToAct5 = false;
+
+          const timer = window.setInterval(() => {
+            const elapsedMs = Date.now() - startMs;
+            const prog = Math.min(1, elapsedMs / totalMs);
+            const curSec = Math.min(totalDuration, elapsedMs / 1000);
+
+            renderCustomInkFrame(curSec);
+            const pct = Math.min(99, Math.round(74 + prog * 25));
+            setInkWashExportPercent(pct);
+
+            if (prog >= 0.72 && !switchedToAct5) {
+              switchedToAct5 = true;
+              setInkWashWorkingAct(5);
+              setInkWashExportStage(
+                "✉️ Bước cuối: Tiểu Long đóng Châu Ấn Cửu Nhị & xuất bản Video Thủy Mặc..."
+              );
+            }
+
+            if (elapsedMs >= totalMs) {
+              window.clearInterval(timer);
+              try {
+                if (recorder.state !== "inactive") recorder.stop();
+              } catch {
+                resolve();
+              }
+            }
+          }, 42);
+        });
+      }
+
+      const audioUrl = ttsAudioBlob ? URL.createObjectURL(ttsAudioBlob) : undefined;
+      playGoldenChime432Hz();
+      setInkWashExportPercent(100);
+      setInkWashExportStage("✓ Đã xuất xong Video Thủy Mặc ngắn gọn trả lời trực tiếp câu hỏi!");
+      setConciseInkWashResult({
+        question: effectiveQuestion,
+        hexagram_title: hexTitle,
+        direct_answer: directAnswer,
+        key_turning_point: keyTurningPoint,
+        final_verdict: finalVerdict,
+        seal_chars: sealChars,
+        video_url: recordedVideoUrl,
+        video_ext: recordedExt,
+        audio_url: audioUrl,
+        duration: Math.round(totalDuration),
+      });
+      setIsExportingInkWashClip(false);
+      setCopiedToast("🎬 Tiểu Long Cửu Nhị đã xuất xong & đang chiếu Video Thủy Mặc trả lời trực tiếp câu hỏi!");
+      window.setTimeout(() => setCopiedToast(null), 4200);
+    } catch (err: any) {
+      console.error("InkWashExport Error:", err);
+      setIsExportingInkWashClip(false);
+      setCopiedToast("⚠️ Không thể xuất Video Thủy Mặc lúc này, vui lòng thử lại!");
+      window.setTimeout(() => setCopiedToast(null), 3500);
+    }
+  }, [
+    isExportingInkWashClip,
+    dragonWakeState,
+    isDragonUnlocked,
+    getTodayDragonDateKey,
+    mode,
+    cards,
+    userIntentQuestion,
+    huongAnAnswer,
+    directHomeVoice,
+    playGoldenChime432Hz,
+    scrollToHuongAnForChat,
+  ]);
+
+  /* ── Bộ hiển thị Màn Chiếu Video Thủy Mặc (Ngắn gọn súc tích · Trả lời trực tiếp câu hỏi · Hoạt ảnh Cửu Long làm việc khi đang dựng clip) ── */
+  const renderPhoneThuyMacView = useCallback(
+    (isExpandedModal = false) => {
+      const hasDivinationQuestion = Boolean(userIntentQuestion.trim());
+      return (
+        <div className="flex-1 min-h-0 flex flex-col overflow-hidden p-2 gap-1.5">
+          {/* Header Thủy Mặc */}
+          <div className="rounded-xl px-2.5 py-1.5 bg-[#1A130C] border border-[#D4AF37]/45 flex items-center justify-between gap-2 shrink-0">
+            <div className="min-w-0">
+              <div className="text-[10px] font-serif font-bold uppercase tracking-wider text-[#E5C158] truncate">
+                墨 Video Thủy Mặc · Trả Lời Trực Tiếp Từ Quẻ
+              </div>
+              <div className="text-[8.5px] text-[#C4A66A] truncate">
+                {hasDivinationQuestion
+                  ? `✓ Câu hỏi: “${userIntentQuestion.trim()}”`
+                  : "🔒 Cần có Câu hỏi chiêm bốc để xuất & chiếu Video Thủy Mặc"}
+              </div>
+            </div>
+            {!isExportingInkWashClip && (
+              <button
+                type="button"
+                onClick={handleExportDragonInkWashVideo}
+                className={`px-2.5 py-1 rounded-lg text-[9px] font-serif font-bold cursor-pointer transition shrink-0 ${
+                  hasDivinationQuestion
+                    ? "text-[#1C1610] bg-gradient-to-r from-[#FFF3B0] via-[#E5C158] to-[#C4963E] border border-[#FFF8E7] hover:brightness-105"
+                    : "text-[#F3E5AB] bg-[#2D2115] hover:bg-[#3B2B1C] border border-[#D4AF37]/65"
+                }`}
+              >
+                {!hasDivinationQuestion
+                  ? "🔒 Nhập Câu Hỏi ↑"
+                  : conciseInkWashResult
+                  ? "↻ Xuất Lại Clip"
+                  : "🎬 Xuất Video Ngay"}
+              </button>
+            )}
+          </div>
+
+          {!hasDivinationQuestion ? (
+            /* KHI CHƯA CÓ CÂU HỎI CHIÊM BỐC: YÊU CẦU NHẬP CÂU HỎI TẠI HƯƠNG ÁN KHỞI NIỆM TRƯỚC KHI XUẤT CHIẾU THỦY MẶC */
+            <div className="flex-1 min-h-0 overflow-y-auto rounded-2xl border border-[#D4AF37]/60 bg-gradient-to-b from-[#231910] via-[#18110B] to-[#120D08] p-3 text-[#FFF8E7] space-y-2.5 shadow-md">
+              <div className="flex items-center justify-between text-[9.5px] text-[#E5C158] font-bold border-b border-[#D4AF37]/25 pb-1.5">
+                <span className="flex items-center gap-1">
+                  <span>🔒</span>
+                  <span>Cần Câu Hỏi Chiêm Bốc Để Xuất Video Thủy Mặc</span>
+                </span>
+                <span className="px-1.5 py-0.5 rounded-full bg-[#3A2818] text-[#F3E5AB] text-[8px] border border-[#D4AF37]/45">
+                  Bắt buộc
+                </span>
+              </div>
+
+              <p className="text-[10.5px] leading-relaxed text-[#F5E6C4]">
+                Kính thưa quý bạn! Để nhấn xuất & chiếu{" "}
+                <strong className="text-[#E5C158]">Video Thủy Mặc (Phiên bản ngắn gọn · Trả lời trực tiếp dựa vào quẻ)</strong>, quý bạn cần nhập{" "}
+                <strong className="text-[#FFF3B0]">Câu hỏi chiêm bốc</strong> tại mục{" "}
+                <strong className="text-[#F3E5AB]">「印 Hương Án Khởi Niệm · Câu Hỏi Chiêm Bốc」</strong> trước. Khi có câu hỏi,{" "}
+                <strong className="text-[#F3E5AB]">Tiểu Long Cửu Nhị</strong> mới chạy hoạt ảnh làm việc và dựng clip Thủy Mặc trả lời thẳng vào vấn đề của quý bạn!
+              </p>
+
+              {/* Ô nhập nhanh câu hỏi chiêm bốc đồng bộ trực tiếp với Hương Án Khởi Niệm */}
+              <div className="rounded-xl p-2.5 bg-[#140E09] border border-[#D4AF37]/40 space-y-1.5">
+                <label className="block text-[9.5px] font-serif font-bold text-[#E5C158]">
+                  🕯️ Nhập nhanh Câu hỏi chiêm bốc (Đồng bộ Hương Án Khởi Niệm):
+                </label>
+                <input
+                  type="text"
+                  value={userIntentQuestion}
+                  onChange={(e) => setUserIntentQuestion(e.target.value)}
+                  placeholder="Ví dụ: Tháng tới tôi có nên mở rộng kinh doanh không?..."
+                  className="w-full h-8 px-2.5 rounded-lg text-[10.5px] bg-[#0D0906] text-[#FFF8E7] placeholder-[#8E7B60] border border-[#D4AF37]/50 focus:outline-none focus:border-[#F3E5AB]"
+                />
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (isExpandedModal) setIsPhoneChatModalExpanded(false);
+                  scrollToHuongAnForChat();
+                }}
+                className="w-full py-2 px-3 rounded-xl text-[10px] font-serif font-bold text-[#FFF8E7] border border-[#D4AF37]/80 cursor-pointer transition hover:brightness-110 flex items-center justify-center gap-1.5 shadow-sm"
+                style={{
+                  background: "linear-gradient(135deg, #8B1E22 0%, #5A1215 100%)",
+                }}
+              >
+                <span>印</span>
+                <span>Đi Tới Hương Án Khởi Niệm · Nhập Câu Hỏi Chiêm Bốc ↑</span>
+              </button>
+            </div>
+          ) : isExportingInkWashClip ? (
+            /* KHI ĐANG LÀM CLIP: CHẠY HOẠT ẢNH CỬU LONG LÀM VIỆC (ĐỌC SÁCH -> SOI QUẺ -> CHẤM MỰC HỌA THỦY MẶC -> GÕ MÁY -> ĐÓNG ẤN) */
+            <div className="flex-1 min-h-0 flex flex-col justify-between rounded-2xl border border-[#D4AF37]/55 bg-gradient-to-b from-[#1E160E] via-[#130E09] to-[#0B0805] p-2.5 overflow-hidden shadow-inner">
+              <div className="flex items-center justify-between text-[9.5px] font-serif font-bold text-[#F3E5AB] border-b border-[#D4AF37]/25 pb-1.5 shrink-0">
+                <span className="flex items-center gap-1.5">
+                  <span className="inline-block animate-spin">⏳</span>
+                  <span>Tiểu Long Cửu Nhị Đang Làm Clip Thủy Mặc...</span>
+                </span>
+                <span className="px-2 py-0.5 rounded-full bg-[#8B1E22] text-[#FFF8E7] border border-[#D4AF37]/60 text-[8.5px]">
+                  {inkWashExportPercent}%
+                </span>
+              </div>
+
+              {/* Khung video hoạt ảnh Cửu Long đang làm việc */}
+              <div className="my-1.5 flex-1 min-h-[210px] rounded-xl overflow-hidden border-2 border-[#D4AF37]/65 bg-[#090705] relative shadow-lg flex items-center justify-center">
+                <video
+                  key={DRAGON_VIDEO_MAP[inkWashWorkingAct].src}
+                  src={DRAGON_VIDEO_MAP[inkWashWorkingAct].src}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover object-center"
+                />
+                <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/75 border border-[#D4AF37]/55 text-[8.5px] font-serif font-bold text-[#F3E5AB]">
+                  {DRAGON_VIDEO_MAP[inkWashWorkingAct].badge}
+                </div>
+                <div className="absolute bottom-2 inset-x-2 px-2.5 py-1.5 rounded-xl bg-black/80 backdrop-blur-xs border border-[#D4AF37]/45 text-[9.5px] text-[#FFF8E7] font-serif">
+                  {inkWashExportStage}
+                </div>
+              </div>
+
+              {/* Thanh tiến độ 4 bước làm việc của Tiểu Long Cửu Nhị */}
+              <div className="space-y-1.5 shrink-0">
+                <div className="w-full h-2 rounded-full bg-[#241A10] border border-[#D4AF37]/35 overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-[#8B1E22] via-[#D4AF37] to-[#FFF3B0] transition-all duration-300"
+                    style={{ width: `${inkWashExportPercent}%` }}
+                  />
+                </div>
+                <div className="grid grid-cols-4 gap-1 text-[8px] font-serif text-center">
+                  <span
+                    className={`py-0.5 rounded border ${
+                      inkWashExportPercent >= 10
+                        ? "bg-[#2C2014] text-[#F3E5AB] border-[#D4AF37]/60 font-bold"
+                        : "bg-[#140E09] text-[#8E7B60] border-[#D4AF37]/20"
+                    }`}
+                  >
+                    1.📖 Đọc Sách
+                  </span>
+                  <span
+                    className={`py-0.5 rounded border ${
+                      inkWashExportPercent >= 34
+                        ? "bg-[#2C2014] text-[#F3E5AB] border-[#D4AF37]/60 font-bold"
+                        : "bg-[#140E09] text-[#8E7B60] border-[#D4AF37]/20"
+                    }`}
+                  >
+                    2.🔍 Soi Quẻ
+                  </span>
+                  <span
+                    className={`py-0.5 rounded border ${
+                      inkWashExportPercent >= 56
+                        ? "bg-[#2C2014] text-[#F3E5AB] border-[#D4AF37]/60 font-bold"
+                        : "bg-[#140E09] text-[#8E7B60] border-[#D4AF37]/20"
+                    }`}
+                  >
+                    3.✍️ Họa Mực
+                  </span>
+                  <span
+                    className={`py-0.5 rounded border ${
+                      inkWashExportPercent >= 74
+                        ? "bg-[#2C2014] text-[#F3E5AB] border-[#D4AF37]/60 font-bold"
+                        : "bg-[#140E09] text-[#8E7B60] border-[#D4AF37]/20"
+                    }`}
+                  >
+                    4.💻 Xuất Clip
+                  </span>
+                </div>
+              </div>
+            </div>
+          ) : conciseInkWashResult ? (
+            /* KHI ĐÃ LÀM XONG CLIP: CHIẾU VIDEO THỦY MẶC NGẮN GỌN SÚC TÍCH & TRẢ LỜI TRỰC TIẾP CÂU HỎI DỰA VÀO QUẺ */
+            <div
+              className="flex-1 min-h-0 overflow-y-auto rounded-2xl border border-[#D4AF37]/45 bg-[#110C08]/95 p-2 space-y-2 shadow-inner"
+              style={{
+                scrollbarWidth: "thin",
+                scrollbarColor: "rgba(212,175,55,0.4) transparent",
+              }}
+            >
+              {/* Màn chiếu Video Thủy Mặc 9:16 */}
+              {conciseInkWashResult.video_url && (
+                <div className="relative w-full rounded-xl overflow-hidden border-2 border-[#D4AF37]/75 bg-[#EAE3D2] shadow-lg">
+                  <video
+                    key={conciseInkWashResult.video_url}
+                    src={conciseInkWashResult.video_url}
+                    controls
+                    autoPlay
+                    loop
+                    playsInline
+                    className={`w-full ${isExpandedModal ? "max-h-[420px]" : "max-h-[285px]"} object-contain bg-[#EAE3D2]`}
+                  />
+                  <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-[#1C1610]/85 border border-[#D4AF37]/70 text-[8.5px] font-serif font-bold text-[#F3E5AB] pointer-events-none">
+                    墨 Thủy Mặc Ngắn Gọn · {conciseInkWashResult.duration}s
+                  </span>
+                </div>
+              )}
+
+              {/* Nút Tải Video Thủy Mặc & Xuất Lại */}
+              <div className="flex items-center gap-1.5">
+                {conciseInkWashResult.video_url && (
+                  <a
+                    href={conciseInkWashResult.video_url}
+                    download={`video-thuy-mac-cuu-nhi-${Date.now()}.${conciseInkWashResult.video_ext}`}
+                    className="flex-1 py-1.5 px-3 rounded-xl text-[10px] font-serif font-bold text-[#1C1610] bg-gradient-to-r from-[#FFF3B0] via-[#E5C158] to-[#C4963E] border border-[#FFF8E7] shadow-sm text-center cursor-pointer hover:brightness-105"
+                  >
+                    ⬇ Tải Video Thủy Mặc (.{conciseInkWashResult.video_ext})
+                  </a>
+                )}
+                <button
+                  type="button"
+                  onClick={handleExportDragonInkWashVideo}
+                  className="py-1.5 px-2.5 rounded-xl text-[9.5px] font-serif font-bold text-[#FFF8E7] bg-[#261C12] hover:bg-[#36281A] border border-[#D4AF37]/50 cursor-pointer shrink-0"
+                >
+                  🎬 Dựng Lại
+                </button>
+              </div>
+
+              {/* Thẻ tóm tắt Lời Đáp Trực Tiếp Câu Hỏi Dựa Vào Quẻ */}
+              <div className="rounded-xl p-2.5 border border-[#D4AF37]/40 bg-gradient-to-b from-[#1E160E] to-[#140E09] space-y-1.5 text-[10px] leading-relaxed">
+                <div className="flex items-center justify-between border-b border-[#D4AF37]/25 pb-1">
+                  <span className="font-serif font-bold text-[#E5C158] text-[10.5px]">
+                    ✦ {conciseInkWashResult.hexagram_title}
+                  </span>
+                  <span className="px-1.5 py-0.2 rounded bg-[#8B1E22] text-[#FFF8E7] font-serif font-bold text-[8.5px] border border-[#D4AF37]/50">
+                    Ấn: {conciseInkWashResult.seal_chars}
+                  </span>
+                </div>
+                <div className="text-[#F3E5AB]">
+                  <strong className="text-[#E5C158]">• Câu hỏi:</strong> “{conciseInkWashResult.question}”
+                </div>
+                <div className="text-[#FFF8E7]">
+                  <strong className="text-emerald-300">1. Trả lời trực tiếp:</strong> {conciseInkWashResult.direct_answer}
+                </div>
+                <div className="text-[#E5D3B3]">
+                  <strong className="text-[#E5C158]">2. Điểm mấu chốt:</strong> {conciseInkWashResult.key_turning_point}
+                </div>
+                <div className="p-2 rounded-lg bg-[#241A10] border border-[#D4AF37]/45 text-[#FFF3B0]">
+                  <strong>3. Châu Ấn quyết đoán:</strong> {conciseInkWashResult.final_verdict}
+                </div>
+              </div>
+            </div>
+          ) : (
+            /* MÀN HÌNH CHỜ KHI ĐÃ CÓ CÂU HỎI CHIÊM BỐC NHƯNG CHƯA NHẤN NÚT XUẤT VIDEO THỦY MẶC */
+            <div className="flex-1 min-h-0 flex flex-col justify-between rounded-2xl border border-[#D4AF37]/40 bg-[#130E09] p-3 text-[#FFF8E7]">
+              <div className="space-y-2">
+                <div className="text-[11px] font-serif font-bold text-[#E5C158]">
+                  🎬 Xuất Video Thủy Mặc Ngắn Gọn · Trả Lời Trực Tiếp Từ Quẻ
+                </div>
+                <div className="rounded-lg p-2 bg-[#1B140C] border border-emerald-500/40 text-[9.5px] text-[#F3E5AB]">
+                  <span className="text-emerald-300 font-bold">✓ Câu hỏi chiêm bốc:</span> “{userIntentQuestion.trim()}”
+                </div>
+                <p className="text-[10.5px] leading-relaxed text-[#E5D3B3]">
+                  Khi nhấn nút bên dưới, <strong className="text-[#F3E5AB]">Tiểu Long Cửu Nhị</strong> sẽ chạy hoạt ảnh làm việc (Đọc sách cổ ➔ Soi kính lúp ➔ Chấm mực họa Thủy Mặc ➔ Gõ máy dựng clip ➔ Đóng Ấn Chu Sa) và chiếu ngay{" "}
+                  <strong className="text-[#E5C158]">Video Thủy Mặc (水墨周易)</strong> phiên bản ngắn gọn, súc tích trả lời trực tiếp câu hỏi dựa vào quẻ!
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleExportDragonInkWashVideo}
+                className="w-full py-2.5 px-4 rounded-xl text-xs font-serif font-bold text-[#1C1610] bg-gradient-to-r from-[#FFF3B0] via-[#E5C158] to-[#C4963E] border border-[#FFF8E7] shadow-md cursor-pointer hover:brightness-105 flex items-center justify-center gap-2"
+              >
+                <span>🎬</span>
+                <span>Xuất & Chiếu Video Thủy Mặc Ngay</span>
+              </button>
+            </div>
+          )}
+        </div>
+      );
+    },
+    [
+      userIntentQuestion,
+      isExportingInkWashClip,
+      inkWashWorkingAct,
+      inkWashExportPercent,
+      inkWashExportStage,
+      conciseInkWashResult,
+      handleExportDragonInkWashVideo,
+      scrollToHuongAnForChat,
+    ]
+  );
 
   const startDirectHomeBackgroundPolling = useCallback(() => {
     stopDirectHomePolling();
@@ -4895,8 +6439,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
       // 3. Gửi trực tiếp sang Engine Luận Trực Tiếp & Render Video 9:16 chạy ngầm
       setDirectHomePercent(32);
-      setDirectHomeStage("Đã kích hoạt chạy ngầm! Đại Sư Gemini đang luận giải & thu âm...");
-      setDirectHomeMessage("Đang chạy ngầm trên máy chủ: Bạn có thể tự do lướt web hoặc chuyển tab, xong sẽ tự báo chuông!");
+      setDirectHomeStage("Đã kích hoạt chạy ngầm! Tiểu Long Cửu Nhị đang luận giải & thu âm...");
+      setDirectHomeMessage("Đang chạy ngầm: Bạn có thể tự do lướt web hoặc chuyển tab, xong sẽ tự báo chuông!");
 
       const effectiveQuestion =
         userIntentQuestion.trim() ||
@@ -5891,7 +7435,11 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               {/* MODULE 1: HƯƠNG ÁN KHỞI NIỆM (TRỤC LỤA GIẤY TUYÊN THÀNH VIỀN KÉP CHỈ VÀNG ĐỒNG BỘ TRANG CHỦ) */}
               <div id="huong-an-khoi-niem" className="mt-6 max-w-xl scroll-mt-24">
                 <div
-                  className="relative rounded-2xl border border-[#C4963E]/45 p-4 sm:p-5 backdrop-blur-md transition-all duration-300 focus-within:border-[#C4963E] focus-within:shadow-[0_16px_38px_-6px_rgba(196,150,62,0.22),inset_0_0_0_3px_#FDFBF7,inset_0_0_0_4px_rgba(196,150,62,0.32)]"
+                  className={`relative rounded-2xl border p-4 sm:p-5 backdrop-blur-md transition-all duration-300 focus-within:border-[#C4963E] focus-within:shadow-[0_16px_38px_-6px_rgba(196,150,62,0.22),inset_0_0_0_3px_#FDFBF7,inset_0_0_0_4px_rgba(196,150,62,0.32)] ${
+                    isHuongAnHighlighted
+                      ? "border-[#9E2A2B] ring-4 ring-[#D4AF37]/45 shadow-[0_0_32px_rgba(212,175,55,0.45)]"
+                      : "border-[#C4963E]/45"
+                  }`}
                   style={{
                     background: "linear-gradient(180deg, rgba(253, 251, 247, 0.96) 0%, rgba(244, 238, 226, 0.94) 100%)",
                     boxShadow:
@@ -5936,7 +7484,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                           type="button"
                           onClick={() => handleQuestionChange("")}
                           className="text-[11px] text-[#7D6E57] hover:text-[#9E2A2B] font-semibold transition cursor-pointer flex items-center gap-1"
-                          title="Xóa nội dung câu hỏi"
+                          title="Xóa nội dung câu hỏi & câu trả lời Hương Án"
                         >
                           ✕ Xóa
                         </button>
@@ -5953,23 +7501,9 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     rows={2}
                     value={userIntentQuestion}
                     onChange={(e) => handleQuestionChange(e.target.value)}
-                    placeholder="Tĩnh tâm nhập câu hỏi hoặc sự việc đang trăn trở (VD: Sự nghiệp tháng tới diễn biến ra sao? Có nên ký kết hợp tác này không?...)"
+                    placeholder="Nhập câu hỏi hoặc sự việc đang trăn trở (VD: Sự nghiệp tháng tới diễn biến ra sao? Có nên ký kết hợp tác này không?...)"
                     className="w-full resize-none rounded-xl bg-[#F6F1E5]/85 focus:bg-[#FFFEFA] border border-[#C4963E]/35 px-3.5 py-2.5 text-xs sm:text-sm text-[#1E1912] placeholder:text-[#8A7960] focus:outline-none focus:border-[#C4963E] focus:ring-2 focus:ring-[#C4963E]/15 transition leading-relaxed font-serif shadow-inner"
                   />
-
-                  <div className="mt-2.5 flex flex-wrap items-center justify-between gap-1.5 text-[11px] text-[#6E5D47]">
-                    <span className="flex items-center gap-1.5">
-                      <span className="text-[#B8862D] font-bold">✦</span>
-                      {userIntentQuestion.trim()
-                        ? "Tâm niệm đã được niêm phong vào quẻ bài để gửi cho AI luận giải."
-                        : "Nhập câu hỏi để khi 'Chép Toàn Thư AI', AI luận giải đúng trọng tâm của bạn."}
-                    </span>
-                    {userIntentQuestion.trim() && (
-                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-900 bg-emerald-50/90 border border-emerald-500/45 px-2.5 py-0.5 rounded-full">
-                        ✓ Đã ghim tâm niệm
-                      </span>
-                    )}
-                  </div>
                 </div>
               </div>
 
@@ -6162,7 +7696,62 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     </button>
                   </div>
 
-
+                  {/* CỤM 4: NÚT KHAI MỞ LUẬN GIẢI & ĐÀM ĐẠO TRỰC TIẾP TRONG ĐIỆN THOẠI TIỂU LONG CỬU NHỊ */}
+                  <div className="relative w-full">
+                    <button
+                      type="button"
+                      id="btn-chat-with-dragon-phone"
+                      onClick={() => {
+                        setShowPhoneVideoMode(false);
+                        setPhoneDisplayTab("chat");
+                        setIsPhoneMockupHighlighted(true);
+                        window.setTimeout(() => setIsPhoneMockupHighlighted(false), 3200);
+                        const phoneEl = document.getElementById("direct-home-phone-mockup");
+                        if (phoneEl) {
+                          phoneEl.scrollIntoView({ behavior: "smooth", block: "center" });
+                        }
+                        if (isHuongAnReadyForChat) {
+                          handleSendPhoneChatMessage();
+                        } else {
+                          setCopiedToast(
+                            "🕯️ Đã chuyển tới màn hình điện thoại Tiểu Long Cửu Nhị! Vui lòng nhập Câu hỏi chiêm bốc để bắt đầu khuyên bảo."
+                          );
+                          window.setTimeout(() => setCopiedToast(null), 3800);
+                          window.setTimeout(() => {
+                            const inlineQ = document.getElementById("phone-inline-question-input") as HTMLInputElement | null;
+                            if (inlineQ) inlineQ.focus();
+                          }, 420);
+                        }
+                      }}
+                      disabled={isPhoneChatLoading}
+                      className="inline-flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl text-xs sm:text-sm font-serif font-bold text-[#FFF8E7] border border-[#D4AF37] transition cursor-pointer shadow-lg hover:brightness-110 active:scale-[0.99] select-none disabled:opacity-60"
+                      style={{
+                        background: isHuongAnReadyForChat
+                          ? "linear-gradient(135deg, #7A1C1C 0%, #4E1010 52%, #2A160D 100%)"
+                          : "linear-gradient(135deg, #4A3723 0%, #2C2014 55%, #1A130C 100%)",
+                        boxShadow: "0 10px 26px -4px rgba(122, 28, 28, 0.45), inset 0 1px 0 rgba(243, 229, 171, 0.45)",
+                      }}
+                      title="Nhấn để nhảy ngay qua màn hình điện thoại Tiểu Long Cửu Nhị trên trang chủ"
+                    >
+                      <span className="text-base shrink-0">{isHuongAnReadyForChat ? "🐉" : "🔒"}</span>
+                      <span>
+                        {isPhoneChatLoading
+                          ? "Tiểu Long Cửu Nhị Đang Dựa Vào Hương Án Khuyên Bảo..."
+                          : isHuongAnReadyForChat
+                          ? "Xin Tiểu Long Cửu Nhị Dựa Vào Hương Án Khuyên Bảo"
+                          : "Mở Chat Tiểu Long (Cần Câu Hỏi Chiêm Bốc)"}
+                      </span>
+                      <span
+                        className={`text-[10px] font-sans font-bold px-2 py-0.5 rounded-full border ${
+                          isHuongAnReadyForChat
+                            ? "text-[#1C1610] bg-[#F3E5AB] border-[#D4AF37]"
+                            : "text-[#F3E5AB] bg-[#3A2B1C] border-[#D4AF37]/60"
+                        }`}
+                      >
+                        {isHuongAnReadyForChat ? "✓ Đã Khai Ấn" : "Chưa Khai Ấn"}
+                      </span>
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -6310,16 +7899,23 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 aria-hidden="true"
               />
 
-              <div className="w-full max-w-[360px] flex flex-col items-center gap-3">
-                {/* KHUNG ĐIỆN THOẠI DỌC 9:16 (MẪU 2 - TINH GỌN ĐIỆN THOẠI) */}
+              <div className="w-full max-w-[376px] flex flex-col items-center gap-3">
+                {/* KHUNG ĐIỆN THOẠI DỌC 9:16 CỬU NHỊ TIỂU LONG TÍCH HỢP KHUNG CHATBOX ĐÀM ĐẠO TRỰC TIẾP */}
                 <div
                   id="direct-home-phone-mockup"
-                  className="relative w-[308px] sm:w-[336px] rounded-[42px] p-[9px] transition-all duration-300"
+                  className={`relative w-[320px] sm:w-[356px] rounded-[42px] p-[9px] transition-all duration-300 scroll-mt-20 ${
+                    isPhoneMockupHighlighted
+                      ? "ring-4 ring-[#F3E5AB] scale-[1.015]"
+                      : ""
+                  }`}
                   style={{
                     background: "linear-gradient(145deg, #3A2C1E 0%, #17120D 50%, #2C2116 100%)",
-                    border: "2px solid rgba(212, 175, 55, 0.85)",
-                    boxShadow:
-                      "0 26px 60px -12px rgba(24, 18, 12, 0.55), 0 0 28px rgba(212, 175, 55, 0.22), inset 0 1px 1px rgba(255, 248, 220, 0.35)",
+                    border: isPhoneMockupHighlighted
+                      ? "2px solid #FFF3B0"
+                      : "2px solid rgba(212, 175, 55, 0.85)",
+                    boxShadow: isPhoneMockupHighlighted
+                      ? "0 0 42px rgba(243, 229, 171, 0.65), 0 26px 60px -12px rgba(24, 18, 12, 0.65), inset 0 1px 1px rgba(255, 248, 220, 0.55)"
+                      : "0 26px 60px -12px rgba(24, 18, 12, 0.55), 0 0 28px rgba(212, 175, 55, 0.22), inset 0 1px 1px rgba(255, 248, 220, 0.35)",
                   }}
                 >
                   {/* Loa thoại / Dynamic Island */}
@@ -6330,34 +7926,132 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
                   {/* Màn hình 9:16 bên trong */}
                   <div
-                    className="relative w-full aspect-[9/16] rounded-[33px] overflow-hidden flex flex-col justify-between text-[#F5E6C4]"
+                    className="relative w-full h-[588px] sm:h-[636px] rounded-[33px] overflow-hidden flex flex-col justify-between text-[#F5E6C4]"
                     style={{
                       background:
-                        "radial-gradient(circle at 50% 22%, rgba(158, 42, 43, 0.28) 0%, rgba(20, 15, 10, 0.96) 65%, #0D0A07 100%)",
+                        "radial-gradient(circle at 50% 18%, rgba(158, 42, 43, 0.28) 0%, rgba(20, 15, 10, 0.96) 65%, #0D0A07 100%)",
                       border: "1px solid rgba(212, 175, 55, 0.32)",
                     }}
                   >
                     {/* Thanh trạng thái trên cùng của điện thoại */}
-                    <div className="pt-6 px-3.5 pb-1.5 flex items-center justify-between text-[10px] text-[#E5C158]/90 border-b border-[#D4AF37]/20 bg-black/30 backdrop-blur-xs z-20">
+                    <div className="pt-6 px-3.5 pb-1.5 flex items-center justify-between text-[10px] text-[#E5C158]/90 border-b border-[#D4AF37]/20 bg-black/35 backdrop-blur-xs z-20 shrink-0">
                       <span className="font-mono font-bold">9:41</span>
-                      <span className="font-serif font-bold tracking-[0.12em] text-[9px] uppercase text-[#F3E5AB] truncate">
-                        ☯ CỬU NHỊ · LUẬN GIẢI TRỰC TIẾP
+                      <span className="font-serif font-bold tracking-[0.08em] text-[9px] uppercase text-[#F3E5AB] truncate">
+                        ☯ TIỂU LONG CỬU NHỊ · ĐÀM ĐẠO
                       </span>
                       <span className="text-[9px] font-semibold text-emerald-400">● LIVE</span>
                     </div>
 
-                    {/* Nút chuyển đổi giữa Video MP4 thực tế và Hoạt ảnh Tiểu Long */}
-                    {directHomeResult?.video_url && !isDragonSendingFinale && (
-                      <div className="px-3 pt-1.5 flex justify-end z-20">
+                    {/* Thanh điều khiển chế độ hiển thị trong điện thoại: Khung Chatbox | Bách Khoa 64 Quẻ | Blog Dịch Học | Sân Khấu */}
+                    <div className="px-2 py-1.5 flex items-center justify-between gap-1 bg-[#140F0A]/90 border-b border-[#D4AF37]/25 z-20 shrink-0">
+                      <div className="inline-flex items-center rounded-full p-0.5 bg-[#0B0806] border border-[#D4AF37]/35">
                         <button
                           type="button"
-                          onClick={() => setShowPhoneVideoMode((v) => !v)}
-                          className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#1C1610]/90 text-[#F3E5AB] border border-[#D4AF37]/70 hover:brightness-110 cursor-pointer shadow-xs"
+                          onClick={() => {
+                            setShowPhoneVideoMode(false);
+                            setPhoneDisplayTab("chat");
+                          }}
+                          className={`text-[9px] font-serif font-bold px-2 py-0.5 rounded-full transition cursor-pointer ${
+                            phoneDisplayTab === "chat" && !(directHomeResult?.video_url && showPhoneVideoMode)
+                              ? "bg-gradient-to-r from-[#D4AF37] to-[#B8862D] text-[#1C1610] shadow-2xs"
+                              : "text-[#D9C498] hover:text-[#FFF8E7]"
+                          }`}
                         >
-                          {showPhoneVideoMode ? "🐉 Xem Rồng Nhỏ" : "🎬 Xem Video MP4"}
+                          💬 Chat
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowPhoneVideoMode(false);
+                            setPhoneDisplayTab("bakh_khoa");
+                          }}
+                          className={`text-[9px] font-serif font-bold px-2 py-0.5 rounded-full transition cursor-pointer ${
+                            phoneDisplayTab === "bakh_khoa" && !(directHomeResult?.video_url && showPhoneVideoMode)
+                              ? "bg-gradient-to-r from-[#D4AF37] to-[#B8862D] text-[#1C1610] shadow-2xs"
+                              : "text-[#D9C498] hover:text-[#FFF8E7]"
+                          }`}
+                        >
+                          📚 Bách Khoa
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowPhoneVideoMode(false);
+                            setPhoneDisplayTab("blog");
+                          }}
+                          className={`text-[9px] font-serif font-bold px-2 py-0.5 rounded-full transition cursor-pointer ${
+                            phoneDisplayTab === "blog" && !(directHomeResult?.video_url && showPhoneVideoMode)
+                              ? "bg-gradient-to-r from-[#D4AF37] to-[#B8862D] text-[#1C1610] shadow-2xs"
+                              : "text-[#D9C498] hover:text-[#FFF8E7]"
+                          }`}
+                        >
+                          📰 Blog
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowPhoneVideoMode(false);
+                            setPhoneDisplayTab("stage");
+                          }}
+                          className={`text-[9px] font-serif font-bold px-2 py-0.5 rounded-full transition cursor-pointer ${
+                            phoneDisplayTab === "stage" && !(directHomeResult?.video_url && showPhoneVideoMode)
+                              ? "bg-gradient-to-r from-[#D4AF37] to-[#B8862D] text-[#1C1610] shadow-2xs"
+                              : "text-[#D9C498] hover:text-[#FFF8E7]"
+                          }`}
+                        >
+                          🐉 3D
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowPhoneVideoMode(false);
+                            setPhoneDisplayTab("thuy_mac");
+                          }}
+                          className={`text-[9px] font-serif font-bold px-2 py-0.5 rounded-full transition cursor-pointer ${
+                            phoneDisplayTab === "thuy_mac" && !(directHomeResult?.video_url && showPhoneVideoMode)
+                              ? "bg-gradient-to-r from-[#8B1E22] to-[#B3282D] text-[#FFF8E7] border border-[#D4AF37]/60 shadow-2xs"
+                              : "text-[#F3E5AB] hover:text-[#FFF8E7]"
+                          }`}
+                          title="Xem hoặc Xuất Video Thủy Mặc ngắn gọn trả lời trực tiếp câu hỏi"
+                        >
+                          墨 Thủy Mặc
+                        </button>
+                        {directHomeResult?.video_url && !isDragonSendingFinale && (
+                          <button
+                            type="button"
+                            onClick={() => setShowPhoneVideoMode((v) => !v)}
+                            className={`text-[9px] font-serif font-bold px-1.5 py-0.5 rounded-full transition cursor-pointer ${
+                              showPhoneVideoMode
+                                ? "bg-emerald-500 text-[#09150E]"
+                                : "text-emerald-300 hover:text-emerald-200"
+                            }`}
+                          >
+                            🎬 MP4
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-1">
+                        {phoneChatMessages.length > 0 && phoneDisplayTab === "chat" && (
+                          <button
+                            type="button"
+                            onClick={handleResetPhoneChat}
+                            className="text-[8.5px] font-semibold px-1.5 py-0.5 rounded-full bg-[#1F1710] hover:bg-[#2C2117] text-[#E5C158] border border-[#D4AF37]/40 cursor-pointer transition"
+                            title="Làm mới cuộc trò chuyện cùng Tiểu Long Cửu Nhị"
+                          >
+                            ↺ Mới
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => setIsPhoneChatModalExpanded(true)}
+                          className="text-[8.5px] font-semibold px-1.5 py-0.5 rounded-full bg-[#1F1710] hover:bg-[#2C2117] text-[#F3E5AB] border border-[#D4AF37]/50 cursor-pointer transition"
+                          title="Mở rộng khung đàm đạo Tiểu Long Cửu Nhị toàn màn hình"
+                        >
+                          ⤢ Mở
                         </button>
                       </div>
-                    )}
+                    </div>
 
                     {/* NỘI DUNG CHÍNH TRONG MÀN HÌNH 9:16 */}
                     {directHomeResult?.video_url && showPhoneVideoMode && !isDragonSendingFinale ? (
@@ -6372,43 +8066,17 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                           className="w-full h-full object-cover"
                         />
                       </div>
-                    ) : (
+                    ) : phoneDisplayTab === "thuy_mac" ? (
+                      renderPhoneThuyMacView(false)
+                    ) : phoneDisplayTab === "bakh_khoa" ? (
+                      renderPhoneBakhKhoaView(false)
+                    ) : phoneDisplayTab === "blog" ? (
+                      renderPhoneBlogView(false)
+                    ) : phoneDisplayTab === "stage" ? (
+                      /* CHẾ ĐỘ XEM SÂN KHẤU HOẠT ẢNH TIỂU LONG CỠ LỚN */
                       <div className="flex-1 flex flex-col justify-between p-2.5 overflow-hidden">
-                        <style>{`
-                          @keyframes cuunhiArtBob {
-                            0%, 100% { transform: scale(1.03) translateY(0px); }
-                            50% { transform: scale(1.06) translateY(-3px); }
-                          }
-                          @keyframes cuunhiFloatGlyph {
-                            0% { opacity: 0; transform: translateY(8px) scale(0.7); }
-                            35% { opacity: 1; }
-                            100% { opacity: 0; transform: translateY(-26px) scale(1.15); }
-                          }
-                          @keyframes cuunhiLensSweep {
-                            0%, 100% { transform: translate(-10px, 0px) scale(0.95); opacity: 0.45; }
-                            50% { transform: translate(12px, -3px) scale(1.12); opacity: 0.85; }
-                          }
-                          @keyframes cuunhiBrushSpark {
-                            0%, 100% { transform: translate(-12px, 2px) scale(0.9); opacity: 0.6; }
-                            50% { transform: translate(14px, -2px) scale(1.15); opacity: 1; }
-                          }
-                          @keyframes cuunhiScreenGlow {
-                            0%, 100% { opacity: 0.35; transform: scale(0.98); }
-                            50% { opacity: 0.85; transform: scale(1.06); }
-                          }
-                          @keyframes cuunhiPullSendLetter {
-                            0% { opacity: 0; transform: translate(-18px, 24px) scale(0.35) rotate(-8deg); }
-                            25% { opacity: 1; transform: translate(-6px, 4px) scale(0.92) rotate(-4deg); }
-                            55% { opacity: 1; transform: translate(8px, -12px) scale(1.08) rotate(6deg); }
-                            82% { opacity: 1; transform: translate(42px, -44px) scale(1.12) rotate(16deg); }
-                            100% { opacity: 0; transform: translate(78px, -74px) scale(0.45) rotate(24deg); }
-                          }
-                        `}</style>
-
-                        {/* 1. SÂN KHẤU HOẠT ẢNH TIỂU LONG CỬU NHỊ */}
                         <div className="flex-1 flex flex-col items-center gap-1.5 min-h-0">
                           <div className="w-full flex-1 flex flex-col rounded-xl overflow-hidden border border-[#D4AF37]/60 bg-gradient-to-b from-[#1E160E] via-[#140F0A] to-[#0D0A07] p-1.5 shadow-inner relative">
-                            {/* Khung Video Hoạt Ảnh */}
                             <div className="w-full flex-1 min-h-[214px] rounded-lg overflow-hidden relative border border-[#D4AF37]/45 bg-[#0E0A07] shadow-md">
                               <video
                                 ref={dragonVideoRef}
@@ -6442,7 +8110,6 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                             </div>
                           </div>
 
-                          {/* Tên Quẻ & Trạng thái đồng bộ từ Trang Chủ */}
                           <div className="text-center px-1">
                             <div className="text-[10.5px] font-serif font-bold text-[#F3E5AB] tracking-wide line-clamp-1">
                               {directHomeResult?.hexagram_title ||
@@ -6454,16 +8121,35 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                           </div>
                         </div>
 
-                        {/* 2. Phần giữa: Hộp Phụ Đề Vàng Kim (Luận Giải Trực Tiếp) */}
                         <div
-                          className="my-1 rounded-xl p-2 border border-[#D4AF37]/50 bg-[#1B140E]/90 shadow-md flex flex-col gap-0.5"
+                          className="my-1 rounded-xl p-2 border border-[#D4AF37]/50 bg-[#1B140E]/90 shadow-md flex flex-col gap-1.5"
                           style={{
                             boxShadow: "inset 0 0 18px rgba(212, 175, 55, 0.10)",
                           }}
                         >
                           <div className="flex items-center justify-between text-[8.5px] font-bold uppercase tracking-wider text-[#E5C158]">
-                            <span>✦ Lời Bàn Cửu Nhị Đại Sư</span>
-                            <span>{isDirectHomeRunning ? `${directHomePercent}%` : "9:16 HD"}</span>
+                            <span>✦ Lời Bàn Tiểu Long Cửu Nhị</span>
+                            <div className="flex items-center gap-1">
+                              <button
+                                type="button"
+                                onClick={handleExportDragonInkWashVideo}
+                                disabled={isExportingInkWashClip}
+                                className="text-[8.5px] font-bold text-[#FFF8E7] bg-gradient-to-r from-[#8B1E22] to-[#631316] border border-[#D4AF37]/75 px-2 py-0.5 rounded-full cursor-pointer hover:brightness-110 disabled:opacity-55"
+                              >
+                                {isExportingInkWashClip
+                                  ? `⏳ Đang làm (${inkWashExportPercent}%)`
+                                  : !userIntentQuestion.trim()
+                                  ? "🔒 Thủy Mặc (Cần Câu Hỏi ↑)"
+                                  : "🎬 Xuất Video Thủy Mặc"}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setPhoneDisplayTab("chat")}
+                                className="text-[8.5px] font-bold text-[#1C1610] bg-[#F3E5AB] px-2 py-0.5 rounded-full cursor-pointer"
+                              >
+                                Chat →
+                              </button>
+                            </div>
                           </div>
                           <p className="text-[10px] font-serif leading-relaxed text-[#FFF8E7] line-clamp-3 italic">
                             {isDirectHomeRunning || isDragonSendingFinale
@@ -6474,18 +8160,690 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                           </p>
                         </div>
                       </div>
+                    ) : (
+                      /* CHẾ ĐỘ MẶC ĐỊNH: HOẠT ẢNH CỬU NHỊ TIỂU LONG + KHUNG CHATBOX ĐÀM ĐẠO TRỰC TIẾP */
+                      <div className="flex-1 flex flex-col min-h-0 overflow-hidden p-2 gap-1.5">
+                        {/* 1. Đầu màn hình: Hoạt ảnh trực tiếp Tiểu Long Cửu Nhị + Thông tin Trận Pháp đang trải + Nút Xuất Video Thủy Mặc */}
+                        <div className="flex flex-col gap-1.5 p-1.5 rounded-2xl border border-[#D4AF37]/50 bg-gradient-to-r from-[#1E160E] via-[#15100B] to-[#1A120B] shadow-md shrink-0">
+                          <div className="flex items-center gap-2.5">
+                            <div
+                              onClick={() => setPhoneDisplayTab("stage")}
+                              title="Nhấn để phóng to sân khấu hoạt ảnh Tiểu Long Cửu Nhị"
+                              className="w-[78px] h-[92px] sm:w-[84px] sm:h-[98px] rounded-xl overflow-hidden border border-[#D4AF37]/60 bg-[#0A0806] relative shrink-0 cursor-pointer group"
+                            >
+                              <video
+                                ref={dragonVideoRef}
+                                key={DRAGON_VIDEO_MAP[activeDragonAct].src}
+                                src={DRAGON_VIDEO_MAP[activeDragonAct].src}
+                                autoPlay
+                                loop={activeDragonAct === 0 || activeDragonAct === 9}
+                                muted
+                                playsInline
+                                onEnded={(e) => {
+                                  if (dragonWakeState === "waking") {
+                                    setDragonWakeState("awake");
+                                    setIsDragonUnlocked(true);
+                                  } else if (isPhoneChatLoading) {
+                                    setPhoneChatAct((prev) => (prev === 1 ? 3 : prev === 3 ? 2 : 1));
+                                  } else {
+                                    const v = e.currentTarget;
+                                    v.currentTime = 0;
+                                    v.play().catch(() => {});
+                                  }
+                                }}
+                                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+                              />
+                              <span className="absolute bottom-1 right-1 px-1.5 py-0.2 rounded-full bg-black/75 border border-[#D4AF37]/50 text-[7.5px] font-semibold text-[#F3E5AB]">
+                                {isExportingInkWashClip
+                                  ? `${inkWashExportPercent}%`
+                                  : isPhoneChatLoading
+                                  ? "Đang soi..."
+                                  : "3D Live"}
+                              </span>
+                            </div>
+
+                            <div className="flex-1 min-w-0 flex flex-col justify-between gap-1">
+                              <div>
+                                <div className="flex items-center gap-1">
+                                  <span className="text-[11px] font-serif font-bold text-[#F3E5AB] truncate">
+                                    Tiểu Long Cửu Nhị
+                                  </span>
+                                  <span className="px-1.5 py-0.2 rounded-full text-[7.5px] font-bold bg-[#D4AF37]/20 text-[#E5C158] border border-[#D4AF37]/40 shrink-0">
+                                    Cửu Nhị Dịch Học
+                                  </span>
+                                </div>
+                                <div className="text-[9.5px] font-serif font-semibold text-[#E5C158] truncate mt-0.5">
+                                  {SPREAD_MODE_NAMES[mode] || "Trận Pháp Kinh Dịch"}
+                                </div>
+                                <div className="text-[8.5px] text-[#D8C5A0] line-clamp-1 leading-snug mt-0.5">
+                                  {cards.map((c) => c.name.replace(/^Quẻ (Chủ|Biến):\s*/i, "").trim()).join(" · ")}
+                                </div>
+                              </div>
+
+                              {/* Hàng nút thao tác ngay chỗ Rồng Con Cửu Nhị */}
+                              <div className="flex flex-col gap-1 pt-0.5">
+                                {isDragonSleeping ? (
+                                  <button
+                                    type="button"
+                                    onClick={handleWakeUpDragon}
+                                    className="w-full py-1 px-2 rounded-lg text-[9px] font-serif font-bold text-[#1C1610] bg-gradient-to-r from-[#FFF3B0] via-[#E5C158] to-[#C4963E] border border-[#FFF8E7] shadow-xs cursor-pointer hover:brightness-105"
+                                  >
+                                    🔔 Gọi Tiểu Long Dậy
+                                  </button>
+                                ) : !isHuongAnReadyForChat ? (
+                                  <button
+                                    type="button"
+                                    onClick={scrollToHuongAnForChat}
+                                    className="w-full py-1 px-2 rounded-lg text-[8.5px] font-serif font-bold text-[#F3E5AB] bg-[#2D2115] hover:bg-[#3B2B1C] border border-[#D4AF37]/65 shadow-xs cursor-pointer truncate"
+                                  >
+                                    🔒 Cần Câu Hỏi Chiêm Bốc ↑
+                                  </button>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    disabled={isPhoneChatLoading}
+                                    onClick={() =>
+                                      handleSendPhoneChatMessage(
+                                        `Xin Tiểu Long Cửu Nhị dựa vào câu hỏi tại Hương Án Khởi Niệm để khuyên bảo chi tiết cho con về trận pháp đang trải?`
+                                      )
+                                    }
+                                    className="w-full py-1 px-2 rounded-lg text-[8.5px] font-serif font-bold text-[#1C1610] bg-gradient-to-r from-[#F3E5AB] via-[#E5C158] to-[#C4963E] border border-[#FFF8E7]/80 shadow-xs cursor-pointer hover:brightness-105 disabled:opacity-55 truncate"
+                                  >
+                                    {isPhoneChatLoading ? "⏳ Đang khuyên bảo..." : "✨ Xin Tiểu Long Khuyên Bảo"}
+                                  </button>
+                                )}
+
+                                {/* NÚT XUẤT VIDEO THỦY MẶC NGẮN GỌN TRẢ LỜI TRỰC TIẾP NGAY CHỖ RỒNG CON CỬU NHỊ */}
+                                <button
+                                  type="button"
+                                  id="btn-dragon-export-ink-wash"
+                                  disabled={isExportingInkWashClip}
+                                  onClick={handleExportDragonInkWashVideo}
+                                  className="w-full py-1 px-2 rounded-lg text-[9px] font-serif font-bold text-[#FFF8E7] border border-[#D4AF37]/85 shadow-sm cursor-pointer transition hover:brightness-110 active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-1 truncate"
+                                  style={{
+                                    background: userIntentQuestion.trim()
+                                      ? "linear-gradient(135deg, #8B1E22 0%, #5E1216 55%, #3B120E 100%)"
+                                      : "linear-gradient(135deg, #3A2918 0%, #24190E 100%)",
+                                  }}
+                                  title={
+                                    userIntentQuestion.trim()
+                                      ? "Xuất & Chiếu Video Thủy Mặc phiên bản ngắn gọn súc tích trả lời trực tiếp câu hỏi dựa vào quẻ (Khi đang làm clip sẽ chạy hoạt ảnh Cửu Long làm việc)"
+                                      : "Cần nhập Câu hỏi chiêm bốc tại Hương Án Khởi Niệm trước khi xuất & chiếu Video Thủy Mặc"
+                                  }
+                                >
+                                  <span>{userIntentQuestion.trim() ? "🎬" : "🔒"}</span>
+                                  <span className="truncate">
+                                    {isExportingInkWashClip
+                                      ? `Cửu Long đang dựng (${inkWashExportPercent}%)...`
+                                      : !userIntentQuestion.trim()
+                                      ? "Video Thủy Mặc (Cần Câu Hỏi ↑)"
+                                      : conciseInkWashResult?.video_url
+                                      ? "Chiếu / Xuất Lại Video Thủy Mặc"
+                                      : "Xuất Video Thủy Mặc (Ngắn Gọn)"}
+                                  </span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* 2. Giữa màn hình: KHUNG CHATBOX ĐÀM ĐẠO CÙNG TIỂU LONG CỬU NHỊ */}
+                        <div
+                          ref={phoneChatScrollRef}
+                          className="flex-1 min-h-0 overflow-y-auto rounded-2xl border border-[#D4AF37]/35 bg-[#110C08]/95 p-2.5 space-y-2.5 shadow-inner"
+                          style={{
+                            scrollbarWidth: "thin",
+                            scrollbarColor: "rgba(212,175,55,0.4) transparent",
+                          }}
+                        >
+                          {!isHuongAnReadyForChat ? (
+                            /* TRẠNG THÁI KHÓA CHAT: CẦN CÓ CÂU HỎI TẠI HƯƠNG ÁN KHỞI NIỆM TRƯỚC (CỬU LONG TỰ LÀM PHẦN TRẢ LỜI HƯƠNG ÁN NGẦM) */
+                            <div className="rounded-xl p-3 border border-[#D4AF37]/60 bg-gradient-to-b from-[#231910] via-[#18110B] to-[#120D08] text-[#FFF8E7] space-y-2.5 shadow-md">
+                              <div className="flex items-center justify-between text-[9.5px] text-[#E5C158] font-bold border-b border-[#D4AF37]/25 pb-1.5">
+                                <span className="flex items-center gap-1">
+                                  <span>🔒</span>
+                                  <span>Khóa Đàm Đạo Tiểu Long Cửu Nhị</span>
+                                </span>
+                                <span className="px-1.5 py-0.5 rounded-full bg-[#3A2818] text-[#F3E5AB] text-[8px] border border-[#D4AF37]/45">
+                                  Cần Câu Hỏi Chiêm Bốc
+                                </span>
+                              </div>
+
+                              <p className="text-[10.5px] leading-relaxed text-[#F5E6C4]">
+                                Kính thưa quý bạn! Để mở khung chat trò chuyện cùng{" "}
+                                <strong className="text-[#F3E5AB]">Tiểu Long Cửu Nhị</strong>, quý bạn vui lòng nhập{" "}
+                                <strong className="text-[#E5C158]">Câu hỏi</strong> tại mục{" "}
+                                <strong className="text-[#FFF3B0]">「印 Hương Án Khởi Niệm · Câu Hỏi Chiêm Bốc」</strong>{" "}
+                                hoặc nhập trực tiếp vào ô bên dưới. <strong className="text-[#F3E5AB]">Tiểu Long Cửu Nhị</strong> sẽ tự động luận giải và khuyên bảo thấu đáo cho quý bạn!
+                              </p>
+
+                              <div className="rounded-xl p-2 bg-[#140E09] border border-[#D4AF37]/40 space-y-1">
+                                <label
+                                  htmlFor="phone-inline-question-input"
+                                  className="block text-[9px] font-serif font-bold text-[#E5C158]"
+                                >
+                                  🕯️ Nhập nhanh Câu hỏi chiêm bốc (Đồng bộ Hương Án):
+                                </label>
+                                <input
+                                  id="phone-inline-question-input"
+                                  type="text"
+                                  value={userIntentQuestion}
+                                  onChange={(e) => handleQuestionChange(e.target.value)}
+                                  placeholder="VD: Tháng tới có nên mở rộng kinh doanh không?..."
+                                  className="w-full h-8 px-2.5 rounded-lg text-[10.5px] bg-[#0D0906] text-[#FFF8E7] placeholder-[#8E7B60] border border-[#D4AF37]/50 focus:outline-none focus:border-[#F3E5AB]"
+                                />
+                              </div>
+
+                              <button
+                                type="button"
+                                onClick={scrollToHuongAnForChat}
+                                className="w-full py-1.5 px-2.5 rounded-xl text-[10px] font-serif font-bold text-[#FFF8E7] border border-[#D4AF37]/80 cursor-pointer transition hover:brightness-110 flex items-center justify-center gap-1"
+                                style={{
+                                  background: "linear-gradient(135deg, #8B1E22 0%, #5A1215 100%)",
+                                }}
+                              >
+                                <span>印</span>
+                                <span>Đi Tới Hương Án Khởi Niệm · Nhập Câu Hỏi Chiêm Bốc ↑</span>
+                              </button>
+
+                              <div className="grid grid-cols-2 gap-1.5 pt-1 border-t border-[#D4AF37]/20">
+                                <button
+                                  type="button"
+                                  onClick={() => setPhoneDisplayTab("bakh_khoa")}
+                                  className="py-1 px-2 rounded-lg text-[9px] font-serif font-bold text-[#F3E5AB] bg-[#241A10] hover:bg-[#332517] border border-[#D4AF37]/45 cursor-pointer transition"
+                                >
+                                  📚 Bách Khoa 64 Quẻ
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setPhoneDisplayTab("blog")}
+                                  className="py-1 px-2 rounded-lg text-[9px] font-serif font-bold text-[#F3E5AB] bg-[#241A10] hover:bg-[#332517] border border-[#D4AF37]/45 cursor-pointer transition"
+                                >
+                                  📰 Blog Dịch Học
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <>
+                              {/* THẺ CÂU HỎI TẠI HƯƠNG ÁN KHỞI NIỆM (CỬU LONG TỰ TỔNG HỢP LỜI ĐÁP NGẦM PHÍA SAU) */}
+                              <div className="rounded-xl p-2.5 border border-emerald-500/45 bg-gradient-to-b from-[#1A241B] via-[#161B14] to-[#121610] text-[#FFF8E7] space-y-1.5 shadow-sm">
+                                <div className="flex items-center justify-between gap-1 text-[9px] font-bold text-emerald-300 border-b border-emerald-500/25 pb-1">
+                                  <span>印 Câu Hỏi Tại Hương Án Khởi Niệm</span>
+                                  <button
+                                    type="button"
+                                    onClick={scrollToHuongAnForChat}
+                                    className="text-[8px] font-semibold text-[#F3E5AB] hover:underline cursor-pointer"
+                                  >
+                                    Sửa câu hỏi ↑
+                                  </button>
+                                </div>
+                                <div className="text-[9.5px] text-[#F3E5AB] leading-snug">
+                                  “{userIntentQuestion.trim()}”
+                                </div>
+                                {phoneChatMessages.length === 0 && (
+                                  <button
+                                    type="button"
+                                    disabled={isPhoneChatLoading}
+                                    onClick={() =>
+                                      handleSendPhoneChatMessage(
+                                        `Xin Tiểu Long Cửu Nhị dựa vào câu hỏi tại Hương Án Khởi Niệm để khuyên bảo chi tiết cho con về trận pháp đang trải?`
+                                      )
+                                    }
+                                    className="w-full py-1.5 px-3 rounded-xl text-[10px] font-serif font-bold text-[#FFF8E7] border border-[#D4AF37]/85 cursor-pointer transition hover:brightness-110 active:scale-[0.99] shadow-sm flex items-center justify-center gap-1.5"
+                                    style={{
+                                      background: "linear-gradient(135deg, #8B1E22 0%, #5A1215 100%)",
+                                    }}
+                                  >
+                                    <span>🐉</span>
+                                    <span>Xin Tiểu Long Cửu Nhị Khuyên Bảo Ngay</span>
+                                  </button>
+                                )}
+                              </div>
+
+                              {/* Danh sách tin nhắn hội thoại đa lượt */}
+                              {phoneChatMessages.map((msg) =>
+                                msg.role === "user" ? (
+                                  <div key={msg.id} className="flex flex-col items-end">
+                                    <div className="max-w-[88%] rounded-2xl rounded-tr-xs px-3 py-2 bg-gradient-to-br from-[#8B1E22] to-[#591114] border border-[#D4AF37]/50 text-[#FFF8E7] text-[11.5px] leading-relaxed shadow-sm">
+                                      {msg.content}
+                                    </div>
+                                    <span className="text-[8px] text-[#A89270] mt-0.5 pr-1">
+                                      Quý bạn · {msg.timestamp}
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <div key={msg.id} className="flex flex-col items-start">
+                                    <div className="w-full rounded-2xl rounded-tl-xs p-2.5 bg-gradient-to-b from-[#1E160E] to-[#140E09] border border-[#D4AF37]/45 text-[#FFF8E7] shadow-sm space-y-1.5">
+                                      <div className="flex items-center justify-between gap-1 border-b border-[#D4AF37]/20 pb-1">
+                                        <div className="flex items-center gap-1 min-w-0">
+                                          <span className="text-[10px]">🐉</span>
+                                          <span className="text-[9.5px] font-serif font-bold text-[#E5C158] truncate">
+                                            Tiểu Long Cửu Nhị
+                                          </span>
+                                          {msg.poseBadge && (
+                                            <span className="text-[8px] px-1.5 py-0.2 rounded-full bg-[#2A1F14] text-[#D8C292] border border-[#D4AF37]/30 truncate">
+                                              {msg.poseBadge}
+                                            </span>
+                                          )}
+                                        </div>
+                                        <button
+                                          type="button"
+                                          onClick={() => handleCopyPhoneChatMsg(msg.id, msg.content)}
+                                          className="text-[8.5px] font-semibold px-1.5 py-0.2 rounded bg-[#2A2016] hover:bg-[#3A2C1E] text-[#F3E5AB] border border-[#D4AF37]/35 shrink-0 cursor-pointer"
+                                        >
+                                          {copiedChatMsgId === msg.id ? "✓ Đã chép" : "Chép"}
+                                        </button>
+                                      </div>
+
+                                      {renderPhoneChatMarkdown(msg.content)}
+                                    </div>
+                                    <span className="text-[8px] text-[#A89270] mt-0.5 pl-1">
+                                      Trí Tuệ Cửu Nhị · {msg.timestamp}
+                                    </span>
+                                  </div>
+                                )
+                              )}
+
+                              {/* Hiệu ứng Tiểu Long đang suy ngẫm & khuyên bảo dựa trên Hương Án */}
+                              {isPhoneChatLoading && (
+                                <div className="rounded-2xl rounded-tl-xs p-2.5 bg-[#1B140D] border border-[#D4AF37]/45 text-[#F3E5AB] flex items-center gap-2 shadow-sm animate-pulse">
+                                  <span className="text-sm">🔍</span>
+                                  <div className="text-[10.5px] font-serif italic leading-snug">
+                                    Tiểu Long Cửu Nhị đang đối chiếu câu trả lời tại Hương Án Khởi Niệm với Sách Thuyết Minh, Bách Khoa 64 Quẻ & Blog để khuyên bảo...
+                                  </div>
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </div>
+
+                        {/* 3. Thanh câu hỏi gợi ý nhanh */}
+                        <div
+                          className="flex items-center gap-1.5 overflow-x-auto pb-0.5 shrink-0"
+                          style={{ scrollbarWidth: "none" }}
+                        >
+                          {phoneQuickQuestions.map((qText, idx) => (
+                            <button
+                              key={idx}
+                              type="button"
+                              disabled={isPhoneChatLoading}
+                              onClick={() => {
+                                if (!isHuongAnReadyForChat) {
+                                  scrollToHuongAnForChat();
+                                  return;
+                                }
+                                handleSendPhoneChatMessage(qText.replace(/^[✨📕⏳💼❤️📚📰]\s*/, ""));
+                              }}
+                              className=" whitespace-nowrap px-2.5 py-1 rounded-full text-[9.5px] font-medium bg-[#1C150E] hover:bg-[#2C2116] text-[#F3E5AB] border border-[#D4AF37]/40 transition cursor-pointer shrink-0 disabled:opacity-50"
+                            >
+                              {qText}
+                            </button>
+                          ))}
+                        </div>
+
+                        {/* 4. Ô nhập câu hỏi đàm đạo trực tiếp dưới đáy màn hình điện thoại */}
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            if (!isHuongAnReadyForChat) {
+                              scrollToHuongAnForChat();
+                              return;
+                            }
+                            handleSendPhoneChatMessage();
+                          }}
+                          className="flex items-center gap-1.5 pt-0.5 shrink-0"
+                        >
+                          <input
+                            type="text"
+                            value={phoneChatInput}
+                            onChange={(e) => setPhoneChatInput(e.target.value)}
+                            onClick={() => {
+                              if (!isHuongAnReadyForChat) {
+                                scrollToHuongAnForChat();
+                              }
+                            }}
+                            readOnly={!isHuongAnReadyForChat}
+                            disabled={isPhoneChatLoading}
+                            placeholder={
+                              isHuongAnReadyForChat
+                                ? "Hỏi thêm Tiểu Long Cửu Nhị..."
+                                : "🔒 Cần nhập câu hỏi tại Hương Án Khởi Niệm trước..."
+                            }
+                            className="flex-1 min-w-0 h-8 px-3 rounded-full text-[11px] bg-[#16100B] text-[#FFF8E7] placeholder-[#9E8B6E] border border-[#D4AF37]/55 focus:outline-none focus:border-[#F3E5AB] shadow-inner cursor-text"
+                          />
+                          <button
+                            type="submit"
+                            disabled={isPhoneChatLoading}
+                            className="h-8 px-3.5 rounded-full text-[10.5px] font-serif font-bold text-[#1C1610] border border-[#FFF8E7] cursor-pointer transition hover:brightness-105 active:scale-95 disabled:opacity-50 shrink-0 shadow-sm"
+                            style={{
+                              background: "linear-gradient(135deg, #FFF3B0 0%, #E5C158 50%, #C4963E 100%)",
+                            }}
+                          >
+                            {isHuongAnReadyForChat ? "Gửi" : "Khóa"}
+                          </button>
+                        </form>
+                      </div>
                     )}
 
                     {/* Thanh Home Bar dưới đáy điện thoại */}
-                    <div className="py-1.5 flex justify-center bg-black/40">
+                    <div className="py-1.5 flex justify-center bg-black/40 shrink-0">
                       <div className="w-24 h-1 rounded-full bg-[#D4AF37]/50" />
                     </div>
                   </div>
+                </div>
+
+                {/* NÚT XUẤT VIDEO THỦY MẶC NGẮN GỌN TRỰC TIẾP DƯỚI KHUNG ĐIỆN THOẠI RỒNG CON CỬU NHỊ */}
+                <div className="w-[320px] sm:w-[356px] flex flex-col gap-1.5">
+                  <button
+                    type="button"
+                    id="btn-phone-bottom-export-ink-wash"
+                    disabled={isExportingInkWashClip}
+                    onClick={handleExportDragonInkWashVideo}
+                    className="w-full py-2.5 px-4 rounded-2xl text-xs font-serif font-bold text-[#FFF8E7] border-2 border-[#D4AF37] shadow-lg cursor-pointer transition hover:brightness-110 active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2"
+                    style={{
+                      background: userIntentQuestion.trim()
+                        ? "linear-gradient(135deg, #8B1E22 0%, #5A1215 55%, #2C120E 100%)"
+                        : "linear-gradient(135deg, #3A2918 0%, #23180E 100%)",
+                      boxShadow: "0 10px 24px -6px rgba(139, 30, 34, 0.55), inset 0 1px 0 rgba(255, 248, 231, 0.25)",
+                    }}
+                  >
+                    <span className="text-sm">{userIntentQuestion.trim() ? "🎬" : "🔒"}</span>
+                    <span>
+                      {isExportingInkWashClip
+                        ? `Cửu Long Đang Dựng Video Thủy Mặc (${inkWashExportPercent}%)...`
+                        : !userIntentQuestion.trim()
+                        ? "Xuất Video Thủy Mặc · Cần Câu Hỏi Chiêm Bốc Trước ↑"
+                        : conciseInkWashResult?.video_url
+                        ? "Chiếu / Xuất Lại Video Thủy Mặc Cửu Nhị"
+                        : "Xuất Video Thủy Mặc · Trả Lời Trực Tiếp Theo Quẻ"}
+                    </span>
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        {/* MODAL MỞ RỘNG KHUNG ĐÀM ĐẠO, BÁCH KHOA 64 QUẺ & BLOG DỊCH HỌC CÙNG TIỂU LONG CỬU NHỊ */}
+        {isPhoneChatModalExpanded && (
+          <div className="fixed inset-0 z-[265] flex items-center justify-center bg-black/75 backdrop-blur-xs p-3 sm:p-5">
+            <div className="relative w-full max-w-2xl h-[86vh] rounded-3xl border-2 border-[#D4AF37] bg-[#140F0A] text-[#FFF8E7] shadow-2xl flex flex-col overflow-hidden">
+              {/* Header Modal */}
+              <div
+                className="px-5 py-3 flex items-center justify-between border-b border-[#D4AF37]/35 shrink-0"
+                style={{
+                  background: "linear-gradient(135deg, #2A2016 0%, #17110B 100%)",
+                }}
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <span className="w-8 h-8 rounded-full bg-[#8B1E22] border border-[#D4AF37] flex items-center justify-center text-sm shrink-0">
+                    🐉
+                  </span>
+                  <div className="min-w-0">
+                    <div className="font-serif font-bold text-sm sm:text-base text-[#F3E5AB] truncate">
+                      Đàm Đạo Cùng Tiểu Long Cửu Nhị · Video Thủy Mặc · Bách Khoa & Blog
+                    </div>
+                    <div className="text-[11px] text-[#D8C5A0] truncate">
+                      {SPREAD_MODE_NAMES[mode]} · {cards.map((c) => c.name).join(" • ")}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  {phoneChatMessages.length > 0 && phoneDisplayTab === "chat" && (
+                    <button
+                      type="button"
+                      onClick={handleResetPhoneChat}
+                      className="px-3 py-1 rounded-full text-xs font-serif font-bold bg-[#261C12] hover:bg-[#352719] text-[#E5C158] border border-[#D4AF37]/45 cursor-pointer"
+                    >
+                      ↺ Làm mới
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setIsPhoneChatModalExpanded(false)}
+                    className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-[#F3E5AB] flex items-center justify-center font-bold cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+
+              {/* Thanh chuyển Tab trong Modal mở rộng */}
+              <div className="px-5 py-2 bg-[#1B140D] border-b border-[#D4AF37]/25 flex flex-wrap items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setPhoneDisplayTab("chat")}
+                  className={`px-3.5 py-1 rounded-full text-xs font-serif font-bold transition cursor-pointer ${
+                    phoneDisplayTab === "chat"
+                      ? "bg-gradient-to-r from-[#D4AF37] to-[#B8862D] text-[#1C1610]"
+                      : "bg-[#120D09] text-[#D8C5A0] border border-[#D4AF37]/30 hover:text-[#FFF8E7]"
+                  }`}
+                >
+                  💬 Khung Chat Đàm Đạo
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPhoneDisplayTab("thuy_mac")}
+                  className={`px-3.5 py-1 rounded-full text-xs font-serif font-bold transition cursor-pointer ${
+                    phoneDisplayTab === "thuy_mac"
+                      ? "bg-gradient-to-r from-[#8B1E22] to-[#B3282D] text-[#FFF8E7] border border-[#D4AF37]/60"
+                      : "bg-[#120D09] text-[#F3E5AB] border border-[#D4AF37]/30 hover:text-[#FFF8E7]"
+                  }`}
+                >
+                  🎬 Video Thủy Mặc (Ngắn Gọn)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPhoneDisplayTab("bakh_khoa")}
+                  className={`px-3.5 py-1 rounded-full text-xs font-serif font-bold transition cursor-pointer ${
+                    phoneDisplayTab === "bakh_khoa"
+                      ? "bg-gradient-to-r from-[#D4AF37] to-[#B8862D] text-[#1C1610]"
+                      : "bg-[#120D09] text-[#D8C5A0] border border-[#D4AF37]/30 hover:text-[#FFF8E7]"
+                  }`}
+                >
+                  📚 Bách Khoa 64 Quẻ & 384 Hào
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPhoneDisplayTab("blog")}
+                  className={`px-3.5 py-1 rounded-full text-xs font-serif font-bold transition cursor-pointer ${
+                    phoneDisplayTab === "blog"
+                      ? "bg-gradient-to-r from-[#D4AF37] to-[#B8862D] text-[#1C1610]"
+                      : "bg-[#120D09] text-[#D8C5A0] border border-[#D4AF37]/30 hover:text-[#FFF8E7]"
+                  }`}
+                >
+                  📰 Blog Dịch Học (6 Chuyên Khảo)
+                </button>
+              </div>
+
+              {phoneDisplayTab === "thuy_mac" ? (
+                renderPhoneThuyMacView(true)
+              ) : phoneDisplayTab === "bakh_khoa" ? (
+                renderPhoneBakhKhoaView(true)
+              ) : phoneDisplayTab === "blog" ? (
+                renderPhoneBlogView(true)
+              ) : (
+                <>
+                  {/* Nội dung hội thoại */}
+                  <div
+                    ref={phoneModalChatScrollRef}
+                    className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-5 space-y-3.5 bg-[#0F0B07]"
+                  >
+                    {!isHuongAnReadyForChat ? (
+                      <div className="rounded-2xl p-5 border border-[#D4AF37]/60 bg-[#1B140D] space-y-3">
+                        <div className="flex items-center justify-between text-xs sm:text-sm font-serif font-bold text-[#E5C158] border-b border-[#D4AF37]/25 pb-2">
+                          <span>🔒 Khóa Đàm Đạo — Cần Có Câu Hỏi Tại Hương Án Khởi Niệm Trước</span>
+                          <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#3A2818] text-[#F3E5AB]">
+                            Chưa mở khóa
+                          </span>
+                        </div>
+                        <p className="text-xs sm:text-sm leading-relaxed text-[#FFF8E7]">
+                          Kính thưa quý bạn! Để mở khung chat nói chuyện cùng{" "}
+                          <strong className="text-[#F3E5AB]">Tiểu Long Cửu Nhị</strong>, quý bạn vui lòng nhập{" "}
+                          <strong>Câu hỏi chiêm bốc</strong> tại mục{" "}
+                          <strong className="text-[#E5C158]">「印 Hương Án Khởi Niệm · Câu Hỏi Chiêm Bốc」</strong>{" "}
+                          trên trang chủ trước. <strong className="text-[#F3E5AB]">Tiểu Long Cửu Nhị</strong> sẽ tự động tổng hợp và khuyên bảo cho quý bạn.
+                        </p>
+                        <div className="flex flex-wrap gap-2 pt-1">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setIsPhoneChatModalExpanded(false);
+                              scrollToHuongAnForChat();
+                            }}
+                            className="px-4 py-2 rounded-xl text-xs font-serif font-bold text-[#FFF8E7] border border-[#D4AF37] cursor-pointer"
+                            style={{
+                              background: "linear-gradient(135deg, #8B1E22 0%, #5A1215 100%)",
+                            }}
+                          >
+                            印 Đi Tới Hương Án Khởi Niệm · Câu Hỏi Chiêm Bốc ↑
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        {/* Thẻ câu hỏi Hương Án Khởi Niệm trong Modal */}
+                        <div className="rounded-2xl p-4 border border-emerald-500/45 bg-[#151F16] space-y-2">
+                          <div className="flex items-center justify-between text-xs font-serif font-bold text-emerald-300 border-b border-emerald-500/25 pb-1.5">
+                            <span>印 Câu Hỏi Tại Hương Án Khởi Niệm</span>
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-500/40">
+                              ✓ Tiểu Long dựa vào đây khuyên bảo
+                            </span>
+                          </div>
+                          <div className="text-xs text-[#F3E5AB]">
+                            “{userIntentQuestion.trim()}”
+                          </div>
+                          {phoneChatMessages.length === 0 && (
+                            <button
+                              type="button"
+                              disabled={isPhoneChatLoading}
+                              onClick={() =>
+                                handleSendPhoneChatMessage(
+                                  `Xin Tiểu Long Cửu Nhị dựa vào câu hỏi tại Hương Án Khởi Niệm để khuyên bảo chi tiết cho con về trận pháp đang trải?`
+                                )
+                              }
+                              className="px-4 py-2 rounded-xl text-xs font-serif font-bold text-[#FFF8E7] border border-[#D4AF37] cursor-pointer"
+                              style={{
+                                background: "linear-gradient(135deg, #8B1E22 0%, #5A1215 100%)",
+                              }}
+                            >
+                              🐉 Xin Tiểu Long Cửu Nhị Khuyên Bảo Ngay
+                            </button>
+                          )}
+                        </div>
+
+                        {phoneChatMessages.map((msg) =>
+                          msg.role === "user" ? (
+                            <div key={msg.id} className="flex flex-col items-end">
+                              <div className="max-w-[82%] rounded-2xl rounded-tr-xs px-4 py-2.5 bg-gradient-to-br from-[#8B1E22] to-[#591114] border border-[#D4AF37]/50 text-[#FFF8E7] text-xs sm:text-sm leading-relaxed">
+                                {msg.content}
+                              </div>
+                              <span className="text-[10px] text-[#A89270] mt-1 pr-1">Quý bạn · {msg.timestamp}</span>
+                            </div>
+                          ) : (
+                            <div key={msg.id} className="flex flex-col items-start">
+                              <div className="w-full rounded-2xl rounded-tl-xs p-4 bg-[#1B140D] border border-[#D4AF37]/45 text-[#FFF8E7] space-y-2">
+                                <div className="flex items-center justify-between border-b border-[#D4AF37]/20 pb-1.5">
+                                  <div className="flex items-center gap-2">
+                                    <span>🐉</span>
+                                    <span className="text-xs font-serif font-bold text-[#E5C158]">Tiểu Long Cửu Nhị</span>
+                                    {msg.poseBadge && (
+                                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#2A1F14] text-[#D8C292] border border-[#D4AF37]/30">
+                                        {msg.poseBadge}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleCopyPhoneChatMsg(msg.id, msg.content)}
+                                    className="text-[10px] font-semibold px-2.5 py-0.5 rounded-md bg-[#2A2016] hover:bg-[#3A2C1E] text-[#F3E5AB] border border-[#D4AF37]/35 cursor-pointer"
+                                  >
+                                    {copiedChatMsgId === msg.id ? "✓ Đã sao chép" : "Sao chép"}
+                                  </button>
+                                </div>
+                                <div className="text-xs sm:text-sm">{renderPhoneChatMarkdown(msg.content)}</div>
+                              </div>
+                              <span className="text-[10px] text-[#A89270] mt-1 pl-1">Trí Tuệ Cửu Nhị · {msg.timestamp}</span>
+                            </div>
+                          )
+                        )}
+
+                        {isPhoneChatLoading && (
+                          <div className="rounded-2xl p-3.5 bg-[#1B140D] border border-[#D4AF37]/45 text-[#F3E5AB] flex items-center gap-2.5 animate-pulse">
+                            <span>🔍</span>
+                            <span className="text-xs sm:text-sm font-serif italic">
+                              Tiểu Long Cửu Nhị đang đối chiếu câu trả lời tại Hương Án Khởi Niệm với Sách Thuyết Minh, Bách Khoa 64 Quẻ & Blog Dịch Học để khuyên bảo...
+                            </span>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+
+                  {/* Chân Modal: Câu hỏi gợi ý & Ô nhập */}
+                  <div className="p-3.5 bg-[#1A130D] border-t border-[#D4AF37]/30 space-y-2 shrink-0">
+                    <div className="flex flex-wrap gap-1.5">
+                      {phoneQuickQuestions.map((qText, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          disabled={isPhoneChatLoading}
+                          onClick={() => {
+                            if (!isHuongAnReadyForChat) {
+                              setIsPhoneChatModalExpanded(false);
+                              scrollToHuongAnForChat();
+                              return;
+                            }
+                            handleSendPhoneChatMessage(qText.replace(/^[✨📕⏳💼❤️📚📰]\s*/, ""));
+                          }}
+                          className="px-3 py-1 rounded-full text-[11px] font-medium bg-[#261C12] hover:bg-[#342619] text-[#F3E5AB] border border-[#D4AF37]/40 transition cursor-pointer disabled:opacity-50"
+                        >
+                          {qText}
+                        </button>
+                      ))}
+                    </div>
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        if (!isHuongAnReadyForChat) {
+                          setIsPhoneChatModalExpanded(false);
+                          scrollToHuongAnForChat();
+                          return;
+                        }
+                        handleSendPhoneChatMessage();
+                      }}
+                      className="flex items-center gap-2"
+                    >
+                      <input
+                        type="text"
+                        value={phoneChatInput}
+                        onChange={(e) => setPhoneChatInput(e.target.value)}
+                        readOnly={!isHuongAnReadyForChat}
+                        disabled={isPhoneChatLoading}
+                        placeholder={
+                          isHuongAnReadyForChat
+                            ? "Nhập câu hỏi để Tiểu Long dựa vào câu trả lời Hương Án khuyên bảo..."
+                            : "🔒 Cần có câu trả lời tại Hương Án Khởi Niệm trước khi mở chat..."
+                        }
+                        className="flex-1 h-10 px-4 rounded-full text-xs sm:text-sm bg-[#110C08] text-[#FFF8E7] placeholder-[#9E8B6E] border border-[#D4AF37]/55 focus:outline-none focus:border-[#F3E5AB]"
+                      />
+                      <button
+                        type="submit"
+                        disabled={isPhoneChatLoading}
+                        className="h-10 px-5 rounded-full text-xs sm:text-sm font-serif font-bold text-[#1C1610] border border-[#FFF8E7] cursor-pointer transition hover:brightness-105 disabled:opacity-50"
+                        style={{
+                          background: "linear-gradient(135deg, #FFF3B0 0%, #E5C158 50%, #C4963E 100%)",
+                        }}
+                      >
+                        {isHuongAnReadyForChat ? "Gửi Câu Hỏi" : "Đi Tới Hương Án"}
+                      </button>
+                    </form>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* MODAL XEM CHI TIẾT KẾT QUẢ LUẬN GIẢI TRỰC TIẾP TỪ TRANG CHỦ */}
         {isDirectResultModalOpen && (

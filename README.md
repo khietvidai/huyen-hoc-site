@@ -12,7 +12,7 @@
 1. **Bốc Bài Kinh Dịch & Trận Pháp Đa Chiều**:
    - Đầy đủ các trận pháp: Độc Quẻ (1 lá), Song Quẻ Bản-Biến / Đối Chiếu A-B (2 lá), Tiến Trình Thời Gian / So Sánh A-B-C (3 lá), Tứ Thời Xuân-Hạ-Thu-Đông (4 lá), Thất Tinh (7 lá), Cửu Cung (9 lá), Thập Tinh (10 lá), Thập Nhị Cung Tử Vi Kinh Dịch (12 lá).
    - Hiệu ứng xào bài 3D, trải bài vòng cung 360°, rút cỏ thi (49 cọng Đại Diễn) và gieo xu âm dương trực quan.
-2. **Sách Thuyết Minh 64 Quẻ & Dịch Tiên Sinh**:
+2. **Sách Thuyết Minh 64 Quẻ & Tiểu Long Cửu Nhị**:
    - Tra cứu toàn văn 64 quẻ Kinh Dịch kèm Thoán từ, Đại tượng, Hào từ, Thơ tượng và lời bàn vận thế - tình cảm - sự nghiệp.
 3. **Lục Thập Hoa Giáp & Tứ Trụ Bát Tự**:
    - Lập lá số Bát Tự, phân tích Kết Cấu Thiên, Hành Vi Thiên, Thực Thi Thiên, Giá Cấu Thiên và Lục Nhâm Hóa Dịch.

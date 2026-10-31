@@ -82,7 +82,7 @@ export const IChingChatbot: React.FC<IChingChatbotProps> = ({
       spreadDesc = `${hexName}`;
     }
 
-    return `Kính chào hiền hữu. Ta là **Dịch Tiên Sinh AI**. 
+    return `Kính chào quý bạn! Ta là **Tiểu Long Cửu Nhị**. 
 
 Ta cùng bạn luận giải trận pháp quẻ bài **hoàn toàn theo nghĩa ý trong cuốn Sách Thuyết Minh** đi kèm bộ bài, không dùng kiến thức kinh điển hay bói toán truyền thống.
 
@@ -228,7 +228,7 @@ Bạn muốn thỉnh giáo sâu hơn về dòng chữ đỏ trên lá bài, tư�
         };
         setMessages((prev) => [...prev, botMessage]);
       } else {
-        throw new Error(data.error || "Không nhận được phản hồi từ Dịch Tiên Sinh.");
+        throw new Error(data.error || "Không nhận được phản hồi từ Tiểu Long Cửu Nhị.");
       }
     } catch (err: any) {
       console.warn("Chat API unavailable, using local Sách Thuyết Minh engine:", err);
@@ -296,10 +296,10 @@ Bạn muốn thỉnh giáo sâu hơn về dòng chữ đỏ trên lá bài, tư�
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-sm font-serif font-bold text-[#F5EAD4] tracking-wide">
-                Dịch Tiên Sinh AI
+                Tiểu Long Cửu Nhị
               </h3>
               <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-[#2B2115] text-[#C9A55A] border border-[#483721]">
-                Gemini 3.8
+                Cửu Nhị Dịch Học
               </span>
             </div>
             <p className="text-[11px] text-[#A69780]">
@@ -394,7 +394,7 @@ Bạn muốn thỉnh giáo sâu hơn về dòng chữ đỏ trên lá bài, tư�
             <div className="bg-[#1C1712] border border-[#3E3120] rounded-2xl rounded-tl-sm px-4 py-3 text-xs text-[#C8B89E] flex items-center gap-2.5 shadow">
               <Loader2 className="w-3.5 h-3.5 animate-spin text-[#C9A55A]" />
               <span className="font-serif italic animate-pulse">
-                Dịch Tiên Sinh đang chiêm nghiệm tượng quẻ và hào từ...
+                Tiểu Long Cửu Nhị đang chiêm nghiệm tượng quẻ và hào từ...
               </span>
             </div>
           </div>
@@ -458,7 +458,7 @@ Bạn muốn thỉnh giáo sâu hơn về dòng chữ đỏ trên lá bài, tư�
               onChange={(e) => setInputText(e.target.value)}
               onKeyDown={handleKeyDown}
               disabled={isLoading}
-              placeholder="Thỉnh giáo Dịch Tiên Sinh về từng lá bài, sự nghiệp, tài lộc, thời cơ, cách hóa giải... (Nhấn Enter để gửi)"
+              placeholder="Thỉnh giáo Tiểu Long Cửu Nhị về từng lá bài, sự nghiệp, tài lộc, thời cơ, cách hóa giải... (Nhấn Enter để gửi)"
               className="w-full bg-[#110E0B] border border-[#3A2E1E] focus:border-[#C9A55A] rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-[#F0E4D2] placeholder-[#7E6F5C] outline-none resize-none transition-colors"
             />
           </div>

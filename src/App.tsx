@@ -25,6 +25,9 @@ import {
   ScrollText,
   Crown,
   Sparkles,
+  Loader2,
+  MessageCircle,
+  X,
 } from "lucide-react";
 import { CHI_LIST, CAN_LIST, getCurrentBaziPillars, PillarItem } from "./data/baziConstants";
 import { Hexagram, DivinationRecord, DoubleCardMode, ThreeCardMode, SpreadType, CustomCardPosition } from "./types";
@@ -40,6 +43,7 @@ import { MaiHoaDivination } from "./components/MaiHoaDivination";
 import { KyMonDivination } from "./components/KyMonDivination";
 import { ThaiAtDivination } from "./components/ThaiAtDivination";
 import { HexagramDetail } from "./components/HexagramDetail";
+import { IChingChatbot } from "./components/IChingChatbot";
 import { HistoryView } from "./components/HistoryView";
 import { HexagramLibrary } from "./components/HexagramLibrary";
 import { DeckManager } from "./components/DeckManager";
@@ -269,6 +273,7 @@ export default function App() {
   // Input states
   const [question, setQuestion] = useState("");
   const [category, setCategory] = useState(CATEGORIES[0]);
+  const [isRefiningQuestion, setIsRefiningQuestion] = useState(false);
 
   // Active reading states
   const [activeQuestion, setActiveQuestion] = useState("");
@@ -315,6 +320,7 @@ export default function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isAdminModalOpen, setIsAdminModalOpen] = useState<boolean>(false);
   const [isDonateModalOpen, setIsDonateModalOpen] = useState<boolean>(false);
+  const [isCuuNhiChatOpen, setIsCuuNhiChatOpen] = useState<boolean>(false);
   const [authModalMode, setAuthModalMode] = useState<"login" | "register" | "upgrade">("login");
 
   useEffect(() => {
@@ -1115,6 +1121,32 @@ export default function App() {
     setCurrentTab("divination");
   };
 
+  const handleAiRefineQuestion = async () => {
+    setIsRefiningQuestion(true);
+    try {
+      const res = await fetch("/api/iching/ai-refine-question", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: question || "Xem thời vận tổng quan", category }),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        const refined = json.data?.refinedQuestion || json.data?.originalQuestion;
+        if (refined) {
+          setQuestion(refined);
+          showToast(`✨ Tiểu Long Cửu Nhị đã tinh chỉnh câu hỏi: "${refined}"`);
+        }
+        if (json.data?.recommendedSpread?.drawMode) {
+          setSuggestedDrawMode(json.data.recommendedSpread.drawMode);
+        }
+      }
+    } catch {
+      showToast("Lỗi khi kết nối AI tinh chỉnh câu hỏi.");
+    } finally {
+      setIsRefiningQuestion(false);
+    }
+  };
+
   if (currentTab === "yilore") {
     return (
       <>
@@ -1549,9 +1581,26 @@ export default function App() {
 
               {/* Quick suggestions */}
               <div className="space-y-2.5 pt-1">
-                <span className="text-[11px] font-sans font-bold uppercase tracking-[0.18em] text-[#6E5D47] flex items-center gap-1.5">
-                  <HelpCircle className="w-3.5 h-3.5 text-[#9E2A2B]" /> Gợi ý câu hỏi chuẩn cổ pháp
-                </span>
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <span className="text-[11px] font-sans font-bold uppercase tracking-[0.18em] text-[#6E5D47] flex items-center gap-1.5">
+                    <HelpCircle className="w-3.5 h-3.5 text-[#9E2A2B]" /> Gợi ý câu hỏi chuẩn cổ pháp
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={handleAiRefineQuestion}
+                    disabled={isRefiningQuestion}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-600/15 via-amber-700/25 to-amber-600/15 hover:from-amber-600/30 hover:to-amber-700/40 border border-amber-600/50 text-[#7A5D28] hover:text-[#523B15] font-serif font-bold text-[11px] transition-all cursor-pointer shadow-xs active:scale-95 disabled:opacity-50"
+                    title="Dùng Trí Tuệ Tiểu Long Cửu Nhị phân tích câu hỏi và gợi ý trận pháp chuẩn Albert"
+                  >
+                    {isRefiningQuestion ? (
+                      <Loader2 className="w-3 h-3 animate-spin text-amber-700" />
+                    ) : (
+                      <Sparkles className="w-3 h-3 text-amber-700 animate-pulse" />
+                    )}
+                    <span>{isRefiningQuestion ? "Đang tinh chỉnh câu hỏi..." : "✨ Tinh chỉnh câu hỏi cùng Tiểu Long Cửu Nhị"}</span>
+                  </button>
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {QUESTION_SUGGESTIONS.map((sug, i) => (
                     <button
@@ -2887,6 +2936,62 @@ export default function App() {
         isOpen={isDonateModalOpen}
         onClose={() => setIsDonateModalOpen(false)}
       />
+
+      {/* Nút Nổi & Hộp Thoại Đàm Đạo Trực Tiếp Cùng Tiểu Long Cửu Nhị (Hiện ở mọi trang) */}
+      <div className="fixed bottom-5 right-5 z-[95] flex flex-col items-end">
+        {isCuuNhiChatOpen && (
+          <div className="mb-3 w-[94vw] sm:w-[440px] max-h-[82vh] bg-[#15120E] border-2 border-[#C9A55A] rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.85)] overflow-hidden flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-200">
+            <div className="bg-gradient-to-r from-[#3A1210] via-[#26120D] to-[#3A1210] border-b border-[#C9A55A]/40 px-4 py-2.5 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-base">🐉</span>
+                <span className="font-serif font-bold text-xs sm:text-sm text-[#F5EAD4] tracking-wide">
+                  Đàm Đạo Cùng Tiểu Long Cửu Nhị
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsCuuNhiChatOpen(false)}
+                className="text-[#C9A55A] hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
+                title="Thu gọn hộp thoại"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto">
+              <IChingChatbot
+                question={activeQuestion || question || "Đàm đạo thời vận & hỏi đáp Sách Thuyết Minh 64 Quẻ"}
+                category={activeCategory || category || "Tổng quát"}
+                primaryHexagram={primaryHexagram || HEXAGRAMS[0]}
+                changingLines={changingLines}
+                transformedHexagram={transformedHexagram}
+                drawnCards={activeDrawnCards}
+                spreadType={activeSpreadType}
+                doubleMode={activeDoubleMode}
+                choiceALabel={activeChoiceALabel}
+                choiceBLabel={activeChoiceBLabel}
+                threeMode={activeThreeMode}
+                choiceCLabel={activeChoiceCLabel}
+                isCard2Reversed={activeIsCard2Reversed}
+                customPositions={activeCustomPositions}
+                initialInterpretation={activeAiText}
+              />
+            </div>
+          </div>
+        )}
+
+        <button
+          type="button"
+          onClick={() => setIsCuuNhiChatOpen((prev) => !prev)}
+          className="group flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-[#8B1A1A] via-[#A62424] to-[#8B1A1A] hover:from-[#A62424] hover:to-[#C23030] text-[#FFFDF8] border-2 border-[#E2C275] shadow-[0_8px_30px_rgba(139,26,26,0.65)] hover:shadow-[0_10px_35px_rgba(226,194,117,0.45)] transition-all cursor-pointer active:scale-95"
+          title="Mở hộp thoại trò chuyện trực tiếp cùng Tiểu Long Cửu Nhị"
+        >
+          <span className="text-lg group-hover:scale-110 transition-transform">🐉</span>
+          <span className="font-serif font-bold text-xs sm:text-sm tracking-wide text-[#F9E7B2]">
+            {isCuuNhiChatOpen ? "Đóng Chat Tiểu Long" : "Chat cùng Tiểu Long Cửu Nhị"}
+          </span>
+          <MessageCircle className="w-4 h-4 text-[#E2C275] animate-pulse" />
+        </button>
+      </div>
     </div>
   );
 }

@@ -32,6 +32,9 @@ import {
   BarChart3,
   Scroll,
   Dices,
+  Volume2,
+  VolumeX,
+  Bot,
 } from "lucide-react";
 import { captureElementToPng } from "../utils/captureHelper";
 import { Hexagram, DoubleCardMode, ThreeCardMode, SpreadType, CustomCardPosition } from "../types";
@@ -60,6 +63,8 @@ import { ChangingLinesGuideView } from "./ChangingLinesGuideView";
 import { TamTaiDiceRollSection, EarthlyBranchDiceItem } from "./TamTaiDiceRollSection";
 import { KhongMinhKinhDichView } from "./KhongMinhKinhDichView";
 import { NguCheTinhTuySection } from "./NguCheTinhTuySection";
+import { IChingChatbot } from "./IChingChatbot";
+import Markdown from "react-markdown";
 
 interface HexagramDetailProps {
   question: string;
@@ -162,7 +167,77 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
           cardsDrawSummary.toLowerCase().includes("lục hào"))
     );
 
-  const [detailActiveTab, setDetailActiveTab] = useState<"canonical" | "elements" | "xiangzhuan" | "khongminh">("canonical");
+  const [detailActiveTab, setDetailActiveTab] = useState<"canonical" | "ai" | "elements" | "xiangzhuan" | "khongminh">("canonical");
+  const [aiInterpretationText, setAiInterpretationText] = useState<string>(initialAiText || "");
+  const [isAiLoading, setIsAiLoading] = useState<boolean>(false);
+  const [aiProvider, setAiProvider] = useState<string>("deepseek");
+  const [copiedAiInterp, setCopiedAiInterp] = useState<boolean>(false);
+  const [isSpeakingAi, setIsSpeakingAi] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (initialAiText && !aiInterpretationText) {
+      setAiInterpretationText(initialAiText);
+    }
+  }, [initialAiText]);
+
+  const handleRequestAiInterpretation = async () => {
+    setIsAiLoading(true);
+    try {
+      const res = await fetch("/api/iching/ai-interpret", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          question,
+          category,
+          hexagram: primaryHexagram,
+          changingLines,
+          transformedHexagram,
+          drawnCards,
+          spreadType,
+          doubleMode,
+          choiceALabel,
+          choiceBLabel,
+          threeMode,
+          choiceCLabel,
+          isCard2Reversed,
+          customPositions,
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const text = data.interpretation || "";
+        setAiInterpretationText(text);
+        if (data.provider) setAiProvider(data.provider);
+        onSaveToHistory(userNote, text);
+      }
+    } catch (err) {
+      console.error("Lỗi gọi AI luận giải:", err);
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
+
+  const handleToggleSpeakAi = () => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    if (isSpeakingAi) {
+      window.speechSynthesis.cancel();
+      setIsSpeakingAi(false);
+      return;
+    }
+    const cleanText = (aiInterpretationText || "")
+      .replace(/[#*`_~>\[\]()]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (!cleanText) return;
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(cleanText);
+    utt.lang = "vi-VN";
+    utt.rate = 0.95;
+    utt.onend = () => setIsSpeakingAi(false);
+    utt.onerror = () => setIsSpeakingAi(false);
+    setIsSpeakingAi(true);
+    window.speechSynthesis.speak(utt);
+  };
 
   const [selectedCanonicalLine, setSelectedCanonicalLine] = useState<number | "all">(() => {
     if ((primaryHexagram.number === 1 || primaryHexagram.number === 2) && changingLines.length === 6) {
@@ -1087,7 +1162,7 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                 </span>
               </h4>
               <p className="text-xs text-ivory-300">
-                Mỗi lá bài được gán một mục đích thỉnh vấn cụ thể do bạn thiết lập. Bấm vào từng lá bài trong trận pháp để tra cứu chi tiết và nghe Dịch Tiên Sinh luận giải.
+                Mỗi lá bài được gán một mục đích thỉnh vấn cụ thể do bạn thiết lập. Bấm vào từng lá bài trong trận pháp để tra cứu chi tiết và nghe Tiểu Long Cửu Nhị luận giải.
               </p>
             </div>
           </div>
@@ -2526,6 +2601,23 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
 
                     <button
                       type="button"
+                      onClick={() => setDetailActiveTab("ai")}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-all cursor-pointer ${
+                        detailActiveTab === "ai"
+                          ? "bg-amber-500/25 text-amber-200 border border-amber-400 font-bold shadow-[0_0_12px_rgba(245,158,11,0.3)]"
+                          : "text-amber-400 bg-lacquer-800/90 border border-amber-900/80 hover:text-amber-200 hover:border-amber-500/60"
+                      }`}
+                      title="Luận giải toàn diện trận pháp cùng Tiểu Long Cửu Nhị"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                      <span>Luận Giải Tiểu Long Cửu Nhị</span>
+                      <span className="px-1.5 py-0.2 rounded text-[9px] font-mono bg-emerald-950 text-emerald-300 border border-emerald-700/60 font-semibold">
+                        Cửu Nhị
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
                       onClick={() => setDetailActiveTab("elements")}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm transition-all cursor-pointer ${
                         detailActiveTab === "elements"
@@ -2606,6 +2698,168 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                     </button>
                   </div>
                 )}
+
+                {/* TAB AI: LUẬN GIẢI CHUYÊN SÂU BẰNG DEEPSEEK AI */}
+                {detailActiveTab === "ai" && (
+                  <div className="space-y-6">
+                    {/* Header Banner */}
+                    <div className="bg-gradient-to-r from-[#1E1610] via-[#2A1D13] to-[#1E1610] border border-amber-500/40 rounded-sm p-4 sm:p-5 relative overflow-hidden shadow-lg">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <span className="w-2.5 h-2.5 rotate-45 bg-amber-400 animate-pulse" />
+                            <h4 className="font-serif font-bold text-amber-200 text-base sm:text-lg flex items-center gap-2 flex-wrap">
+                              <span>Tiểu Long Cửu Nhị · Luận Giải Sâu Sắc Theo Sách Thuyết Minh</span>
+                              <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-950 text-emerald-300 border border-emerald-700/60 font-semibold">
+                                Cửu Nhị Dịch Học
+                              </span>
+                            </h4>
+                          </div>
+                          <p className="text-xs text-ivory-300 max-w-2xl">
+                            Quán triệt 100% nghĩa ý Sách Thuyết Minh đi kèm bộ bài: Dòng chữ đỏ, Thơ tượng, Đại tượng, Vận thế và Tình cảm. Bỏ hoàn toàn cát hung mê tín và định kiến cố định.
+                          </p>
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          {aiInterpretationText && (
+                            <>
+                              <button
+                                type="button"
+                                onClick={handleToggleSpeakAi}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs font-serif font-bold border transition-all cursor-pointer ${
+                                  isSpeakingAi
+                                    ? "bg-amber-600 text-white border-amber-400"
+                                    : "bg-lacquer-800 text-amber-300 border-amber-800 hover:border-amber-500"
+                                }`}
+                                title={isSpeakingAi ? "Dừng đọc" : "Đọc bài luận giải AI bằng giọng nói"}
+                              >
+                                {isSpeakingAi ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+                                <span>{isSpeakingAi ? "Dừng đọc" : "Đọc bài luận"}</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (aiInterpretationText) {
+                                    navigator.clipboard.writeText(aiInterpretationText);
+                                    setCopiedAiInterp(true);
+                                    setTimeout(() => setCopiedAiInterp(false), 2000);
+                                  }
+                                }}
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs font-serif font-bold bg-lacquer-800 text-gold-300 border border-gold-800 hover:border-gold-500 transition-all cursor-pointer"
+                                title="Sao chép toàn bộ bài luận giải AI"
+                              >
+                                {copiedAiInterp ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                                <span>{copiedAiInterp ? "Đã chép" : "Sao chép"}</span>
+                              </button>
+                            </>
+                          )}
+
+                          <button
+                            type="button"
+                            onClick={handleRequestAiInterpretation}
+                            disabled={isAiLoading}
+                            className="flex items-center gap-1.5 px-4 py-2 rounded-sm text-xs font-serif font-bold bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-lacquer-950 border border-amber-400 transition-all cursor-pointer shadow-md active:scale-95 disabled:opacity-50"
+                          >
+                            {isAiLoading ? (
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            ) : (
+                              <Sparkles className="w-3.5 h-3.5 text-lacquer-950 animate-pulse" />
+                            )}
+                            <span>{isAiLoading ? "Đang luận giải..." : aiInterpretationText ? "Luận giải lại" : "Khai Mở Luận Giải AI"}</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* AI Loading State */}
+                    {isAiLoading && (
+                      <div className="bg-[#1C150F] border border-amber-500/30 rounded-sm p-8 text-center space-y-4">
+                        <div className="w-12 h-12 rounded-full border-2 border-amber-400 border-t-transparent animate-spin mx-auto" />
+                        <div className="space-y-1">
+                          <h4 className="font-serif font-bold text-amber-300 text-sm sm:text-base">
+                            Tiểu Long Cửu Nhị đang tĩnh tâm chiêm nghiệm trận pháp...
+                          </h4>
+                          <p className="text-xs text-ivory-400 max-w-md mx-auto">
+                            Đang đối chiếu Dòng Chữ Đỏ, Thơ Tượng, Vận Thế và Tình Cảm theo đúng cuốn Sách Thuyết Minh cho từng lá bài trong quẻ của bạn.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* AI Interpretation Result */}
+                    {!isAiLoading && aiInterpretationText && (
+                      <div className="bg-[#18130E] border border-gold-800/80 rounded-sm p-5 sm:p-6 space-y-4 shadow-inner">
+                        <div className="flex items-center justify-between border-b border-gold-800/60 pb-3">
+                          <span className="text-xs font-serif font-bold text-amber-400 flex items-center gap-2">
+                            <Bot className="w-4 h-4 text-emerald-400" />
+                            <span>BÀI LUẬN GIẢI TOÀN TRẬN PHÁP (TIỂU LONG CỬU NHỊ)</span>
+                          </span>
+                          <span className="text-[10px] font-mono text-ivory-500">
+                            Thần Dịch Diệu Toán · Sách Thuyết Minh
+                          </span>
+                        </div>
+
+                        <div className="prose prose-invert prose-amber max-w-none text-xs sm:text-sm text-ivory-200 leading-relaxed font-serif">
+                          <Markdown>{aiInterpretationText}</Markdown>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* If no AI text yet, show prompt banner */}
+                    {!isAiLoading && !aiInterpretationText && (
+                      <div className="bg-[#19130D] border border-dashed border-amber-800/60 rounded-sm p-8 text-center space-y-3">
+                        <Sparkles className="w-8 h-8 text-amber-400 mx-auto animate-bounce" />
+                        <h4 className="font-serif font-bold text-amber-200 text-base">
+                          Chưa có bài luận giải AI cho trải bài này
+                        </h4>
+                        <p className="text-xs text-ivory-400 max-w-md mx-auto">
+                          Nhấn nút bên dưới để Tiểu Long Cửu Nhị tổng hợp ý nghĩa toàn trận pháp, liên kết các lá bài và đưa ra lời khuyên hành sự đắc sách.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={handleRequestAiInterpretation}
+                          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-sm bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-lacquer-950 font-serif font-bold text-xs border border-amber-400 shadow-lg cursor-pointer active:scale-95 transition-all"
+                        >
+                          <Sparkles className="w-4 h-4" />
+                          <span>Khai Mở Luận Giải Cùng Tiểu Long Cửu Nhị</span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Interactive Multi-turn Chatbot Section — Luôn hiển thị để người dùng trò chuyện ngay cùng Tiểu Long Cửu Nhị */}
+                <div id="cuu-nhi-chat-section" className="space-y-3 pt-4 border-t border-gold-800/60">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <div className="flex items-center gap-2">
+                      <Bot className="w-4 h-4 text-amber-400" />
+                      <h4 className="font-serif font-bold text-amber-200 text-sm uppercase tracking-wide">
+                        🐉 Đàm Đạo & Vấn Đáp Trực Tiếp Cùng Tiểu Long Cửu Nhị
+                      </h4>
+                    </div>
+                    <span className="text-[11px] font-serif text-amber-300/80">
+                      Hỏi đáp trực tiếp theo Sách Thuyết Minh 64 Quẻ
+                    </span>
+                  </div>
+                  <IChingChatbot
+                    question={question}
+                    category={category}
+                    primaryHexagram={primaryHexagram}
+                    changingLines={changingLines}
+                    transformedHexagram={transformedHexagram}
+                    drawnCards={drawnCards}
+                    spreadType={spreadType}
+                    doubleMode={doubleMode}
+                    choiceALabel={choiceALabel}
+                    choiceBLabel={choiceBLabel}
+                    threeMode={threeMode}
+                    choiceCLabel={choiceCLabel}
+                    isCard2Reversed={isCard2Reversed}
+                    customPositions={customPositions}
+                    initialInterpretation={aiInterpretationText}
+                  />
+                </div>
 
                 {/* TAB 1: LUẬN GIẢI QUẺ & 6 HÀO KINH ĐIỂN */}
                 {detailActiveTab === "canonical" && (
