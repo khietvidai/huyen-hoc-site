@@ -5957,7 +5957,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       const isLan = isPrivateLanIp(hostname);
 
       if (isLocalhost || isLan) {
-        // Đang chạy nội bộ (localhost hoặc LAN Wi-Fi): ưu tiên đường dẫn tương đối nếu cổng 5168/5173/8000
+        // Đang chạy nội bộ (localhost hoặc LAN Wi-Fi): ưu tiên đường dẫn tương đối
         candidates.push(cleanEndpoint);
         if (isLan && port !== "8000") {
           candidates.push(`${protocol}//${hostname}:8000${cleanEndpoint}`);
@@ -5966,14 +5966,11 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         candidates.push(`http://127.0.0.1:8000${cleanEndpoint}`);
       } else {
         // Đang mở trên tên miền công khai (ví dụ ichingtarot.com):
-        // Gọi thẳng xuống máy chủ Engine Luận Trực Tiếp cục bộ (localhost:8000) trước để tránh SPA fallback trả về HTML hoặc treo port 8000 trên tên miền
-        candidates.push(`http://localhost:8000${cleanEndpoint}`);
-        candidates.push(`http://127.0.0.1:8000${cleanEndpoint}`);
+        // Chỉ gọi đường dẫn tương đối trên cùng tên miền để tránh lỗi CORS / Private Network Access
         candidates.push(cleanEndpoint);
       }
     } else {
       candidates.push(cleanEndpoint);
-      candidates.push(`http://localhost:8000${cleanEndpoint}`);
     }
 
     const uniqueCandidates = Array.from(new Set(candidates));
@@ -6013,7 +6010,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     if (lastResponse && !(lastResponse.headers.get("content-type") || "").toLowerCase().includes("text/html")) {
       return lastResponse;
     }
-    throw lastError || new Error(`Không thể kết nối đến máy chủ Luận Trực Tiếp & Tạo Video (port 8000).`);
+    throw lastError || new Error(`Không thể kết nối dịch vụ Luận Giải & Tạo Video Thủy Mặc.`);
   }, [isPrivateLanIp]);
 
   // Tự động kiểm tra trạng thái chạy ngầm khi vừa mở hoặc tải lại trang

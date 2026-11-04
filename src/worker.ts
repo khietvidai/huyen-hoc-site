@@ -4,11 +4,13 @@ import {
   synthesizeEdgeNeuralChunk,
   synthesizeVoxCpmAnchored,
 } from "./utils/edgeNeuralTts";
+import { BOOK_HEXAGRAMS } from "./data/bookHexagrams";
 
 export interface Env {
   ASSETS: {
     fetch: (request: Request) => Promise<Response>;
   };
+  DEEPSEEK_API_KEY?: string;
 }
 
 function cleanTextForVietnameseTts(rawText: string): string {
@@ -56,12 +58,162 @@ const CORS_HEADERS: Record<string, string> = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
+const TECH_PROBE_REGEX =
+  /\b(deepseek|openai|chatgpt|gpt-?4|gpt-?3|claude|anthropic|gemini|google\s*ai|llama|llm|large\s*language\s*model|mô\s*hình\s*ngôn\s*ngữ|mô\s*hình\s*gì|model\s*gì|api\s*key|system\s*prompt|prompt\s*injection|ai\s*lập\s*trình|dùng\s*api\s*nào|fastapi|vite|express|node\.?js|python)\b/i;
+
+const CONFIDENTIAL_IDENTITY_REPLY =
+  "Kính thưa quý bạn, tại Cửu Nhị Dịch Quán, ta là **Tiểu Long Cửu Nhị** — người cùng bạn soi chiếu lẽ biến dịch của đất trời dựa trên tinh hoa Chu Dịch và cuốn **Sách Thuyết Minh 64 Quẻ Đi Kèm Bộ Bài**. Nơi đây chỉ đàm đạo về Đạo Tùy Thời, Nhân sinh, Thời thế và Hướng ứng xử trung chính; không bàn về những sự vụ kỹ thuật thế tục bên ngoài. Mời bạn trở lại với tâm niệm của trận pháp quẻ bài.";
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
     if (request.method === "OPTIONS" && url.pathname.startsWith("/api/")) {
       return new Response(null, { status: 204, headers: CORS_HEADERS });
+    }
+
+    if (url.pathname === "/api/direct_home/status") {
+      return new Response(JSON.stringify({ status: "idle" }), {
+        status: 200,
+        headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+      });
+    }
+
+    if (url.pathname === "/api/auth/sync") {
+      return new Response(JSON.stringify({ ok: true, users: [] }), {
+        status: 200,
+        headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+      });
+    }
+
+    if (url.pathname === "/api/dragon_agent/chat" && request.method === "POST") {
+      try {
+        const body: any = await request.json().catch(() => ({}));
+        const userMessage = String(body?.user_message || "").trim();
+        const mainQuestion = String(body?.main_question || "").trim();
+        const spreadTitle = String(body?.spread_title || "Trận Pháp Chu Dịch").trim();
+        const rawCards: any[] = Array.isArray(body?.cards) ? body.cards : [];
+
+        if (TECH_PROBE_REGEX.test(userMessage) || TECH_PROBE_REGEX.test(mainQuestion)) {
+          return new Response(
+            JSON.stringify({
+              ok: true,
+              reply: CONFIDENTIAL_IDENTITY_REPLY,
+              pose_badge: "🐉 Bảo Mật Dịch Quán",
+              hexagram_focus: spreadTitle,
+            }),
+            {
+              status: 200,
+              headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+            }
+          );
+        }
+
+        const cardLines = rawCards.map((c, idx) => {
+          const hNum = Number(c?.hexNumber) || 1;
+          const b = BOOK_HEXAGRAMS.find((x) => x.number === hNum) || BOOK_HEXAGRAMS[0];
+          const posLabel = String(c?.positionLabel || `Lá thứ ${idx + 1}`).trim();
+          const yaoNum = Number(c?.yaoNumber) || 0;
+          return `- **Lá ${idx + 1} [${posLabel}] — Quẻ #${b.number} ${b.name}${yaoNum ? ` (Hào ${yaoNum})` : ""}**: *${b.redHeadline}* — ${b.bigImage} Vận thế: ${b.destiny}`;
+        });
+
+        const firstNum = Number(rawCards[0]?.hexNumber) || 1;
+        const lastNum = Number(rawCards[rawCards.length - 1]?.hexNumber) || firstNum;
+        const bookFirst = BOOK_HEXAGRAMS.find((x) => x.number === firstNum) || BOOK_HEXAGRAMS[0];
+        const bookLast = BOOK_HEXAGRAMS.find((x) => x.number === lastNum) || bookFirst;
+
+        const reply = [
+          `Kính chào quý bạn! **Tiểu Long Cửu Nhị** đã cẩn trọng soi chiếu tâm niệm **"${mainQuestion || userMessage || "Vấn sự thời vận"}"** cùng toàn bộ **${rawCards.length || 1} lá bài** trong **${spreadTitle}**:`,
+          cardLines.join("\n"),
+          `**Châu Ấn Đúc Kết:** Khởi đầu từ tinh thần *${bookFirst.redHeadline}* (${bookFirst.name}) chuyển sang *${bookLast.redHeadline}* (${bookLast.name}). ${bookLast.destiny} Quý bạn hãy giữ tâm trung chính, chuẩn bị chu toàn từng bước và thuận theo đạo tùy thời thì mưu sự ắt hanh thông.`,
+        ]
+          .filter(Boolean)
+          .join("\n\n");
+
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            reply,
+            pose_badge: "📜 Chiếu Soi Sách Thuyết Minh",
+            hexagram_focus: `${spreadTitle} · ${rawCards.length || 1} Lá Bài`,
+          }),
+          {
+            status: 200,
+            headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+          }
+        );
+      } catch (err: any) {
+        return new Response(
+          JSON.stringify({ error: err?.message || "Lỗi xử lý đàm đạo" }),
+          {
+            status: 500,
+            headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+          }
+        );
+      }
+    }
+
+    if (url.pathname === "/api/ink_wash/ai_interpret" && request.method === "POST") {
+      try {
+        const body: any = await request.json().catch(() => ({}));
+        const question = String(body?.question || "Thỉnh vấn thiên cơ").trim();
+        const spreadTitle = String(body?.spread_title || "Trận Pháp Chu Dịch").trim();
+        const rawCards: any[] = Array.isArray(body?.cards) ? body.cards : [];
+
+        const firstNum = Number(rawCards[0]?.hexNumber) || 1;
+        const lastNum = Number(rawCards[rawCards.length - 1]?.hexNumber) || firstNum;
+        const bookFirst = BOOK_HEXAGRAMS.find((x) => x.number === firstNum) || BOOK_HEXAGRAMS[0];
+        const bookLast = BOOK_HEXAGRAMS.find((x) => x.number === lastNum) || bookFirst;
+
+        const cardAnalyses = rawCards.map((c, idx) => {
+          const hNum = Number(c?.hexNumber) || firstNum;
+          const b = BOOK_HEXAGRAMS.find((x) => x.number === hNum) || bookFirst;
+          const posLabel = String(c?.positionLabel || `Lá ${idx + 1}`).trim();
+          const cardTitle = String(c?.name || b.name).trim();
+          return {
+            card_number: idx + 1,
+            card_title: cardTitle,
+            position_label: posLabel,
+            concise_analysis: `Lá số ${idx + 1} ở vị trí ${posLabel} ứng vào Quẻ ${b.name}: ${b.redHeadline} — ${b.destiny}`,
+          };
+        });
+
+        const sealChars = bookLast.redHeadline.includes("Cát")
+          ? "大吉"
+          : bookLast.redHeadline.includes("Hung")
+          ? "慎行"
+          : "玖貳";
+
+        return new Response(
+          JSON.stringify({
+            success: true,
+            hexagram_title:
+              rawCards.length > 1
+                ? `${spreadTitle} (${rawCards.length} Lá): Quẻ #${bookFirst.number} ${bookFirst.name} ➔ Quẻ #${bookLast.number} ${bookLast.name}`
+                : `Quẻ #${bookFirst.number} ${bookFirst.name} — ${bookFirst.redHeadline}`,
+            direct_answer: `Đối với câu hỏi "${question}", toàn cục ${rawCards.length} lá bài khuyên quý bạn giữ vững nội lực theo tinh thần ${bookFirst.redHeadline}. ${bookFirst.destiny}`,
+            card_analyses: cardAnalyses,
+            key_turning_point:
+              rawCards.length > 1
+                ? `Mạch biến chuyển của ${rawCards.length} lá bài hội tụ về Quẻ ${bookLast.name} (${bookLast.redHeadline}): ${bookLast.destiny}`
+                : `${bookFirst.bigImage} ${bookFirst.destiny}`,
+            final_verdict: `Châu Ấn Cửu Nhị quyết đoán cho trọn vẹn ${rawCards.length} lá bài: Giữ chữ Tín, hành sự thận trọng theo đạo lý Quẻ ${bookLast.name} thì mưu sự ắt viên mãn.`,
+            seal_chars: sealChars,
+          }),
+          {
+            status: 200,
+            headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+          }
+        );
+      } catch (err: any) {
+        return new Response(
+          JSON.stringify({ success: false, error: err?.message || "Lỗi phân tích quẻ" }),
+          {
+            status: 500,
+            headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
+          }
+        );
+      }
     }
 
     // Cloud Vietnamese TTS MP3 synthesizer (Warm Deep Male I Ching Master voice primary)
@@ -208,7 +360,23 @@ export default {
     }
 
     if (env.ASSETS) {
-      return env.ASSETS.fetch(request);
+      const assetRes = await env.ASSETS.fetch(request);
+      if (assetRes.status >= 500 && url.pathname.startsWith("/assets/")) {
+        const mirrorUrl = `https://khietvidai.github.io/huyen-hoc-site${url.pathname}`;
+        const mirrorRes = await fetch(mirrorUrl).catch(() => null);
+        if (mirrorRes && mirrorRes.ok) {
+          return new Response(mirrorRes.body, {
+            status: 200,
+            headers: {
+              "Content-Type":
+                mirrorRes.headers.get("Content-Type") || "application/javascript; charset=utf-8",
+              "Cache-Control": "public, max-age=31536000, immutable",
+              ...CORS_HEADERS,
+            },
+          });
+        }
+      }
+      return assetRes;
     }
     return new Response("Not Found", { status: 404 });
   },

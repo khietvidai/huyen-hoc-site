@@ -35,36 +35,38 @@ import { HEXAGRAMS } from "./data/hexagrams";
 import { Header, NavTab } from "./components/Header";
 import { ImperialPageShell } from "./components/ImperialPageShell";
 import { BrandLockup } from "./components/BrandMark";
-import { CardDraw } from "./components/CardDraw";
-import { ThapLaDivination } from "./components/ThapLaDivination";
-import { CoinToss } from "./components/CoinToss";
-import { YarrowDivination } from "./components/YarrowDivination";
-import { MaiHoaDivination } from "./components/MaiHoaDivination";
-import { KyMonDivination } from "./components/KyMonDivination";
-import { ThaiAtDivination } from "./components/ThaiAtDivination";
-import { HexagramDetail } from "./components/HexagramDetail";
-import { IChingChatbot } from "./components/IChingChatbot";
-import { HistoryView } from "./components/HistoryView";
-import { HexagramLibrary } from "./components/HexagramLibrary";
-import { DeckManager } from "./components/DeckManager";
 import { zenAudio } from "./utils/zenAudio";
-import { ManualBookSection } from "./components/ManualBookSection";
-import { JiaziSection } from "./components/JiaziSection";
-import { JiaziLucNhamSection } from "./components/JiaziLucNhamSection";
-import { LucNhamHoaDichSection } from "./components/LucNhamHoaDichSection";
-import { LichDungSuSection } from "./components/LichDungSuSection";
-import { HanNhietMenhSection } from "./components/HanNhietMenhSection";
-import { HomeSection } from "./components/HomeSection";
 import { LandingPage } from "./components/LandingPage";
-import { YiloreAppSuite } from "./components/YiloreAppSuite";
-import { PricingSection } from "./components/PricingSection";
-import { DailyHexagramModal } from "./components/DailyHexagramModal";
-import { DailyHexagramWidget } from "./components/DailyHexagramWidget";
-import { GoogleWorkspaceModal, WorkspaceTab, DivinationReadingData } from "./components/GoogleWorkspaceModal";
+import type { WorkspaceTab, DivinationReadingData } from "./components/GoogleWorkspaceModal";
 import { AuthModal } from "./components/AuthModal";
-import { AdminManagementModal } from "./components/AdminManagementModal";
 import { DonateModal } from "./components/DonateModal";
 import { AuthService, AppUser } from "./services/authService";
+
+const CardDraw = React.lazy(() => import("./components/CardDraw").then((m) => ({ default: m.CardDraw })));
+const ThapLaDivination = React.lazy(() => import("./components/ThapLaDivination").then((m) => ({ default: m.ThapLaDivination })));
+const CoinToss = React.lazy(() => import("./components/CoinToss").then((m) => ({ default: m.CoinToss })));
+const YarrowDivination = React.lazy(() => import("./components/YarrowDivination").then((m) => ({ default: m.YarrowDivination })));
+const MaiHoaDivination = React.lazy(() => import("./components/MaiHoaDivination").then((m) => ({ default: m.MaiHoaDivination })));
+const KyMonDivination = React.lazy(() => import("./components/KyMonDivination").then((m) => ({ default: m.KyMonDivination })));
+const ThaiAtDivination = React.lazy(() => import("./components/ThaiAtDivination").then((m) => ({ default: m.ThaiAtDivination })));
+const HexagramDetail = React.lazy(() => import("./components/HexagramDetail").then((m) => ({ default: m.HexagramDetail })));
+const IChingChatbot = React.lazy(() => import("./components/IChingChatbot").then((m) => ({ default: m.IChingChatbot })));
+const HistoryView = React.lazy(() => import("./components/HistoryView").then((m) => ({ default: m.HistoryView })));
+const HexagramLibrary = React.lazy(() => import("./components/HexagramLibrary").then((m) => ({ default: m.HexagramLibrary })));
+const DeckManager = React.lazy(() => import("./components/DeckManager").then((m) => ({ default: m.DeckManager })));
+const ManualBookSection = React.lazy(() => import("./components/ManualBookSection").then((m) => ({ default: m.ManualBookSection })));
+const JiaziSection = React.lazy(() => import("./components/JiaziSection").then((m) => ({ default: m.JiaziSection })));
+const JiaziLucNhamSection = React.lazy(() => import("./components/JiaziLucNhamSection").then((m) => ({ default: m.JiaziLucNhamSection })));
+const LucNhamHoaDichSection = React.lazy(() => import("./components/LucNhamHoaDichSection").then((m) => ({ default: m.LucNhamHoaDichSection })));
+const LichDungSuSection = React.lazy(() => import("./components/LichDungSuSection").then((m) => ({ default: m.LichDungSuSection })));
+const HanNhietMenhSection = React.lazy(() => import("./components/HanNhietMenhSection").then((m) => ({ default: m.HanNhietMenhSection })));
+const HomeSection = React.lazy(() => import("./components/HomeSection").then((m) => ({ default: m.HomeSection })));
+const YiloreAppSuite = React.lazy(() => import("./components/YiloreAppSuite").then((m) => ({ default: m.YiloreAppSuite })));
+const PricingSection = React.lazy(() => import("./components/PricingSection").then((m) => ({ default: m.PricingSection })));
+const DailyHexagramModal = React.lazy(() => import("./components/DailyHexagramModal").then((m) => ({ default: m.DailyHexagramModal })));
+const DailyHexagramWidget = React.lazy(() => import("./components/DailyHexagramWidget").then((m) => ({ default: m.DailyHexagramWidget })));
+const GoogleWorkspaceModal = React.lazy(() => import("./components/GoogleWorkspaceModal").then((m) => ({ default: m.GoogleWorkspaceModal })));
+const AdminManagementModal = React.lazy(() => import("./components/AdminManagementModal").then((m) => ({ default: m.AdminManagementModal })));
 import {
   cardImageStore,
   DEFAULT_DECK_ID,
@@ -1150,27 +1152,35 @@ export default function App() {
   if (currentTab === "yilore") {
     return (
       <>
-        <div>
-          <YiloreAppSuite
-            currentUser={currentUser}
-            onGoHome={() => {
-              if (typeof window !== "undefined") {
-                window.history.pushState({}, "", "/");
-              }
-              setCurrentTab("home");
-            }}
-            onExitToMainApp={() => {
-              AuthService.logout();
-              setCurrentUser(null);
-              if (typeof window !== "undefined") {
-                window.history.pushState({}, "", "/");
-              }
-              setCurrentTab("home");
-              showToast("Đã đăng xuất tài khoản Cửu Nhị.");
-            }}
-            onShowToast={showToast}
-          />
-        </div>
+        <React.Suspense
+          fallback={
+            <div className="min-h-screen bg-[#0B0A08] flex items-center justify-center text-[#D4AF37] font-serif text-sm">
+              Đang khai mở Sổ Tay Cửu Nhị...
+            </div>
+          }
+        >
+          <div>
+            <YiloreAppSuite
+              currentUser={currentUser}
+              onGoHome={() => {
+                if (typeof window !== "undefined") {
+                  window.history.pushState({}, "", "/");
+                }
+                setCurrentTab("home");
+              }}
+              onExitToMainApp={() => {
+                AuthService.logout();
+                setCurrentUser(null);
+                if (typeof window !== "undefined") {
+                  window.history.pushState({}, "", "/");
+                }
+                setCurrentTab("home");
+                showToast("Đã đăng xuất tài khoản Cửu Nhị.");
+              }}
+              onShowToast={showToast}
+            />
+          </div>
+        </React.Suspense>
 
         <AuthModal
           isOpen={isAuthModalOpen}
@@ -1341,8 +1351,16 @@ export default function App() {
         onSelectDivinationMethod={handleSelectDivinationMethod}
       >
         <main className={`relative z-10 flex-1 w-full mx-auto px-3 sm:px-4 py-4 sm:py-6 ${currentTab === "detail" ? "max-w-7xl" : "max-w-6xl"}`}>
+        <React.Suspense
+          fallback={
+            <div className="py-16 text-center text-[#D4AF37] font-serif text-sm">
+              Đang khai mở không gian Dịch Học...
+            </div>
+          }
+        >
         {/* TAB 0: TRANG CHỦ (PHƯƠNG PHÁP BỐC BÀI I CHING TAROT & LIÊN LẠC) */}
-        <div className={(currentTab as string) === "home" ? "space-y-6" : "hidden"}>
+        {(currentTab as string) === "home" && (
+        <div className="space-y-6">
           <HomeSection
             onNavigateTab={handleSelectTabWithVipCheck}
             onSelectDrawMode={handleSelectDrawModeFromHome}
@@ -1372,9 +1390,11 @@ export default function App() {
             }}
           />
         </div>
+        )}
 
         {/* TAB BÁO GIÁ: BẢNG GIÁ DỊCH VỤ PHONG THỦY, MỆNH LÝ & ĐẶC QUYỀN HỘI VIÊN */}
-        <div className={currentTab === "pricing" ? "space-y-6" : "hidden"}>
+        {currentTab === "pricing" && (
+        <div className="space-y-6">
           <PricingSection
             onNavigateTab={setCurrentTab}
             onOpenDailyHexagram={() => setIsDailyHexagramOpen(true)}
@@ -1387,6 +1407,7 @@ export default function App() {
             }}
           />
         </div>
+        )}
 
         {/* TAB 1: DIVINATION (BỐC BÀI / THỈNH QUẺ) */}
         <div className={currentTab === "divination" ? "space-y-6" : "hidden"}>
@@ -2608,7 +2629,8 @@ export default function App() {
       )}
 
         {/* TAB: LỤC THẬP HOA GIÁP (60 CAN CHI) */}
-        <div className={currentTab === "jiazi" ? "block" : "hidden"}>
+        {currentTab === "jiazi" && (
+        <div>
           {!isVip ? (
             renderVipTabGate(
               "Lục Thập Hoa Giáp (60 Can Chi)",
@@ -2640,9 +2662,11 @@ export default function App() {
             />
           )}
         </div>
+        )}
 
         {/* TAB: LỊCH DỤNG SỰ (CAN CHI, TRỰC NHẬT TINH & 12 GIỜ TÂM ẤN PHÚ) */}
-        <div className={currentTab === "calendar" ? "block" : "hidden"}>
+        {currentTab === "calendar" && (
+        <div>
           {!isVip ? (
             renderVipTabGate(
               "Lịch Dụng Sự & Giờ Tâm Ấn Phú",
@@ -2658,9 +2682,11 @@ export default function App() {
             />
           )}
         </div>
+        )}
 
         {/* TAB: HÀN NHIỆT MỆNH (TÔ DÂN PHONG) */}
-        <div className={currentTab === "hannhiet" ? "block" : "hidden"}>
+        {currentTab === "hannhiet" && (
+        <div>
           {!isVip ? (
             renderVipTabGate(
               "Bát Tự Hàn Nhiệt Mệnh (Tô Dân Phong)",
@@ -2670,6 +2696,7 @@ export default function App() {
             <HanNhietMenhSection />
           )}
         </div>
+        )}
 
         {/* TAB: DETAILED INTERPRETATION (GIẢI NGHĨA QUẺ) */}
         {currentTab === "detail" && (
@@ -2776,6 +2803,7 @@ export default function App() {
             onOpenWorkspace={handleOpenWorkspaceForRecord}
           />
         )}
+        </React.Suspense>
         </main>
       </ImperialPageShell>
 
@@ -2849,56 +2877,72 @@ export default function App() {
         </div>
       </footer>
 
-      {/* Google Workspace Modal (Docs, Sheets, Gmail, Drive & Picker) */}
-      <GoogleWorkspaceModal
-        isOpen={isWorkspaceModalOpen}
-        onClose={() => setIsWorkspaceModalOpen(false)}
-        defaultTab={workspaceDefaultTab}
-        activeDeckId={activeDeckId}
-        onCardImageSet={handleImageUpdated}
-        onCardBackSet={(dataUrl) => setCardBackImage(dataUrl)}
-        readingData={
-          customWorkspaceReading || {
-            question: activeQuestion || question,
-            primaryHexagram,
-            transformedHexagram,
-            changingLines,
-            aiAnalysis: activeAiText,
-            divinationMethod: activeSpreadType || "Bốc bài 3 lá",
-          }
-        }
-      />
+      <React.Suspense fallback={null}>
+        {/* Google Workspace Modal (Docs, Sheets, Gmail, Drive & Picker) */}
+        {isWorkspaceModalOpen && (
+          <GoogleWorkspaceModal
+            isOpen={isWorkspaceModalOpen}
+            onClose={() => setIsWorkspaceModalOpen(false)}
+            defaultTab={workspaceDefaultTab}
+            activeDeckId={activeDeckId}
+            onCardImageSet={handleImageUpdated}
+            onCardBackSet={(dataUrl) => setCardBackImage(dataUrl)}
+            readingData={
+              customWorkspaceReading || {
+                question: activeQuestion || question,
+                primaryHexagram,
+                transformedHexagram,
+                changingLines,
+                aiAnalysis: activeAiText,
+                divinationMethod: activeSpreadType || "Bốc bài 3 lá",
+              }
+            }
+          />
+        )}
 
-      {/* Modal Quẻ Ngày Kinh Dịch Dựa Trên Lịch Dương */}
-      <DailyHexagramModal
-        isOpen={isDailyHexagramOpen}
-        onClose={() => setIsDailyHexagramOpen(false)}
-        cardImages={cardImages}
-        onNavigateToDetail={(hexNum) => {
-          const hex = HEXAGRAMS.find((h) => h.number === hexNum);
-          if (hex) {
-            setPrimaryHexagram(hex);
-            setChangingLines([]);
-            setTransformedHexagram(undefined);
-            setCardsDrawSummary(`Tra cứu từ Quẻ Ngày: Quẻ #${hex.number} ${hex.name} (${hex.vietnameseName})`);
-            setActiveQuestion(question.trim() || `Tìm hiểu vận trình Quẻ Ngày #${hex.number} ${hex.name}`);
-            setActiveCategory("Tổng quát");
-            setCurrentTab("detail");
-            showToast(`Đã mở luận giải chi tiết Quẻ Ngày #${hex.number} ${hex.name}`);
-          }
-        }}
-        onNavigateToManual={(hexNum) => {
-          setManualSelectedHexNum(hexNum);
-          setCurrentTab("manual");
-          const hex = HEXAGRAMS.find((h) => h.number === hexNum);
-          showToast(`Đang xem Thuyết Minh Quẻ #${hexNum} ${hex ? hex.name : ""}`);
-        }}
-        onNavigateToCalendar={() => {
-          setCurrentTab("calendar");
-          showToast("Đã mở Tab Lịch Dụng Sự & 12 Giờ Tâm Ấn Phú!");
-        }}
-        onOpenWorkspace={(tab) => handleOpenWorkspace(tab)}
-      />
+        {/* Modal Quẻ Ngày Kinh Dịch Dựa Trên Lịch Dương */}
+        {isDailyHexagramOpen && (
+          <DailyHexagramModal
+            isOpen={isDailyHexagramOpen}
+            onClose={() => setIsDailyHexagramOpen(false)}
+            cardImages={cardImages}
+            onNavigateToDetail={(hexNum) => {
+              const hex = HEXAGRAMS.find((h) => h.number === hexNum);
+              if (hex) {
+                setPrimaryHexagram(hex);
+                setChangingLines([]);
+                setTransformedHexagram(undefined);
+                setCardsDrawSummary(`Tra cứu từ Quẻ Ngày: Quẻ #${hex.number} ${hex.name} (${hex.vietnameseName})`);
+                setActiveQuestion(question.trim() || `Tìm hiểu vận trình Quẻ Ngày #${hex.number} ${hex.name}`);
+                setActiveCategory("Tổng quát");
+                setCurrentTab("detail");
+                showToast(`Đã mở luận giải chi tiết Quẻ Ngày #${hex.number} ${hex.name}`);
+              }
+            }}
+            onNavigateToManual={(hexNum) => {
+              setManualSelectedHexNum(hexNum);
+              setCurrentTab("manual");
+              const hex = HEXAGRAMS.find((h) => h.number === hexNum);
+              showToast(`Đang xem Thuyết Minh Quẻ #${hexNum} ${hex ? hex.name : ""}`);
+            }}
+            onNavigateToCalendar={() => {
+              setCurrentTab("calendar");
+              showToast("Đã mở Tab Lịch Dụng Sự & 12 Giờ Tâm Ấn Phú!");
+            }}
+            onOpenWorkspace={(tab) => handleOpenWorkspace(tab)}
+          />
+        )}
+
+        {/* Modal Quản Trị Hệ Thống Dành Cho Admin cuunhi */}
+        {isAdminModalOpen && (
+          <AdminManagementModal
+            isOpen={isAdminModalOpen}
+            onClose={() => setIsAdminModalOpen(false)}
+            currentUser={currentUser}
+            onShowToast={showToast}
+          />
+        )}
+      </React.Suspense>
 
       {/* Modal Đăng Ký Thành Viên & Đăng Nhập Tài Khoản Cửu Nhị */}
       <AuthModal
@@ -2920,14 +2964,6 @@ export default function App() {
           );
           setCurrentTab("divination");
         }}
-        onShowToast={showToast}
-      />
-
-      {/* Modal Quản Trị Hệ Thống Dành Cho Admin cuunhi */}
-      <AdminManagementModal
-        isOpen={isAdminModalOpen}
-        onClose={() => setIsAdminModalOpen(false)}
-        currentUser={currentUser}
         onShowToast={showToast}
       />
 
@@ -2958,23 +2994,31 @@ export default function App() {
               </button>
             </div>
             <div className="flex-1 overflow-y-auto">
-              <IChingChatbot
-                question={activeQuestion || question || "Đàm đạo thời vận & hỏi đáp Sách Thuyết Minh 64 Quẻ"}
-                category={activeCategory || category || "Tổng quát"}
-                primaryHexagram={primaryHexagram || HEXAGRAMS[0]}
-                changingLines={changingLines}
-                transformedHexagram={transformedHexagram}
-                drawnCards={activeDrawnCards}
-                spreadType={activeSpreadType}
-                doubleMode={activeDoubleMode}
-                choiceALabel={activeChoiceALabel}
-                choiceBLabel={activeChoiceBLabel}
-                threeMode={activeThreeMode}
-                choiceCLabel={activeChoiceCLabel}
-                isCard2Reversed={activeIsCard2Reversed}
-                customPositions={activeCustomPositions}
-                initialInterpretation={activeAiText}
-              />
+              <React.Suspense
+                fallback={
+                  <div className="p-8 text-center text-[#D4AF37] font-serif text-xs">
+                    Đang kết nối Tiểu Long Cửu Nhị...
+                  </div>
+                }
+              >
+                <IChingChatbot
+                  question={activeQuestion || question || "Đàm đạo thời vận & hỏi đáp Sách Thuyết Minh 64 Quẻ"}
+                  category={activeCategory || category || "Tổng quát"}
+                  primaryHexagram={primaryHexagram || HEXAGRAMS[0]}
+                  changingLines={changingLines}
+                  transformedHexagram={transformedHexagram}
+                  drawnCards={activeDrawnCards}
+                  spreadType={activeSpreadType}
+                  doubleMode={activeDoubleMode}
+                  choiceALabel={activeChoiceALabel}
+                  choiceBLabel={activeChoiceBLabel}
+                  threeMode={activeThreeMode}
+                  choiceCLabel={activeChoiceCLabel}
+                  isCard2Reversed={activeIsCard2Reversed}
+                  customPositions={activeCustomPositions}
+                  initialInterpretation={activeAiText}
+                />
+              </React.Suspense>
             </div>
           </div>
         )}
