@@ -322,7 +322,6 @@ export default function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isAdminModalOpen, setIsAdminModalOpen] = useState<boolean>(false);
   const [isDonateModalOpen, setIsDonateModalOpen] = useState<boolean>(false);
-  const [isCuuNhiChatOpen, setIsCuuNhiChatOpen] = useState<boolean>(false);
   const [authModalMode, setAuthModalMode] = useState<"login" | "register" | "upgrade">("login");
 
   useEffect(() => {
@@ -2972,70 +2971,6 @@ export default function App() {
         isOpen={isDonateModalOpen}
         onClose={() => setIsDonateModalOpen(false)}
       />
-
-      {/* Nút Nổi & Hộp Thoại Đàm Đạo Trực Tiếp Cùng Tiểu Long Cửu Nhị (Hiện ở mọi trang) */}
-      <div className="fixed bottom-5 right-5 z-[95] flex flex-col items-end">
-        {isCuuNhiChatOpen && (
-          <div className="mb-3 w-[94vw] sm:w-[440px] max-h-[82vh] bg-[#15120E] border-2 border-[#C9A55A] rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.85)] overflow-hidden flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-200">
-            <div className="bg-gradient-to-r from-[#3A1210] via-[#26120D] to-[#3A1210] border-b border-[#C9A55A]/40 px-4 py-2.5 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-base">🐉</span>
-                <span className="font-serif font-bold text-xs sm:text-sm text-[#F5EAD4] tracking-wide">
-                  Đàm Đạo Cùng Tiểu Long Cửu Nhị
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsCuuNhiChatOpen(false)}
-                className="text-[#C9A55A] hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
-                title="Thu gọn hộp thoại"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="flex-1 overflow-y-auto">
-              <React.Suspense
-                fallback={
-                  <div className="p-8 text-center text-[#D4AF37] font-serif text-xs">
-                    Đang kết nối Tiểu Long Cửu Nhị...
-                  </div>
-                }
-              >
-                <IChingChatbot
-                  question={activeQuestion || question || "Đàm đạo thời vận & hỏi đáp Sách Thuyết Minh 64 Quẻ"}
-                  category={activeCategory || category || "Tổng quát"}
-                  primaryHexagram={primaryHexagram || HEXAGRAMS[0]}
-                  changingLines={changingLines}
-                  transformedHexagram={transformedHexagram}
-                  drawnCards={activeDrawnCards}
-                  spreadType={activeSpreadType}
-                  doubleMode={activeDoubleMode}
-                  choiceALabel={activeChoiceALabel}
-                  choiceBLabel={activeChoiceBLabel}
-                  threeMode={activeThreeMode}
-                  choiceCLabel={activeChoiceCLabel}
-                  isCard2Reversed={activeIsCard2Reversed}
-                  customPositions={activeCustomPositions}
-                  initialInterpretation={activeAiText}
-                />
-              </React.Suspense>
-            </div>
-          </div>
-        )}
-
-        <button
-          type="button"
-          onClick={() => setIsCuuNhiChatOpen((prev) => !prev)}
-          className="group flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-[#8B1A1A] via-[#A62424] to-[#8B1A1A] hover:from-[#A62424] hover:to-[#C23030] text-[#FFFDF8] border-2 border-[#E2C275] shadow-[0_8px_30px_rgba(139,26,26,0.65)] hover:shadow-[0_10px_35px_rgba(226,194,117,0.45)] transition-all cursor-pointer active:scale-95"
-          title="Mở hộp thoại trò chuyện trực tiếp cùng Tiểu Long Cửu Nhị"
-        >
-          <span className="text-lg group-hover:scale-110 transition-transform">🐉</span>
-          <span className="font-serif font-bold text-xs sm:text-sm tracking-wide text-[#F9E7B2]">
-            {isCuuNhiChatOpen ? "Đóng Chat Tiểu Long" : "Chat cùng Tiểu Long Cửu Nhị"}
-          </span>
-          <MessageCircle className="w-4 h-4 text-[#E2C275] animate-pulse" />
-        </button>
-      </div>
     </div>
   );
 }
