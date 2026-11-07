@@ -1963,17 +1963,6 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                           {pillar.title}
                         </span>
                       </div>
-                      <div className="mt-1 flex justify-center">
-                        {colIdx === 1 ? (
-                          <span className="px-2 py-0.2 rounded-full bg-[#9E2A2B] text-white text-[8px] sm:text-[9.5px] font-serif font-semibold tracking-wider whitespace-nowrap">
-                            Nhật Chủ
-                          </span>
-                        ) : canTenGod ? (
-                          <span className="text-[8.5px] sm:text-[10px] font-serif text-[#7A5D28] whitespace-nowrap">
-                            {canTenGod.name}
-                          </span>
-                        ) : null}
-                      </div>
                     </div>
 
                     {/* KHỐI CAN CHI TỐI GIẢN (KHÔNG ĐÓNG HỘP LỒNG HỘP) */}
@@ -1985,16 +1974,11 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                         title="Nhấp để chọn Thiên Can"
                       >
                         {canData ? (
-                          <>
-                            <div className="flex items-baseline justify-center gap-1 sm:gap-1.5">
-                              <span className={`text-base sm:text-2xl font-serif font-bold ${canData.colorText} leading-none`}>
-                                {canData.emoji} {canData.name}
-                              </span>
-                            </div>
-                            <span className="text-[8.5px] sm:text-[10px] text-[#7A6B56] font-serif mt-1">
-                              Hành {canData.element}
+                          <div className="flex items-baseline justify-center gap-1 sm:gap-1.5">
+                            <span className={`text-base sm:text-2xl font-serif font-bold ${canData.colorText} leading-none`}>
+                              {canData.emoji} {canData.name}
                             </span>
-                          </>
+                          </div>
                         ) : (
                           <span className="text-[9px] sm:text-xs text-[#8A7960] group-hover:text-[#6E4E16] py-2">
                             + Chọn Can
@@ -2009,16 +1993,11 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                         title="Nhấp để chọn Địa Chi"
                       >
                         {chiData ? (
-                          <>
-                            <div className="flex items-baseline justify-center gap-1 sm:gap-1.5">
-                              <span className={`text-base sm:text-2xl font-serif font-bold ${getElementBoxStyle(chiData.element).split(" ").pop()} leading-none`}>
-                                {chiData.emoji} {chiData.name}
-                              </span>
-                            </div>
-                            <span className="text-[8.5px] sm:text-[10px] text-[#7A6B56] font-serif mt-1">
-                              Hành {chiData.element}
+                          <div className="flex items-baseline justify-center gap-1 sm:gap-1.5">
+                            <span className={`text-base sm:text-2xl font-serif font-bold ${getElementBoxStyle(chiData.element).split(" ").pop()} leading-none`}>
+                              {chiData.emoji} {chiData.name}
                             </span>
-                          </>
+                          </div>
                         ) : (
                           <span className="text-[9px] sm:text-xs text-[#8A7960] group-hover:text-[#6E4E16] py-2">
                             + Chọn Chi
@@ -2027,12 +2006,18 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                       </div>
                     </div>
 
-                    {/* FOOTER TỐI GIẢN: NẠP ÂM & QUẺ DỊCH (BỎ HỘP TRONG HỘP) */}
+                    {/* FOOTER TỐI GIẢN: HOA GIÁP, PHỐI TƯỢNG, NẠP ÂM & QUẺ DỊCH */}
                     <div className="mt-auto pt-2 border-t border-[#EAE2D0] text-center space-y-0.5">
                       {matchedJiazi ? (
                         <>
                           <div className="text-[8.5px] sm:text-[10.5px] text-[#2C241B] font-serif font-bold truncate">
                             #{matchedJiazi.order} {matchedJiazi.name}
+                          </div>
+                          <div
+                            title={`Phối tượng: ${matchedJiazi.symbolicCreature}\n• ${matchedJiazi.part1.items.map((it) => it.title).join(" • ")}`}
+                            className="text-[7.5px] sm:text-[9px] text-[#78350F] font-serif italic line-clamp-2 leading-tight px-0.5"
+                          >
+                            {matchedJiazi.symbolicCreature}
                           </div>
                           <div className="text-[7.5px] sm:text-[9.5px] text-[#6E5D47] truncate">
                             {matchedJiazi.elementNapAm.split("(")[0]?.trim()}
@@ -2064,7 +2049,6 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                 const canData = CAN_MAP.get(dvCan);
                 const chiData = CHI_MAP.get(dvChi);
                 const matchedJiazi = getMatchedJiazi(dvCan, dvChi);
-                const canTenGod = activeDaiVan?.canTenGod || getTenGod(dvCan, dayCan);
 
                 return (
                   <div
@@ -2074,11 +2058,6 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                       <div className="flex items-center justify-center gap-1">
                         <span className="text-[10px] sm:text-sm font-bold text-[#5C4318] font-serif whitespace-nowrap">
                           Đại Vận {activeDaiVan?.step || ""}
-                        </span>
-                      </div>
-                      <div className="mt-1 flex justify-center">
-                        <span className="text-[8.5px] sm:text-[10px] font-serif text-[#7A5D28] whitespace-nowrap">
-                          {canTenGod ? canTenGod.name : `${activeDaiVan?.ageStart || 0}-${activeDaiVan?.ageEnd || 0}t`}
                         </span>
                       </div>
                     </div>
@@ -2093,14 +2072,9 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                     >
                       <div className="py-2.5 sm:py-3.5 flex flex-col items-center justify-center text-center hover:bg-[#F3ECE0]/60 rounded-t-lg transition-colors">
                         {canData ? (
-                          <>
-                            <span className={`text-base sm:text-2xl font-serif font-bold ${canData.colorText} leading-none`}>
-                              {canData.emoji} {canData.name}
-                            </span>
-                            <span className="text-[8.5px] sm:text-[10px] text-[#7A6B56] font-serif mt-1">
-                              Hành {canData.element}
-                            </span>
-                          </>
+                          <span className={`text-base sm:text-2xl font-serif font-bold ${canData.colorText} leading-none`}>
+                            {canData.emoji} {canData.name}
+                          </span>
                         ) : (
                           <span className="text-[9px] sm:text-xs text-[#8A7960] py-2">Chưa có</span>
                         )}
@@ -2108,14 +2082,9 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
 
                       <div className="py-2.5 sm:py-3.5 flex flex-col items-center justify-center text-center hover:bg-[#F3ECE0]/60 rounded-b-lg transition-colors">
                         {chiData ? (
-                          <>
-                            <span className={`text-base sm:text-2xl font-serif font-bold ${getElementBoxStyle(chiData.element).split(" ").pop()} leading-none`}>
-                              {chiData.emoji} {chiData.name}
-                            </span>
-                            <span className="text-[8.5px] sm:text-[10px] text-[#7A6B56] font-serif mt-1">
-                              Hành {chiData.element}
-                            </span>
-                          </>
+                          <span className={`text-base sm:text-2xl font-serif font-bold ${getElementBoxStyle(chiData.element).split(" ").pop()} leading-none`}>
+                            {chiData.emoji} {chiData.name}
+                          </span>
                         ) : (
                           <span className="text-[9px] sm:text-xs text-[#8A7960] py-2">Chưa có</span>
                         )}
@@ -2127,6 +2096,12 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                         <>
                           <div className="text-[8.5px] sm:text-[10.5px] text-[#2C241B] font-serif font-bold truncate">
                             #{matchedJiazi.order} {matchedJiazi.name}
+                          </div>
+                          <div
+                            title={`Phối tượng: ${matchedJiazi.symbolicCreature}\n• ${matchedJiazi.part1.items.map((it) => it.title).join(" • ")}`}
+                            className="text-[7.5px] sm:text-[9px] text-[#78350F] font-serif italic line-clamp-2 leading-tight px-0.5"
+                          >
+                            {matchedJiazi.symbolicCreature}
                           </div>
                           <div className="text-[7.5px] sm:text-[9.5px] text-[#6E5D47] truncate">
                             {matchedJiazi.elementNapAm.split("(")[0]?.trim()}
@@ -2155,7 +2130,6 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                 const canData = CAN_MAP.get(lnCan);
                 const chiData = CHI_MAP.get(lnChi);
                 const matchedJiazi = getMatchedJiazi(lnCan, lnChi);
-                const canTenGod = activeLuuNien?.canTenGod || getTenGod(lnCan, dayCan);
 
                 return (
                   <div
@@ -2165,11 +2139,6 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                       <div className="flex items-center justify-center gap-1">
                         <span className="text-[10px] sm:text-sm font-bold text-[#5C4318] font-serif whitespace-nowrap">
                           Năm {activeLuuNien?.year || ""}
-                        </span>
-                      </div>
-                      <div className="mt-1 flex justify-center">
-                        <span className="text-[8.5px] sm:text-[10px] font-serif text-[#7A5D28] whitespace-nowrap">
-                          {canTenGod ? canTenGod.name : `${activeLuuNien?.age || 0} tuổi`}
                         </span>
                       </div>
                     </div>
@@ -2184,14 +2153,9 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                     >
                       <div className="py-2.5 sm:py-3.5 flex flex-col items-center justify-center text-center hover:bg-[#F3ECE0]/60 rounded-t-lg transition-colors">
                         {canData ? (
-                          <>
-                            <span className={`text-base sm:text-2xl font-serif font-bold ${canData.colorText} leading-none`}>
-                              {canData.emoji} {canData.name}
-                            </span>
-                            <span className="text-[8.5px] sm:text-[10px] text-[#7A6B56] font-serif mt-1">
-                              Hành {canData.element}
-                            </span>
-                          </>
+                          <span className={`text-base sm:text-2xl font-serif font-bold ${canData.colorText} leading-none`}>
+                            {canData.emoji} {canData.name}
+                          </span>
                         ) : (
                           <span className="text-[9px] sm:text-xs text-[#8A7960] py-2">Chưa có</span>
                         )}
@@ -2199,14 +2163,9 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
 
                       <div className="py-2.5 sm:py-3.5 flex flex-col items-center justify-center text-center hover:bg-[#F3ECE0]/60 rounded-b-lg transition-colors">
                         {chiData ? (
-                          <>
-                            <span className={`text-base sm:text-2xl font-serif font-bold ${getElementBoxStyle(chiData.element).split(" ").pop()} leading-none`}>
-                              {chiData.emoji} {chiData.name}
-                            </span>
-                            <span className="text-[8.5px] sm:text-[10px] text-[#7A6B56] font-serif mt-1">
-                              Hành {chiData.element}
-                            </span>
-                          </>
+                          <span className={`text-base sm:text-2xl font-serif font-bold ${getElementBoxStyle(chiData.element).split(" ").pop()} leading-none`}>
+                            {chiData.emoji} {chiData.name}
+                          </span>
                         ) : (
                           <span className="text-[9px] sm:text-xs text-[#8A7960] py-2">Chưa có</span>
                         )}
@@ -2218,6 +2177,12 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                         <>
                           <div className="text-[8.5px] sm:text-[10.5px] text-[#2C241B] font-serif font-bold truncate">
                             #{matchedJiazi.order} {matchedJiazi.name}
+                          </div>
+                          <div
+                            title={`Phối tượng: ${matchedJiazi.symbolicCreature}\n• ${matchedJiazi.part1.items.map((it) => it.title).join(" • ")}`}
+                            className="text-[7.5px] sm:text-[9px] text-[#78350F] font-serif italic line-clamp-2 leading-tight px-0.5"
+                          >
+                            {matchedJiazi.symbolicCreature}
                           </div>
                           <div className="text-[7.5px] sm:text-[9.5px] text-[#6E5D47] truncate">
                             {matchedJiazi.elementNapAm.split("(")[0]?.trim()}
@@ -2401,6 +2366,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                 const isSelected = originalIdx === activeDaiVanIndex;
                 const canData = CAN_MAP.get(dv.can);
                 const chiData = CHI_MAP.get(dv.chi);
+                const dvJiazi = getMatchedJiazi(dv.can, dv.chi);
 
                 return (
                   <button
@@ -2419,7 +2385,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                         : "bg-[#FFFDF8] border-[#C4963E]/45 hover:border-[#B8862D]"
                     }`}
                   >
-                    {/* Header Cột: Vận, Tuổi, Thập Thần */}
+                    {/* Header Cột: Vận, Tuổi, Năm */}
                     <div className="text-center pb-1 mb-1 border-b border-[#C4963E]/45 w-full">
                       <div className="flex items-center justify-between text-[8.5px] sm:text-[10px] gap-0.5">
                         <span className={`font-serif font-extrabold ${isSelected ? "text-[#9E2A2B]" : "text-[#6E4E16]"}`}>Vận {dv.step}</span>
@@ -2431,11 +2397,8 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                           <span className="text-[8px] text-[#5C4D3C] font-mono">{dv.ageStart}-{dv.ageEnd}t</span>
                         )}
                       </div>
-                      <div className="text-[8px] sm:text-[9px] text-[#5C4D3C] flex items-center justify-between mt-0.5">
+                      <div className="text-[8px] sm:text-[9px] text-[#5C4D3C] flex items-center justify-center mt-0.5">
                         <span className="font-mono text-[7.5px] sm:text-[9px]">{dv.yearStart}</span>
-                        <span className={`px-1 py-0.2 rounded text-[7.5px] font-semibold border ${dv.canTenGod.badgeBg}`}>
-                          {dv.canTenGod.code}
-                        </span>
                       </div>
                     </div>
 
@@ -2453,13 +2416,18 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                       </div>
                     </div>
 
-                    {/* Footer HOA GIÁP / NẠP ÂM */}
-                    <div className="w-full mt-auto pt-0.5 border-t border-[#C4963E]/45 text-center">
+                    {/* Footer HOA GIÁP / PHỐI TƯỢNG / NẠP ÂM */}
+                    <div className="w-full mt-auto pt-0.5 border-t border-[#C4963E]/45 text-center space-y-0.5">
+                      {dvJiazi && (
+                        <div
+                          className="text-[7.5px] sm:text-[8.5px] text-[#78350F] font-serif italic line-clamp-1"
+                          title={`Phối tượng: ${dvJiazi.symbolicCreature}`}
+                        >
+                          {dvJiazi.symbolicCreature}
+                        </div>
+                      )}
                       <div className="text-[8px] sm:text-[9.5px] text-[#5C4D3C] truncate" title={dv.napAm}>
                         {dv.napAm.split("(")[0]?.trim()}
-                      </div>
-                      <div className="text-[7.5px] text-[#5C4D3C] flex items-center justify-center gap-0.5 mt-0.5">
-                        <span className={dv.chiTenGod.color}>[{dv.chiTenGod.code}]</span>
                       </div>
                     </div>
                   </button>
@@ -2526,7 +2494,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                 const isSelected = ln.year === selectedLuuNienYear;
                 const canData = CAN_MAP.get(ln.can);
                 const chiData = CHI_MAP.get(ln.chi);
-                const chiTenGod = getTenGod(ln.chi, dayCan);
+                const lnJiazi = getMatchedJiazi(ln.can, ln.chi);
                 const hasInteractions =
                   ln.interactions.withDayChi.length > 0 || ln.interactions.withDaiVanChi.length > 0;
 
@@ -2546,7 +2514,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                         : "bg-[#FFFDF8] border-[#C4963E]/45 hover:border-[#B8862D]"
                     }`}
                   >
-                    {/* Header: Năm, Tuổi, Năm Nay, Thập Thần Can */}
+                    {/* Header: Năm, Tuổi, Năm Nay */}
                     <div className="text-center pb-1 mb-1 border-b border-[#C4963E]/45 w-full">
                       <div className="flex items-center justify-between text-[8.5px] sm:text-[10px] gap-0.5">
                         <span className={`font-serif font-extrabold ${isSelected ? "text-[#9E2A2B]" : "text-[#6E4E16]"}`}>{ln.year}</span>
@@ -2557,12 +2525,6 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                         ) : (
                           <span className="text-[8px] text-[#5C4D3C] font-mono">{ln.age}t</span>
                         )}
-                      </div>
-                      <div className="text-[8px] sm:text-[9px] text-[#5C4D3C] flex items-center justify-between mt-0.5">
-                        <span className="text-[#5C4D3C] text-[7.5px] sm:text-[9px]">{ln.age}t</span>
-                        <span className={`px-1 py-0.2 rounded text-[7.5px] font-semibold border ${ln.canTenGod.badgeBg}`}>
-                          {ln.canTenGod.code}
-                        </span>
                       </div>
                     </div>
 
@@ -2580,8 +2542,16 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                       </div>
                     </div>
 
-                    {/* Footer: TƯƠNG TÁC HOẶC NẠP ÂM */}
-                    <div className="w-full mt-auto pt-0.5 border-t border-[#C4963E]/45 text-center">
+                    {/* Footer: PHỐI TƯỢNG, TƯƠNG TÁC HOẶC NẠP ÂM */}
+                    <div className="w-full mt-auto pt-0.5 border-t border-[#C4963E]/45 text-center space-y-0.5">
+                      {lnJiazi && (
+                        <div
+                          className="text-[7.5px] sm:text-[8.5px] text-[#78350F] font-serif italic line-clamp-1"
+                          title={`Phối tượng: ${lnJiazi.symbolicCreature}`}
+                        >
+                          {lnJiazi.symbolicCreature}
+                        </div>
+                      )}
                       {hasInteractions ? (
                         <div className="text-[8px] sm:text-[9px] text-[#78350F] font-semibold truncate block" title={ln.interactions.withDayChi[0] || ln.interactions.withDaiVanChi[0]}>
                           {ln.interactions.withDayChi[0] || ln.interactions.withDaiVanChi[0]}
@@ -2591,9 +2561,6 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                           {ln.napAm.split("(")[0]?.trim() || "Bình hòa"}
                         </div>
                       )}
-                      <div className="text-[8.5px] text-[#5C4D3C] flex items-center justify-center gap-1 mt-0.5">
-                        <span className={chiTenGod.color}>[{chiTenGod.code} • {chiTenGod.name}]</span>
-                      </div>
                     </div>
                   </button>
                 );
@@ -2603,7 +2570,9 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
             )}
 
             {/* KHUNG PHÂN TÍCH CHI TIẾT LƯU NIÊN ĐANG CHỌN */}
-            {activeLuuNien && (
+            {activeLuuNien && (() => {
+              const activeLnJiazi = getMatchedJiazi(activeLuuNien.can, activeLuuNien.chi);
+              return (
               <div className="mt-4 p-4 rounded-xl bg-[#FFFDF8] border border-[#C4963E]/45 text-xs">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-3 border-b border-[#C4963E]/45">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -2614,9 +2583,11 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                       Nạp Âm: <strong className="text-[#1C1813]">{activeLuuNien.napAm || "—"}</strong>
                     </span>
                   </div>
-                  <div className="text-[#6E4E16] font-semibold">
-                    Thập Thần: <span className={activeLuuNien.canTenGod.color}>{activeLuuNien.canTenGod.name}</span> ({activeLuuNien.canTenGod.aspect})
-                  </div>
+                  {activeLnJiazi && (
+                    <div className="text-[#78350F] font-serif font-semibold">
+                      Phối tượng: <span className="italic">{activeLnJiazi.symbolicCreature}</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-3">
@@ -2655,15 +2626,18 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                   <div className="p-2.5 rounded-lg bg-[#FFFDF8] border border-[#C4963E]/45">
                     <div className="font-semibold text-[#1C1813] mb-1 flex items-center gap-1.5">
                       <Briefcase className="w-3.5 h-3.5 text-[#1D4ED8]" />
-                      <span>Định hướng Vận Khí năm {activeLuuNien.year}:</span>
+                      <span>Tượng Hình & Phối Tượng Năm {activeLuuNien.year}:</span>
                     </div>
                     <div className="text-[11px] text-[#5C4D3C]">
-                      {activeLuuNien.canTenGod.desc}
+                      {activeLnJiazi
+                        ? activeLnJiazi.part1.items.map((it) => it.title).join(" • ")
+                        : "Chưa xác định phối tượng."}
                     </div>
                   </div>
                 </div>
               </div>
-            )}
+              );
+            })()}
           </div>
         </div>
       )}

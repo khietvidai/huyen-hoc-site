@@ -4570,6 +4570,12 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                       : matchedJiazi.branchGroup}
                                   </span>
                                 </div>
+                                <div
+                                  title={`Phối tượng: ${matchedJiazi.symbolicCreature}\n• ${matchedJiazi.part1.items.map((it) => it.title).join(" • ")}`}
+                                  className="text-[7px] sm:text-[9px] text-[#78350F] font-serif italic line-clamp-2 leading-tight"
+                                >
+                                  {matchedJiazi.symbolicCreature}
+                                </div>
                                 <div className="text-[7px] sm:text-[10px] text-[#5C4D3C] truncate">
                                   {matchedJiazi.elementNapAm}
                                 </div>
