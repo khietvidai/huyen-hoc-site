@@ -700,8 +700,8 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                       </div>
                     </div>
 
-                    {/* FOOTER: HOA GIÁP, PHỐI TƯỢNG 60 HOA GIÁP & QUẺ DỊCH */}
-                    <div className="mt-auto pt-2 border-t border-[#EAE2D0] text-center space-y-1">
+                    {/* FOOTER: HOA GIÁP, NẠP ÂM, PHỐI TƯỢNG 60 HOA GIÁP & QUẺ DỊCH */}
+                    <div className="flex-1 flex flex-col pt-2 border-t border-[#EAE2D0] text-center">
                       {matchedJiazi ? (
                         <>
                           <div
@@ -713,12 +713,19 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                           </div>
                           <div
                             onClick={() => onSelectJiazi && onSelectJiazi(matchedJiazi.id)}
-                            title={matchedJiazi.symbolicCreature}
-                            className="text-[8.5px] sm:text-[9.5px] text-[#9E2A2B] font-serif font-semibold italic leading-tight px-0.5 cursor-pointer"
+                            title={matchedJiazi.elementNapAm}
+                            className="mt-0.5 text-[8px] sm:text-[9px] text-[#6E4E16] font-serif font-semibold truncate cursor-pointer"
                           >
-                            {matchedJiazi.symbolicCreature}
+                            {matchedJiazi.elementNapAm}
                           </div>
-                          <div className="pt-1 border-t border-[#EAE2D0]/70 text-left space-y-0.5">
+                          <div
+                            onClick={() => onSelectJiazi && onSelectJiazi(matchedJiazi.id)}
+                            title={matchedJiazi.symbolicCreature}
+                            className="mt-1 min-h-[28px] sm:min-h-[38px] flex items-center justify-center text-[8.5px] sm:text-[9.5px] text-[#9E2A2B] font-serif font-semibold italic leading-tight px-0.5 cursor-pointer"
+                          >
+                            <span className="line-clamp-3">{matchedJiazi.symbolicCreature}</span>
+                          </div>
+                          <div className="mt-1 pt-1 border-t border-[#EAE2D0]/70 text-left space-y-0.5 flex-1">
                             {matchedJiazi.part1.items.map((item, idx) => (
                               <div
                                 key={idx}
@@ -734,14 +741,14 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                           {matchedJiazi.hexagramLink && (
                             <div
                               onClick={() => onSelectJiazi && onSelectJiazi(matchedJiazi.id)}
-                              className="pt-0.5 text-[8.5px] sm:text-[9.5px] text-[#8A6A2F] hover:text-[#9E2A2B] font-serif truncate cursor-pointer transition-colors"
+                              className="mt-auto pt-1.5 border-t border-[#EAE2D0]/60 text-[8.5px] sm:text-[9.5px] text-[#8A6A2F] hover:text-[#9E2A2B] font-serif truncate cursor-pointer transition-colors"
                             >
                               ☯ {matchedJiazi.hexagramLink.hexagramName} ↗
                             </div>
                           )}
                         </>
                       ) : (
-                        <span className="text-[9px] text-[#9A8B74] italic">Chưa phối Can Chi</span>
+                        <span className="my-auto text-[9px] text-[#9A8B74] italic">Chưa phối Can Chi</span>
                       )}
                     </div>
                   </div>
@@ -806,7 +813,6 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                             >
                               <span className="text-xl sm:text-2xl mb-1">{item.emoji}</span>
                               <span className="text-base sm:text-lg font-serif font-bold">{item.name}</span>
-                              <span className="text-[11px] text-[#5C4D3C]">{item.chinese}</span>
                               <span className="text-[9px] mt-1 text-[#5C4D3C] text-center line-clamp-1">
                                 {item.symbol}
                               </span>
@@ -841,7 +847,6 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                             >
                               <span className="text-xl sm:text-2xl mb-1">{item.emoji}</span>
                               <span className="text-base sm:text-lg font-serif font-bold">{item.name}</span>
-                              <span className="text-[11px] text-[#5C4D3C]">{item.chinese}</span>
                               <span className="text-[9px] mt-1 text-[#5C4D3C] text-center line-clamp-1">
                                 {item.symbol}
                               </span>
@@ -899,7 +904,6 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                               >
                                 <span className="text-xl sm:text-2xl mb-1">{item.emoji}</span>
                                 <span className="text-sm sm:text-base font-serif font-bold">{item.name}</span>
-                                <span className="text-[11px] text-[#5C4D3C]">{item.chinese}</span>
                                 <span className="text-[9px] mt-1 text-[#5C4D3C] text-center line-clamp-1">
                                   {item.zodiac}
                                 </span>
@@ -936,7 +940,6 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                               >
                                 <span className="text-xl sm:text-2xl mb-1">{item.emoji}</span>
                                 <span className="text-sm sm:text-base font-serif font-bold">{item.name}</span>
-                                <span className="text-[11px] text-[#5C4D3C]">{item.chinese}</span>
                                 <span className="text-[9px] mt-1 text-[#5C4D3C] text-center line-clamp-1">
                                   {item.zodiac}
                                 </span>

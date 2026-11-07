@@ -598,9 +598,6 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                       <span className="text-xs sm:text-sm font-serif font-bold text-[#1C1813] leading-none">
                         {p.chi}
                       </span>
-                      <span className="text-[8px] sm:text-[9px] text-[#5C4D3C] font-serif">
-                        ({chiData?.chinese || ""})
-                      </span>
                     </div>
                     <div className="text-[7.5px] sm:text-[8.5px] text-[#5C4D3C] font-mono leading-none">
                       {p.pillar}
@@ -867,7 +864,6 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                         <span className={`text-xs sm:text-sm font-serif font-bold leading-none ${isSelected ? "text-[#78350F]" : "text-[#1C1813]"}`}>
                           {p.chi}
                         </span>
-                        <span className="text-[8px] sm:text-[9.5px] text-[#5C4D3C] font-serif">({chiData?.chinese || ""})</span>
                       </div>
                       <div className="text-[7.5px] sm:text-[8.5px] text-[#5C4D3C] font-mono leading-none">
                         {p.pillar}
@@ -917,7 +913,6 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                         <span className={`text-xs sm:text-sm font-serif font-bold leading-none ${isSelected ? "text-[#1E3A8A]" : "text-[#1C1813]"}`}>
                           {p.chi}
                         </span>
-                        <span className="text-[8px] sm:text-[9.5px] text-[#5C4D3C] font-serif">({chiData?.chinese || ""})</span>
                       </div>
                       <div className="text-[7.5px] sm:text-[8.5px] text-[#5C4D3C] font-mono leading-none">
                         {p.pillar}
@@ -1024,9 +1019,6 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                           >
                             {b.chi}
                           </span>
-                          <span className="text-[8px] sm:text-[9.5px] text-[#5C4D3C] font-serif">
-                            ({chiData?.chinese || ""})
-                          </span>
                         </div>
                         <div className="text-[7.5px] sm:text-[8.5px] text-[#5C4D3C] font-mono leading-none">
                           {b.pillar}
@@ -1089,9 +1081,6 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                           >
                             {b.chi}
                           </span>
-                          <span className="text-[8px] sm:text-[9.5px] text-[#5C4D3C] font-serif">
-                            ({chiData?.chinese || ""})
-                          </span>
                         </div>
                         <div className="text-[7.5px] sm:text-[8.5px] text-[#5C4D3C] font-mono leading-none">
                           {b.pillar}
@@ -1153,9 +1142,6 @@ export const BaziKetCauThien: React.FC<BaziKetCauThienProps> = ({
                             }`}
                           >
                             {b.chi}
-                          </span>
-                          <span className="text-[8px] sm:text-[9.5px] text-[#5C4D3C] font-serif">
-                            ({chiData?.chinese || ""})
                           </span>
                         </div>
                         <div className="text-[7.5px] sm:text-[8.5px] text-[#5C4D3C] font-mono leading-none">

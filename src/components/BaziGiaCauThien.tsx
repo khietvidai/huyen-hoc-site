@@ -460,9 +460,6 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
                         <span className="text-xs sm:text-sm font-serif font-bold text-[#1C1813] leading-none">
                           {b.chi}
                         </span>
-                        <span className="text-[8px] sm:text-[9.5px] text-[#5C4D3C] font-serif">
-                          ({chiData?.chinese || ""})
-                        </span>
                       </div>
 
                       {/* Nhãn Niên/Nguyệt/Nhật/Thời */}

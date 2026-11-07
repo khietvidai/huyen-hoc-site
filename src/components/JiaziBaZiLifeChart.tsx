@@ -1086,18 +1086,22 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                     </div>
                   </div>
 
-                  {/* Footer Trụ: Phối Tượng 60 Hoa Giáp & Vòng Tràng Sinh */}
-                  <div className="pt-2 border-t border-[#261A0F] text-[10.5px] space-y-1">
+                  {/* Footer Trụ: Phối Tượng 60 Hoa Giáp, Nạp Âm & Vòng Tràng Sinh */}
+                  <div className="flex-1 flex flex-col pt-2 border-t border-[#261A0F] text-[10.5px]">
                     {matchedJiazi && (
-                      <div className="space-y-1 pb-1 border-b border-[#20150B]">
+                      <div className="flex-1 flex flex-col space-y-1 pb-1.5 border-b border-[#20150B]">
                         <div className="flex items-center justify-between text-[#CDBFA8]">
                           <span className="text-[#8C7D6B]">Hoa Giáp:</span>
                           <strong className="text-amber-200 font-serif">#{matchedJiazi.order} {matchedJiazi.name}</strong>
                         </div>
-                        <div className="text-amber-300/90 font-serif italic text-[10px]">
-                          {matchedJiazi.symbolicCreature}
+                        <div className="flex items-center justify-between text-[#CDBFA8]">
+                          <span className="text-[#8C7D6B]">Nạp Âm:</span>
+                          <span className="text-[#D6B97A] font-serif font-semibold truncate">{matchedJiazi.elementNapAm}</span>
                         </div>
-                        <div className="space-y-0.5">
+                        <div className="min-h-[26px] flex items-center text-amber-300/90 font-serif italic text-[10px] leading-tight">
+                          <span className="line-clamp-2">{matchedJiazi.symbolicCreature}</span>
+                        </div>
+                        <div className="space-y-0.5 flex-1">
                           {matchedJiazi.part1.items.map((item, idx) => (
                             <div
                               key={idx}
@@ -1111,7 +1115,7 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                         </div>
                       </div>
                     )}
-                    <div className="flex items-center justify-between text-[#CDBFA8]">
+                    <div className="mt-auto pt-1 flex items-center justify-between text-[#CDBFA8]">
                       <span className="text-[#8C7D6B]">Tràng Sinh:</span>
                       <span className="text-[#D6B97A] font-semibold font-serif">{trangSinh}</span>
                     </div>

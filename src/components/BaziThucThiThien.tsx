@@ -3656,9 +3656,6 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                       <span className="font-serif font-bold text-[#78350F] text-xs sm:text-sm">
                         {selectedLuuNienChi}
                       </span>
-                      <span className="text-[10px] text-[#92400E] font-serif font-bold">
-                        ({targetChiData?.chinese || ""})
-                      </span>
                     </div>
                     <span className="text-[9px] text-[#5C4D3C] font-semibold mt-0.5">
                       {targetChiData?.zodiac ? `Chi ${selectedLuuNienChi} (${targetChiData.zodiac})` : `Chi ${selectedLuuNienChi}`}
@@ -4474,9 +4471,6 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                   >
                                     {canData.name}
                                   </span>
-                                  <span className="hidden md:inline text-xs sm:text-sm text-[#5C4D3C] font-serif">
-                                    ({canData.chinese})
-                                  </span>
                                 </div>
                               ) : (
                                 <div className="text-center">
@@ -4524,9 +4518,6 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                   <span className="text-xs sm:text-2xl font-serif font-bold text-[#1C1813] leading-none mt-0.5 sm:mt-0">
                                     {chiData.name}
                                   </span>
-                                  <span className="hidden md:inline text-xs sm:text-sm text-[#5C4D3C] font-serif">
-                                    ({chiData.chinese})
-                                  </span>
                                 </div>
                               ) : (
                                 <div className="text-center">
@@ -4571,12 +4562,18 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                   </span>
                                 </div>
                                 <div
-                                  title={matchedJiazi.symbolicCreature}
-                                  className="text-[7px] sm:text-[9px] text-[#9E2A2B] font-serif font-semibold italic line-clamp-1 leading-tight"
+                                  title={matchedJiazi.elementNapAm}
+                                  className="text-[6.5px] sm:text-[8.5px] text-[#6E4E16] font-serif font-semibold truncate text-center"
                                 >
-                                  {matchedJiazi.symbolicCreature}
+                                  {matchedJiazi.elementNapAm}
                                 </div>
-                                <div className="pt-0.5 border-t border-[#C4963E]/30 space-y-0.5 text-left">
+                                <div
+                                  title={matchedJiazi.symbolicCreature}
+                                  className="min-h-[24px] sm:min-h-[34px] flex items-center justify-center text-center text-[7px] sm:text-[9px] text-[#9E2A2B] font-serif font-semibold italic leading-tight"
+                                >
+                                  <span className="line-clamp-3">{matchedJiazi.symbolicCreature}</span>
+                                </div>
+                                <div className="pt-0.5 border-t border-[#C4963E]/30 space-y-0.5 text-left flex-1">
                                   {matchedJiazi.part1.items.map((item, idx) => (
                                     <div
                                       key={idx}

@@ -1574,7 +1574,7 @@ export const BaziHanhViThien: React.FC<BaziHanhViThienProps> = ({
                 <span>Chọn Địa Chi khảo sát (Mở đầu là Tý):</span>
               </span>
               <span className="text-[#5C4D3C] font-mono text-[9px]">
-                Đang khảo sát: <strong className="text-[#78350F] font-serif text-xs">{showTableEmoji && targetChiData?.emoji ? `${targetChiData.emoji} ` : ""}{selectedBranch}</strong> ({targetChiData?.chinese})
+                Đang khảo sát: <strong className="text-[#78350F] font-serif text-xs">{showTableEmoji && targetChiData?.emoji ? `${targetChiData.emoji} ` : ""}{selectedBranch}</strong>
               </span>
             </div>
 

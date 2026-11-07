@@ -455,7 +455,6 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
                               <span className={`text-2xl sm:text-3xl font-serif font-bold ${canData.colorText}`}>
                                 {canData.name}
                               </span>
-                              <span className="text-xs sm:text-sm text-[#8C7D6B] font-serif">({canData.chinese})</span>
                             </div>
                           ) : (
                             <div className="text-center">
@@ -489,7 +488,6 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
                               <span className="text-2xl sm:text-3xl font-serif font-bold text-[#F5EAD4]">
                                 {chiData.name}
                               </span>
-                              <span className="text-xs sm:text-sm text-[#8C7D6B] font-serif">({chiData.chinese})</span>
                             </div>
                           ) : (
                             <div className="text-center">
@@ -513,10 +511,13 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
                                 {matchedJiazi.branchGroup}
                               </span>
                             </div>
-                            <div className="text-[9.5px] text-amber-300/95 font-serif italic">
-                              {matchedJiazi.symbolicCreature}
+                            <div className="text-[9px] text-[#D6B97A] font-serif font-semibold truncate">
+                              {matchedJiazi.elementNapAm}
                             </div>
-                            <div className="pt-1 border-t border-[#362819] space-y-0.5 text-left">
+                            <div className="min-h-[26px] flex items-center text-[9.5px] text-amber-300/95 font-serif italic leading-tight">
+                              <span className="line-clamp-2">{matchedJiazi.symbolicCreature}</span>
+                            </div>
+                            <div className="pt-1 border-t border-[#362819] space-y-0.5 text-left flex-1">
                               {matchedJiazi.part1.items.map((item, idx) => (
                                 <div
                                   key={idx}
@@ -679,7 +680,6 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
                           <span className="text-base sm:text-lg font-serif font-bold">
                             {item.name}
                           </span>
-                          <span className="text-[11px] text-[#A89882]">{item.chinese}</span>
                           <span className="text-[9px] mt-1 text-[#CDBFA8] text-center line-clamp-1">
                             {item.symbol}
                           </span>
@@ -718,7 +718,6 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
                           <span className="text-base sm:text-lg font-serif font-bold">
                             {item.name}
                           </span>
-                          <span className="text-[11px] text-[#A89882]">{item.chinese}</span>
                           <span className="text-[9px] mt-1 text-[#CDBFA8] text-center line-clamp-1">
                             {item.symbol}
                           </span>
@@ -808,7 +807,6 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
                             <span className="text-sm sm:text-base font-serif font-bold">
                               {item.name}
                             </span>
-                            <span className="text-[10px] text-[#A89882]">{item.chinese}</span>
                             {isLocked ? (
                               <span className="text-[9px] text-rose-400 mt-1 flex items-center gap-0.5">
                                 <Lock className="w-2.5 h-2.5" /> Khóa
@@ -864,7 +862,6 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
                             <span className="text-sm sm:text-base font-serif font-bold">
                               {item.name}
                             </span>
-                            <span className="text-[10px] text-[#A89882]">{item.chinese}</span>
                             {isLocked ? (
                               <span className="text-[9px] text-rose-400 mt-1 flex items-center gap-0.5">
                                 <Lock className="w-2.5 h-2.5" /> Khóa
