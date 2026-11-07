@@ -4571,13 +4571,22 @@ export const BaziThucThiThien: React.FC<BaziThucThiThienProps> = ({
                                   </span>
                                 </div>
                                 <div
-                                  title={`Phối tượng: ${matchedJiazi.symbolicCreature}\n• ${matchedJiazi.part1.items.map((it) => it.title).join(" • ")}`}
-                                  className="text-[7px] sm:text-[9px] text-[#78350F] font-serif italic line-clamp-2 leading-tight"
+                                  title={matchedJiazi.symbolicCreature}
+                                  className="text-[7px] sm:text-[9px] text-[#9E2A2B] font-serif font-semibold italic line-clamp-1 leading-tight"
                                 >
                                   {matchedJiazi.symbolicCreature}
                                 </div>
-                                <div className="text-[7px] sm:text-[10px] text-[#5C4D3C] truncate">
-                                  {matchedJiazi.elementNapAm}
+                                <div className="pt-0.5 border-t border-[#C4963E]/30 space-y-0.5 text-left">
+                                  {matchedJiazi.part1.items.map((item, idx) => (
+                                    <div
+                                      key={idx}
+                                      title={`${item.title}${item.chineseTerm ? ` (${item.chineseTerm})` : ""}: ${item.description}`}
+                                      className="text-[6.5px] sm:text-[8.5px] text-[#5C4D3C] font-serif leading-tight flex items-start gap-0.5"
+                                    >
+                                      <span className="text-[#B8862D] shrink-0">•</span>
+                                      <span className="line-clamp-1">{item.title}</span>
+                                    </div>
+                                  ))}
                                 </div>
                                 {matchedJiazi.hexagramLink && (
                                   <div

@@ -1000,11 +1000,8 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
             ].map(({ key, title, sub, role, pillar, isDayMaster }) => {
               const canDetail = CAN_DETAILS[pillar.can] || CAN_DETAILS["Giáp"];
               const chiDetail = CHI_DETAILS[pillar.chi] || CHI_DETAILS["Tý"];
-              const tenGod = isDayMaster
-                ? { name: "NHẬT CHỦ" as const, short: "Bản Thân", color: "text-amber-300", badge: "bg-amber-900/90 border-amber-500 text-amber-200" }
-                : getTenGod(pillars.day.can, pillar.can);
               const hidden = HIDDEN_STEMS[pillar.chi] || [];
-              const napAm = getNapAm(pillar.can, pillar.chi);
+              const matchedJiazi = SIXTY_JIAZI.find((j) => j.can === pillar.can && j.chi === pillar.chi);
               const trangSinh = getTrangSinh(pillars.day.can, pillar.chi);
               const kv = getKhongVong(pillars.day.can, pillars.day.chi);
               const isKv = kv.branches.includes(pillar.chi);
@@ -1027,16 +1024,8 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                         </div>
                         <h4 className="font-serif font-bold text-sm text-[#F5EAD4] flex items-center gap-1.5">
                           <span>{title}</span>
-                          {isDayMaster && (
-                            <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-900/80 text-amber-200 border border-amber-500 font-sans font-bold">
-                              NGUYÊN THẦN
-                            </span>
-                          )}
                         </h4>
                       </div>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-serif font-bold border ${tenGod.badge}`}>
-                        {tenGod.name}
-                      </span>
                     </div>
 
                     {/* Thiên Can (Ô Trên) */}
@@ -1051,11 +1040,6 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                             {pillar.can}
                           </span>
                         </div>
-                      </div>
-                      <div className="text-right text-[10px]">
-                        <span className={`px-2 py-0.5 rounded border font-semibold ${canDetail.bg}`}>
-                          {canDetail.pol} {canDetail.el}
-                        </span>
                       </div>
                     </div>
 
@@ -1074,9 +1058,6 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                         </div>
                       </div>
                       <div className="text-right text-[10px] space-y-1">
-                        <span className="px-2 py-0.5 rounded border border-[#3E2D1C] bg-[#1C140C] text-[#CDBFA8] font-semibold block">
-                          Hành {chiDetail.el}
-                        </span>
                         {isKv && (
                           <span className="px-1.5 py-0.2 rounded bg-purple-900/90 text-purple-200 border border-purple-500 text-[9px] font-bold animate-pulse block">
                             ⭕ Tuần Không
@@ -1088,33 +1069,48 @@ export const JiaziBaZiLifeChart: React.FC<JiaziBaZiLifeChartProps> = ({
                     {/* Địa Chi Tàng Can (Ẩn Can) */}
                     <div className="bg-[#16100B] border border-[#291C10] rounded-xl p-2 mb-2 space-y-1 text-[10.5px]">
                       <div className="text-[10px] text-[#8C7D6B] font-semibold flex items-center justify-between">
-                        <span>Tàng Can (Ẩn Thần):</span>
+                        <span>Tàng Can (Ẩn Can):</span>
                       </div>
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        {hidden.map((h) => {
-                          const hGod = getTenGod(pillars.day.can, h.can);
-                          return (
-                            <span
-                              key={h.can}
-                              className="px-1.5 py-0.5 rounded bg-[#20160D] border border-[#3D2C1C] text-[10px] flex items-center gap-1"
-                              title={`${h.can} (${h.type} ${h.percentage}%) - ${hGod.name}`}
-                            >
-                              <strong className={CAN_DETAILS[h.can]?.color}>{h.can}</strong>
-                              <span className="text-[9px] text-[#A89882]">{hGod.short}</span>
-                              <span className="text-[8px] opacity-60">({h.percentage}%)</span>
-                            </span>
-                          );
-                        })}
+                        {hidden.map((h) => (
+                          <span
+                            key={h.can}
+                            className="px-1.5 py-0.5 rounded bg-[#20160D] border border-[#3D2C1C] text-[10px] flex items-center gap-1"
+                            title={`${h.can} (${h.type} ${h.percentage}%)`}
+                          >
+                            <strong className={CAN_DETAILS[h.can]?.color}>{h.can}</strong>
+                            <span className="text-[8px] opacity-60">({h.percentage}%)</span>
+                          </span>
+                        ))}
                       </div>
                     </div>
                   </div>
 
-                  {/* Footer Trụ: Nạp Âm & Vòng Tràng Sinh */}
+                  {/* Footer Trụ: Phối Tượng 60 Hoa Giáp & Vòng Tràng Sinh */}
                   <div className="pt-2 border-t border-[#261A0F] text-[10.5px] space-y-1">
-                    <div className="flex items-center justify-between text-[#CDBFA8]">
-                      <span className="text-[#8C7D6B]">Nạp Âm:</span>
-                      <strong className="text-amber-200 font-serif">{napAm}</strong>
-                    </div>
+                    {matchedJiazi && (
+                      <div className="space-y-1 pb-1 border-b border-[#20150B]">
+                        <div className="flex items-center justify-between text-[#CDBFA8]">
+                          <span className="text-[#8C7D6B]">Hoa Giáp:</span>
+                          <strong className="text-amber-200 font-serif">#{matchedJiazi.order} {matchedJiazi.name}</strong>
+                        </div>
+                        <div className="text-amber-300/90 font-serif italic text-[10px]">
+                          {matchedJiazi.symbolicCreature}
+                        </div>
+                        <div className="space-y-0.5">
+                          {matchedJiazi.part1.items.map((item, idx) => (
+                            <div
+                              key={idx}
+                              title={`${item.title}${item.chineseTerm ? ` (${item.chineseTerm})` : ""}: ${item.description}`}
+                              className="text-[9.5px] text-[#CDBFA8] font-serif leading-tight flex items-start gap-1"
+                            >
+                              <span className="text-[#C9A55A] shrink-0">•</span>
+                              <span className="line-clamp-1">{item.title}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     <div className="flex items-center justify-between text-[#CDBFA8]">
                       <span className="text-[#8C7D6B]">Tràng Sinh:</span>
                       <span className="text-[#D6B97A] font-semibold font-serif">{trangSinh}</span>

@@ -663,11 +663,6 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                         <span className={`text-xs sm:text-sm font-bold font-serif whitespace-nowrap ${col.idx === 1 ? "text-[#9E2A2B]" : "text-[#2C241B]"}`}>
                           {col.title}
                         </span>
-                        {col.idx === 1 && (
-                          <span className="px-1.5 py-0.2 rounded-full bg-[#9E2A2B] text-white text-[8.5px] font-serif font-semibold">
-                            Nhật Chủ
-                          </span>
-                        )}
                       </div>
                       <div className="text-[9px] text-[#7A6B56] font-serif mt-0.5 truncate">
                         {col.sub}
@@ -682,14 +677,9 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                         title={`Nhấp để chọn Thiên Can cho ${col.title}`}
                       >
                         {canData ? (
-                          <>
-                            <span className={`text-lg sm:text-2xl font-serif font-bold ${canData.colorText} leading-none`}>
-                              {canData.emoji} {canData.name}
-                            </span>
-                            <span className="text-[9px] sm:text-[10px] text-[#7A6B56] font-serif mt-1">
-                              Hành {canData.element}
-                            </span>
-                          </>
+                          <span className={`text-lg sm:text-2xl font-serif font-bold ${canData.colorText} leading-none`}>
+                            {canData.emoji} {canData.name}
+                          </span>
                         ) : (
                           <span className="text-xs text-[#8A7960] py-2">+ Chọn Can</span>
                         )}
@@ -701,30 +691,54 @@ export const JiaziLucNhamSection: React.FC<JiaziLucNhamSectionProps> = ({
                         title={`Nhấp để chọn Địa Chi cho ${col.title}`}
                       >
                         {chiData ? (
-                          <>
-                            <span className={`text-lg sm:text-2xl font-serif font-bold ${getElementBoxStyle(chiData.element).split(" ").pop()} leading-none`}>
-                              {chiData.emoji} {chiData.name}
-                            </span>
-                            <span className="text-[9px] sm:text-[10px] text-[#7A6B56] font-serif mt-1">
-                              Hành {chiData.element}
-                            </span>
-                          </>
+                          <span className={`text-lg sm:text-2xl font-serif font-bold ${getElementBoxStyle(chiData.element).split(" ").pop()} leading-none`}>
+                            {chiData.emoji} {chiData.name}
+                          </span>
                         ) : (
                           <span className="text-xs text-[#8A7960] py-2">+ Chọn Chi</span>
                         )}
                       </div>
                     </div>
 
-                    {/* FOOTER TỐI GIẢN */}
-                    <div className="mt-auto pt-2 border-t border-[#EAE2D0] text-center space-y-0.5">
+                    {/* FOOTER: HOA GIÁP, PHỐI TƯỢNG 60 HOA GIÁP & QUẺ DỊCH */}
+                    <div className="mt-auto pt-2 border-t border-[#EAE2D0] text-center space-y-1">
                       {matchedJiazi ? (
                         <>
-                          <div className="text-[10px] sm:text-[11px] text-[#2C241B] font-serif font-bold truncate">
+                          <div
+                            onClick={() => onSelectJiazi && onSelectJiazi(matchedJiazi.id)}
+                            className="text-[10px] sm:text-[11px] text-[#2C241B] hover:text-[#9E2A2B] font-serif font-bold truncate cursor-pointer transition-colors"
+                            title={`Nhấp xem chi tiết Hoa Giáp #${matchedJiazi.order} ${matchedJiazi.name} (${matchedJiazi.chinese})`}
+                          >
                             #{matchedJiazi.order} {matchedJiazi.name}
                           </div>
-                          <div className="text-[9px] sm:text-[10px] text-[#6E5D47] truncate">
-                            {matchedJiazi.elementNapAm}
+                          <div
+                            onClick={() => onSelectJiazi && onSelectJiazi(matchedJiazi.id)}
+                            title={matchedJiazi.symbolicCreature}
+                            className="text-[8.5px] sm:text-[9.5px] text-[#9E2A2B] font-serif font-semibold italic leading-tight px-0.5 cursor-pointer"
+                          >
+                            {matchedJiazi.symbolicCreature}
                           </div>
+                          <div className="pt-1 border-t border-[#EAE2D0]/70 text-left space-y-0.5">
+                            {matchedJiazi.part1.items.map((item, idx) => (
+                              <div
+                                key={idx}
+                                onClick={() => onSelectJiazi && onSelectJiazi(matchedJiazi.id)}
+                                title={`${item.title}${item.chineseTerm ? ` (${item.chineseTerm})` : ""}: ${item.description}`}
+                                className="text-[8px] sm:text-[9px] text-[#5C4D3C] hover:text-[#9E2A2B] font-serif leading-snug flex items-start gap-1 cursor-pointer transition-colors"
+                              >
+                                <span className="text-[#B8862D] shrink-0">•</span>
+                                <span className="line-clamp-1">{item.title}</span>
+                              </div>
+                            ))}
+                          </div>
+                          {matchedJiazi.hexagramLink && (
+                            <div
+                              onClick={() => onSelectJiazi && onSelectJiazi(matchedJiazi.id)}
+                              className="pt-0.5 text-[8.5px] sm:text-[9.5px] text-[#8A6A2F] hover:text-[#9E2A2B] font-serif truncate cursor-pointer transition-colors"
+                            >
+                              ☯ {matchedJiazi.hexagramLink.hexagramName} ↗
+                            </div>
+                          )}
                         </>
                       ) : (
                         <span className="text-[9px] text-[#9A8B74] italic">Chưa phối Can Chi</span>

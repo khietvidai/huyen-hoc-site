@@ -426,17 +426,12 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
                           : "bg-[#18130E] border-[#332619] hover:border-[#4D3A26]"
                       }`}
                     >
-                      {/* Header Cột: Tên Trụ & Nhật Chủ */}
+                      {/* Header Cột: Tên Trụ */}
                       <div className="text-center pb-2 mb-2 border-b border-[#281E14]">
                         <div className="flex items-center justify-center gap-1.5 flex-wrap">
                           <span className="text-xs sm:text-sm font-bold text-[#D6B97A] font-serif">
                             {pillar.title}
                           </span>
-                          {colIdx === 1 && (
-                            <span className="px-1.5 py-0.2 rounded text-[8.5px] font-bold bg-amber-950/90 text-amber-300 border border-amber-600/70 shadow-sm">
-                              Nhật Chủ
-                            </span>
-                          )}
                         </div>
                         <div className="text-[10px] text-[#8C7D6B] font-mono">{pillar.sub}</div>
                       </div>
@@ -518,8 +513,20 @@ export const JiaziEightPillars: React.FC<JiaziEightPillarsProps> = ({
                                 {matchedJiazi.branchGroup}
                               </span>
                             </div>
-                            <div className="text-[10px] text-[#C4B49F] line-clamp-1">
-                              {matchedJiazi.elementNapAm}
+                            <div className="text-[9.5px] text-amber-300/95 font-serif italic">
+                              {matchedJiazi.symbolicCreature}
+                            </div>
+                            <div className="pt-1 border-t border-[#362819] space-y-0.5 text-left">
+                              {matchedJiazi.part1.items.map((item, idx) => (
+                                <div
+                                  key={idx}
+                                  title={`${item.title}${item.chineseTerm ? ` (${item.chineseTerm})` : ""}: ${item.description}`}
+                                  className="text-[9px] text-[#C4B49F] font-serif leading-tight flex items-start gap-1"
+                                >
+                                  <span className="text-[#C9A55A] shrink-0">•</span>
+                                  <span className="line-clamp-1">{item.title}</span>
+                                </div>
+                              ))}
                             </div>
                             {matchedJiazi.hexagramLink && (
                               <div className="text-[9px] text-[#8C7D6B] flex items-center gap-1">

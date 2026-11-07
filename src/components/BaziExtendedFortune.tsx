@@ -2006,21 +2006,36 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                       </div>
                     </div>
 
-                    {/* FOOTER TỐI GIẢN: HOA GIÁP, PHỐI TƯỢNG, NẠP ÂM & QUẺ DỊCH */}
-                    <div className="mt-auto pt-2 border-t border-[#EAE2D0] text-center space-y-0.5">
+                    {/* FOOTER: HOA GIÁP, PHỐI TƯỢNG 60 HOA GIÁP & QUẺ DỊCH */}
+                    <div className="mt-auto pt-2 border-t border-[#EAE2D0] text-center space-y-1">
                       {matchedJiazi ? (
                         <>
-                          <div className="text-[8.5px] sm:text-[10.5px] text-[#2C241B] font-serif font-bold truncate">
+                          <div
+                            onClick={() => onSelectJiazi && onSelectJiazi(matchedJiazi.id)}
+                            className="text-[8.5px] sm:text-[11px] text-[#2C241B] hover:text-[#9E2A2B] font-serif font-bold truncate cursor-pointer transition-colors"
+                            title={`Nhấp xem chi tiết Hoa Giáp #${matchedJiazi.order} ${matchedJiazi.name} (${matchedJiazi.chinese})`}
+                          >
                             #{matchedJiazi.order} {matchedJiazi.name}
                           </div>
                           <div
-                            title={`Phối tượng: ${matchedJiazi.symbolicCreature}\n• ${matchedJiazi.part1.items.map((it) => it.title).join(" • ")}`}
-                            className="text-[7.5px] sm:text-[9px] text-[#78350F] font-serif italic line-clamp-2 leading-tight px-0.5"
+                            onClick={() => onSelectJiazi && onSelectJiazi(matchedJiazi.id)}
+                            title={matchedJiazi.symbolicCreature}
+                            className="text-[7.5px] sm:text-[9.5px] text-[#9E2A2B] font-serif font-semibold italic leading-tight px-0.5 cursor-pointer"
                           >
                             {matchedJiazi.symbolicCreature}
                           </div>
-                          <div className="text-[7.5px] sm:text-[9.5px] text-[#6E5D47] truncate">
-                            {matchedJiazi.elementNapAm.split("(")[0]?.trim()}
+                          <div className="pt-1 border-t border-[#EAE2D0]/70 text-left space-y-0.5">
+                            {matchedJiazi.part1.items.map((item, idx) => (
+                              <div
+                                key={idx}
+                                onClick={() => onSelectJiazi && onSelectJiazi(matchedJiazi.id)}
+                                title={`${item.title}${item.chineseTerm ? ` (${item.chineseTerm})` : ""}: ${item.description}`}
+                                className="text-[7px] sm:text-[8.5px] text-[#5C4D3C] hover:text-[#9E2A2B] font-serif leading-snug flex items-start gap-1 cursor-pointer transition-colors"
+                              >
+                                <span className="text-[#B8862D] shrink-0">•</span>
+                                <span className="line-clamp-1">{item.title}</span>
+                              </div>
+                            ))}
                           </div>
                           {matchedJiazi.hexagramLink && (
                             <div
@@ -2091,20 +2106,35 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                       </div>
                     </div>
 
-                    <div className="mt-auto pt-2 border-t border-[#EAE2D0] text-center space-y-0.5">
+                    <div className="mt-auto pt-2 border-t border-[#EAE2D0] text-center space-y-1">
                       {matchedJiazi ? (
                         <>
-                          <div className="text-[8.5px] sm:text-[10.5px] text-[#2C241B] font-serif font-bold truncate">
+                          <div
+                            onClick={() => onSelectJiazi && onSelectJiazi(matchedJiazi.id)}
+                            className="text-[8.5px] sm:text-[11px] text-[#2C241B] hover:text-[#9E2A2B] font-serif font-bold truncate cursor-pointer transition-colors"
+                            title={`Nhấp xem chi tiết Hoa Giáp #${matchedJiazi.order} ${matchedJiazi.name} (${matchedJiazi.chinese})`}
+                          >
                             #{matchedJiazi.order} {matchedJiazi.name}
                           </div>
                           <div
-                            title={`Phối tượng: ${matchedJiazi.symbolicCreature}\n• ${matchedJiazi.part1.items.map((it) => it.title).join(" • ")}`}
-                            className="text-[7.5px] sm:text-[9px] text-[#78350F] font-serif italic line-clamp-2 leading-tight px-0.5"
+                            onClick={() => onSelectJiazi && onSelectJiazi(matchedJiazi.id)}
+                            title={matchedJiazi.symbolicCreature}
+                            className="text-[7.5px] sm:text-[9.5px] text-[#9E2A2B] font-serif font-semibold italic leading-tight px-0.5 cursor-pointer"
                           >
                             {matchedJiazi.symbolicCreature}
                           </div>
-                          <div className="text-[7.5px] sm:text-[9.5px] text-[#6E5D47] truncate">
-                            {matchedJiazi.elementNapAm.split("(")[0]?.trim()}
+                          <div className="pt-1 border-t border-[#EAE2D0]/70 text-left space-y-0.5">
+                            {matchedJiazi.part1.items.map((item, idx) => (
+                              <div
+                                key={idx}
+                                onClick={() => onSelectJiazi && onSelectJiazi(matchedJiazi.id)}
+                                title={`${item.title}${item.chineseTerm ? ` (${item.chineseTerm})` : ""}: ${item.description}`}
+                                className="text-[7px] sm:text-[8.5px] text-[#5C4D3C] hover:text-[#9E2A2B] font-serif leading-snug flex items-start gap-1 cursor-pointer transition-colors"
+                              >
+                                <span className="text-[#B8862D] shrink-0">•</span>
+                                <span className="line-clamp-1">{item.title}</span>
+                              </div>
+                            ))}
                           </div>
                           {matchedJiazi.hexagramLink && (
                             <div
@@ -2172,20 +2202,35 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                       </div>
                     </div>
 
-                    <div className="mt-auto pt-2 border-t border-[#EAE2D0] text-center space-y-0.5">
+                    <div className="mt-auto pt-2 border-t border-[#EAE2D0] text-center space-y-1">
                       {matchedJiazi ? (
                         <>
-                          <div className="text-[8.5px] sm:text-[10.5px] text-[#2C241B] font-serif font-bold truncate">
+                          <div
+                            onClick={() => onSelectJiazi && onSelectJiazi(matchedJiazi.id)}
+                            className="text-[8.5px] sm:text-[11px] text-[#2C241B] hover:text-[#9E2A2B] font-serif font-bold truncate cursor-pointer transition-colors"
+                            title={`Nhấp xem chi tiết Hoa Giáp #${matchedJiazi.order} ${matchedJiazi.name} (${matchedJiazi.chinese})`}
+                          >
                             #{matchedJiazi.order} {matchedJiazi.name}
                           </div>
                           <div
-                            title={`Phối tượng: ${matchedJiazi.symbolicCreature}\n• ${matchedJiazi.part1.items.map((it) => it.title).join(" • ")}`}
-                            className="text-[7.5px] sm:text-[9px] text-[#78350F] font-serif italic line-clamp-2 leading-tight px-0.5"
+                            onClick={() => onSelectJiazi && onSelectJiazi(matchedJiazi.id)}
+                            title={matchedJiazi.symbolicCreature}
+                            className="text-[7.5px] sm:text-[9.5px] text-[#9E2A2B] font-serif font-semibold italic leading-tight px-0.5 cursor-pointer"
                           >
                             {matchedJiazi.symbolicCreature}
                           </div>
-                          <div className="text-[7.5px] sm:text-[9.5px] text-[#6E5D47] truncate">
-                            {matchedJiazi.elementNapAm.split("(")[0]?.trim()}
+                          <div className="pt-1 border-t border-[#EAE2D0]/70 text-left space-y-0.5">
+                            {matchedJiazi.part1.items.map((item, idx) => (
+                              <div
+                                key={idx}
+                                onClick={() => onSelectJiazi && onSelectJiazi(matchedJiazi.id)}
+                                title={`${item.title}${item.chineseTerm ? ` (${item.chineseTerm})` : ""}: ${item.description}`}
+                                className="text-[7px] sm:text-[8.5px] text-[#5C4D3C] hover:text-[#9E2A2B] font-serif leading-snug flex items-start gap-1 cursor-pointer transition-colors"
+                              >
+                                <span className="text-[#B8862D] shrink-0">•</span>
+                                <span className="line-clamp-1">{item.title}</span>
+                              </div>
+                            ))}
                           </div>
                           {matchedJiazi.hexagramLink && (
                             <div
