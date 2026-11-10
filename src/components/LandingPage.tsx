@@ -9,7 +9,9 @@
  * - Interactive modals: Card Detail Inspector, Coin Toss Divination Studio, Life Config Thermal Receipt
  */
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { Camera, Bookmark, FolderOpen, Clock, Heart, QrCode } from "lucide-react";
+import { Camera, Bookmark, FolderOpen, Clock, Heart, QrCode, Compass } from "lucide-react";
+import { driver } from "driver.js";
+import "driver.js/dist/driver.css";
 import { SaveSpreadDialog } from "./SaveSpreadDialog";
 import { SavedSpreadsModal } from "./SavedSpreadsModal";
 import { TempSpreadsModal } from "./TempSpreadsModal";
@@ -2105,32 +2107,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
   }, []);
-  const [dragonWakeState, setDragonWakeState] = useState<"sleeping" | "waking" | "awake">(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const now = new Date();
-        const todayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-        if (localStorage.getItem("cuunhi_dragon_awake_date_v1") === todayKey) {
-          return "awake";
-        }
-      } catch {}
-    }
-    return "sleeping";
-  });
-  const isDragonSleeping = dragonWakeState === "sleeping";
-  const [isDragonUnlocked, setIsDragonUnlocked] = useState<boolean>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const now = new Date();
-        const todayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-        if (localStorage.getItem("cuunhi_dragon_awake_date_v1") === todayKey) {
-          return true;
-        }
-      } catch {}
-    }
-    return false;
-  });
-  const isDragonLocked = !isDragonUnlocked;
+  const [dragonWakeState, setDragonWakeState] = useState<"sleeping" | "waking" | "awake">("awake");
+  const isDragonSleeping = false;
+  const [isDragonUnlocked, setIsDragonUnlocked] = useState<boolean>(true);
+  const isDragonLocked = false;
   const dragonUnlockTimerRef = useRef<number | null>(null);
   const [dragonIdleAct, setDragonIdleAct] = useState<0 | 1 | 2 | 3 | 4 | 5 | 6 | 7>(0);
   const [dragonAutoFullAct, setDragonAutoFullAct] = useState<6 | 7>(6);
@@ -6836,6 +6816,121 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     setOracleResult(null);
   };
 
+  /* ── Hướng Dẫn Sử Dụng Tương Tác Trang Chủ (Driver.js Product Tour 7 Bước) ── */
+  const handleStartUserGuideTour = useCallback(() => {
+    const isDesktopView = typeof window !== "undefined" && window.innerWidth >= 1024;
+    const startDivinationSelector = isDesktopView
+      ? "#btn-hero-start-divination"
+      : "#btn-hero-mobile-start-divination";
+
+    const driverObj = driver({
+      showProgress: true,
+      animate: true,
+      smoothScroll: true,
+      allowClose: true,
+      overlayColor: "#090705",
+      overlayOpacity: 0.76,
+      stagePadding: 10,
+      stageRadius: 16,
+      popoverClass: "cuunhi-driver-popover",
+      progressText: "Bước {{current}} / {{total}}",
+      nextBtnText: "Tiếp theo →",
+      prevBtnText: "← Quay lại",
+      doneBtnText: "Hoàn tất ✦",
+      onDestroyed: () => {
+        document.body.classList.remove("cuunhi-tour-step-cards");
+      },
+      steps: [
+        {
+          element: startDivinationSelector,
+          onHighlightStarted: () => {
+            document.body.classList.remove("cuunhi-tour-step-cards");
+          },
+          popover: {
+            title: "☯ Bước 1: Bắt Đầu Bốc Quẻ & Nghi Thức Tam Kính",
+            description:
+              "• Nhấn 1 lần: Rút ngẫu nhiên một trận pháp mới từ 64 Quẻ & 384 Hào Chu Dịch và tự động cuộn xuống bàn quẻ.\n• Nhấn & Giữ 3 lần (Kính Thiên · Kính Địa · Kính Nhân): Khai mở nghi thức Đắc Pháp Tam Kính (✦), giúp mở khóa 100% Toàn Thư Bách Khoa khi sao chép cho AI.",
+            side: "bottom",
+            align: "start",
+          },
+        },
+        {
+          element: "#destiny-tour-frame",
+          onHighlightStarted: () => {
+            document.body.classList.add("cuunhi-tour-step-cards");
+            const sec = document.getElementById("destiny-cards");
+            if (sec) {
+              sec.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+            window.setTimeout(() => {
+              requestTickRef.current?.();
+              driverObj.refresh();
+            }, 180);
+            window.setTimeout(() => {
+              requestTickRef.current?.();
+              driverObj.refresh();
+            }, 420);
+          },
+          onDeselected: () => {
+            document.body.classList.remove("cuunhi-tour-step-cards");
+          },
+          popover: {
+            title: "🃏 Bước 2: Bàn Trải Bài & Soi Hộp Gấm 2 Mặt",
+            description:
+              "Các lá bài tự động xòe theo trận pháp (Đơn Quẻ, Lưỡng Nghi, Tam Tài, Ngũ Hành, Thất Tinh, Thập Tinh hoặc Tháp La Kinh Dịch).\n• Nhấp trực tiếp vào bất kỳ lá bài nào để mở Hộp Gấm Bảo Vật: soi rõ Mặt Trước (Quẻ Tượng) & Mặt Sau (Thoán Từ / Hào Từ), tra cứu Bách Khoa 64 Quẻ hoặc chép riêng lá đó cho AI.",
+            side: "top",
+            align: "center",
+          },
+        },
+        {
+          element: "#huong-an-khoi-niem",
+          onHighlightStarted: () => {
+            document.body.classList.remove("cuunhi-tour-step-cards");
+          },
+          popover: {
+            title: "印 Bước 3: Hương Án Khởi Niệm · Gửi Câu Hỏi Chiêm Bốc",
+            description:
+              "“Tâm tĩnh tắc linh” — Nhập câu hỏi hoặc sự việc bạn đang trăn trở (sự nghiệp, tài lộc, tình duyên, hợp tác...) vào ô Hương Án, hoặc bấm 🎙️ Nói câu hỏi để nhập bằng giọng nói tiếng Việt. Tâm niệm này sẽ tự động đính kèm vào bộ quẻ khi gửi cho AI.",
+            side: "top",
+            align: "center",
+          },
+        },
+        {
+          element: "#cuunhi-command-dock-controls",
+          popover: {
+            title: "🔒 Bước 4: Quản Trị Bàn Quẻ (Giữ Nguyên · Lưu · Mở · Quẻ Tạm)",
+            description:
+              "• Giữ nguyên: Khóa các lá bài hiện tại để không bị đổi bài khi bấm bốc lại hoặc khi nhấn giữ 3 lần Tam Kính.\n• Lưu Quẻ / Mở Quẻ: Lưu lại trải bài kèm câu hỏi và lời nghiệm cá nhân để đối chiếu về sau.\n• Quẻ Tạm: Tự động ghi nhớ mọi quẻ đã rút trong ngày hôm nay dù chưa nhấn lưu.",
+            side: "top",
+            align: "center",
+          },
+        },
+        {
+          element: "#btn-copy-all-for-ai",
+          popover: {
+            title: "⚡ Bước 5: Chép Toàn Thư Quẻ Bài & Câu Hỏi Cho AI",
+            description:
+              "Bấm nút này để sao chép trọn bộ thông tin các lá bài đang trải (Quẻ tượng, Thoán từ, Hào động, Vị trí trận pháp + Câu hỏi Hương Án) vào bộ nhớ tạm. Nếu đã Đắc Pháp Tam Kính (✦), hệ thống sao chép 100% Toàn Thư Bách Khoa để bạn gửi cho AI luận giải sâu sắc nhất.",
+            side: "top",
+            align: "center",
+          },
+        },
+        {
+          element: "#btn-capture-cards-snapshot",
+          popover: {
+            title: "📸 Bước 6: Chụp Hình Trọn Bộ Thẻ Bài Đang Trải",
+            description:
+              "Tự động căn chỉnh bố cục và kết xuất ảnh PNG sắc nét của toàn bộ các lá bài trên bàn quẻ để tải về máy, lưu làm tư liệu hoặc gửi kèm khi luận giải.",
+            side: "bottom",
+            align: "end",
+          },
+        },
+      ],
+    });
+
+    driverObj.drive();
+  }, []);
+
   return (
     <div className="font-serif min-h-full flex flex-col bg-white text-zinc-900" style={{ fontFamily: "'IM Fell English','Noto Serif TC',serif" }}>
       {/* ── CSS Animations & Hover Rules identical to Yilore ── */}
@@ -6884,6 +6979,102 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         .animate-ritual-wiggle {
           animation: ritual-wiggle 0.3s ease-in-out;
         }
+        /* ── Cửu Nhị Driver.js Custom Theme (Sơn Mài Hổ Phách × Vàng Hoàng Kim) ── */
+        body.cuunhi-tour-step-cards #cards-stack-layer {
+          z-index: 10001 !important;
+        }
+        .driver-popover.cuunhi-driver-popover {
+          background: linear-gradient(155deg, #1E1812 0%, #120E0A 100%) !important;
+          color: #F5EFE3 !important;
+          border: 1.5px solid rgba(212, 175, 55, 0.78) !important;
+          border-radius: 18px !important;
+          padding: 18px 20px !important;
+          max-width: 390px !important;
+          box-shadow: 0 24px 60px rgba(0, 0, 0, 0.72), 0 0 28px rgba(212, 175, 55, 0.24), inset 0 1px 0 rgba(255, 240, 195, 0.22) !important;
+          font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif !important;
+        }
+        .driver-popover.cuunhi-driver-popover .driver-popover-title {
+          font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif !important;
+          font-size: 16px !important;
+          font-weight: 700 !important;
+          line-height: 1.35 !important;
+          color: #F3E5AB !important;
+          padding-right: 24px !important;
+          margin-bottom: 8px !important;
+          border-bottom: 1px solid rgba(196, 150, 62, 0.32) !important;
+          padding-bottom: 8px !important;
+        }
+        .driver-popover.cuunhi-driver-popover .driver-popover-description {
+          font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+          font-size: 13.5px !important;
+          line-height: 1.62 !important;
+          color: #E7DFCF !important;
+          margin-bottom: 4px !important;
+        }
+        .driver-popover.cuunhi-driver-popover .driver-popover-progress-text {
+          font-size: 11.5px !important;
+          font-weight: 700 !important;
+          letter-spacing: 0.04em !important;
+          color: #D4AF37 !important;
+        }
+        .driver-popover.cuunhi-driver-popover .driver-popover-close-btn {
+          color: #C4963E !important;
+          font-size: 20px !important;
+          top: 12px !important;
+          right: 12px !important;
+          transition: color 0.15s ease !important;
+        }
+        .driver-popover.cuunhi-driver-popover .driver-popover-close-btn:hover {
+          color: #FFF4CC !important;
+        }
+        .driver-popover.cuunhi-driver-popover .driver-popover-footer {
+          margin-top: 14px !important;
+          padding-top: 10px !important;
+          border-top: 1px solid rgba(196, 150, 62, 0.25) !important;
+        }
+        .driver-popover.cuunhi-driver-popover .driver-popover-prev-btn {
+          background: rgba(255, 255, 255, 0.06) !important;
+          color: #E2D5BE !important;
+          border: 1px solid rgba(196, 150, 62, 0.45) !important;
+          border-radius: 999px !important;
+          padding: 6px 13px !important;
+          font-size: 12px !important;
+          font-weight: 600 !important;
+          text-shadow: none !important;
+          transition: all 0.15s ease !important;
+        }
+        .driver-popover.cuunhi-driver-popover .driver-popover-prev-btn:hover {
+          background: rgba(196, 150, 62, 0.2) !important;
+          color: #FFF7DF !important;
+        }
+        .driver-popover.cuunhi-driver-popover .driver-popover-next-btn {
+          background: linear-gradient(135deg, #D4AF37 0%, #AA7C11 100%) !important;
+          color: #16110B !important;
+          border: 1px solid #F3E5AB !important;
+          border-radius: 999px !important;
+          padding: 6px 15px !important;
+          font-size: 12px !important;
+          font-weight: 700 !important;
+          text-shadow: none !important;
+          box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35) !important;
+          transition: all 0.15s ease !important;
+        }
+        .driver-popover.cuunhi-driver-popover .driver-popover-next-btn:hover {
+          filter: brightness(1.08) !important;
+          transform: translateY(-1px) !important;
+        }
+        .driver-popover.cuunhi-driver-popover .driver-popover-arrow-side-left.driver-popover-arrow {
+          border-left-color: #1E1812 !important;
+        }
+        .driver-popover.cuunhi-driver-popover .driver-popover-arrow-side-right.driver-popover-arrow {
+          border-right-color: #1E1812 !important;
+        }
+        .driver-popover.cuunhi-driver-popover .driver-popover-arrow-side-top.driver-popover-arrow {
+          border-top-color: #1E1812 !important;
+        }
+        .driver-popover.cuunhi-driver-popover .driver-popover-arrow-side-bottom.driver-popover-arrow {
+          border-bottom-color: #1E1812 !important;
+        }
       `}</style>
 
       {/* ══════════════════════════════════════════════════════════════════
@@ -6910,9 +7101,23 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         </div>
 
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+          {/* Nút Hướng dẫn sử dụng tương tác (Driver.js Tour) */}
+          <button
+            type="button"
+            id="btn-header-user-guide"
+            onClick={handleStartUserGuideTour}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#F3E5AB] hover:text-white transition px-3 py-1.5 rounded-full bg-[#1C1610] hover:bg-[#2A2016] border border-[#D4AF37]/80 hover:border-[#F3E5AB] cursor-pointer shadow-xs active:scale-95"
+            title="Mở hướng dẫn sử dụng từng bước trực quan trên Trang chủ"
+          >
+            <Compass className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <span className="hidden xs:inline sm:inline">Hướng dẫn sử dụng</span>
+            <span className="xs:hidden sm:hidden">Hướng dẫn</span>
+          </button>
+
           {/* Nút chụp hình thẻ bài: Tự động căn chỉnh & chụp trọn vẹn toàn bộ trải bài */}
           <button
             type="button"
+            id="btn-capture-cards-snapshot"
             onClick={handleCaptureCardsSnapshot}
             disabled={isCapturingSnapshot}
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1C1813] hover:text-amber-950 transition px-3 py-1.5 rounded-full bg-[#FDFBF7] hover:bg-amber-50 border border-[#C4963E]/55 hover:border-amber-500 cursor-pointer shadow-xs active:scale-95 disabled:opacity-60"
@@ -7061,8 +7266,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   </a>
                 </div>
 
-                {/* Hàng 2: Nút Donate Ủng Hộ Dự Án ngay dưới chỗ nút bốc quẻ */}
-                <div className="mt-3 w-full max-w-xl flex items-center justify-start">
+                {/* Hàng 2: Nút Donate Ủng Hộ Dự Án & Hướng Dẫn Sử Dụng ngay dưới chỗ nút bốc quẻ */}
+                <div className="mt-3 w-full max-w-xl flex flex-wrap items-center justify-start gap-2.5">
                   <button
                     type="button"
                     onClick={() => {
@@ -7075,6 +7280,16 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     <Heart className="w-4 h-4 text-rose-400 fill-rose-500/30 group-hover:scale-110 transition-transform" />
                     <span>Donate Ủng Hộ Dự Án</span>
                     <QrCode className="w-3.5 h-3.5 text-amber-400 group-hover:text-amber-200" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleStartUserGuideTour}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-serif font-bold text-[#F3E5AB] hover:text-white bg-white/10 hover:bg-white/20 border border-[#D4AF37]/65 hover:border-[#F3E5AB] rounded-full transition-all cursor-pointer shadow-lg backdrop-blur-md active:scale-95 group"
+                    title="Khởi chạy tour hướng dẫn sử dụng từng bước"
+                  >
+                    <Compass className="w-4 h-4 text-[#D4AF37] group-hover:rotate-45 transition-transform" />
+                    <span>Hướng Dẫn Sử Dụng</span>
                   </button>
                 </div>
               </div>
@@ -7140,20 +7355,32 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 </a>
               </div>
 
-              {/* Hàng 2: Nút Donate Ủng Hộ Dự Án ngay dưới nút bốc quẻ */}
-              <button
-                type="button"
-                onClick={() => {
-                  if (onOpenDonateModal) onOpenDonateModal();
-                  else window.dispatchEvent(new CustomEvent("open-donate-modal"));
-                }}
-                className="flex items-center justify-center gap-1.5 w-full rounded-2xl px-3 py-2.5 text-xs font-semibold text-amber-300 hover:text-amber-200 bg-amber-950/60 hover:bg-amber-900/80 border border-amber-600/60 hover:border-amber-400 transition cursor-pointer shadow-md active:scale-[0.98]"
-                title="Quét mã QR donate ủng hộ dự án Cửu Nhị"
-              >
-                <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-500/30" />
-                <span>Donate Ủng Hộ Dự Án</span>
-                <QrCode className="w-3.5 h-3.5 text-amber-400" />
-              </button>
+              {/* Hàng 2: Nút Donate Ủng Hộ Dự Án & Hướng Dẫn Sử Dụng ngay dưới nút bốc quẻ */}
+              <div className="flex w-full max-w-xl flex-row items-stretch gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (onOpenDonateModal) onOpenDonateModal();
+                    else window.dispatchEvent(new CustomEvent("open-donate-modal"));
+                  }}
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-2xl px-3 py-2.5 text-xs font-semibold text-amber-300 hover:text-amber-200 bg-amber-950/60 hover:bg-amber-900/80 border border-amber-600/60 hover:border-amber-400 transition cursor-pointer shadow-md active:scale-[0.98]"
+                  title="Quét mã QR donate ủng hộ dự án Cửu Nhị"
+                >
+                  <Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-500/30 shrink-0" />
+                  <span className="truncate">Donate Ủng Hộ</span>
+                  <QrCode className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleStartUserGuideTour}
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-2xl px-3 py-2.5 text-xs font-semibold text-[#F3E5AB] hover:text-white bg-white/10 hover:bg-white/20 border border-[#D4AF37]/65 hover:border-[#F3E5AB] transition cursor-pointer shadow-md backdrop-blur-md active:scale-[0.98]"
+                  title="Xem hướng dẫn sử dụng từng bước"
+                >
+                  <Compass className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
+                  <span className="truncate">Hướng Dẫn Sử Dụng</span>
+                </button>
+              </div>
             </div>
 
             {/* ── CỘT PHẢI: HERO CARD ANCHOR (Điểm neo cho xấp bài ở Hero - Sắp ở dưới trên mobile) ── */}
@@ -7363,7 +7590,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           </div>
 
           {/* Điểm neo cho các lá bài xòe ra ở giữa phần Giấy Tuyên Thành */}
-          <div className={`relative z-10 flex items-center justify-center pt-4 pb-4 ${mode === "that_tinh" || mode === "thap_tinh" || mode === "thap_la" ? "min-h-[680px] sm:min-h-[760px] md:min-h-[820px]" : "min-h-[540px] sm:min-h-[580px]"}`}>
+          <div id="destiny-tour-frame" className={`relative z-10 flex items-center justify-center pt-4 pb-4 ${mode === "that_tinh" || mode === "thap_tinh" || mode === "thap_la" ? "min-h-[680px] sm:min-h-[760px] md:min-h-[820px]" : "min-h-[540px] sm:min-h-[580px]"}`}>
             <div
               ref={destinyAnchorRef}
               id="destiny-card-anchor"
@@ -7536,10 +7763,10 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           />
         </div>
 
-        <div className="relative z-10 max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            {/* Cột phải (Desktop) / Cột trên (Mobile): Văn bản tính năng, Hương Án Khởi Niệm & Cửu Nhị Command Dock */}
-            <div className="order-1 lg:order-2">
+        <div className="relative z-10 max-w-2xl mx-auto">
+          <div>
+            {/* Văn bản tính năng, Hương Án Khởi Niệm & Cửu Nhị Command Dock */}
+            <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#16130F]/90 border border-[#C4963E]/50 mb-5 shadow-xs">
                 <span className="text-[#D4AF37] text-xs">☯</span>
                 <span className="text-[11px] font-semibold tracking-[0.22em] uppercase text-[#F3E5AB]">
@@ -7586,7 +7813,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               </div>
 
               {/* MODULE 1: HƯƠNG ÁN KHỞI NIỆM (TRỤC LỤA GIẤY TUYÊN THÀNH VIỀN KÉP CHỈ VÀNG ĐỒNG BỘ TRANG CHỦ) */}
-              <div id="huong-an-khoi-niem" className="mt-6 max-w-xl scroll-mt-24">
+              <div id="huong-an-khoi-niem" className="mt-6 w-full scroll-mt-24">
                 <div
                   className={`relative rounded-2xl border p-4 sm:p-5 backdrop-blur-md transition-all duration-300 focus-within:border-[#C4963E] focus-within:shadow-[0_16px_38px_-6px_rgba(196,150,62,0.22),inset_0_0_0_3px_#FDFBF7,inset_0_0_0_4px_rgba(196,150,62,0.32)] ${
                     isHuongAnHighlighted
@@ -7662,7 +7889,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
               {/* MODULE 2: CỬU NHỊ COMMAND DOCK (NGỌC GIẢN KÍNH MỜ GIẤY TUYÊN THÀNH HÒA QUYỆN NÚI THỦY MẶC) */}
               <div
-                className="mt-4 max-w-xl rounded-2xl border border-[#C4963E]/45 p-4 sm:p-5 backdrop-blur-xl flex flex-col gap-3.5"
+                className="mt-4 w-full rounded-2xl border border-[#C4963E]/45 p-4 sm:p-5 backdrop-blur-xl flex flex-col gap-3.5"
                 style={{
                   background: "linear-gradient(180deg, rgba(253, 251, 247, 0.92) 0%, rgba(243, 236, 224, 0.88) 100%)",
                   boxShadow:
@@ -7686,6 +7913,15 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                         🔒 Đang khóa bài
                       </span>
                     )}
+                    <button
+                      type="button"
+                      onClick={handleStartUserGuideTour}
+                      className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-serif font-bold text-[#6E4E16] hover:text-[#1C1610] bg-[#FAF0D7]/90 hover:bg-[#F3E5AB] border border-[#C4963E]/60 transition cursor-pointer shadow-2xs active:scale-95"
+                      title="Mở hướng dẫn sử dụng từng bước"
+                    >
+                      <Compass className="w-3 h-3 text-[#B8862D]" />
+                      <span>Hướng dẫn</span>
+                    </button>
                   </div>
                 </div>
 
@@ -7708,7 +7944,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
                 {/* CỤM 2 & 3: QUẢN TRỊ BÀN QUẺ & NÚT CHÉP TOÀN THƯ AI */}
                 <div className="flex flex-col gap-2.5">
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2">
+                  <div id="cuunhi-command-dock-controls" className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2">
                     {/* Nút Khóa / Giữ nguyên */}
                     <RitualHoldButton
                       id="hero-action-keep-cards"
@@ -7783,56 +8019,29 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     </button>
                   </div>
 
-                  {/* NÚT GỌI CỬU NHỊ TIỂU LONG DẬY */}
-                  {isDragonSleeping ? (
-                    <div className="relative w-full">
-                      <button
-                        type="button"
-                        id="btn-wake-up-dragon"
-                        onClick={handleWakeUpDragon}
-                        className="inline-flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl text-xs sm:text-sm font-serif font-bold text-[#1C1610] border-2 border-[#FFF8E7] transition cursor-pointer shadow-lg hover:brightness-105 active:scale-[0.99] select-none"
-                        style={{
-                          background: "linear-gradient(135deg, #FFF3B0 0%, #E5C158 45%, #C4963E 100%)",
-                          boxShadow: "0 12px 28px -4px rgba(212, 175, 55, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.9)",
-                        }}
-                      >
-                        <span className="tracking-wide">GỌI CỬU NHỊ TIỂU LONG DẬY</span>
-                      </button>
-                    </div>
-                  ) : null}
-
                   {/* CỤM 3: HERO CTA - CHÉP TOÀN THƯ CHO AI (ĐIỂM NHẤN SƠN MÀI HỔ PHÁCH × VÀNG KIM HOÀNG GIA) */}
                   <div className="relative w-full">
                     <button
                       type="button"
                       id="btn-copy-all-for-ai"
-                      disabled={isDragonLocked}
                       onClick={handleCopyCardsForAI}
                       className={`inline-flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl text-xs sm:text-sm font-serif font-bold transition shadow-md select-none ${
-                        isDragonLocked
-                          ? "opacity-55 cursor-not-allowed grayscale-[45%] text-[#A89880] border border-[#8A7960]/60"
-                          : copiedAI
+                        copiedAI
                           ? "bg-emerald-700 text-white border border-emerald-400 cursor-pointer active:scale-[0.99]"
                           : "text-[#F5E6C4] border border-[#D4AF37]/85 hover:brightness-110 cursor-pointer active:scale-[0.99]"
                       }`}
                       style={
-                        copiedAI && !isDragonLocked
+                        copiedAI
                           ? undefined
                           : {
-                              background: isDragonLocked
-                                ? "linear-gradient(135deg, #3A332C 0%, #26211C 100%)"
-                                : "linear-gradient(135deg, #2A2118 0%, #1C1610 55%, #261D14 100%)",
+                              background: "linear-gradient(135deg, #2A2118 0%, #1C1610 55%, #261D14 100%)",
                               boxShadow: "0 10px 24px -4px rgba(28, 22, 16, 0.28), inset 0 1px 0 rgba(212, 175, 55, 0.35)",
                             }
                       }
-                      title={
-                        isDragonLocked
-                          ? "Đang khóa vì Cửu Nhị Tiểu Long còn ngủ/đang thức dậy. Sau khi gọi dậy 5 giây sẽ tự động mở khóa!"
-                          : "Sao chép toàn bộ thông tin các lá bài (kèm câu hỏi & đáp án) để gửi cho AI luận giải"
-                      }
+                      title="Sao chép toàn bộ thông tin các lá bài (kèm câu hỏi & đáp án) để gửi cho AI luận giải"
                     >
                       <span className="text-base text-[#E5C158] shrink-0">
-                        {isDragonLocked ? "🔒" : copiedAI ? "✓" : isRitualCompleted ? "✨" : "⚡"}
+                        {copiedAI ? "✓" : isRitualCompleted ? "✨" : "⚡"}
                       </span>
                       <span>
                         {copiedAI
@@ -7841,7 +8050,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                           ? "Chép Toàn Thư Bách Khoa Cho AI (Đắc Pháp)"
                           : "Chép Toàn Bộ Quẻ Bài & Câu Hỏi Cho AI"}
                       </span>
-                      {(userIntentQuestion.trim() || userCustomAnswer.trim()) && !copiedAI && !isDragonLocked && (
+                      {(userIntentQuestion.trim() || userCustomAnswer.trim()) && !copiedAI && (
                         <span className="text-[10px] font-sans font-bold text-[#1C1610] bg-[#F3E5AB] px-2 py-0.5 rounded-full border border-[#D4AF37]">
                           +Kèm Tâm Niệm
                         </span>
@@ -7851,28 +8060,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 </div>
               </div>
 
-              {/* KHỐI 3: CỤM NÚT VÀO NHẬT KÝ & NGÔN NGỮ / ĐĂNG NHẬP (ĐỒNG BỘ CẶP PHÁP KHÍ LỤA TUYÊN THÀNH 44PX) */}
-              <div className="mt-5 max-w-xl flex flex-wrap items-center justify-between gap-3">
-                <button
-                  type="button"
-                  id="btn-use-on-web"
-                  onClick={() => onEnterApp("yilore")}
-                  className="group inline-flex h-11 items-center gap-2.5 px-5 rounded-full text-[#231C14] font-serif text-xs sm:text-sm font-bold cursor-pointer transition-all hover:-translate-y-0.5 active:scale-[0.98]"
-                  style={{
-                    background: "linear-gradient(180deg, #FDFBF7 0%, #F2EAE0 100%)",
-                    border: "1px solid rgba(196, 150, 62, 0.55)",
-                    boxShadow: "0 6px 18px rgba(110, 90, 55, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.9)",
-                  }}
-                >
-                  <span className="w-6 h-6 rounded-full bg-[#1C1610] border border-[#D4AF37]/80 flex items-center justify-center text-[#E5C158] text-xs shadow-2xs">
-                    ☯
-                  </span>
-                  <span>Vào nhật ký chiêm bốc</span>
-                  <svg viewBox="0 0 24 24" className="w-4 h-4 text-[#996515] transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2.2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                  </svg>
-                </button>
-
+              {/* KHỐI 3: CỤM NÚT DONATE & NGÔN NGỮ / ĐĂNG NHẬP */}
+              <div className="mt-5 w-full flex flex-wrap items-center justify-between gap-3">
                 {/* Nút Donate Ủng Hộ Dự Án */}
                 <button
                   type="button"
@@ -7985,961 +8174,15 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               </div>
             </div>
 
-            {/* Cột trái (Desktop) / Cột dưới (Mobile): MẪU 2 — MÀN HÌNH ĐIỆN THOẠI 9:16 TINH GỌN + 3 NÚT TẢI + NÚT XEM KẾT QUẢ LUẬN GIẢI TRỰC TIẾP TỪ TRANG CHỦ */}
-            <div className="order-2 lg:order-1 flex flex-col items-center lg:items-center justify-center lg:self-center mt-6 lg:mt-0 lg:pb-1">
-              {/* Giữ nguyên neo vật lý ẩn để không ảnh hưởng engine cuộn bài */}
-              <div
-                ref={featuresAnchorRef}
-                id="features-card-anchor"
-                className="hidden pointer-events-none"
-                aria-hidden="true"
-              />
-
-              <div className="w-full max-w-[376px] flex flex-col items-center gap-3">
-                {/* KHUNG ĐIỆN THOẠI DỌC 9:16 CỬU NHỊ TIỂU LONG TÍCH HỢP KHUNG CHATBOX ĐÀM ĐẠO TRỰC TIẾP */}
-                <div
-                  id="direct-home-phone-mockup"
-                  className={`relative w-[320px] sm:w-[356px] rounded-[42px] p-[9px] transition-all duration-300 scroll-mt-20 ${
-                    isPhoneMockupHighlighted
-                      ? "ring-4 ring-[#F3E5AB] scale-[1.015]"
-                      : ""
-                  }`}
-                  style={{
-                    background: "linear-gradient(145deg, #3A2C1E 0%, #17120D 50%, #2C2116 100%)",
-                    border: isPhoneMockupHighlighted
-                      ? "2px solid #FFF3B0"
-                      : "2px solid rgba(212, 175, 55, 0.85)",
-                    boxShadow: isPhoneMockupHighlighted
-                      ? "0 0 42px rgba(243, 229, 171, 0.65), 0 26px 60px -12px rgba(24, 18, 12, 0.65), inset 0 1px 1px rgba(255, 248, 220, 0.55)"
-                      : "0 26px 60px -12px rgba(24, 18, 12, 0.55), 0 0 28px rgba(212, 175, 55, 0.22), inset 0 1px 1px rgba(255, 248, 220, 0.35)",
-                  }}
-                >
-                  {/* Loa thoại / Dynamic Island */}
-                  <div className="absolute top-[14px] left-1/2 -translate-x-1/2 z-30 h-4 w-24 rounded-full bg-[#090705] border border-[#D4AF37]/30 flex items-center justify-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#2A241D]" />
-                    <span className="w-8 h-1 rounded-full bg-[#231D16]" />
-                  </div>
-
-                  {/* Màn hình 9:16 bên trong */}
-                  <div
-                    className="relative w-full h-[588px] sm:h-[636px] rounded-[33px] overflow-hidden flex flex-col justify-between text-[#F5E6C4]"
-                    style={{
-                      background:
-                        "radial-gradient(circle at 50% 18%, rgba(158, 42, 43, 0.28) 0%, rgba(20, 15, 10, 0.96) 65%, #0D0A07 100%)",
-                      border: "1px solid rgba(212, 175, 55, 0.32)",
-                    }}
-                  >
-                    {/* Thanh trạng thái trên cùng của điện thoại */}
-                    <div className="pt-6 px-3.5 pb-1.5 flex items-center justify-between text-[10px] text-[#E5C158]/90 border-b border-[#D4AF37]/20 bg-black/35 backdrop-blur-xs z-20 shrink-0">
-                      <span className="font-mono font-bold">9:41</span>
-                      <span className="font-serif font-bold tracking-[0.08em] text-[9px] uppercase text-[#F3E5AB] truncate">
-                        ☯ TIỂU LONG CỬU NHỊ · ĐÀM ĐẠO
-                      </span>
-                      <span className="text-[9px] font-semibold text-emerald-400">● LIVE</span>
-                    </div>
-
-                    {/* Thanh điều khiển chế độ hiển thị trong điện thoại: Khung Chatbox | Bách Khoa 64 Quẻ | Blog Dịch Học | Sân Khấu */}
-                    <div className="px-2 py-1.5 flex items-center justify-between gap-1 bg-[#140F0A]/90 border-b border-[#D4AF37]/25 z-20 shrink-0">
-                      <div className="inline-flex items-center rounded-full p-0.5 bg-[#0B0806] border border-[#D4AF37]/35">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowPhoneVideoMode(false);
-                            setPhoneDisplayTab("chat");
-                          }}
-                          className={`text-[9px] font-serif font-bold px-2 py-0.5 rounded-full transition cursor-pointer ${
-                            phoneDisplayTab === "chat" && !(directHomeResult?.video_url && showPhoneVideoMode)
-                              ? "bg-gradient-to-r from-[#D4AF37] to-[#B8862D] text-[#1C1610] shadow-2xs"
-                              : "text-[#D9C498] hover:text-[#FFF8E7]"
-                          }`}
-                        >
-                          💬 Chat
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowPhoneVideoMode(false);
-                            setPhoneDisplayTab("bakh_khoa");
-                          }}
-                          className={`text-[9px] font-serif font-bold px-2 py-0.5 rounded-full transition cursor-pointer ${
-                            phoneDisplayTab === "bakh_khoa" && !(directHomeResult?.video_url && showPhoneVideoMode)
-                              ? "bg-gradient-to-r from-[#D4AF37] to-[#B8862D] text-[#1C1610] shadow-2xs"
-                              : "text-[#D9C498] hover:text-[#FFF8E7]"
-                          }`}
-                        >
-                          📚 Bách Khoa
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowPhoneVideoMode(false);
-                            setPhoneDisplayTab("blog");
-                          }}
-                          className={`text-[9px] font-serif font-bold px-2 py-0.5 rounded-full transition cursor-pointer ${
-                            phoneDisplayTab === "blog" && !(directHomeResult?.video_url && showPhoneVideoMode)
-                              ? "bg-gradient-to-r from-[#D4AF37] to-[#B8862D] text-[#1C1610] shadow-2xs"
-                              : "text-[#D9C498] hover:text-[#FFF8E7]"
-                          }`}
-                        >
-                          📰 Blog
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowPhoneVideoMode(false);
-                            setPhoneDisplayTab("stage");
-                          }}
-                          className={`text-[9px] font-serif font-bold px-2 py-0.5 rounded-full transition cursor-pointer ${
-                            phoneDisplayTab === "stage" && !(directHomeResult?.video_url && showPhoneVideoMode)
-                              ? "bg-gradient-to-r from-[#D4AF37] to-[#B8862D] text-[#1C1610] shadow-2xs"
-                              : "text-[#D9C498] hover:text-[#FFF8E7]"
-                          }`}
-                        >
-                          🐉 3D
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowPhoneVideoMode(false);
-                            setPhoneDisplayTab("thuy_mac");
-                          }}
-                          className={`text-[9px] font-serif font-bold px-2 py-0.5 rounded-full transition cursor-pointer ${
-                            phoneDisplayTab === "thuy_mac" && !(directHomeResult?.video_url && showPhoneVideoMode)
-                              ? "bg-gradient-to-r from-[#8B1E22] to-[#B3282D] text-[#FFF8E7] border border-[#D4AF37]/60 shadow-2xs"
-                              : "text-[#F3E5AB] hover:text-[#FFF8E7]"
-                          }`}
-                          title="Xem hoặc Xuất Video Thủy Mặc ngắn gọn trả lời trực tiếp câu hỏi"
-                        >
-                          墨 Thủy Mặc
-                        </button>
-                        {directHomeResult?.video_url && !isDragonSendingFinale && (
-                          <button
-                            type="button"
-                            onClick={() => setShowPhoneVideoMode((v) => !v)}
-                            className={`text-[9px] font-serif font-bold px-1.5 py-0.5 rounded-full transition cursor-pointer ${
-                              showPhoneVideoMode
-                                ? "bg-emerald-500 text-[#09150E]"
-                                : "text-emerald-300 hover:text-emerald-200"
-                            }`}
-                          >
-                            🎬 MP4
-                          </button>
-                        )}
-                      </div>
-
-                      <div className="flex items-center gap-1">
-                        {phoneChatMessages.length > 0 && phoneDisplayTab === "chat" && (
-                          <button
-                            type="button"
-                            onClick={handleResetPhoneChat}
-                            className="text-[8.5px] font-semibold px-1.5 py-0.5 rounded-full bg-[#1F1710] hover:bg-[#2C2117] text-[#E5C158] border border-[#D4AF37]/40 cursor-pointer transition"
-                            title="Làm mới cuộc trò chuyện cùng Tiểu Long Cửu Nhị"
-                          >
-                            ↺ Mới
-                          </button>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() => setIsPhoneChatModalExpanded(true)}
-                          className="text-[8.5px] font-semibold px-1.5 py-0.5 rounded-full bg-[#1F1710] hover:bg-[#2C2117] text-[#F3E5AB] border border-[#D4AF37]/50 cursor-pointer transition"
-                          title="Mở rộng khung đàm đạo Tiểu Long Cửu Nhị toàn màn hình"
-                        >
-                          ⤢ Mở
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* NỘI DUNG CHÍNH TRONG MÀN HÌNH 9:16 */}
-                    {directHomeResult?.video_url && showPhoneVideoMode && !isDragonSendingFinale ? (
-                      <div className="flex-1 relative flex items-center justify-center bg-black overflow-hidden">
-                        <video
-                          key={resolveMediaUrl(directHomeResult.video_url)}
-                          src={resolveMediaUrl(directHomeResult.video_url)}
-                          controls
-                          autoPlay
-                          loop
-                          playsInline
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    ) : phoneDisplayTab === "thuy_mac" ? (
-                      renderPhoneThuyMacView(false)
-                    ) : phoneDisplayTab === "bakh_khoa" ? (
-                      renderPhoneBakhKhoaView(false)
-                    ) : phoneDisplayTab === "blog" ? (
-                      renderPhoneBlogView(false)
-                    ) : phoneDisplayTab === "stage" ? (
-                      /* CHẾ ĐỘ XEM SÂN KHẤU HOẠT ẢNH TIỂU LONG CỠ LỚN */
-                      <div className="flex-1 flex flex-col justify-between p-2.5 overflow-hidden">
-                        <div className="flex-1 flex flex-col items-center gap-1.5 min-h-0">
-                          <div className="w-full flex-1 flex flex-col rounded-xl overflow-hidden border border-[#D4AF37]/60 bg-gradient-to-b from-[#1E160E] via-[#140F0A] to-[#0D0A07] p-1.5 shadow-inner relative">
-                            <div className="w-full flex-1 min-h-[214px] rounded-lg overflow-hidden relative border border-[#D4AF37]/45 bg-[#0E0A07] shadow-md">
-                              <video
-                                ref={dragonVideoRef}
-                                key={DRAGON_VIDEO_MAP[activeDragonAct].src}
-                                src={DRAGON_VIDEO_MAP[activeDragonAct].src}
-                                autoPlay
-                                loop={activeDragonAct === 0 || activeDragonAct === 9}
-                                muted
-                                playsInline
-                                onEnded={(e) => {
-                                  if (dragonWakeState === "waking") {
-                                    setDragonWakeState("awake");
-                                    setIsDragonUnlocked(true);
-                                  } else if (isDirectHomeRunning || isCapturingSnapshot) {
-                                    setDragonAutoFullAct((prev) => (prev === 6 ? 7 : 6));
-                                  } else if (isPlayingCopyFullClips) {
-                                    if (dragonAutoFullAct === 6) {
-                                      setDragonAutoFullAct(7);
-                                    } else {
-                                      setIsPlayingCopyFullClips(false);
-                                      setDragonAutoFullAct(6);
-                                    }
-                                  } else {
-                                    const v = e.currentTarget;
-                                    v.currentTime = 0;
-                                    v.play().catch(() => {});
-                                  }
-                                }}
-                                className="w-full h-full object-cover object-center"
-                              />
-                            </div>
-                          </div>
-
-                          <div className="text-center px-1">
-                            <div className="text-[10.5px] font-serif font-bold text-[#F3E5AB] tracking-wide line-clamp-1">
-                              {directHomeResult?.hexagram_title ||
-                                cards.map((c) => c.name).slice(0, 3).join(" · ")}
-                            </div>
-                            <div className="text-[8.5px] text-[#C4A66A] line-clamp-1">
-                              {DRAGON_VIDEO_MAP[activeDragonAct].sub}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div
-                          className="my-1 rounded-xl p-2 border border-[#D4AF37]/50 bg-[#1B140E]/90 shadow-md flex flex-col gap-1.5"
-                          style={{
-                            boxShadow: "inset 0 0 18px rgba(212, 175, 55, 0.10)",
-                          }}
-                        >
-                          <div className="flex items-center justify-between text-[8.5px] font-bold uppercase tracking-wider text-[#E5C158]">
-                            <span>✦ Lời Bàn Tiểu Long Cửu Nhị</span>
-                            <div className="flex items-center gap-1">
-                              <button
-                                type="button"
-                                onClick={handleExportDragonInkWashVideo}
-                                disabled={isExportingInkWashClip}
-                                className="text-[8.5px] font-bold text-[#FFF8E7] bg-gradient-to-r from-[#8B1E22] to-[#631316] border border-[#D4AF37]/75 px-2 py-0.5 rounded-full cursor-pointer hover:brightness-110 disabled:opacity-55"
-                              >
-                                {isExportingInkWashClip
-                                  ? `⏳ Đang làm (${inkWashExportPercent}%)`
-                                  : !userIntentQuestion.trim()
-                                  ? "🔒 Thủy Mặc (Cần Câu Hỏi ↑)"
-                                  : "🎬 Xuất Video Thủy Mặc"}
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => setPhoneDisplayTab("chat")}
-                                className="text-[8.5px] font-bold text-[#1C1610] bg-[#F3E5AB] px-2 py-0.5 rounded-full cursor-pointer"
-                              >
-                                Chat →
-                              </button>
-                            </div>
-                          </div>
-                          <p className="text-[10px] font-serif leading-relaxed text-[#FFF8E7] line-clamp-3 italic">
-                            {isDirectHomeRunning || isDragonSendingFinale
-                              ? `“${directHomeMessage}”`
-                              : directHomeResult?.video_script
-                              ? `“${directHomeResult.video_script.slice(0, 160)}...”`
-                              : `“${DRAGON_VIDEO_MAP[activeDragonAct].quote}”`}
-                          </p>
-                        </div>
-                      </div>
-                    ) : (
-                      /* CHẾ ĐỘ MẶC ĐỊNH: HOẠT ẢNH CỬU NHỊ TIỂU LONG + KHUNG CHATBOX ĐÀM ĐẠO TRỰC TIẾP */
-                      <div className="flex-1 flex flex-col min-h-0 overflow-hidden p-2 gap-1.5">
-                        {/* 1. Đầu màn hình: Hoạt ảnh trực tiếp Tiểu Long Cửu Nhị + Thông tin Trận Pháp đang trải + Nút Xuất Video Thủy Mặc */}
-                        <div className="flex flex-col gap-1.5 p-1.5 rounded-2xl border border-[#D4AF37]/50 bg-gradient-to-r from-[#1E160E] via-[#15100B] to-[#1A120B] shadow-md shrink-0">
-                          <div className="flex items-center gap-2.5">
-                            <div
-                              onClick={() => setPhoneDisplayTab("stage")}
-                              title="Nhấn để phóng to sân khấu hoạt ảnh Tiểu Long Cửu Nhị"
-                              className="w-[78px] h-[92px] sm:w-[84px] sm:h-[98px] rounded-xl overflow-hidden border border-[#D4AF37]/60 bg-[#0A0806] relative shrink-0 cursor-pointer group"
-                            >
-                              <video
-                                ref={dragonVideoRef}
-                                key={DRAGON_VIDEO_MAP[activeDragonAct].src}
-                                src={DRAGON_VIDEO_MAP[activeDragonAct].src}
-                                autoPlay
-                                loop={activeDragonAct === 0 || activeDragonAct === 9}
-                                muted
-                                playsInline
-                                onEnded={(e) => {
-                                  if (dragonWakeState === "waking") {
-                                    setDragonWakeState("awake");
-                                    setIsDragonUnlocked(true);
-                                  } else if (isPhoneChatLoading) {
-                                    setPhoneChatAct((prev) => (prev === 1 ? 3 : prev === 3 ? 2 : 1));
-                                  } else {
-                                    const v = e.currentTarget;
-                                    v.currentTime = 0;
-                                    v.play().catch(() => {});
-                                  }
-                                }}
-                                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
-                              />
-                              <span className="absolute bottom-1 right-1 px-1.5 py-0.2 rounded-full bg-black/75 border border-[#D4AF37]/50 text-[7.5px] font-semibold text-[#F3E5AB]">
-                                {isExportingInkWashClip
-                                  ? `${inkWashExportPercent}%`
-                                  : isPhoneChatLoading
-                                  ? "Đang soi..."
-                                  : "3D Live"}
-                              </span>
-                            </div>
-
-                            <div className="flex-1 min-w-0 flex flex-col justify-between gap-1">
-                              <div>
-                                <div className="flex items-center gap-1">
-                                  <span className="text-[11px] font-serif font-bold text-[#F3E5AB] truncate">
-                                    Tiểu Long Cửu Nhị
-                                  </span>
-                                  <span className="px-1.5 py-0.2 rounded-full text-[7.5px] font-bold bg-[#D4AF37]/20 text-[#E5C158] border border-[#D4AF37]/40 shrink-0">
-                                    Cửu Nhị Dịch Học
-                                  </span>
-                                </div>
-                                <div className="text-[9.5px] font-serif font-semibold text-[#E5C158] truncate mt-0.5">
-                                  {SPREAD_MODE_NAMES[mode] || "Trận Pháp Kinh Dịch"}
-                                </div>
-                                <div className="text-[8.5px] text-[#D8C5A0] line-clamp-1 leading-snug mt-0.5">
-                                  {cards.map((c) => c.name.replace(/^Quẻ (Chủ|Biến):\s*/i, "").trim()).join(" · ")}
-                                </div>
-                              </div>
-
-                              {/* Hàng nút thao tác ngay chỗ Rồng Con Cửu Nhị */}
-                              <div className="flex flex-col gap-1 pt-0.5">
-                                {isDragonSleeping ? (
-                                  <button
-                                    type="button"
-                                    onClick={handleWakeUpDragon}
-                                    className="w-full py-1 px-2 rounded-lg text-[9px] font-serif font-bold text-[#1C1610] bg-gradient-to-r from-[#FFF3B0] via-[#E5C158] to-[#C4963E] border border-[#FFF8E7] shadow-xs cursor-pointer hover:brightness-105"
-                                  >
-                                    🔔 Gọi Tiểu Long Dậy
-                                  </button>
-                                ) : !isHuongAnReadyForChat ? (
-                                  <button
-                                    type="button"
-                                    onClick={scrollToHuongAnForChat}
-                                    className="w-full py-1 px-2 rounded-lg text-[8.5px] font-serif font-bold text-[#F3E5AB] bg-[#2D2115] hover:bg-[#3B2B1C] border border-[#D4AF37]/65 shadow-xs cursor-pointer truncate"
-                                  >
-                                    🔒 Cần Câu Hỏi Chiêm Bốc ↑
-                                  </button>
-                                ) : (
-                                  <button
-                                    type="button"
-                                    disabled={isPhoneChatLoading}
-                                    onClick={() =>
-                                      handleSendPhoneChatMessage(
-                                        `Xin Tiểu Long Cửu Nhị dựa vào câu hỏi tại Hương Án Khởi Niệm để khuyên bảo chi tiết cho con về trận pháp đang trải?`
-                                      )
-                                    }
-                                    className="w-full py-1 px-2 rounded-lg text-[8.5px] font-serif font-bold text-[#1C1610] bg-gradient-to-r from-[#F3E5AB] via-[#E5C158] to-[#C4963E] border border-[#FFF8E7]/80 shadow-xs cursor-pointer hover:brightness-105 disabled:opacity-55 truncate"
-                                  >
-                                    {isPhoneChatLoading ? "⏳ Đang khuyên bảo..." : "✨ Xin Tiểu Long Khuyên Bảo"}
-                                  </button>
-                                )}
-
-                                {/* NÚT XUẤT VIDEO THỦY MẶC NGẮN GỌN TRẢ LỜI TRỰC TIẾP NGAY CHỖ RỒNG CON CỬU NHỊ */}
-                                <button
-                                  type="button"
-                                  id="btn-dragon-export-ink-wash"
-                                  disabled={isExportingInkWashClip}
-                                  onClick={handleExportDragonInkWashVideo}
-                                  className="w-full py-1 px-2 rounded-lg text-[9px] font-serif font-bold text-[#FFF8E7] border border-[#D4AF37]/85 shadow-sm cursor-pointer transition hover:brightness-110 active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-1 truncate"
-                                  style={{
-                                    background: userIntentQuestion.trim()
-                                      ? "linear-gradient(135deg, #8B1E22 0%, #5E1216 55%, #3B120E 100%)"
-                                      : "linear-gradient(135deg, #3A2918 0%, #24190E 100%)",
-                                  }}
-                                  title={
-                                    userIntentQuestion.trim()
-                                      ? "Xuất & Chiếu Video Thủy Mặc phiên bản ngắn gọn súc tích trả lời trực tiếp câu hỏi dựa vào quẻ (Khi đang làm clip sẽ chạy hoạt ảnh Cửu Long làm việc)"
-                                      : "Cần nhập Câu hỏi chiêm bốc tại Hương Án Khởi Niệm trước khi xuất & chiếu Video Thủy Mặc"
-                                  }
-                                >
-                                  <span>{userIntentQuestion.trim() ? "🎬" : "🔒"}</span>
-                                  <span className="truncate">
-                                    {isExportingInkWashClip
-                                      ? `Cửu Long đang dựng (${inkWashExportPercent}%)...`
-                                      : !userIntentQuestion.trim()
-                                      ? "Video Thủy Mặc (Cần Câu Hỏi ↑)"
-                                      : conciseInkWashResult?.video_url
-                                      ? "Chiếu / Xuất Lại Video Thủy Mặc"
-                                      : "Xuất Video Thủy Mặc (Ngắn Gọn)"}
-                                  </span>
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* 2. Giữa màn hình: KHUNG CHATBOX ĐÀM ĐẠO CÙNG TIỂU LONG CỬU NHỊ */}
-                        <div
-                          ref={phoneChatScrollRef}
-                          className="flex-1 min-h-0 overflow-y-auto rounded-2xl border border-[#D4AF37]/35 bg-[#110C08]/95 p-2.5 space-y-2.5 shadow-inner"
-                          style={{
-                            scrollbarWidth: "thin",
-                            scrollbarColor: "rgba(212,175,55,0.4) transparent",
-                          }}
-                        >
-                          {!isHuongAnReadyForChat ? (
-                            /* TRẠNG THÁI KHÓA CHAT: CẦN CÓ CÂU HỎI TẠI HƯƠNG ÁN KHỞI NIỆM TRƯỚC (CỬU LONG TỰ LÀM PHẦN TRẢ LỜI HƯƠNG ÁN NGẦM) */
-                            <div className="rounded-xl p-3 border border-[#D4AF37]/60 bg-gradient-to-b from-[#231910] via-[#18110B] to-[#120D08] text-[#FFF8E7] space-y-2.5 shadow-md">
-                              <div className="flex items-center justify-between text-[9.5px] text-[#E5C158] font-bold border-b border-[#D4AF37]/25 pb-1.5">
-                                <span className="flex items-center gap-1">
-                                  <span>🔒</span>
-                                  <span>Khóa Đàm Đạo Tiểu Long Cửu Nhị</span>
-                                </span>
-                                <span className="px-1.5 py-0.5 rounded-full bg-[#3A2818] text-[#F3E5AB] text-[8px] border border-[#D4AF37]/45">
-                                  Cần Câu Hỏi Chiêm Bốc
-                                </span>
-                              </div>
-
-                              <p className="text-[10.5px] leading-relaxed text-[#F5E6C4]">
-                                Kính thưa quý bạn! Để mở khung chat trò chuyện cùng{" "}
-                                <strong className="text-[#F3E5AB]">Tiểu Long Cửu Nhị</strong>, quý bạn vui lòng nhập{" "}
-                                <strong className="text-[#E5C158]">Câu hỏi</strong> tại mục{" "}
-                                <strong className="text-[#FFF3B0]">「印 Hương Án Khởi Niệm · Câu Hỏi Chiêm Bốc」</strong>{" "}
-                                hoặc nhập trực tiếp vào ô bên dưới. <strong className="text-[#F3E5AB]">Tiểu Long Cửu Nhị</strong> sẽ tự động luận giải và khuyên bảo thấu đáo cho quý bạn!
-                              </p>
-
-                              <div className="rounded-xl p-2 bg-[#140E09] border border-[#D4AF37]/40 space-y-1">
-                                <label
-                                  htmlFor="phone-inline-question-input"
-                                  className="block text-[9px] font-serif font-bold text-[#E5C158]"
-                                >
-                                  🕯️ Nhập nhanh Câu hỏi chiêm bốc (Đồng bộ Hương Án):
-                                </label>
-                                <input
-                                  id="phone-inline-question-input"
-                                  type="text"
-                                  value={userIntentQuestion}
-                                  onChange={(e) => handleQuestionChange(e.target.value)}
-                                  placeholder="VD: Tháng tới có nên mở rộng kinh doanh không?..."
-                                  className="w-full h-8 px-2.5 rounded-lg text-[10.5px] bg-[#0D0906] text-[#FFF8E7] placeholder-[#8E7B60] border border-[#D4AF37]/50 focus:outline-none focus:border-[#F3E5AB]"
-                                />
-                              </div>
-
-                              <button
-                                type="button"
-                                onClick={scrollToHuongAnForChat}
-                                className="w-full py-1.5 px-2.5 rounded-xl text-[10px] font-serif font-bold text-[#FFF8E7] border border-[#D4AF37]/80 cursor-pointer transition hover:brightness-110 flex items-center justify-center gap-1"
-                                style={{
-                                  background: "linear-gradient(135deg, #8B1E22 0%, #5A1215 100%)",
-                                }}
-                              >
-                                <span>印</span>
-                                <span>Đi Tới Hương Án Khởi Niệm · Nhập Câu Hỏi Chiêm Bốc ↑</span>
-                              </button>
-
-                              <div className="grid grid-cols-2 gap-1.5 pt-1 border-t border-[#D4AF37]/20">
-                                <button
-                                  type="button"
-                                  onClick={() => setPhoneDisplayTab("bakh_khoa")}
-                                  className="py-1 px-2 rounded-lg text-[9px] font-serif font-bold text-[#F3E5AB] bg-[#241A10] hover:bg-[#332517] border border-[#D4AF37]/45 cursor-pointer transition"
-                                >
-                                  📚 Bách Khoa 64 Quẻ
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => setPhoneDisplayTab("blog")}
-                                  className="py-1 px-2 rounded-lg text-[9px] font-serif font-bold text-[#F3E5AB] bg-[#241A10] hover:bg-[#332517] border border-[#D4AF37]/45 cursor-pointer transition"
-                                >
-                                  📰 Blog Dịch Học
-                                </button>
-                              </div>
-                            </div>
-                          ) : (
-                            <>
-                              {/* THẺ CÂU HỎI TẠI HƯƠNG ÁN KHỞI NIỆM (CỬU LONG TỰ TỔNG HỢP LỜI ĐÁP NGẦM PHÍA SAU) */}
-                              <div className="rounded-xl p-2.5 border border-emerald-500/45 bg-gradient-to-b from-[#1A241B] via-[#161B14] to-[#121610] text-[#FFF8E7] space-y-1.5 shadow-sm">
-                                <div className="flex items-center justify-between gap-1 text-[9px] font-bold text-emerald-300 border-b border-emerald-500/25 pb-1">
-                                  <span>印 Câu Hỏi Tại Hương Án Khởi Niệm</span>
-                                  <button
-                                    type="button"
-                                    onClick={scrollToHuongAnForChat}
-                                    className="text-[8px] font-semibold text-[#F3E5AB] hover:underline cursor-pointer"
-                                  >
-                                    Sửa câu hỏi ↑
-                                  </button>
-                                </div>
-                                <div className="text-[9.5px] text-[#F3E5AB] leading-snug">
-                                  “{userIntentQuestion.trim()}”
-                                </div>
-                                {phoneChatMessages.length === 0 && (
-                                  <button
-                                    type="button"
-                                    disabled={isPhoneChatLoading}
-                                    onClick={() =>
-                                      handleSendPhoneChatMessage(
-                                        `Xin Tiểu Long Cửu Nhị dựa vào câu hỏi tại Hương Án Khởi Niệm để khuyên bảo chi tiết cho con về trận pháp đang trải?`
-                                      )
-                                    }
-                                    className="w-full py-1.5 px-3 rounded-xl text-[10px] font-serif font-bold text-[#FFF8E7] border border-[#D4AF37]/85 cursor-pointer transition hover:brightness-110 active:scale-[0.99] shadow-sm flex items-center justify-center gap-1.5"
-                                    style={{
-                                      background: "linear-gradient(135deg, #8B1E22 0%, #5A1215 100%)",
-                                    }}
-                                  >
-                                    <span>🐉</span>
-                                    <span>Xin Tiểu Long Cửu Nhị Khuyên Bảo Ngay</span>
-                                  </button>
-                                )}
-                              </div>
-
-                              {/* Danh sách tin nhắn hội thoại đa lượt */}
-                              {phoneChatMessages.map((msg) =>
-                                msg.role === "user" ? (
-                                  <div key={msg.id} className="flex flex-col items-end">
-                                    <div className="max-w-[88%] rounded-2xl rounded-tr-xs px-3 py-2 bg-gradient-to-br from-[#8B1E22] to-[#591114] border border-[#D4AF37]/50 text-[#FFF8E7] text-[11.5px] leading-relaxed shadow-sm">
-                                      {msg.content}
-                                    </div>
-                                    <span className="text-[8px] text-[#A89270] mt-0.5 pr-1">
-                                      Quý bạn · {msg.timestamp}
-                                    </span>
-                                  </div>
-                                ) : (
-                                  <div key={msg.id} className="flex flex-col items-start">
-                                    <div className="w-full rounded-2xl rounded-tl-xs p-2.5 bg-gradient-to-b from-[#1E160E] to-[#140E09] border border-[#D4AF37]/45 text-[#FFF8E7] shadow-sm space-y-1.5">
-                                      <div className="flex items-center justify-between gap-1 border-b border-[#D4AF37]/20 pb-1">
-                                        <div className="flex items-center gap-1 min-w-0">
-                                          <span className="text-[10px]">🐉</span>
-                                          <span className="text-[9.5px] font-serif font-bold text-[#E5C158] truncate">
-                                            Tiểu Long Cửu Nhị
-                                          </span>
-                                          {msg.poseBadge && (
-                                            <span className="text-[8px] px-1.5 py-0.2 rounded-full bg-[#2A1F14] text-[#D8C292] border border-[#D4AF37]/30 truncate">
-                                              {msg.poseBadge}
-                                            </span>
-                                          )}
-                                        </div>
-                                        <button
-                                          type="button"
-                                          onClick={() => handleCopyPhoneChatMsg(msg.id, msg.content)}
-                                          className="text-[8.5px] font-semibold px-1.5 py-0.2 rounded bg-[#2A2016] hover:bg-[#3A2C1E] text-[#F3E5AB] border border-[#D4AF37]/35 shrink-0 cursor-pointer"
-                                        >
-                                          {copiedChatMsgId === msg.id ? "✓ Đã chép" : "Chép"}
-                                        </button>
-                                      </div>
-
-                                      {renderPhoneChatMarkdown(msg.content)}
-                                    </div>
-                                    <span className="text-[8px] text-[#A89270] mt-0.5 pl-1">
-                                      Trí Tuệ Cửu Nhị · {msg.timestamp}
-                                    </span>
-                                  </div>
-                                )
-                              )}
-
-                              {/* Hiệu ứng Tiểu Long đang suy ngẫm & khuyên bảo dựa trên Hương Án */}
-                              {isPhoneChatLoading && (
-                                <div className="rounded-2xl rounded-tl-xs p-2.5 bg-[#1B140D] border border-[#D4AF37]/45 text-[#F3E5AB] flex items-center gap-2 shadow-sm animate-pulse">
-                                  <span className="text-sm">🔍</span>
-                                  <div className="text-[10.5px] font-serif italic leading-snug">
-                                    Tiểu Long Cửu Nhị đang đối chiếu câu trả lời tại Hương Án Khởi Niệm với Sách Thuyết Minh, Bách Khoa 64 Quẻ & Blog để khuyên bảo...
-                                  </div>
-                                </div>
-                              )}
-                            </>
-                          )}
-                        </div>
-
-                        {/* 3. Thanh câu hỏi gợi ý nhanh */}
-                        <div
-                          className="flex items-center gap-1.5 overflow-x-auto pb-0.5 shrink-0"
-                          style={{ scrollbarWidth: "none" }}
-                        >
-                          {phoneQuickQuestions.map((qText, idx) => (
-                            <button
-                              key={idx}
-                              type="button"
-                              disabled={isPhoneChatLoading}
-                              onClick={() => {
-                                if (!isHuongAnReadyForChat) {
-                                  scrollToHuongAnForChat();
-                                  return;
-                                }
-                                handleSendPhoneChatMessage(qText.replace(/^[✨📕⏳💼❤️📚📰]\s*/, ""));
-                              }}
-                              className=" whitespace-nowrap px-2.5 py-1 rounded-full text-[9.5px] font-medium bg-[#1C150E] hover:bg-[#2C2116] text-[#F3E5AB] border border-[#D4AF37]/40 transition cursor-pointer shrink-0 disabled:opacity-50"
-                            >
-                              {qText}
-                            </button>
-                          ))}
-                        </div>
-
-                        {/* 4. Ô nhập câu hỏi đàm đạo trực tiếp dưới đáy màn hình điện thoại */}
-                        <form
-                          onSubmit={(e) => {
-                            e.preventDefault();
-                            if (!isHuongAnReadyForChat) {
-                              scrollToHuongAnForChat();
-                              return;
-                            }
-                            handleSendPhoneChatMessage();
-                          }}
-                          className="flex items-center gap-1.5 pt-0.5 shrink-0"
-                        >
-                          <input
-                            type="text"
-                            value={phoneChatInput}
-                            onChange={(e) => setPhoneChatInput(e.target.value)}
-                            onClick={() => {
-                              if (!isHuongAnReadyForChat) {
-                                scrollToHuongAnForChat();
-                              }
-                            }}
-                            readOnly={!isHuongAnReadyForChat}
-                            disabled={isPhoneChatLoading}
-                            placeholder={
-                              isHuongAnReadyForChat
-                                ? "Hỏi thêm Tiểu Long Cửu Nhị..."
-                                : "🔒 Cần nhập câu hỏi tại Hương Án Khởi Niệm trước..."
-                            }
-                            className="flex-1 min-w-0 h-8 px-3 rounded-full text-[11px] bg-[#16100B] text-[#FFF8E7] placeholder-[#9E8B6E] border border-[#D4AF37]/55 focus:outline-none focus:border-[#F3E5AB] shadow-inner cursor-text"
-                          />
-                          <button
-                            type="submit"
-                            disabled={isPhoneChatLoading}
-                            className="h-8 px-3.5 rounded-full text-[10.5px] font-serif font-bold text-[#1C1610] border border-[#FFF8E7] cursor-pointer transition hover:brightness-105 active:scale-95 disabled:opacity-50 shrink-0 shadow-sm"
-                            style={{
-                              background: "linear-gradient(135deg, #FFF3B0 0%, #E5C158 50%, #C4963E 100%)",
-                            }}
-                          >
-                            {isHuongAnReadyForChat ? "Gửi" : "Khóa"}
-                          </button>
-                        </form>
-                      </div>
-                    )}
-
-                    {/* Thanh Home Bar dưới đáy điện thoại */}
-                    <div className="py-1.5 flex justify-center bg-black/40 shrink-0">
-                      <div className="w-24 h-1 rounded-full bg-[#D4AF37]/50" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* NÚT XUẤT VIDEO THỦY MẶC NGẮN GỌN TRỰC TIẾP DƯỚI KHUNG ĐIỆN THOẠI RỒNG CON CỬU NHỊ */}
-                <div className="w-[320px] sm:w-[356px] flex flex-col gap-1.5">
-                  <button
-                    type="button"
-                    id="btn-phone-bottom-export-ink-wash"
-                    disabled={isExportingInkWashClip}
-                    onClick={handleExportDragonInkWashVideo}
-                    className="w-full py-2.5 px-4 rounded-2xl text-xs font-serif font-bold text-[#FFF8E7] border-2 border-[#D4AF37] shadow-lg cursor-pointer transition hover:brightness-110 active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2"
-                    style={{
-                      background: userIntentQuestion.trim()
-                        ? "linear-gradient(135deg, #8B1E22 0%, #5A1215 55%, #2C120E 100%)"
-                        : "linear-gradient(135deg, #3A2918 0%, #23180E 100%)",
-                      boxShadow: "0 10px 24px -6px rgba(139, 30, 34, 0.55), inset 0 1px 0 rgba(255, 248, 231, 0.25)",
-                    }}
-                  >
-                    <span className="text-sm">{userIntentQuestion.trim() ? "🎬" : "🔒"}</span>
-                    <span>
-                      {isExportingInkWashClip
-                        ? `Cửu Long Đang Dựng Video Thủy Mặc (${inkWashExportPercent}%)...`
-                        : !userIntentQuestion.trim()
-                        ? "Xuất Video Thủy Mặc · Cần Câu Hỏi Chiêm Bốc Trước ↑"
-                        : conciseInkWashResult?.video_url
-                        ? "Chiếu / Xuất Lại Video Thủy Mặc Cửu Nhị"
-                        : "Xuất Video Thủy Mặc · Trả Lời Trực Tiếp Theo Quẻ"}
-                    </span>
-                  </button>
-                </div>
-              </div>
-            </div>
+            {/* Giữ nguyên neo vật lý ẩn để không ảnh hưởng engine cuộn bài */}
+            <div
+              ref={featuresAnchorRef}
+              id="features-card-anchor"
+              className="hidden pointer-events-none"
+              aria-hidden="true"
+            />
           </div>
         </div>
-
-        {/* MODAL MỞ RỘNG KHUNG ĐÀM ĐẠO, BÁCH KHOA 64 QUẺ & BLOG DỊCH HỌC CÙNG TIỂU LONG CỬU NHỊ */}
-        {isPhoneChatModalExpanded && (
-          <div className="fixed inset-0 z-[265] flex items-center justify-center bg-black/75 backdrop-blur-xs p-3 sm:p-5">
-            <div className="relative w-full max-w-2xl h-[86vh] rounded-3xl border-2 border-[#D4AF37] bg-[#140F0A] text-[#FFF8E7] shadow-2xl flex flex-col overflow-hidden">
-              {/* Header Modal */}
-              <div
-                className="px-5 py-3 flex items-center justify-between border-b border-[#D4AF37]/35 shrink-0"
-                style={{
-                  background: "linear-gradient(135deg, #2A2016 0%, #17110B 100%)",
-                }}
-              >
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <span className="w-8 h-8 rounded-full bg-[#8B1E22] border border-[#D4AF37] flex items-center justify-center text-sm shrink-0">
-                    🐉
-                  </span>
-                  <div className="min-w-0">
-                    <div className="font-serif font-bold text-sm sm:text-base text-[#F3E5AB] truncate">
-                      Đàm Đạo Cùng Tiểu Long Cửu Nhị · Video Thủy Mặc · Bách Khoa & Blog
-                    </div>
-                    <div className="text-[11px] text-[#D8C5A0] truncate">
-                      {SPREAD_MODE_NAMES[mode]} · {cards.map((c) => c.name).join(" • ")}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  {phoneChatMessages.length > 0 && phoneDisplayTab === "chat" && (
-                    <button
-                      type="button"
-                      onClick={handleResetPhoneChat}
-                      className="px-3 py-1 rounded-full text-xs font-serif font-bold bg-[#261C12] hover:bg-[#352719] text-[#E5C158] border border-[#D4AF37]/45 cursor-pointer"
-                    >
-                      ↺ Làm mới
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => setIsPhoneChatModalExpanded(false)}
-                    className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-[#F3E5AB] flex items-center justify-center font-bold cursor-pointer"
-                  >
-                    ✕
-                  </button>
-                </div>
-              </div>
-
-              {/* Thanh chuyển Tab trong Modal mở rộng */}
-              <div className="px-5 py-2 bg-[#1B140D] border-b border-[#D4AF37]/25 flex flex-wrap items-center gap-2 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => setPhoneDisplayTab("chat")}
-                  className={`px-3.5 py-1 rounded-full text-xs font-serif font-bold transition cursor-pointer ${
-                    phoneDisplayTab === "chat"
-                      ? "bg-gradient-to-r from-[#D4AF37] to-[#B8862D] text-[#1C1610]"
-                      : "bg-[#120D09] text-[#D8C5A0] border border-[#D4AF37]/30 hover:text-[#FFF8E7]"
-                  }`}
-                >
-                  💬 Khung Chat Đàm Đạo
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPhoneDisplayTab("thuy_mac")}
-                  className={`px-3.5 py-1 rounded-full text-xs font-serif font-bold transition cursor-pointer ${
-                    phoneDisplayTab === "thuy_mac"
-                      ? "bg-gradient-to-r from-[#8B1E22] to-[#B3282D] text-[#FFF8E7] border border-[#D4AF37]/60"
-                      : "bg-[#120D09] text-[#F3E5AB] border border-[#D4AF37]/30 hover:text-[#FFF8E7]"
-                  }`}
-                >
-                  🎬 Video Thủy Mặc (Ngắn Gọn)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPhoneDisplayTab("bakh_khoa")}
-                  className={`px-3.5 py-1 rounded-full text-xs font-serif font-bold transition cursor-pointer ${
-                    phoneDisplayTab === "bakh_khoa"
-                      ? "bg-gradient-to-r from-[#D4AF37] to-[#B8862D] text-[#1C1610]"
-                      : "bg-[#120D09] text-[#D8C5A0] border border-[#D4AF37]/30 hover:text-[#FFF8E7]"
-                  }`}
-                >
-                  📚 Bách Khoa 64 Quẻ & 384 Hào
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPhoneDisplayTab("blog")}
-                  className={`px-3.5 py-1 rounded-full text-xs font-serif font-bold transition cursor-pointer ${
-                    phoneDisplayTab === "blog"
-                      ? "bg-gradient-to-r from-[#D4AF37] to-[#B8862D] text-[#1C1610]"
-                      : "bg-[#120D09] text-[#D8C5A0] border border-[#D4AF37]/30 hover:text-[#FFF8E7]"
-                  }`}
-                >
-                  📰 Blog Dịch Học (6 Chuyên Khảo)
-                </button>
-              </div>
-
-              {phoneDisplayTab === "thuy_mac" ? (
-                renderPhoneThuyMacView(true)
-              ) : phoneDisplayTab === "bakh_khoa" ? (
-                renderPhoneBakhKhoaView(true)
-              ) : phoneDisplayTab === "blog" ? (
-                renderPhoneBlogView(true)
-              ) : (
-                <>
-                  {/* Nội dung hội thoại */}
-                  <div
-                    ref={phoneModalChatScrollRef}
-                    className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-5 space-y-3.5 bg-[#0F0B07]"
-                  >
-                    {!isHuongAnReadyForChat ? (
-                      <div className="rounded-2xl p-5 border border-[#D4AF37]/60 bg-[#1B140D] space-y-3">
-                        <div className="flex items-center justify-between text-xs sm:text-sm font-serif font-bold text-[#E5C158] border-b border-[#D4AF37]/25 pb-2">
-                          <span>🔒 Khóa Đàm Đạo — Cần Có Câu Hỏi Tại Hương Án Khởi Niệm Trước</span>
-                          <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#3A2818] text-[#F3E5AB]">
-                            Chưa mở khóa
-                          </span>
-                        </div>
-                        <p className="text-xs sm:text-sm leading-relaxed text-[#FFF8E7]">
-                          Kính thưa quý bạn! Để mở khung chat nói chuyện cùng{" "}
-                          <strong className="text-[#F3E5AB]">Tiểu Long Cửu Nhị</strong>, quý bạn vui lòng nhập{" "}
-                          <strong>Câu hỏi chiêm bốc</strong> tại mục{" "}
-                          <strong className="text-[#E5C158]">「印 Hương Án Khởi Niệm · Câu Hỏi Chiêm Bốc」</strong>{" "}
-                          trên trang chủ trước. <strong className="text-[#F3E5AB]">Tiểu Long Cửu Nhị</strong> sẽ tự động tổng hợp và khuyên bảo cho quý bạn.
-                        </p>
-                        <div className="flex flex-wrap gap-2 pt-1">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setIsPhoneChatModalExpanded(false);
-                              scrollToHuongAnForChat();
-                            }}
-                            className="px-4 py-2 rounded-xl text-xs font-serif font-bold text-[#FFF8E7] border border-[#D4AF37] cursor-pointer"
-                            style={{
-                              background: "linear-gradient(135deg, #8B1E22 0%, #5A1215 100%)",
-                            }}
-                          >
-                            印 Đi Tới Hương Án Khởi Niệm · Câu Hỏi Chiêm Bốc ↑
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <>
-                        {/* Thẻ câu hỏi Hương Án Khởi Niệm trong Modal */}
-                        <div className="rounded-2xl p-4 border border-emerald-500/45 bg-[#151F16] space-y-2">
-                          <div className="flex items-center justify-between text-xs font-serif font-bold text-emerald-300 border-b border-emerald-500/25 pb-1.5">
-                            <span>印 Câu Hỏi Tại Hương Án Khởi Niệm</span>
-                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-500/40">
-                              ✓ Tiểu Long dựa vào đây khuyên bảo
-                            </span>
-                          </div>
-                          <div className="text-xs text-[#F3E5AB]">
-                            “{userIntentQuestion.trim()}”
-                          </div>
-                          {phoneChatMessages.length === 0 && (
-                            <button
-                              type="button"
-                              disabled={isPhoneChatLoading}
-                              onClick={() =>
-                                handleSendPhoneChatMessage(
-                                  `Xin Tiểu Long Cửu Nhị dựa vào câu hỏi tại Hương Án Khởi Niệm để khuyên bảo chi tiết cho con về trận pháp đang trải?`
-                                )
-                              }
-                              className="px-4 py-2 rounded-xl text-xs font-serif font-bold text-[#FFF8E7] border border-[#D4AF37] cursor-pointer"
-                              style={{
-                                background: "linear-gradient(135deg, #8B1E22 0%, #5A1215 100%)",
-                              }}
-                            >
-                              🐉 Xin Tiểu Long Cửu Nhị Khuyên Bảo Ngay
-                            </button>
-                          )}
-                        </div>
-
-                        {phoneChatMessages.map((msg) =>
-                          msg.role === "user" ? (
-                            <div key={msg.id} className="flex flex-col items-end">
-                              <div className="max-w-[82%] rounded-2xl rounded-tr-xs px-4 py-2.5 bg-gradient-to-br from-[#8B1E22] to-[#591114] border border-[#D4AF37]/50 text-[#FFF8E7] text-xs sm:text-sm leading-relaxed">
-                                {msg.content}
-                              </div>
-                              <span className="text-[10px] text-[#A89270] mt-1 pr-1">Quý bạn · {msg.timestamp}</span>
-                            </div>
-                          ) : (
-                            <div key={msg.id} className="flex flex-col items-start">
-                              <div className="w-full rounded-2xl rounded-tl-xs p-4 bg-[#1B140D] border border-[#D4AF37]/45 text-[#FFF8E7] space-y-2">
-                                <div className="flex items-center justify-between border-b border-[#D4AF37]/20 pb-1.5">
-                                  <div className="flex items-center gap-2">
-                                    <span>🐉</span>
-                                    <span className="text-xs font-serif font-bold text-[#E5C158]">Tiểu Long Cửu Nhị</span>
-                                    {msg.poseBadge && (
-                                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#2A1F14] text-[#D8C292] border border-[#D4AF37]/30">
-                                        {msg.poseBadge}
-                                      </span>
-                                    )}
-                                  </div>
-                                  <button
-                                    type="button"
-                                    onClick={() => handleCopyPhoneChatMsg(msg.id, msg.content)}
-                                    className="text-[10px] font-semibold px-2.5 py-0.5 rounded-md bg-[#2A2016] hover:bg-[#3A2C1E] text-[#F3E5AB] border border-[#D4AF37]/35 cursor-pointer"
-                                  >
-                                    {copiedChatMsgId === msg.id ? "✓ Đã sao chép" : "Sao chép"}
-                                  </button>
-                                </div>
-                                <div className="text-xs sm:text-sm">{renderPhoneChatMarkdown(msg.content)}</div>
-                              </div>
-                              <span className="text-[10px] text-[#A89270] mt-1 pl-1">Trí Tuệ Cửu Nhị · {msg.timestamp}</span>
-                            </div>
-                          )
-                        )}
-
-                        {isPhoneChatLoading && (
-                          <div className="rounded-2xl p-3.5 bg-[#1B140D] border border-[#D4AF37]/45 text-[#F3E5AB] flex items-center gap-2.5 animate-pulse">
-                            <span>🔍</span>
-                            <span className="text-xs sm:text-sm font-serif italic">
-                              Tiểu Long Cửu Nhị đang đối chiếu câu trả lời tại Hương Án Khởi Niệm với Sách Thuyết Minh, Bách Khoa 64 Quẻ & Blog Dịch Học để khuyên bảo...
-                            </span>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-
-                  {/* Chân Modal: Câu hỏi gợi ý & Ô nhập */}
-                  <div className="p-3.5 bg-[#1A130D] border-t border-[#D4AF37]/30 space-y-2 shrink-0">
-                    <div className="flex flex-wrap gap-1.5">
-                      {phoneQuickQuestions.map((qText, idx) => (
-                        <button
-                          key={idx}
-                          type="button"
-                          disabled={isPhoneChatLoading}
-                          onClick={() => {
-                            if (!isHuongAnReadyForChat) {
-                              setIsPhoneChatModalExpanded(false);
-                              scrollToHuongAnForChat();
-                              return;
-                            }
-                            handleSendPhoneChatMessage(qText.replace(/^[✨📕⏳💼❤️📚📰]\s*/, ""));
-                          }}
-                          className="px-3 py-1 rounded-full text-[11px] font-medium bg-[#261C12] hover:bg-[#342619] text-[#F3E5AB] border border-[#D4AF37]/40 transition cursor-pointer disabled:opacity-50"
-                        >
-                          {qText}
-                        </button>
-                      ))}
-                    </div>
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        if (!isHuongAnReadyForChat) {
-                          setIsPhoneChatModalExpanded(false);
-                          scrollToHuongAnForChat();
-                          return;
-                        }
-                        handleSendPhoneChatMessage();
-                      }}
-                      className="flex items-center gap-2"
-                    >
-                      <input
-                        type="text"
-                        value={phoneChatInput}
-                        onChange={(e) => setPhoneChatInput(e.target.value)}
-                        readOnly={!isHuongAnReadyForChat}
-                        disabled={isPhoneChatLoading}
-                        placeholder={
-                          isHuongAnReadyForChat
-                            ? "Nhập câu hỏi để Tiểu Long dựa vào câu trả lời Hương Án khuyên bảo..."
-                            : "🔒 Cần có câu trả lời tại Hương Án Khởi Niệm trước khi mở chat..."
-                        }
-                        className="flex-1 h-10 px-4 rounded-full text-xs sm:text-sm bg-[#110C08] text-[#FFF8E7] placeholder-[#9E8B6E] border border-[#D4AF37]/55 focus:outline-none focus:border-[#F3E5AB]"
-                      />
-                      <button
-                        type="submit"
-                        disabled={isPhoneChatLoading}
-                        className="h-10 px-5 rounded-full text-xs sm:text-sm font-serif font-bold text-[#1C1610] border border-[#FFF8E7] cursor-pointer transition hover:brightness-105 disabled:opacity-50"
-                        style={{
-                          background: "linear-gradient(135deg, #FFF3B0 0%, #E5C158 50%, #C4963E 100%)",
-                        }}
-                      >
-                        {isHuongAnReadyForChat ? "Gửi Câu Hỏi" : "Đi Tới Hương Án"}
-                      </button>
-                    </form>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        )}
 
         {/* MODAL XEM CHI TIẾT KẾT QUẢ LUẬN GIẢI TRỰC TIẾP TỪ TRANG CHỦ */}
         {isDirectResultModalOpen && (

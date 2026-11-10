@@ -19,6 +19,7 @@
     "@vitejs/plugin-react": "^6.1.1",
     "camoufox-js": "^0.13.0",
     "dotenv": "^17.2.3",
+    "driver.js": "^1.11.0",
     "express": "^4.21.2",
     "firebase": "^12.19.0",
     "html-to-image": "^1.11.13",
