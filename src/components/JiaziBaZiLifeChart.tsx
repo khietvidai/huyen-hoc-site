@@ -311,9 +311,10 @@ export function calculateBaziFromDateTime(
   const baseMonthCan = ((yearCanIdx % 5) * 2 + 2) % 10;
   const monthCanIdx = (baseMonthCan + monthOffset) % 10;
 
-  // Hour
+  // Hour (Giờ Dạ Tý 23:00–23:59 nối tiếp sau Giờ Hợi nên Thiên Can khởi theo Can ngày kế tiếp)
   const hourChiIdx = Math.floor(((hour + 1) % 24) / 2);
-  const baseHourCan = (dayCanIdx % 5) * 2;
+  const hourRefDayCanIdx = hour === 23 ? (dayCanIdx + 1) % 10 : dayCanIdx;
+  const baseHourCan = (hourRefDayCanIdx % 5) * 2;
   const hourCanIdx = (baseHourCan + hourChiIdx) % 10;
 
   return {

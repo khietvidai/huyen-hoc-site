@@ -115,13 +115,13 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
       <div className="flex flex-row items-center justify-between gap-2 pb-2.5 sm:pb-3 border-b border-[#C4963E]/45">
         <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
           <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#9E2A2B] text-[#FFF9F5] flex items-center justify-center shadow-md shrink-0">
-            <Layers className="w-4 h-4 text-[#78350F]" />
+            <Layers className="w-4 h-4 text-[#FFF9F5]" />
           </div>
           <div className="min-w-0">
-            <h3 className="text-xs sm:text-base font-bold text-[#1C1813] font-serif tracking-wide truncate">
+            <h3 className="text-xs sm:text-base font-bold text-[#1C1813] font-serif tracking-wide leading-snug">
               GIA CẤU THIÊN (架構篇)
             </h3>
-            <p className="text-[10px] sm:text-xs text-[#5C4D3C] mt-0.5 line-clamp-1">
+            <p className="text-[10px] sm:text-xs text-[#5C4D3C] mt-0.5 leading-snug">
               Phân tích tổ hợp Địa Chi và trục Chấn Đoài & Khảm Ly.
             </p>
           </div>
@@ -200,37 +200,37 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
                   <button
                     type="button"
                     onClick={() => setGiaCauToHop(prev => prev === "nien_nguyet_nhat_thoi" ? null : "nien_nguyet_nhat_thoi")}
-                    className={`p-2 sm:p-2.5 rounded-lg border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                    className={`p-2 sm:p-2.5 rounded-lg border text-left transition-all cursor-pointer flex flex-col justify-between gap-1 ${
                       giaCauToHop === "nien_nguyet_nhat_thoi"
                         ? "bg-gradient-to-r from-[#FAF6EE] to-[#FFFDF8] border-[#B8862D] text-[#1C1813] font-bold shadow-md shadow-[#C9A55A]/15 ring-1 ring-[#C9A55A]/50"
                         : "bg-[#FFFDF8] hover:bg-[#FFFDF8] border-[#C4963E]/45 text-[#5C4D3C]"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-1">
-                      <span className="font-serif text-[11px] sm:text-xs text-[#6E4E16] leading-tight font-bold">Niên Nguyệt - Nhật Thời</span>
+                      <span className="font-serif text-[11px] sm:text-xs text-[#6E4E16] leading-snug font-bold">Niên Nguyệt - Nhật Thời</span>
                       {giaCauToHop === "nien_nguyet_nhat_thoi" && (
                         <span className="w-1.5 h-1.5 rounded-full bg-[#C9A55A] shrink-0" />
                       )}
                     </div>
-                    <div className="text-[9px] sm:text-[10px] text-[#5C4D3C] mt-0.5 leading-tight">Khách (Ngoại) ⟷ Chủ (Nội)</div>
+                    <div className="text-[9px] sm:text-[10px] text-[#5C4D3C] leading-snug">Khách (Ngoại) ⟷ Chủ (Nội)</div>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setGiaCauToHop(prev => prev === "nien_thoi_nguyet_nhat" ? null : "nien_thoi_nguyet_nhat")}
-                    className={`p-2 sm:p-2.5 rounded-lg border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                    className={`p-2 sm:p-2.5 rounded-lg border text-left transition-all cursor-pointer flex flex-col justify-between gap-1 ${
                       giaCauToHop === "nien_thoi_nguyet_nhat"
                         ? "bg-gradient-to-r from-[#FAF6EE] to-[#FFFDF8] border-[#B8862D] text-[#1C1813] font-bold shadow-md shadow-[#C9A55A]/15 ring-1 ring-[#C9A55A]/50"
                         : "bg-[#FFFDF8] hover:bg-[#FFFDF8] border-[#C4963E]/45 text-[#5C4D3C]"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-1">
-                      <span className="font-serif text-[11px] sm:text-xs text-[#6E4E16] leading-tight font-bold">Niên Thời - Nguyệt Nhật</span>
+                      <span className="font-serif text-[11px] sm:text-xs text-[#6E4E16] leading-snug font-bold">Niên Thời - Nguyệt Nhật</span>
                       {giaCauToHop === "nien_thoi_nguyet_nhat" && (
                         <span className="w-1.5 h-1.5 rounded-full bg-[#C9A55A] shrink-0" />
                       )}
                     </div>
-                    <div className="text-[9px] sm:text-[10px] text-[#5C4D3C] mt-0.5 leading-tight">Khung Viền ⟷ Cốt Lõi</div>
+                    <div className="text-[9px] sm:text-[10px] text-[#5C4D3C] leading-snug">Khung Viền ⟷ Cốt Lõi</div>
                   </button>
                 </div>
               </div>
@@ -248,37 +248,37 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
                   <button
                     type="button"
                     onClick={() => setGiaCauLuan(prev => prev === "chan_doai" ? null : "chan_doai")}
-                    className={`p-2 sm:p-2.5 rounded-lg border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                    className={`p-2 sm:p-2.5 rounded-lg border text-left transition-all cursor-pointer flex flex-col justify-between gap-1 ${
                       giaCauLuan === "chan_doai"
                         ? "bg-gradient-to-r from-[#ECFDF5] to-[#FFFDF8] border-emerald-400 text-[#14532D] font-bold shadow-md shadow-emerald-500/15 ring-1 ring-emerald-500/40"
                         : "bg-[#FFFDF8] hover:bg-[#FFFDF8] border-[#C4963E]/45 text-[#5C4D3C]"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-1">
-                      <span className="font-serif text-[11px] sm:text-xs text-[#14532D] leading-tight font-bold">Chấn Đoài (震兌)</span>
+                      <span className="font-serif text-[11px] sm:text-xs text-[#14532D] leading-snug font-bold">Chấn Đoài (震兌)</span>
                       {giaCauLuan === "chan_doai" && (
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
                       )}
                     </div>
-                    <div className="text-[9px] sm:text-[10px] text-[#5C4D3C] mt-0.5 leading-tight">Trục Mộc Kim</div>
+                    <div className="text-[9px] sm:text-[10px] text-[#5C4D3C] leading-snug">Trục Mộc Kim</div>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setGiaCauLuan(prev => prev === "kham_ly" ? null : "kham_ly")}
-                    className={`p-2 sm:p-2.5 rounded-lg border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                    className={`p-2 sm:p-2.5 rounded-lg border text-left transition-all cursor-pointer flex flex-col justify-between gap-1 ${
                       giaCauLuan === "kham_ly"
                         ? "bg-gradient-to-r from-[#EFF6FF] to-[#FFFDF8] border-sky-400 text-[#1E3A8A] font-bold shadow-md shadow-sky-500/15 ring-1 ring-sky-500/40"
                         : "bg-[#FFFDF8] hover:bg-[#FFFDF8] border-[#C4963E]/45 text-[#5C4D3C]"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-1">
-                      <span className="font-serif text-[11px] sm:text-xs text-[#1E3A8A] leading-tight font-bold">Khảm Ly (坎離)</span>
+                      <span className="font-serif text-[11px] sm:text-xs text-[#1E3A8A] leading-snug font-bold">Khảm Ly (坎離)</span>
                       {giaCauLuan === "kham_ly" && (
                         <span className="w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0" />
                       )}
                     </div>
-                    <div className="text-[9px] sm:text-[10px] text-[#5C4D3C] mt-0.5 leading-tight">Trục Thủy Hỏa</div>
+                    <div className="text-[9px] sm:text-[10px] text-[#5C4D3C] leading-snug">Trục Thủy Hỏa</div>
                   </button>
                 </div>
 
@@ -495,15 +495,15 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
                 {/* 1. THÁI DỊCH */}
                 <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-b from-[#FFFDF8] to-[#FFFDF8] border border-[#C4963E]/45 space-y-2 flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10.5px] sm:text-[11.5px] font-serif font-bold text-[#78350F]">
+                    <div className="flex items-center justify-between gap-1.5">
+                      <span className="text-[10.5px] sm:text-[11.5px] font-serif font-bold text-[#78350F] leading-snug">
                         Thái Dịch (太易)
                       </span>
-                      <span className="text-[8.5px] sm:text-[9.5px] text-[#5C4D3C] font-mono">
+                      <span className="text-[8.5px] sm:text-[9.5px] text-[#5C4D3C] font-mono shrink-0">
                         {thaiDich === "kim_thuy" ? "Kim Thủy" : thaiDich === "moc_hoa" ? "Mộc Hỏa" : "Chưa chọn"}
                       </span>
                     </div>
-                    <div className="text-[8.5px] sm:text-[9px] text-[#5C4D3C] leading-tight mt-0.5">
+                    <div className="text-[8.5px] sm:text-[9px] text-[#5C4D3C] leading-snug mt-0.5">
                       Khí chưa sinh (Chân nguyên)
                     </div>
                   </div>
@@ -512,31 +512,31 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
                     <button
                       type="button"
                       onClick={() => setThaiDich((prev) => (prev === "kim_thuy" ? null : "kim_thuy"))}
-                      className={`p-1.5 sm:p-2 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center ${
+                      className={`p-1.5 sm:p-2 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
                         thaiDich === "kim_thuy"
-                          ? "bg-gradient-to-b from-cyan-950/90 to-[#FAF6EE] border-cyan-400 text-cyan-200 font-bold ring-1 ring-cyan-500/50 shadow-sm"
+                          ? "bg-gradient-to-b from-[#ECFEFF] to-[#FAF6EE] border-cyan-500 text-[#155E75] font-bold ring-1 ring-cyan-500/50 shadow-sm"
                           : "bg-[#FFFDF8] hover:bg-[#FFFDF8] border-[#C4963E]/45 text-[#5C4D3C]"
                       }`}
                     >
-                      <span className="text-[10.5px] sm:text-[11.5px] font-bold font-serif leading-tight">
+                      <span className="text-[10.5px] sm:text-[11.5px] font-bold font-serif leading-snug">
                         Kim Thủy
                       </span>
-                      <span className="text-[8px] sm:text-[8.5px] text-[#5C4D3C] leading-none mt-0.5 font-serif">金水</span>
+                      <span className="text-[8px] sm:text-[8.5px] text-[#5C4D3C] leading-none font-serif">金水</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => setThaiDich((prev) => (prev === "moc_hoa" ? null : "moc_hoa"))}
-                      className={`p-1.5 sm:p-2 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center ${
+                      className={`p-1.5 sm:p-2 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
                         thaiDich === "moc_hoa"
                           ? "bg-gradient-to-b from-[#FFF1F2] to-[#FFFDF8] border-rose-400 text-[#991B1B] font-bold ring-1 ring-rose-500/50 shadow-sm"
                           : "bg-[#FFFDF8] hover:bg-[#FFFDF8] border-[#C4963E]/45 text-[#5C4D3C]"
                       }`}
                     >
-                      <span className="text-[10.5px] sm:text-[11.5px] font-bold font-serif leading-tight">
+                      <span className="text-[10.5px] sm:text-[11.5px] font-bold font-serif leading-snug">
                         Mộc Hỏa
                       </span>
-                      <span className="text-[8px] sm:text-[8.5px] text-[#5C4D3C] leading-none mt-0.5 font-serif">木火</span>
+                      <span className="text-[8px] sm:text-[8.5px] text-[#5C4D3C] leading-none font-serif">木火</span>
                     </button>
                   </div>
                 </div>
@@ -544,15 +544,15 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
                 {/* 2. THÁI SƠ */}
                 <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-b from-[#FFFDF8] to-[#FFFDF8] border border-[#C4963E]/45 space-y-2 flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10.5px] sm:text-[11.5px] font-serif font-bold text-[#78350F]">
+                    <div className="flex items-center justify-between gap-1.5">
+                      <span className="text-[10.5px] sm:text-[11.5px] font-serif font-bold text-[#78350F] leading-snug">
                         Thái Sơ (太初)
                       </span>
-                      <span className="text-[8.5px] sm:text-[9.5px] text-[#5C4D3C] font-mono">
+                      <span className="text-[8.5px] sm:text-[9.5px] text-[#5C4D3C] font-mono shrink-0">
                         {thaiSo === "kim" ? "Kim" : thaiSo === "moc" ? "Mộc" : "Chưa chọn"}
                       </span>
                     </div>
-                    <div className="text-[8.5px] sm:text-[9px] text-[#5C4D3C] leading-tight mt-0.5">
+                    <div className="text-[8.5px] sm:text-[9px] text-[#5C4D3C] leading-snug mt-0.5">
                       Khí bắt đầu sinh
                     </div>
                   </div>
@@ -561,31 +561,31 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
                     <button
                       type="button"
                       onClick={() => setThaiSo((prev) => (prev === "kim" ? null : "kim"))}
-                      className={`p-1.5 sm:p-2 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center ${
+                      className={`p-1.5 sm:p-2 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
                         thaiSo === "kim"
                           ? "bg-gradient-to-b from-[#FEF3C7] to-[#FAF6EE] border-amber-400 text-[#78350F] font-bold ring-1 ring-amber-500/50 shadow-sm"
                           : "bg-[#FFFDF8] hover:bg-[#FFFDF8] border-[#C4963E]/45 text-[#5C4D3C]"
                       }`}
                     >
-                      <span className="text-[10.5px] sm:text-[11.5px] font-bold font-serif leading-tight">
+                      <span className="text-[10.5px] sm:text-[11.5px] font-bold font-serif leading-snug">
                         Kim
                       </span>
-                      <span className="text-[8px] sm:text-[8.5px] text-[#5C4D3C] leading-none mt-0.5 font-serif">金</span>
+                      <span className="text-[8px] sm:text-[8.5px] text-[#5C4D3C] leading-none font-serif">金</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => setThaiSo((prev) => (prev === "moc" ? null : "moc"))}
-                      className={`p-1.5 sm:p-2 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center ${
+                      className={`p-1.5 sm:p-2 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
                         thaiSo === "moc"
                           ? "bg-gradient-to-b from-[#ECFDF5] to-[#FAF6EE] border-emerald-400 text-[#14532D] font-bold ring-1 ring-emerald-500/50 shadow-sm"
                           : "bg-[#FFFDF8] hover:bg-[#FFFDF8] border-[#C4963E]/45 text-[#5C4D3C]"
                       }`}
                     >
-                      <span className="text-[10.5px] sm:text-[11.5px] font-bold font-serif leading-tight">
+                      <span className="text-[10.5px] sm:text-[11.5px] font-bold font-serif leading-snug">
                         Mộc
                       </span>
-                      <span className="text-[8px] sm:text-[8.5px] text-[#5C4D3C] leading-none mt-0.5 font-serif">木</span>
+                      <span className="text-[8px] sm:text-[8.5px] text-[#5C4D3C] leading-none font-serif">木</span>
                     </button>
                   </div>
                 </div>
@@ -593,15 +593,15 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
                 {/* 3. THÁI THỦY */}
                 <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-b from-[#FFFDF8] to-[#FFFDF8] border border-[#C4963E]/45 space-y-2 flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10.5px] sm:text-[11.5px] font-serif font-bold text-[#78350F]">
+                    <div className="flex items-center justify-between gap-1.5">
+                      <span className="text-[10.5px] sm:text-[11.5px] font-serif font-bold text-[#78350F] leading-snug">
                         Thái Thủy (太始)
                       </span>
-                      <span className="text-[8.5px] sm:text-[9.5px] text-[#5C4D3C] font-mono">
+                      <span className="text-[8.5px] sm:text-[9.5px] text-[#5C4D3C] font-mono shrink-0">
                         {thaiThuy === "ty" ? "Tỵ" : thaiThuy === "hoi" ? "Hợi" : "Chưa chọn"}
                       </span>
                     </div>
-                    <div className="text-[8.5px] sm:text-[9px] text-[#5C4D3C] leading-tight mt-0.5">
+                    <div className="text-[8.5px] sm:text-[9px] text-[#5C4D3C] leading-snug mt-0.5">
                       Hình bắt đầu sinh
                     </div>
                   </div>
@@ -610,7 +610,7 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
                     <button
                       type="button"
                       onClick={() => setThaiThuy((prev) => (prev === "ty" ? null : "ty"))}
-                      className={`p-1.5 sm:p-2 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center ${
+                      className={`p-1.5 sm:p-2 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
                         thaiThuy === "ty"
                           ? "bg-gradient-to-b from-[#FFF1F2] to-[#FFFDF8] border-rose-400 text-[#991B1B] font-bold ring-1 ring-rose-500/50 shadow-sm"
                           : "bg-[#FFFDF8] hover:bg-[#FFFDF8] border-[#C4963E]/45 text-[#5C4D3C]"
@@ -618,17 +618,17 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
                     >
                       <div className="flex items-center justify-center gap-1">
                         <span className="text-xs sm:text-sm leading-none">🐍</span>
-                        <span className="text-[10.5px] sm:text-[11.5px] font-bold font-serif leading-tight">
+                        <span className="text-[10.5px] sm:text-[11.5px] font-bold font-serif leading-snug">
                           Tỵ
                         </span>
                       </div>
-                      <span className="text-[8px] sm:text-[8.5px] text-[#5C4D3C] leading-none mt-0.5 font-serif">巳 (Hỏa)</span>
+                      <span className="text-[8px] sm:text-[8.5px] text-[#5C4D3C] leading-none font-serif">巳 (Hỏa)</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => setThaiThuy((prev) => (prev === "hoi" ? null : "hoi"))}
-                      className={`p-1.5 sm:p-2 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center ${
+                      className={`p-1.5 sm:p-2 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
                         thaiThuy === "hoi"
                           ? "bg-gradient-to-b from-[#EFF6FF] to-[#FFFDF8] border-sky-400 text-[#1E3A8A] font-bold ring-1 ring-sky-500/50 shadow-sm"
                           : "bg-[#FFFDF8] hover:bg-[#FFFDF8] border-[#C4963E]/45 text-[#5C4D3C]"
@@ -636,11 +636,11 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
                     >
                       <div className="flex items-center justify-center gap-1">
                         <span className="text-xs sm:text-sm leading-none">🐷</span>
-                        <span className="text-[10.5px] sm:text-[11.5px] font-bold font-serif leading-tight">
+                        <span className="text-[10.5px] sm:text-[11.5px] font-bold font-serif leading-snug">
                           Hợi
                         </span>
                       </div>
-                      <span className="text-[8px] sm:text-[8.5px] text-[#5C4D3C] leading-none mt-0.5 font-serif">亥 (Thủy)</span>
+                      <span className="text-[8px] sm:text-[8.5px] text-[#5C4D3C] leading-none font-serif">亥 (Thủy)</span>
                     </button>
                   </div>
                 </div>
@@ -648,15 +648,15 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
                 {/* 4. THÁI TỐ */}
                 <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-b from-[#FFFDF8] to-[#FFFDF8] border border-[#C4963E]/45 space-y-2 flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10.5px] sm:text-[11.5px] font-serif font-bold text-[#78350F]">
+                    <div className="flex items-center justify-between gap-1.5">
+                      <span className="text-[10.5px] sm:text-[11.5px] font-serif font-bold text-[#78350F] leading-snug">
                         Thái Tố (太素)
                       </span>
-                      <span className="text-[8.5px] sm:text-[9.5px] text-[#5C4D3C] font-mono">
+                      <span className="text-[8.5px] sm:text-[9.5px] text-[#5C4D3C] font-mono shrink-0">
                         {thaiTo === "than" ? "Thân" : thaiTo === "dan" ? "Dần" : "Chưa chọn"}
                       </span>
                     </div>
-                    <div className="text-[8.5px] sm:text-[9px] text-[#5C4D3C] leading-tight mt-0.5">
+                    <div className="text-[8.5px] sm:text-[9px] text-[#5C4D3C] leading-snug mt-0.5">
                       Chất bắt đầu sinh
                     </div>
                   </div>
@@ -665,7 +665,7 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
                     <button
                       type="button"
                       onClick={() => setThaiTo((prev) => (prev === "than" ? null : "than"))}
-                      className={`p-1.5 sm:p-2 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center ${
+                      className={`p-1.5 sm:p-2 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
                         thaiTo === "than"
                           ? "bg-gradient-to-b from-[#FEF3C7] to-[#FAF6EE] border-amber-400 text-[#78350F] font-bold ring-1 ring-amber-500/50 shadow-sm"
                           : "bg-[#FFFDF8] hover:bg-[#FFFDF8] border-[#C4963E]/45 text-[#5C4D3C]"
@@ -673,17 +673,17 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
                     >
                       <div className="flex items-center justify-center gap-1">
                         <span className="text-xs sm:text-sm leading-none">🐒</span>
-                        <span className="text-[10.5px] sm:text-[11.5px] font-bold font-serif leading-tight">
+                        <span className="text-[10.5px] sm:text-[11.5px] font-bold font-serif leading-snug">
                           Thân
                         </span>
                       </div>
-                      <span className="text-[8px] sm:text-[8.5px] text-[#5C4D3C] leading-none mt-0.5 font-serif">申 (Kim)</span>
+                      <span className="text-[8px] sm:text-[8.5px] text-[#5C4D3C] leading-none font-serif">申 (Kim)</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => setThaiTo((prev) => (prev === "dan" ? null : "dan"))}
-                      className={`p-1.5 sm:p-2 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center ${
+                      className={`p-1.5 sm:p-2 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
                         thaiTo === "dan"
                           ? "bg-gradient-to-b from-[#ECFDF5] to-[#FAF6EE] border-emerald-400 text-[#14532D] font-bold ring-1 ring-emerald-500/50 shadow-sm"
                           : "bg-[#FFFDF8] hover:bg-[#FFFDF8] border-[#C4963E]/45 text-[#5C4D3C]"
@@ -691,11 +691,11 @@ export const BaziGiaCauThien: React.FC<BaziGiaCauThienProps> = ({
                     >
                       <div className="flex items-center justify-center gap-1">
                         <span className="text-xs sm:text-sm leading-none">🐯</span>
-                        <span className="text-[10.5px] sm:text-[11.5px] font-bold font-serif leading-tight">
+                        <span className="text-[10.5px] sm:text-[11.5px] font-bold font-serif leading-snug">
                           Dần
                         </span>
                       </div>
-                      <span className="text-[8px] sm:text-[8.5px] text-[#5C4D3C] leading-none mt-0.5 font-serif">寅 (Mộc)</span>
+                      <span className="text-[8px] sm:text-[8.5px] text-[#5C4D3C] leading-none font-serif">寅 (Mộc)</span>
                     </button>
                   </div>
                 </div>

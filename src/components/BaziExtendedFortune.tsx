@@ -462,13 +462,15 @@ const STORAGE_KEY_PROFILES = "iching_saved_bazi_profiles_v1";
 const STORAGE_KEY_EXTENDED_OPEN = "iching_bazi_fortune_chart_open";
 const STORAGE_KEY_SOLAR_INPUT = "iching_bazi_solar_birth_input_v1";
 
+export type NightZiMode = "same_day" | "next_day" | "special_db";
+
 export interface AppliedSolarBirthInfo {
   year: number;
   month: number;
   day: number;
   hour: number;
   minute: number;
-  nightZiMode: "same_day" | "next_day";
+  nightZiMode: NightZiMode;
   lunar: LunarDate;
   baziYear: number;
   activeSolarTermName: string;
@@ -514,7 +516,7 @@ export function calculateSolarBirthBazi(
   hour: number,
   minute: number,
   gender: "nam" | "nu",
-  nightZiMode: "same_day" | "next_day" = "same_day"
+  nightZiMode: NightZiMode = "same_day"
 ): {
   pillars: [PillarItem, PillarItem, PillarItem, PillarItem];
   info: AppliedSolarBirthInfo;
@@ -555,11 +557,24 @@ export function calculateSolarBirthBazi(
   const monthCan = CAN_LIST[monthCanIdx].name;
   const monthChi = CHI_LIST[monthChiIdx].name;
 
-  // 3. Trụ Ngày & Trụ Giờ (xử lý tùy chọn Giờ Dạ Tý 23:00–23:59)
-  const effectiveDayJdn = hour === 23 && nightZiMode === "next_day" ? jdn + 1 : jdn;
+  // 3. Trụ Ngày & Trụ Giờ (xử lý 3 quy ước Giờ Dạ Tý 23:00–23:59, giữ nguyên birthJD để không ảnh hưởng Tiết Khí chuyển tháng):
+  // - "same_day" (Dạ Tý chuẩn Tử Bình): Giữ nguyên Trụ Ngày hôm đó (jdn), Trụ Giờ khởi theo Can ngày kế (jdn + 1).
+  // - "next_day" (Đổi ngày từ 23:00): Cả Trụ Ngày và Trụ Giờ đều sang ngày kế tiếp (jdn + 1).
+  // - "special_db" (ĐB — Tính 23h Dạ Tý của ngày hôm tiếp theo): Trụ Ngày sang ngày kế tiếp (jdn + 1),
+  //   và Can Trụ Giờ nhảy thêm 1 bậc theo Dạ Tý của ngày kế tiếp (khởi từ Can của jdn + 2), giữ nguyên Tiết Khí tháng.
+  const effectiveDayJdn =
+    hour === 23 && (nightZiMode === "next_day" || nightZiMode === "special_db")
+      ? jdn + 1
+      : jdn;
   const dayCanChi = getDayCanChi(effectiveDayJdn);
+  const hourRefDayCanChi =
+    hour === 23
+      ? nightZiMode === "special_db"
+        ? getDayCanChi(jdn + 2)
+        : getDayCanChi(jdn + 1)
+      : getDayCanChi(jdn);
   const hourChiIdx = Math.floor(((hour + 1) % 24) / 2);
-  const hourCanChi = getHourCanChi(dayCanChi.canIdx, hourChiIdx);
+  const hourCanChi = getHourCanChi(hourRefDayCanChi.canIdx, hourChiIdx);
 
   // 4. Tiết khí đương lệnh & Âm lịch tương ứng
   let activeTerm = SOLAR_TERMS_24[0];
@@ -761,8 +776,10 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
   const [birthMinute, setBirthMinute] = useState<number>(() =>
     typeof initialSolarSaved?.minute === "number" ? initialSolarSaved.minute : 0
   );
-  const [nightZiMode, setNightZiMode] = useState<"same_day" | "next_day">(() =>
-    initialSolarSaved?.nightZiMode === "next_day" ? "next_day" : "same_day"
+  const [nightZiMode, setNightZiMode] = useState<NightZiMode>(() =>
+    initialSolarSaved?.nightZiMode === "next_day" || initialSolarSaved?.nightZiMode === "special_db"
+      ? initialSolarSaved.nightZiMode
+      : "same_day"
   );
   const [solarYearError, setSolarYearError] = useState<string | null>(null);
   const [appliedSolarInfo, setAppliedSolarInfo] = useState<AppliedSolarBirthInfo | null>(null);
@@ -783,6 +800,52 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
       setBirthDay(maxSolarDays);
     }
   }, [birthDay, maxSolarDays]);
+
+  // Tính trước Can Chi thực tế của 24 khung giờ (00h–23h) và thông tin Dạ Tý ứng với Năm • Tháng • Ngày đang chọn
+  const { solarHourOptionsWithCanChi, nightZiPreview } = useMemo(() => {
+    const safeDay = Math.min(birthDay, maxSolarDays);
+    const previewJdn = getJulianDay(parsedPreviewYear, birthMonth, safeDay);
+    const sameDayCC = getDayCanChi(previewJdn);
+    const nextDayCC = getDayCanChi(previewJdn + 1);
+    const afterNextDayCC = getDayCanChi(previewJdn + 2);
+    const nightZiHourCC = getHourCanChi(nextDayCC.canIdx, 0);
+    const specialDbHourCC = getHourCanChi(afterNextDayCC.canIdx, 0);
+
+    const options = SOLAR_HOUR_OPTIONS.map((opt) => {
+      const hChiIdx = Math.floor(((opt.hour + 1) % 24) / 2);
+      const refDayCC =
+        opt.hour === 23
+          ? nightZiMode === "special_db"
+            ? afterNextDayCC
+            : nextDayCC
+          : sameDayCC;
+      const hCC = getHourCanChi(refDayCC.canIdx, hChiIdx);
+      const hh = opt.hour.toString().padStart(2, "0");
+      const tag =
+        opt.hour === 23
+          ? nightZiMode === "special_db"
+            ? `Giờ Dạ Tý (ĐB) — ${hCC.fullName}`
+            : `Giờ Dạ Tý — ${hCC.fullName}`
+          : opt.hour === 0
+          ? `Giờ Tảo Tý — ${hCC.fullName}`
+          : `Giờ ${opt.chi} — ${hCC.fullName}`;
+      return {
+        ...opt,
+        hourCanChiFullName: hCC.fullName,
+        dynamicLabel: `${hh}h (${tag} • ${hh}:00–${hh}:59)`,
+      };
+    });
+
+    return {
+      solarHourOptionsWithCanChi: options,
+      nightZiPreview: {
+        sameDayFullName: sameDayCC.fullName,
+        nextDayFullName: nextDayCC.fullName,
+        hourFullName: nightZiHourCC.fullName,
+        specialDbHourFullName: specialDbHourCC.fullName,
+      },
+    };
+  }, [parsedPreviewYear, birthMonth, birthDay, maxSolarDays, nightZiMode]);
 
   // Năm muốn xem (Mặc định năm hiện tại 2026)
   const [viewYear, setViewYear] = useState<number>(() => {
@@ -842,6 +905,31 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
     setStartAge(recalc.info.computedStartAge);
     setSelectedDaiVanIdx(null);
   }, [gender]);
+
+  // Khi lá số Giờ Dạ Tý (23h) đã được xuất mà người dùng chuyển đổi quy ước Dạ Tý, cập nhật đồng bộ ngay Tứ Trụ
+  useEffect(() => {
+    if (!appliedSolarInfo || appliedSolarInfo.hour !== 23) return;
+    if (appliedSolarInfo.nightZiMode === nightZiMode) return;
+    const recalc = calculateSolarBirthBazi(
+      appliedSolarInfo.year,
+      appliedSolarInfo.month,
+      appliedSolarInfo.day,
+      appliedSolarInfo.hour,
+      appliedSolarInfo.minute,
+      gender,
+      nightZiMode
+    );
+    setPillars(recalc.pillars);
+    setAppliedSolarInfo(recalc.info);
+    try {
+      localStorage.setItem("iching_jiazi_eight_pillars_v3", JSON.stringify(recalc.pillars));
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent("sync-bazi-pillars", { detail: recalc.pillars }));
+      }, 0);
+    } catch {
+      // ignore
+    }
+  }, [nightZiMode]);
 
   // Modal active selector cho ô Can hoặc Chi được nhấp (giống y chang bảng dưới)
   const [activeSlot, setActiveSlot] = useState<{
@@ -944,8 +1032,9 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
       }
 
       const dataUrl = await captureElementToPng(targetEl, {
-        backgroundColor: "#140E08",
+        backgroundColor: "#FDFBF7",
         pixelRatio: 2,
+        minWidth: 1080,
       });
 
       if (!dataUrl || dataUrl === "data:," || dataUrl.length < 100) {
@@ -1000,7 +1089,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
     h: number,
     min: number,
     targetGender: "nam" | "nu" = gender,
-    targetNightZi: "same_day" | "next_day" = nightZiMode,
+    targetNightZi: NightZiMode = nightZiMode,
     customMessage?: string
   ) => {
     const clampedDay = Math.min(d, getMaxDaysInSolarMonth(y, m));
@@ -1566,7 +1655,25 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
         setNightZiMode("next_day");
         setAppliedSolarInfo(checkNextDay.info);
       } else {
-        setAppliedSolarInfo(null);
+        const checkSpecialDb = calculateSolarBirthBazi(
+          loadedYear,
+          loadedMonth,
+          loadedDay,
+          loadedHour,
+          loadedMinute,
+          profile.gender,
+          "special_db"
+        );
+        const isSpecialDbMatch = checkSpecialDb.pillars.every(
+          (item, idx) =>
+            item.can === profile.pillars[idx]?.can && item.chi === profile.pillars[idx]?.chi
+        );
+        if (isSpecialDbMatch) {
+          setNightZiMode("special_db");
+          setAppliedSolarInfo(checkSpecialDb.info);
+        } else {
+          setAppliedSolarInfo(null);
+        }
       }
     } else {
       setAppliedSolarInfo(null);
@@ -2435,14 +2542,14 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                   onChange={(e) => setBirthHour(parseInt(e.target.value, 10))}
                   className="min-h-12 px-3 py-2 rounded-xl bg-[#FFFDF8] text-base font-semibold text-[#1C1813] border border-[#8C6D32]/80 hover:border-[#6E4E16] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9E2A2B]"
                 >
-                  {SOLAR_HOUR_OPTIONS.map((opt) => (
+                  {solarHourOptionsWithCanChi.map((opt) => (
                     <option key={opt.hour} value={opt.hour}>
-                      {opt.label}
+                      {opt.dynamicLabel}
                     </option>
                   ))}
                 </select>
                 <span className="text-[11px] text-[#5C4D3C] mt-1">
-                  Khung 24 giờ chuẩn sang 12 Địa Chi
+                  Tự động hiển thị Can Chi chuẩn (kể cả Tảo Tý &amp; Dạ Tý)
                 </span>
               </div>
 
@@ -2532,11 +2639,11 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                 </fieldset>
 
                 {birthHour === 23 && (
-                  <fieldset className="p-2.5 px-3 rounded-xl bg-[#FFFDF8] border border-[#C4963E]/60">
+                  <fieldset className="p-2.5 px-3 rounded-xl bg-[#FFFDF8] border border-[#C4963E]/60 space-y-1.5">
                     <legend className="text-xs font-bold text-[#6E4E16] px-1">
                       Quy ước Giờ Dạ Tý (23:00–23:59)
                     </legend>
-                    <div className="flex flex-wrap items-center gap-3.5 pt-0.5">
+                    <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-x-4 gap-y-1.5 pt-0.5">
                       <div className="inline-flex items-center gap-1.5">
                         <input
                           type="radio"
@@ -2549,11 +2656,12 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                         />
                         <label
                           htmlFor={`${formUid}-nightzi-same`}
-                          className="text-xs font-medium text-[#1C1813] cursor-pointer py-1.5 select-none"
+                          className="text-xs font-medium text-[#1C1813] cursor-pointer py-1 select-none"
                         >
-                          Giữ Trụ Ngày hôm đó (Dạ Tý)
+                          Dạ Tý chuẩn (Giữ Ngày <strong className="text-[#6E4E16] font-serif">{nightZiPreview.sameDayFullName}</strong> • Giờ <strong className="text-[#9E2A2B] font-serif">{nightZiPreview.hourFullName}</strong>)
                         </label>
                       </div>
+
                       <div className="inline-flex items-center gap-1.5">
                         <input
                           type="radio"
@@ -2566,9 +2674,27 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                         />
                         <label
                           htmlFor={`${formUid}-nightzi-next`}
-                          className="text-xs font-medium text-[#1C1813] cursor-pointer py-1.5 select-none"
+                          className="text-xs font-medium text-[#1C1813] cursor-pointer py-1 select-none"
                         >
-                          Sang Trụ Ngày hôm sau từ 23:00
+                          Đổi ngày từ 23:00 (Sang Ngày <strong className="text-[#9E2A2B] font-serif">{nightZiPreview.nextDayFullName}</strong> • Giờ <strong className="text-[#9E2A2B] font-serif">{nightZiPreview.hourFullName}</strong>)
+                        </label>
+                      </div>
+
+                      <div className="inline-flex items-center gap-1.5">
+                        <input
+                          type="radio"
+                          id={`${formUid}-nightzi-db`}
+                          name="nightZiMode"
+                          value="special_db"
+                          checked={nightZiMode === "special_db"}
+                          onChange={() => setNightZiMode("special_db")}
+                          className="w-4 h-4 accent-[#9E2A2B] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9E2A2B]"
+                        />
+                        <label
+                          htmlFor={`${formUid}-nightzi-db`}
+                          className="text-xs font-medium text-[#1C1813] cursor-pointer py-1 select-none"
+                        >
+                          <strong className="text-[#9E2A2B]">(ĐB)</strong> Tính 23h ngày kế (Sang Ngày <strong className="text-[#9E2A2B] font-serif">{nightZiPreview.nextDayFullName}</strong> • Giờ <strong className="text-[#9E2A2B] font-serif">{nightZiPreview.specialDbHourFullName}</strong> • Không đổi Tiết Khí tháng)
                         </label>
                       </div>
                     </div>
@@ -2651,11 +2777,22 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                     <strong className="text-[#1C1813]">{appliedSolarInfo.vaoVanSummary}</strong> (An Khởi Vận:{" "}
                     <strong className="text-[#9E2A2B]">{appliedSolarInfo.computedStartAge} tuổi</strong>)
                   </span>
-                  {appliedSolarInfo.baziYear !== appliedSolarInfo.year && (
-                    <span className="px-2 py-0.5 rounded bg-[#FEF3C7] text-[#78350F] border border-amber-600/40 font-medium">
-                      Sinh trước thời khắc Lập Xuân ➔ Niên trụ tính theo năm {appliedSolarInfo.baziYear}
-                    </span>
-                  )}
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    {appliedSolarInfo.hour === 23 && (
+                      <span className="px-2 py-0.5 rounded bg-[#FAF3E0] text-[#6E4E16] border border-[#C4963E]/60 font-medium">
+                        {appliedSolarInfo.nightZiMode === "same_day"
+                          ? `Dạ Tý (23h): Giữ Ngày ${dayCan} ${dayChi} • Giờ ${hourCan} ${hourChi} khởi Can ngày kế`
+                          : appliedSolarInfo.nightZiMode === "special_db"
+                          ? `Dạ Tý (ĐB • 23h): Tính 23h ngày kế (Ngày ${dayCan} ${dayChi} • Giờ ${hourCan} ${hourChi}) • Giữ nguyên Tiết Khí tháng`
+                          : `Dạ Tý (23h): Đổi sang Ngày ${dayCan} ${dayChi} • Giờ ${hourCan} ${hourChi}`}
+                      </span>
+                    )}
+                    {appliedSolarInfo.baziYear !== appliedSolarInfo.year && (
+                      <span className="px-2 py-0.5 rounded bg-[#FEF3C7] text-[#78350F] border border-amber-600/40 font-medium">
+                        Sinh trước thời khắc Lập Xuân ➔ Niên trụ tính theo năm {appliedSolarInfo.baziYear}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             )}

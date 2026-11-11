@@ -28,7 +28,7 @@ import {
   TempSpreadItem,
 } from "../services/savedSpreadsService";
 import { toPng } from "html-to-image";
-import { downloadDataUrlAsPng } from "../utils/captureHelper";
+import { downloadDataUrlAsPng, getCaptureFontEmbedCSS } from "../utils/captureHelper";
 import { ExportImageModal } from "./ExportImageModal";
 import { BrandMark } from "./BrandMark";
 import { NavTab } from "./Header";
@@ -4568,6 +4568,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           );
           await new Promise((resolve) => setTimeout(resolve, 80));
 
+          const fontEmbedCSS = await getCaptureFontEmbedCSS();
           dataUrl = await toPng(container, {
             width: cropW,
             height: cropH,
@@ -4577,6 +4578,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             backgroundColor: "#FFFFFF",
             cacheBust: false,
             skipFonts: true,
+            fontEmbedCSS,
             filter: (node: Node) => {
               if (node instanceof HTMLElement) {
                 if (node.classList.contains("no-capture")) return false;
@@ -8003,7 +8005,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
   }, []);
 
   return (
-    <div className="font-serif min-h-full flex flex-col bg-white text-zinc-900" style={{ fontFamily: "'IM Fell English','Noto Serif TC',serif" }}>
+    <div className="font-serif min-h-full flex flex-col bg-white text-zinc-900" style={{ fontFamily: "'IM Fell English','Lora',Georgia,'Times New Roman','Noto Serif TC',serif" }}>
       {/* ── CSS Animations & Hover Rules identical to Yilore ── */}
       <style>{`
         @keyframes particle-drift {
@@ -9159,12 +9161,6 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     background: "linear-gradient(180deg, #FBF4E4 0%, #EFE1C2 100%)",
                   }}
                 >
-                  {/* Đường chỉ chu sa × hoàng kim nhấn đỉnh Hương Án */}
-                  <div
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-6 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#9E2A2B]/75 to-transparent"
-                  />
-
                   <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                     <label
                       htmlFor="user-intent-question-input"
@@ -9228,7 +9224,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     value={userIntentQuestion}
                     onChange={(e) => handleQuestionChange(e.target.value)}
                     placeholder="Nhập câu hỏi hoặc sự việc đang trăn trở (VD: Sự nghiệp tháng tới diễn biến ra sao? Có nên ký kết hợp tác này không?...)"
-                    className="w-full h-auto min-h-[5.25rem] max-h-56 [field-sizing:content] resize-y rounded-xl bg-[#FFFFFF] border-[1.5px] border-[#8A6220] hover:border-[#6B4A14] px-4 py-3 text-base text-[#18120B] font-medium placeholder:text-[#6B5638] placeholder:font-normal focus-visible:border-[#9E2A2B] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9E2A2B] transition leading-relaxed font-serif shadow-[0_2px_10px_rgba(62,42,14,0.08),inset_0_1px_0_rgba(255,255,255,1)]"
+                    className="w-full h-auto min-h-[5.25rem] max-h-56 [field-sizing:content] resize-y rounded-xl bg-[#FFFFFF] border-[1.5px] border-[#8A6220] hover:border-[#6B4A14] px-4 py-3 text-base text-[#18120B] font-medium placeholder:text-[#6B5638] placeholder:font-normal focus-visible:border-[#9E2A2B] focus-visible:outline-2! focus-visible:outline-offset-2! focus-visible:outline-[#9E2A2B]! transition leading-relaxed font-serif shadow-[0_2px_10px_rgba(62,42,14,0.08),inset_0_1px_0_rgba(255,255,255,1)]"
                   />
                 </div>
               </div>

@@ -94,7 +94,8 @@ function computeBaziFromDate(dateStr: string, hour: number): [string, string, st
   const dayGZ = `${STEMS[(dayStemIdx + 10) % 10]}${BRANCHES[(dayBranchIdx + 12) % 12]}`;
 
   const hourBranchIdx = Math.floor(((hour + 1) % 24) / 2);
-  const hourStemIdx = ((dayStemIdx % 5) * 2 + hourBranchIdx) % 10;
+  const hourRefDayStemIdx = hour === 23 ? (dayStemIdx + 1) % 10 : dayStemIdx;
+  const hourStemIdx = ((hourRefDayStemIdx % 5) * 2 + hourBranchIdx) % 10;
   const hourGZ = `${STEMS[(hourStemIdx + 10) % 10]}${BRANCHES[(hourBranchIdx + 12) % 12]}`;
 
   return [yearGZ, monthGZ, dayGZ, hourGZ];

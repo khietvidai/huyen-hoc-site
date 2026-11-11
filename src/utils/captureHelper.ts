@@ -9,6 +9,277 @@ export interface CaptureOptions {
   minWidth?: number;
 }
 
+const DEFAULT_GOOGLE_FONTS_URL =
+  "https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400..700;1,400..700&family=Noto+Serif:ital,wght@0,400..700;1,400..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap";
+
+/**
+ * Quy tắc CSS nhúng trực tiếp vào SVG <foreignObject> khi chụp ảnh:
+ * 1. Đảm bảo chuỗi font ưu tiên đầy đủ dấu Tiếng Việt (Lora / Be Vietnam Pro / Georgia / Times New Roman) đứng TRƯỚC font chữ Hán (Noto Serif TC).
+ * 2. Chống lỗi html-to-image sao chép cứng width/height co cụm của thẻ inline/flex/button khiến chữ rớt dòng và đè chồng lên dòng dưới.
+ */
+const CAPTURE_LAYOUT_SAFETY_CSS = `
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+  font-synthesis: weight style;
+  font-kerning: normal;
+}
+
+.font-serif {
+  font-family: "Lora", "Noto Serif", Georgia, Cambria, "Times New Roman", "Noto Serif TC", "Microsoft JhengHei", "PingFang TC", serif !important;
+  font-size-adjust: from-font;
+}
+
+.font-display {
+  font-family: "Cormorant Garamond", "Playfair Display", "Lora", "Noto Serif", Georgia, "Times New Roman", "Noto Serif TC", serif !important;
+  font-size-adjust: from-font;
+}
+
+.font-classic,
+.font-book,
+.font-prose-serif {
+  font-family: "Lora", "Playfair Display", "Noto Serif", Georgia, "Times New Roman", "Noto Serif TC", serif !important;
+  font-size-adjust: from-font;
+}
+
+.font-sans {
+  font-family: "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+}
+
+@supports not (font-size-adjust: from-font) {
+  .font-serif,
+  .font-display,
+  .font-classic,
+  .font-book,
+  .font-prose-serif {
+    line-height: 1.4;
+  }
+}
+
+span:not(:empty):not([class*="w-"]):not([class*="h-"]):not([class*="size-"]),
+strong:not([class*="w-"]):not([class*="h-"]),
+b:not([class*="w-"]):not([class*="h-"]),
+em:not([class*="w-"]):not([class*="h-"]),
+i:not(:empty):not([class*="w-"]):not([class*="h-"]),
+label:not([class*="w-"]):not([class*="h-"]) {
+  width: auto !important;
+  inline-size: auto !important;
+  height: auto !important;
+  block-size: auto !important;
+}
+
+button:not([class*="h-"]):not([class*="size-"]),
+button div:not([class*="h-"]):not([class*="size-"]),
+p:not([class*="h-"]),
+h1:not([class*="h-"]),
+h2:not([class*="h-"]),
+h3:not([class*="h-"]),
+h4:not([class*="h-"]),
+h5:not([class*="h-"]),
+h6:not([class*="h-"]),
+li:not([class*="h-"]) {
+  height: auto !important;
+  block-size: auto !important;
+}
+
+div:not(:empty):not([data-keep-h]):not([data-capture-fixed-size="true"]):not([data-capture-root="true"]):not(.flip-card-3d-inner):not(.flip-card-front-face):not([class*="h-"]):not([class*="size-"]):not([class*="aspect-"]):not([class*="inset-"]):not([class*="bottom-"]) {
+  height: auto !important;
+  block-size: auto !important;
+}
+`;
+
+let cachedFontEmbedCSSPromise: Promise<string> | null = null;
+
+function fetchWithTimeout(url: string, timeoutMs = 3500, init?: RequestInit): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  return fetch(url, { ...init, signal: controller.signal }).finally(() => clearTimeout(timer));
+}
+
+function blobToBase64DataUrl(blob: Blob, fallbackMime = "font/woff2"): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (typeof reader.result === "string" && reader.result.length > 0) {
+        if (reader.result.startsWith("data:application/octet-stream")) {
+          resolve(reader.result.replace("data:application/octet-stream", `data:${fallbackMime}`));
+        } else {
+          resolve(reader.result);
+        }
+      } else {
+        reject(new Error("Empty font data URL"));
+      }
+    };
+    reader.onerror = () => reject(reader.error || new Error("FileReader error"));
+    reader.readAsDataURL(blob);
+  });
+}
+
+/**
+ * Tải và nhúng bộ font Tiếng Việt + Latin (Lora, Be Vietnam Pro, Cormorant Garamond, Noto Serif, Playfair Display)
+ * dưới dạng base64 @font-face để SVG <foreignObject> hiển thị chuẩn 100% dấu Tiếng Việt và kích thước chữ.
+ * Bỏ qua các mảnh CJK khổng lồ (Noto Serif TC/SC) để tốc độ chụp nhanh tức thì và không tràn bộ nhớ.
+ */
+export async function getCaptureFontEmbedCSS(): Promise<string> {
+  if (typeof document === "undefined" || typeof fetch === "undefined") {
+    return CAPTURE_LAYOUT_SAFETY_CSS;
+  }
+
+  if (cachedFontEmbedCSSPromise) {
+    return cachedFontEmbedCSSPromise;
+  }
+
+  cachedFontEmbedCSSPromise = (async () => {
+    try {
+      const linkEls = Array.from(
+        document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')
+      ).filter((l) => l.href && l.href.includes("fonts.googleapis.com"));
+
+      const stylesheetUrls =
+        linkEls.length > 0 ? linkEls.map((l) => l.href) : [DEFAULT_GOOGLE_FONTS_URL];
+
+      const embeddedBlocks: string[] = [];
+      const allowedSubsets = new Set(["vietnamese", "latin", "latin-ext", ""]);
+
+      for (const cssUrl of stylesheetUrls) {
+        let cssText = "";
+        try {
+          const res = await fetchWithTimeout(cssUrl, 3500, {
+            mode: "cors",
+            credentials: "omit",
+          });
+          if (res.ok) {
+            cssText = await res.text();
+          }
+        } catch {
+          continue;
+        }
+
+        if (!cssText) continue;
+
+        const blockRegex = /(?:\/\*\s*([^*]+?)\s*\*\/\s*)?@font-face\s*\{[^}]+\}/g;
+        const candidates: string[] = [];
+        let match: RegExpExecArray | null;
+
+        while ((match = blockRegex.exec(cssText)) !== null) {
+          const subset = (match[1] || "").trim().toLowerCase();
+          const block = match[0];
+
+          const familyMatch = block.match(/font-family:\s*['"]?([^;'"]+)['"]?/i);
+          const familyName = (familyMatch?.[1] || "").trim().toLowerCase();
+
+          // Bỏ qua các họ font CJK nặng hàng trăm mảnh (chữ Hán dùng thẳng font hệ thống sắc nét)
+          if (
+            familyName.includes("noto serif tc") ||
+            familyName.includes("noto serif sc") ||
+            familyName.includes("noto sans tc") ||
+            familyName.includes("noto sans sc")
+          ) {
+            continue;
+          }
+
+          if (!allowedSubsets.has(subset)) {
+            continue;
+          }
+
+          candidates.push(block);
+        }
+
+        const resolvedBlocks = await Promise.all(
+          candidates.map(async (block) => {
+            const urlMatch = block.match(/url\((['"]?)([^'")]+)\1\)/i);
+            if (!urlMatch) return null;
+            const rawFontUrl = urlMatch[2];
+            try {
+              const fontRes = await fetchWithTimeout(rawFontUrl, 4000, {
+                mode: "cors",
+                credentials: "omit",
+                cache: "force-cache",
+              });
+              if (!fontRes.ok) return null;
+              const blob = await fontRes.blob();
+              const mime = rawFontUrl.includes(".woff2")
+                ? "font/woff2"
+                : blob.type || "font/woff2";
+              const dataUrl = await blobToBase64DataUrl(blob, mime);
+              return block.replace(urlMatch[0], `url("${dataUrl}")`);
+            } catch {
+              return null;
+            }
+          })
+        );
+
+        for (const rb of resolvedBlocks) {
+          if (rb) embeddedBlocks.push(rb);
+        }
+      }
+
+      if (embeddedBlocks.length === 0) {
+        // Cho phép thử tải lại ở lần chụp sau nếu mạng tạm thời gián đoạn
+        cachedFontEmbedCSSPromise = null;
+        return CAPTURE_LAYOUT_SAFETY_CSS;
+      }
+
+      return `${embeddedBlocks.join("\n")}\n${CAPTURE_LAYOUT_SAFETY_CSS}`;
+    } catch {
+      cachedFontEmbedCSSPromise = null;
+      return CAPTURE_LAYOUT_SAFETY_CSS;
+    }
+  })();
+
+  return cachedFontEmbedCSSPromise;
+}
+
+/**
+ * Chuẩn hóa chuỗi văn bản Tiếng Việt về chuẩn Unicode dựng sẵn (NFC) để tránh tách rời dấu thanh
+ */
+function normalizeTextNodesToNFC(root: HTMLElement): void {
+  try {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    let current = walker.nextNode();
+    while (current) {
+      const val = current.nodeValue;
+      if (val && typeof val.normalize === "function") {
+        const nfc = val.normalize("NFC");
+        if (nfc !== val) {
+          current.nodeValue = nfc;
+        }
+      }
+      current = walker.nextNode();
+    }
+  } catch {}
+}
+
+/**
+ * Đánh dấu các phần tử vốn có inline style height/blockSize tường minh để không bị reset thành height: auto
+ */
+function markExplicitInlineHeights(root: HTMLElement): () => void {
+  const marked: HTMLElement[] = [];
+  try {
+    const all = root.querySelectorAll<HTMLElement>("*");
+    all.forEach((el) => {
+      if (
+        (el.style.height && el.style.height !== "auto") ||
+        (el.style.blockSize && el.style.blockSize !== "auto")
+      ) {
+        if (!el.hasAttribute("data-keep-h")) {
+          el.setAttribute("data-keep-h", "1");
+          marked.push(el);
+        }
+      }
+    });
+  } catch {}
+
+  return () => {
+    for (const el of marked) {
+      try {
+        el.removeAttribute("data-keep-h");
+      } catch {}
+    }
+  };
+}
+
 /**
  * Chuyển đổi chuỗi Data URL (base64) thành Blob đối tượng
  */
@@ -33,8 +304,8 @@ export function dataUrlToBlob(dataUrl: string): Blob {
 
 /**
  * Chụp ảnh phần tử HTML và trả về Data URL
- * Tự động tính toán tỷ lệ an toàn, xử lý chống lỗi bộ nhớ trình duyệt,
- * hỗ trợ fallback đa tầng (PNG 2x -> PNG 1x -> JPEG -> toBlob)
+ * Tự động tính toán tỷ lệ an toàn, nhúng WebFont Tiếng Việt chuẩn NFC,
+ * xử lý chống đè chữ & lỗi bộ nhớ trình duyệt, hỗ trợ fallback đa tầng (PNG 2x -> PNG 1x -> JPEG -> toBlob)
  */
 export async function captureElementToPng(
   element: HTMLElement,
@@ -42,6 +313,16 @@ export async function captureElementToPng(
 ): Promise<string> {
   if (!element) {
     throw new Error("Không tìm thấy phần tử cần chụp ảnh");
+  }
+
+  // Đợi bộ font trên trang sẵn sàng trước khi đo kích thước bố cục
+  if (typeof document !== "undefined" && (document as any).fonts?.ready) {
+    try {
+      await Promise.race([
+        (document as any).fonts.ready,
+        new Promise((res) => setTimeout(res, 1500)),
+      ]);
+    } catch {}
   }
 
   // Đảm bảo mọi hình ảnh bên trong phần tử đã nạp và decode hoàn toàn (tránh ảnh trắng/placeholder trên mobile)
@@ -70,7 +351,10 @@ export async function captureElementToPng(
     );
   };
 
-  await waitForImages(element);
+  const [, fontEmbedCSS] = await Promise.all([
+    waitForImages(element),
+    getCaptureFontEmbedCSS(),
+  ]);
 
   // Nếu người dùng yêu cầu minWidth và độ rộng thực tế trên điện thoại nhỏ hơn minWidth:
   // Tự động tạo bản sao Offscreen chuẩn desktop để ảnh xuất ra không bị co rút, chữ không bị tràn vỡ
@@ -95,7 +379,7 @@ export async function captureElementToPng(
       outerWrapper.style.maxWidth = `${options.minWidth}px`;
       outerWrapper.style.overflow = "visible";
       outerWrapper.style.zIndex = "-9999";
-      outerWrapper.style.backgroundColor = options.backgroundColor || "#15100A";
+      outerWrapper.style.backgroundColor = options.backgroundColor || "#FDFBF7";
 
       const clone = element.cloneNode(true) as HTMLElement;
       clone.setAttribute("data-capturing", "true");
@@ -119,10 +403,11 @@ export async function captureElementToPng(
 
       outerWrapper.appendChild(clone);
       document.body.appendChild(outerWrapper);
+      normalizeTextNodesToNFC(outerWrapper);
       await waitForImages(clone);
       await new Promise((resolve) => setTimeout(resolve, 80));
 
-      targetElement = outerWrapper;
+      targetElement = clone;
       cleanupOffscreen = () => {
         if (outerWrapper.parentNode) {
           outerWrapper.parentNode.removeChild(outerWrapper);
@@ -134,9 +419,23 @@ export async function captureElementToPng(
     }
   }
 
+  const hadCapturingAttr = targetElement.hasAttribute("data-capturing");
+  if (!hadCapturingAttr) {
+    targetElement.setAttribute("data-capturing", "true");
+  }
+  normalizeTextNodesToNFC(targetElement);
+  const cleanupInlineHeights = markExplicitInlineHeights(targetElement);
+
+  // Chờ 1 khung hình để các quy tắc [data-capturing="true"] mở rộng hết văn bản trước khi đo chiều cao
+  await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+
   try {
-    return await doCaptureElement(targetElement, options);
+    return await doCaptureElement(targetElement, options, fontEmbedCSS);
   } finally {
+    cleanupInlineHeights();
+    if (!hadCapturingAttr) {
+      targetElement.removeAttribute("data-capturing");
+    }
     if (cleanupOffscreen) {
       cleanupOffscreen();
     }
@@ -148,9 +447,10 @@ export async function captureElementToPng(
  */
 async function doCaptureElement(
   element: HTMLElement,
-  options?: CaptureOptions
+  options?: CaptureOptions,
+  fontEmbedCSS: string = CAPTURE_LAYOUT_SAFETY_CSS
 ): Promise<string> {
-  // Đo đạc kích thước thực tế của phần tử
+  // Đo đạc kích thước thực tế của phần tử sau khi áp dụng chế độ chụp
   const rect = element.getBoundingClientRect();
   const rawWidth = Math.max(
     element.scrollWidth || 0,
@@ -166,26 +466,29 @@ async function doCaptureElement(
   );
 
   // Giới hạn an toàn chiều dài/rộng lớn nhất (tránh tràn RAM/Canvas crash trên Safari & Mobile)
-  const maxSafeDim = options?.maxDimension || 3600;
+  const maxSafeDim = options?.maxDimension || 4096;
   const requestedRatio = options?.pixelRatio || 2;
   const maxRaw = Math.max(rawWidth, rawHeight);
 
   // Tính tỷ lệ an toàn không vượt quá maxSafeDim
   let safeRatio = requestedRatio;
   if (maxRaw * requestedRatio > maxSafeDim) {
-    safeRatio = Math.max(0.6, Math.floor((maxSafeDim / maxRaw) * 100) / 100);
+    safeRatio = Math.max(0.75, Math.floor((maxSafeDim / maxRaw) * 100) / 100);
   }
 
   const transparent1x1 =
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
 
   const buildConfig = (ratio: number, useCanvasDims = false) => {
+    const targetW = Math.round(options?.width || rawWidth);
+    const targetH = Math.round(options?.height || rawHeight);
+
     const config: any = {
-      backgroundColor: options?.backgroundColor || "#15100A",
+      backgroundColor: options?.backgroundColor || "#FDFBF7",
       pixelRatio: ratio,
       cacheBust: false,
       skipFonts: true,
-      fontEmbedCSS: "",
+      fontEmbedCSS,
       imagePlaceholder: transparent1x1,
       filter: (node: Node) => {
         if (node instanceof HTMLElement) {
@@ -197,6 +500,13 @@ async function doCaptureElement(
       },
       style: {
         margin: "0",
+        position: "static",
+        left: "auto",
+        top: "auto",
+        right: "auto",
+        bottom: "auto",
+        opacity: "1",
+        visibility: "visible",
         transform: "none",
         maxHeight: "none",
         height: options?.height ? `${options.height}px` : "auto",
@@ -206,18 +516,21 @@ async function doCaptureElement(
       },
     };
 
+    // Lưu ý: html-to-image tự nhân canvasWidth/canvasHeight với pixelRatio bên trong toCanvas()
     if (useCanvasDims) {
-      config.canvasWidth = Math.round((options?.width || rawWidth) * ratio);
-      config.canvasHeight = Math.round((options?.height || rawHeight) * ratio);
+      config.width = targetW;
+      config.height = targetH;
+      config.canvasWidth = targetW;
+      config.canvasHeight = targetH;
+    } else {
+      if (options?.width) config.width = options.width;
+      if (options?.height) config.height = options.height;
     }
-
-    if (options?.width) config.width = options.width;
-    if (options?.height) config.height = options.height;
 
     return config;
   };
 
-  // Tầng 1: Thử chụp PNG với safeRatio và kích thước canvas chuẩn
+  // Tầng 1: Thử chụp PNG với safeRatio và kích thước chuẩn
   try {
     const dataUrl = await toPng(element, buildConfig(safeRatio, true));
     if (dataUrl && dataUrl !== "data:," && dataUrl.length > 200) {
