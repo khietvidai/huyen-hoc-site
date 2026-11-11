@@ -248,7 +248,7 @@ Khi trong lòng có nghi vấn mà chưa thể quyết định:
     id: "spread_methods",
     title: "5. Phương pháp trải bài & 5 Ví dụ thực tế",
     icon: "Scroll",
-    summary: "Phương pháp 1 lá, 2 lá (Nhân - Quả), 3 lá (Thời gian & Xăm Khổng Minh Tam Tài) kèm 5 ví dụ minh họa chứng khoán, kinh doanh, vận hạn.",
+    summary: "Phương pháp 1, 2, 3, 5, 7, 10, 11 lá Mở Rộng, 12 Cung Tử Vi (tự động random Cung Mệnh) & Xăm Khổng Minh kèm ví dụ thực tế.",
     content: `
 ### PHƯƠNG PHÁP TRẢI BÀI & CÁC VÍ DỤ THỰC TẾ
 
@@ -307,6 +307,21 @@ Khi trong lòng có nghi vấn mà chưa thể quyết định:
     - *Số 5 (Thìn) & Số 11 (Tuất):* Động Ngũ Hào (Hào 5).
     - *Số 6 (Tỵ) & Số 12 (Hợi):* Động Thượng Hào (Hào 6).
   - Hào động làm phát sáng đồ hình quẻ Dịch và mở ra bài thơ **Quẻ Xăm Khổng Minh** (Gia Cát Vũ Hầu Thần Toán) tương ứng, kèm giải nghĩa chi tiết từng câu thơ, điển tích lịch sử, triết lý Đạo học, hành động thuận nghịch và góc nhìn ứng dụng 4 quẻ Dịch: Quẻ Chính, Quẻ Tông (đối phương), Quẻ Hỗ (tiềm ẩn), Quẻ Thác (mặt trái đối lập).
+
+---
+
+#### V. HỆ THỐNG 9 TRẬN PHÁP TRANG CHỦ & LUẬT RÚT BỘ RIÊNG CỬU NHỊ
+Trên bàn trải bài Trang Chủ **Cửu Nhị Dịch Học**, hệ thống vận hành theo nguyên tắc chuẩn xác:
+1. **Gộp chung 448 lá chia đều tỷ lệ & Mỗi vị trí là 1 bộ bài riêng:**
+   - Mỗi vị trí lá bài mới khi trải ra đều được rút độc lập từ **1 bộ bài riêng biệt gồm 448 lá** (*Bộ Riêng #1, Bộ Riêng #2, ...*), không bị ảnh hưởng hay khử trùng lặp chéo giữa các vị trí.
+   - Trong mỗi bộ riêng, **384 Lá Hào Từ Chu Dịch** và **64 Lá Quẻ Chính** được cộng gộp lại thành **448 lá**, chia đều tỷ lệ xuất hiện đồng nhất (**1/448**) cho từng lá bài.
+2. **Giữ nguyên trận bài trong ngày:**
+   - Trận bài đang mở được giữ cố định xuyên suốt trong ngày (kể cả khi tải lại trang), chỉ tự động khởi mở sang trận pháp mới khi bước qua ngày hôm sau — hoặc khi người thỉnh quẻ chủ động tắt ô **✓ Giữ nguyên** / chọn trận pháp khác tại **Cửu Nhị Command Dock**.
+3. **Trận Pháp Thập Tinh Mở Rộng (11 Lá):**
+   - Mở rộng từ trận Thập Tinh 10 lá bằng cách tách vị trí Lá 2 thành hai nguồn lực độc lập: **Lá 2A (Bổ Trợ Tích Cực)** và **Lá 2B (Thách Thức Trở Ngại)**, cho phép lật đổi chiều **Xuôi ↔ Ngược** trực tiếp trên từng lá.
+4. **Trận Pháp Thập Nhị Cung (12 Lá · Thiên Bàn Tử Vi 12 Địa Chi):**
+   - An 12 bộ bài riêng lên vòng Thiên Bàn 4×4 gồm 12 Địa Chi (**Tý → Hợi**).
+   - Mỗi lần lập trận 12 lá, hệ thống **tự động random vị trí ★ Cung Mệnh** tại 1 trong 12 Địa Chi và tự động an thuận chiều cho đủ 11 cung còn lại (*Phụ Mẫu, Phúc Đức, Điền Trạch, Quan Lộc, Nô Bộc, Thiên Di, Tật Ách, Tài Bạch, Tử Tức, Phu Thê, Huynh Đệ*), đồng thời hỗ trợ nút **🎲 Random Cung Mệnh** khi muốn gieo lại vị trí Cung Mệnh.
     `,
   },
   {

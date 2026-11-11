@@ -6,6 +6,9 @@ export interface SavedSpreadItem {
   spreadTitle: string;
   cards: any[];
   isCard2Reversed?: boolean;
+  isCard2AReversed?: boolean;
+  isCard2BReversed?: boolean;
+  menhBranchNumber?: number;
   question: string; // Câu hỏi gửi AI
   hexagramPrediction?: string; // Dự đoán của quẻ / Điềm báo ở giữa
   userAnswer?: string; // Đáp án tự điền / Chiêm nghiệm thực tế
@@ -31,6 +34,9 @@ export function saveSpreadItem(data: {
   spreadTitle: string;
   cards: any[];
   isCard2Reversed?: boolean;
+  isCard2AReversed?: boolean;
+  isCard2BReversed?: boolean;
+  menhBranchNumber?: number;
   question: string;
   hexagramPrediction?: string;
   userAnswer?: string;
@@ -54,6 +60,9 @@ export function saveSpreadItem(data: {
     spreadTitle: data.spreadTitle,
     cards: data.cards,
     isCard2Reversed: data.isCard2Reversed,
+    isCard2AReversed: data.isCard2AReversed,
+    isCard2BReversed: data.isCard2BReversed,
+    menhBranchNumber: data.menhBranchNumber,
     question: data.question || "",
     hexagramPrediction: data.hexagramPrediction || "",
     userAnswer: data.userAnswer || "",
@@ -115,6 +124,9 @@ export interface TempSpreadItem {
   spreadTitle: string;
   cards: any[];
   isCard2Reversed?: boolean;
+  isCard2AReversed?: boolean;
+  isCard2BReversed?: boolean;
+  menhBranchNumber?: number;
   question: string;
   hexagramPrediction?: string;
   userAnswer?: string;
@@ -167,6 +179,9 @@ export function addTempSpreadItem(data: {
   spreadTitle: string;
   cards: any[];
   isCard2Reversed?: boolean;
+  isCard2AReversed?: boolean;
+  isCard2BReversed?: boolean;
+  menhBranchNumber?: number;
   question?: string;
   hexagramPrediction?: string;
   userAnswer?: string;
@@ -208,6 +223,9 @@ export function addTempSpreadItem(data: {
     spreadTitle: data.spreadTitle,
     cards: data.cards,
     isCard2Reversed: data.isCard2Reversed,
+    isCard2AReversed: data.isCard2AReversed,
+    isCard2BReversed: data.isCard2BReversed,
+    menhBranchNumber: data.menhBranchNumber,
     question: data.question || "",
     hexagramPrediction: data.hexagramPrediction || "",
     userAnswer: data.userAnswer || "",

@@ -99,6 +99,63 @@ export const SpreadMethodsSection: React.FC<SpreadMethodsSectionProps> = ({
             );
           })}
         </div>
+
+        {/* KHỐI BỔ SUNG: HỆ THỐNG 9 TRẬN PHÁP TRANG CHỦ, LUẬT GỘP 448 LÁ BỘ RIÊNG, 11 LÁ & 12 CUNG TỬ VI */}
+        <div className="bg-gradient-to-br from-[#1C1610] via-[#15110C] to-[#110D0A] border border-[#483723] rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-lg">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#2C2115] pb-2.5">
+            <div className="flex items-center gap-2">
+              <Compass className="w-4 h-4 text-[#C9A55A]" />
+              <h4 className="text-xs sm:text-sm font-serif font-bold text-[#F5EAD4] uppercase tracking-wide">
+                Hệ Thống 9 Trận Pháp Trang Chủ &amp; Luật Rút Bộ Bài Riêng Cửu Nhị
+              </h4>
+            </div>
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#261E14] text-[#E0B861] border border-[#483723]">
+              1 → 12 Lá · Chuẩn Cửu Nhị
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs leading-relaxed">
+            <div className="bg-[#14100C] border border-[#2B2014] rounded-xl p-3.5 space-y-1">
+              <div className="font-bold text-[#E5C378] flex items-center gap-1.5">
+                <span>🎴</span>
+                <span>Gộp 448 Lá Chia Đều Tỷ Lệ &amp; Mỗi Vị Trí Là 1 Bộ Riêng</span>
+              </div>
+              <p className="text-[#C9BAA2]">
+                Mỗi vị trí lá bài mới khi trải ra đều rút độc lập từ <strong className="text-[#F5EAD4]">1 bộ bài riêng 448 lá</strong> (<em>Bộ Riêng #1, #2, ...</em>), cộng gộp <strong className="text-[#F5EAD4]">384 Lá Hào Từ + 64 Lá Quẻ Chính</strong> và chia đều tỷ lệ đồng nhất (<strong className="text-[#F5EAD4]">1/448</strong>) cho từng lá bài.
+              </p>
+            </div>
+
+            <div className="bg-[#14100C] border border-[#2B2014] rounded-xl p-3.5 space-y-1">
+              <div className="font-bold text-[#E5C378] flex items-center gap-1.5">
+                <span>🔒</span>
+                <span>Giữ Nguyên Trận Bài Suốt Ngày (✓ Giữ nguyên)</span>
+              </div>
+              <p className="text-[#C9BAA2]">
+                Trận bài trên trang chủ được <strong className="text-[#F5EAD4]">giữ cố định suốt cả ngày</strong> dù tải lại trang, chỉ tự động khởi mở trận pháp mới khi bước sang ngày hôm sau (tắt <strong className="text-[#F5EAD4]">✓ Giữ nguyên</strong> nếu muốn chủ động bốc lại ngay).
+              </p>
+            </div>
+
+            <div className="bg-[#14100C] border border-[#2B2014] rounded-xl p-3.5 space-y-1">
+              <div className="font-bold text-[#E5C378] flex items-center gap-1.5">
+                <span>✦</span>
+                <span>Trận 11 Lá · Thập Tinh Mở Rộng (Tách Lá 2A &amp; 2B)</span>
+              </div>
+              <p className="text-[#C9BAA2]">
+                Mở rộng từ trận Thập Tinh 10 lá bằng cách tách đôi vị trí Lá 2 thành <strong className="text-[#F5EAD4]">Lá 2A (Bổ Trợ Tích Cực)</strong> và <strong className="text-[#F5EAD4]">Lá 2B (Thách Thức Trở Ngại)</strong>; bấm nhãn <span className="text-[#E5C378] font-bold">🔄</span> để đổi chiều Xuôi ↔ Ngược từng lá.
+              </p>
+            </div>
+
+            <div className="bg-[#14100C] border border-[#2B2014] rounded-xl p-3.5 space-y-1">
+              <div className="font-bold text-[#E5C378] flex items-center gap-1.5">
+                <span>★</span>
+                <span>Trận 12 Lá · Thập Nhị Cung (Tự Động Random Cung Mệnh)</span>
+              </div>
+              <p className="text-[#C9BAA2]">
+                An 12 bộ bài riêng lên vòng Thiên Bàn 12 Địa Chi (<strong className="text-[#F5EAD4]">Tý → Hợi</strong>), tự động gieo ngẫu nhiên vị trí <strong className="text-[#F5EAD4]">★ Cung Mệnh</strong> viền vàng và an thuận chiều cho đủ 11 cung còn lại.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* 2. THANH LỌC DANH SÁCH 5 VÍ DỤ THỰC TẾ */}

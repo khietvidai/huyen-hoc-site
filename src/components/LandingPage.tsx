@@ -34,6 +34,11 @@ import { BrandMark } from "./BrandMark";
 import { NavTab } from "./Header";
 import { HEXAGRAMS, getTransformedHexagram } from "../data/hexagrams";
 import { BOOK_HEXAGRAMS } from "../data/bookHexagrams";
+import {
+  TEN_STARS_EXPANDED_POSITIONS,
+  TWELVE_BRANCHES_DATA,
+  getHouseForBranch,
+} from "../data/spreads";
 import { AppUser } from "../services/authService";
 import {
   InkWashRenderer,
@@ -195,7 +200,16 @@ const getHexDetailUrl = (hexNumber: number, yaoNumber?: number) => {
   return `/vi/hexagram/${slug}`;
 };
 
-export type SpreadMode = "1_single" | "1_to_2" | "1_to_3" | "3_to_5" | "that_tinh" | "thap_tinh" | "thap_la";
+export type SpreadMode =
+  | "1_single"
+  | "1_to_2"
+  | "1_to_3"
+  | "3_to_5"
+  | "that_tinh"
+  | "thap_tinh"
+  | "thap_nhat"
+  | "thap_nhi"
+  | "thap_la";
 
 export interface DynamicCardItem {
   id: string;
@@ -210,8 +224,14 @@ export interface DynamicCardItem {
   img: string;
   backImg: string;
   positionLabel?: string;
+  shortBadgeLabel?: string;
   positionDesc?: string;
   isReversed?: boolean;
+  deckNumber?: number;
+  slotIndex?: number;
+  branchNumber?: number;
+  branchName?: string;
+  isMenhCung?: boolean;
 }
 
 export const SINGLE_POSITIONS = [
@@ -260,11 +280,69 @@ export const THAP_TINH_POSITIONS = [
   { index: 9, label: "10. Lá Bài Khuyên Bảo", sub: "Minh triết tối hậu", desc: "Lời chỉ dẫn thấu đáo nhất từ Kinh Dịch giúp bạn định hình vận mệnh và làm chủ tương lai." },
 ];
 
-/* ─── Helper: Rút 1 lá ngẫu nhiên từ 64 quẻ và 384 hào ─── */
-function drawRandomCard(): DynamicCardItem {
-  if (!HEXAGRAMS || HEXAGRAMS.length === 0) {
+export function rollRandomMenhBranch(): number {
+  return Math.floor(Math.random() * 12) + 1;
+}
+
+export function applyTwelveHousesToCards(
+  rawCards: DynamicCardItem[],
+  menhBranchNumber: number
+): DynamicCardItem[] {
+  const validMenh = menhBranchNumber >= 1 && menhBranchNumber <= 12 ? menhBranchNumber : 3;
+  return rawCards.map((card, idx) => {
+    const branch = TWELVE_BRANCHES_DATA[idx] || TWELVE_BRANCHES_DATA[0];
+    const house = getHouseForBranch(branch.number, validMenh, false);
+    const isMenh = branch.number === validMenh;
     return {
-      id: "1",
+      ...card,
+      slotIndex: idx,
+      deckNumber: card.deckNumber || idx + 1,
+      branchNumber: branch.number,
+      branchName: branch.name,
+      isMenhCung: isMenh,
+      shortBadgeLabel: isMenh ? `★ Cung Mệnh · ${branch.name}` : `${house.alias} · ${branch.name}`,
+      positionLabel: isMenh
+        ? `★ Cung Mệnh · Địa Chi ${branch.name}`
+        : `${house.name} · Địa Chi ${branch.name}`,
+      positionDesc: `${branch.lunarMonth} • Phương ${branch.direction} (${branch.element}) — ${house.description}`,
+    };
+  });
+}
+
+interface CombinedDeckBlueprint {
+  type: "hexagram" | "yao";
+  hexIndex: number;
+  lineIndex?: number;
+}
+
+let cachedCombined448DeckPool: CombinedDeckBlueprint[] | null = null;
+
+function getCombined448DeckPool(): CombinedDeckBlueprint[] {
+  if (cachedCombined448DeckPool && cachedCombined448DeckPool.length > 0) {
+    return cachedCombined448DeckPool;
+  }
+  const pool: CombinedDeckBlueprint[] = [];
+  HEXAGRAMS.forEach((hex, hexIndex) => {
+    // 1 lá thuộc 64 Quẻ Chính
+    pool.push({ type: "hexagram", hexIndex });
+    // 6 lá thuộc 384 Hào Từ
+    if (hex.lineMeanings && hex.lineMeanings.length > 0) {
+      hex.lineMeanings.forEach((_, lineIndex) => {
+        pool.push({ type: "yao", hexIndex, lineIndex });
+      });
+    }
+  });
+  cachedCombined448DeckPool = pool;
+  return pool;
+}
+
+/* ─── Helper: Rút 1 lá độc lập từ 1 bộ bài riêng 448 lá (384 Hào Từ + 64 Quẻ Chính chia đều tỷ lệ 1/448 cho từng lá) tại vị trí slotIndex ─── */
+function drawRandomCardFromSeparateDeck(slotIndex: number = 0): DynamicCardItem {
+  const deckNumber = slotIndex + 1;
+  const pool = getCombined448DeckPool();
+  if (!HEXAGRAMS || HEXAGRAMS.length === 0 || pool.length === 0) {
+    return {
+      id: `deck${deckNumber}-1`,
       type: "hexagram",
       hexNumber: 1,
       symbol: "䷀",
@@ -274,16 +352,24 @@ function drawRandomCard(): DynamicCardItem {
       desc: "Khởi đầu lớn lao, hanh thông suôn sẻ, thu được lợi ích chính đáng.",
       img: "/assets/oss/1/1a.webp",
       backImg: "/assets/oss/1/1b.webp",
+      deckNumber,
+      slotIndex,
     };
   }
 
-  const hex = HEXAGRAMS[Math.floor(Math.random() * HEXAGRAMS.length)];
-  const isYao = Math.random() > 0.45; // ~55% rút Hào (384 hào), ~45% rút Quẻ chính (64 quẻ)
+  // Rút ngẫu nhiên đồng nhất trên tổng 448 lá (64 Quẻ + 384 Hào = 448 lá, mỗi lá đúng 1/448 xác suất)
+  const picked = pool[Math.floor(Math.random() * pool.length)];
+  const hex = HEXAGRAMS[picked.hexIndex] || HEXAGRAMS[0];
 
-  if (isYao && hex.lineMeanings && hex.lineMeanings.length > 0) {
-    const line = hex.lineMeanings[Math.floor(Math.random() * hex.lineMeanings.length)];
+  if (
+    picked.type === "yao" &&
+    typeof picked.lineIndex === "number" &&
+    hex.lineMeanings &&
+    hex.lineMeanings[picked.lineIndex]
+  ) {
+    const line = hex.lineMeanings[picked.lineIndex];
     return {
-      id: `${hex.number}-${line.line}`,
+      id: `deck${deckNumber}-${hex.number}-${line.line}`,
       type: "yao",
       hexNumber: hex.number,
       yaoNumber: line.line,
@@ -294,11 +380,13 @@ function drawRandomCard(): DynamicCardItem {
       desc: `${line.text} — ${line.meaning}`,
       img: `/assets/oss/${hex.number}/${hex.number}-${line.line}a.webp`,
       backImg: `/assets/oss/${hex.number}/${hex.number}-${line.line}b.webp`,
+      deckNumber,
+      slotIndex,
     };
   }
 
   return {
-    id: `${hex.number}`,
+    id: `deck${deckNumber}-${hex.number}`,
     type: "hexagram",
     hexNumber: hex.number,
     symbol: hex.symbol,
@@ -308,31 +396,30 @@ function drawRandomCard(): DynamicCardItem {
     desc: hex.overview || hex.judgment || hex.image,
     img: `/assets/oss/${hex.number}/${hex.number}a.webp`,
     backImg: `/assets/oss/${hex.number}/${hex.number}b.webp`,
+    deckNumber,
+    slotIndex,
   };
 }
 
-/* ─── Helper: Rút danh sách bài cho từng cấu hình ─── */
-function drawCardsForMode(mode: SpreadMode): DynamicCardItem[] {
+/* ─── Helper: Rút danh sách bài cho từng cấu hình (Mỗi vị trí là 1 bộ bài riêng độc lập) ─── */
+function drawCardsForMode(mode: SpreadMode, customMenhBranch?: number): DynamicCardItem[] {
   if (mode === "thap_la") {
     // 1. Quẻ Chủ (Bản Quái): Đầu tiên là bốc lá Quẻ Chủ từ 64 quẻ
     const priHex = HEXAGRAMS[Math.floor(Math.random() * HEXAGRAMS.length)];
 
-    // 2. AI lựa chọn random động từ 0 đến 6 hào
+    // 2. Lựa chọn random động từ 0 đến 6 hào
     const numChanging = Math.floor(Math.random() * 7); // 0, 1, 2, 3, 4, 5, 6
     let changingLines: number[] = [];
     let transHex = priHex;
 
     if (numChanging === 0) {
-      // Động 0 hào thì quẻ biến vẫn là quẻ chủ (Quẻ Tĩnh)
       changingLines = [];
       transHex = priHex;
     } else if (numChanging === 1) {
-      // Động 1 hào thì sẽ chọn random từ hào 1 đến hào 6
       const randomLine = Math.floor(Math.random() * 6) + 1;
       changingLines = [randomLine];
       transHex = getTransformedHexagram(priHex, changingLines) || priHex;
     } else {
-      // Các động hào khác (2..6 hào) cũng random tương tự từ hào 1 đến hào 6
       const allLines = [1, 2, 3, 4, 5, 6];
       for (let i = allLines.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -342,7 +429,6 @@ function drawCardsForMode(mode: SpreadMode): DynamicCardItem[] {
       transHex = getTransformedHexagram(priHex, changingLines) || priHex;
     }
 
-    // Nếu Quẻ Chủ và Quẻ Biến cùng 1 quẻ thì không hiện hào động
     if (priHex.number === transHex.number) {
       changingLines = [];
     }
@@ -362,6 +448,8 @@ function drawCardsForMode(mode: SpreadMode): DynamicCardItem[] {
       backImg: `/assets/oss/${priHex.number}/${priHex.number}b.webp`,
       positionLabel: "Quẻ Chủ (Bản Quái)",
       positionDesc: "Định vị hiện trạng và bức tranh nền tảng tổng quan",
+      deckNumber: 1,
+      slotIndex: 0,
     };
 
     const transformedCard: DynamicCardItem = {
@@ -377,13 +465,13 @@ function drawCardsForMode(mode: SpreadMode): DynamicCardItem[] {
       backImg: `/assets/oss/${transHex.number}/${transHex.number}b.webp`,
       positionLabel: isSameHex ? "Quẻ Biến (Đồng Quẻ Chủ)" : "Quẻ Biến (Biến Quái)",
       positionDesc: isSameHex ? "Quẻ Tĩnh: Quẻ biến giữ nguyên quẻ chủ, lấy tĩnh chế động" : "Định hướng xu thế phát triển và kết quả chuyển dịch",
+      deckNumber: 2,
+      slotIndex: 1,
     };
 
-    // 3. Các lá hào từ (ở 384 lá bài hào từ) thay đổi theo các hào động AI đã chọn
-    // Nếu Quẻ Chủ và Quẻ Biến cùng 1 quẻ thì không hiện hào động
     const changingYaoCards: DynamicCardItem[] = [];
     if (!isSameHex) {
-      changingLines.forEach((lineNum) => {
+      changingLines.forEach((lineNum, cIdx) => {
         const isYangToYin = priHex.lines?.[lineNum - 1] === 1;
         const lineMeaning = priHex.lineMeanings?.find((m) => m.line === lineNum);
         const yaoName = lineMeaning?.name || `Hào ${lineNum}`;
@@ -400,53 +488,59 @@ function drawCardsForMode(mode: SpreadMode): DynamicCardItem[] {
           img: `/assets/oss/${priHex.number}/${priHex.number}-${lineNum}a.webp`,
           backImg: `/assets/oss/${priHex.number}/${priHex.number}-${lineNum}b.webp`,
           positionLabel: `Hào Động: Hào ${lineNum}`,
-          positionDesc: `Bước ngoặt biến dịch then chốt do AI phân định tại vị trí Hào ${lineNum}`,
+          positionDesc: `Bước ngoặt biến dịch then chốt tại vị trí Hào ${lineNum}`,
+          deckNumber: 3 + cIdx,
+          slotIndex: 2 + cIdx,
         });
       });
     }
 
-    // Thứ tự trả về: [Quẻ Chủ, Quẻ Biến, các lá hào từ thay đổi từ Sơ tới Lục]
     return [primaryCard, transformedCard, ...changingYaoCards];
   }
 
   if (mode === "that_tinh") {
-    const list: DynamicCardItem[] = [];
-    const seen = new Set<string>();
-    let attempts = 0;
-    while (list.length < 7 && attempts < 100) {
-      attempts++;
-      const c = drawRandomCard();
-      if (!seen.has(c.id)) {
-        seen.add(c.id);
-        const pos = THAT_TINH_POSITIONS[list.length];
-        list.push({
-          ...c,
-          positionLabel: pos ? pos.label : `Lá ${list.length + 1}`,
-          positionDesc: pos ? pos.desc : "",
-        });
-      }
-    }
-    return list;
+    return Array.from({ length: 7 }, (_, idx) => {
+      const c = drawRandomCardFromSeparateDeck(idx);
+      const pos = THAT_TINH_POSITIONS[idx];
+      return {
+        ...c,
+        positionLabel: pos ? pos.label : `Lá ${idx + 1}`,
+        positionDesc: pos ? pos.desc : "",
+      };
+    });
   }
 
   if (mode === "thap_tinh") {
-    const list: DynamicCardItem[] = [];
-    const seen = new Set<string>();
-    let attempts = 0;
-    while (list.length < 10 && attempts < 120) {
-      attempts++;
-      const c = drawRandomCard();
-      if (!seen.has(c.id)) {
-        seen.add(c.id);
-        const pos = THAP_TINH_POSITIONS[list.length];
-        list.push({
-          ...c,
-          positionLabel: pos ? pos.label : `Lá ${list.length + 1}`,
-          positionDesc: pos ? pos.desc : "",
-        });
-      }
-    }
-    return list;
+    return Array.from({ length: 10 }, (_, idx) => {
+      const c = drawRandomCardFromSeparateDeck(idx);
+      const pos = THAP_TINH_POSITIONS[idx];
+      return {
+        ...c,
+        positionLabel: pos ? pos.label : `Lá ${idx + 1}`,
+        positionDesc: pos ? pos.desc : "",
+      };
+    });
+  }
+
+  if (mode === "thap_nhat") {
+    return Array.from({ length: 11 }, (_, idx) => {
+      const c = drawRandomCardFromSeparateDeck(idx);
+      const pos = TEN_STARS_EXPANDED_POSITIONS[idx];
+      return {
+        ...c,
+        positionLabel: pos ? pos.name : `Lá ${idx + 1}`,
+        positionDesc: pos ? pos.description : "",
+      };
+    });
+  }
+
+  if (mode === "thap_nhi") {
+    const menhBranch =
+      customMenhBranch && customMenhBranch >= 1 && customMenhBranch <= 12
+        ? customMenhBranch
+        : rollRandomMenhBranch();
+    const rawTwelve = Array.from({ length: 12 }, (_, idx) => drawRandomCardFromSeparateDeck(idx));
+    return applyTwelveHousesToCards(rawTwelve, menhBranch);
   }
 
   const count = mode === "1_single" ? 1 : mode === "1_to_2" ? 2 : mode === "1_to_3" ? 3 : 5;
@@ -459,27 +553,28 @@ function drawCardsForMode(mode: SpreadMode): DynamicCardItem[] {
       ? TAM_TAI_POSITIONS
       : NGU_HANH_POSITIONS;
 
-  const list: DynamicCardItem[] = [];
-  const seen = new Set<string>();
-  let attempts = 0;
-
-  while (list.length < count && attempts < 50) {
-    attempts++;
-    const c = drawRandomCard();
-    if (!seen.has(c.id)) {
-      seen.add(c.id);
-      const pos = positions[list.length];
-      list.push({
-        ...c,
-        positionLabel: pos ? pos.label : `Lá ${list.length + 1}`,
-        positionDesc: pos ? pos.desc : "",
-      });
-    }
-  }
-  return list;
+  return Array.from({ length: count }, (_, idx) => {
+    const c = drawRandomCardFromSeparateDeck(idx);
+    const pos = positions[idx];
+    return {
+      ...c,
+      positionLabel: pos ? pos.label : `Lá ${idx + 1}`,
+      positionDesc: pos ? pos.desc : "",
+    };
+  });
 }
 
-export const SPREAD_MODES: SpreadMode[] = ["that_tinh", "thap_tinh", "thap_la", "3_to_5", "1_to_3", "1_to_2", "1_single"];
+export const SPREAD_MODES: SpreadMode[] = [
+  "that_tinh",
+  "thap_tinh",
+  "thap_nhat",
+  "thap_nhi",
+  "thap_la",
+  "3_to_5",
+  "1_to_3",
+  "1_to_2",
+  "1_single",
+];
 
 export const SPREAD_MODE_NAMES: Record<SpreadMode, string> = {
   "1_single": "Đơn Quẻ (1 Lá)",
@@ -488,6 +583,8 @@ export const SPREAD_MODE_NAMES: Record<SpreadMode, string> = {
   "3_to_5": "Trận Pháp Ngũ Hành (5 Lá)",
   "that_tinh": "Trận Pháp Thất Tinh (7 Lá)",
   "thap_tinh": "Trận Pháp Thập Tinh Celtic Cross (10 Lá)",
+  "thap_nhat": "Trận Pháp Thập Tinh Mở Rộng (11 Lá)",
+  "thap_nhi": "Trận Pháp Thập Nhị Cung (12 Lá · 12 Địa Chi)",
   "thap_la": "Tháp La Kinh Dịch (Bản Quái & Biến Quái)",
 };
 
@@ -826,7 +923,12 @@ function generateHexagramPrediction(
   cardsList: DynamicCardItem[],
   currentMode: SpreadMode,
   isCard2ReversedState: boolean = false,
-  questionText?: string
+  questionText?: string,
+  extraOpts?: {
+    isCard2AReversed?: boolean;
+    isCard2BReversed?: boolean;
+    menhBranchNumber?: number;
+  }
 ): string {
   if (!cardsList || cardsList.length === 0) return "";
 
@@ -999,6 +1101,85 @@ ${allTenLines}
 • Chỉ dẫn then chốt: ${hexS9?.advice || s9?.desc || "Thấu suốt bản chất biến dịch, hành xử cẩn trọng vững vàng."}`;
   }
 
+  if (currentMode === "thap_nhat") {
+    const s0 = cardsList[0];
+    const s2A = cardsList[1];
+    const s2B = cardsList[2];
+    const s9 = cardsList[9] || cardsList[cardsList.length - 2];
+    const s10 = cardsList[10] || cardsList[cardsList.length - 1];
+    const rev2A = Boolean(extraOpts?.isCard2AReversed);
+    const rev2B = Boolean(extraOpts?.isCard2BReversed);
+    const eff2A = rev2A ? "Trở ngại 2A" : "Hỗ trợ 2A";
+    const eff2B = rev2B ? "Trở ngại 2B" : "Hỗ trợ 2B";
+    const hexS9 = HEXAGRAMS.find((h) => h.number === s9?.hexNumber);
+    const hexS10 = HEXAGRAMS.find((h) => h.number === s10?.hexNumber);
+    const omenS9 = hexS9?.omen ? `[${hexS9.omen}] ` : "";
+    const allElevenLines = cardsList
+      .map((c, idx) => {
+        const basePos = TEN_STARS_EXPANDED_POSITIONS[idx]?.name || c.positionLabel || `Lá ${idx + 1}`;
+        const pos = idx === 1 ? `2A. ${eff2A}` : idx === 2 ? `2B. ${eff2B}` : basePos;
+        const h = HEXAGRAMS.find((x) => x.number === c?.hexNumber);
+        const brief = getHexDomainInsight(h, domain) || c?.desc || c?.sub || "";
+        return `  - Lá ${idx + 1} (${pos} · ${c?.name}): ${brief}`;
+      })
+      .join("\n");
+
+    if (isQuestionEmpty) {
+      return `Thập Tinh Mở Rộng 11 Lá: Tâm điểm: ${s0?.name} | 2A: ${s2A?.name} (${eff2A}) & 2B: ${s2B?.name} (${eff2B}) | Kết quả: ${s9?.name} | Khuyên bảo: ${s10?.name}.\n${allElevenLines}${EMPTY_QUESTION_REMINDER}`;
+    }
+
+    const omenOutlook = getOmenOutlookText(hexS9?.omen);
+    return `🕊️ Tâm niệm / Câu hỏi: "${cleanedQuestion}"
+• Cục diện Thập Tinh Mở Rộng (Đủ 11 lá): Tâm điểm: ${s0?.name} | Tác nhân kép: 2A ${s2A?.name} (${eff2A}) & 2B ${s2B?.name} (${eff2B}) ➔ Kết quả: ${s9?.name} ${omenS9}(${s9?.sub}) | Khuyên bảo: ${s10?.name}.
+• Luận giải chi tiết đủ 11 lá theo ${domainLabel}:
+${allElevenLines}
+• Dự đoán viễn cảnh: Đối với vấn đề "${cleanedQuestion}": ${omenOutlook}
+• Chỉ dẫn then chốt: ${hexS10?.advice || s10?.desc || "Hài hòa hai nhánh lực 2A & 2B, giữ tâm trung chính."}`;
+  }
+
+  if (currentMode === "thap_nhi") {
+    const detectedMenhCard = cardsList.find((c) => c.isMenhCung);
+    const menhBranchNum =
+      extraOpts?.menhBranchNumber ||
+      detectedMenhCard?.branchNumber ||
+      3;
+    const menhBranchObj =
+      TWELVE_BRANCHES_DATA.find((b) => b.number === menhBranchNum) || TWELVE_BRANCHES_DATA[2];
+    const menhCard = cardsList[menhBranchObj.number - 1] || cardsList[0];
+    const quanLocIdx = ((menhBranchObj.number - 1 + 4) % 12);
+    const taiBachIdx = ((menhBranchObj.number - 1 + 8) % 12);
+    const phuTheIdx = ((menhBranchObj.number - 1 + 10) % 12);
+    const quanCard = cardsList[quanLocIdx];
+    const taiCard = cardsList[taiBachIdx];
+    const phuTheCard = cardsList[phuTheIdx];
+    const hexMenh = HEXAGRAMS.find((h) => h.number === menhCard?.hexNumber);
+    const omenMenh = hexMenh?.omen ? `[${hexMenh.omen}] ` : "";
+
+    const allTwelveLines = cardsList
+      .map((c, idx) => {
+        const branch = TWELVE_BRANCHES_DATA[idx] || TWELVE_BRANCHES_DATA[0];
+        const house = getHouseForBranch(branch.number, menhBranchObj.number, false);
+        const h = HEXAGRAMS.find((x) => x.number === c?.hexNumber);
+        const brief = getHexDomainInsight(h, domain) || c?.desc || c?.sub || "";
+        const prefix = branch.number === menhBranchObj.number ? "★ " : "";
+        return `  - Chi ${branch.name} (${prefix}${house.name} · ${c?.name}): ${brief}`;
+      })
+      .join("\n");
+
+    if (isQuestionEmpty) {
+      return `Thập Nhị Cung 12 Lá (★ Cung Mệnh an ngẫu nhiên tại Chi ${menhBranchObj.name}): Bản Mệnh: ${menhCard?.name} | Quan Lộc: ${quanCard?.name} | Tài Bạch: ${taiCard?.name} | Phu Thê: ${phuTheCard?.name}.\n${allTwelveLines}${EMPTY_QUESTION_REMINDER}`;
+    }
+
+    const omenOutlook = getOmenOutlookText(hexMenh?.omen);
+    return `🕊️ Tâm niệm / Câu hỏi: "${cleanedQuestion}"
+• Thập Nhị Cung Tử Vi × Chu Dịch (Đủ 12 lá · ★ Cung Mệnh tự động an tại Địa Chi ${menhBranchObj.name}):
+  Bản Mệnh: ${menhCard?.name} ${omenMenh}| Quan Lộc: ${quanCard?.name} | Tài Bạch: ${taiCard?.name} | Phu Thê: ${phuTheCard?.name}.
+• Luận giải chi tiết 12 Cung theo ${domainLabel}:
+${allTwelveLines}
+• Dự đoán viễn cảnh: Soi chiếu từ ★ Cung Mệnh tại Chi ${menhBranchObj.name} (${menhCard?.name}): ${omenOutlook}
+• Phương châm hành động: ${hexMenh?.advice || "Thuận theo khí vận 12 cung Địa Chi, giữ tâm sáng suốt để chuyển hóa cát tường."}`;
+  }
+
   if (currentMode === "thap_la") {
     const pri = cardsList[0];
     const trans = cardsList[1];
@@ -1064,7 +1245,12 @@ async function formatSpreadForAI(
   includeFullBakhKhoa: boolean = false,
   userQuestion?: string,
   userPrediction?: string,
-  userAnswer?: string
+  userAnswer?: string,
+  extraOpts?: {
+    isCard2AReversed?: boolean;
+    isCard2BReversed?: boolean;
+    menhBranchNumber?: number;
+  }
 ): Promise<string> {
   const cleanedQuestion = userQuestion?.trim();
   const cleanedPrediction = userPrediction?.trim();
@@ -1173,6 +1359,139 @@ async function formatSpreadForAI(
     if (cleanedQuestion) {
       lines.push(`5. Đưa ra câu trả lời dứt khoát và kết luận sáng suốt nhất cho câu hỏi/tâm niệm của đương số.`);
     }
+    return lines.join("\n");
+  }
+
+  if (currentMode === "thap_nhat") {
+    const rev2A = Boolean(extraOpts?.isCard2AReversed);
+    const rev2B = Boolean(extraOpts?.isCard2BReversed);
+    const lines: string[] = [];
+    lines.push(`=== THÔNG TIN TRẢI BÀI TRẬN PHÁP THẬP TINH MỞ RỘNG (11 LÁ · TÁC NHÂN KÉP 2A & 2B${bakhKhoaNotice}) ===`);
+    if (cleanedQuestion) {
+      lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
+      lines.push(`"${cleanedQuestion}"\n`);
+    }
+    if (cleanedPrediction) {
+      lines.push(`【DỰ ĐOÁN CỦA QUẺ / ĐIỀM BÁO DỊCH LÝ】:`);
+      lines.push(`"${cleanedPrediction}"\n`);
+    }
+    if (cleanedAnswer) {
+      lines.push(`【ĐÁP ÁN / CHIÊM NGHIỆM TỰ ĐIỀN】:`);
+      lines.push(`"${cleanedAnswer}"\n`);
+    }
+    lines.push(`Khẩu quyết: Tâm điểm thập tự mở rộng 11 lá, tách lực tác động ngang thành 2 nhánh 2A & 2B độc lập (mỗi vị trí rút từ 1 bộ bài riêng).`);
+    lines.push(`* Trạng thái Lá 2A hiện thời: [${rev2A ? "CHIỀU NGƯỢC: TRỞ NGẠI / RÀO CẢN (NHÁNH A)" : "CHIỀU XUÔI: HỖ TRỢ / TRỢ LỰC (NHÁNH A)"}]`);
+    lines.push(`* Trạng thái Lá 2B hiện thời: [${rev2B ? "CHIỀU NGƯỢC: TRỞ NGẠI / RÀO CẢN (NHÁNH B)" : "CHIỀU XUÔI: HỖ TRỢ / TRỢ LỰC (NHÁNH B)"}]\n`);
+    cardsList.forEach((c, idx) => {
+      const pos = TEN_STARS_EXPANDED_POSITIONS[idx] || {
+        name: `Lá ${idx + 1}`,
+        subtitle: "",
+        description: "",
+      };
+      const extraBadge =
+        idx === 1
+          ? rev2A
+            ? "[2A ĐANG Ở THẾ NGƯỢC: TRỞ NGẠI]"
+            : "[2A ĐANG Ở THẾ XUÔI: HỖ TRỢ]"
+          : idx === 2
+          ? rev2B
+            ? "[2B ĐANG Ở THẾ NGƯỢC: TRỞ NGẠI]"
+            : "[2B ĐANG Ở THẾ XUÔI: HỖ TRỢ]"
+          : undefined;
+      lines.push(`----------------------------------------`);
+      if (!includeFullBakhKhoa) {
+        lines.push(`▶ Vị trí ${pos.name} [${pos.subtitle}]: ${pos.description}${extraBadge ? ` ${extraBadge}` : ""}`);
+        lines.push(`• Quẻ tượng: ${c.symbol}`);
+        lines.push(`• Tên: ${c.name}`);
+        lines.push(`• Ý nghĩa: ${c.sub}`);
+        lines.push(`• Lời giải: ${c.desc}`);
+      } else {
+        const cardLines = formatCardFullInfoFromHexagram(
+          c,
+          `Vị trí ${pos.name} [${pos.subtitle}]: ${pos.description}`,
+          extraBadge,
+          articles[idx]
+        );
+        lines.push(...cardLines);
+      }
+      lines.push("");
+    });
+    lines.push(`========================================`);
+    lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI]:`);
+    if (cleanedQuestion) {
+      lines.push(`▶ Trọng tâm giải đáp: Tập trung luận giải và tháo gỡ trực diện câu hỏi/tâm niệm: "${cleanedQuestion}"`);
+    }
+    const hasYaoInThapNhat = cardsList.some((c) => c.type === "yao" && Boolean(c.yaoNumber));
+    lines.push(`Xin hãy phân tích trải bài Trận Pháp Thập Tinh Mở Rộng 11 Lá thật thấu đáo (sử dụng đầy đủ dữ liệu Thoán Từ, Đại Tượng${hasYaoInThapNhat ? ", Hào Từ" : ""}, Ngũ Hành, Thời vận${includeFullBakhKhoa ? ", Cửu Nhị Luận Giải và Chiêm đoán 4 phương diện" : ""}):`);
+    lines.push(`1. Tâm điểm hiện tại (Lá 1) và thế song hành của hai nhánh 2A (${rev2A ? "Trở Ngại" : "Hỗ Trợ"}) & 2B (${rev2B ? "Trở Ngại" : "Hỗ Trợ"}).`);
+    lines.push(`2. Mối liên hệ ngoại cảnh (Lá 3), góc khuất chưa biết (Lá 4), quá khứ (Lá 5) và tương lai gần (Lá 6).`);
+    lines.push(`3. Đại cục vận hạn năm nay (Lá 7), góc nhìn người ngoài (Lá 8) và Kết quả cuối cùng (Lá 9).`);
+    lines.push(`4. Đúc kết sách lược từ Lá Bài Khuyên Bảo (Lá 10) và trả lời trực diện câu hỏi của đương số.`);
+    return lines.join("\n");
+  }
+
+  if (currentMode === "thap_nhi") {
+    const detectedMenhCard = cardsList.find((c) => c.isMenhCung);
+    const menhBranchNum =
+      extraOpts?.menhBranchNumber ||
+      detectedMenhCard?.branchNumber ||
+      3;
+    const menhBranchObj =
+      TWELVE_BRANCHES_DATA.find((b) => b.number === menhBranchNum) || TWELVE_BRANCHES_DATA[2];
+    const lines: string[] = [];
+    lines.push(`=== THÔNG TIN TRẢI BÀI TRẬN PHÁP THẬP NHỊ CUNG (12 LÁ ĐỊA CHI & 12 CUNG TỬ VI${bakhKhoaNotice}) ===`);
+    if (cleanedQuestion) {
+      lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
+      lines.push(`"${cleanedQuestion}"\n`);
+    }
+    if (cleanedPrediction) {
+      lines.push(`【DỰ ĐOÁN CỦA QUẺ / ĐIỀM BÁO DỊCH LÝ】:`);
+      lines.push(`"${cleanedPrediction}"\n`);
+    }
+    if (cleanedAnswer) {
+      lines.push(`【ĐÁP ÁN / CHIÊM NGHIỆM TỰ ĐIỀN】:`);
+      lines.push(`"${cleanedAnswer}"\n`);
+    }
+    lines.push(`Khẩu quyết: Vòng thiên bàn 12 Địa Chi (Tý ➔ Hợi) kết hợp 12 Cung Tử Vi, mỗi cung là 1 bộ bài độc lập.`);
+    lines.push(`* ★ VỊ TRÍ CUNG MỆNH (ĐƯỢC GIEO TỰ ĐỘNG NGẪU NHIÊN): An tại 【Địa Chi ${menhBranchObj.name}】 (${menhBranchObj.lunarMonth} • Phương ${menhBranchObj.direction} • Hành ${menhBranchObj.element}).`);
+    lines.push(`* Quy tắc an 12 Cung thuận chiều Địa Chi khởi từ Cung Mệnh tại Chi ${menhBranchObj.name}: Mệnh ➔ Phụ Mẫu ➔ Phúc Đức ➔ Điền Trạch ➔ Quan Lộc ➔ Nô Bộc ➔ Thiên Di ➔ Tật Ách ➔ Tài Bạch ➔ Tử Tức ➔ Phu Thê ➔ Huynh Đệ.\n`);
+
+    cardsList.forEach((c, idx) => {
+      const branch = TWELVE_BRANCHES_DATA[idx] || TWELVE_BRANCHES_DATA[0];
+      const house = getHouseForBranch(branch.number, menhBranchObj.number, false);
+      const isMenh = branch.number === menhBranchObj.number;
+      const posTitle = `${isMenh ? "★ " : ""}${house.name} — Địa Chi ${branch.name} (${branch.lunarMonth} • ${branch.direction})`;
+      const extraBadge = isMenh ? "[★ BẢN MỆNH TRUNG TÂM]" : undefined;
+      lines.push(`----------------------------------------`);
+      if (!includeFullBakhKhoa) {
+        lines.push(`▶ Cung thứ ${idx + 1}/12 [${posTitle}]: ${house.description}`);
+        lines.push(`• Quẻ tượng: ${c.symbol}`);
+        lines.push(`• Tên: ${c.name}`);
+        lines.push(`• Ý nghĩa: ${c.sub}`);
+        lines.push(`• Lời giải: ${c.desc}`);
+      } else {
+        const cardLines = formatCardFullInfoFromHexagram(
+          c,
+          `Cung thứ ${idx + 1}/12 [${posTitle}]: ${house.description}`,
+          extraBadge,
+          articles[idx]
+        );
+        lines.push(...cardLines);
+      }
+      lines.push("");
+    });
+
+    lines.push(`========================================`);
+    lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI]:`);
+    if (cleanedQuestion) {
+      lines.push(`▶ Trọng tâm giải đáp: Tập trung luận giải và tháo gỡ trực diện câu hỏi/tâm niệm: "${cleanedQuestion}"`);
+    }
+    const hasYaoInThapNhi = cardsList.some((c) => c.type === "yao" && Boolean(c.yaoNumber));
+    lines.push(`Xin hãy luận giải toàn diện Trận Pháp Thập Nhị Cung 12 Lá (sử dụng đầy đủ dữ liệu Thoán Từ, Đại Tượng${hasYaoInThapNhi ? ", Hào Từ" : ""}, Ngũ Hành 12 Địa Chi & 12 Cung Tử Vi${includeFullBakhKhoa ? ", Cửu Nhị Luận Giải và Chiêm đoán 4 phương diện" : ""}):`);
+    lines.push(`1. Phân tích ★ Cung Mệnh an tại Địa Chi ${menhBranchObj.name} và tam hợp Mệnh – Tài Bạch – Quan Lộc cùng cung xung chiếu Thiên Di.`);
+    lines.push(`2. Soi chiếu các cung trọng điểm liên quan trực tiếp tới câu hỏi (Phu Thê, Phúc Đức, Điền Trạch, Phụ Mẫu, Tử Tức, Nô Bộc, Tật Ách, Huynh Đệ).`);
+    lines.push(`3. Nhận diện thời điểm ứng kỳ theo các tháng Âm lịch tương ứng trên vòng 12 Địa Chi.`);
+    lines.push(`4. Đúc kết chiến lược hành động cát tường và lời đáp rõ ràng nhất cho đương số.`);
     return lines.join("\n");
   }
 
@@ -1381,6 +1700,8 @@ async function formatSpreadForAI(
       case "3_to_5": return "5 Lá (Ngũ Hành Tương Sinh Tương Khắc)";
       case "that_tinh": return "Trận Pháp Thất Tinh (7 Lá Chu Dịch Bắc Đẩu)";
       case "thap_tinh": return "Trận Pháp Thập Tinh (10 Lá Celtic Cross Dịch Lý)";
+      case "thap_nhat": return "Trận Pháp Thập Tinh Mở Rộng (11 Lá · Tác Nhân Kép 2A & 2B)";
+      case "thap_nhi": return "Trận Pháp Thập Nhị Cung (12 Lá · 12 Địa Chi & 12 Cung Tử Vi)";
       case "thap_la": return "Tháp La Kinh Dịch (Bản Quái • Hào Động • Biến Quái)";
       default: return `${cardsList.length} Lá`;
     }
@@ -1701,6 +2022,7 @@ const RitualHoldButton: React.FC<RitualHoldButtonProps> = ({
       )}
 
       <button
+        id={id}
         ref={buttonRef}
         type="button"
         title={title || "Kính Thiên, Kính Địa, Kính Nhân"}
@@ -1789,6 +2111,125 @@ const RitualHoldButton: React.FC<RitualHoldButtonProps> = ({
   );
 };
 
+const DAILY_ACTIVE_SPREAD_STORAGE_KEY = "cuunhi_daily_active_spread_v1";
+
+interface PersistedDailySpreadState {
+  dateKey: string;
+  mode: SpreadMode;
+  cards: DynamicCardItem[];
+  isCard2Reversed: boolean;
+  isCard2AReversed: boolean;
+  isCard2BReversed: boolean;
+  menhBranchNumber: number;
+  isRitualCompleted: boolean;
+}
+
+/** Lấy ngày lịch địa phương chuẩn ISO (YYYY-MM-DD) ưu tiên Temporal.PlainDate khi khả dụng */
+function getLocalCalendarDateKey(): string {
+  const TemporalApi = (globalThis as Record<string, any>).Temporal;
+  if (TemporalApi?.Now?.plainDateISO) {
+    return TemporalApi.Now.plainDateISO().toString();
+  }
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, "0");
+  const d = String(now.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+/** So sánh hai ngày lịch địa phương bằng Temporal.PlainDate.equals() (kèm fallback an toàn cho Safari) */
+function isSameLocalCalendarDay(savedDateKey?: string): boolean {
+  if (!savedDateKey || !/^\d{4}-\d{2}-\d{2}$/.test(savedDateKey)) return false;
+  const TemporalApi = (globalThis as Record<string, any>).Temporal;
+  if (TemporalApi?.PlainDate?.from && TemporalApi?.Now?.plainDateISO) {
+    try {
+      const savedPlain = TemporalApi.PlainDate.from(savedDateKey);
+      const todayPlain = TemporalApi.Now.plainDateISO();
+      return Boolean(todayPlain.equals(savedPlain));
+    } catch {
+      return savedDateKey === getLocalCalendarDateKey();
+    }
+  }
+  return savedDateKey === getLocalCalendarDateKey();
+}
+
+function persistDailySpreadState(state: PersistedDailySpreadState): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(DAILY_ACTIVE_SPREAD_STORAGE_KEY, JSON.stringify(state));
+  } catch {}
+}
+
+function loadOrCreateDailySpreadState(): PersistedDailySpreadState {
+  const todayKey = getLocalCalendarDateKey();
+  let previousMode: SpreadMode | null = null;
+
+  if (typeof window !== "undefined") {
+    try {
+      const raw = localStorage.getItem(DAILY_ACTIVE_SPREAD_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as Partial<PersistedDailySpreadState>;
+        if (parsed.mode && SPREAD_MODES.includes(parsed.mode)) {
+          previousMode = parsed.mode;
+        }
+        if (
+          parsed.mode &&
+          SPREAD_MODES.includes(parsed.mode) &&
+          Array.isArray(parsed.cards) &&
+          parsed.cards.length > 0 &&
+          isSameLocalCalendarDay(parsed.dateKey)
+        ) {
+          const restoredMenhBranch =
+            typeof parsed.menhBranchNumber === "number" &&
+            parsed.menhBranchNumber >= 1 &&
+            parsed.menhBranchNumber <= 12
+              ? parsed.menhBranchNumber
+              : parsed.cards.find((c) => c.isMenhCung)?.branchNumber || rollRandomMenhBranch();
+          const restoredCards =
+            parsed.mode === "thap_nhi"
+              ? applyTwelveHousesToCards(parsed.cards, restoredMenhBranch)
+              : parsed.cards;
+          return {
+            dateKey: todayKey,
+            mode: parsed.mode,
+            cards: restoredCards,
+            isCard2Reversed: typeof parsed.isCard2Reversed === "boolean" ? parsed.isCard2Reversed : false,
+            isCard2AReversed: typeof parsed.isCard2AReversed === "boolean" ? parsed.isCard2AReversed : false,
+            isCard2BReversed: typeof parsed.isCard2BReversed === "boolean" ? parsed.isCard2BReversed : false,
+            menhBranchNumber: restoredMenhBranch,
+            isRitualCompleted: Boolean(parsed.isRitualCompleted),
+          };
+        }
+      }
+    } catch {}
+  }
+
+  // Sang ngày mới (hoặc lần đầu tiên mở web): Chọn trận bài khác với ngày hôm trước
+  const candidateModes = previousMode ? SPREAD_MODES.filter((m) => m !== previousMode) : SPREAD_MODES;
+  const nextMode =
+    candidateModes.length > 0
+      ? candidateModes[Math.floor(Math.random() * candidateModes.length)]
+      : SPREAD_MODES[Math.floor(Math.random() * SPREAD_MODES.length)];
+  const nextMenhBranch = rollRandomMenhBranch();
+  const nextCards = drawCardsForMode(nextMode, nextMenhBranch);
+  const nextReversed = Math.random() < 0.5;
+  const nextReversed2A = Math.random() < 0.5;
+  const nextReversed2B = Math.random() < 0.5;
+
+  const freshDailyState: PersistedDailySpreadState = {
+    dateKey: todayKey,
+    mode: nextMode,
+    cards: nextCards,
+    isCard2Reversed: nextReversed,
+    isCard2AReversed: nextReversed2A,
+    isCard2BReversed: nextReversed2B,
+    menhBranchNumber: nextMenhBranch,
+    isRitualCompleted: false,
+  };
+  persistDailySpreadState(freshDailyState);
+  return freshDailyState;
+}
+
 export const LandingPage: React.FC<LandingPageProps> = ({
   currentUser,
   onEnterApp,
@@ -1796,22 +2237,98 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   onLogout,
   onOpenDonateModal,
 }) => {
-  /* Spread mode state (random initial mode from 1, 1->2, 1->3, 3->5) */
-  const [mode, setMode] = useState<SpreadMode>(() => SPREAD_MODES[Math.floor(Math.random() * SPREAD_MODES.length)]);
-  const [cards, setCards] = useState<DynamicCardItem[]>(() => drawCardsForMode(mode));
+  /* Giữ nguyên trận bài trong suốt cả ngày dù F5 / reset web; chỉ sang ngày hôm sau mới đổi sang trận bài khác */
+  const [initialDailySpread] = useState<PersistedDailySpreadState>(() => loadOrCreateDailySpreadState());
+  const activeSpreadDateRef = useRef<string>(initialDailySpread.dateKey);
 
-  /* Trạng thái chiều của Lá thứ 2 trong Thập Tinh Trận: false = Xuôi (Hỗ Trợ), true = Ngược (Trở Ngại) - tỷ lệ xuất hiện 50% */
-  const [isCard2Reversed, setIsCard2Reversed] = useState<boolean>(() => Math.random() < 0.5);
+  const [mode, setMode] = useState<SpreadMode>(initialDailySpread.mode);
+  const [cards, setCards] = useState<DynamicCardItem[]>(initialDailySpread.cards);
+
+  /* Trạng thái chiều của Lá thứ 2 trong Thập Tinh Trận: false = Xuôi (Hỗ Trợ), true = Ngược (Trở Ngại) */
+  const [isCard2Reversed, setIsCard2Reversed] = useState<boolean>(initialDailySpread.isCard2Reversed);
+  /* Trạng thái chiều của Lá 2A & 2B trong Thập Tinh Mở Rộng (11 Lá) */
+  const [isCard2AReversed, setIsCard2AReversed] = useState<boolean>(initialDailySpread.isCard2AReversed);
+  const [isCard2BReversed, setIsCard2BReversed] = useState<boolean>(initialDailySpread.isCard2BReversed);
+  /* Vị trí Địa Chi (1..12: Tý..Hợi) an ★ Cung Mệnh tự động ngẫu nhiên trong Trận Thập Nhị Cung (12 Lá) */
+  const [menhBranchNumber, setMenhBranchNumber] = useState<number>(initialDailySpread.menhBranchNumber);
 
   /* Trạng thái đắc pháp nghi thức: false = nhấn nhanh (trích chuẩn như cũ), true = nhấn đủ Kính Thiên - Kính Địa - Kính Nhân (trích 100% bách khoa) */
-  const [isRitualCompleted, setIsRitualCompleted] = useState<boolean>(false);
+  const [isRitualCompleted, setIsRitualCompleted] = useState<boolean>(initialDailySpread.isRitualCompleted);
 
   /* Trạng thái giữ nguyên các lá bài hiện tại (khóa quẻ không bị rút lại khi thực hiện Tam Kính) */
   const [isKeepCards, setIsKeepCards] = useState<boolean>(true);
 
+  /* Đồng bộ trận bài hiện tại vào bộ nhớ theo ngày để khi reset / F5 web trong ngày không bị đổi bài */
+  useEffect(() => {
+    if (!Array.isArray(cards) || cards.length === 0) return;
+    const todayKey = getLocalCalendarDateKey();
+    activeSpreadDateRef.current = todayKey;
+    persistDailySpreadState({
+      dateKey: todayKey,
+      mode,
+      cards,
+      isCard2Reversed,
+      isCard2AReversed,
+      isCard2BReversed,
+      menhBranchNumber,
+      isRitualCompleted,
+    });
+  }, [mode, cards, isCard2Reversed, isCard2AReversed, isCard2BReversed, menhBranchNumber, isRitualCompleted]);
+
+  /* Nếu người dùng treo tab qua 00:00 sang ngày hôm sau và quay lại xem, tự động khởi mở trận bài khác cho ngày mới */
+  useEffect(() => {
+    const checkNextDayRollover = () => {
+      if (document.visibilityState === "hidden") return;
+      if (!isSameLocalCalendarDay(activeSpreadDateRef.current)) {
+        const nextDaySpread = loadOrCreateDailySpreadState();
+        activeSpreadDateRef.current = nextDaySpread.dateKey;
+        setMode(nextDaySpread.mode);
+        setCards(nextDaySpread.cards);
+        setIsCard2Reversed(nextDaySpread.isCard2Reversed);
+        setIsCard2AReversed(nextDaySpread.isCard2AReversed);
+        setIsCard2BReversed(nextDaySpread.isCard2BReversed);
+        setMenhBranchNumber(nextDaySpread.menhBranchNumber);
+        setIsRitualCompleted(false);
+        setIsKeepCards(true);
+      }
+    };
+    window.addEventListener("focus", checkNextDayRollover);
+    document.addEventListener("visibilitychange", checkNextDayRollover);
+    return () => {
+      window.removeEventListener("focus", checkNextDayRollover);
+      document.removeEventListener("visibilitychange", checkNextDayRollover);
+    };
+  }, []);
+
   const handleToggleCard2Reversed = useCallback(() => {
     setIsCard2Reversed((prev) => !prev);
   }, []);
+
+  const handleToggleCard2AReversed = useCallback(() => {
+    setIsCard2AReversed((prev) => !prev);
+  }, []);
+
+  const handleToggleCard2BReversed = useCallback(() => {
+    setIsCard2BReversed((prev) => !prev);
+  }, []);
+
+  const handleRerollMenhBranch = useCallback(() => {
+    let nextMenh = rollRandomMenhBranch();
+    if (TWELVE_BRANCHES_DATA.length > 1) {
+      let guard = 0;
+      while (nextMenh === menhBranchNumber && guard < 12) {
+        nextMenh = rollRandomMenhBranch();
+        guard++;
+      }
+    }
+    setMenhBranchNumber(nextMenh);
+    setCards((prev) => (mode === "thap_nhi" ? applyTwelveHousesToCards(prev, nextMenh) : prev));
+    const branchInfo = TWELVE_BRANCHES_DATA.find((b) => b.number === nextMenh);
+    setCopiedToast(
+      `🎲 Đã tự động an ngẫu nhiên ★ Cung Mệnh sang Địa Chi ${branchInfo?.name || nextMenh} (${branchInfo?.lunarMonth || ""})!`
+    );
+    setTimeout(() => setCopiedToast(null), 3200);
+  }, [menhBranchNumber, mode]);
 
   /* Anchors for scroll physics */
   const heroAnchorRef = useRef<HTMLDivElement>(null);
@@ -1922,7 +2439,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const getAutoHuongAnAnswer = useCallback(() => {
     const qClean = userIntentQuestion.trim();
     if (!qClean) return "";
-    const pred = generateHexagramPrediction(cards, mode, isCard2Reversed, qClean);
+    const pred = generateHexagramPrediction(cards, mode, isCard2Reversed, qClean, {
+      isCard2AReversed,
+      isCard2BReversed,
+      menhBranchNumber,
+    });
     const firstCard = cards[0];
     const book0 = BOOK_HEXAGRAMS.find((b) => b.number === firstCard?.hexNumber) || BOOK_HEXAGRAMS[0];
     return [
@@ -1931,7 +2452,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     ]
       .filter(Boolean)
       .join("\n");
-  }, [userIntentQuestion, cards, mode, isCard2Reversed]);
+  }, [userIntentQuestion, cards, mode, isCard2Reversed, isCard2AReversed, isCard2BReversed, menhBranchNumber]);
 
   useEffect(() => {
     const autoAns = getAutoHuongAnAnswer();
@@ -1955,7 +2476,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   }, []);
 
   const handleRefreshPredictionFromCards = useCallback(() => {
-    const pred = generateHexagramPrediction(cards, mode, isCard2Reversed, userIntentQuestion);
+    const pred = generateHexagramPrediction(cards, mode, isCard2Reversed, userIntentQuestion, {
+      isCard2AReversed,
+      isCard2BReversed,
+      menhBranchNumber,
+    });
     handleHexagramPredictionChange(pred);
     if (userIntentQuestion && userIntentQuestion.trim()) {
       setCopiedToast("✨ Đã tham khảo tâm niệm & điền gợi ý dự đoán từ quẻ!");
@@ -1963,7 +2488,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       setCopiedToast("💡 Đã điền dự đoán từ quẻ. Nhập tâm niệm ở trên để dự đoán sát việc hơn!");
     }
     setTimeout(() => setCopiedToast(null), 3000);
-  }, [cards, mode, isCard2Reversed, userIntentQuestion, handleHexagramPredictionChange]);
+  }, [cards, mode, isCard2Reversed, isCard2AReversed, isCard2BReversed, menhBranchNumber, userIntentQuestion, handleHexagramPredictionChange]);
 
   /* Quản lý danh sách quẻ đã lưu & Popups */
   const [savedSpreads, setSavedSpreads] = useState<SavedSpreadItem[]>(() => {
@@ -1993,7 +2518,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     targetReversed?: boolean,
     targetRitual?: boolean,
     customQuestion?: string,
-    customPrediction?: string
+    customPrediction?: string,
+    extraOpts?: {
+      isCard2AReversed?: boolean;
+      isCard2BReversed?: boolean;
+      menhBranchNumber?: number;
+    }
   ) => {
     if (!Array.isArray(targetCards) || targetCards.length === 0) return;
     const spreadTitle = SPREAD_MODE_NAMES[targetMode] || "Trận Pháp Kinh Dịch";
@@ -2002,6 +2532,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       spreadTitle,
       cards: targetCards,
       isCard2Reversed: targetMode === "thap_tinh" ? targetReversed : undefined,
+      isCard2AReversed: targetMode === "thap_nhat" ? extraOpts?.isCard2AReversed : undefined,
+      isCard2BReversed: targetMode === "thap_nhat" ? extraOpts?.isCard2BReversed : undefined,
+      menhBranchNumber: targetMode === "thap_nhi" ? extraOpts?.menhBranchNumber : undefined,
       question: typeof customQuestion === "string" ? customQuestion : userIntentQuestion,
       hexagramPrediction: typeof customPrediction === "string" ? customPrediction : hexagramPrediction,
       isRitualCompleted: targetRitual,
@@ -2012,12 +2545,27 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     }
   }, [userIntentQuestion, hexagramPrediction]);
 
-  /* Tự động lưu quẻ đầu tiên mở trong ngày khi vào ứng dụng */
+  /* Tự động ghi nhận quẻ của ngày khi mở ứng dụng (không tạo bản trùng khi F5 / reset web) */
   const initialTempRecordedRef = useRef<boolean>(false);
   useEffect(() => {
     if (!initialTempRecordedRef.current && cards.length > 0) {
       initialTempRecordedRef.current = true;
-      recordDrawnSpreadToTemp(mode, cards, isCard2Reversed, isRitualCompleted, userIntentQuestion, hexagramPrediction);
+      const existingToday = getTodayTempSpreads().find(
+        (t) =>
+          t.mode === mode &&
+          Array.isArray(t.cards) &&
+          t.cards.length === cards.length &&
+          t.cards.every((c: any, idx: number) => c?.id === cards[idx]?.id)
+      );
+      if (existingToday) {
+        currentTempSpreadIdRef.current = existingToday.id;
+      } else {
+        recordDrawnSpreadToTemp(mode, cards, isCard2Reversed, isRitualCompleted, userIntentQuestion, hexagramPrediction, {
+          isCard2AReversed,
+          isCard2BReversed,
+          menhBranchNumber,
+        });
+      }
     }
   }, []);
 
@@ -2038,6 +2586,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       spreadTitle,
       cards,
       isCard2Reversed: mode === "thap_tinh" ? isCard2Reversed : undefined,
+      isCard2AReversed: mode === "thap_nhat" ? isCard2AReversed : undefined,
+      isCard2BReversed: mode === "thap_nhat" ? isCard2BReversed : undefined,
+      menhBranchNumber: mode === "thap_nhi" ? menhBranchNumber : undefined,
       question: data.question,
       hexagramPrediction: data.prediction,
       userAnswer: data.answer,
@@ -2056,24 +2607,39 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     setIsSaveDialogOpen(false);
     setCopiedToast("💾 Đã lưu quẻ (kèm câu hỏi, dự đoán & đáp án) thành công!");
     setTimeout(() => setCopiedToast(null), 3000);
-  }, [mode, cards, isCard2Reversed, isRitualCompleted, userIntentQuestion, hexagramPrediction, userCustomAnswer, handleQuestionChange, handleHexagramPredictionChange, handleCustomAnswerChange, reloadSavedSpreads, reloadTempSpreads]);
+  }, [mode, cards, isCard2Reversed, isCard2AReversed, isCard2BReversed, menhBranchNumber, isRitualCompleted, userIntentQuestion, hexagramPrediction, userCustomAnswer, handleQuestionChange, handleHexagramPredictionChange, handleCustomAnswerChange, reloadSavedSpreads, reloadTempSpreads]);
 
   const handleLoadSavedSpread = useCallback((item: SavedSpreadItem) => {
-    if (item.mode && SPREAD_MODES.includes(item.mode as SpreadMode)) {
-      setMode(item.mode as SpreadMode);
+    const loadedMode = item.mode && SPREAD_MODES.includes(item.mode as SpreadMode) ? (item.mode as SpreadMode) : mode;
+    setMode(loadedMode);
+    const loadedMenh =
+      typeof item.menhBranchNumber === "number" && item.menhBranchNumber >= 1 && item.menhBranchNumber <= 12
+        ? item.menhBranchNumber
+        : item.cards?.find((c: any) => c?.isMenhCung)?.branchNumber || menhBranchNumber;
+    if (loadedMode === "thap_nhi") {
+      setMenhBranchNumber(loadedMenh);
     }
     if (Array.isArray(item.cards) && item.cards.length > 0) {
-      const loadedCards =
-        item.mode === "thap_la" &&
+      let loadedCards: DynamicCardItem[] =
+        loadedMode === "thap_la" &&
         item.cards.length >= 2 &&
         item.cards[0]?.hexNumber !== undefined &&
         item.cards[0]?.hexNumber === item.cards[1]?.hexNumber
           ? item.cards.slice(0, 2)
           : item.cards;
+      if (loadedMode === "thap_nhi") {
+        loadedCards = applyTwelveHousesToCards(loadedCards, loadedMenh);
+      }
       setCards(loadedCards);
     }
     if (typeof item.isCard2Reversed === "boolean") {
       setIsCard2Reversed(item.isCard2Reversed);
+    }
+    if (typeof item.isCard2AReversed === "boolean") {
+      setIsCard2AReversed(item.isCard2AReversed);
+    }
+    if (typeof item.isCard2BReversed === "boolean") {
+      setIsCard2BReversed(item.isCard2BReversed);
     }
     if (typeof item.isRitualCompleted === "boolean") {
       setIsRitualCompleted(item.isRitualCompleted);
@@ -2100,7 +2666,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         sec.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     }, 100);
-  }, [handleQuestionChange, handleHexagramPredictionChange, handleCustomAnswerChange]);
+  }, [mode, menhBranchNumber, handleQuestionChange, handleHexagramPredictionChange, handleCustomAnswerChange]);
 
   const [showPhoneVideoMode, setShowPhoneVideoMode] = useState<boolean>(true);
   const getTodayDragonDateKey = useCallback(() => {
@@ -2202,7 +2768,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       item.isRitualCompleted,
       item.question,
       item.hexagramPrediction,
-      item.userAnswer
+      item.userAnswer,
+      {
+        isCard2AReversed: item.isCard2AReversed,
+        isCard2BReversed: item.isCard2BReversed,
+        menhBranchNumber: item.menhBranchNumber,
+      }
     );
     const ok = await copyToClipboard(text);
     if (ok) {
@@ -2212,21 +2783,36 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   }, [triggerDragonFullAnimations]);
 
   const handleLoadTempSpread = useCallback((item: TempSpreadItem) => {
-    if (item.mode && SPREAD_MODES.includes(item.mode as SpreadMode)) {
-      setMode(item.mode as SpreadMode);
+    const loadedMode = item.mode && SPREAD_MODES.includes(item.mode as SpreadMode) ? (item.mode as SpreadMode) : mode;
+    setMode(loadedMode);
+    const loadedMenh =
+      typeof item.menhBranchNumber === "number" && item.menhBranchNumber >= 1 && item.menhBranchNumber <= 12
+        ? item.menhBranchNumber
+        : item.cards?.find((c: any) => c?.isMenhCung)?.branchNumber || menhBranchNumber;
+    if (loadedMode === "thap_nhi") {
+      setMenhBranchNumber(loadedMenh);
     }
     if (Array.isArray(item.cards) && item.cards.length > 0) {
-      const loadedCards =
-        item.mode === "thap_la" &&
+      let loadedCards: DynamicCardItem[] =
+        loadedMode === "thap_la" &&
         item.cards.length >= 2 &&
         item.cards[0]?.hexNumber !== undefined &&
         item.cards[0]?.hexNumber === item.cards[1]?.hexNumber
           ? item.cards.slice(0, 2)
           : item.cards;
+      if (loadedMode === "thap_nhi") {
+        loadedCards = applyTwelveHousesToCards(loadedCards, loadedMenh);
+      }
       setCards(loadedCards);
     }
     if (typeof item.isCard2Reversed === "boolean") {
       setIsCard2Reversed(item.isCard2Reversed);
+    }
+    if (typeof item.isCard2AReversed === "boolean") {
+      setIsCard2AReversed(item.isCard2AReversed);
+    }
+    if (typeof item.isCard2BReversed === "boolean") {
+      setIsCard2BReversed(item.isCard2BReversed);
     }
     if (typeof item.isRitualCompleted === "boolean") {
       setIsRitualCompleted(item.isRitualCompleted);
@@ -2254,7 +2840,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         sec.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     }, 100);
-  }, [handleQuestionChange, handleHexagramPredictionChange, handleCustomAnswerChange]);
+  }, [mode, menhBranchNumber, handleQuestionChange, handleHexagramPredictionChange, handleCustomAnswerChange]);
 
   const handleSaveTempSpreadPermanently = useCallback((item: TempSpreadItem) => {
     saveSpreadItem({
@@ -2262,6 +2848,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       spreadTitle: item.spreadTitle,
       cards: item.cards,
       isCard2Reversed: item.isCard2Reversed,
+      isCard2AReversed: item.isCard2AReversed,
+      isCard2BReversed: item.isCard2BReversed,
+      menhBranchNumber: item.menhBranchNumber,
       question: item.question,
       hexagramPrediction: item.hexagramPrediction,
       userAnswer: item.userAnswer,
@@ -2283,7 +2872,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       item.isRitualCompleted,
       item.question,
       item.hexagramPrediction,
-      item.userAnswer
+      item.userAnswer,
+      {
+        isCard2AReversed: item.isCard2AReversed,
+        isCard2BReversed: item.isCard2BReversed,
+        menhBranchNumber: item.menhBranchNumber,
+      }
     );
     const ok = await copyToClipboard(text);
     if (ok) {
@@ -2420,8 +3014,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       }
 
       // 3. Phân vùng điều khiển:
+      const isTourCardsStep =
+        typeof document !== "undefined" && document.body.classList.contains("cuunhi-tour-step-cards");
       const midScroll = (170 + Math.max(220, s1 - 260)) / 2;
-      const isHeroDominant = scrollY < midScroll;
+      const isHeroDominant = !isTourCardsStep && scrollY < midScroll;
 
       if (isHeroDominant) {
         tgtOpacity = heroOpacity;
@@ -2431,7 +3027,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         tgtF = 0; // Dáng quạt bài gọn gàng ở Hero
         tgtHero = 1;
       } else {
-        tgtOpacity = spreadOpacity;
+        tgtOpacity = isTourCardsStep ? 1 : spreadOpacity;
         tgtX = destinyStageX;
         tgtY = curDestinyY;
         tgtG = 1;
@@ -2863,6 +3459,116 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             f, heroF, idx === 0
           );
         });
+      } else if (mode === "thap_nhat") {
+        // ── CHẾ ĐỘ: TRẬN PHÁP THẬP TINH MỞ RỘNG (11 LÁ DỊCH LÝ: LÁ 2 TÁCH THÀNH 2A BỔ TRỢ & 2B THÁCH THỨC) ──
+        const isSmallScreen = w < 860;
+        const mobScale11 = w < 380 ? 0.34 : w < 440 ? 0.38 : w < 640 ? 0.42 : 0.46;
+        const deskScale11 = w < 1000 ? 0.50 : w < 1200 ? 0.56 : w < 1440 ? 0.61 : 0.66;
+        const scale11 = isSmallScreen ? mobScale11 : deskScale11;
+
+        const stepX = isSmallScreen
+          ? (w < 380 ? 56 : w < 440 ? 62 : w < 640 ? 70 : 104)
+          : (w < 1000 ? 132 : w < 1200 ? 146 : w < 1440 ? 160 : 172) * factor;
+        const stepY = isSmallScreen
+          ? (w < 380 ? 114 : w < 440 ? 124 : w < 640 ? 136 : 168)
+          : (w < 1000 ? 192 : w < 1200 ? 214 : w < 1440 ? 230 : 246) * factor;
+
+        const midAnchor = isSmallScreen ? 14 : 26;
+        const col1X = midAnchor - stepX * 2.22;  // Lá 10 (idx 10)
+        const col2X = midAnchor - stepX * 1.15;  // Lá 7, 8, 9 (idx 7, 8, 9)
+        const card2X = midAnchor - stepX * 0.12; // Cột Lá 2A & 2B (idx 1, 2)
+        const card1X = midAnchor + stepX * 0.88; // Lá 1, 3, 4 (idx 0, 3, 4)
+        const col5X = midAnchor + stepX * 1.88;  // Lá 5, 6 (idx 5, 6)
+
+        const posMap11: { x: number; y: number; z: number; rot?: number }[] = [
+          { x: card1X, y: 0, z: 15, rot: 0 },                       // 0: Lá 1 (Tình Huống Hiện Tại)
+          { x: card2X, y: -stepY * 0.58, z: 16, rot: 0 },           // 1: Lá 2A (Bổ Trợ Tích Cực)
+          { x: card2X, y: stepY * 0.58, z: 16, rot: 0 },            // 2: Lá 2B (Thách Thức Trở Ngại)
+          { x: card1X, y: stepY, z: 14, rot: 0 },                   // 3: Lá 3 (Nền Tảng Tiềm Thức)
+          { x: card1X, y: -stepY, z: 14, rot: 0 },                  // 4: Lá 4 (Mục Tiêu Ý Thức)
+          { x: col5X, y: -stepY * 0.58, z: 13, rot: 0 },            // 5: Lá 5 (Quá Khứ Gần)
+          { x: col5X, y: stepY * 0.58, z: 13, rot: 0 },             // 6: Lá 6 (Tương Lai Gần)
+          { x: col2X, y: -stepY, z: 13, rot: 0 },                   // 7: Lá 7 (Thái Độ Bản Thân)
+          { x: col2X, y: 0, z: 13, rot: 0 },                        // 8: Lá 8 (Môi Trường Bên Ngoài)
+          { x: col2X, y: stepY, z: 13, rot: 0 },                    // 9: Lá 9 (Hy Vọng & Nỗi Sợ)
+          { x: col1X, y: 0, z: 14, rot: 0 },                        // 10: Lá 10 (Lá Bài Khuyên Bảo)
+        ];
+
+        posMap11.forEach((p, idx) => {
+          applySlotTransform(
+            slots[idx],
+            getFanCardTransform(idx, cardCount, isSmallScreen, factor),
+            { x: p.x, y: p.y, rot: p.rot || 0, scale: scale11, zIndex: p.z },
+            f, heroF, idx === 0
+          );
+        });
+      } else if (mode === "thap_nhi") {
+        // ── CHẾ ĐỘ: TRẬN PHÁP THẬP NHỊ CUNG (12 LÁ THIÊN BÀN TỬ VI 4×4 QUANH TÂM BÁT QUÁI) ──
+        const isSmallScreen = w < 860;
+        const scale12 =
+          w < 380
+            ? 0.34
+            : w < 440
+            ? 0.38
+            : w < 640
+            ? 0.42
+            : w < 860
+            ? 0.43
+            : w < 1000
+            ? 0.46
+            : w < 1200
+            ? 0.50
+            : w < 1440
+            ? 0.54
+            : 0.58;
+
+        const stepX12 =
+          w < 380
+            ? 78
+            : w < 440
+            ? 88
+            : w < 640
+            ? 104
+            : w < 860
+            ? 142
+            : w < 1000
+            ? 162
+            : w < 1200
+            ? 182
+            : w < 1440
+            ? 198
+            : 214;
+
+        const stepY12 =
+          w < 380
+            ? 112
+            : w < 440
+            ? 124
+            : w < 640
+            ? 136
+            : w < 860
+            ? 154
+            : w < 1000
+            ? 168
+            : w < 1200
+            ? 180
+            : w < 1440
+            ? 192
+            : 204;
+
+        TWELVE_BRANCHES_DATA.forEach((branch, idx) => {
+          const x = (branch.gridCol - 2.5) * stepX12;
+          const y = (branch.gridRow - 2.5) * stepY12;
+          const isMenh = cards[idx]?.isMenhCung || branch.number === menhBranchNumber;
+          applySlotTransform(
+            slots[idx],
+            getFanCardTransform(idx, cardCount, isSmallScreen, factor),
+            { x, y, rot: 0, scale: scale12, zIndex: isMenh ? 20 : 12 + branch.gridRow },
+            f,
+            heroF,
+            Boolean(isMenh)
+          );
+        });
       } else if (cardCount === 5 || mode === "3_to_5") {
         // ── CHẾ ĐỘ: 5 LÁ (NGŨ HÀNH) ──
         const isSmallScreen = w < 860;
@@ -3075,13 +3781,22 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       window.removeEventListener("scroll", requestTick);
       window.removeEventListener("resize", requestTick);
     };
-  }, [mode, cards, isCard2Reversed]);
+  }, [mode, cards, isCard2Reversed, isCard2AReversed, isCard2BReversed, menhBranchNumber]);
 
   useEffect(() => {
     if (requestTickRef.current) {
       requestTickRef.current();
     }
-  }, [isCard2Reversed]);
+  }, [isCard2Reversed, isCard2AReversed, isCard2BReversed, menhBranchNumber]);
+
+  /* Đồng bộ thẻ bài đang mở trong Modal nếu danh sách cards được cập nhật (ví dụ khi gieo lại Cung Mệnh) */
+  useEffect(() => {
+    if (!selectedCard) return;
+    const updated = cards.find((c) => c.id === selectedCard.id);
+    if (updated && updated !== selectedCard) {
+      setSelectedCard(updated);
+    }
+  }, [cards, selectedCard]);
 
   /* ── Switch Mode Handler ── */
   const handleSwitchMode = (newMode: SpreadMode, isRitual: boolean = false) => {
@@ -3092,13 +3807,28 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     setIsRitualCompleted(isRitual);
     setMode(newMode);
     let rev: boolean | undefined = undefined;
+    let rev2A: boolean | undefined = isCard2AReversed;
+    let rev2B: boolean | undefined = isCard2BReversed;
+    let nextMenh: number = menhBranchNumber;
     if (newMode === "thap_tinh") {
       rev = Math.random() < 0.5;
       setIsCard2Reversed(rev);
+    } else if (newMode === "thap_nhat") {
+      rev2A = Math.random() < 0.5;
+      rev2B = Math.random() < 0.5;
+      setIsCard2AReversed(rev2A);
+      setIsCard2BReversed(rev2B);
+    } else if (newMode === "thap_nhi") {
+      nextMenh = rollRandomMenhBranch();
+      setMenhBranchNumber(nextMenh);
     }
-    const newCards = drawCardsForMode(newMode);
+    const newCards = drawCardsForMode(newMode, nextMenh);
     setCards(newCards);
-    recordDrawnSpreadToTemp(newMode, newCards, rev, isRitual);
+    recordDrawnSpreadToTemp(newMode, newCards, rev, isRitual, undefined, undefined, {
+      isCard2AReversed: rev2A,
+      isCard2BReversed: rev2B,
+      menhBranchNumber: nextMenh,
+    });
     setTimeout(() => {
       requestTickRef.current();
     }, 50);
@@ -3108,17 +3838,32 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const handleShuffleCards = useCallback((isRitual: boolean = false) => {
     setIsRitualCompleted(isRitual);
     let rev: boolean | undefined = isCard2Reversed;
+    let rev2A: boolean | undefined = isCard2AReversed;
+    let rev2B: boolean | undefined = isCard2BReversed;
+    let nextMenh: number = menhBranchNumber;
     if (mode === "thap_tinh") {
       rev = Math.random() < 0.5;
       setIsCard2Reversed(rev);
+    } else if (mode === "thap_nhat") {
+      rev2A = Math.random() < 0.5;
+      rev2B = Math.random() < 0.5;
+      setIsCard2AReversed(rev2A);
+      setIsCard2BReversed(rev2B);
+    } else if (mode === "thap_nhi") {
+      nextMenh = rollRandomMenhBranch();
+      setMenhBranchNumber(nextMenh);
     }
-    const newCards = drawCardsForMode(mode);
+    const newCards = drawCardsForMode(mode, nextMenh);
     setCards(newCards);
-    recordDrawnSpreadToTemp(mode, newCards, rev, isRitual);
+    recordDrawnSpreadToTemp(mode, newCards, rev, isRitual, undefined, undefined, {
+      isCard2AReversed: rev2A,
+      isCard2BReversed: rev2B,
+      menhBranchNumber: nextMenh,
+    });
     setTimeout(() => {
       requestTickRef.current();
     }, 50);
-  }, [mode, isCard2Reversed, recordDrawnSpreadToTemp]);
+  }, [mode, isCard2Reversed, isCard2AReversed, isCard2BReversed, menhBranchNumber, recordDrawnSpreadToTemp]);
 
   const handleShuffleCardsAndScroll = useCallback((isRitual: boolean = false) => {
     handleShuffleCards(isRitual);
@@ -3140,7 +3885,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     } else {
       setCopiedToast("Đang chuẩn bị dữ liệu quẻ & luận giải tiêu chuẩn cho AI...");
     }
-    const text = await formatSpreadForAI(cards, mode, isCard2Reversed, isRitualCompleted, userIntentQuestion, hexagramPrediction, userCustomAnswer);
+    const text = await formatSpreadForAI(
+      cards,
+      mode,
+      isCard2Reversed,
+      isRitualCompleted,
+      userIntentQuestion,
+      hexagramPrediction,
+      userCustomAnswer,
+      { isCard2AReversed, isCard2BReversed, menhBranchNumber }
+    );
     const ok = await copyToClipboard(text);
     if (ok) {
       setCopiedAI(true);
@@ -3166,7 +3920,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       setTimeout(() => setCopiedAI(false), 2500);
       setTimeout(() => setCopiedToast(null), 3500);
     }
-  }, [isDragonLocked, cards, mode, isCard2Reversed, isRitualCompleted, userIntentQuestion, userCustomAnswer, triggerDragonFullAnimations]);
+  }, [isDragonLocked, cards, mode, isCard2Reversed, isCard2AReversed, isCard2BReversed, menhBranchNumber, isRitualCompleted, userIntentQuestion, hexagramPrediction, userCustomAnswer, triggerDragonFullAnimations]);
 
   /* ── Sao chép 1 lá bài đơn lẻ cho AI (Thông tin cơ bản hoặc 100% bách khoa khi đắc pháp) ── */
   const handleCopySingleCardForAI = useCallback(async (card: DynamicCardItem) => {
@@ -3301,11 +4055,13 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         const cx = stageW / 2 + tx;
         const cy = stageH / 2 + ty;
 
-        // Tính khung bao hình học có tính góc xoay và nhãn phía trên lá bài (chỉ Trận 7 và Trận 10 có nhãn trên)
+        // Tính khung bao hình học có tính góc xoay và nhãn phía trên lá bài (Trận 7, 10, 11 và 12 lá có nhãn trên)
         const rad = Math.abs((rotDeg * Math.PI) / 180);
         const halfW = ((unscaledW * Math.cos(rad) + unscaledH * Math.sin(rad)) * sc) / 2;
         const halfH = ((unscaledW * Math.sin(rad) + unscaledH * Math.cos(rad)) * sc) / 2;
-        const hasTopBadge = (mode === "that_tinh" || mode === "thap_tinh") && Boolean(card?.positionLabel);
+        const hasTopBadge =
+          (mode === "that_tinh" || mode === "thap_tinh" || mode === "thap_nhat" || mode === "thap_nhi") &&
+          Boolean(card?.positionLabel);
         const topBadgeExtra = hasTopBadge ? 42 : 12;
 
         minX = Math.min(minX, cx - halfW - 14);
@@ -3480,7 +4236,10 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             drawRoundRect(ctx, rx, ry, cw, ch, cardRadius);
             ctx.clip();
 
-            if (mode === "thap_tinh" && item.idx === 1 && isCard2Reversed) {
+            if (
+              (mode === "thap_tinh" && item.idx === 1 && isCard2Reversed) ||
+              (mode === "thap_nhat" && ((item.idx === 1 && isCard2AReversed) || (item.idx === 2 && isCard2BReversed)))
+            ) {
               ctx.rotate(Math.PI);
             }
 
@@ -3530,12 +4289,12 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             ctx.restore();
           }
 
-          // Lớp 2: Vẽ nhãn vị trí trận pháp phía trên từng lá bài (Chỉ áp dụng cho Trận 7 lá và Trận 10 lá)
-          if (mode === "that_tinh" || mode === "thap_tinh") {
+          // Lớp 2: Vẽ nhãn vị trí trận pháp phía trên từng lá bài (Trận 7, 10, 11 và 12 lá)
+          if (mode === "that_tinh" || mode === "thap_tinh" || mode === "thap_nhat" || mode === "thap_nhi") {
             for (const item of sortedMetas) {
               if (!item.card.positionLabel) continue;
 
-              let topText = item.card.positionLabel;
+              let topText = item.card.shortBadgeLabel || item.card.positionLabel;
               let pillBg = "rgba(24, 24, 27, 0.92)";
               let pillBorder = "rgba(120, 113, 108, 0.65)";
               let pillColor = "#F5F5F4";
@@ -3555,6 +4314,31 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 pillBg = "rgba(69, 26, 3, 0.95)";
                 pillBorder = "rgba(245, 158, 11, 0.85)";
                 pillColor = "#FDE68A";
+              } else if (mode === "thap_nhat" && item.idx === 0) {
+                topText = "1. Tình Huống Hiện Tại";
+                pillBg = "rgba(24, 24, 27, 0.95)";
+                pillBorder = "rgba(217, 119, 6, 0.7)";
+                pillColor = "#FDE68A";
+              } else if (mode === "thap_nhat" && item.idx === 1) {
+                topText = isCard2AReversed ? "2A. Ngược: Bổ Trợ Suy 🔄" : "2A. Xuôi: Bổ Trợ 🔄";
+                pillBg = isCard2AReversed ? "#4C0519" : "#022C22";
+                pillBorder = isCard2AReversed ? "#F43F5E" : "#10B981";
+                pillColor = isCard2AReversed ? "#FECDD3" : "#A7F3D0";
+              } else if (mode === "thap_nhat" && item.idx === 2) {
+                topText = isCard2BReversed ? "2B. Ngược: Áp Lực Giảm 🔄" : "2B. Xuôi: Thách Thức 🔄";
+                pillBg = isCard2BReversed ? "#022C22" : "#4C0519";
+                pillBorder = isCard2BReversed ? "#10B981" : "#F43F5E";
+                pillColor = isCard2BReversed ? "#A7F3D0" : "#FECDD3";
+              } else if (mode === "thap_nhat" && item.idx === 10) {
+                topText = "10. Lá Bài Khuyên Bảo";
+                pillBg = "rgba(69, 26, 3, 0.95)";
+                pillBorder = "rgba(245, 158, 11, 0.85)";
+                pillColor = "#FDE68A";
+              } else if (mode === "thap_nhi" && item.card.isMenhCung) {
+                topText = item.card.shortBadgeLabel || `★ Cung Mệnh · ${item.card.branchName || ""}`;
+                pillBg = "rgba(69, 26, 3, 0.96)";
+                pillBorder = "#F59E0B";
+                pillColor = "#FEF08A";
               }
 
               ctx.save();
@@ -3819,6 +4603,10 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           ? "that-tinh-7-la"
           : mode === "thap_tinh"
           ? "thap-tinh-10-la"
+          : mode === "thap_nhat"
+          ? "thap-tinh-mo-rong-11-la"
+          : mode === "thap_nhi"
+          ? "thap-nhi-cung-12-la"
           : mode === "thap_la"
           ? "thap-la"
           : `${cards.length}-la-bai`;
@@ -3849,7 +4637,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         setIsCapturingSnapshot(false);
       }
     }
-  }, [cards, mode, isCard2Reversed, isCapturingSnapshot]);
+  }, [cards, mode, isCard2Reversed, isCard2AReversed, isCard2BReversed, menhBranchNumber, isCapturingSnapshot]);
 
   /* ── TÍCH HỢP MẪU 2: LUẬN TRỰC TIẾP & VIDEO 9:16 NGAY TẠI TRANG CHỦ (CHẠY NGẦM + DỰ BÁO ETA + THÔNG BÁO ĐA KÊNH) ── */
   const [directHomeVoice, setDirectHomeVoice] = useState<string>("nam_tram_am");
@@ -4090,7 +4878,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           true,
           userIntentQuestion,
           hexagramPrediction,
-          autoHuongAn || userCustomAnswer
+          autoHuongAn || userCustomAnswer,
+          { isCard2AReversed, isCard2BReversed, menhBranchNumber }
         );
 
         const res = await fetch("/api/dragon_agent/chat", {
@@ -4176,6 +4965,9 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       getTodayDragonDateKey,
       phoneChatMessages,
       isCard2Reversed,
+      isCard2AReversed,
+      isCard2BReversed,
+      menhBranchNumber,
       isRitualCompleted,
       hexagramPrediction,
       userCustomAnswer,
@@ -5684,7 +6476,9 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
   }, [stopDirectHomePolling]);
 
   // Khi người dùng bốc quẻ mới hoặc đổi trận pháp trên trang chủ, tự động đồng bộ lại màn hình điện thoại theo quẻ mới
-  const cardsSignature = cards.map((c) => `${c.id}:${c.hexNumber}:${c.yaoNumber || 0}`).join("|") + `|${mode}|${isCard2Reversed}`;
+  const cardsSignature =
+    cards.map((c) => `${c.id}:${c.hexNumber}:${c.yaoNumber || 0}:${c.positionLabel || ""}`).join("|") +
+    `|${mode}|${isCard2Reversed}|${isCard2AReversed}|${isCard2BReversed}|${menhBranchNumber}`;
   const prevCardsSigRef = useRef<string>(cardsSignature);
   useEffect(() => {
     if (prevCardsSigRef.current !== cardsSignature) {
@@ -6563,7 +7357,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         isRitualCompleted,
         userIntentQuestion,
         hexagramPrediction,
-        userCustomAnswer
+        userCustomAnswer,
+        { isCard2AReversed, isCard2BReversed, menhBranchNumber }
       );
       setDirectHomeRawAIText(aiText);
       await copyToClipboard(aiText);
@@ -6643,6 +7438,9 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     cards,
     mode,
     isCard2Reversed,
+    isCard2AReversed,
+    isCard2BReversed,
+    menhBranchNumber,
     isRitualCompleted,
     userIntentQuestion,
     hexagramPrediction,
@@ -6664,6 +7462,9 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         if (isRitual) {
           setCopiedToast("✨ Tam Kính thành công! Đã đắc pháp & giữ nguyên các lá bài hiện tại.");
           setTimeout(() => setCopiedToast(null), 3500);
+        } else {
+          setCopiedToast("🔒 Đang bật Giữ nguyên: Tắt ô “✓ Giữ nguyên” nếu muốn rút bộ bài mới cho trận này.");
+          setTimeout(() => setCopiedToast(null), 3000);
         }
         setTimeout(() => {
           if (requestTickRef.current) requestTickRef.current();
@@ -6678,13 +7479,39 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       setIsRitualCompleted(isRitual);
       setMode(newMode);
       let rev: boolean | undefined = undefined;
+      let rev2A: boolean | undefined = isCard2AReversed;
+      let rev2B: boolean | undefined = isCard2BReversed;
+      let nextMenh: number = menhBranchNumber;
       if (newMode === "thap_tinh") {
         rev = Math.random() < 0.5;
         setIsCard2Reversed(rev);
+      } else if (newMode === "thap_nhat") {
+        rev2A = Math.random() < 0.5;
+        rev2B = Math.random() < 0.5;
+        setIsCard2AReversed(rev2A);
+        setIsCard2BReversed(rev2B);
+      } else if (newMode === "thap_nhi") {
+        nextMenh = rollRandomMenhBranch();
+        setMenhBranchNumber(nextMenh);
       }
-      const newCards = drawCardsForMode(newMode);
+      const newCards = drawCardsForMode(newMode, nextMenh);
       setCards(newCards);
-      recordDrawnSpreadToTemp(newMode, newCards, rev, isRitual);
+      recordDrawnSpreadToTemp(newMode, newCards, rev, isRitual, undefined, undefined, {
+        isCard2AReversed: rev2A,
+        isCard2BReversed: rev2B,
+        menhBranchNumber: nextMenh,
+      });
+      const spreadName = SPREAD_MODE_NAMES[newMode] || "Trận Pháp";
+      const menhSuffix =
+        newMode === "thap_nhi"
+          ? ` · ★ Cung Mệnh tự động tại Địa Chi ${TWELVE_BRANCHES_DATA.find((b) => b.number === nextMenh)?.name || nextMenh}`
+          : "";
+      setCopiedToast(
+        isRitual
+          ? `✨ Đắc Pháp Tam Kính: ${spreadName}${menhSuffix}!`
+          : `🔮 Đã trải bài: ${spreadName}${menhSuffix}`
+      );
+      setTimeout(() => setCopiedToast(null), 3500);
       setTimeout(() => {
         if (requestTickRef.current) requestTickRef.current();
       }, 50);
@@ -6693,7 +7520,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         sec.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     },
-    [isKeepCards, mode, recordDrawnSpreadToTemp]
+    [isKeepCards, mode, isCard2AReversed, isCard2BReversed, menhBranchNumber, recordDrawnSpreadToTemp]
   );
 
   /* ── Bật/Tắt giữ nguyên các lá bài hiện tại (Khóa quẻ khi Tam Kính) ── */
@@ -6757,13 +7584,28 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
     setMode(randomMode);
     let rev: boolean | undefined = undefined;
+    let rev2A: boolean | undefined = isCard2AReversed;
+    let rev2B: boolean | undefined = isCard2BReversed;
+    let nextMenh: number = menhBranchNumber;
     if (randomMode === "thap_tinh") {
       rev = Math.random() < 0.5;
       setIsCard2Reversed(rev);
+    } else if (randomMode === "thap_nhat") {
+      rev2A = Math.random() < 0.5;
+      rev2B = Math.random() < 0.5;
+      setIsCard2AReversed(rev2A);
+      setIsCard2BReversed(rev2B);
+    } else if (randomMode === "thap_nhi") {
+      nextMenh = rollRandomMenhBranch();
+      setMenhBranchNumber(nextMenh);
     }
-    const newDrawnCards = drawCardsForMode(randomMode);
+    const newDrawnCards = drawCardsForMode(randomMode, nextMenh);
     setCards(newDrawnCards);
-    recordDrawnSpreadToTemp(randomMode, newDrawnCards, rev, isRitual);
+    recordDrawnSpreadToTemp(randomMode, newDrawnCards, rev, isRitual, undefined, undefined, {
+      isCard2AReversed: rev2A,
+      isCard2BReversed: rev2B,
+      menhBranchNumber: nextMenh,
+    });
     setTimeout(() => {
       if (requestTickRef.current) requestTickRef.current();
     }, 50);
@@ -6774,13 +7616,17 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     }
 
     const spreadName = SPREAD_MODE_NAMES[randomMode] || "Trận Pháp";
+    const menhSuffix =
+      randomMode === "thap_nhi"
+        ? ` · ★ Cung Mệnh tự động tại Chi ${TWELVE_BRANCHES_DATA.find((b) => b.number === nextMenh)?.name || nextMenh}`
+        : "";
     if (isRitual) {
-      setCopiedToast(`✨ Đắc Pháp Tam Kính: Đã bốc ngẫu nhiên ${spreadName} (Mở khóa 100% Bách Khoa cho AI)!`);
+      setCopiedToast(`✨ Đắc Pháp Tam Kính: Đã bốc ngẫu nhiên ${spreadName}${menhSuffix} (Mở khóa 100% Bách Khoa cho AI)!`);
     } else {
-      setCopiedToast(`🔮 Đã bốc ngẫu nhiên: ${spreadName}`);
+      setCopiedToast(`🔮 Đã bốc ngẫu nhiên: ${spreadName}${menhSuffix}`);
     }
     setTimeout(() => setCopiedToast(null), 3500);
-  }, [isKeepCards, mode, recordDrawnSpreadToTemp]);
+  }, [isKeepCards, mode, isCard2AReversed, isCard2BReversed, menhBranchNumber, recordDrawnSpreadToTemp]);
 
   /* ── Coin Toss Handler ── */
   const handleTossCoin = () => {
@@ -6816,81 +7662,232 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     setOracleResult(null);
   };
 
-  /* ── Hướng Dẫn Sử Dụng Tương Tác Trang Chủ (Driver.js Product Tour 7 Bước) ── */
+  /* ── Hướng Dẫn Sử Dụng Tương Tác Trang Chủ (Driver.js Product Tour 7 Bước · Tự Động Chạy Lần Đầu) ── */
+  const activeDriverRef = useRef<ReturnType<typeof driver> | null>(null);
+
   const handleStartUserGuideTour = useCallback(() => {
-    const isDesktopView = typeof window !== "undefined" && window.innerWidth >= 1024;
-    const startDivinationSelector = isDesktopView
-      ? "#btn-hero-start-divination"
-      : "#btn-hero-mobile-start-divination";
+    const FIRST_VISIT_GUIDE_KEY = "cuunhi_user_guide_first_visit_v2";
+    try {
+      localStorage.setItem(FIRST_VISIT_GUIDE_KEY, "1");
+    } catch {}
+
+    if (activeDriverRef.current?.isActive()) {
+      activeDriverRef.current.destroy();
+    }
+
+    const getStartDivinationElement = (): Element => {
+      const isDesktopView = typeof window !== "undefined" && window.innerWidth >= 1024;
+      const primaryId = isDesktopView ? "btn-hero-start-divination" : "btn-hero-mobile-start-divination";
+      return (
+        document.getElementById(primaryId) ||
+        document.getElementById("btn-hero-start-divination") ||
+        document.getElementById("btn-hero-mobile-start-divination") ||
+        document.body
+      );
+    };
 
     const driverObj = driver({
       showProgress: true,
       animate: true,
       smoothScroll: true,
       allowClose: true,
-      overlayColor: "#090705",
-      overlayOpacity: 0.76,
-      stagePadding: 10,
+      overlayColor: "#0A0806",
+      overlayOpacity: 0.22,
+      stagePadding: 8,
       stageRadius: 16,
+      popoverOffset: 12,
       popoverClass: "cuunhi-driver-popover",
-      progressText: "Bước {{current}} / {{total}}",
-      nextBtnText: "Tiếp theo →",
-      prevBtnText: "← Quay lại",
-      doneBtnText: "Hoàn tất ✦",
+      progressText: "{{current}} / {{total}}",
+      nextBtnText: "Tiếp →",
+      prevBtnText: "← Trước",
+      doneBtnText: "Xong ✦",
       onDestroyed: () => {
-        document.body.classList.remove("cuunhi-tour-step-cards");
+        document.body.classList.remove("cuunhi-tour-step-cards", "cuunhi-tour-step-1");
+        activeDriverRef.current = null;
       },
       steps: [
         {
-          element: startDivinationSelector,
+          element: getStartDivinationElement,
           onHighlightStarted: () => {
             document.body.classList.remove("cuunhi-tour-step-cards");
+            document.body.classList.add("cuunhi-tour-step-1");
+            if (typeof window !== "undefined" && window.scrollY > 40) {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+            window.setTimeout(() => {
+              requestTickRef.current?.();
+              driverObj.refresh();
+            }, 80);
+            window.setTimeout(() => {
+              requestTickRef.current?.();
+              driverObj.refresh();
+            }, 240);
+            window.setTimeout(() => {
+              requestTickRef.current?.();
+              driverObj.refresh();
+            }, 450);
+          },
+          onDeselected: () => {
+            document.body.classList.remove("cuunhi-tour-step-1");
           },
           popover: {
-            title: "☯ Bước 1: Bắt Đầu Bốc Quẻ & Nghi Thức Tam Kính",
-            description:
-              "• Nhấn 1 lần: Rút ngẫu nhiên một trận pháp mới từ 64 Quẻ & 384 Hào Chu Dịch và tự động cuộn xuống bàn quẻ.\n• Nhấn & Giữ 3 lần (Kính Thiên · Kính Địa · Kính Nhân): Khai mở nghi thức Đắc Pháp Tam Kính (✦), giúp mở khóa 100% Toàn Thư Bách Khoa khi sao chép cho AI.",
+            title: "☯ Bước 1 · Nút Bốc Quẻ & Luật Bộ Riêng",
+            description: `
+              <div class="cuunhi-guide-body">
+                <div class="cuunhi-guide-loc">
+                  <span class="cuunhi-guide-loc-badge">VỊ TRÍ</span>
+                  <span>Nút <strong>“☯ Bắt Đầu Bốc Quẻ”</strong> đang sáng viền vàng ngay đầu trang chủ.</span>
+                </div>
+                <div class="cuunhi-guide-card">
+                  <div class="cuunhi-guide-row">
+                    <span class="cuunhi-guide-pill">👆 Bấm 1 lần</span>
+                    <span><strong>Bốc nhanh:</strong> Rút ngẫu nhiên 1 trong <strong>9 trận pháp</strong> <em>(tắt <strong>✓ Giữ nguyên</strong> nếu muốn đổi bài trong ngày)</em>.</span>
+                  </div>
+                  <div class="cuunhi-guide-divider"></div>
+                  <div class="cuunhi-guide-row">
+                    <span class="cuunhi-guide-pill cuunhi-guide-pill-gold">✨ Đè giữ 3s × 3</span>
+                    <span><strong>Tam Kính:</strong> Đè giữ 3 giây qua <span class="cuunhi-gold-tag">Kính Thiên</span> ➔ <span class="cuunhi-gold-tag">Kính Địa</span> ➔ <span class="cuunhi-gold-tag">Kính Nhân</span> để mở khóa <strong>100% Bách Khoa 64 Quẻ</strong>.</span>
+                  </div>
+                  <div class="cuunhi-guide-divider"></div>
+                  <div class="cuunhi-guide-row">
+                    <span class="cuunhi-guide-pill">🎴 448 Lá</span>
+                    <span>Mỗi vị trí là <strong>1 bộ bài riêng</strong> gộp <strong>384 Hào Từ + 64 Quẻ Chính</strong> (448 lá chia đều tỷ lệ).</span>
+                  </div>
+                </div>
+                <button type="button" id="cuunhi-tour-try-draw-btn" class="cuunhi-guide-action-btn">
+                  🎲 Bốc Thử Quẻ Mới Ngay →
+                </button>
+              </div>
+            `,
             side: "bottom",
             align: "start",
+            onPopoverRender: (popover) => {
+              const tryBtn = popover.wrapper.querySelector("#cuunhi-tour-try-draw-btn");
+              if (tryBtn) {
+                tryBtn.addEventListener("click", () => {
+                  setIsKeepCards(false);
+                  setIsRitualCompleted(false);
+                  const availableModes = SPREAD_MODES.filter((m) => m !== mode);
+                  const randomMode =
+                    availableModes.length > 0
+                      ? availableModes[Math.floor(Math.random() * availableModes.length)]
+                      : SPREAD_MODES[Math.floor(Math.random() * SPREAD_MODES.length)];
+                  setMode(randomMode);
+                  let rev: boolean | undefined = undefined;
+                  let rev2A: boolean | undefined = isCard2AReversed;
+                  let rev2B: boolean | undefined = isCard2BReversed;
+                  let nextMenh: number = menhBranchNumber;
+                  if (randomMode === "thap_tinh") {
+                    rev = Math.random() < 0.5;
+                    setIsCard2Reversed(rev);
+                  } else if (randomMode === "thap_nhat") {
+                    rev2A = Math.random() < 0.5;
+                    rev2B = Math.random() < 0.5;
+                    setIsCard2AReversed(rev2A);
+                    setIsCard2BReversed(rev2B);
+                  } else if (randomMode === "thap_nhi") {
+                    nextMenh = rollRandomMenhBranch();
+                    setMenhBranchNumber(nextMenh);
+                  }
+                  const newDrawnCards = drawCardsForMode(randomMode, nextMenh);
+                  setCards(newDrawnCards);
+                  recordDrawnSpreadToTemp(randomMode, newDrawnCards, rev, false, undefined, undefined, {
+                    isCard2AReversed: rev2A,
+                    isCard2BReversed: rev2B,
+                    menhBranchNumber: nextMenh,
+                  });
+                  const spreadName = SPREAD_MODE_NAMES[randomMode] || "Trận Pháp";
+                  const menhSuffix =
+                    randomMode === "thap_nhi"
+                      ? ` (★ Cung Mệnh tại Chi ${TWELVE_BRANCHES_DATA.find((b) => b.number === nextMenh)?.name || nextMenh})`
+                      : "";
+                  setCopiedToast(`🔮 Đã bốc mới: ${spreadName}${menhSuffix} — Mời bạn xem bài ở Bước 2!`);
+                  setTimeout(() => setCopiedToast(null), 3500);
+                  setTimeout(() => {
+                    requestTickRef.current?.();
+                    driverObj.moveNext();
+                  }, 60);
+                });
+              }
+            },
           },
         },
         {
           element: "#destiny-tour-frame",
           onHighlightStarted: () => {
+            document.body.classList.remove("cuunhi-tour-step-1");
             document.body.classList.add("cuunhi-tour-step-cards");
-            const sec = document.getElementById("destiny-cards");
-            if (sec) {
-              sec.scrollIntoView({ behavior: "smooth", block: "start" });
+            const frameEl = document.getElementById("destiny-tour-frame") || document.getElementById("destiny-cards");
+            if (frameEl) {
+              frameEl.scrollIntoView({ behavior: "smooth", block: "center" });
             }
             window.setTimeout(() => {
               requestTickRef.current?.();
               driverObj.refresh();
-            }, 180);
+            }, 150);
             window.setTimeout(() => {
               requestTickRef.current?.();
               driverObj.refresh();
-            }, 420);
+            }, 380);
           },
           onDeselected: () => {
             document.body.classList.remove("cuunhi-tour-step-cards");
           },
           popover: {
-            title: "🃏 Bước 2: Bàn Trải Bài & Soi Hộp Gấm 2 Mặt",
-            description:
-              "Các lá bài tự động xòe theo trận pháp (Đơn Quẻ, Lưỡng Nghi, Tam Tài, Ngũ Hành, Thất Tinh, Thập Tinh hoặc Tháp La Kinh Dịch).\n• Nhấp trực tiếp vào bất kỳ lá bài nào để mở Hộp Gấm Bảo Vật: soi rõ Mặt Trước (Quẻ Tượng) & Mặt Sau (Thoán Từ / Hào Từ), tra cứu Bách Khoa 64 Quẻ hoặc chép riêng lá đó cho AI.",
-            side: "top",
-            align: "center",
+            title: "🃏 Bước 2 · Soi Thẻ 2 Mặt · Đổi Chiều & Cung Mệnh",
+            description: `
+              <div class="cuunhi-guide-body">
+                <div class="cuunhi-guide-card">
+                  <div class="cuunhi-guide-card-desc">
+                    • <strong>Nhấp vào lá bài bất kỳ</strong> để mở <strong>Hộp Gấm 2 Mặt</strong> (Quẻ Tượng, Thoán/Hào Từ, <strong>Bộ Riêng #N</strong> &amp; Bách Khoa).<br/>
+                    • <strong>Trận 10 &amp; 11 Lá:</strong> Bấm nhãn <span class="cuunhi-gold-tag">🔄</span> trên đầu <strong>Lá 2 / 2A / 2B</strong> để lật chiều Xuôi ↔ Ngược.<br/>
+                    • <strong>Trận 12 Lá:</strong> <span class="cuunhi-gold-tag">★ Cung Mệnh</span> tự động random viền vàng trên 12 Địa Chi.
+                  </div>
+                </div>
+              </div>
+            `,
+            side: "bottom",
+            align: "end",
           },
         },
         {
           element: "#huong-an-khoi-niem",
           onHighlightStarted: () => {
-            document.body.classList.remove("cuunhi-tour-step-cards");
+            document.body.classList.remove("cuunhi-tour-step-cards", "cuunhi-tour-step-1");
           },
           popover: {
-            title: "印 Bước 3: Hương Án Khởi Niệm · Gửi Câu Hỏi Chiêm Bốc",
-            description:
-              "“Tâm tĩnh tắc linh” — Nhập câu hỏi hoặc sự việc bạn đang trăn trở (sự nghiệp, tài lộc, tình duyên, hợp tác...) vào ô Hương Án, hoặc bấm 🎙️ Nói câu hỏi để nhập bằng giọng nói tiếng Việt. Tâm niệm này sẽ tự động đính kèm vào bộ quẻ khi gửi cho AI.",
+            title: "印 Bước 3 · Hương Án Khởi Niệm",
+            description: `
+              <div class="cuunhi-guide-body">
+                <div class="cuunhi-guide-card">
+                  <div class="cuunhi-guide-card-desc">
+                    • <strong>Gõ câu hỏi</strong> sự việc đang trăn trở hoặc bấm <strong>🎙️ Nói câu hỏi</strong> bằng tiếng Việt.<br/>
+                    • Tâm niệm sẽ tự động đính kèm vào toàn bộ trận bài khi sao chép luận giải cùng <strong>Tiểu Long Cửu Nhị</strong>.
+                  </div>
+                </div>
+              </div>
+            `,
+            side: "top",
+            align: "center",
+          },
+        },
+        {
+          element: "#cuunhi-spread-selector-grid",
+          onHighlightStarted: () => {
+            document.body.classList.remove("cuunhi-tour-step-cards", "cuunhi-tour-step-1");
+          },
+          popover: {
+            title: "✦ Bước 4 · Chọn Nhanh 9 Trận Pháp",
+            description: `
+              <div class="cuunhi-guide-body">
+                <div class="cuunhi-guide-card">
+                  <div class="cuunhi-guide-row">
+                    <span class="cuunhi-guide-pill">1 → 12 Lá</span>
+                    <span>Chọn nhanh Đơn Quẻ, Âm Dương, Tam Tài, Ngũ Hành, Thất Tinh, Thập Tinh, Mở Rộng, 12 Cung hoặc Tháp La Dịch.</span>
+                  </div>
+                </div>
+              </div>
+            `,
             side: "top",
             align: "center",
           },
@@ -6898,9 +7895,22 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         {
           element: "#cuunhi-command-dock-controls",
           popover: {
-            title: "🔒 Bước 4: Quản Trị Bàn Quẻ (Giữ Nguyên · Lưu · Mở · Quẻ Tạm)",
-            description:
-              "• Giữ nguyên: Khóa các lá bài hiện tại để không bị đổi bài khi bấm bốc lại hoặc khi nhấn giữ 3 lần Tam Kính.\n• Lưu Quẻ / Mở Quẻ: Lưu lại trải bài kèm câu hỏi và lời nghiệm cá nhân để đối chiếu về sau.\n• Quẻ Tạm: Tự động ghi nhớ mọi quẻ đã rút trong ngày hôm nay dù chưa nhấn lưu.",
+            title: "🔒 Bước 5 · Giữ Bài Theo Ngày · Lưu & Mở Quẻ",
+            description: `
+              <div class="cuunhi-guide-body">
+                <div class="cuunhi-guide-card">
+                  <div class="cuunhi-guide-row">
+                    <span class="cuunhi-guide-pill cuunhi-guide-pill-gold">✓ Giữ nguyên</span>
+                    <span>Trận bài hiện tại được <strong>giữ cố định suốt cả ngày</strong> dù tải lại trang; qua ngày mới mới tự đổi trận khác. <strong>Tắt đi</strong> khi muốn bốc lại bài mới.</span>
+                  </div>
+                  <div class="cuunhi-guide-divider"></div>
+                  <div class="cuunhi-guide-row">
+                    <span class="cuunhi-guide-pill">💾 Lưu · Quẻ Tạm</span>
+                    <span>Lưu/Mở trải bài cá nhân hoặc tra lại danh sách các quẻ đã rút tạm trong ngày.</span>
+                  </div>
+                </div>
+              </div>
+            `,
             side: "top",
             align: "center",
           },
@@ -6908,9 +7918,16 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         {
           element: "#btn-copy-all-for-ai",
           popover: {
-            title: "⚡ Bước 5: Chép Toàn Thư Quẻ Bài & Câu Hỏi Cho AI",
-            description:
-              "Bấm nút này để sao chép trọn bộ thông tin các lá bài đang trải (Quẻ tượng, Thoán từ, Hào động, Vị trí trận pháp + Câu hỏi Hương Án) vào bộ nhớ tạm. Nếu đã Đắc Pháp Tam Kính (✦), hệ thống sao chép 100% Toàn Thư Bách Khoa để bạn gửi cho AI luận giải sâu sắc nhất.",
+            title: "⚡ Bước 6 · Chép Toàn Bộ Quẻ Bài & Câu Hỏi",
+            description: `
+              <div class="cuunhi-guide-body">
+                <div class="cuunhi-guide-card">
+                  <div class="cuunhi-guide-card-desc">
+                    Sao chép <strong>1 chạm</strong> toàn bộ các lá bài đang trải <em>(kèm thế 2A/2B hoặc 12 Cung &amp; ★ Cung Mệnh)</em> cùng câu hỏi Hương Án để luận giải cùng <strong>Tiểu Long Cửu Nhị</strong> <em>(trích 100% Bách Khoa khi đạt Tam Kính)</em>.
+                  </div>
+                </div>
+              </div>
+            `,
             side: "top",
             align: "center",
           },
@@ -6918,9 +7935,16 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         {
           element: "#btn-capture-cards-snapshot",
           popover: {
-            title: "📸 Bước 6: Chụp Hình Trọn Bộ Thẻ Bài Đang Trải",
-            description:
-              "Tự động căn chỉnh bố cục và kết xuất ảnh PNG sắc nét của toàn bộ các lá bài trên bàn quẻ để tải về máy, lưu làm tư liệu hoặc gửi kèm khi luận giải.",
+            title: "📸 Bước 7 · Chụp Hình Trọn Bộ Thẻ Bài",
+            description: `
+              <div class="cuunhi-guide-body">
+                <div class="cuunhi-guide-card">
+                  <div class="cuunhi-guide-card-desc">
+                    Nút ở góc phải thanh trên cùng giúp xuất ảnh <strong>PNG sắc nét</strong> trọn bộ trận pháp <em>(1 đến 12 lá kèm nhãn vị trí &amp; ★ Cung Mệnh)</em> để tải về máy hoặc chia sẻ.
+                  </div>
+                </div>
+              </div>
+            `,
             side: "bottom",
             align: "end",
           },
@@ -6928,7 +7952,54 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       ],
     });
 
+    activeDriverRef.current = driverObj;
     driverObj.drive();
+  }, [mode, isCard2AReversed, isCard2BReversed, menhBranchNumber, recordDrawnSpreadToTemp]);
+
+  const startTourRef = useRef(handleStartUserGuideTour);
+  startTourRef.current = handleStartUserGuideTour;
+
+  /* Tự động khởi chạy Hướng Dẫn Sử Dụng khi người dùng lần đầu tiên truy cập web */
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const FIRST_VISIT_GUIDE_KEY = "cuunhi_user_guide_first_visit_v2";
+    let hasSeenGuide = false;
+    try {
+      hasSeenGuide = Boolean(localStorage.getItem(FIRST_VISIT_GUIDE_KEY));
+    } catch {
+      hasSeenGuide = false;
+    }
+    if (hasSeenGuide) return;
+
+    const launchFirstVisitGuide = () => {
+      try {
+        if (localStorage.getItem(FIRST_VISIT_GUIDE_KEY)) return;
+      } catch {}
+      if (document.querySelector(".driver-active")) return;
+      startTourRef.current();
+    };
+
+    let timerId: number | undefined;
+    const scheduleLaunch = () => {
+      timerId = window.setTimeout(launchFirstVisitGuide, 650);
+    };
+
+    if (document.readyState === "complete") {
+      scheduleLaunch();
+    } else {
+      window.addEventListener("load", scheduleLaunch, { once: true });
+    }
+
+    return () => {
+      window.removeEventListener("load", scheduleLaunch);
+      if (timerId !== undefined) {
+        window.clearTimeout(timerId);
+      }
+      if (activeDriverRef.current?.isActive()) {
+        activeDriverRef.current.destroy();
+      }
+      document.body.classList.remove("cuunhi-tour-step-cards", "cuunhi-tour-step-1");
+    };
   }, []);
 
   return (
@@ -6979,84 +8050,262 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         .animate-ritual-wiggle {
           animation: ritual-wiggle 0.3s ease-in-out;
         }
-        /* ── Cửu Nhị Driver.js Custom Theme (Sơn Mài Hổ Phách × Vàng Hoàng Kim) ── */
+        /* ── Cửu Nhị Driver.js Custom Theme (Kính Mờ Thủy Tinh Hoàng Kim · Đồng Bộ Trang Chủ) ── */
         body.cuunhi-tour-step-cards #cards-stack-layer {
           z-index: 10001 !important;
         }
+        body.cuunhi-tour-step-cards .driver-popover.cuunhi-driver-popover {
+          top: auto !important;
+          bottom: 18px !important;
+          right: 18px !important;
+          left: auto !important;
+          transform: none !important;
+        }
+        body.cuunhi-tour-step-cards .driver-popover.cuunhi-driver-popover .driver-popover-arrow {
+          display: none !important;
+        }
+        @media (max-width: 640px) {
+          body.cuunhi-tour-step-cards .driver-popover.cuunhi-driver-popover {
+            left: 50% !important;
+            right: auto !important;
+            bottom: 14px !important;
+            transform: translateX(-50%) !important;
+          }
+        }
+        @keyframes cuunhi-target-pulse {
+          0%, 100% {
+            box-shadow: 0 0 0 1.5px rgba(243, 229, 171, 0.85), 0 0 18px rgba(212, 175, 55, 0.55), inset 0 0 10px rgba(212, 175, 55, 0.25);
+          }
+          50% {
+            box-shadow: 0 0 0 3px #FFF4CC, 0 0 28px rgba(243, 229, 171, 0.85), inset 0 0 14px rgba(212, 175, 55, 0.42);
+          }
+        }
+        body.cuunhi-tour-step-1 #btn-hero-start-divination,
+        body.cuunhi-tour-step-1 #btn-hero-mobile-start-divination {
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(212, 175, 55, 0.28) 100%) !important;
+          border: 1.5px solid #F3E5AB !important;
+          backdrop-filter: blur(12px) !important;
+          -webkit-backdrop-filter: blur(12px) !important;
+          animation: cuunhi-target-pulse 1.8s ease-in-out infinite !important;
+        }
+        body.cuunhi-tour-step-1 #btn-hero-start-divination::after,
+        body.cuunhi-tour-step-1 #btn-hero-mobile-start-divination::after {
+          content: "👆 Nút Bốc Quẻ ở đây";
+          position: absolute;
+          top: -28px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: rgba(22, 18, 13, 0.72);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          border: 1px solid rgba(243, 229, 171, 0.65);
+          color: #FFF4CC;
+          font-family: ui-sans-serif, system-ui, sans-serif;
+          font-size: 10.5px;
+          font-weight: 700;
+          padding: 2px 9px;
+          border-radius: 999px;
+          white-space: nowrap;
+          box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+          pointer-events: none;
+          z-index: 60;
+        }
         .driver-popover.cuunhi-driver-popover {
-          background: linear-gradient(155deg, #1E1812 0%, #120E0A 100%) !important;
-          color: #F5EFE3 !important;
-          border: 1.5px solid rgba(212, 175, 55, 0.78) !important;
+          background: linear-gradient(145deg, rgba(22, 19, 15, 0.46) 0%, rgba(14, 12, 9, 0.56) 100%) !important;
+          backdrop-filter: blur(20px) saturate(175%) !important;
+          -webkit-backdrop-filter: blur(20px) saturate(175%) !important;
+          color: #FAF6EE !important;
+          border: 1px solid rgba(243, 229, 171, 0.42) !important;
           border-radius: 18px !important;
-          padding: 18px 20px !important;
-          max-width: 390px !important;
-          box-shadow: 0 24px 60px rgba(0, 0, 0, 0.72), 0 0 28px rgba(212, 175, 55, 0.24), inset 0 1px 0 rgba(255, 240, 195, 0.22) !important;
-          font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif !important;
+          padding: 12px 14px !important;
+          max-width: min(342px, 90vw) !important;
+          max-height: min(78vh, 480px) !important;
+          overflow-y: auto !important;
+          box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28), 0 0 22px rgba(212, 175, 55, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.28), inset 0 -1px 0 rgba(255, 255, 255, 0.06) !important;
+          font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+        }
+        @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+          .driver-popover.cuunhi-driver-popover {
+            background: rgba(20, 17, 13, 0.88) !important;
+          }
+        }
+        @media (prefers-reduced-transparency: reduce) {
+          .driver-popover.cuunhi-driver-popover {
+            background: rgba(20, 17, 13, 0.92) !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+          }
         }
         .driver-popover.cuunhi-driver-popover .driver-popover-title {
           font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif !important;
-          font-size: 16px !important;
+          font-size: 14px !important;
           font-weight: 700 !important;
-          line-height: 1.35 !important;
+          line-height: 1.3 !important;
           color: #F3E5AB !important;
-          padding-right: 24px !important;
+          padding-right: 22px !important;
           margin-bottom: 8px !important;
-          border-bottom: 1px solid rgba(196, 150, 62, 0.32) !important;
-          padding-bottom: 8px !important;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.14) !important;
+          padding-bottom: 6px !important;
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35) !important;
         }
         .driver-popover.cuunhi-driver-popover .driver-popover-description {
           font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-          font-size: 13.5px !important;
-          line-height: 1.62 !important;
-          color: #E7DFCF !important;
-          margin-bottom: 4px !important;
+          font-size: 12px !important;
+          line-height: 1.48 !important;
+          color: #F5EFE3 !important;
+          margin-bottom: 2px !important;
+        }
+        .cuunhi-guide-body {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        .cuunhi-guide-loc {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 5px 8px;
+          border-radius: 9px;
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(243, 229, 171, 0.32);
+          font-size: 11.5px;
+          line-height: 1.38;
+          color: #FFF8E6;
+        }
+        .cuunhi-guide-loc-badge {
+          flex-shrink: 0;
+          background: rgba(212, 175, 55, 0.28);
+          border: 1px solid rgba(243, 229, 171, 0.6);
+          color: #FFF4CC;
+          font-size: 9.5px;
+          font-weight: 800;
+          padding: 1.5px 5.5px;
+          border-radius: 999px;
+          letter-spacing: 0.04em;
+        }
+        .cuunhi-guide-card {
+          background: rgba(255, 255, 255, 0.065);
+          border: 1px solid rgba(255, 255, 255, 0.16);
+          border-radius: 11px;
+          padding: 7px 9px;
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+        }
+        .cuunhi-guide-row {
+          display: flex;
+          align-items: flex-start;
+          gap: 6px;
+          font-size: 11.6px;
+          line-height: 1.42;
+          color: #F4EDE0;
+        }
+        .cuunhi-guide-pill {
+          flex-shrink: 0;
+          display: inline-flex;
+          align-items: center;
+          padding: 1.5px 6.5px;
+          border-radius: 999px;
+          background: rgba(255, 255, 255, 0.12);
+          border: 1px solid rgba(255, 255, 255, 0.28);
+          color: #FFFFFF;
+          font-size: 10.5px;
+          font-weight: 700;
+          white-space: nowrap;
+          margin-top: 1px;
+        }
+        .cuunhi-guide-pill-gold {
+          background: rgba(212, 175, 55, 0.22);
+          border-color: rgba(243, 229, 171, 0.55);
+          color: #FFF2C2;
+        }
+        .cuunhi-guide-divider {
+          height: 1px;
+          background: rgba(255, 255, 255, 0.12);
+          margin: 1px 0;
+        }
+        .cuunhi-guide-card-desc {
+          font-size: 11.8px;
+          line-height: 1.46;
+          color: #F4EDE0;
+        }
+        .cuunhi-gold-tag {
+          display: inline-block;
+          padding: 0px 5px;
+          border-radius: 999px;
+          background: rgba(212, 175, 55, 0.22);
+          border: 1px solid rgba(243, 229, 171, 0.5);
+          color: #FFF2C2;
+          font-weight: 700;
+          font-size: 10.5px;
+        }
+        .cuunhi-guide-action-btn {
+          margin-top: 1px;
+          width: 100%;
+          padding: 6.5px 10px;
+          border-radius: 10px;
+          background: linear-gradient(135deg, rgba(243, 229, 171, 0.92) 0%, rgba(212, 175, 55, 0.92) 100%);
+          color: #16110B;
+          font-weight: 800;
+          font-size: 11.8px;
+          border: 1px solid rgba(255, 255, 255, 0.65);
+          cursor: pointer;
+          box-shadow: 0 4px 14px rgba(212, 175, 55, 0.25);
+          transition: all 0.15s ease;
+          text-align: center;
+        }
+        .cuunhi-guide-action-btn:hover {
+          filter: brightness(1.06);
+          transform: translateY(-1px);
         }
         .driver-popover.cuunhi-driver-popover .driver-popover-progress-text {
-          font-size: 11.5px !important;
+          font-size: 11px !important;
           font-weight: 700 !important;
           letter-spacing: 0.04em !important;
-          color: #D4AF37 !important;
+          color: #F3E5AB !important;
+          opacity: 0.85 !important;
         }
         .driver-popover.cuunhi-driver-popover .driver-popover-close-btn {
-          color: #C4963E !important;
-          font-size: 20px !important;
-          top: 12px !important;
-          right: 12px !important;
+          color: rgba(243, 229, 171, 0.75) !important;
+          font-size: 18px !important;
+          top: 9px !important;
+          right: 10px !important;
           transition: color 0.15s ease !important;
         }
         .driver-popover.cuunhi-driver-popover .driver-popover-close-btn:hover {
-          color: #FFF4CC !important;
+          color: #FFFFFF !important;
         }
         .driver-popover.cuunhi-driver-popover .driver-popover-footer {
-          margin-top: 14px !important;
-          padding-top: 10px !important;
-          border-top: 1px solid rgba(196, 150, 62, 0.25) !important;
+          margin-top: 9px !important;
+          padding-top: 7px !important;
+          border-top: 1px solid rgba(255, 255, 255, 0.14) !important;
         }
         .driver-popover.cuunhi-driver-popover .driver-popover-prev-btn {
-          background: rgba(255, 255, 255, 0.06) !important;
-          color: #E2D5BE !important;
-          border: 1px solid rgba(196, 150, 62, 0.45) !important;
+          background: rgba(255, 255, 255, 0.1) !important;
+          backdrop-filter: blur(8px) !important;
+          color: #F5EFE3 !important;
+          border: 1px solid rgba(255, 255, 255, 0.28) !important;
           border-radius: 999px !important;
-          padding: 6px 13px !important;
-          font-size: 12px !important;
+          padding: 4.5px 11px !important;
+          font-size: 11.5px !important;
           font-weight: 600 !important;
           text-shadow: none !important;
           transition: all 0.15s ease !important;
         }
         .driver-popover.cuunhi-driver-popover .driver-popover-prev-btn:hover {
-          background: rgba(196, 150, 62, 0.2) !important;
-          color: #FFF7DF !important;
+          background: rgba(255, 255, 255, 0.18) !important;
+          color: #FFFFFF !important;
         }
         .driver-popover.cuunhi-driver-popover .driver-popover-next-btn {
-          background: linear-gradient(135deg, #D4AF37 0%, #AA7C11 100%) !important;
+          background: linear-gradient(135deg, rgba(212, 175, 55, 0.88) 0%, rgba(170, 124, 17, 0.92) 100%) !important;
           color: #16110B !important;
           border: 1px solid #F3E5AB !important;
           border-radius: 999px !important;
-          padding: 6px 15px !important;
-          font-size: 12px !important;
+          padding: 4.5px 13px !important;
+          font-size: 11.5px !important;
           font-weight: 700 !important;
           text-shadow: none !important;
-          box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35) !important;
+          box-shadow: 0 3px 10px rgba(212, 175, 55, 0.28) !important;
           transition: all 0.15s ease !important;
         }
         .driver-popover.cuunhi-driver-popover .driver-popover-next-btn:hover {
@@ -7064,16 +8313,16 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           transform: translateY(-1px) !important;
         }
         .driver-popover.cuunhi-driver-popover .driver-popover-arrow-side-left.driver-popover-arrow {
-          border-left-color: #1E1812 !important;
+          border-left-color: rgba(22, 19, 15, 0.56) !important;
         }
         .driver-popover.cuunhi-driver-popover .driver-popover-arrow-side-right.driver-popover-arrow {
-          border-right-color: #1E1812 !important;
+          border-right-color: rgba(22, 19, 15, 0.56) !important;
         }
         .driver-popover.cuunhi-driver-popover .driver-popover-arrow-side-top.driver-popover-arrow {
-          border-top-color: #1E1812 !important;
+          border-top-color: rgba(22, 19, 15, 0.56) !important;
         }
         .driver-popover.cuunhi-driver-popover .driver-popover-arrow-side-bottom.driver-popover-arrow {
-          border-bottom-color: #1E1812 !important;
+          border-bottom-color: rgba(22, 19, 15, 0.56) !important;
         }
       `}</style>
 
@@ -7101,19 +8350,6 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         </div>
 
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-          {/* Nút Hướng dẫn sử dụng tương tác (Driver.js Tour) */}
-          <button
-            type="button"
-            id="btn-header-user-guide"
-            onClick={handleStartUserGuideTour}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#F3E5AB] hover:text-white transition px-3 py-1.5 rounded-full bg-[#1C1610] hover:bg-[#2A2016] border border-[#D4AF37]/80 hover:border-[#F3E5AB] cursor-pointer shadow-xs active:scale-95"
-            title="Mở hướng dẫn sử dụng từng bước trực quan trên Trang chủ"
-          >
-            <Compass className="w-3.5 h-3.5 text-[#D4AF37]" />
-            <span className="hidden xs:inline sm:inline">Hướng dẫn sử dụng</span>
-            <span className="xs:hidden sm:hidden">Hướng dẫn</span>
-          </button>
-
           {/* Nút chụp hình thẻ bài: Tự động căn chỉnh & chụp trọn vẹn toàn bộ trải bài */}
           <button
             type="button"
@@ -7286,7 +8522,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     type="button"
                     onClick={handleStartUserGuideTour}
                     className="inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-serif font-bold text-[#F3E5AB] hover:text-white bg-white/10 hover:bg-white/20 border border-[#D4AF37]/65 hover:border-[#F3E5AB] rounded-full transition-all cursor-pointer shadow-lg backdrop-blur-md active:scale-95 group"
-                    title="Khởi chạy tour hướng dẫn sử dụng từng bước"
+                    title="Khởi chạy hướng dẫn sử dụng tương tác 7 bước"
                   >
                     <Compass className="w-4 h-4 text-[#D4AF37] group-hover:rotate-45 transition-transform" />
                     <span>Hướng Dẫn Sử Dụng</span>
@@ -7375,7 +8611,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   type="button"
                   onClick={handleStartUserGuideTour}
                   className="flex flex-1 items-center justify-center gap-1.5 rounded-2xl px-3 py-2.5 text-xs font-semibold text-[#F3E5AB] hover:text-white bg-white/10 hover:bg-white/20 border border-[#D4AF37]/65 hover:border-[#F3E5AB] transition cursor-pointer shadow-md backdrop-blur-md active:scale-[0.98]"
-                  title="Xem hướng dẫn sử dụng từng bước"
+                  title="Khởi chạy hướng dẫn sử dụng tương tác 7 bước"
                 >
                   <Compass className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
                   <span className="truncate">Hướng Dẫn Sử Dụng</span>
@@ -7508,6 +8744,10 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     ? "Trận Pháp Thất Tinh Bắc Đẩu (7 Lá Chu Dịch)"
                     : mode === "thap_tinh"
                     ? "Trận Pháp Thập Tinh Celtic Cross (10 Lá Chu Dịch)"
+                    : mode === "thap_nhat"
+                    ? "Trận Pháp Thập Tinh Mở Rộng (11 Lá · Tách Đôi 2A & 2B)"
+                    : mode === "thap_nhi"
+                    ? "Trận Pháp Thập Nhị Cung Tử Vi (12 Lá · 12 Địa Chi)"
                     : mode === "thap_la"
                     ? "Tháp La Kinh Dịch (Bản Quái • Hào Động • Biến Quái)"
                     : mode === "1_single"
@@ -7537,6 +8777,10 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   ? "Trận Pháp Thất Tinh"
                   : mode === "thap_tinh"
                   ? "Trận Pháp Thập Tinh"
+                  : mode === "thap_nhat"
+                  ? "Trận Pháp Thập Tinh Mở Rộng"
+                  : mode === "thap_nhi"
+                  ? "Trận Pháp Thập Nhị Cung"
                   : mode === "thap_la"
                   ? "Tháp La Kinh Dịch"
                   : mode === "1_single"
@@ -7558,6 +8802,34 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   <>
                     Tâm điểm thập tự kết hợp 10 vị thế thời vận.
                     <span className="font-semibold text-amber-800"> Lá thứ 2: {isCard2Reversed ? "Chiều Ngược (Trở Ngại)" : "Chiều Xuôi (Hỗ Trợ)"}</span> (bấm vào lá hoặc nút để đổi chiều).
+                  </>
+                ) : mode === "thap_nhat" ? (
+                  <>
+                    Mở rộng Thập Tinh thành 11 lá độc lập: tách rõ hai nguồn lực song hành{" "}
+                    <span className="font-semibold text-emerald-800">
+                      Lá 2A ({isCard2AReversed ? "Ngược: Bổ Trợ Suy" : "Xuôi: Bổ Trợ"})
+                    </span>{" "}
+                    &amp;{" "}
+                    <span className="font-semibold text-rose-800">
+                      Lá 2B ({isCard2BReversed ? "Ngược: Áp Lực Giảm" : "Xuôi: Thách Thức"})
+                    </span>
+                    .
+                  </>
+                ) : mode === "thap_nhi" ? (
+                  <>
+                    Bày 12 bộ bài riêng biệt trên Thiên Bàn 12 Địa Chi (Tý → Hợi), tự động an ngẫu nhiên{" "}
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-950 text-[#FDE68A] text-xs sm:text-sm font-bold border border-amber-500/80 shadow-xs">
+                      ★ Cung Mệnh tại Địa Chi {TWELVE_BRANCHES_DATA.find((b) => b.number === menhBranchNumber)?.name || "Dần"} (
+                      {TWELVE_BRANCHES_DATA.find((b) => b.number === menhBranchNumber)?.lunarMonth || "Tháng Giêng"})
+                    </span>{" "}
+                    <button
+                      type="button"
+                      onClick={handleRerollMenhBranch}
+                      className="inline-flex items-center gap-1 ml-1 px-2.5 py-0.5 rounded-full bg-[#FAF0D7] hover:bg-[#F3E5AB] text-[#6E4E16] text-xs font-bold border border-[#C4963E]/70 transition cursor-pointer active:scale-95"
+                      title="Gieo ngẫu nhiên lại vị trí ★ Cung Mệnh sang Địa Chi khác"
+                    >
+                      🎲 Đổi Cung Mệnh
+                    </button>
                   </>
                 ) : mode === "thap_la" ? (
                   <>
@@ -7590,7 +8862,16 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           </div>
 
           {/* Điểm neo cho các lá bài xòe ra ở giữa phần Giấy Tuyên Thành */}
-          <div id="destiny-tour-frame" className={`relative z-10 flex items-center justify-center pt-4 pb-4 ${mode === "that_tinh" || mode === "thap_tinh" || mode === "thap_la" ? "min-h-[680px] sm:min-h-[760px] md:min-h-[820px]" : "min-h-[540px] sm:min-h-[580px]"}`}>
+          <div
+            id="destiny-tour-frame"
+            className={`relative z-10 flex items-center justify-center pt-4 pb-4 ${
+              mode === "thap_nhat" || mode === "thap_nhi"
+                ? "min-h-[760px] sm:min-h-[840px] md:min-h-[910px]"
+                : mode === "that_tinh" || mode === "thap_tinh" || mode === "thap_la"
+                ? "min-h-[680px] sm:min-h-[760px] md:min-h-[820px]"
+                : "min-h-[540px] sm:min-h-[580px]"
+            }`}
+          >
             <div
               ref={destinyAnchorRef}
               id="destiny-card-anchor"
@@ -7603,7 +8884,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           <div ref={captionRef} className="relative z-10 mt-6 mb-10 text-center pointer-events-auto">
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#EFE9DA]/90 border border-[#C4963E]/35 text-xs sm:text-sm text-[#6E5626] font-serif tracking-wide shadow-2xs">
               <span className="text-[#C4963E]">✦</span>
-              <span>Nhấp vào từng lá bài để soi Mặt Trước &amp; Mặt Sau, tra cứu Hào Từ &amp; Lời Giải AI</span>
+              <span>Nhấp vào từng lá bài để soi Mặt Trước &amp; Mặt Sau, tra cứu Hào Từ &amp; Luận Giải Cửu Nhị</span>
               <span className="text-[#C4963E]">✦</span>
             </span>
           </div>
@@ -7623,7 +8904,9 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           ref={stageRef}
           id="cards-stage"
           className={`relative w-full max-w-[min(1240px,96vw)] overflow-visible will-change-transform ${
-            mode === "that_tinh" || mode === "thap_tinh" || mode === "thap_la"
+            mode === "thap_nhat" || mode === "thap_nhi"
+              ? "h-[min(85vh,880px)]"
+              : mode === "that_tinh" || mode === "thap_tinh" || mode === "thap_la"
               ? "h-[min(76vh,780px)]"
               : "h-[min(56vh,500px)]"
           }`}
@@ -7648,47 +8931,99 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 setSelectedCard(card);
               }}
             >
-              {/* Nhãn vị trí trận pháp phía trên lá bài: Chỉ hiển thị cho Trận 7 lá (that_tinh) và Trận 10 lá (thap_tinh) */}
-              {(mode === "that_tinh" || mode === "thap_tinh") && card.positionLabel && (
-                <div
-                  className="absolute -top-7 sm:-top-8 md:-top-9 left-1/2 -translate-x-1/2 whitespace-nowrap text-center z-40 pointer-events-auto select-none"
-                >
-                  {mode === "thap_tinh" && idx === 1 ? (
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleToggleCard2Reversed();
-                      }}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] sm:text-xs font-serif font-bold shadow-xl transition-all cursor-pointer hover:scale-105 active:scale-95 ${
-                        isCard2Reversed
-                          ? "bg-rose-950 text-rose-200 border-2 border-rose-500 shadow-rose-950/60"
-                          : "bg-emerald-950 text-emerald-200 border-2 border-emerald-500 shadow-emerald-950/60"
-                      }`}
-                      title="Bấm vào đây để đổi chiều Lá 2: Xuôi (Hỗ Trợ) ↔ Ngược (Trở Ngại)"
-                    >
-                      <span>{isCard2Reversed ? "2. Ngược: Trở Ngại" : "2. Xuôi: Hỗ Trợ"}</span>
-                      <span className="text-[10px] text-amber-300">🔄</span>
-                    </button>
-                  ) : mode === "thap_tinh" && idx === 0 ? (
-                    <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-serif font-bold bg-zinc-900/95 text-amber-200 border border-amber-600/60 shadow-lg backdrop-blur-sm">
-                      1. Tình Huống Hiện Tại
-                    </span>
-                  ) : mode === "thap_tinh" && idx === 9 ? (
-                    <span className="inline-block px-3 py-1 rounded-full text-[11px] sm:text-xs font-serif font-bold bg-amber-950/95 text-amber-200 border border-amber-500/80 shadow-lg backdrop-blur-sm">
-                      10. Lá Bài Khuyên Bảo
-                    </span>
-                  ) : (
-                    <span className="inline-block px-2.5 py-0.5 rounded-full text-[10.5px] sm:text-xs font-serif font-bold bg-zinc-900/90 text-stone-100 border border-stone-600/60 shadow-lg backdrop-blur-sm">
-                      {card.positionLabel}
-                    </span>
-                  )}
-                </div>
-              )}
+              {/* Nhãn vị trí trận pháp phía trên lá bài: Trận 7 lá, 10 lá, 11 lá và 12 lá */}
+              {(mode === "that_tinh" || mode === "thap_tinh" || mode === "thap_nhat" || mode === "thap_nhi") &&
+                card.positionLabel && (
+                  <div className="absolute -top-7 sm:-top-8 md:-top-9 left-1/2 -translate-x-1/2 whitespace-nowrap text-center z-40 pointer-events-auto select-none">
+                    {mode === "thap_tinh" && idx === 1 ? (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleCard2Reversed();
+                        }}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] sm:text-xs font-serif font-bold shadow-xl transition-all cursor-pointer hover:scale-105 active:scale-95 ${
+                          isCard2Reversed
+                            ? "bg-rose-950 text-rose-200 border-2 border-rose-500 shadow-rose-950/60"
+                            : "bg-emerald-950 text-emerald-200 border-2 border-emerald-500 shadow-emerald-950/60"
+                        }`}
+                        title="Bấm vào đây để đổi chiều Lá 2: Xuôi (Hỗ Trợ) ↔ Ngược (Trở Ngại)"
+                      >
+                        <span>{isCard2Reversed ? "2. Ngược: Trở Ngại" : "2. Xuôi: Hỗ Trợ"}</span>
+                        <span className="text-[10px] text-amber-300">🔄</span>
+                      </button>
+                    ) : mode === "thap_tinh" && idx === 0 ? (
+                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-serif font-bold bg-zinc-900/95 text-amber-200 border border-amber-600/60 shadow-lg backdrop-blur-sm">
+                        1. Tình Huống Hiện Tại
+                      </span>
+                    ) : mode === "thap_tinh" && idx === 9 ? (
+                      <span className="inline-block px-3 py-1 rounded-full text-[11px] sm:text-xs font-serif font-bold bg-amber-950/95 text-amber-200 border border-amber-500/80 shadow-lg backdrop-blur-sm">
+                        10. Lá Bài Khuyên Bảo
+                      </span>
+                    ) : mode === "thap_nhat" && idx === 0 ? (
+                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-serif font-bold bg-zinc-900/95 text-amber-200 border border-amber-600/60 shadow-lg backdrop-blur-sm">
+                        1. Tình Huống Hiện Tại
+                      </span>
+                    ) : mode === "thap_nhat" && idx === 1 ? (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleCard2AReversed();
+                        }}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] sm:text-xs font-serif font-bold shadow-xl transition-all cursor-pointer hover:scale-105 active:scale-95 ${
+                          isCard2AReversed
+                            ? "bg-rose-950 text-rose-200 border-2 border-rose-500 shadow-rose-950/60"
+                            : "bg-emerald-950 text-emerald-200 border-2 border-emerald-500 shadow-emerald-950/60"
+                        }`}
+                        title="Bấm để đổi chiều Lá 2A: Xuôi (Bổ Trợ Tích Cực) ↔ Ngược (Bổ Trợ Suy Yếu)"
+                      >
+                        <span>{isCard2AReversed ? "2A. Ngược: Bổ Trợ Suy" : "2A. Xuôi: Bổ Trợ"}</span>
+                        <span className="text-[10px] text-amber-300">🔄</span>
+                      </button>
+                    ) : mode === "thap_nhat" && idx === 2 ? (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleCard2BReversed();
+                        }}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] sm:text-xs font-serif font-bold shadow-xl transition-all cursor-pointer hover:scale-105 active:scale-95 ${
+                          isCard2BReversed
+                            ? "bg-emerald-950 text-emerald-200 border-2 border-emerald-500 shadow-emerald-950/60"
+                            : "bg-rose-950 text-rose-200 border-2 border-rose-500 shadow-rose-950/60"
+                        }`}
+                        title="Bấm để đổi chiều Lá 2B: Xuôi (Thách Thức Trở Ngại) ↔ Ngược (Áp Lực Giảm Nhẹ)"
+                      >
+                        <span>{isCard2BReversed ? "2B. Ngược: Áp Lực Giảm" : "2B. Xuôi: Thách Thức"}</span>
+                        <span className="text-[10px] text-amber-300">🔄</span>
+                      </button>
+                    ) : mode === "thap_nhat" && idx === 10 ? (
+                      <span className="inline-block px-3 py-1 rounded-full text-[11px] sm:text-xs font-serif font-bold bg-amber-950/95 text-amber-200 border border-amber-500/80 shadow-lg backdrop-blur-sm">
+                        10. Lá Bài Khuyên Bảo
+                      </span>
+                    ) : mode === "thap_nhi" && card.isMenhCung ? (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[11px] sm:text-xs font-serif font-bold bg-amber-950 text-[#FEF08A] border-2 border-[#F59E0B] shadow-[0_0_18px_rgba(245,158,11,0.55)] backdrop-blur-sm">
+                        <span>{card.shortBadgeLabel || `★ Cung Mệnh · ${card.branchName || ""}`}</span>
+                      </span>
+                    ) : (
+                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[10.5px] sm:text-xs font-serif font-bold bg-zinc-900/90 text-stone-100 border border-stone-600/60 shadow-lg backdrop-blur-sm">
+                        {card.shortBadgeLabel || card.positionLabel}
+                      </span>
+                    )}
+                  </div>
+                )}
 
               <div
                 className={`destiny-card-inner relative w-full h-full rounded-2xl overflow-hidden cursor-pointer bg-zinc-950/90 shadow-2xl transition-transform duration-500 ${
-                  mode === "thap_tinh" && idx === 1 && isCard2Reversed ? "rotate-180" : ""
+                  (mode === "thap_tinh" && idx === 1 && isCard2Reversed) ||
+                  (mode === "thap_nhat" && ((idx === 1 && isCard2AReversed) || (idx === 2 && isCard2BReversed)))
+                    ? "rotate-180"
+                    : ""
+                } ${
+                  mode === "thap_nhi" && card.isMenhCung
+                    ? "ring-2 ring-[#F59E0B] shadow-[0_0_28px_rgba(245,158,11,0.45)]"
+                    : ""
                 }`}
                 style={{ transformStyle: "preserve-3d", transformOrigin: "center center" }}
               >
@@ -7917,7 +9252,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                       type="button"
                       onClick={handleStartUserGuideTour}
                       className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-serif font-bold text-[#6E4E16] hover:text-[#1C1610] bg-[#FAF0D7]/90 hover:bg-[#F3E5AB] border border-[#C4963E]/60 transition cursor-pointer shadow-2xs active:scale-95"
-                      title="Mở hướng dẫn sử dụng từng bước"
+                      title="Mở hướng dẫn sử dụng tương tác 7 bước"
                     >
                       <Compass className="w-3 h-3 text-[#B8862D]" />
                       <span>Hướng dẫn</span>
@@ -7925,7 +9260,42 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   </div>
                 </div>
 
-                {/* Nút Đổi Chiều Lá 2 khi đang ở Thập Tinh Trận */}
+                {/* CỤM 1: BẢNG CHỌN NHANH 9 TRẬN PHÁP TRANG CHỦ (GỒM TRẬN 11 LÁ & 12 LÁ TỰ ĐỘNG RANDOM CUNG MỆNH) */}
+                <div id="cuunhi-spread-selector-grid" className="grid grid-cols-3 sm:grid-cols-5 gap-1.5">
+                  {(
+                    [
+                      { id: "1_single" as SpreadMode, short: "1 Lá · Đơn Quẻ" },
+                      { id: "1_to_2" as SpreadMode, short: "2 Lá · Âm Dương" },
+                      { id: "1_to_3" as SpreadMode, short: "3 Lá · Tam Tài" },
+                      { id: "3_to_5" as SpreadMode, short: "5 Lá · Ngũ Hành" },
+                      { id: "that_tinh" as SpreadMode, short: "7 Lá · Thất Tinh" },
+                      { id: "thap_tinh" as SpreadMode, short: "10 Lá · Thập Tinh" },
+                      { id: "thap_nhat" as SpreadMode, short: "11 Lá · Mở Rộng" },
+                      { id: "thap_nhi" as SpreadMode, short: "12 Lá · 12 Cung" },
+                      { id: "thap_la" as SpreadMode, short: "Tháp La Dịch" },
+                    ] as const
+                  ).map((sp) => {
+                    const isActive = mode === sp.id;
+                    return (
+                      <RitualHoldButton
+                        key={sp.id}
+                        id={`cmd-dock-mode-${sp.id}`}
+                        active={isActive}
+                        onClick={(isRitual) => handleSwitchModeAndScroll(sp.id, isRitual)}
+                        className={`inline-flex items-center justify-center gap-1 px-2 py-1.5 rounded-xl text-[11px] font-serif font-bold transition cursor-pointer select-none ${
+                          isActive
+                            ? "bg-gradient-to-b from-[#2A2118] to-[#1C1610] text-[#F3E5AB] border border-[#D4AF37] shadow-sm"
+                            : "bg-[#FAF6EE]/90 hover:bg-[#EFE6D5] text-[#4A3B28] border border-[#C4963E]/35"
+                        }`}
+                        title={`Chuyển sang ${SPREAD_MODE_NAMES[sp.id]} (mỗi vị trí là 1 bộ 448 lá riêng: 384 Hào Từ + 64 Quẻ Chính chia đều tỷ lệ)`}
+                      >
+                        <span className="truncate">{sp.short}</span>
+                      </RitualHoldButton>
+                    );
+                  })}
+                </div>
+
+                {/* Nút Đổi Chiều Lá 2 khi đang ở Thập Tinh Trận (10 Lá) */}
                 {mode === "thap_tinh" && (
                   <button
                     type="button"
@@ -7940,6 +9310,61 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     <span>🔄</span>
                     <span>Thế Lá Thứ 2: {isCard2Reversed ? "Chiều Ngược (Trở Ngại)" : "Chiều Xuôi (Hỗ Trợ)"}</span>
                   </button>
+                )}
+
+                {/* Cụm Đổi Chiều Lá 2A & 2B khi đang ở Thập Tinh Mở Rộng (11 Lá) */}
+                {mode === "thap_nhat" && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                    <button
+                      type="button"
+                      onClick={handleToggleCard2AReversed}
+                      className={`inline-flex items-center justify-center gap-1.5 w-full px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer shadow-xs active:scale-95 ${
+                        isCard2AReversed
+                          ? "bg-rose-50/95 text-rose-900 border border-rose-400/70"
+                          : "bg-emerald-50/95 text-emerald-900 border border-emerald-400/70"
+                      }`}
+                      title="Đổi chiều Lá 2A: Chiều Xuôi (Bổ Trợ Tích Cực) ↔ Chiều Ngược (Bổ Trợ Suy Yếu)"
+                    >
+                      <span>🔄</span>
+                      <span>Lá 2A: {isCard2AReversed ? "Ngược (Bổ Trợ Suy)" : "Xuôi (Bổ Trợ)"}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleToggleCard2BReversed}
+                      className={`inline-flex items-center justify-center gap-1.5 w-full px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer shadow-xs active:scale-95 ${
+                        isCard2BReversed
+                          ? "bg-emerald-50/95 text-emerald-900 border border-emerald-400/70"
+                          : "bg-rose-50/95 text-rose-900 border border-rose-400/70"
+                      }`}
+                      title="Đổi chiều Lá 2B: Chiều Xuôi (Thách Thức Trở Ngại) ↔ Chiều Ngược (Áp Lực Giảm Nhẹ)"
+                    >
+                      <span>🔄</span>
+                      <span>Lá 2B: {isCard2BReversed ? "Ngược (Áp Lực Giảm)" : "Xuôi (Thách Thức)"}</span>
+                    </button>
+                  </div>
+                )}
+
+                {/* Thanh hiển thị & Gieo lại ★ Cung Mệnh ngẫu nhiên khi đang ở Thập Nhị Cung (12 Lá) */}
+                {mode === "thap_nhi" && (
+                  <div className="flex flex-wrap items-center justify-between gap-2 px-3.5 py-2 rounded-xl bg-[#FAF0D7]/95 border border-[#C4963E]/70 text-xs font-serif text-[#5C3D0E] shadow-2xs">
+                    <span className="font-bold flex items-center gap-1.5">
+                      <span className="text-[#B8862D]">★</span>
+                      <span>
+                        Cung Mệnh tự động: Địa Chi{" "}
+                        {TWELVE_BRANCHES_DATA.find((b) => b.number === menhBranchNumber)?.name || "Dần"} (
+                        {TWELVE_BRANCHES_DATA.find((b) => b.number === menhBranchNumber)?.lunarMonth || "Tháng Giêng"})
+                      </span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleRerollMenhBranch}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#1C1610] hover:brightness-125 text-[#F3E5AB] text-[11px] font-bold border border-[#D4AF37]/80 transition cursor-pointer active:scale-95"
+                      title="Random sang vị trí Địa Chi khác làm ★ Cung Mệnh"
+                    >
+                      <span>🎲</span>
+                      <span>Random Cung Mệnh</span>
+                    </button>
+                  </div>
                 )}
 
                 {/* CỤM 2 & 3: QUẢN TRỊ BÀN QUẺ & NÚT CHÉP TOÀN THƯ AI */}
@@ -8409,7 +9834,12 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   </span>
                   <div
                     className={`relative rounded-2xl overflow-hidden shadow-[0_12px_36px_rgba(0,0,0,0.65)] border-2 border-[#C4963E]/65 bg-[#0A0806] flex items-center justify-center p-1 group hover:border-[#F3E5AB] transition-transform duration-500 ${
-                      mode === "thap_tinh" && selectedCard.id === cards[1]?.id && isCard2Reversed ? "rotate-180" : ""
+                      (mode === "thap_tinh" && selectedCard.id === cards[1]?.id && isCard2Reversed) ||
+                      (mode === "thap_nhat" &&
+                        ((selectedCard.id === cards[1]?.id && isCard2AReversed) ||
+                          (selectedCard.id === cards[2]?.id && isCard2BReversed)))
+                        ? "rotate-180"
+                        : ""
                     }`}
                     style={{
                       width: selectedCard.type === "yao" ? "150px" : "140px",
@@ -8480,7 +9910,12 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 </span>
                 <div
                   className={`relative rounded-2xl overflow-hidden shadow-[0_12px_36px_rgba(0,0,0,0.65)] border-2 border-[#C4963E]/65 bg-[#0A0806] flex items-center justify-center p-1 group hover:border-[#F3E5AB] transition-transform duration-500 ${
-                    mode === "thap_tinh" && selectedCard.id === cards[1]?.id && isCard2Reversed ? "rotate-180" : ""
+                    (mode === "thap_tinh" && selectedCard.id === cards[1]?.id && isCard2Reversed) ||
+                    (mode === "thap_nhat" &&
+                      ((selectedCard.id === cards[1]?.id && isCard2AReversed) ||
+                        (selectedCard.id === cards[2]?.id && isCard2BReversed)))
+                      ? "rotate-180"
+                      : ""
                   }`}
                   style={{
                     width: selectedCard.type === "yao" ? "220px" : "180px",
@@ -8519,7 +9954,13 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
             {selectedCard.positionLabel && (
               <div className="relative z-10 mb-3 flex flex-wrap items-center justify-center gap-2">
-                <span className="inline-block px-3.5 py-1 rounded-full text-xs font-bold font-serif bg-[#C4963E]/20 text-[#F3E5AB] border border-[#C4963E]/55 tracking-wider">
+                <span
+                  className={`inline-block px-3.5 py-1 rounded-full text-xs font-bold font-serif tracking-wider ${
+                    mode === "thap_nhi" && selectedCard.isMenhCung
+                      ? "bg-amber-950 text-[#FEF08A] border-2 border-[#F59E0B] shadow-[0_0_16px_rgba(245,158,11,0.45)]"
+                      : "bg-[#C4963E]/20 text-[#F3E5AB] border border-[#C4963E]/55"
+                  }`}
+                >
                   Vị trí: {selectedCard.positionLabel}
                 </span>
                 {mode === "thap_tinh" && selectedCard.id === cards[1]?.id && (
@@ -8536,11 +9977,50 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     <span>🔄 Đổi thế: {isCard2Reversed ? "Ngược (Trở Ngại)" : "Xuôi (Hỗ Trợ)"}</span>
                   </button>
                 )}
+                {mode === "thap_nhat" && selectedCard.id === cards[1]?.id && (
+                  <button
+                    type="button"
+                    onClick={() => handleToggleCard2AReversed()}
+                    className={`px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer flex items-center gap-1.5 shadow-md ${
+                      isCard2AReversed
+                        ? "bg-rose-950 text-rose-200 border border-rose-500 hover:bg-rose-900"
+                        : "bg-emerald-950 text-emerald-200 border border-emerald-500 hover:bg-emerald-900"
+                    }`}
+                    title="Đổi thế Lá 2A: Chiều Xuôi (Bổ Trợ) ↔ Chiều Ngược (Bổ Trợ Suy)"
+                  >
+                    <span>🔄 Đổi thế 2A: {isCard2AReversed ? "Ngược (Bổ Trợ Suy)" : "Xuôi (Bổ Trợ)"}</span>
+                  </button>
+                )}
+                {mode === "thap_nhat" && selectedCard.id === cards[2]?.id && (
+                  <button
+                    type="button"
+                    onClick={() => handleToggleCard2BReversed()}
+                    className={`px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer flex items-center gap-1.5 shadow-md ${
+                      isCard2BReversed
+                        ? "bg-emerald-950 text-emerald-200 border border-emerald-500 hover:bg-emerald-900"
+                        : "bg-rose-950 text-rose-200 border border-rose-500 hover:bg-rose-900"
+                    }`}
+                    title="Đổi thế Lá 2B: Chiều Xuôi (Thách Thức) ↔ Chiều Ngược (Áp Lực Giảm)"
+                  >
+                    <span>🔄 Đổi thế 2B: {isCard2BReversed ? "Ngược (Áp Lực Giảm)" : "Xuôi (Thách Thức)"}</span>
+                  </button>
+                )}
+                {mode === "thap_nhi" && (
+                  <button
+                    type="button"
+                    onClick={handleRerollMenhBranch}
+                    className="px-3 py-1 rounded-full text-xs font-bold bg-[#1C1610] hover:bg-[#2A2118] text-[#F3E5AB] border border-[#D4AF37]/80 transition cursor-pointer flex items-center gap-1 shadow-md"
+                    title="Gieo ngẫu nhiên lại vị trí ★ Cung Mệnh"
+                  >
+                    <span>🎲 Đổi Cung Mệnh</span>
+                  </button>
+                )}
               </div>
             )}
 
             <div className="relative z-10 mb-2">
               <span className="inline-block px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#C4963E]/20 text-[#E5C158] border border-[#C4963E]/40 uppercase tracking-wider">
+                {selectedCard.deckNumber ? `Bộ Riêng #${selectedCard.deckNumber} · ` : ""}
                 {selectedCard.type === "yao" ? "384 Hào Từ Chu Dịch" : "64 Quẻ Chu Dịch"}
               </span>
             </div>
@@ -8886,7 +10366,13 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         prediction={hexagramPrediction}
         initialAnswer={userCustomAnswer}
         onConfirmSave={handleConfirmSaveSpread}
-        onGeneratePrediction={(q) => generateHexagramPrediction(cards, mode, isCard2Reversed, q)}
+        onGeneratePrediction={(q) =>
+          generateHexagramPrediction(cards, mode, isCard2Reversed, q, {
+            isCard2AReversed,
+            isCard2BReversed,
+            menhBranchNumber,
+          })
+        }
       />
 
       {/* Modal danh sách quẻ đã lưu */}

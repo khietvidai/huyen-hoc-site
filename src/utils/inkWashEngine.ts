@@ -766,7 +766,7 @@ export function buildFullAIPromptForInkWash(
     } else if (isThapLa && idx === totalCards - 1 && totalCards > 1) {
       lines.push(`【Lá ${totalCards} / ${totalCards} · BIẾN QUÁI (QUẺ BIẾN) — LÁ DƯỚI SONG SONG】`);
       lines.push(`▶ Vị trí Lá ${totalCards} [Quẻ Biến (Biến Quái)]: Định hướng xu thế phát triển và kết quả chuyển dịch`);
-    } else if (c.type === "yao" && c.yaoNumber) {
+    } else if (isThapLa && c.type === "yao" && c.yaoNumber) {
       lines.push(`▶ Vị trí Lá ${cardNum} [Hào Động thứ ${idx}]: Hào ${c.yaoNumber}: ${c.name}`);
     } else {
       lines.push(`▶ Vị trí Lá ${cardNum} [${c.positionLabel || `Lá ${cardNum}`}]: ${c.name}`);
