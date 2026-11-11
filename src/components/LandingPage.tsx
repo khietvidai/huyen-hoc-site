@@ -9150,42 +9150,51 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               {/* MODULE 1: HƯƠNG ÁN KHỞI NIỆM (TRỤC LỤA GIẤY TUYÊN THÀNH VIỀN KÉP CHỈ VÀNG ĐỒNG BỘ TRANG CHỦ) */}
               <div id="huong-an-khoi-niem" className="mt-6 w-full scroll-mt-24">
                 <div
-                  className={`relative rounded-2xl border p-4 sm:p-5 backdrop-blur-md transition-all duration-300 focus-within:border-[#C4963E] focus-within:shadow-[0_16px_38px_-6px_rgba(196,150,62,0.22),inset_0_0_0_3px_#FDFBF7,inset_0_0_0_4px_rgba(196,150,62,0.32)] ${
+                  className={`relative overflow-hidden rounded-2xl border-[1.5px] p-4 sm:p-5 backdrop-blur-md transition-all duration-300 focus-within:border-[#9E2A2B] focus-within:shadow-[0_18px_42px_-6px_rgba(158,42,43,0.18),0_4px_14px_rgba(150,108,35,0.16),inset_0_0_0_2.5px_#FFFDF8,inset_0_0_0_3.5px_rgba(158,42,43,0.38)] ${
                     isHuongAnHighlighted
-                      ? "border-[#9E2A2B] ring-4 ring-[#D4AF37]/45 shadow-[0_0_32px_rgba(212,175,55,0.45)]"
-                      : "border-[#C4963E]/45"
+                      ? "border-[#9E2A2B] ring-4 ring-[#D4AF37]/55 shadow-[0_0_36px_rgba(212,175,55,0.5),inset_0_0_0_2.5px_#FFFDF8,inset_0_0_0_3.5px_rgba(158,42,43,0.45)]"
+                      : "border-[#966C23] shadow-[0_16px_36px_-8px_rgba(62,42,14,0.20),0_4px_12px_rgba(62,42,14,0.09),inset_0_0_0_2.5px_#FFFDF8,inset_0_0_0_3.5px_rgba(150,108,35,0.36)]"
                   }`}
                   style={{
-                    background: "linear-gradient(180deg, rgba(253, 251, 247, 0.96) 0%, rgba(244, 238, 226, 0.94) 100%)",
-                    boxShadow:
-                      "0 12px 32px -8px rgba(110, 90, 55, 0.12), 0 2px 6px rgba(110, 90, 55, 0.06), inset 0 0 0 3px #FDFBF7, inset 0 0 0 4px rgba(196, 150, 62, 0.18)",
+                    background: "linear-gradient(180deg, #FBF4E4 0%, #EFE1C2 100%)",
                   }}
                 >
-                  <div className="flex items-center justify-between mb-2.5">
+                  {/* Đường chỉ chu sa × hoàng kim nhấn đỉnh Hương Án */}
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-x-6 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#9E2A2B]/75 to-transparent"
+                  />
+
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                     <label
                       htmlFor="user-intent-question-input"
-                      className="flex items-center gap-2 text-xs font-serif font-bold uppercase tracking-[0.16em] text-[#6E4E16]"
+                      className="flex items-center gap-2 text-xs sm:text-[13px] font-serif font-bold uppercase tracking-[0.15em] text-[#4A320A]"
                     >
-                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-md bg-[#9E2A2B] text-amber-50 text-[10px] font-serif border border-[#D4AF37]/60 shadow-2xs">
+                      <span
+                        aria-hidden="true"
+                        className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-[#9E2A2B] text-[#FFF8E7] text-[11px] font-serif border border-[#E5C158]/80 shadow-xs"
+                      >
                         印
                       </span>
                       <span>Hương Án Khởi Niệm · Câu Hỏi Chiêm Bốc</span>
                     </label>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2.5">
                       <button
                         type="button"
                         onClick={handleToggleVoiceQuestion}
                         disabled={isTranscribingVoiceQ}
-                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold transition cursor-pointer border ${
+                        className={`inline-flex min-h-7 items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold transition cursor-pointer border shadow-2xs ${
                           isTranscribingVoiceQ
-                            ? "bg-amber-100 text-amber-900 border-amber-400 opacity-85 cursor-wait"
+                            ? "bg-amber-100 text-amber-950 border-amber-600 opacity-90 cursor-wait"
                             : isRecordingVoiceQ
                             ? "bg-[#9E2A2B] text-amber-50 border-[#D4AF37] animate-pulse"
-                            : "bg-[#FAF3E3] hover:bg-[#EFE4CC] text-[#6E4E16] border-[#C4963E]/45"
+                            : "bg-[#FFFDF8] hover:bg-[#FAF0D7] text-[#4A320A] border-[#8A6220]/80"
                         }`}
                         title="Nhập câu hỏi bằng giọng nói tiếng Việt"
                       >
-                        <span>{isTranscribingVoiceQ ? "⏳" : isRecordingVoiceQ ? "🔴" : "🎙️"}</span>
+                        <span aria-hidden="true">
+                          {isTranscribingVoiceQ ? "⏳" : isRecordingVoiceQ ? "🔴" : "🎙️"}
+                        </span>
                         <span>
                           {isTranscribingVoiceQ
                             ? "Đang dịch..."
@@ -9198,13 +9207,14 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                         <button
                           type="button"
                           onClick={() => handleQuestionChange("")}
-                          className="text-[11px] text-[#7D6E57] hover:text-[#9E2A2B] font-semibold transition cursor-pointer flex items-center gap-1"
+                          className="min-h-7 px-2 py-1 rounded-md text-[11px] text-[#5C3D0E] hover:text-[#9E2A2B] hover:bg-[#FFFDF8]/70 font-semibold transition cursor-pointer flex items-center gap-1"
                           title="Xóa nội dung câu hỏi & câu trả lời Hương Án"
                         >
-                          ✕ Xóa
+                          <span aria-hidden="true">✕</span>
+                          <span>Xóa</span>
                         </button>
                       ) : (
-                        <span className="hidden sm:inline text-[11px] italic text-[#8A7960] font-serif">
+                        <span className="hidden sm:inline text-xs italic text-[#6B532E] font-serif">
                           “Tâm tĩnh tắc linh”
                         </span>
                       )}
@@ -9213,11 +9223,12 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
                   <textarea
                     id="user-intent-question-input"
+                    name="divinationQuestion"
                     rows={2}
                     value={userIntentQuestion}
                     onChange={(e) => handleQuestionChange(e.target.value)}
                     placeholder="Nhập câu hỏi hoặc sự việc đang trăn trở (VD: Sự nghiệp tháng tới diễn biến ra sao? Có nên ký kết hợp tác này không?...)"
-                    className="w-full resize-none rounded-xl bg-[#F6F1E5]/85 focus:bg-[#FFFEFA] border border-[#C4963E]/35 px-3.5 py-2.5 text-xs sm:text-sm text-[#1E1912] placeholder:text-[#8A7960] focus:outline-none focus:border-[#C4963E] focus:ring-2 focus:ring-[#C4963E]/15 transition leading-relaxed font-serif shadow-inner"
+                    className="w-full h-auto min-h-[5.25rem] max-h-56 [field-sizing:content] resize-y rounded-xl bg-[#FFFFFF] border-[1.5px] border-[#8A6220] hover:border-[#6B4A14] px-4 py-3 text-base text-[#18120B] font-medium placeholder:text-[#6B5638] placeholder:font-normal focus-visible:border-[#9E2A2B] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9E2A2B] transition leading-relaxed font-serif shadow-[0_2px_10px_rgba(62,42,14,0.08),inset_0_1px_0_rgba(255,255,255,1)]"
                   />
                 </div>
               </div>

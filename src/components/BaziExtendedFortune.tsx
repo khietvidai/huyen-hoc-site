@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useId, useRef } from "react";
 import {
   Sparkles,
   Compass,
+  Calendar,
   Clock,
   RotateCcw,
   Copy,
@@ -65,10 +66,23 @@ import {
   PillarItem,
   PILLAR_LABELS,
   getElementBoxStyle,
+  getVietnamDateTime,
 } from "../data/baziConstants";
 import { XuanBaguaStage } from "./XuanBaguaStage";
 import { getCurrentBaziPillars } from "./JiaziEightPillars";
 import { getKhongVongInfo } from "./JiaziD12Dice";
+import {
+  getJulianDay,
+  getDayCanChi,
+  getHourCanChi,
+  convertSolarToLunar,
+  LunarDate,
+} from "../utils/lunarCalendar";
+import {
+  getExactSunLongitude,
+  SOLAR_TERMS_24,
+  calculateTuoiVaoVan,
+} from "../utils/solarTerms";
 
 // ============================================================================
 // ĐỊNH NGHĨA THẬP THẦN & NGŨ HÀNH
@@ -446,6 +460,167 @@ export interface SavedBaziProfile {
 
 const STORAGE_KEY_PROFILES = "iching_saved_bazi_profiles_v1";
 const STORAGE_KEY_EXTENDED_OPEN = "iching_bazi_fortune_chart_open";
+const STORAGE_KEY_SOLAR_INPUT = "iching_bazi_solar_birth_input_v1";
+
+export interface AppliedSolarBirthInfo {
+  year: number;
+  month: number;
+  day: number;
+  hour: number;
+  minute: number;
+  nightZiMode: "same_day" | "next_day";
+  lunar: LunarDate;
+  baziYear: number;
+  activeSolarTermName: string;
+  activeSolarTermChinese: string;
+  sunLongitude: number;
+  vaoVanSummary: string;
+  vaoVanDirectionText: string;
+  vaoVanTargetTerm: string;
+  vaoVanTargetTime: string;
+  vaoVanDiffFormatted: string;
+  computedStartAge: number;
+}
+
+const SOLAR_HOUR_OPTIONS: { hour: number; chi: string; label: string }[] = Array.from(
+  { length: 24 },
+  (_, h) => {
+    const chiIdx = Math.floor(((h + 1) % 24) / 2);
+    const chiName = CHI_LIST[chiIdx]?.name || "Tý";
+    const hh = h.toString().padStart(2, "0");
+    const specialTag = h === 23 ? "Giờ Dạ Tý" : h === 0 ? "Giờ Tảo Tý" : `Giờ ${chiName}`;
+    return {
+      hour: h,
+      chi: chiName,
+      label: `${hh}h (${specialTag} • ${hh}:00–${hh}:59)`,
+    };
+  }
+);
+
+function getMaxDaysInSolarMonth(year: number, month: number): number {
+  const safeYear = year >= 100 && year <= 3000 ? year : 2000;
+  const safeMonth = Math.max(1, Math.min(12, month));
+  return new Date(safeYear, safeMonth, 0).getDate();
+}
+
+/**
+ * Quy đổi chính xác Năm • Tháng • Ngày • Giờ • Phút Dương lịch (UTC+7)
+ * sang Tứ Trụ Bát Tự (Giờ • Ngày • Tháng • Năm), Âm lịch, Tiết khí & Tuổi Khởi Đại Vận.
+ */
+export function calculateSolarBirthBazi(
+  year: number,
+  month: number,
+  day: number,
+  hour: number,
+  minute: number,
+  gender: "nam" | "nu",
+  nightZiMode: "same_day" | "next_day" = "same_day"
+): {
+  pillars: [PillarItem, PillarItem, PillarItem, PillarItem];
+  info: AppliedSolarBirthInfo;
+} {
+  const jdn = getJulianDay(year, month, day);
+  const hourFloat = hour + minute / 60;
+  const birthJD = jdn - 0.5 + (hourFloat - 7) / 24;
+  const sunDeg = getExactSunLongitude(birthJD);
+
+  // 1. Trụ Năm (Xét thời khắc Lập Xuân 315° chính xác tới từng phút)
+  let baziYear = year;
+  if (month <= 2 && sunDeg < 315 && sunDeg > 270) {
+    baziYear = year - 1;
+  }
+  const yearCanIdx = (((baziYear - 4) % 10) + 10) % 10;
+  const yearChiIdx = (((baziYear - 4) % 12) + 12) % 12;
+  const yearCan = CAN_LIST[yearCanIdx].name;
+  const yearChi = CHI_LIST[yearChiIdx].name;
+
+  // 2. Trụ Tháng (Xét 12 Chính Tiết Khí theo kinh độ Thái Dương & Ngũ Hổ Độn)
+  let monthOffset = 0; // Tháng Dần = 0
+  if (sunDeg >= 315 && sunDeg < 345) monthOffset = 0; // Dần (Lập Xuân)
+  else if (sunDeg >= 345 || sunDeg < 15) monthOffset = 1; // Mão (Kinh Trập)
+  else if (sunDeg >= 15 && sunDeg < 45) monthOffset = 2; // Thìn (Thanh Minh)
+  else if (sunDeg >= 45 && sunDeg < 75) monthOffset = 3; // Tỵ (Lập Hạ)
+  else if (sunDeg >= 75 && sunDeg < 105) monthOffset = 4; // Ngọ (Mang Chủng)
+  else if (sunDeg >= 105 && sunDeg < 135) monthOffset = 5; // Mùi (Tiểu Thử)
+  else if (sunDeg >= 135 && sunDeg < 165) monthOffset = 6; // Thân (Lập Thu)
+  else if (sunDeg >= 165 && sunDeg < 195) monthOffset = 7; // Dậu (Bạch Lộ)
+  else if (sunDeg >= 195 && sunDeg < 225) monthOffset = 8; // Tuất (Hàn Lộ)
+  else if (sunDeg >= 225 && sunDeg < 255) monthOffset = 9; // Hợi (Lập Đông)
+  else if (sunDeg >= 255 && sunDeg < 285) monthOffset = 10; // Tý (Đại Tuyết)
+  else monthOffset = 11; // Sửu (Tiểu Hàn: 285° -> 315°)
+
+  const monthChiIdx = (2 + monthOffset) % 12;
+  const baseMonthCan = ((yearCanIdx % 5) * 2 + 2) % 10;
+  const monthCanIdx = (baseMonthCan + monthOffset) % 10;
+  const monthCan = CAN_LIST[monthCanIdx].name;
+  const monthChi = CHI_LIST[monthChiIdx].name;
+
+  // 3. Trụ Ngày & Trụ Giờ (xử lý tùy chọn Giờ Dạ Tý 23:00–23:59)
+  const effectiveDayJdn = hour === 23 && nightZiMode === "next_day" ? jdn + 1 : jdn;
+  const dayCanChi = getDayCanChi(effectiveDayJdn);
+  const hourChiIdx = Math.floor(((hour + 1) % 24) / 2);
+  const hourCanChi = getHourCanChi(dayCanChi.canIdx, hourChiIdx);
+
+  // 4. Tiết khí đương lệnh & Âm lịch tương ứng
+  let activeTerm = SOLAR_TERMS_24[0];
+  for (const term of SOLAR_TERMS_24) {
+    if (term.deg <= sunDeg) {
+      activeTerm = term;
+    }
+  }
+  const lunar = convertSolarToLunar(day, month, year);
+
+  // 5. Tuổi Khởi Đại Vận chuẩn Tử Bình (3 ngày = 1 năm, 1 ngày = 4 tháng, 1 giờ = 5 ngày)
+  const vaoVan = calculateTuoiVaoVan(
+    year,
+    month,
+    day,
+    hourFloat,
+    gender === "nam" ? "male" : "female"
+  );
+  const isDuongYear = DUONG_CAN_NAMES.includes(yearCan);
+  const isForward = (gender === "nam" && isDuongYear) || (gender === "nu" && !isDuongYear);
+  const activeVaoVan = isForward ? vaoVan.nextVaoVan : vaoVan.prevVaoVan;
+  const targetTerm = isForward ? vaoVan.nextMajorTerm : vaoVan.prevMajorTerm;
+  const diffFormatted = isForward ? vaoVan.diffNextFormatted : vaoVan.diffPrevFormatted;
+  const computedStartAge = Math.max(
+    1,
+    Math.min(11, Math.round(activeVaoVan.totalApproxYears) || 1)
+  );
+  const vaoVanDirectionText = isForward
+    ? `${gender === "nam" ? "Dương Nam" : "Âm Nữ"} • Thuận hành tới tiết ${targetTerm.record.name}`
+    : `${gender === "nam" ? "Âm Nam" : "Dương Nữ"} • Nghịch hành về tiết ${targetTerm.record.name}`;
+
+  const pillarsResult: [PillarItem, PillarItem, PillarItem, PillarItem] = [
+    { can: hourCanChi.can, chi: hourCanChi.chi },
+    { can: dayCanChi.can, chi: dayCanChi.chi },
+    { can: monthCan, chi: monthChi },
+    { can: yearCan, chi: yearChi },
+  ];
+
+  return {
+    pillars: pillarsResult,
+    info: {
+      year,
+      month,
+      day,
+      hour,
+      minute,
+      nightZiMode,
+      lunar,
+      baziYear,
+      activeSolarTermName: activeTerm.name,
+      activeSolarTermChinese: activeTerm.chinese,
+      sunLongitude: Number(sunDeg.toFixed(2)),
+      vaoVanSummary: activeVaoVan.summary,
+      vaoVanDirectionText,
+      vaoVanTargetTerm: `${targetTerm.record.name} (${targetTerm.record.chinese})`,
+      vaoVanTargetTime: targetTerm.time.formatted,
+      vaoVanDiffFormatted: diffFormatted,
+      computedStartAge,
+    },
+  };
+}
 
 // ============================================================================
 // COMPONENT CHÍNH: BaziExtendedFortune
@@ -464,6 +639,16 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
   className = "",
   defaultExpanded = false,
 }) => {
+  const formUid = useId();
+  const solarFormHeadingId = `${formUid}-solar-heading`;
+  const solarYearFieldId = `${formUid}-solar-year`;
+  const solarYearErrorId = `${formUid}-solar-year-err`;
+  const solarMonthFieldId = `${formUid}-solar-month`;
+  const solarDayFieldId = `${formUid}-solar-day`;
+  const solarHourFieldId = `${formUid}-solar-hour`;
+  const solarMinuteFieldId = `${formUid}-solar-minute`;
+  const solarYearInputRef = useRef<HTMLInputElement>(null);
+
   // Trạng thái thu gọn / mở rộng
   const [isOpen, setIsOpen] = useState<boolean>(defaultExpanded);
 
@@ -527,7 +712,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
     };
   }, []);
 
-  // Tuổi khởi vận (Khởi Vận: 1 - 10 tuổi, mặc định 4 tuổi)
+  // Tuổi khởi vận (Khởi Vận: 1 - 11 tuổi, mặc định 4 tuổi)
   const [startAge, setStartAge] = useState<number>(() => {
     try {
       const saved = localStorage.getItem("iching_bazi_start_age");
@@ -537,9 +722,23 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
     }
   });
 
-  // Năm sinh ước tính để tính khoảng năm đại vận
+  // Dữ liệu Năm • Tháng • Ngày • Giờ • Phút sinh Dương lịch để xuất lá số
   const now = new Date();
+  const initialSolarSaved = useMemo(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY_SOLAR_INPUT);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === "object") return parsed;
+      }
+    } catch {
+      // ignore
+    }
+    return null;
+  }, []);
+
   const [birthYear, setBirthYear] = useState<number>(() => {
+    if (typeof initialSolarSaved?.year === "number") return initialSolarSaved.year;
     try {
       const saved = localStorage.getItem("iching_bazi_birth_year");
       return saved ? parseInt(saved, 10) : 1990;
@@ -547,6 +746,43 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
       return 1990;
     }
   });
+  const [solarYearText, setSolarYearText] = useState<string>(() =>
+    String(initialSolarSaved?.year ?? birthYear)
+  );
+  const [birthMonth, setBirthMonth] = useState<number>(() =>
+    typeof initialSolarSaved?.month === "number" ? initialSolarSaved.month : 1
+  );
+  const [birthDay, setBirthDay] = useState<number>(() =>
+    typeof initialSolarSaved?.day === "number" ? initialSolarSaved.day : 1
+  );
+  const [birthHour, setBirthHour] = useState<number>(() =>
+    typeof initialSolarSaved?.hour === "number" ? initialSolarSaved.hour : 12
+  );
+  const [birthMinute, setBirthMinute] = useState<number>(() =>
+    typeof initialSolarSaved?.minute === "number" ? initialSolarSaved.minute : 0
+  );
+  const [nightZiMode, setNightZiMode] = useState<"same_day" | "next_day">(() =>
+    initialSolarSaved?.nightZiMode === "next_day" ? "next_day" : "same_day"
+  );
+  const [solarYearError, setSolarYearError] = useState<string | null>(null);
+  const [appliedSolarInfo, setAppliedSolarInfo] = useState<AppliedSolarBirthInfo | null>(null);
+
+  // Tự động giới hạn ngày tối đa khi người dùng đổi Năm hoặc Tháng Dương lịch (VD: tháng 2 năm nhuận 29 ngày)
+  const parsedPreviewYear = useMemo(() => {
+    const n = parseInt(solarYearText.trim(), 10);
+    return !isNaN(n) && n >= 1900 && n <= 2100 ? n : birthYear;
+  }, [solarYearText, birthYear]);
+
+  const maxSolarDays = useMemo(
+    () => getMaxDaysInSolarMonth(parsedPreviewYear, birthMonth),
+    [parsedPreviewYear, birthMonth]
+  );
+
+  useEffect(() => {
+    if (birthDay > maxSolarDays) {
+      setBirthDay(maxSolarDays);
+    }
+  }, [birthDay, maxSolarDays]);
 
   // Năm muốn xem (Mặc định năm hiện tại 2026)
   const [viewYear, setViewYear] = useState<number>(() => {
@@ -574,18 +810,38 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
       localStorage.setItem("iching_bazi_birth_year", String(birthYear));
       localStorage.setItem("iching_bazi_view_year", String(viewYear));
       localStorage.setItem("iching_bazi_reversed_order", String(isReversedOrder));
+      localStorage.setItem(
+        STORAGE_KEY_SOLAR_INPUT,
+        JSON.stringify({
+          year: birthYear,
+          month: birthMonth,
+          day: birthDay,
+          hour: birthHour,
+          minute: birthMinute,
+          nightZiMode,
+        })
+      );
     } catch {
       // ignore
     }
-  }, [startAge, birthYear, viewYear, isReversedOrder]);
+  }, [startAge, birthYear, birthMonth, birthDay, birthHour, birthMinute, nightZiMode, viewYear, isReversedOrder]);
 
-  // Tự động suy ra năm sinh từ Trụ Năm khi đổi Trụ Năm
+  // Khi đổi Nam ⇄ Nữ mà lá số đang được xuất từ Ngày Giờ Dương Lịch, tự động tính lại chiều & tuổi Khởi Đại Vận
   useEffect(() => {
-    if (pillars[3]?.can && pillars[3]?.chi) {
-      const derived = getBirthYearFromYearPillar(pillars[3].can, pillars[3].chi, viewYear);
-      setBirthYear(derived);
-    }
-  }, [pillars[3]?.can, pillars[3]?.chi]);
+    if (!appliedSolarInfo) return;
+    const recalc = calculateSolarBirthBazi(
+      appliedSolarInfo.year,
+      appliedSolarInfo.month,
+      appliedSolarInfo.day,
+      appliedSolarInfo.hour,
+      appliedSolarInfo.minute,
+      gender,
+      appliedSolarInfo.nightZiMode
+    );
+    setAppliedSolarInfo(recalc.info);
+    setStartAge(recalc.info.computedStartAge);
+    setSelectedDaiVanIdx(null);
+  }, [gender]);
 
   // Modal active selector cho ô Can hoặc Chi được nhấp (giống y chang bảng dưới)
   const [activeSlot, setActiveSlot] = useState<{
@@ -735,23 +991,109 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
   };
 
   /**
-   * Lấy Ngày Giờ Hiện Tại cho Bát Tự (theo đúng chuẩn thiên văn thực tế)
+   * Xuất lá số Bát Tự từ Năm • Tháng • Ngày • Giờ • Phút sinh Dương lịch
    */
-  const handleCurrentDateTime = () => {
-    const curr = getCurrentBaziPillars();
-    setPillars(curr);
-    const realYear = new Date().getFullYear();
-    setBirthYear(realYear);
-    // Đồng bộ xuống Bảng 8 Ô bên dưới
+  const applySolarBirthAndSync = (
+    y: number,
+    m: number,
+    d: number,
+    h: number,
+    min: number,
+    targetGender: "nam" | "nu" = gender,
+    targetNightZi: "same_day" | "next_day" = nightZiMode,
+    customMessage?: string
+  ) => {
+    const clampedDay = Math.min(d, getMaxDaysInSolarMonth(y, m));
+    const { pillars: nextPillars, info } = calculateSolarBirthBazi(
+      y,
+      m,
+      clampedDay,
+      h,
+      min,
+      targetGender,
+      targetNightZi
+    );
+
+    setSolarYearText(String(y));
+    setSolarYearError(null);
+    setBirthYear(y);
+    setBirthMonth(m);
+    setBirthDay(clampedDay);
+    setBirthHour(h);
+    setBirthMinute(min);
+    setPillars(nextPillars);
+    setStartAge(info.computedStartAge);
+    setAppliedSolarInfo(info);
+    setSelectedDaiVanIdx(null);
+    setSelectedLuuNienYear(viewYear);
+
     try {
-      localStorage.setItem("iching_jiazi_eight_pillars_v3", JSON.stringify(curr));
+      localStorage.setItem("iching_jiazi_eight_pillars_v3", JSON.stringify(nextPillars));
       setTimeout(() => {
-        window.dispatchEvent(new CustomEvent("sync-bazi-pillars", { detail: curr }));
+        window.dispatchEvent(new CustomEvent("sync-bazi-pillars", { detail: nextPillars }));
       }, 0);
     } catch {
       // ignore
     }
-    setNoticeMessage("Đã nạp chính xác Bát Tự (Giờ • Ngày • Tháng • Năm) theo ngày giờ hiện tại!");
+
+    const hhStr = h.toString().padStart(2, "0");
+    const mmStr = min.toString().padStart(2, "0");
+    const ddStr = clampedDay.toString().padStart(2, "0");
+    const moStr = m.toString().padStart(2, "0");
+    setNoticeMessage(
+      customMessage ||
+        `Đã xuất lá số Bát Tự Dương lịch ${hhStr}:${mmStr} ngày ${ddStr}/${moStr}/${y} ➔ Tứ Trụ: ${nextPillars
+          .map((p) => `${p.can} ${p.chi}`)
+          .join(" • ")} (Khởi vận ${info.computedStartAge} tuổi)!`
+    );
+  };
+
+  const validateSolarYearInput = (raw: string): number | null => {
+    const trimmed = raw.trim();
+    if (!/^\d{4}$/.test(trimmed)) return null;
+    const yr = parseInt(trimmed, 10);
+    if (isNaN(yr) || yr < 1900 || yr > 2100) return null;
+    return yr;
+  };
+
+  const handleSolarYearBlur = () => {
+    if (!solarYearText.trim()) return;
+    const validYr = validateSolarYearInput(solarYearText);
+    if (validYr === null) {
+      setSolarYearError("Vui lòng nhập năm sinh Dương lịch gồm 4 chữ số từ 1900 đến 2100 (ví dụ: 1990).");
+    } else {
+      setSolarYearError(null);
+    }
+  };
+
+  const handleSolarFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const validYr = validateSolarYearInput(solarYearText);
+    if (validYr === null) {
+      setSolarYearError("Vui lòng nhập năm sinh Dương lịch gồm 4 chữ số từ 1900 đến 2100 (ví dụ: 1990).");
+      solarYearInputRef.current?.focus();
+      return;
+    }
+    applySolarBirthAndSync(validYr, birthMonth, birthDay, birthHour, birthMinute, gender, nightZiMode);
+  };
+
+  /**
+   * Lấy Ngày Giờ Hiện Tại cho Bát Tự (theo đúng chuẩn thiên văn thực tế)
+   */
+  const handleCurrentDateTime = () => {
+    const vnNow = getVietnamDateTime();
+    applySolarBirthAndSync(
+      vnNow.year,
+      vnNow.month,
+      vnNow.day,
+      vnNow.hour,
+      vnNow.minute,
+      gender,
+      nightZiMode,
+      `Đã nạp chính xác Bát Tự (Giờ • Ngày • Tháng • Năm) theo thời gian thực Dương lịch ${vnNow.hour
+        .toString()
+        .padStart(2, "0")}:${vnNow.minute.toString().padStart(2, "0")} ngày ${vnNow.day}/${vnNow.month}/${vnNow.year}!`
+    );
   };
 
   /**
@@ -765,6 +1107,8 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
       { can: "", chi: "" },
     ];
     setPillars(empty);
+    setAppliedSolarInfo(null);
+    setSolarYearError(null);
     try {
       localStorage.setItem("iching_bazi_custom_pillars_v1", JSON.stringify(empty));
       localStorage.setItem("iching_jiazi_eight_pillars_v3", JSON.stringify(empty));
@@ -781,6 +1125,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
    * Xử lý chọn Thiên Can cho Trụ colIndex (tuân thủ luật phối tượng âm dương y chang bảng dưới)
    */
   const handleSelectCan = (colIndex: number, newCan: string) => {
+    setAppliedSolarInfo(null);
     setPillars((prev) => {
       const next = [...prev] as [PillarItem, PillarItem, PillarItem, PillarItem];
       const canData = CAN_MAP.get(newCan);
@@ -812,6 +1157,12 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
         can: newCan,
         chi: updatedChi,
       };
+
+      if (colIndex === 3 && next[3].can && next[3].chi) {
+        const derived = getBirthYearFromYearPillar(next[3].can, next[3].chi, viewYear);
+        setBirthYear(derived);
+        setSolarYearText(String(derived));
+      }
 
       // Tự động đồng bộ sang bảng dưới
       try {
@@ -845,12 +1196,19 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
       }
     }
 
+    setAppliedSolarInfo(null);
     setPillars((prev) => {
       const next = [...prev] as [PillarItem, PillarItem, PillarItem, PillarItem];
       next[colIndex] = {
         ...next[colIndex],
         chi: newChi,
       };
+
+      if (colIndex === 3 && next[3].can && next[3].chi) {
+        const derived = getBirthYearFromYearPillar(next[3].can, next[3].chi, viewYear);
+        setBirthYear(derived);
+        setSolarYearText(String(derived));
+      }
 
       try {
         localStorage.setItem("iching_jiazi_eight_pillars_v3", JSON.stringify(next));
@@ -1085,7 +1443,10 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
       setSaveFullName(activeP.fullName || "");
       setSaveNotes(activeP.notes || "");
     } else {
-      setSaveTitle(`Lá số ${gender === "nam" ? "Nam" : "Nữ"} - ${dayCan} ${dayChi} (${birthYear})`);
+      const dateTag = appliedSolarInfo
+        ? `${appliedSolarInfo.day.toString().padStart(2, "0")}/${appliedSolarInfo.month.toString().padStart(2, "0")}/${appliedSolarInfo.year}`
+        : String(birthYear);
+      setSaveTitle(`Lá số ${gender === "nam" ? "Nam" : "Nữ"} - ${dayCan || "?"} ${dayChi || "?"} (${dateTag})`);
       setSaveFullName("");
       setSaveNotes("");
     }
@@ -1103,6 +1464,10 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
             fullName: saveFullName.trim(),
             gender,
             birthYear,
+            birthMonth,
+            birthDay,
+            birthHour,
+            birthMinute,
             pillars: [pillars[0], pillars[1], pillars[2], pillars[3]] as [PillarItem, PillarItem, PillarItem, PillarItem],
             startAge,
             notes: saveNotes.trim(),
@@ -1127,10 +1492,10 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
       fullName: saveFullName.trim(),
       gender,
       birthYear,
-      birthMonth: 1,
-      birthDay: 1,
-      birthHour: 12,
-      birthMinute: 0,
+      birthMonth,
+      birthDay,
+      birthHour,
+      birthMinute,
       pillars: [...pillars],
       startAge,
       notes: saveNotes.trim(),
@@ -1148,11 +1513,74 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
 
   // Nạp lá số và nhảy ra luôn thiết lập các Thiên
   const handleLoadProfile = (profile: SavedBaziProfile) => {
+    const loadedYear = profile.birthYear || 1990;
+    const loadedMonth = profile.birthMonth || 1;
+    const loadedDay = profile.birthDay || 1;
+    const loadedHour = typeof profile.birthHour === "number" ? profile.birthHour : 12;
+    const loadedMinute = typeof profile.birthMinute === "number" ? profile.birthMinute : 0;
+
     setCurrentLoadedProfileId(profile.id);
     setPillars(profile.pillars);
     setGender(profile.gender);
-    setBirthYear(profile.birthYear);
+    setBirthYear(loadedYear);
+    setSolarYearText(String(loadedYear));
+    setBirthMonth(loadedMonth);
+    setBirthDay(loadedDay);
+    setBirthHour(loadedHour);
+    setBirthMinute(loadedMinute);
+    setSolarYearError(null);
     setStartAge(profile.startAge || 4);
+
+    // Kiểm tra xem bộ Tứ Trụ đã lưu có khớp ngày giờ Dương lịch không để khôi phục thông tin Âm lịch & Tiết Khí
+    const checkSameDay = calculateSolarBirthBazi(
+      loadedYear,
+      loadedMonth,
+      loadedDay,
+      loadedHour,
+      loadedMinute,
+      profile.gender,
+      "same_day"
+    );
+    const isSameDayMatch = checkSameDay.pillars.every(
+      (item, idx) =>
+        item.can === profile.pillars[idx]?.can && item.chi === profile.pillars[idx]?.chi
+    );
+    if (isSameDayMatch) {
+      setNightZiMode("same_day");
+      setAppliedSolarInfo(checkSameDay.info);
+    } else if (loadedHour === 23) {
+      const checkNextDay = calculateSolarBirthBazi(
+        loadedYear,
+        loadedMonth,
+        loadedDay,
+        loadedHour,
+        loadedMinute,
+        profile.gender,
+        "next_day"
+      );
+      const isNextDayMatch = checkNextDay.pillars.every(
+        (item, idx) =>
+          item.can === profile.pillars[idx]?.can && item.chi === profile.pillars[idx]?.chi
+      );
+      if (isNextDayMatch) {
+        setNightZiMode("next_day");
+        setAppliedSolarInfo(checkNextDay.info);
+      } else {
+        setAppliedSolarInfo(null);
+      }
+    } else {
+      setAppliedSolarInfo(null);
+    }
+
+    try {
+      localStorage.setItem("iching_jiazi_eight_pillars_v3", JSON.stringify(profile.pillars));
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent("sync-bazi-pillars", { detail: profile.pillars }));
+      }, 0);
+    } catch {
+      // ignore
+    }
+
     if (profile.thienSettings) {
       // Khi mở file ra thì nhảy ra luôn: mở sẵn tất cả các Thiên
       setThienSettings({
@@ -1220,13 +1648,13 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
   const handleExportJson = (profileToExport?: SavedBaziProfile) => {
     const data = profileToExport || {
       id: "bazi_" + Date.now().toString(36),
-      title: `Lá số ${gender === "nam" ? "Nam" : "Nữ"} - ${dayCan} ${dayChi} (${birthYear})`,
+      title: `Lá số ${gender === "nam" ? "Nam" : "Nữ"} - ${dayCan || "?"} ${dayChi || "?"} (${birthYear})`,
       gender,
       birthYear,
-      birthMonth: 1,
-      birthDay: 1,
-      birthHour: 12,
-      birthMinute: 0,
+      birthMonth,
+      birthDay,
+      birthHour,
+      birthMinute,
       pillars,
       startAge,
       thienSettings,
@@ -1830,7 +2258,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
             ) : (
               <span className="text-[#5C4D3C] italic flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500/70 inline-block" />
-                Trạng thái: Trống (Chưa điền Can Chi)
+                Trạng thái: Trống (Điền ngày giờ sinh Dương lịch hoặc chọn Can Chi để lập lá số)
               </span>
             )}
           </div>
@@ -1839,20 +2267,398 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
             onClick={() => setIsOpen(true)}
             className="text-[#6E4E16] hover:underline flex items-center gap-1 cursor-pointer font-medium ml-auto"
           >
-            <span>{pillars.some((p) => Boolean(p.can || p.chi)) ? "Mở rộng xem 8 ô, Đại Vận & Lưu Niên" : "Mở Rộng để điền Bát Tự"}</span>
+            <span>{pillars.some((p) => Boolean(p.can || p.chi)) ? "Mở rộng xem 8 ô, Đại Vận & Lưu Niên" : "Mở Rộng để nhập ngày sinh Dương lịch / Bát Tự"}</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
       )}
 
       {/* ========================================================
-          BODY CHÍNH: KẾT CẤU 8 Ô BÁT TỰ GIỐNG Y CHANG BẢNG BÊN DƯỚI
+          BODY CHÍNH: MỤC ĐIỀN NGÀY GIỜ SINH DƯƠNG LỊCH & KẾT CẤU 8 Ô BÁT TỰ
           ======================================================== */}
       {isOpen && (
         <div className="p-4 sm:p-6 space-y-6">
+          {/* =================================================================
+              MỤC ĐIỀN NĂM • THÁNG • NGÀY • GIỜ • PHÚT SINH DƯƠNG LỊCH ĐỂ XUẤT LÁ SỐ
+              ================================================================= */}
+          <form
+            action="#"
+            aria-labelledby={solarFormHeadingId}
+            onSubmit={handleSolarFormSubmit}
+            noValidate
+            className="no-capture p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#FFFDF8] via-[#FAF6EE] to-[#F5E8CE]/60 border border-[#C4963E]/60 shadow-sm space-y-4"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-[#C4963E]/35">
+              <div className="flex items-start gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-[#9E2A2B]/10 border border-[#9E2A2B]/35 flex items-center justify-center shrink-0 mt-0.5">
+                  <Calendar className="w-4 h-4 text-[#9E2A2B]" />
+                </div>
+                <div>
+                  <h3
+                    id={solarFormHeadingId}
+                    className="text-sm sm:text-base font-bold font-serif text-[#1C1813] tracking-wide"
+                  >
+                    ĐIỀN NĂM • THÁNG • NGÀY • GIỜ SINH DƯƠNG LỊCH ĐỂ XUẤT LÁ SỐ
+                  </h3>
+                  <p className="text-xs text-[#5C4D3C] mt-0.5">
+                    Quy đổi chính xác theo Tiết Khí thiên văn (UTC+7) sang Tứ Trụ Bát Tự, Âm lịch &amp; Tuổi Khởi Đại Vận.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleCurrentDateTime}
+                className="inline-flex items-center justify-center gap-1.5 min-h-10 px-3 py-1.5 text-xs font-semibold rounded-xl bg-[#FFFDF8] hover:bg-[#FAF6EE] text-[#6E4E16] border border-[#8C6D32]/60 transition-all cursor-pointer shrink-0 self-start sm:self-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9E2A2B]"
+              >
+                <Clock className="w-3.5 h-3.5 text-[#9E2A2B]" />
+                <span>Điền Giờ Hiện Tại</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3.5 items-start">
+              {/* 1. Năm sinh Dương lịch */}
+              <div className="lg:col-span-2 flex flex-col">
+                <label
+                  htmlFor={solarYearFieldId}
+                  className="text-xs font-bold text-[#2C241B] mb-1"
+                >
+                  Năm sinh (DL) <span aria-hidden="true" className="text-[#9E2A2B]">*</span>
+                </label>
+                <input
+                  ref={solarYearInputRef}
+                  id={solarYearFieldId}
+                  name="birthYear"
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]{4}"
+                  maxLength={4}
+                  autoComplete="bday-year"
+                  autoCorrect="off"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  enterKeyHint="done"
+                  required
+                  value={solarYearText}
+                  onChange={(e) => {
+                    const cleaned = e.target.value.replace(/[^\d]/g, "").slice(0, 4);
+                    setSolarYearText(cleaned);
+                    if (solarYearError) setSolarYearError(null);
+                  }}
+                  onBlur={handleSolarYearBlur}
+                  aria-invalid={solarYearError ? "true" : undefined}
+                  aria-describedby={
+                    solarYearError
+                      ? `${solarYearFieldId}-help ${solarYearErrorId}`
+                      : `${solarYearFieldId}-help`
+                  }
+                  className={`min-h-12 px-3 py-2 rounded-xl bg-[#FFFDF8] text-base font-bold text-[#1C1813] border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9E2A2B] ${
+                    solarYearError
+                      ? "border-[#991B1B] bg-[#FEF2F2]/60"
+                      : "border-[#8C6D32]/80 hover:border-[#6E4E16]"
+                  }`}
+                />
+                <span id={`${solarYearFieldId}-help`} className="text-[11px] text-[#5C4D3C] mt-1">
+                  4 chữ số (1900–2100)
+                </span>
+              </div>
+
+              {/* 2. Tháng sinh Dương lịch */}
+              <div className="lg:col-span-2 flex flex-col">
+                <label
+                  htmlFor={solarMonthFieldId}
+                  className="text-xs font-bold text-[#2C241B] mb-1"
+                >
+                  Tháng sinh (DL) <span aria-hidden="true" className="text-[#9E2A2B]">*</span>
+                </label>
+                <select
+                  id={solarMonthFieldId}
+                  name="birthMonth"
+                  autoComplete="bday-month"
+                  required
+                  value={birthMonth}
+                  onChange={(e) => setBirthMonth(parseInt(e.target.value, 10))}
+                  className="min-h-12 px-3 py-2 rounded-xl bg-[#FFFDF8] text-base font-semibold text-[#1C1813] border border-[#8C6D32]/80 hover:border-[#6E4E16] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9E2A2B]"
+                >
+                  {Array.from({ length: 12 }, (_, idx) => idx + 1).map((m) => (
+                    <option key={m} value={m}>
+                      Tháng {m.toString().padStart(2, "0")}
+                    </option>
+                  ))}
+                </select>
+                <span className="text-[11px] text-[#5C4D3C] mt-1">
+                  Theo lịch Dương
+                </span>
+              </div>
+
+              {/* 3. Ngày sinh Dương lịch */}
+              <div className="lg:col-span-2 flex flex-col">
+                <label
+                  htmlFor={solarDayFieldId}
+                  className="text-xs font-bold text-[#2C241B] mb-1"
+                >
+                  Ngày sinh (DL) <span aria-hidden="true" className="text-[#9E2A2B]">*</span>
+                </label>
+                <select
+                  id={solarDayFieldId}
+                  name="birthDay"
+                  autoComplete="bday-day"
+                  required
+                  value={Math.min(birthDay, maxSolarDays)}
+                  onChange={(e) => setBirthDay(parseInt(e.target.value, 10))}
+                  className="min-h-12 px-3 py-2 rounded-xl bg-[#FFFDF8] text-base font-semibold text-[#1C1813] border border-[#8C6D32]/80 hover:border-[#6E4E16] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9E2A2B]"
+                >
+                  {Array.from({ length: maxSolarDays }, (_, idx) => idx + 1).map((d) => (
+                    <option key={d} value={d}>
+                      Ngày {d.toString().padStart(2, "0")}
+                    </option>
+                  ))}
+                </select>
+                <span className="text-[11px] text-[#5C4D3C] mt-1">
+                  Tối đa {maxSolarDays} ngày
+                </span>
+              </div>
+
+              {/* 4. Giờ sinh Dương lịch */}
+              <div className="lg:col-span-4 flex flex-col">
+                <label
+                  htmlFor={solarHourFieldId}
+                  className="text-xs font-bold text-[#2C241B] mb-1"
+                >
+                  Giờ sinh (DL • Địa Chi) <span aria-hidden="true" className="text-[#9E2A2B]">*</span>
+                </label>
+                <select
+                  id={solarHourFieldId}
+                  name="birthHour"
+                  required
+                  value={birthHour}
+                  onChange={(e) => setBirthHour(parseInt(e.target.value, 10))}
+                  className="min-h-12 px-3 py-2 rounded-xl bg-[#FFFDF8] text-base font-semibold text-[#1C1813] border border-[#8C6D32]/80 hover:border-[#6E4E16] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9E2A2B]"
+                >
+                  {SOLAR_HOUR_OPTIONS.map((opt) => (
+                    <option key={opt.hour} value={opt.hour}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+                <span className="text-[11px] text-[#5C4D3C] mt-1">
+                  Khung 24 giờ chuẩn sang 12 Địa Chi
+                </span>
+              </div>
+
+              {/* 5. Phút sinh */}
+              <div className="lg:col-span-2 flex flex-col">
+                <label
+                  htmlFor={solarMinuteFieldId}
+                  className="text-xs font-bold text-[#2C241B] mb-1"
+                >
+                  Phút sinh
+                </label>
+                <select
+                  id={solarMinuteFieldId}
+                  name="birthMinute"
+                  value={birthMinute}
+                  onChange={(e) => setBirthMinute(parseInt(e.target.value, 10))}
+                  className="min-h-12 px-3 py-2 rounded-xl bg-[#FFFDF8] text-base font-semibold text-[#1C1813] border border-[#8C6D32]/80 hover:border-[#6E4E16] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9E2A2B]"
+                >
+                  {Array.from({ length: 60 }, (_, m) => m).map((m) => (
+                    <option key={m} value={m}>
+                      {m.toString().padStart(2, "0")} phút
+                    </option>
+                  ))}
+                </select>
+                <span className="text-[11px] text-[#5C4D3C] mt-1">
+                  Xét phút giao Tiết Khí
+                </span>
+              </div>
+            </div>
+
+            {/* Hàng dưới: Mệnh tạo (Nam/Nữ), Tùy chọn Dạ Tý (nếu chọn 23h) & Nút Xuất Lá Số */}
+            <div className="pt-3 border-t border-[#C4963E]/35 flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+              <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-end gap-4">
+                <fieldset>
+                  <legend className="text-xs font-bold text-[#2C241B] mb-1">
+                    Mệnh tạo (Giới tính) <span aria-hidden="true" className="text-[#9E2A2B]">*</span>
+                  </legend>
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <div
+                      className={`inline-flex items-center gap-2 min-h-12 px-3.5 rounded-xl border transition-colors ${
+                        gender === "nam"
+                          ? "bg-[#261E16]/8 border-[#6E4E16]"
+                          : "bg-[#FFFDF8] border-[#8C6D32]/70 hover:border-[#6E4E16]"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        id={`${formUid}-gender-nam`}
+                        name="baziGender"
+                        value="nam"
+                        checked={gender === "nam"}
+                        onChange={() => setGender("nam")}
+                        className="w-4 h-4 accent-[#6E4E16] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9E2A2B]"
+                      />
+                      <label
+                        htmlFor={`${formUid}-gender-nam`}
+                        className="text-sm font-semibold text-[#1C1813] cursor-pointer py-2.5 select-none"
+                      >
+                        Nam mệnh (Càn tạo)
+                      </label>
+                    </div>
+
+                    <div
+                      className={`inline-flex items-center gap-2 min-h-12 px-3.5 rounded-xl border transition-colors ${
+                        gender === "nu"
+                          ? "bg-[#9E2A2B]/8 border-[#9E2A2B]"
+                          : "bg-[#FFFDF8] border-[#8C6D32]/70 hover:border-[#9E2A2B]"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        id={`${formUid}-gender-nu`}
+                        name="baziGender"
+                        value="nu"
+                        checked={gender === "nu"}
+                        onChange={() => setGender("nu")}
+                        className="w-4 h-4 accent-[#9E2A2B] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9E2A2B]"
+                      />
+                      <label
+                        htmlFor={`${formUid}-gender-nu`}
+                        className="text-sm font-semibold text-[#1C1813] cursor-pointer py-2.5 select-none"
+                      >
+                        Nữ mệnh (Khôn tạo)
+                      </label>
+                    </div>
+                  </div>
+                </fieldset>
+
+                {birthHour === 23 && (
+                  <fieldset className="p-2.5 px-3 rounded-xl bg-[#FFFDF8] border border-[#C4963E]/60">
+                    <legend className="text-xs font-bold text-[#6E4E16] px-1">
+                      Quy ước Giờ Dạ Tý (23:00–23:59)
+                    </legend>
+                    <div className="flex flex-wrap items-center gap-3.5 pt-0.5">
+                      <div className="inline-flex items-center gap-1.5">
+                        <input
+                          type="radio"
+                          id={`${formUid}-nightzi-same`}
+                          name="nightZiMode"
+                          value="same_day"
+                          checked={nightZiMode === "same_day"}
+                          onChange={() => setNightZiMode("same_day")}
+                          className="w-4 h-4 accent-[#6E4E16] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9E2A2B]"
+                        />
+                        <label
+                          htmlFor={`${formUid}-nightzi-same`}
+                          className="text-xs font-medium text-[#1C1813] cursor-pointer py-1.5 select-none"
+                        >
+                          Giữ Trụ Ngày hôm đó (Dạ Tý)
+                        </label>
+                      </div>
+                      <div className="inline-flex items-center gap-1.5">
+                        <input
+                          type="radio"
+                          id={`${formUid}-nightzi-next`}
+                          name="nightZiMode"
+                          value="next_day"
+                          checked={nightZiMode === "next_day"}
+                          onChange={() => setNightZiMode("next_day")}
+                          className="w-4 h-4 accent-[#9E2A2B] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9E2A2B]"
+                        />
+                        <label
+                          htmlFor={`${formUid}-nightzi-next`}
+                          className="text-xs font-medium text-[#1C1813] cursor-pointer py-1.5 select-none"
+                        >
+                          Sang Trụ Ngày hôm sau từ 23:00
+                        </label>
+                      </div>
+                    </div>
+                  </fieldset>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                className="min-h-12 px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#9E2A2B] via-[#8B2223] to-[#6E1A1B] hover:from-[#B23234] hover:to-[#7F1E20] text-[#FFFDF8] font-serif font-bold text-base shadow-md shadow-[#9E2A2B]/25 border border-[#C4963E]/60 flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9E2A2B] shrink-0"
+              >
+                <Sparkles className="w-4 h-4 text-[#F3E5AB]" />
+                <span>Xuất Lá Số Bát Tự</span>
+              </button>
+            </div>
+
+            {solarYearError && (
+              <div
+                id={solarYearErrorId}
+                role="alert"
+                aria-live="polite"
+                className="p-3 rounded-xl bg-[#FEE2E2]/90 border border-[#991B1B]/60 text-[#991B1B] text-xs font-medium flex items-center gap-2"
+              >
+                <AlertTriangle className="w-4 h-4 shrink-0 text-[#991B1B]" />
+                <span>{solarYearError}</span>
+              </div>
+            )}
+          </form>
+
           {/* KHỐI BÁT TỰ RIÊNG (DÙNG ĐỂ CHỤP ẢNH BÁT TỰ RIÊNG) */}
           <div ref={onlyBaziContainerRef} className="space-y-6 p-1 rounded-2xl">
+            {/* Bảng thông tin gốc Dương lịch • Âm lịch • Tiết Khí • Khởi Đại Vận khi đã xuất lá số */}
+            {appliedSolarInfo && (
+              <div
+                role="status"
+                aria-live="polite"
+                className="p-3.5 sm:p-4 rounded-xl bg-gradient-to-r from-[#FFFDF8] via-[#FAF4E6] to-[#FFFDF8] border border-[#C4963E]/65 shadow-xs space-y-2 text-xs"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-[#C4963E]/30">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="px-2 py-0.5 rounded-md bg-[#9E2A2B] text-[#FFFDF8] font-serif font-bold text-[11px]">
+                      {gender === "nam" ? "Càn Tạo (Nam Mệnh)" : "Khôn Tạo (Nữ Mệnh)"}
+                    </span>
+                    <span className="text-[#1C1813] font-semibold">
+                      Dương lịch:{" "}
+                      <strong className="text-[#9E2A2B] font-serif">
+                        {appliedSolarInfo.hour.toString().padStart(2, "0")}:
+                        {appliedSolarInfo.minute.toString().padStart(2, "0")} — Ngày{" "}
+                        {appliedSolarInfo.day.toString().padStart(2, "0")}/
+                        {appliedSolarInfo.month.toString().padStart(2, "0")}/
+                        {appliedSolarInfo.year}
+                      </strong>
+                    </span>
+                    <span className="text-[#5C4D3C]">•</span>
+                    <span className="text-[#1C1813]">
+                      Âm lịch:{" "}
+                      <strong className="text-[#6E4E16] font-serif">
+                        Ngày {appliedSolarInfo.lunar.day.toString().padStart(2, "0")}/
+                        {appliedSolarInfo.lunar.month.toString().padStart(2, "0")}
+                        {appliedSolarInfo.lunar.isLeap ? " (Nhuận)" : ""} năm{" "}
+                        {appliedSolarInfo.lunar.yearFullName}
+                      </strong>
+                    </span>
+                  </div>
 
+                  <span className="text-[#6E4E16] font-medium">
+                    Tiết khí:{" "}
+                    <strong className="text-[#1C1813] font-serif">
+                      {appliedSolarInfo.activeSolarTermName} ({appliedSolarInfo.activeSolarTermChinese})
+                    </strong>{" "}
+                    • {appliedSolarInfo.sunLongitude}°
+                  </span>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-between gap-2 text-[11.5px] text-[#5C4D3C]">
+                  <span>
+                    <strong className="text-[#6E4E16]">Khởi Đại Vận:</strong>{" "}
+                    {appliedSolarInfo.vaoVanDirectionText} ({appliedSolarInfo.vaoVanTargetTime} • cách{" "}
+                    {appliedSolarInfo.vaoVanDiffFormatted}) ➔ Vào vận sau{" "}
+                    <strong className="text-[#1C1813]">{appliedSolarInfo.vaoVanSummary}</strong> (An Khởi Vận:{" "}
+                    <strong className="text-[#9E2A2B]">{appliedSolarInfo.computedStartAge} tuổi</strong>)
+                  </span>
+                  {appliedSolarInfo.baziYear !== appliedSolarInfo.year && (
+                    <span className="px-2 py-0.5 rounded bg-[#FEF3C7] text-[#78350F] border border-amber-600/40 font-medium">
+                      Sinh trước thời khắc Lập Xuân ➔ Niên trụ tính theo năm {appliedSolarInfo.baziYear}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
 
           {/* Thiết lập Vận Trình: Năm muốn xem & Tuổi khởi vận cho Đại Vận */}
           <div className="p-3 rounded-xl bg-[#FFFDF8] border border-[#C4963E]/45 flex flex-wrap items-center justify-between gap-3 text-xs">
@@ -1862,8 +2668,9 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                 <span>Thiết lập Vận Trình:</span>
               </span>
               <div className="flex items-center gap-1.5">
-                <label className="text-[#5C4D3C] font-semibold">Năm muốn xem:</label>
+                <label htmlFor={`${formUid}-view-year`} className="text-[#5C4D3C] font-semibold">Năm muốn xem:</label>
                 <input
+                  id={`${formUid}-view-year`}
                   type="number"
                   min="1900"
                   max="2100"
@@ -1881,7 +2688,7 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                       }
                     }
                   }}
-                  className="w-20 px-2 py-1 rounded bg-[#FFFDF8] border border-[#C4963E]/45 text-[#1C1813] font-bold text-center focus:outline-none focus:border-[#B8862D]"
+                  className="w-20 px-2 py-1 rounded bg-[#FFFDF8] border border-[#C4963E]/45 text-[#1C1813] font-bold text-center focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#9E2A2B]"
                 />
               </div>
 
@@ -1901,13 +2708,14 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
               })()}
 
               <div className="flex items-center gap-1.5 ml-2">
-                <label className="text-[#5C4D3C]">Khởi vận:</label>
+                <label htmlFor={`${formUid}-start-age`} className="text-[#5C4D3C]">Khởi vận:</label>
                 <select
+                  id={`${formUid}-start-age`}
                   value={startAge}
                   onChange={(e) => setStartAge(parseInt(e.target.value, 10))}
-                  className="px-2 py-1 rounded bg-[#FFFDF8] border border-[#C4963E]/45 text-[#6E4E16] font-bold focus:outline-none focus:border-[#B8862D] cursor-pointer"
+                  className="px-2 py-1 rounded bg-[#FFFDF8] border border-[#C4963E]/45 text-[#6E4E16] font-bold focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#9E2A2B] cursor-pointer"
                 >
-                  {Array.from({ length: 10 }, (_, i) => i + 1).map((a) => (
+                  {Array.from({ length: 11 }, (_, i) => i + 1).map((a) => (
                     <option key={a} value={a}>
                       {a} tuổi khởi vận
                     </option>
@@ -2422,7 +3230,9 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
             {displayedDaiVanList.length === 0 ? (
               <div className="py-6 px-4 text-center rounded-xl bg-[#FFFDF8] border border-dashed border-[#C4963E]/45 text-xs text-[#5C4D3C] space-y-1">
                 <p className="text-[#6E4E16] font-semibold">Chưa có thông tin 10 Bước Đại Vận</p>
-                <p>Vui lòng điền Can Chi cho Trụ Tháng hoặc bấm <strong className="text-[#6E4E16]">&quot;Lấy Ngày Giờ Hiện Tại&quot;</strong> để an 10 Bước Đại Vận.</p>
+                <p>
+                  Vui lòng điền ngày giờ sinh Dương lịch rồi bấm <strong className="text-[#9E2A2B]">&quot;Xuất Lá Số Bát Tự&quot;</strong> (hoặc điền Can Chi cho Trụ Tháng) để an 10 Bước Đại Vận.
+                </p>
               </div>
             ) : (
               <div className="overflow-x-auto pb-2.5 -mx-1 px-1 sm:mx-0 sm:px-0 scrollbar-thin">
@@ -3195,7 +4005,13 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                         {p.pillars.map((item) => `${item.can || "?"} ${item.chi || "?"}`).join("  •  ")}
                       </div>
                       <div className="text-[10px] text-[#5C4D3C]">
-                        Năm sinh: {p.birthYear} • Lưu lúc: {p.savedAt}
+                        Sinh DL:{" "}
+                        {p.birthDay && p.birthMonth
+                          ? `${p.birthDay.toString().padStart(2, "0")}/${p.birthMonth.toString().padStart(2, "0")}/${p.birthYear} (${(typeof p.birthHour === "number" ? p.birthHour : 12)
+                              .toString()
+                              .padStart(2, "0")}:${(p.birthMinute || 0).toString().padStart(2, "0")})`
+                          : p.birthYear}{" "}
+                        • Lưu lúc: {p.savedAt}
                       </div>
                     </div>
 
@@ -3224,6 +4040,10 @@ export const BaziExtendedFortune: React.FC<BaziExtendedFortuneProps> = ({
                                     ...item,
                                     gender,
                                     birthYear,
+                                    birthMonth,
+                                    birthDay,
+                                    birthHour,
+                                    birthMinute,
                                     pillars: [pillars[0], pillars[1], pillars[2], pillars[3]] as [PillarItem, PillarItem, PillarItem, PillarItem],
                                     startAge,
                                     savedAt: new Date().toLocaleString("vi-VN") + " (Đã ghi đè)",
