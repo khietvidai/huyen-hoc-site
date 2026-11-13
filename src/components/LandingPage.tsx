@@ -35,6 +35,7 @@ import { NavTab } from "./Header";
 import { HEXAGRAMS, getTransformedHexagram } from "../data/hexagrams";
 import { BOOK_HEXAGRAMS } from "../data/bookHexagrams";
 import {
+  NINE_PALACES_POSITIONS,
   TEN_STARS_EXPANDED_POSITIONS,
   TWELVE_BRANCHES_DATA,
   getHouseForBranch,
@@ -206,6 +207,7 @@ export type SpreadMode =
   | "1_to_3"
   | "3_to_5"
   | "that_tinh"
+  | "cuu_cung"
   | "thap_tinh"
   | "thap_nhat"
   | "thap_nhi"
@@ -265,6 +267,18 @@ export const THAT_TINH_POSITIONS = [
   { index: 4, label: "5. Kết Quả", sub: "Thành tựu & Triển vọng", desc: "Kết quả khả dĩ của sự việc theo đà phát triển hiện tại." },
   { index: 5, label: "6. Môi Trường Bên Ngoài", sub: "Ngoại duyên & Khách quan", desc: "Các yếu tố ngoại cảnh, sự hỗ trợ hay cản trở từ xã hội, thị trường, đối tác xung quanh." },
   { index: 6, label: "7. Thiếu Sót Của Bản Thân", sub: "Điểm mù & Khuyết điểm", desc: "Sơ hở nội tại, thói quen sai lầm, ảo tưởng hoặc điều bạn còn thiếu sót cần tu sửa." },
+];
+
+export const CUU_CUNG_SHORT_BADGES: string[] = [
+  "★ Lá 1: Trung Cung (5)",
+  "Lá 2: Tây Bắc (Càn 6)",
+  "Lá 3: Chính Tây (Đoài 7)",
+  "Lá 4: Đông Bắc (Cấn 8)",
+  "Lá 5: Chính Nam (Ly 9)",
+  "Lá 6: Chính Bắc (Khảm 1)",
+  "Lá 7: Tây Nam (Khôn 2)",
+  "Lá 8: Chính Đông (Chấn 3)",
+  "Lá 9: Đông Nam (Tốn 4)",
 ];
 
 export const THAP_TINH_POSITIONS = [
@@ -510,6 +524,19 @@ function drawCardsForMode(mode: SpreadMode, customMenhBranch?: number): DynamicC
     });
   }
 
+  if (mode === "cuu_cung") {
+    return Array.from({ length: 9 }, (_, idx) => {
+      const c = drawRandomCardFromSeparateDeck(idx);
+      const pos = NINE_PALACES_POSITIONS[idx];
+      return {
+        ...c,
+        shortBadgeLabel: CUU_CUNG_SHORT_BADGES[idx] || (pos ? pos.name : `Lá ${idx + 1}`),
+        positionLabel: pos ? `${pos.name} (${pos.subtitle})` : `Lá ${idx + 1}`,
+        positionDesc: pos ? pos.description : "",
+      };
+    });
+  }
+
   if (mode === "thap_tinh") {
     return Array.from({ length: 10 }, (_, idx) => {
       const c = drawRandomCardFromSeparateDeck(idx);
@@ -566,6 +593,7 @@ function drawCardsForMode(mode: SpreadMode, customMenhBranch?: number): DynamicC
 
 export const SPREAD_MODES: SpreadMode[] = [
   "that_tinh",
+  "cuu_cung",
   "thap_tinh",
   "thap_nhat",
   "thap_nhi",
@@ -582,6 +610,7 @@ export const SPREAD_MODE_NAMES: Record<SpreadMode, string> = {
   "1_to_3": "Trận Pháp Tam Tài (3 Lá)",
   "3_to_5": "Trận Pháp Ngũ Hành (5 Lá)",
   "that_tinh": "Trận Pháp Thất Tinh (7 Lá)",
+  "cuu_cung": "Trận Pháp Cửu Cung (9 Lá · Phi Tinh Lạc Thư)",
   "thap_tinh": "Trận Pháp Thập Tinh Celtic Cross (10 Lá)",
   "thap_nhat": "Trận Pháp Thập Tinh Mở Rộng (11 Lá)",
   "thap_nhi": "Trận Pháp Thập Nhị Cung (12 Lá · 12 Địa Chi)",
@@ -1068,6 +1097,38 @@ ${allSevenLines}
 • Phương châm hành động: Hành động theo minh triết ${adv?.name} để đón cát tránh hung, đạt được kết quả như ý.`;
   }
 
+  if (currentMode === "cuu_cung") {
+    const trungCung = cardsList[0];
+    const canTayBac = cardsList[1];
+    const lyChinhNam = cardsList[4];
+    const khamChinhBac = cardsList[5];
+    const tonDongNam = cardsList[8];
+    const hexTrung = HEXAGRAMS.find((h) => h.number === trungCung?.hexNumber);
+    const omenTrung = hexTrung?.omen ? `[${hexTrung.omen}] ` : "";
+    const allNineLines = cardsList
+      .map((c, idx) => {
+        const pos = NINE_PALACES_POSITIONS[idx];
+        const posTitle = pos ? `${pos.name} · ${pos.subtitle}` : c?.positionLabel || `Lá ${idx + 1}`;
+        const h = HEXAGRAMS.find((x) => x.number === c?.hexNumber);
+        const brief = getHexDomainInsight(h, domain) || c?.desc || c?.sub || "";
+        return `  - ${posTitle} (${c?.name}): ${brief}`;
+      })
+      .join("\n");
+
+    if (isQuestionEmpty) {
+      return `Trận Cửu Cung 9 Lá (Phi Tinh Lạc Thư): ★ Trung Cung (Cung 5): ${trungCung?.name} | Quý Nhân Càn 6: ${canTayBac?.name} | Danh Trí Ly 9: ${lyChinhNam?.name} | Tiềm Năng Khảm 1: ${khamChinhBac?.name} | Hòa Hợp Tốn 4: ${tonDongNam?.name}.\n${allNineLines}${EMPTY_QUESTION_REMINDER}`;
+    }
+
+    const omenOutlook = getOmenOutlookText(hexTrung?.omen);
+    return `🕊️ Tâm niệm / Câu hỏi: "${cleanedQuestion}"
+• Cửu Cung Phi Tinh Lạc Thư (Đủ 9 lá · ★ Trung Cung làm Trục Tâm thống lĩnh 8 phương Bát Quái):
+  ★ Trung Cung (Cung 5): ${trungCung?.name} ${omenTrung}| Quý Nhân (Càn 6): ${canTayBac?.name} | Danh Trí (Ly 9): ${lyChinhNam?.name} | Tiềm Năng (Khảm 1): ${khamChinhBac?.name} | Văn Xương Hòa Hợp (Tốn 4): ${tonDongNam?.name}.
+• Luận giải chi tiết 9 Cung Lạc Thư theo ${domainLabel}:
+${allNineLines}
+• Dự đoán viễn cảnh: Soi chiếu từ ★ Trung Cung (${trungCung?.name}) lan tỏa 8 phương Hậu Thiên Bát Quái: ${omenOutlook}
+• Phương châm hành động: ${hexTrung?.advice || "Giữ vững trục tâm Trung Cung, thuận theo vận khí Cửu Cung Phi Tinh để đón lành tránh dữ."}`;
+  }
+
   if (currentMode === "thap_tinh") {
     const s0 = cardsList[0];
     const s1 = cardsList[1];
@@ -1307,6 +1368,61 @@ async function formatSpreadForAI(
     if (cleanedQuestion) {
       lines.push(`5. Đúc kết lời khuyên và câu trả lời cụ thể, sáng rõ cho câu hỏi tâm niệm trên.`);
     }
+    return lines.join("\n");
+  }
+
+  if (currentMode === "cuu_cung") {
+    const lines: string[] = [];
+    lines.push(`=== THÔNG TIN TRẢI BÀI TRẬN PHÁP CỬU CUNG (9 LÁ · PHI TINH LẠC THƯ & BÁT QUÁI HẬU THIÊN${bakhKhoaNotice}) ===`);
+    if (cleanedQuestion) {
+      lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
+      lines.push(`"${cleanedQuestion}"\n`);
+    }
+    if (cleanedPrediction) {
+      lines.push(`【DỰ ĐOÁN CỦA QUẺ / ĐIỀM BÁO DỊCH LÝ】:`);
+      lines.push(`"${cleanedPrediction}"\n`);
+    }
+    if (cleanedAnswer) {
+      lines.push(`【ĐÁP ÁN / CHIÊM NGHIỆM TỰ ĐIỀN】:`);
+      lines.push(`"${cleanedAnswer}"\n`);
+    }
+    lines.push(`Khẩu quyết: Lạc Thư Cửu Cung Phi Tinh — Lá 1 tọa ★ Trung Cung (Cung 5 · Ngũ Hoàng Thổ) làm trục tâm bản thể, 8 lá còn lại bay thuận chiều Phi Tinh Lạc Thư (5 ➔ 6 Càn Tây Bắc ➔ 7 Đoài Chính Tây ➔ 8 Cấn Đông Bắc ➔ 9 Ly Chính Nam ➔ 1 Khảm Chính Bắc ➔ 2 Khôn Tây Nam ➔ 3 Chấn Chính Đông ➔ 4 Tốn Đông Nam), mỗi cung rút từ 1 bộ bài 448 lá riêng biệt.\n`);
+    cardsList.forEach((c, idx) => {
+      const pos = NINE_PALACES_POSITIONS[idx] || {
+        name: `Lá ${idx + 1}`,
+        subtitle: "",
+        description: "",
+      };
+      const extraBadge = idx === 0 ? "[★ TRUNG CUNG TRỌNG TÂM · BẢN THỂ]" : undefined;
+      lines.push(`----------------------------------------`);
+      if (!includeFullBakhKhoa) {
+        lines.push(`▶ Vị trí ${pos.name} [${pos.subtitle}]: ${pos.description}${extraBadge ? ` ${extraBadge}` : ""}`);
+        lines.push(`• Quẻ tượng: ${c.symbol}`);
+        lines.push(`• Tên: ${c.name}`);
+        lines.push(`• Ý nghĩa: ${c.sub}`);
+        lines.push(`• Lời giải: ${c.desc}`);
+      } else {
+        const cardLines = formatCardFullInfoFromHexagram(
+          c,
+          `Vị trí ${pos.name} [${pos.subtitle}]: ${pos.description}`,
+          extraBadge,
+          articles[idx]
+        );
+        lines.push(...cardLines);
+      }
+      lines.push("");
+    });
+    lines.push(`========================================`);
+    lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI]:`);
+    if (cleanedQuestion) {
+      lines.push(`▶ Trọng tâm giải đáp: Tập trung luận giải và tháo gỡ trực diện câu hỏi/tâm niệm: "${cleanedQuestion}"`);
+    }
+    const hasYaoInCuuCung = cardsList.some((c) => c.type === "yao" && Boolean(c.yaoNumber));
+    lines.push(`Xin hãy phân tích trải bài Trận Pháp Cửu Cung (9 Lá Phi Tinh Lạc Thư) theo ma trận không gian Hậu Thiên Bát Quái và tương sinh tương khắc Ngũ Hành giữa 9 cung (sử dụng đầy đủ dữ liệu Thoán Từ, Đại Tượng${hasYaoInCuuCung ? ", Hào Từ" : ""}, Ngũ Hành, Thời vận${includeFullBakhKhoa ? ", Cửu Nhị Luận Giải và Chiêm đoán 4 phương diện" : ""}):`);
+    lines.push(`1. Phân tích ★ Trung Cung (Lá 1 - Cung 5 Ngũ Hoàng Thổ): Trục tâm bản thể, cốt lõi tình thế và nội lực chủ đạo của đương số.`);
+    lines.push(`2. Soi chiếu trục Tứ Chính: Chính Nam Ly Hỏa (Lá 5 - Danh tiếng & Trí tuệ), Chính Bắc Khảm Thủy (Lá 6 - Chiều sâu & Tiềm năng), Chính Đông Chấn Mộc (Lá 8 - Sức bật & Đột phá), Chính Tây Đoài Kim (Lá 3 - Giao đạo & Khẩu tài).`);
+    lines.push(`3. Soi chiếu trục Tứ Duy: Tây Bắc Càn Kim (Lá 2 - Quý nhân & Quyền uy), Đông Bắc Cấn Thổ (Lá 4 - Điểm dừng & Điền trạch), Tây Nam Khôn Thổ (Lá 7 - Hậu phương & Nhu thuận), Đông Nam Tốn Mộc (Lá 9 - Văn xương & Hòa hợp).`);
+    lines.push(`4. Đúc kết phương vị cát lợi cần kích hoạt, phương vị cần hóa giải và chiến lược hành động sáng rõ nhất cho câu hỏi của đương số.`);
     return lines.join("\n");
   }
 
@@ -1699,6 +1815,7 @@ async function formatSpreadForAI(
       case "1_to_3": return "3 Lá (Tam Tài: Quá Khứ - Hiện Tại - Tương Lai)";
       case "3_to_5": return "5 Lá (Ngũ Hành Tương Sinh Tương Khắc)";
       case "that_tinh": return "Trận Pháp Thất Tinh (7 Lá Chu Dịch Bắc Đẩu)";
+      case "cuu_cung": return "Trận Pháp Cửu Cung (9 Lá · Phi Tinh Lạc Thư)";
       case "thap_tinh": return "Trận Pháp Thập Tinh (10 Lá Celtic Cross Dịch Lý)";
       case "thap_nhat": return "Trận Pháp Thập Tinh Mở Rộng (11 Lá · Tác Nhân Kép 2A & 2B)";
       case "thap_nhi": return "Trận Pháp Thập Nhị Cung (12 Lá · 12 Địa Chi & 12 Cung Tử Vi)";
@@ -3419,6 +3536,40 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             f, heroF, idx === 2
           );
         });
+      } else if (mode === "cuu_cung") {
+        // ── CHẾ ĐỘ: TRẬN PHÁP CỬU CUNG (9 LÁ · PHI TINH LẠC THƯ 3×3: NAM TRÊN - BẮC DƯỚI - TRUNG CUNG Ở GIỮA) ──
+        const isSmallScreen = w < 860;
+        const mobScale9 = w < 380 ? 0.42 : w < 440 ? 0.46 : 0.52;
+        const deskScale9 = w < 1000 ? 0.58 : w < 1200 ? 0.65 : w < 1440 ? 0.71 : 0.76;
+        const scale9 = isSmallScreen ? mobScale9 : deskScale9;
+
+        const stepX = isSmallScreen ? 102 * (scale9 / 0.50) : 185 * (scale9 / 0.72) * factor;
+        const stepY = isSmallScreen ? 150 * (scale9 / 0.50) : 232 * (scale9 / 0.72) * factor;
+
+        // Tọa độ Lạc Thư 3×3 theo đúng thứ tự rút 9 lá của NINE_PALACES_POSITIONS (Cung 5 -> 6 -> 7 -> 8 -> 9 -> 1 -> 2 -> 3 -> 4):
+        // Hàng 1 (Phía Nam, y = -stepY): Đông Nam Tốn 4 (idx 8, x = -stepX) | Chính Nam Ly 9 (idx 4, x = 0) | Tây Nam Khôn 2 (idx 6, x = +stepX)
+        // Hàng 2 (Trục Ngang, y = 0):    Chính Đông Chấn 3 (idx 7, x = -stepX) | ★ Trung Cung 5 (idx 0, x = 0) | Chính Tây Đoài 7 (idx 2, x = +stepX)
+        // Hàng 3 (Phía Bắc, y = +stepY): Đông Bắc Cấn 8 (idx 3, x = -stepX) | Chính Bắc Khảm 1 (idx 5, x = 0) | Tây Bắc Càn 6 (idx 1, x = +stepX)
+        const posMap9: { x: number; y: number; z: number }[] = [
+          { x: 0, y: 0, z: 18 },              // 0: Lá 1 (★ Cung 5 • Trung Cung - Trọng Tâm)
+          { x: stepX, y: stepY, z: 12 },      // 1: Lá 2 (Cung 6 • Càn Tây Bắc)
+          { x: stepX, y: 0, z: 14 },          // 2: Lá 3 (Cung 7 • Đoài Chính Tây)
+          { x: -stepX, y: stepY, z: 12 },     // 3: Lá 4 (Cung 8 • Cấn Đông Bắc)
+          { x: 0, y: -stepY, z: 15 },         // 4: Lá 5 (Cung 9 • Ly Chính Nam)
+          { x: 0, y: stepY, z: 13 },          // 5: Lá 6 (Cung 1 • Khảm Chính Bắc)
+          { x: stepX, y: -stepY, z: 14 },     // 6: Lá 7 (Cung 2 • Khôn Tây Nam)
+          { x: -stepX, y: 0, z: 14 },         // 7: Lá 8 (Cung 3 • Chấn Chính Đông)
+          { x: -stepX, y: -stepY, z: 14 },    // 8: Lá 9 (Cung 4 • Tốn Đông Nam)
+        ];
+
+        posMap9.forEach((p, idx) => {
+          applySlotTransform(
+            slots[idx],
+            getFanCardTransform(idx, cardCount, isSmallScreen, factor),
+            { x: p.x, y: p.y, rot: 0, scale: scale9, zIndex: p.z },
+            f, heroF, idx === 0
+          );
+        });
       } else if (mode === "thap_tinh") {
         // ── CHẾ ĐỘ: TRẬN PHÁP THẬP TINH (10 LÁ DỊCH LÝ) ──
         const isSmallScreen = w < 860;
@@ -4060,7 +4211,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         const halfW = ((unscaledW * Math.cos(rad) + unscaledH * Math.sin(rad)) * sc) / 2;
         const halfH = ((unscaledW * Math.sin(rad) + unscaledH * Math.cos(rad)) * sc) / 2;
         const hasTopBadge =
-          (mode === "that_tinh" || mode === "thap_tinh" || mode === "thap_nhat" || mode === "thap_nhi") &&
+          (mode === "that_tinh" || mode === "cuu_cung" || mode === "thap_tinh" || mode === "thap_nhat" || mode === "thap_nhi") &&
           Boolean(card?.positionLabel);
         const topBadgeExtra = hasTopBadge ? 42 : 12;
 
@@ -4289,8 +4440,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             ctx.restore();
           }
 
-          // Lớp 2: Vẽ nhãn vị trí trận pháp phía trên từng lá bài (Trận 7, 10, 11 và 12 lá)
-          if (mode === "that_tinh" || mode === "thap_tinh" || mode === "thap_nhat" || mode === "thap_nhi") {
+          // Lớp 2: Vẽ nhãn vị trí trận pháp phía trên từng lá bài (Trận 7, 9, 10, 11 và 12 lá)
+          if (mode === "that_tinh" || mode === "cuu_cung" || mode === "thap_tinh" || mode === "thap_nhat" || mode === "thap_nhi") {
             for (const item of sortedMetas) {
               if (!item.card.positionLabel) continue;
 
@@ -4299,7 +4450,12 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               let pillBorder = "rgba(120, 113, 108, 0.65)";
               let pillColor = "#F5F5F4";
 
-              if (mode === "thap_tinh" && item.idx === 1) {
+              if (mode === "cuu_cung" && item.idx === 0) {
+                topText = item.card.shortBadgeLabel || "★ Lá 1: Trung Cung (5)";
+                pillBg = "rgba(69, 26, 3, 0.96)";
+                pillBorder = "#F59E0B";
+                pillColor = "#FEF08A";
+              } else if (mode === "thap_tinh" && item.idx === 1) {
                 topText = isCard2Reversed ? "2. Ngược: Trở Ngại 🔄" : "2. Xuôi: Hỗ Trợ 🔄";
                 pillBg = isCard2Reversed ? "#4C0519" : "#022C22";
                 pillBorder = isCard2Reversed ? "#F43F5E" : "#10B981";
@@ -4603,6 +4759,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       const modeSlug =
         mode === "that_tinh"
           ? "that-tinh-7-la"
+          : mode === "cuu_cung"
+          ? "cuu-cung-9-la"
           : mode === "thap_tinh"
           ? "thap-tinh-10-la"
           : mode === "thap_nhat"
@@ -7743,7 +7901,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 <div class="cuunhi-guide-card">
                   <div class="cuunhi-guide-row">
                     <span class="cuunhi-guide-pill">👆 Bấm 1 lần</span>
-                    <span><strong>Bốc nhanh:</strong> Rút ngẫu nhiên 1 trong <strong>9 trận pháp</strong> <em>(tắt <strong>✓ Giữ nguyên</strong> nếu muốn đổi bài trong ngày)</em>.</span>
+                    <span><strong>Bốc nhanh:</strong> Rút ngẫu nhiên 1 trong <strong>10 trận pháp</strong> <em>(tắt <strong>✓ Giữ nguyên</strong> nếu muốn đổi bài trong ngày)</em>.</span>
                   </div>
                   <div class="cuunhi-guide-divider"></div>
                   <div class="cuunhi-guide-row">
@@ -7879,13 +8037,13 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             document.body.classList.remove("cuunhi-tour-step-cards", "cuunhi-tour-step-1");
           },
           popover: {
-            title: "✦ Bước 4 · Chọn Nhanh 9 Trận Pháp",
+            title: "✦ Bước 4 · Chọn Nhanh 10 Trận Pháp",
             description: `
               <div class="cuunhi-guide-body">
                 <div class="cuunhi-guide-card">
                   <div class="cuunhi-guide-row">
                     <span class="cuunhi-guide-pill">1 → 12 Lá</span>
-                    <span>Chọn nhanh Đơn Quẻ, Âm Dương, Tam Tài, Ngũ Hành, Thất Tinh, Thập Tinh, Mở Rộng, 12 Cung hoặc Tháp La Dịch.</span>
+                    <span>Chọn nhanh Đơn Quẻ, Âm Dương, Tam Tài, Ngũ Hành, Thất Tinh, Cửu Cung, Thập Tinh, Mở Rộng, 12 Cung hoặc Tháp La Dịch.</span>
                   </div>
                 </div>
               </div>
@@ -8744,6 +8902,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 <span>
                   {mode === "that_tinh"
                     ? "Trận Pháp Thất Tinh Bắc Đẩu (7 Lá Chu Dịch)"
+                    : mode === "cuu_cung"
+                    ? "Trận Pháp Cửu Cung Phi Tinh (9 Lá · Lạc Thư Bát Quái)"
                     : mode === "thap_tinh"
                     ? "Trận Pháp Thập Tinh Celtic Cross (10 Lá Chu Dịch)"
                     : mode === "thap_nhat"
@@ -8777,6 +8937,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               <h2 className="mb-3 text-3xl font-bold text-[#1C1813] sm:text-5xl lg:text-6xl tracking-tight font-serif drop-shadow-[0_1px_0_rgba(255,255,255,0.8)]">
                 {mode === "that_tinh"
                   ? "Trận Pháp Thất Tinh"
+                  : mode === "cuu_cung"
+                  ? "Trận Pháp Cửu Cung"
                   : mode === "thap_tinh"
                   ? "Trận Pháp Thập Tinh"
                   : mode === "thap_nhat"
@@ -8799,6 +8961,14 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 {mode === "that_tinh" ? (
                   <>
                     Khảo sát toàn diện 7 phương diện: Quá khứ, Bản thân hiện tại, Diễn biến, Gợi ý chiến lược, Kết quả, Ngoại cảnh và Điểm mù bản thân.
+                  </>
+                ) : mode === "cuu_cung" ? (
+                  <>
+                    Ma trận Lạc Thư Cửu Cung Phi Tinh 3×3: lấy{" "}
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-950 text-[#FDE68A] text-xs sm:text-sm font-bold border border-amber-500/80 shadow-xs">
+                      ★ Lá 1: Trung Cung (Cung 5 · Ngũ Hoàng Thổ)
+                    </span>{" "}
+                    làm trục tâm bản thể, thống lĩnh 8 phương vị Hậu Thiên Bát Quái (Càn 6 · Đoài 7 · Cấn 8 · Ly 9 · Khảm 1 · Khôn 2 · Chấn 3 · Tốn 4).
                   </>
                 ) : mode === "thap_tinh" ? (
                   <>
@@ -8869,7 +9039,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             className={`relative z-10 flex items-center justify-center pt-4 pb-4 ${
               mode === "thap_nhat" || mode === "thap_nhi"
                 ? "min-h-[760px] sm:min-h-[840px] md:min-h-[910px]"
-                : mode === "that_tinh" || mode === "thap_tinh" || mode === "thap_la"
+                : mode === "that_tinh" || mode === "cuu_cung" || mode === "thap_tinh" || mode === "thap_la"
                 ? "min-h-[680px] sm:min-h-[760px] md:min-h-[820px]"
                 : "min-h-[540px] sm:min-h-[580px]"
             }`}
@@ -8908,7 +9078,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
           className={`relative w-full max-w-[min(1240px,96vw)] overflow-visible will-change-transform ${
             mode === "thap_nhat" || mode === "thap_nhi"
               ? "h-[min(85vh,880px)]"
-              : mode === "that_tinh" || mode === "thap_tinh" || mode === "thap_la"
+              : mode === "that_tinh" || mode === "cuu_cung" || mode === "thap_tinh" || mode === "thap_la"
               ? "h-[min(76vh,780px)]"
               : "h-[min(56vh,500px)]"
           }`}
@@ -8933,11 +9103,15 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 setSelectedCard(card);
               }}
             >
-              {/* Nhãn vị trí trận pháp phía trên lá bài: Trận 7 lá, 10 lá, 11 lá và 12 lá */}
-              {(mode === "that_tinh" || mode === "thap_tinh" || mode === "thap_nhat" || mode === "thap_nhi") &&
+              {/* Nhãn vị trí trận pháp phía trên lá bài: Trận 7 lá, 9 lá, 10 lá, 11 lá và 12 lá */}
+              {(mode === "that_tinh" || mode === "cuu_cung" || mode === "thap_tinh" || mode === "thap_nhat" || mode === "thap_nhi") &&
                 card.positionLabel && (
                   <div className="absolute -top-7 sm:-top-8 md:-top-9 left-1/2 -translate-x-1/2 whitespace-nowrap text-center z-40 pointer-events-auto select-none">
-                    {mode === "thap_tinh" && idx === 1 ? (
+                    {mode === "cuu_cung" && idx === 0 ? (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[11px] sm:text-xs font-serif font-bold bg-amber-950 text-[#FEF08A] border-2 border-[#F59E0B] shadow-[0_0_18px_rgba(245,158,11,0.55)] backdrop-blur-sm">
+                        <span>{card.shortBadgeLabel || "★ Lá 1: Trung Cung (5)"}</span>
+                      </span>
+                    ) : mode === "thap_tinh" && idx === 1 ? (
                       <button
                         type="button"
                         onClick={(e) => {
@@ -9023,7 +9197,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     ? "rotate-180"
                     : ""
                 } ${
-                  mode === "thap_nhi" && card.isMenhCung
+                  (mode === "thap_nhi" && card.isMenhCung) || (mode === "cuu_cung" && idx === 0)
                     ? "ring-2 ring-[#F59E0B] shadow-[0_0_28px_rgba(245,158,11,0.45)]"
                     : ""
                 }`}
@@ -9267,8 +9441,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   </div>
                 </div>
 
-                {/* CỤM 1: BẢNG CHỌN NHANH 9 TRẬN PHÁP TRANG CHỦ (GỒM TRẬN 11 LÁ & 12 LÁ TỰ ĐỘNG RANDOM CUNG MỆNH) */}
-                <div id="cuunhi-spread-selector-grid" className="grid grid-cols-3 sm:grid-cols-5 gap-1.5">
+                {/* CỤM 1: BẢNG CHỌN NHANH 10 TRẬN PHÁP TRANG CHỦ (GỒM TRẬN CỬU CUNG 9 LÁ, 11 LÁ & 12 LÁ TỰ ĐỘNG RANDOM CUNG MỆNH) */}
+                <div id="cuunhi-spread-selector-grid" className="grid grid-cols-2 sm:grid-cols-5 gap-1.5">
                   {(
                     [
                       { id: "1_single" as SpreadMode, short: "1 Lá · Đơn Quẻ" },
@@ -9276,6 +9450,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                       { id: "1_to_3" as SpreadMode, short: "3 Lá · Tam Tài" },
                       { id: "3_to_5" as SpreadMode, short: "5 Lá · Ngũ Hành" },
                       { id: "that_tinh" as SpreadMode, short: "7 Lá · Thất Tinh" },
+                      { id: "cuu_cung" as SpreadMode, short: "9 Lá · Cửu Cung" },
                       { id: "thap_tinh" as SpreadMode, short: "10 Lá · Thập Tinh" },
                       { id: "thap_nhat" as SpreadMode, short: "11 Lá · Mở Rộng" },
                       { id: "thap_nhi" as SpreadMode, short: "12 Lá · 12 Cung" },
@@ -9963,7 +10138,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               <div className="relative z-10 mb-3 flex flex-wrap items-center justify-center gap-2">
                 <span
                   className={`inline-block px-3.5 py-1 rounded-full text-xs font-bold font-serif tracking-wider ${
-                    mode === "thap_nhi" && selectedCard.isMenhCung
+                    (mode === "thap_nhi" && selectedCard.isMenhCung) ||
+                    (mode === "cuu_cung" && selectedCard.id === cards[0]?.id)
                       ? "bg-amber-950 text-[#FEF08A] border-2 border-[#F59E0B] shadow-[0_0_16px_rgba(245,158,11,0.45)]"
                       : "bg-[#C4963E]/20 text-[#F3E5AB] border border-[#C4963E]/55"
                   }`}
