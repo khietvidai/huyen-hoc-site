@@ -4,7 +4,7 @@ import { getCanonicalHexagram, CanonicalHexagram, CanonicalYao } from "../data/c
 import { getKhongMinhForHexagram, KhongMinhHexagramBridge, KhongMinhLineItem } from "../data/khongMinhBridgeData";
 import { BOOK_HEXAGRAMS, BookHexagramSummary } from "../data/bookHexagrams";
 import { XIANGZHUAN_DATA } from "../data/xiangzhuanData";
-import { getKhongMinhComprehensive, KhongMinhOracleComprehensive } from "../data/khongMinhOracleDetails";
+import { getKhongMinhComprehensive, KhongMinhOracleComprehensive, isKhongMinhOracleHung } from "../data/khongMinhOracleDetails";
 
 export interface KhongMinhLineStatus {
   line: number; // 6 down to 1
@@ -115,6 +115,10 @@ export interface KhongMinhKinhDichResult {
     hexName: string;
     activeLine: number;
     oracleType: string;
+    isHung: boolean;
+    actionPrincipleRule: string;
+    appliedKinhDichAction: string;
+    avoidedKinhDichAction: string;
     poemHanzi: string;
     poemHaniViet: string;
     poemMeaning: string;
@@ -132,6 +136,8 @@ export interface KhongMinhKinhDichResult {
       symbolicFigure: string;
     };
   };
+
+  actionPrincipleBannerText: string;
 
   // Toàn văn chuỗi ký tự theo chuẩn mẫu người dùng
   plainText: string;
@@ -456,7 +462,7 @@ export function formatKhongMinhKinhDich(
     },
   };
 
-  // 5. Khối Trích Quẻ Khổng Minh Thần Toán
+  // 5. Khối Trích Quẻ Khổng Minh Thần Toán & Quy Tắc Hành Động (Cát làm theo lời khuyên Kinh Dịch, Hung làm ngược lại lời khuyên Kinh Dịch)
   const oracleNum = kmActiveLine?.oracleNum || 80;
   const oracleDetail: KhongMinhOracleComprehensive = getKhongMinhComprehensive(
     oracleNum,
@@ -465,17 +471,41 @@ export function formatKhongMinhKinhDich(
     primaryHex.name
   );
 
+  const isHung = isKhongMinhOracleHung(oracleDetail.oracleType);
+  const kinhDichThuan = primaryBlock.activeLineBlock.hanhDongThuan;
+  const kinhDichNguoc = primaryBlock.activeLineBlock.hanhDongNguoc;
+
+  const actionPrincipleRule = isHung
+    ? `Quẻ Khổng Minh #${oracleDetail.oracleNum} là HUNG (${oracleDetail.oracleType}) ➔ HÀNH ĐỘNG NGƯỢC LẠI với lời khuyên của Kinh Dịch.`
+    : `Quẻ Khổng Minh #${oracleDetail.oracleNum} là CÁT (${oracleDetail.oracleType}) ➔ LÀM THEO lời khuyên hành động của Kinh Dịch.`;
+
+  const appliedKinhDichAction = isHung
+    ? `Hành động ngược lại với lời khuyên Kinh Dịch: ${kinhDichNguoc} (Tuyệt đối KHÔNG làm theo lời khuyên thuận thông thường của Kinh Dịch: "${kinhDichThuan}").`
+    : `Làm theo lời khuyên hành động của Kinh Dịch: ${kinhDichThuan}`;
+
+  const avoidedKinhDichAction = isHung
+    ? `Cấm làm theo lời khuyên thuận của Kinh Dịch ("${kinhDichThuan}") vì Quẻ Khổng Minh đang báo HUNG.`
+    : `Cần tránh: ${kinhDichNguoc}`;
+
+  const actionPrincipleBannerText = isHung
+    ? `[QUY TẮC HÀNH ĐỘNG KHỔNG MINH — KINH DỊCH]: Quẻ Khổng Minh #${oracleDetail.oracleNum} là HUNG (${oracleDetail.oracleType}) ➔ HÀNH ĐỘNG NGƯỢC LẠI VỚI LỜI KHUYÊN CỦA KINH DỊCH: Thực hiện "${kinhDichNguoc}" — Tuyệt đối KHÔNG làm theo lời khuyên thuận của Kinh Dịch ("${kinhDichThuan}").`
+    : `[QUY TẮC HÀNH ĐỘNG KHỔNG MINH — KINH DỊCH]: Quẻ Khổng Minh #${oracleDetail.oracleNum} là CÁT (${oracleDetail.oracleType}) ➔ LÀM THEO LỜI KHUYÊN HÀNH ĐỘNG CỦA KINH DỊCH: "${kinhDichThuan}" (Tránh: "${kinhDichNguoc}").`;
+
   const oracleBlock = {
     oracleNum: oracleDetail.oracleNum,
     hexName: primaryHex.name,
     activeLine,
     oracleType: oracleDetail.oracleType,
+    isHung,
+    actionPrincipleRule,
+    appliedKinhDichAction,
+    avoidedKinhDichAction,
     poemHanzi: oracleDetail.poemHanzi,
     poemHaniViet: oracleDetail.poemHaniViet,
     poemMeaning: oracleDetail.poemMeaning,
     detailedExplanation: oracleDetail.overallMeaning.detailedExplanation,
-    doList: oracleDetail.actionGuidance.doList,
-    avoidList: oracleDetail.actionGuidance.avoidList,
+    doList: isHung ? kinhDichNguoc : kinhDichThuan,
+    avoidList: isHung ? kinhDichThuan : kinhDichNguoc,
     attitude: oracleDetail.actionGuidance.attitude,
     symbolicFigure: oracleDetail.overallMeaning.symbolicFigure,
     invertedVersion: {
@@ -495,7 +525,7 @@ export function formatKhongMinhKinhDich(
 ${linesFormattedText}
 
 ${findingMethodText}
-${transformedCommandText}
+${actionPrincipleBannerText}
 
 --- QUẺ CHÍNH ---
   - Tên quẻ: ${primaryBlock.hexNameWithHanzi}
@@ -514,12 +544,13 @@ Hào từ hào ${activeLine}:
   - Nghĩa lý: ${primaryBlock.activeLineBlock.nghiaLy}
   - Tượng số: ${primaryBlock.activeLineBlock.tuongSo}
   - Vị trí: ${primaryBlock.activeLineBlock.viTri}
-  - ✅ Hành động thuận: ${primaryBlock.activeLineBlock.hanhDongThuan}
-  - 🛑 Hành động ngược: ${primaryBlock.activeLineBlock.hanhDongNguoc}
+  - Lời khuyên hành động của Kinh Dịch (Thuận): ${primaryBlock.activeLineBlock.hanhDongThuan}
+  - Hành động ngược lại lời khuyên Kinh Dịch (Nghịch): ${primaryBlock.activeLineBlock.hanhDongNguoc}
+  - ⚡ QUYẾT ĐỊNH HÀNH ĐỘNG (${isHung ? "Quẻ Khổng Minh là HUNG ➔ Hành động NGƯỢC LẠI với lời khuyên của Kinh Dịch" : "Quẻ Khổng Minh là CÁT ➔ Làm THEO lời khuyên hành động của Kinh Dịch"}): ${appliedKinhDichAction}
   - Tiểu Tượng Truyện: ${primaryBlock.activeLineBlock.tieuTuong}
     -> Nghĩa là: ${primaryBlock.activeLineBlock.tieuTuongNghia}
 
---- 4 QUẺ PHỤ (TÔNG, HỖ, THÁC, BIẾN) ---
+--- 3 QUẺ PHỤ (TÔNG, HỖ, THÁC) ---
 1. Quẻ Tông (綜卦 - Quẻ Phản) [Góc nhìn từ phía đối phương hoặc quan sát sự việc ngược lại]:
    - Tên quẻ: ${auxiliaryBlocks.queTong.name}
    - Tượng & Ý: ${auxiliaryBlocks.queTong.tuongYMeaning}
@@ -559,43 +590,26 @@ Hào từ hào ${activeLine}:
      * Nghĩa lý: ${auxiliaryBlocks.queThac.nghiaLy}
      * Tượng số: ${auxiliaryBlocks.queThac.tuongSo}
 
-4. Quẻ Biến (變卦 - Quẻ Kết Quả) [Kết cục tối hậu & Mệnh lệnh hành động]:
-   - Tên quẻ: ${auxiliaryBlocks.queBien.name}
-   - Tượng & Ý: ${auxiliaryBlocks.queBien.tuongYMeaning}
-   - Tượng & Ý (Hán Việt): ${auxiliaryBlocks.queBien.tuongYHanViet}
-   - Chuyển biến vị thế: ${auxiliaryBlocks.queBien.chuyenBienViThe}
-   - Lời Hào Biến (Hào ${auxiliaryBlocks.queBien.respondingLineNum} (${auxiliaryBlocks.queBien.respondingLineName}) Quẻ Biến - MỆNH LỆNH HÀNH ĐỘNG):
-     * Hán Việt: ${auxiliaryBlocks.queBien.hanViet}
-     * Lời dịch: ${auxiliaryBlocks.queBien.loiDich}
-     * Lời hào cốt lõi / Mệnh lệnh: ${auxiliaryBlocks.queBien.loiHaoCotLoi}
-     * Tiểu Tượng Truyện: ${auxiliaryBlocks.queBien.tieuTuong}
-       -> Nghĩa là: ${auxiliaryBlocks.queBien.tieuTuongNghia}
-     * Áp dụng: ${auxiliaryBlocks.queBien.apDung}
-     * Nghĩa lý: ${auxiliaryBlocks.queBien.nghiaLy}
-     * Tượng số: ${auxiliaryBlocks.queBien.tuongSo}
-
 --- TRÍCH QUẺ KHỔNG MINH THẦN TOÁN (QUẺ CHÍNH) ---
 Hào ${activeLine} của quẻ ${primaryHex.name} ứng với quẻ thứ ${oracleBlock.oracleNum} trong hệ thống Khổng Minh Thần Số.
-  - Loại xăm: ${oracleBlock.oracleType}
+  - Loại xăm: ${oracleBlock.oracleType} [${isHung ? "HUNG — Hành động ngược lại với lời khuyên của Kinh Dịch" : "CÁT — Làm theo lời khuyên hành động của Kinh Dịch"}]
   - Kinh văn: "${oracleBlock.poemHanzi}"
   - Âm Hán Việt: "${oracleBlock.poemHaniViet}"
   - Dịch thơ / Diễn xuôi: "${oracleBlock.poemMeaning}"
-  - Luận giải chi tiết (Bản Thuận): ${oracleBlock.detailedExplanation}
-    * Nên làm: ${oracleBlock.doList}
-    * Tránh làm: ${oracleBlock.avoidList}
+  - Luận giải chi tiết: ${oracleBlock.detailedExplanation}
+  - ⚡ Chỉ dẫn hành động (Khi Quẻ Khổng Minh là Cát thì làm theo lời khuyên Kinh Dịch; khi là Hung thì làm ngược lại lời khuyên Kinh Dịch):
+    * Quy tắc áp dụng: ${oracleBlock.actionPrincipleRule}
+    * Hành động phải làm (${isHung ? "Làm ngược lại lời khuyên Kinh Dịch" : "Làm theo lời khuyên Kinh Dịch"}): ${oracleBlock.doList}
+    * Điều phải tránh (${isHung ? "Không làm theo lời khuyên thuận của Kinh Dịch" : "Tránh hành động ngược của Kinh Dịch"}): ${oracleBlock.avoidList}
     * Thái độ cần có: ${oracleBlock.attitude}
-  - Tượng số (Thuận): ${oracleBlock.symbolicFigure}
-  - 🛑 Phiên bản đảo ngược 180 độ (Bản Nghịch):
-    * Thơ nghịch: ${oracleBlock.invertedVersion.poemHanzi} Âm Hán Việt: ${oracleBlock.invertedVersion.poemHaniViet} (Dịch thơ/Diễn xuôi: ${oracleBlock.invertedVersion.poemMeaning})
-    * Luận giải nghịch: ${oracleBlock.invertedVersion.detailedExplanation}
-    * Lời khuyên nghịch: ${oracleBlock.invertedVersion.actionAdvice}
-    * Tượng số nghịch: ${oracleBlock.invertedVersion.symbolicFigure}`;
+  - Tượng số: ${oracleBlock.symbolicFigure}`;
 
   return {
     linesStatus,
     activeLine,
     findingMethodText,
     transformedCommandText,
+    actionPrincipleBannerText,
     primaryBlock,
     auxiliaryBlocks,
     oracleBlock,

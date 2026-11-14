@@ -28,7 +28,7 @@ import { getTransformedHexagram } from "../data/hexagrams";
 import { getKhongMinhForHexagram, KhongMinhLineItem } from "../data/khongMinhBridgeData";
 import { getCanonicalHexagram, CanonicalHexagram, CanonicalYao } from "../data/canonical";
 import { BOOK_HEXAGRAMS, RED_HEADLINES_DATA } from "../data/bookHexagrams";
-import { getKhongMinhComprehensive } from "../data/khongMinhOracleDetails";
+import { getKhongMinhComprehensive, isKhongMinhOracleHung } from "../data/khongMinhOracleDetails";
 import {
   getMovingLineComprehensiveAnalysis,
   KhongMinhTuongYAnalysis,
@@ -1204,32 +1204,57 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
                   </div>
                 </div>
 
-                {/* 7. Lời khuyên cụ thể về cách hành xử (Trích Sách Thuyết Minh & Kết Nối 3 Quẻ Phụ) */}
-                <div className="bg-[#19110B] p-4 sm:p-5 rounded-xl border border-[#3A2817] space-y-3">
-                  <div className="flex items-center justify-between border-b border-[#2C1E12] pb-2 flex-wrap gap-2">
-                    <div className="text-xs font-mono text-amber-400 uppercase tracking-wider font-bold flex items-center gap-2">
-                      <Scale className="w-4 h-4 text-amber-400" />
-                      <span>Lời Khuyên Hành Xử Cụ Thể (Trích Thuyết Minh & Định Hướng 3 Quẻ Phụ):</span>
+                {/* 7. Lời khuyên cụ thể về cách hành xử (Khi Quẻ Khổng Minh Cát thì làm theo lời khuyên Kinh Dịch, khi Hung thì làm ngược lại lời khuyên Kinh Dịch) */}
+                {(() => {
+                  const isHungOracle = isKhongMinhOracleHung(oracleDetail.oracleType);
+                  const kdThuan = canonicalYao?.favorableAction || oracleDetail.actionGuidance.doList;
+                  const kdNguoc = canonicalYao?.unfavorableAction || oracleDetail.actionGuidance.avoidList;
+                  return (
+                    <div className="bg-[#19110B] p-4 sm:p-5 rounded-xl border border-[#3A2817] space-y-3">
+                      <div className="flex items-center justify-between border-b border-[#2C1E12] pb-2 flex-wrap gap-2">
+                        <div className="text-xs font-mono text-amber-400 uppercase tracking-wider font-bold flex items-center gap-2">
+                          <Scale className="w-4 h-4 text-amber-400" />
+                          <span>Chỉ Dẫn Hành Động (Phối Hợp Quẻ Khổng Minh &amp; Lời Khuyên Kinh Dịch):</span>
+                        </div>
+                        <span
+                          className={`text-[10px] font-mono px-2.5 py-0.5 rounded border font-bold ${
+                            isHungOracle
+                              ? "text-rose-200 bg-rose-950/80 border-rose-500/70"
+                              : "text-emerald-200 bg-emerald-950/80 border-emerald-500/70"
+                          }`}
+                        >
+                          {isHungOracle
+                            ? "🔄 Quẻ Khổng Minh HUNG ➔ Hành động NGƯỢC LẠI lời khuyên Kinh Dịch"
+                            : "✅ Quẻ Khổng Minh CÁT ➔ Làm THEO lời khuyên Kinh Dịch"}
+                        </span>
+                      </div>
+                      <div className="space-y-2 text-[#DDD0BD] leading-relaxed">
+                        <p>
+                          <strong className="text-amber-300">⚡ Nguyên tắc quyết định: </strong>
+                          {isHungOracle
+                            ? `Vì Quẻ Khổng Minh #${oracleDetail.formattedNum} là HUNG (${oracleDetail.oracleType}), phải HÀNH ĐỘNG NGƯỢC LẠI với lời khuyên của Kinh Dịch.`
+                            : `Vì Quẻ Khổng Minh #${oracleDetail.formattedNum} là CÁT (${oracleDetail.oracleType}), hãy LÀM THEO lời khuyên hành động của Kinh Dịch.`}
+                        </p>
+                        <p>
+                          <strong className="text-emerald-400">
+                            ✅ Hành động thực thi ({isHungOracle ? "Làm ngược lại lời khuyên Kinh Dịch" : "Làm theo lời khuyên Kinh Dịch"}):{" "}
+                          </strong>
+                          {isHungOracle ? kdNguoc : kdThuan}
+                        </p>
+                        <p>
+                          <strong className="text-rose-400">
+                            🛑 Tuyệt đối tránh ({isHungOracle ? "Không làm theo lời khuyên thuận của Kinh Dịch vì xăm Hung" : "Tránh hành động ngược của Kinh Dịch"}):{" "}
+                          </strong>
+                          {isHungOracle ? kdThuan : kdNguoc}
+                        </p>
+                        <p className="border-t border-[#2B1B0F] pt-2">
+                          <strong className="text-amber-300">☯️ Thái độ &amp; Tâm thế ứng biến: </strong>
+                          {oracleDetail.actionGuidance.attitude}
+                        </p>
+                      </div>
                     </div>
-                    <span className="text-[10px] font-mono text-[#E5B552] bg-[#281A0E] px-2 py-0.5 rounded border border-[#482F19]">
-                      Thuận Nghịch Tứ Quái
-                    </span>
-                  </div>
-                  <div className="space-y-2 text-[#DDD0BD] leading-relaxed">
-                    <p>
-                      <strong className="text-emerald-400">✅ Nên làm (Hành động thuận theo 3 quẻ phụ): </strong>
-                      {oracleDetail.actionGuidance.doList}
-                    </p>
-                    <p>
-                      <strong className="text-rose-400">🛑 Tránh làm (Hành động nghịch theo 3 quẻ phụ): </strong>
-                      {oracleDetail.actionGuidance.avoidList}
-                    </p>
-                    <p className="border-t border-[#2B1B0F] pt-2">
-                      <strong className="text-amber-300">☯️ Thái độ & Tâm thế ứng biến: </strong>
-                      {oracleDetail.actionGuidance.attitude}
-                    </p>
-                  </div>
-                </div>
+                  );
+                })()}
 
                 {/* 8. Điển tích Lịch sử & Triết lý Đạo học (Trích Sách Thuyết Minh) */}
                 {(histText || philText) && (
@@ -1250,50 +1275,6 @@ export const TamTaiDiceRollSection: React.FC<TamTaiDiceRollSectionProps> = ({
                         <span>{philText}</span>
                       </div>
                     )}
-                  </div>
-                )}
-
-                {/* 9. 🛑 Phiên bản đảo ngược 180 độ (Cảnh Báo Từ Sách Thuyết Minh) */}
-                {oracleDetail.invertedVersion && (
-                  <div className="bg-gradient-to-b from-[#241012] to-[#160B0D] border-2 border-rose-900/80 p-4 sm:p-6 rounded-xl space-y-3.5 shadow-lg">
-                    <div className="flex items-center gap-2 text-rose-300 font-mono text-xs sm:text-sm font-bold uppercase tracking-wider border-b border-rose-950/80 pb-2.5">
-                      <span className="text-base">🛑</span>
-                      <span>Phiên Bản Đảo Ngược 180 Độ (Cảnh Báo Nghịch Vận — Trích Thuyết Minh):</span>
-                    </div>
-
-                    <div className="space-y-2 text-center py-1">
-                      <div className="text-[10.5px] font-mono text-rose-400 uppercase tracking-wider font-bold">
-                        Bài thơ quẻ xăm nghịch đối:
-                      </div>
-                      <div className="font-serif font-black text-lg sm:text-xl text-rose-200 tracking-widest leading-relaxed">
-                        {oracleDetail.invertedVersion.poemHanzi}
-                      </div>
-                      <div className="text-xs sm:text-sm font-bold text-rose-300/90 italic">
-                        Âm Hán Việt: {oracleDetail.invertedVersion.poemHaniViet}
-                      </div>
-                    </div>
-
-                    <div className="bg-[#1B0A0C] p-3 rounded-lg border border-rose-950 text-rose-100/90 text-xs sm:text-sm leading-relaxed">
-                      <span className="font-bold text-rose-400 font-mono text-[11px] uppercase tracking-wider block mb-0.5">
-                        (Dịch thơ / Diễn xuôi):
-                      </span>
-                      {oracleDetail.invertedVersion.poemMeaning}
-                    </div>
-
-                    <div className="space-y-2 text-xs sm:text-sm text-rose-200/90 leading-relaxed pt-1">
-                      <p>
-                        <strong className="text-rose-300">Luận giải chi tiết: </strong>
-                        {oracleDetail.invertedVersion.detailedExplanation}
-                      </p>
-                      <p className="border-t border-rose-950/80 pt-2">
-                        <strong className="text-rose-400">Lời khuyên cụ thể: </strong>
-                        {oracleDetail.invertedVersion.actionAdvice}
-                      </p>
-                      <p className="border-t border-rose-950/80 pt-2">
-                        <strong className="text-rose-300">Tượng số cảnh báo: </strong>
-                        {oracleDetail.invertedVersion.symbolicFigure}
-                      </p>
-                    </div>
                   </div>
                 )}
               </div>

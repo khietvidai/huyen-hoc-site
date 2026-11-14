@@ -808,12 +808,10 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
           `- Lá 1 (Thiên Đạo): Quẻ #${drawnCards[0].number} ${drawnCards[0].name}\n` +
           `- Lá 2 (Địa Đạo): Quẻ #${drawnCards[1].number} ${drawnCards[1].name}\n` +
           `- Lá 3 (Nhân Đạo • Lá Cuối Cùng Làm Quẻ Chủ): Quẻ #${drawnCards[2].number} ${drawnCards[2].name}\n\n`;
-      } else if (threeMode === "tam_tai") {
+      } else if (threeMode === "tam_tai" || spreadType === "khongminh") {
         spreadInfo =
-          `\n【Trận Pháp 3 Lá - Tam Tài (Thiên — Địa — Nhân)】:\n` +
-          `- Thiên Đạo [Thiên Thời / Hoàn Cảnh Khách Quan]: Quẻ #${drawnCards[0].number} ${drawnCards[0].name}\n` +
-          `- Địa Đạo [Địa Lợi / Nền Tảng Môi Trường]: Quẻ #${drawnCards[1].number} ${drawnCards[1].name}\n` +
-          `- Nhân Đạo [Nhân Hòa / Con Người & Hành Động]: Quẻ #${drawnCards[2].number} ${drawnCards[2].name}\n\n`;
+          `\n【Quẻ Khổng Minh Thần Toán - Bốc 3 Lá, Lấy Lá Cuối Làm Quẻ】:\n` +
+          `- ★ Lá 3 (Quẻ Khổng Minh): Quẻ #${drawnCards[2].number} ${drawnCards[2].name}\n\n`;
       } else {
         spreadInfo =
           `\n【Trận Pháp 3 Lá - Tiến Trình Dòng Thời Gian】:\n` +
@@ -1561,12 +1559,10 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                         : idx === 1
                         ? "LÁ 2: ĐỊA ĐẠO (ĐỊA LỢI)"
                         : "LÁ 3 (LÁ CUỐI): NHÂN ĐẠO • QUẺ CHỦ NGỰ CHẾ"
-                      : threeMode === "tam_tai"
-                      ? idx === 0
-                        ? "LÁ 1: THIÊN ĐẠO (THIÊN THỜI & HOÀN CẢNH KHÁCH QUAN)"
-                        : idx === 1
-                        ? "LÁ 2: ĐỊA ĐẠO (ĐỊA LỢI & NỀN TẢNG MÔI TRƯỜNG)"
-                        : "LÁ 3: NHÂN ĐẠO (NHÂN HÒA & CON NGƯỜI HÀNH ĐỘNG)"
+                      : threeMode === "tam_tai" || spreadType === "khongminh"
+                      ? idx < 2
+                        ? ""
+                        : "★ LÁ 3 (LÁ CUỐI): QUẺ KHỔNG MINH THẦN TOÁN"
                       : idx === 0
                       ? "LÁ 1: QUÁ KHỨ (CĂN NGUYÊN & KHỞI ĐẦU)"
                       : idx === 1
@@ -1581,12 +1577,10 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                         : idx === 1
                         ? `Địa Đạo: ${card.name} (${card.vietnameseName})`
                         : `Nhân Đạo • Lá Cuối Làm Quẻ Chủ: ${card.name} (${card.vietnameseName})`
-                      : threeMode === "tam_tai"
-                      ? idx === 0
-                        ? `Thiên Đạo: ${card.name} (${card.vietnameseName})`
-                        : idx === 1
-                        ? `Địa Đạo: ${card.name} (${card.vietnameseName})`
-                        : `Nhân Đạo: ${card.name} (${card.vietnameseName})`
+                      : threeMode === "tam_tai" || spreadType === "khongminh"
+                      ? idx < 2
+                        ? ""
+                        : `Quẻ Khổng Minh: ${card.name} (${card.vietnameseName})`
                       : `Thời kỳ: ${card.name} (${card.vietnameseName})`;
                   const roleColor =
                     idx === 0 ? "text-gold-500" : idx === 1 ? "text-gold-300" : "text-[#E28355]";
@@ -1596,103 +1590,114 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                   return (
                     <div
                       key={card.instanceId || `${card.number}_${idx}`}
-                      onClick={() => setSelectedCardIdx(selectedCardIdx === idx ? null : idx)}
-                      onMouseEnter={() =>
+                      onClick={() => {
+                        if (isTamTai && idx < 2) {
+                          setSelectedCardIdx(2);
+                          return;
+                        }
+                        setSelectedCardIdx(selectedCardIdx === idx ? null : idx);
+                      }}
+                      onMouseEnter={() => {
+                        if (isTamTai && idx < 2) return;
                         handleHoverCard({
                           card,
                           positionTitle: roleTitle,
                           positionSubtitle: roleSubtitle,
                           isReversed: card.isReversed ?? false,
-                        })
-                      }
+                        });
+                      }}
                       onMouseLeave={handleLeaveCard}
                       className={`bg-lacquer-800 border rounded-sm p-2 sm:p-4 md:p-5 flex flex-col items-center text-center relative overflow-visible transition-all cursor-pointer shadow-lg ${
-                        showHighlight || (isNguChe && idx === 2)
+                        showHighlight || (isNguChe && idx === 2) || (isTamTai && idx === 2)
                           ? "border-gold-500 ring-2 ring-gold-500 bg-lacquer-800 scale-101"
                           : "border-gold-800 hover:border-gold-700"
                       }`}
                     >
-                      {(showHighlight || (isNguChe && idx === 2)) && (
+                      {(showHighlight || (isNguChe && idx === 2) || (isTamTai && idx === 2)) && (
                         <div className="no-capture absolute -top-1 -right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-gold-500 text-lacquer-900 rounded-full text-[8px] sm:text-[9px] font-bold flex items-center justify-center shadow z-20">
                           ✓
                         </div>
                       )}
-                      <div className="flex items-center justify-between w-full max-w-[98%] mb-1 sm:mb-2 gap-1">
-                        <div className="flex items-center gap-1 flex-wrap truncate">
-                          <div className={`text-[8px] sm:text-[10px] font-mono ${roleColor} font-bold uppercase tracking-wider bg-lacquer-700 px-1 sm:px-2 py-0.5 rounded border border-gold-800 truncate`}>
-                            {roleTitle}
+                      {!(isTamTai && idx < 2) && (
+                        <div className="flex items-center justify-between w-full max-w-[98%] mb-1 sm:mb-2 gap-1">
+                          <div className="flex items-center gap-1 flex-wrap truncate">
+                            {roleTitle && (
+                              <div className={`text-[8px] sm:text-[10px] font-mono ${roleColor} font-bold uppercase tracking-wider bg-lacquer-700 px-1 sm:px-2 py-0.5 rounded border border-gold-800 truncate`}>
+                                {roleTitle}
+                              </div>
+                            )}
+                            {card.deckNumber && (
+                              <span className="text-[8px] sm:text-[9px] font-mono font-bold text-gold-500 bg-lacquer-800 px-1 sm:px-1.5 py-0.5 rounded border border-gold-800">
+                                Bộ #{card.deckNumber}
+                              </span>
+                            )}
+                            {(threeMode === "tam_tai" || spreadType === "khongminh") && idx === 2 && (
+                              <span className={`text-[8px] sm:text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border flex items-center gap-1 shadow-xs transition-colors ${
+                                selectedCardIdx === 2
+                                  ? "bg-gold-500/15 text-gold-200 border-gold-500"
+                                  : "bg-lacquer-800 text-gold-300 border-[#5E3F21]"
+                              }`}>
+                                <Dices className="w-2.5 h-2.5" />
+                                <span>{selectedCardIdx === 2 ? "Đang mở xúc xắc 12 mặt" : "Chạm thẻ để mở xúc xắc"}</span>
+                              </span>
+                            )}
+                            {isNguChe && idx === 2 && (
+                              <span className="text-[8px] sm:text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border flex items-center gap-1 shadow-xs bg-amber-950/90 text-amber-200 border-amber-500/70">
+                                <Dices className="w-2.5 h-2.5 text-amber-400" />
+                                <span>Lá Cuối Làm Quẻ Chủ • Xí Ngầu 12 Mặt</span>
+                              </span>
+                            )}
                           </div>
-                          {card.deckNumber && (
-                            <span className="text-[8px] sm:text-[9px] font-mono font-bold text-gold-500 bg-lacquer-800 px-1 sm:px-1.5 py-0.5 rounded border border-gold-800">
-                              Bộ #{card.deckNumber}
-                            </span>
-                          )}
-                          {(threeMode === "tam_tai" || spreadType === "khongminh") && idx === 2 && (
-                            <span className={`text-[8px] sm:text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border flex items-center gap-1 shadow-xs transition-colors ${
-                              selectedCardIdx === 2
-                                ? "bg-gold-500/15 text-gold-200 border-gold-500"
-                                : "bg-lacquer-800 text-gold-300 border-[#5E3F21]"
-                            }`}>
-                              <Dices className="w-2.5 h-2.5" />
-                              <span>{selectedCardIdx === 2 ? "Đang mở xúc xắc 12 mặt" : "Chạm thẻ để mở xúc xắc"}</span>
-                            </span>
-                          )}
-                          {isNguChe && idx === 2 && (
-                            <span className="text-[8px] sm:text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border flex items-center gap-1 shadow-xs bg-amber-950/90 text-amber-200 border-amber-500/70">
-                              <Dices className="w-2.5 h-2.5 text-amber-400" />
-                              <span>Lá Cuối Làm Quẻ Chủ • Xí Ngầu 12 Mặt</span>
-                            </span>
-                          )}
-                        </div>
 
-                        {/* Top-right draw additional card & interpret button */}
-                        <div className="no-capture flex items-center gap-1 ml-auto shrink-0 flex-wrap justify-end">
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setInspectingTwoSidedCard({
-                                card,
-                                positionTitle: roleTitle,
-                                isReversed: card.isReversed ?? false,
-                              });
-                            }}
-                            className="flex items-center gap-0.5 px-2 py-0.5 rounded-sm bg-[#9A1F1A] hover:bg-[#7A1C18] text-[#FFFDF8] border border-[#C4963E] text-[8.5px] sm:text-[9.5px] font-serif font-bold shadow-sm transition-all cursor-pointer shrink-0 whitespace-nowrap"
-                            title="Mở cửa sổ xem song song cả 2 mặt bài (Quẻ Tượng & Thoán Từ)"
-                          >
-                            <ZoomIn className="w-2.5 h-2.5 text-[#E2C275]" />
-                            <span>2 mặt</span>
-                          </button>
-                          {showCompanionButton && companionList.length === 0 && (
+                          {/* Top-right draw additional card & interpret button */}
+                          <div className="no-capture flex items-center gap-1 ml-auto shrink-0 flex-wrap justify-end">
                             <button
                               type="button"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleDrawCompanion(slotKey);
+                                setInspectingTwoSidedCard({
+                                  card,
+                                  positionTitle: roleTitle,
+                                  isReversed: card.isReversed ?? false,
+                                });
                               }}
-                              className="flex items-center gap-0.5 px-2 py-0.5 rounded-sm bg-lacquer-800 hover:bg-gold-500 text-gold-400 hover:text-lacquer-900 border border-gold-800 hover:border-gold-400 text-[8.5px] sm:text-[9.5px] font-mono font-bold shadow-md transition-all cursor-pointer group active:scale-95 shrink-0 whitespace-nowrap"
-                              title="Bốc thêm 1 lá kế bên (Lá bổ trợ giải trình)"
+                              className="flex items-center gap-0.5 px-2 py-0.5 rounded-sm bg-[#9A1F1A] hover:bg-[#7A1C18] text-[#FFFDF8] border border-[#C4963E] text-[8.5px] sm:text-[9.5px] font-serif font-bold shadow-sm transition-all cursor-pointer shrink-0 whitespace-nowrap"
+                              title="Mở cửa sổ xem song song cả 2 mặt bài (Quẻ Tượng & Thoán Từ)"
                             >
-                              <Plus className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-gold-400 group-hover:text-lacquer-900 group-hover:rotate-90 transition-transform" />
-                              <span>Bốc thêm</span>
+                              <ZoomIn className="w-2.5 h-2.5 text-[#E2C275]" />
+                              <span>2 mặt</span>
                             </button>
-                          )}
-                          {showInterpretButton && (
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                onNavigateToManual?.(card.number);
-                              }}
-                              className="flex items-center gap-0.5 px-2 py-0.5 rounded-sm bg-lacquer-800 hover:bg-gold-500 text-gold-500 hover:text-lacquer-900 border border-gold-800 hover:border-gold-500 text-[8.5px] sm:text-[9.5px] font-serif font-bold shadow-md transition-all cursor-pointer group active:scale-95 shrink-0 whitespace-nowrap"
-                              title={`Xem luận giải Quẻ #${card.number} ở Sách Thuyết Minh`}
-                            >
-                              <Eye className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-gold-500 group-hover:text-lacquer-900 transition-colors" />
-                              <span>Luận giải</span>
-                            </button>
-                          )}
+                            {showCompanionButton && companionList.length === 0 && (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDrawCompanion(slotKey);
+                                }}
+                                className="flex items-center gap-0.5 px-2 py-0.5 rounded-sm bg-lacquer-800 hover:bg-gold-500 text-gold-400 hover:text-lacquer-900 border border-gold-800 hover:border-gold-400 text-[8.5px] sm:text-[9.5px] font-mono font-bold shadow-md transition-all cursor-pointer group active:scale-95 shrink-0 whitespace-nowrap"
+                                title="Bốc thêm 1 lá kế bên (Lá bổ trợ giải trình)"
+                              >
+                                <Plus className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-gold-400 group-hover:text-lacquer-900 group-hover:rotate-90 transition-transform" />
+                                <span>Bốc thêm</span>
+                              </button>
+                            )}
+                            {showInterpretButton && (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onNavigateToManual?.(card.number);
+                                }}
+                                className="flex items-center gap-0.5 px-2 py-0.5 rounded-sm bg-lacquer-800 hover:bg-gold-500 text-gold-500 hover:text-lacquer-900 border border-gold-800 hover:border-gold-500 text-[8.5px] sm:text-[9.5px] font-serif font-bold shadow-md transition-all cursor-pointer group active:scale-95 shrink-0 whitespace-nowrap"
+                                title={`Xem luận giải Quẻ #${card.number} ở Sách Thuyết Minh`}
+                              >
+                                <Eye className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-gold-500 group-hover:text-lacquer-900 transition-colors" />
+                                <span>Luận giải</span>
+                              </button>
+                            )}
+                          </div>
                         </div>
-                      </div>
+                      )}
 
                       <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 my-2 sm:my-3 w-full">
                         {/* Main Card - Kích thước ổn định tuyệt đối không co rút khi bốc thêm */}
@@ -1842,14 +1847,16 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
                         })}
                       </div>
 
-                      {/* THÔNG TIN CHI TIẾT TRỌN VẸN CỦA LÁ BÀI CHÍNH */}
-                      <CardInfoSummary
-                        card={card}
-                        isReversed={card.isReversed ?? false}
-                        deckNumber={card.deckNumber}
-                        showJudgment={true}
-                        showAdvice={true}
-                      />
+                      {/* THÔNG TIN CHI TIẾT TRỌN VẸN CỦA LÁ BÀI CHÍNH (Ẩn đối với lá 1 & 2 của Quẻ Khổng Minh) */}
+                      {!(isTamTai && idx < 2) && (
+                        <CardInfoSummary
+                          card={card}
+                          isReversed={card.isReversed ?? false}
+                          deckNumber={card.deckNumber}
+                          showJudgment={true}
+                          showAdvice={true}
+                        />
+                      )}
                     </div>
                   );
                 })}
@@ -2528,11 +2535,13 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
         {(() => {
           const selectableCards: { label: string; card: Hexagram; idx: number }[] =
             drawnCards && drawnCards.length > 1
-              ? drawnCards.map((c, idx) => ({
-                  idx,
-                  card: c,
-                  label: `Lá ${idx + 1}: #${c.number} ${c.name}`,
-                }))
+              ? isTamTai && drawnCards[2]
+                ? [{ idx: 2, card: drawnCards[2], label: `★ Lá 3 (Quẻ Khổng Minh): #${drawnCards[2].number} ${drawnCards[2].name}` }]
+                : drawnCards.map((c, idx) => ({
+                    idx,
+                    card: c,
+                    label: `Lá ${idx + 1}: #${c.number} ${c.name}`,
+                  }))
               : !drawnCards && transformedHexagram
               ? [
                   { idx: 0, card: primaryHexagram, label: `Lá 1 (Quẻ Chủ): #${primaryHexagram.number} ${primaryHexagram.name}` },
@@ -2541,7 +2550,9 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
               : [];
 
           const activeCardIndex =
-            selectedCardIdx !== null && selectableCards.some((s) => s.idx === selectedCardIdx)
+            isTamTai
+              ? 2
+              : selectedCardIdx !== null && selectableCards.some((s) => s.idx === selectedCardIdx)
               ? selectedCardIdx
               : 0;
           const activeReadingHexagram: Hexagram =

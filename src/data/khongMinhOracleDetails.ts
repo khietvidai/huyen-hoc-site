@@ -44,7 +44,7 @@ export const KHONG_MINH_ORACLE_DETAILS: Record<number, KhongMinhOracleComprehens
   80: {
     oracleNum: 80,
     formattedNum: "080",
-    oracleType: "Trung Bình",
+    oracleType: "Hạ Hung (Cây Quý Bị Đốn Làm Củi)",
     poemHanzi: "木向陽春發，三陰又伏根，樵夫不知道，砍去作柴薪。",
     poemHaniViet: "Mộc hướng dương xuân phát, Tam âm hựu phục căn, Tiều phu bất tri đạo, Khảm khứ tác sài tân.",
     poemMeaning:
@@ -319,11 +319,36 @@ function determineOracleType(
     combined.includes("gian nan") ||
     combined.includes("trắc trở") ||
     combined.includes("hung hiểm") ||
+    combined.includes("hung") ||
     combined.includes("nguy") ||
     combined.includes("sầu") ||
     combined.includes("bế tắc") ||
     combined.includes("tai họa") ||
-    combined.includes("rối ren")
+    combined.includes("rối ren") ||
+    combined.includes("khảm khứ") ||
+    combined.includes("sài tân") ||
+    combined.includes("làm củi") ||
+    combined.includes("đốn hạ") ||
+    combined.includes("vùi dập") ||
+    combined.includes("thất bại") ||
+    combined.includes("tổn thất") ||
+    combined.includes("hao tài") ||
+    combined.includes("uổng công") ||
+    combined.includes("chia lìa") ||
+    combined.includes("khóc") ||
+    combined.includes("thương tâm") ||
+    combined.includes("tiểu nhân") ||
+    combined.includes("cạm bẫy") ||
+    combined.includes("hiểm trở") ||
+    combined.includes("u ám") ||
+    combined.includes("gãy đổ") ||
+    combined.includes("đứt gãy") ||
+    combined.includes("khốn") ||
+    combined.includes("bất lợi") ||
+    combined.includes("chẳng lành") ||
+    combined.includes("khó thành") ||
+    combined.includes("lạc đường") ||
+    combined.includes("mắc cạn")
   ) {
     return "Hạ Hung (Gian Nan Trắc Trở)";
   }
@@ -380,8 +405,16 @@ function determineOracleType(
     return "Hạ Cát (Cẩn Trọng Khởi Đầu)";
   }
 
-  // Mặc định: Trung Bình
-  return "Trung Bình (Thủ Hộ Đợi Thời)";
+  // Mặc định: Trung Cát
+  return "Trung Cát (Bình An Thuận Lý)";
+}
+
+/**
+ * Kiểm tra xem Quẻ Khổng Minh thuộc nhóm HUNG hay CÁT
+ */
+export function isKhongMinhOracleHung(oracleType: string): boolean {
+  const lower = (oracleType || "").toLowerCase();
+  return lower.includes("hung") || lower.includes("hạ hạ");
 }
 
 /**

@@ -34,6 +34,8 @@ import { BrandMark } from "./BrandMark";
 import { NavTab } from "./Header";
 import { HEXAGRAMS, getTransformedHexagram } from "../data/hexagrams";
 import { BOOK_HEXAGRAMS } from "../data/bookHexagrams";
+import { getKhongMinhForHexagram } from "../data/khongMinhBridgeData";
+import { formatKhongMinhKinhDich } from "../utils/khongMinhKinhDichFormatter";
 import {
   NINE_PALACES_POSITIONS,
   TEN_STARS_EXPANDED_POSITIONS,
@@ -205,6 +207,7 @@ export type SpreadMode =
   | "1_single"
   | "1_to_2"
   | "1_to_3"
+  | "khong_minh"
   | "3_to_5"
   | "that_tinh"
   | "cuu_cung"
@@ -234,6 +237,9 @@ export interface DynamicCardItem {
   branchNumber?: number;
   branchName?: string;
   isMenhCung?: boolean;
+  khongMinhLine?: number;
+  khongMinhOracleNum?: number;
+  khongMinhFromMain64?: boolean;
 }
 
 export const SINGLE_POSITIONS = [
@@ -249,6 +255,27 @@ export const TAM_TAI_POSITIONS = [
   { index: 0, label: "1. Thiên Thời (Thời Vận)", sub: "Cơ duyên & Thời thế", desc: "Xu thế vũ trụ, cơ hội khách quan và nhịp điệu của thời điểm hiện tại." },
   { index: 1, label: "2. Địa Lợi (Môi Trường)", sub: "Nền tảng & Không gian", desc: "Điều kiện vật chất, nguồn lực sẵn có, nơi chốn và môi trường hoạt động." },
   { index: 2, label: "3. Nhân Hòa (Con Người)", sub: "Tâm thế & Hành động", desc: "Mối quan hệ nhân sự, sự đoàn kết và quyết định chủ động từ chính bạn." },
+];
+
+export const KHONG_MINH_POSITIONS = [
+  {
+    index: 0,
+    label: "",
+    sub: "",
+    desc: "",
+  },
+  {
+    index: 1,
+    label: "",
+    sub: "",
+    desc: "",
+  },
+  {
+    index: 2,
+    label: "★ 3. Quẻ Khổng Minh",
+    sub: "Quẻ Chủ Khổng Minh Thần Toán (384 Xăm)",
+    desc: "Lá cuối cùng định vị Quẻ Khổng Minh Thần Toán. Nếu bốc trúng 384 lá Hào Từ thì lấy chính hào đó; nếu bốc trúng 64 lá Quẻ Chính thì tự động random động 1 hào bất kỳ (1–6) để ứng chiếu 384 quẻ xăm Gia Cát Khổng Minh.",
+  },
 ];
 
 export const NGU_HANH_POSITIONS = [
@@ -319,6 +346,75 @@ export function applyTwelveHousesToCards(
         ? `★ Cung Mệnh · Địa Chi ${branch.name}`
         : `${house.name} · Địa Chi ${branch.name}`,
       positionDesc: `${branch.lunarMonth} • Phương ${branch.direction} (${branch.element}) — ${house.description}`,
+    };
+  });
+}
+
+export function applyKhongMinhToThreeCards(
+  rawCards: DynamicCardItem[],
+  forceRandomLineOnLast?: number
+): DynamicCardItem[] {
+  return rawCards.slice(0, 3).map((card, idx) => {
+    const pos = KHONG_MINH_POSITIONS[idx] || KHONG_MINH_POSITIONS[0];
+    if (idx < 2) {
+      return {
+        ...card,
+        slotIndex: idx,
+        deckNumber: card.deckNumber || idx + 1,
+        shortBadgeLabel: "",
+        positionLabel: "",
+        positionDesc: "",
+        sub: "",
+        desc: "",
+      };
+    }
+
+    // Lá thứ 3 (idx === 2): Lá cuối cùng là Quẻ Khổng Minh Thần Toán
+    // Nếu bốc trúng 64 lá chính (type === "hexagram") -> tự động random động 1 hào bất kỳ (1..6)
+    const isFromMain64 = card.type === "hexagram";
+    const activeLine =
+      forceRandomLineOnLast && forceRandomLineOnLast >= 1 && forceRandomLineOnLast <= 6
+        ? forceRandomLineOnLast
+        : isFromMain64
+        ? card.khongMinhLine && card.khongMinhLine >= 1 && card.khongMinhLine <= 6
+          ? card.khongMinhLine
+          : Math.floor(Math.random() * 6) + 1
+        : card.yaoNumber && card.yaoNumber >= 1 && card.yaoNumber <= 6
+        ? card.yaoNumber
+        : card.khongMinhLine && card.khongMinhLine >= 1 && card.khongMinhLine <= 6
+        ? card.khongMinhLine
+        : Math.floor(Math.random() * 6) + 1;
+
+    const hex = HEXAGRAMS.find((h) => h.number === card.hexNumber) || HEXAGRAMS[0];
+    const kmBridge = getKhongMinhForHexagram(hex.number);
+    const kmLine = kmBridge?.lines?.[activeLine - 1];
+    const oracleNum = kmLine?.oracleNum || (hex.number - 1) * 6 + activeLine;
+    const lineMeaning = hex.lineMeanings?.find((m) => m.line === activeLine);
+    const lineName = lineMeaning?.name || kmLine?.lineName || `Hào ${activeLine}`;
+    const kmFull = formatKhongMinhKinhDich(hex, activeLine);
+    const isHung = kmFull.oracleBlock.isHung;
+    const actionTag = isHung
+      ? "Xăm HUNG ➔ Hành động NGƯỢC LẠI lời khuyên Kinh Dịch"
+      : "Xăm CÁT ➔ Làm THEO lời khuyên Kinh Dịch";
+
+    return {
+      ...card,
+      slotIndex: idx,
+      deckNumber: card.deckNumber || idx + 1,
+      khongMinhLine: activeLine,
+      khongMinhOracleNum: oracleNum,
+      khongMinhFromMain64: isFromMain64,
+      shortBadgeLabel: isFromMain64
+        ? `★ Quẻ Khổng Minh #${oracleNum} (${isHung ? "Hung" : "Cát"}) · Động Hào ${activeLine} (Random)`
+        : `★ Quẻ Khổng Minh #${oracleNum} (${isHung ? "Hung" : "Cát"}) · Hào ${activeLine}`,
+      positionLabel: isFromMain64
+        ? `★ Lá 3 (Quẻ Khổng Minh #${oracleNum} · ${kmFull.oracleBlock.oracleType}): Nhân Đạo · Động Hào ${activeLine} (${lineName}) [64 Lá Chính ➔ Random Hào Động]`
+        : `★ Lá 3 (Quẻ Khổng Minh #${oracleNum} · ${kmFull.oracleBlock.oracleType}): Nhân Đạo · Hào ${activeLine} (${lineName}) [Bộ 384 Lá Hào]`,
+      positionDesc: pos.desc,
+      sub: isFromMain64
+        ? `${hex.vietnameseName || hex.name} · 64 Lá Chính (Random động Hào ${activeLine} · ${lineName}) · [${actionTag}]`
+        : `${hex.vietnameseName || hex.name} · Hào ${activeLine}/6 (${lineName}) · [${actionTag}]`,
+      desc: `【Quẻ Khổng Minh Thần Toán #${oracleNum} (${kmFull.oracleBlock.oracleType}) · Động Hào ${activeLine} (${lineName})】Xăm từ: "${kmLine?.oracleText || ""}" — ${kmFull.oracleBlock.poemMeaning} | ⚡ Chỉ dẫn hành động (${actionTag}): ${kmFull.oracleBlock.appliedKinhDichAction}`,
     };
   });
 }
@@ -570,6 +666,11 @@ function drawCardsForMode(mode: SpreadMode, customMenhBranch?: number): DynamicC
     return applyTwelveHousesToCards(rawTwelve, menhBranch);
   }
 
+  if (mode === "khong_minh") {
+    const rawThree = Array.from({ length: 3 }, (_, idx) => drawRandomCardFromSeparateDeck(idx));
+    return applyKhongMinhToThreeCards(rawThree);
+  }
+
   const count = mode === "1_single" ? 1 : mode === "1_to_2" ? 2 : mode === "1_to_3" ? 3 : 5;
   const positions =
     mode === "1_single"
@@ -599,6 +700,7 @@ export const SPREAD_MODES: SpreadMode[] = [
   "thap_nhi",
   "thap_la",
   "3_to_5",
+  "khong_minh",
   "1_to_3",
   "1_to_2",
   "1_single",
@@ -608,6 +710,7 @@ export const SPREAD_MODE_NAMES: Record<SpreadMode, string> = {
   "1_single": "Đơn Quẻ (1 Lá)",
   "1_to_2": "Trận Pháp Âm Dương (2 Lá)",
   "1_to_3": "Trận Pháp Tam Tài (3 Lá)",
+  "khong_minh": "Quẻ Khổng Minh (3 Lá · Gia Cát Thần Toán)",
   "3_to_5": "Trận Pháp Ngũ Hành (5 Lá)",
   "that_tinh": "Trận Pháp Thất Tinh (7 Lá)",
   "cuu_cung": "Trận Pháp Cửu Cung (9 Lá · Phi Tinh Lạc Thư)",
@@ -1033,6 +1136,40 @@ function generateHexagramPrediction(
   - Tương lai (${c2?.name}): ${insight2 || c2?.desc}
 • Dự đoán viễn cảnh: Chiêm nghiệm việc "${cleanedQuestion}", diễn biến sắp tới định hình theo thế ${c2?.name}. ${omenOutlook}
 • Phương châm hành động: ${hex2?.advice || hex1?.advice || "Chủ động nắm bắt thời cơ để kiến tạo thành tựu như ý."}`;
+  }
+
+  if (currentMode === "khong_minh") {
+    const c2 = cardsList[2] || cardsList[cardsList.length - 1];
+    const hex2 = HEXAGRAMS.find((h) => h.number === c2?.hexNumber) || HEXAGRAMS[0];
+    const activeLine = c2?.khongMinhLine || c2?.yaoNumber || 2;
+    const isFromMain64 = c2?.khongMinhFromMain64 ?? (c2?.type === "hexagram");
+    const kmBridge = getKhongMinhForHexagram(hex2.number);
+    const kmLine = kmBridge?.lines?.[activeLine - 1];
+    const oracleNum = c2?.khongMinhOracleNum || kmLine?.oracleNum || (hex2.number - 1) * 6 + activeLine;
+    const lineMeaning = hex2.lineMeanings?.find((m) => m.line === activeLine);
+    const lineName = lineMeaning?.name || kmLine?.lineName || `Hào ${activeLine}`;
+    const sourceTag = isFromMain64
+      ? `Bốc trúng 64 Lá Chính ➔ Random động Hào ${activeLine} (${lineName})`
+      : `Bộ 384 Lá Hào ➔ Hào ${activeLine} (${lineName})`;
+    const kmFull = formatKhongMinhKinhDich(hex2, activeLine, sourceTag);
+    const isHung = kmFull.oracleBlock.isHung;
+    const actionRuleSummary = isHung
+      ? `Quẻ Khổng Minh #${oracleNum} là HUNG (${kmFull.oracleBlock.oracleType}) ➔ Hành động NGƯỢC LẠI với lời khuyên của Kinh Dịch: ${kmFull.oracleBlock.doList} (Tuyệt đối KHÔNG làm theo lời khuyên thuận: "${kmFull.oracleBlock.avoidList}")`
+      : `Quẻ Khổng Minh #${oracleNum} là CÁT (${kmFull.oracleBlock.oracleType}) ➔ Làm THEO lời khuyên hành động của Kinh Dịch: ${kmFull.oracleBlock.doList} (Tránh: "${kmFull.oracleBlock.avoidList}")`;
+
+    if (isQuestionEmpty) {
+      return `★ Quẻ Khổng Minh #${oracleNum} (${kmFull.oracleBlock.oracleType} · Lá 3): ${hex2.name} · Động Hào ${activeLine} (${sourceTag}). Xăm từ: "${kmLine?.oracleText || ""}". ⚡ Chỉ dẫn: ${actionRuleSummary}.${EMPTY_QUESTION_REMINDER}`;
+    }
+
+    const insight2 = getHexDomainInsight(hex2, domain);
+    const omenOutlook = getOmenOutlookText(hex2.omen);
+
+    return `🕊️ Tâm niệm / Câu hỏi: "${cleanedQuestion}"
+• ★ Quẻ Khổng Minh #${oracleNum} (${kmFull.oracleBlock.oracleType} · Lá 3): ${hex2.name} · Động Hào ${activeLine} (${lineName}) [${sourceTag}].
+• Xăm Khổng Minh Thần Toán #${oracleNum}: "${kmLine?.oracleText || ""}" — ${kmFull.oracleBlock.poemMeaning}
+• Chiêm đoán theo ${domainLabel}: ${insight2 || lineMeaning?.meaning || c2?.desc}
+• Dự đoán viễn cảnh: ${omenOutlook}
+• ⚡ Phương châm hành động (Khi Quẻ Khổng Minh Cát thì làm theo lời khuyên Kinh Dịch, khi Hung thì làm ngược lại lời khuyên Kinh Dịch): ${actionRuleSummary}`;
   }
 
   if (currentMode === "3_to_5") {
@@ -1808,11 +1945,84 @@ async function formatSpreadForAI(
     return lines.join("\n");
   }
 
+  if (currentMode === "khong_minh") {
+    const c2 = cardsList[2] || cardsList[cardsList.length - 1];
+    const hex2 = HEXAGRAMS.find((h) => h.number === c2?.hexNumber) || HEXAGRAMS[0];
+    const activeLine = c2?.khongMinhLine || c2?.yaoNumber || 2;
+    const isFromMain64 = c2?.khongMinhFromMain64 ?? (c2?.type === "hexagram");
+    const sourceMethod = isFromMain64
+      ? `Bốc trúng 64 Lá Chính ➔ Tự động random động Hào ${activeLine}`
+      : `Bốc trúng trực tiếp Lá Hào ${activeLine} (Bộ 384 Hào Từ)`;
+    const kmFull = formatKhongMinhKinhDich(hex2, activeLine, sourceMethod);
+
+    const lines: string[] = [];
+    lines.push(
+      `=== THÔNG TIN TRẢI BÀI QUẺ KHỔNG MINH THẦN TOÁN (LÁ CUỐI CÙNG LÀ QUẺ KHỔNG MINH #${kmFull.oracleBlock.oracleNum}${bakhKhoaNotice}) ===`
+    );
+    if (cleanedQuestion) {
+      lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
+      lines.push(`"${cleanedQuestion}"\n`);
+    }
+    if (cleanedPrediction) {
+      lines.push(`【DỰ ĐOÁN CỦA QUẺ / ĐIỀM BÁO DỊCH LÝ】:`);
+      lines.push(`"${cleanedPrediction}"\n`);
+    }
+    if (cleanedAnswer) {
+      lines.push(`【ĐÁP ÁN / CHIÊM NGHIỆM TỰ ĐIỀN】:`);
+      lines.push(`"${cleanedAnswer}"\n`);
+    }
+    lines.push(
+      `Khẩu quyết: Trận Pháp Quẻ Khổng Minh (Bốc 3 lá bài, lấy duy nhất Lá cuối cùng — Lá 3 làm ★ QUẺ KHỔNG MINH THẦN TOÁN; không dùng thông tin của Lá 1 và Lá 2). Nếu bốc trúng 384 lá Hào Từ thì lấy chính hào đó làm hào động; nếu bốc trúng 64 lá Quẻ Chính thì tự động random động 1 hào bất kỳ (1–6) để ứng chiếu 384 quẻ xăm Gia Cát Khổng Minh.`
+    );
+    lines.push(
+      `* ⚡ QUY TẮC HÀNH ĐỘNG CỐT TỦY: Khi Quẻ Khổng Minh là CÁT thì LÀM THEO lời khuyên hành động của Kinh Dịch; khi Quẻ Khổng Minh là HUNG thì HÀNH ĐỘNG NGƯỢC LẠI với lời khuyên của Kinh Dịch!\n`
+    );
+
+    if (c2) {
+      const pos = KHONG_MINH_POSITIONS[2];
+      const extraBadge = `[★ LÁ CUỐI: QUẺ KHỔNG MINH #${kmFull.oracleBlock.oracleNum} · ĐỘNG HÀO ${activeLine} (${sourceMethod})]`;
+      lines.push(`----------------------------------------`);
+      if (!includeFullBakhKhoa) {
+        lines.push(`▶ Vị trí ${pos.label} [${pos.sub}]: ${pos.desc} ${extraBadge}`);
+        lines.push(`• Quẻ tượng: ${c2.symbol}`);
+        lines.push(`• Tên: ${c2.name}`);
+        lines.push(`• Ý nghĩa: ${c2.sub}`);
+        lines.push(`• Lời giải: ${c2.desc}`);
+      } else {
+        const cardLines = formatCardFullInfoFromHexagram(
+          c2,
+          `Vị trí ${pos.label} [${pos.sub}]: ${pos.desc}`,
+          extraBadge,
+          articles[2]
+        );
+        lines.push(...cardLines);
+      }
+      lines.push("");
+    }
+
+    lines.push(`========================================`);
+    lines.push(`【TOÀN VĂN LUẬN ĐOÁN LÁ CUỐI (LÁ 3) — QUẺ KHỔNG MINH KINH DỊCH #${kmFull.oracleBlock.oracleNum}】:`);
+    lines.push(kmFull.plainText);
+    lines.push("");
+    lines.push(`========================================`);
+    lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI]:`);
+    if (cleanedQuestion) {
+      lines.push(`▶ Trọng tâm giải đáp: Tập trung luận giải và tháo gỡ trực diện câu hỏi/tâm niệm: "${cleanedQuestion}"`);
+    }
+    lines.push(`Xin hãy luận giải sâu sắc Quẻ Khổng Minh Thần Toán (dựa duy nhất vào Lá 3 — Quẻ Khổng Minh #${kmFull.oracleBlock.oracleNum}):`);
+    lines.push(`1. Trọng tâm ★ Lá 3 (Quẻ Khổng Minh Thần Toán #${kmFull.oracleBlock.oracleNum} · ${hex2.name} động Hào ${activeLine}): Phân tích Quẻ Chính, Hào Động ${activeLine}, 3 Quẻ Phụ (Tông - Hỗ - Thác) và Thơ Xăm Khổng Minh Thần Toán #${kmFull.oracleBlock.oracleNum} (${kmFull.oracleBlock.oracleType}).`);
+    lines.push(
+      `2. ⚡ ÁP DỤNG QUY TẮC HÀNH ĐỘNG KHỔNG MINH — KINH DỊCH: Vì Quẻ Khổng Minh #${kmFull.oracleBlock.oracleNum} hiện tại là ${kmFull.oracleBlock.isHung ? `HUNG (${kmFull.oracleBlock.oracleType}), bắt buộc phải khuyên đương số HÀNH ĐỘNG NGƯỢC LẠI với lời khuyên của Kinh Dịch (Thực hiện: "${kmFull.oracleBlock.doList}" — Tuyệt đối KHÔNG làm theo lời khuyên thuận của Kinh Dịch: "${kmFull.oracleBlock.avoidList}")` : `CÁT (${kmFull.oracleBlock.oracleType}), bắt buộc phải khuyên đương số LÀM THEO lời khuyên hành động của Kinh Dịch (Thực hiện: "${kmFull.oracleBlock.doList}" — Tránh: "${kmFull.oracleBlock.avoidList}")`}.`
+    );
+    return lines.join("\n");
+  }
+
   const getSpreadName = (m: SpreadMode) => {
     switch (m) {
       case "1_single": return "1 Lá (Đơn Quẻ Chí Tôn)";
       case "1_to_2": return "2 Lá (Âm Dương Đối Đãi)";
       case "1_to_3": return "3 Lá (Tam Tài: Quá Khứ - Hiện Tại - Tương Lai)";
+      case "khong_minh": return "Quẻ Khổng Minh (3 Lá · Gia Cát Thần Toán)";
       case "3_to_5": return "5 Lá (Ngũ Hành Tương Sinh Tương Khắc)";
       case "that_tinh": return "Trận Pháp Thất Tinh (7 Lá Chu Dịch Bắc Đẩu)";
       case "cuu_cung": return "Trận Pháp Cửu Cung (9 Lá · Phi Tinh Lạc Thư)";
@@ -2305,6 +2515,8 @@ function loadOrCreateDailySpreadState(): PersistedDailySpreadState {
           const restoredCards =
             parsed.mode === "thap_nhi"
               ? applyTwelveHousesToCards(parsed.cards, restoredMenhBranch)
+              : parsed.mode === "khong_minh"
+              ? applyKhongMinhToThreeCards(parsed.cards)
               : parsed.cards;
           return {
             dateKey: todayKey,
@@ -2446,6 +2658,29 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     );
     setTimeout(() => setCopiedToast(null), 3200);
   }, [menhBranchNumber, mode]);
+
+  const handleRerollKhongMinhLine = useCallback(() => {
+    if (mode !== "khong_minh") return;
+    const currentLast = cards[2];
+    if (!currentLast) return;
+    const prevLine = currentLast.khongMinhLine || currentLast.yaoNumber || 1;
+    let nextLine = Math.floor(Math.random() * 6) + 1;
+    let guard = 0;
+    while (nextLine === prevLine && guard < 12) {
+      nextLine = Math.floor(Math.random() * 6) + 1;
+      guard++;
+    }
+    const updated = applyKhongMinhToThreeCards(cards, nextLine);
+    setCards(updated);
+    const updatedLast = updated[2];
+    if (updatedLast) {
+      setSelectedCard((prev) => (prev && prev.slotIndex === 2 ? updatedLast : prev));
+    }
+    setCopiedToast(
+      `🎲 Lá 3 (${currentLast.name}): Đã random động sang Hào ${nextLine} ➔ Quẻ Khổng Minh #${updatedLast?.khongMinhOracleNum || ""}!`
+    );
+    setTimeout(() => setCopiedToast(null), 3200);
+  }, [mode, cards]);
 
   /* Anchors for scroll physics */
   const heroAnchorRef = useRef<HTMLDivElement>(null);
@@ -2746,6 +2981,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           : item.cards;
       if (loadedMode === "thap_nhi") {
         loadedCards = applyTwelveHousesToCards(loadedCards, loadedMenh);
+      } else if (loadedMode === "khong_minh") {
+        loadedCards = applyKhongMinhToThreeCards(loadedCards);
       }
       setCards(loadedCards);
     }
@@ -2828,14 +3065,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     audio_url?: string;
     duration: number;
   } | null>(null);
-  const [selectedPhoneHexNum, setSelectedPhoneHexNum] = useState<number>(() => cards[0]?.hexNumber || 1);
-  const [selectedPhoneYaoNum, setSelectedPhoneYaoNum] = useState<number | null>(() => cards[0]?.yaoNumber || null);
+  const [selectedPhoneHexNum, setSelectedPhoneHexNum] = useState<number>(() =>
+    (mode === "khong_minh" ? cards[2]?.hexNumber : cards[0]?.hexNumber) || 1
+  );
+  const [selectedPhoneYaoNum, setSelectedPhoneYaoNum] = useState<number | null>(() =>
+    mode === "khong_minh"
+      ? cards[2]?.khongMinhLine || cards[2]?.yaoNumber || null
+      : cards[0]?.yaoNumber || null
+  );
   useEffect(() => {
-    if (cards.length > 0 && cards[0]?.hexNumber) {
-      setSelectedPhoneHexNum(cards[0].hexNumber);
-      setSelectedPhoneYaoNum(cards[0].yaoNumber || null);
+    const primaryCard = mode === "khong_minh" ? cards[2] || cards[0] : cards[0];
+    if (primaryCard?.hexNumber) {
+      setSelectedPhoneHexNum(primaryCard.hexNumber);
+      setSelectedPhoneYaoNum(primaryCard.khongMinhLine || primaryCard.yaoNumber || null);
     }
-  }, [cards]);
+  }, [cards, mode]);
   const [isPhoneChatModalExpanded, setIsPhoneChatModalExpanded] = useState<boolean>(false);
   const [isPhoneMockupHighlighted, setIsPhoneMockupHighlighted] = useState<boolean>(false);
   const [phoneChatMessages, setPhoneChatMessages] = useState<
@@ -2919,6 +3163,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           : item.cards;
       if (loadedMode === "thap_nhi") {
         loadedCards = applyTwelveHousesToCards(loadedCards, loadedMenh);
+      } else if (loadedMode === "khong_minh") {
+        loadedCards = applyKhongMinhToThreeCards(loadedCards);
       }
       setCards(loadedCards);
     }
@@ -3792,8 +4038,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             f, heroF, false
           );
         }
-      } else if (cardCount === 3 || mode === "1_to_3") {
-        // ── CHẾ ĐỘ: 3 LÁ (TAM TÀI) ──
+      } else if (cardCount === 3 || mode === "1_to_3" || mode === "khong_minh") {
+        // ── CHẾ ĐỘ: 3 LÁ (TAM TÀI / QUẺ KHỔNG MINH) ──
+        const isKM = mode === "khong_minh";
         applySlotTransform(
           slots[0],
           getFanCardTransform(0, 3, w < 640, factor),
@@ -3803,14 +4050,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         applySlotTransform(
           slots[1],
           getFanCardTransform(1, 3, w < 640, factor),
-          { x: 0, y: 0, rot: 0, scale: 1.08, zIndex: 14 },
-          f, heroF, true
+          { x: 0, y: 0, rot: 0, scale: isKM ? 1.04 : 1.08, zIndex: isKM ? 12 : 14 },
+          f, heroF, !isKM
         );
         applySlotTransform(
           slots[2],
           getFanCardTransform(2, 3, w < 640, factor),
-          { x: 340 * factor, y: 3, rot: 4.5, scale: 1.02, zIndex: 10 },
-          f, heroF, false
+          { x: 340 * factor, y: isKM ? -4 : 3, rot: isKM ? 0 : 4.5, scale: isKM ? 1.08 : 1.02, zIndex: isKM ? 16 : 10 },
+          f, heroF, isKM
         );
       } else if (cardCount === 2 || mode === "1_to_2") {
         // ── CHẾ ĐỘ: 2 LÁ (ÂM DƯƠNG) ──
@@ -4211,7 +4458,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         const halfW = ((unscaledW * Math.cos(rad) + unscaledH * Math.sin(rad)) * sc) / 2;
         const halfH = ((unscaledW * Math.sin(rad) + unscaledH * Math.cos(rad)) * sc) / 2;
         const hasTopBadge =
-          (mode === "that_tinh" || mode === "cuu_cung" || mode === "thap_tinh" || mode === "thap_nhat" || mode === "thap_nhi") &&
+          (mode === "khong_minh" || mode === "that_tinh" || mode === "cuu_cung" || mode === "thap_tinh" || mode === "thap_nhat" || mode === "thap_nhi") &&
           Boolean(card?.positionLabel);
         const topBadgeExtra = hasTopBadge ? 42 : 12;
 
@@ -4440,8 +4687,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             ctx.restore();
           }
 
-          // Lớp 2: Vẽ nhãn vị trí trận pháp phía trên từng lá bài (Trận 7, 9, 10, 11 và 12 lá)
-          if (mode === "that_tinh" || mode === "cuu_cung" || mode === "thap_tinh" || mode === "thap_nhat" || mode === "thap_nhi") {
+          // Lớp 2: Vẽ nhãn vị trí trận pháp phía trên từng lá bài (Quẻ Khổng Minh 3 lá, Trận 7, 9, 10, 11 và 12 lá)
+          if (mode === "khong_minh" || mode === "that_tinh" || mode === "cuu_cung" || mode === "thap_tinh" || mode === "thap_nhat" || mode === "thap_nhi") {
             for (const item of sortedMetas) {
               if (!item.card.positionLabel) continue;
 
@@ -4450,7 +4697,12 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               let pillBorder = "rgba(120, 113, 108, 0.65)";
               let pillColor = "#F5F5F4";
 
-              if (mode === "cuu_cung" && item.idx === 0) {
+              if (mode === "khong_minh" && item.idx === 2) {
+                topText = item.card.shortBadgeLabel || "★ 3. Quẻ Khổng Minh";
+                pillBg = "rgba(69, 26, 3, 0.96)";
+                pillBorder = "#F59E0B";
+                pillColor = "#FEF08A";
+              } else if (mode === "cuu_cung" && item.idx === 0) {
                 topText = item.card.shortBadgeLabel || "★ Lá 1: Trung Cung (5)";
                 pillBg = "rgba(69, 26, 3, 0.96)";
                 pillBorder = "#F59E0B";
@@ -4757,7 +5009,9 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
       // 6. Đặt tên tệp theo loại trải bài & ngày tháng rồi tự động tải về
       const modeSlug =
-        mode === "that_tinh"
+        mode === "khong_minh"
+          ? "que-khong-minh-3-la"
+          : mode === "that_tinh"
           ? "that-tinh-7-la"
           : mode === "cuu_cung"
           ? "cuu-cung-9-la"
@@ -4989,7 +5243,10 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
       const autoHuongAn = huongAnAnswer.trim() || getAutoHuongAnAnswer();
       const spreadName = SPREAD_MODE_NAMES[mode] || "Trận Pháp Kinh Dịch";
-      const cardNamesList = cards.map((c) => c.name.replace(/^Quẻ (Chủ|Biến):\s*/i, "").trim()).join(" • ");
+      const activeChatCards = mode === "khong_minh" && cards[2] ? [cards[2]] : cards;
+      const cardNamesList = activeChatCards
+        .map((c) => c.name.replace(/^Quẻ (Chủ|Biến):\s*/i, "").trim())
+        .join(" • ");
       const rawInput = typeof customQuestion === "string" ? customQuestion.trim() : phoneChatInput.trim();
       const effectiveUserMsg =
         rawInput ||
@@ -5053,10 +5310,10 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             spread_title: spreadName,
             is_card2_reversed: mode === "thap_tinh" ? isCard2Reversed : false,
             is_ritual_completed: isRitualCompleted,
-            cards: cards.map((c, idx) => ({
+            cards: activeChatCards.map((c, idx) => ({
               id: c.id,
               hexNumber: c.hexNumber,
-              yaoNumber: c.yaoNumber,
+              yaoNumber: c.yaoNumber || c.khongMinhLine,
               name: c.name,
               sub: c.sub,
               desc: c.desc,
@@ -5241,17 +5498,19 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               </a>
             </div>
 
-            {/* Các lá bài đang trải trên trang chủ */}
+            {/* Các lá bài đang trải trên trang chủ (Quẻ Khổng Minh chỉ hiện duy nhất Lá 3) */}
             <div className="flex items-center gap-1 overflow-x-auto pb-0.5" style={{ scrollbarWidth: "none" }}>
               {cards.map((c, idx) => {
-                const isSelected = c.hexNumber === targetHexNum && (c.yaoNumber || null) === selectedPhoneYaoNum;
+                if (mode === "khong_minh" && idx < 2) return null;
+                const yaoVal = c.khongMinhLine || c.yaoNumber || null;
+                const isSelected = c.hexNumber === targetHexNum && yaoVal === selectedPhoneYaoNum;
                 return (
                   <button
                     key={c.id + idx}
                     type="button"
                     onClick={() => {
                       setSelectedPhoneHexNum(c.hexNumber);
-                      setSelectedPhoneYaoNum(c.yaoNumber || null);
+                      setSelectedPhoneYaoNum(yaoVal);
                     }}
                     className={`whitespace-nowrap px-2 py-0.5 rounded-full text-[9px] font-serif font-bold border transition cursor-pointer shrink-0 ${
                       isSelected
@@ -5259,7 +5518,9 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                         : "bg-[#110C08] text-[#D8C5A0] border-[#D4AF37]/35 hover:text-[#FFF8E7]"
                     }`}
                   >
-                    Lá {idx + 1}: #{c.hexNumber} {c.yaoNumber ? `(Hào ${c.yaoNumber})` : ""}
+                    {mode === "khong_minh"
+                      ? `★ Lá 3 (Quẻ Khổng Minh #${c.khongMinhOracleNum || ""}): #${c.hexNumber} (Hào ${yaoVal || 1})`
+                      : `Lá ${idx + 1}: #${c.hexNumber} ${c.yaoNumber ? `(Hào ${c.yaoNumber})` : ""}`}
                   </button>
                 );
               })}
@@ -5703,7 +5964,9 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     try {
       // BƯỚC 1: Bóc tách các lá bài thành 3 lớp mực Thủy Mặc (Ướt - Khô - Chu Sa) trong lúc Cửu Long chạy Cảnh 1 (Mò Đọc Sách)
       const orderedCards =
-        mode === "thap_la" && cards.length > 2
+        mode === "khong_minh" && cards[2]
+          ? [cards[2]]
+          : mode === "thap_la" && cards.length > 2
           ? [cards[0], ...cards.slice(2), cards[1]]
           : [...cards];
 
@@ -7012,7 +7275,9 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       const startedAt = Date.now();
       const spreadTitle = SPREAD_MODE_NAMES[mode] || "Trải Bài Kinh Dịch";
       const orderedCards =
-        mode === "thap_la" && cards.length > 2
+        mode === "khong_minh" && cards[2]
+          ? [cards[2]]
+          : mode === "thap_la" && cards.length > 2
           ? [cards[0], ...cards.slice(2), cards[1]]
           : [...cards];
 
@@ -7532,7 +7797,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
       const effectiveQuestion =
         userIntentQuestion.trim() ||
-        `Luận giải trải bài ${cards.map((c) => c.name).join(" • ")} trên trang chủ`;
+        `Luận giải trải bài ${(mode === "khong_minh" && cards[2] ? [cards[2]] : cards).map((c) => c.name).join(" • ")} trên trang chủ`;
 
       const payload = {
         question: effectiveQuestion,
@@ -7665,6 +7930,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       const menhSuffix =
         newMode === "thap_nhi"
           ? ` · ★ Cung Mệnh tự động tại Địa Chi ${TWELVE_BRANCHES_DATA.find((b) => b.number === nextMenh)?.name || nextMenh}`
+          : newMode === "khong_minh" && newCards[2]
+          ? ` · ★ Lá 3 Quẻ Khổng Minh #${newCards[2].khongMinhOracleNum || ""} (Động Hào ${newCards[2].khongMinhLine || 1}${newCards[2].khongMinhFromMain64 ? " · Random từ 64 Lá Chính" : ""})`
           : "";
       setCopiedToast(
         isRitual
@@ -7779,6 +8046,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
     const menhSuffix =
       randomMode === "thap_nhi"
         ? ` · ★ Cung Mệnh tự động tại Chi ${TWELVE_BRANCHES_DATA.find((b) => b.number === nextMenh)?.name || nextMenh}`
+        : randomMode === "khong_minh" && newDrawnCards[2]
+        ? ` · ★ Lá 3 Quẻ Khổng Minh #${newDrawnCards[2].khongMinhOracleNum || ""} (Động Hào ${newDrawnCards[2].khongMinhLine || 1}${newDrawnCards[2].khongMinhFromMain64 ? " · Random từ 64 Lá Chính" : ""})`
         : "";
     if (isRitual) {
       setCopiedToast(`✨ Đắc Pháp Tam Kính: Đã bốc ngẫu nhiên ${spreadName}${menhSuffix} (Mở khóa 100% Bách Khoa cho AI)!`);
@@ -8918,6 +9187,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     ? "Trận Pháp Âm Dương (2 Lá - Thể Dụng Tương Tác)"
                     : mode === "1_to_3"
                     ? "Trận Pháp Tam Tài (3 Lá - Thiên Địa Nhân)"
+                    : mode === "khong_minh"
+                    ? "Quẻ Khổng Minh Thần Toán (3 Lá · Lấy Lá Cuối Làm Quẻ)"
                     : mode === "3_to_5"
                     ? "Trận Pháp Ngũ Hành (5 Lá - Kim Mộc Thủy Hỏa Thổ)"
                     : "Hệ Thống 64 Quẻ & 384 Hào Chu Dịch"}
@@ -8953,6 +9224,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   ? "Trận Pháp Âm Dương"
                   : mode === "1_to_3"
                   ? "Trận Pháp Tam Tài"
+                  : mode === "khong_minh"
+                  ? "Quẻ Khổng Minh Thần Toán"
                   : mode === "3_to_5"
                   ? "Trận Pháp Ngũ Hành"
                   : "Bộ Bài I Ching Tarot Phong Cách Đông Phương"}
@@ -8969,6 +9242,32 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                       ★ Lá 1: Trung Cung (Cung 5 · Ngũ Hoàng Thổ)
                     </span>{" "}
                     làm trục tâm bản thể, thống lĩnh 8 phương vị Hậu Thiên Bát Quái (Càn 6 · Đoài 7 · Cấn 8 · Ly 9 · Khảm 1 · Khôn 2 · Chấn 3 · Tốn 4).
+                  </>
+                ) : mode === "khong_minh" ? (
+                  <>
+                    Bốc 3 lá Tam Tài (Thiên · Địa · Nhân), lấy{" "}
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-950 text-[#FDE68A] text-xs sm:text-sm font-bold border border-amber-500/80 shadow-xs">
+                      ★ Lá 3 (Cuối): Quẻ Khổng Minh #{cards[2]?.khongMinhOracleNum || 1} · {cards[2]?.name || "Thuần Càn"} (Động Hào {cards[2]?.khongMinhLine || 1})
+                    </span>{" "}
+                    {cards[2]?.khongMinhFromMain64 ? (
+                      <>
+                        <span className="text-xs sm:text-sm font-semibold text-amber-900">
+                          [Bốc trúng 64 Lá Chính ➔ Random động Hào {cards[2]?.khongMinhLine || 1}]
+                        </span>{" "}
+                        <button
+                          type="button"
+                          onClick={handleRerollKhongMinhLine}
+                          className="inline-flex items-center gap-1 ml-1 px-2.5 py-0.5 rounded-full bg-[#FAF0D7] hover:bg-[#F3E5AB] text-[#6E4E16] text-xs font-bold border border-[#C4963E]/70 transition cursor-pointer active:scale-95"
+                          title="Gieo ngẫu nhiên lại 1 hào động khác (1–6) cho lá Quẻ Chính thứ 3"
+                        >
+                          🎲 Random Hào Động
+                        </button>
+                      </>
+                    ) : (
+                      <span className="text-xs sm:text-sm font-semibold text-emerald-900">
+                        [Bốc trúng Bộ 384 Hào ➔ Động ngay Hào {cards[2]?.khongMinhLine || 1}]
+                      </span>
+                    )}
                   </>
                 ) : mode === "thap_tinh" ? (
                   <>
@@ -9100,14 +9399,18 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               }}
               onClick={() => {
                 setModalCardView("both");
-                setSelectedCard(card);
+                setSelectedCard(mode === "khong_minh" && cards[2] ? cards[2] : card);
               }}
             >
-              {/* Nhãn vị trí trận pháp phía trên lá bài: Trận 7 lá, 9 lá, 10 lá, 11 lá và 12 lá */}
-              {(mode === "that_tinh" || mode === "cuu_cung" || mode === "thap_tinh" || mode === "thap_nhat" || mode === "thap_nhi") &&
+              {/* Nhãn vị trí trận pháp phía trên lá bài: Quẻ Khổng Minh 3 lá, Trận 7 lá, 9 lá, 10 lá, 11 lá và 12 lá */}
+              {(mode === "khong_minh" || mode === "that_tinh" || mode === "cuu_cung" || mode === "thap_tinh" || mode === "thap_nhat" || mode === "thap_nhi") &&
                 card.positionLabel && (
                   <div className="absolute -top-7 sm:-top-8 md:-top-9 left-1/2 -translate-x-1/2 whitespace-nowrap text-center z-40 pointer-events-auto select-none">
-                    {mode === "cuu_cung" && idx === 0 ? (
+                    {mode === "khong_minh" && idx === 2 ? (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[11px] sm:text-xs font-serif font-bold bg-amber-950 text-[#FEF08A] border-2 border-[#F59E0B] shadow-[0_0_18px_rgba(245,158,11,0.55)] backdrop-blur-sm">
+                        <span>{card.shortBadgeLabel || "★ 3. Quẻ Khổng Minh"}</span>
+                      </span>
+                    ) : mode === "cuu_cung" && idx === 0 ? (
                       <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[11px] sm:text-xs font-serif font-bold bg-amber-950 text-[#FEF08A] border-2 border-[#F59E0B] shadow-[0_0_18px_rgba(245,158,11,0.55)] backdrop-blur-sm">
                         <span>{card.shortBadgeLabel || "★ Lá 1: Trung Cung (5)"}</span>
                       </span>
@@ -9197,7 +9500,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     ? "rotate-180"
                     : ""
                 } ${
-                  (mode === "thap_nhi" && card.isMenhCung) || (mode === "cuu_cung" && idx === 0)
+                  (mode === "thap_nhi" && card.isMenhCung) || (mode === "cuu_cung" && idx === 0) || (mode === "khong_minh" && idx === 2)
                     ? "ring-2 ring-[#F59E0B] shadow-[0_0_28px_rgba(245,158,11,0.45)]"
                     : ""
                 }`}
@@ -9441,13 +9744,14 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   </div>
                 </div>
 
-                {/* CỤM 1: BẢNG CHỌN NHANH 10 TRẬN PHÁP TRANG CHỦ (GỒM TRẬN CỬU CUNG 9 LÁ, 11 LÁ & 12 LÁ TỰ ĐỘNG RANDOM CUNG MỆNH) */}
-                <div id="cuunhi-spread-selector-grid" className="grid grid-cols-2 sm:grid-cols-5 gap-1.5">
+                {/* CỤM 1: BẢNG CHỌN NHANH 11 TRẬN PHÁP TRANG CHỦ (GỒM QUẺ KHỔNG MINH 3 LÁ, TRẬN CỬU CUNG 9 LÁ, 11 LÁ & 12 LÁ) */}
+                <div id="cuunhi-spread-selector-grid" className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-1.5">
                   {(
                     [
                       { id: "1_single" as SpreadMode, short: "1 Lá · Đơn Quẻ" },
                       { id: "1_to_2" as SpreadMode, short: "2 Lá · Âm Dương" },
                       { id: "1_to_3" as SpreadMode, short: "3 Lá · Tam Tài" },
+                      { id: "khong_minh" as SpreadMode, short: "3 Lá · Khổng Minh" },
                       { id: "3_to_5" as SpreadMode, short: "5 Lá · Ngũ Hành" },
                       { id: "that_tinh" as SpreadMode, short: "7 Lá · Thất Tinh" },
                       { id: "cuu_cung" as SpreadMode, short: "9 Lá · Cửu Cung" },
@@ -9523,6 +9827,32 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                       <span>🔄</span>
                       <span>Lá 2B: {isCard2BReversed ? "Ngược (Áp Lực Giảm)" : "Xuôi (Thách Thức)"}</span>
                     </button>
+                  </div>
+                )}
+
+                {/* Thanh hiển thị ★ Lá 3 Quẻ Khổng Minh & Gieo lại Hào Động khi đang ở Quẻ Khổng Minh (3 Lá) */}
+                {mode === "khong_minh" && cards[2] && (
+                  <div className="flex flex-wrap items-center justify-between gap-2 px-3.5 py-2 rounded-xl bg-[#FAF0D7]/95 border border-[#C4963E]/70 text-xs font-serif text-[#5C3D0E] shadow-2xs">
+                    <span className="font-bold flex flex-wrap items-center gap-1.5">
+                      <span className="text-[#B8862D]">★</span>
+                      <span>
+                        Lá 3 (Quẻ Khổng Minh #{cards[2].khongMinhOracleNum || 1}): {cards[2].name} · Động Hào {cards[2].khongMinhLine || 1}{" "}
+                        <span className="font-normal text-[#7A5518]">
+                          ({cards[2].khongMinhFromMain64 ? "64 Lá Chính ➔ Random Hào" : "Bộ 384 Hào"})
+                        </span>
+                      </span>
+                    </span>
+                    {cards[2].khongMinhFromMain64 && (
+                      <button
+                        type="button"
+                        onClick={handleRerollKhongMinhLine}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#1C1610] hover:brightness-125 text-[#F3E5AB] text-[11px] font-bold border border-[#D4AF37]/80 transition cursor-pointer active:scale-95"
+                        title="Random sang 1 hào động khác (1–6) cho lá Quẻ Chính thứ 3"
+                      >
+                        <span>🎲</span>
+                        <span>Random Hào Động</span>
+                      </button>
+                    )}
                   </div>
                 )}
 
@@ -10139,13 +10469,24 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 <span
                   className={`inline-block px-3.5 py-1 rounded-full text-xs font-bold font-serif tracking-wider ${
                     (mode === "thap_nhi" && selectedCard.isMenhCung) ||
-                    (mode === "cuu_cung" && selectedCard.id === cards[0]?.id)
+                    (mode === "cuu_cung" && selectedCard.id === cards[0]?.id) ||
+                    (mode === "khong_minh" && selectedCard.slotIndex === 2)
                       ? "bg-amber-950 text-[#FEF08A] border-2 border-[#F59E0B] shadow-[0_0_16px_rgba(245,158,11,0.45)]"
                       : "bg-[#C4963E]/20 text-[#F3E5AB] border border-[#C4963E]/55"
                   }`}
                 >
                   Vị trí: {selectedCard.positionLabel}
                 </span>
+                {mode === "khong_minh" && selectedCard.slotIndex === 2 && selectedCard.khongMinhFromMain64 && (
+                  <button
+                    type="button"
+                    onClick={handleRerollKhongMinhLine}
+                    className="px-3 py-1 rounded-full text-xs font-bold bg-[#1C1610] hover:bg-[#2A2118] text-[#F3E5AB] border border-[#D4AF37]/80 transition cursor-pointer flex items-center gap-1 shadow-md"
+                    title="Gieo ngẫu nhiên lại hào động (1–6) cho lá Quẻ Chính thứ 3"
+                  >
+                    <span>🎲 Đổi Hào Động (Hào {selectedCard.khongMinhLine || 1})</span>
+                  </button>
+                )}
                 {mode === "thap_tinh" && selectedCard.id === cards[1]?.id && (
                   <button
                     type="button"
@@ -10244,7 +10585,10 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               <button
                 type="button"
                 onClick={() => {
-                  const targetUrl = getHexDetailUrl(selectedCard.hexNumber, selectedCard.yaoNumber);
+                  const targetUrl = getHexDetailUrl(
+                    selectedCard.hexNumber,
+                    selectedCard.yaoNumber || selectedCard.khongMinhLine
+                  );
                   window.open(targetUrl, "_blank", "noopener,noreferrer");
                 }}
                 className="flex-1 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-[#E5C158] via-[#D4AF37] to-[#B8862D] text-stone-950 font-serif font-bold text-xs hover:brightness-110 transition shadow-lg cursor-pointer flex items-center justify-center gap-2"
@@ -10254,6 +10598,8 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 <span>
                   {selectedCard.type === "yao" && selectedCard.yaoNumber
                     ? `Luận Giải Hào ${selectedCard.yaoNumber} Quẻ ${selectedCard.name} ↗`
+                    : selectedCard.khongMinhLine
+                    ? `Luận Giải Quẻ Khổng Minh #${selectedCard.khongMinhOracleNum || ""} (Hào ${selectedCard.khongMinhLine} ${selectedCard.name}) ↗`
                     : `Luận Giải Toàn Quẻ ${selectedCard.name} ↗`}
                 </span>
               </button>

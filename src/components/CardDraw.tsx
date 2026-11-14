@@ -35,7 +35,7 @@ import {
 import { captureElementToPng } from "../utils/captureHelper";
 import { Hexagram, DoubleCardMode, ThreeCardMode, SpreadType, CustomCardPosition } from "../types";
 import { AppUser } from "../services/authService";
-import { HEXAGRAMS } from "../data/hexagrams";
+import { HEXAGRAMS, getTransformedHexagram } from "../data/hexagrams";
 import {
   SEVEN_STARS_POSITIONS,
   NINE_PALACES_POSITIONS,
@@ -1169,11 +1169,12 @@ export const CardDraw: React.FC<CardDrawProps> = ({
             }
           );
         } else if (isKhongMinhMethod || threeSpreadMode === "tam_tai") {
+          const randomMovingLine = Math.floor(Math.random() * 6) + 1;
           onComplete(
-            cardA,
-            [],
-            cardC,
-            `Thỉnh Xăm Khổng Minh (Gia Cát Thần Toán): Thiên Đạo (${cardA.name}) • Địa Đạo (${cardB.name}) • Nhân Đạo (${cardC.name})`,
+            cardC, // Lấy lá cuối cùng (lá thứ 3 - Nhân Đạo) làm Quẻ Khổng Minh, random động 1 hào bất kỳ (không dùng Quẻ Biến, không lấy thông tin lá 1 & 2)
+            [randomMovingLine],
+            undefined,
+            `Thỉnh Xăm Khổng Minh (Gia Cát Thần Toán): ★ Lá 3 — Quẻ Khổng Minh (${cardC.name} · Random Động Hào ${randomMovingLine})`,
             cards,
             {
               threeCards: true,
@@ -4098,12 +4099,10 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                         : i === 1
                         ? `LÁ 2: [LỰA CHỌN B] ${choiceBLabel.trim() || "Phương án B"}`
                         : `LÁ 3: [LỰA CHỌN C] ${choiceCLabel.trim() || "Phương án C"}`
-                      : drawMode === "three" && threeSpreadMode === "tam_tai"
-                      ? i === 0
-                        ? "LÁ 1: THIÊN ĐẠO (THIÊN THỜI & HOÀN CẢNH KHÁCH QUAN)"
-                        : i === 1
-                        ? "LÁ 2: ĐỊA ĐẠO (ĐỊA LỢI & NỀN TẢNG MÔI TRƯỜNG)"
-                        : "LÁ 3: NHÂN ĐẠO (NHÂN HÒA & CON NGƯỜI HÀNH ĐỘNG)"
+                      : drawMode === "three" && (isKhongMinhMethod || threeSpreadMode === "tam_tai")
+                      ? i < 2
+                        ? ""
+                        : "★ LÁ 3 (LÁ CUỐI): QUẺ KHỔNG MINH THẦN TOÁN"
                       : drawMode === "three" && threeSpreadMode === "ngu_che"
                       ? i === 0
                         ? "LÁ 1: THIÊN ĐẠO (THIÊN THỜI & KHỞI CƠ)"
@@ -4131,12 +4130,14 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                         </div>
                       )}
 
-                      {/* Role Title — Nhãn Vị Trí Sơn Mài Nổi */}
-                      <div className="mb-2 mt-0.5 px-3 py-1 rounded-full bg-[#16120D] border border-[#C4963E]/70 shadow-sm pointer-events-none">
-                        <span className="font-serif font-bold text-[#F3E5AB] uppercase tracking-wider text-[9px] sm:text-[11px]">
-                          {roleLabel}
-                        </span>
-                      </div>
+                      {/* Role Title — Nhãn Vị Trí Sơn Mài Nổi (ẩn ở lá 1 & 2 của Quẻ Khổng Minh) */}
+                      {roleLabel && (
+                        <div className="mb-2 mt-0.5 px-3 py-1 rounded-full bg-[#16120D] border border-[#C4963E]/70 shadow-sm pointer-events-none">
+                          <span className="font-serif font-bold text-[#F3E5AB] uppercase tracking-wider text-[9px] sm:text-[11px]">
+                            {roleLabel}
+                          </span>
+                        </div>
+                      )}
 
                       {/* PROMINENT CARD IMAGE DISPLAY WITH 3D SPIRITUAL FLIP */}
                       <div className="my-1 sm:my-2 relative z-10 hover:z-50">
@@ -4163,30 +4164,35 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                         />
                       </div>
 
-                      {/* Nút Soi 2 Mặt (Quẻ Tượng & Thoán Từ) */}
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setInspectingTwoSidedCard({
-                            card,
-                            positionTitle: roleLabel,
-                            isReversed: isCardRotated(i),
-                          })
-                        }
-                        className="no-capture mt-1 mb-1 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#9A1F1A] hover:bg-[#7A1C18] text-[#FFFDF8] border border-[#C4963E] text-[10px] sm:text-xs font-serif font-bold shadow-sm transition-all cursor-pointer"
-                      >
-                        <ZoomIn className="w-3 h-3 text-[#E2C275]" />
-                        <span>Soi 2 Mặt (Quẻ Tượng & Thoán Từ)</span>
-                      </button>
+                      {/* Chỉ hiện thông tin chi tiết cho Lá 3 khi là Quẻ Khổng Minh (ẩn thông tin lá 1 & 2) */}
+                      {!(drawMode === "three" && (isKhongMinhMethod || threeSpreadMode === "tam_tai") && i < 2) && (
+                        <>
+                          {/* Nút Soi 2 Mặt (Quẻ Tượng & Thoán Từ) */}
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setInspectingTwoSidedCard({
+                                card,
+                                positionTitle: roleLabel,
+                                isReversed: isCardRotated(i),
+                              })
+                            }
+                            className="no-capture mt-1 mb-1 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#9A1F1A] hover:bg-[#7A1C18] text-[#FFFDF8] border border-[#C4963E] text-[10px] sm:text-xs font-serif font-bold shadow-sm transition-all cursor-pointer"
+                          >
+                            <ZoomIn className="w-3 h-3 text-[#E2C275]" />
+                            <span>Soi 2 Mặt (Quẻ Tượng & Thoán Từ)</span>
+                          </button>
 
-                      {/* Thông tin chi tiết trọn vẹn của lá bài */}
-                      <CardInfoSummary
-                        card={card}
-                        isReversed={isCardRotated(i)}
-                        deckNumber={card.deckNumber}
-                        showJudgment={true}
-                        showAdvice={revealedCards.length <= 2}
-                      />
+                          {/* Thông tin chi tiết trọn vẹn của lá bài */}
+                          <CardInfoSummary
+                            card={card}
+                            isReversed={isCardRotated(i)}
+                            deckNumber={card.deckNumber}
+                            showJudgment={true}
+                            showAdvice={revealedCards.length <= 2}
+                          />
+                        </>
+                      )}
                     </motion.div>
                   );
                 })}

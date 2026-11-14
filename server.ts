@@ -1494,57 +1494,61 @@ app.post("/api/iching/ai-interpret", async (req: Request, res: Response) => {
     // Build cards detail strictly from Sách Thuyết Minh
     cardsDetailFromBook = "";
     if (drawnCards && Array.isArray(drawnCards) && drawnCards.length > 0) {
-      cardsDetailFromBook = drawnCards
-        .map((c: any, i: number) => {
-          let posLabel = `Lá số ${i + 1}`;
-          if (spreadType === "custom" || customPositions) {
-            const pos = customPositions?.[i];
-            posLabel = pos?.purpose || pos?.name || `Lá ${i + 1}`;
-          } else if (drawnCards.length === 7) {
-            const labels = [
-              "Lá 1: Quá Khứ (Cội nguồn)",
-              "Lá 2: Bản Thân Hiện Tại (Tâm thế)",
-              "Lá 3: Diễn Biến Tiếp Theo (Bước ngoặt)",
-              "Lá 4: Minh Triết Gợi Ý (Sách lược)",
-              "Lá 5: Kết Quả (Triển vọng)",
-              "Lá 6: Môi Trường Ngoại Tại (Bối cảnh)",
-              "Lá 7: Thiếu Sót Nội Tại (Điểm mù)",
-            ];
-            posLabel = labels[i] || `Lá ${i + 1}`;
-          } else if (drawnCards.length === 10) {
-            const labels = [
-              "Lá 1: Tình Huống Hiện Tại",
-              `Lá 2: Trọng Tâm (${isCard2Reversed ? "NGƯỢC - Trở ngại / Lực cản cần tháo gỡ" : "XUÔI - Trợ lực / Thuận duyên thúc đẩy"})`,
-              "Lá 3: Yếu Tố Bên Ngoài",
-              "Lá 4: Điều Bạn Không Biết",
-              "Lá 5: Tình Huống Trước Đây",
-              "Lá 6: Tương Lai Tiếp Theo",
-              "Lá 7: Vận Hạn Năm Nay",
-              "Lá 8: Cách Nhìn Của Người Ngoài",
-              "Lá 9: Kết Quả Cuối Cùng",
-              "Lá 10: Lá Bài Khuyên Bảo",
-            ];
-            posLabel = labels[i] || `Lá ${i + 1}`;
-          } else if (drawnCards.length === 3) {
-            if (threeMode === "choice_abc") {
+      if (drawnCards.length === 3 && (spreadType === "khongminh" || threeMode === "tam_tai") && drawnCards[2]) {
+        cardsDetailFromBook = getCardManualText(drawnCards[2], "★ Lá 3 (Lá Cuối Cùng) — Quẻ Khổng Minh Thần Toán");
+      } else {
+        cardsDetailFromBook = drawnCards
+          .map((c: any, i: number) => {
+            let posLabel = `Lá số ${i + 1}`;
+            if (spreadType === "custom" || customPositions) {
+              const pos = customPositions?.[i];
+              posLabel = pos?.purpose || pos?.name || `Lá ${i + 1}`;
+            } else if (drawnCards.length === 7) {
               const labels = [
-                `Lá 1: Lựa chọn A [${choiceALabel || "Phương án A"}]`,
-                `Lá 2: Lựa chọn B [${choiceBLabel || "Phương án B"}]`,
-                `Lá 3: Lựa chọn C [${choiceCLabel || "Phương án C"}]`,
+                "Lá 1: Quá Khứ (Cội nguồn)",
+                "Lá 2: Bản Thân Hiện Tại (Tâm thế)",
+                "Lá 3: Diễn Biến Tiếp Theo (Bước ngoặt)",
+                "Lá 4: Minh Triết Gợi Ý (Sách lược)",
+                "Lá 5: Kết Quả (Triển vọng)",
+                "Lá 6: Môi Trường Ngoại Tại (Bối cảnh)",
+                "Lá 7: Thiếu Sót Nội Tại (Điểm mù)",
               ];
               posLabel = labels[i] || `Lá ${i + 1}`;
-            } else {
-              const labels = ["Lá 1: Quá Khứ", "Lá 2: Hiện Tại", "Lá 3: Tương Lai"];
+            } else if (drawnCards.length === 10) {
+              const labels = [
+                "Lá 1: Tình Huống Hiện Tại",
+                `Lá 2: Trọng Tâm (${isCard2Reversed ? "NGƯỢC - Trở ngại / Lực cản cần tháo gỡ" : "XUÔI - Trợ lực / Thuận duyên thúc đẩy"})`,
+                "Lá 3: Yếu Tố Bên Ngoài",
+                "Lá 4: Điều Bạn Không Biết",
+                "Lá 5: Tình Huống Trước Đây",
+                "Lá 6: Tương Lai Tiếp Theo",
+                "Lá 7: Vận Hạn Năm Nay",
+                "Lá 8: Cách Nhìn Của Người Ngoài",
+                "Lá 9: Kết Quả Cuối Cùng",
+                "Lá 10: Lá Bài Khuyên Bảo",
+              ];
               posLabel = labels[i] || `Lá ${i + 1}`;
+            } else if (drawnCards.length === 3) {
+              if (threeMode === "choice_abc") {
+                const labels = [
+                  `Lá 1: Lựa chọn A [${choiceALabel || "Phương án A"}]`,
+                  `Lá 2: Lựa chọn B [${choiceBLabel || "Phương án B"}]`,
+                  `Lá 3: Lựa chọn C [${choiceCLabel || "Phương án C"}]`,
+                ];
+                posLabel = labels[i] || `Lá ${i + 1}`;
+              } else {
+                const labels = ["Lá 1: Quá Khứ", "Lá 2: Hiện Tại", "Lá 3: Tương Lai"];
+                posLabel = labels[i] || `Lá ${i + 1}`;
+              }
+            } else if (doubleMode === "choice_ab" && i <= 1) {
+              posLabel = i === 0 ? `Lựa chọn A (${choiceALabel || "Phương án A"})` : `Lựa chọn B (${choiceBLabel || "Phương án B"})`;
+            } else if (doubleMode === "present_future" && i <= 1) {
+              posLabel = i === 0 ? "Lá 1: Hiện Tại" : "Lá 2: Tương Lai";
             }
-          } else if (doubleMode === "choice_ab" && i <= 1) {
-            posLabel = i === 0 ? `Lựa chọn A (${choiceALabel || "Phương án A"})` : `Lựa chọn B (${choiceBLabel || "Phương án B"})`;
-          } else if (doubleMode === "present_future" && i <= 1) {
-            posLabel = i === 0 ? "Lá 1: Hiện Tại" : "Lá 2: Tương Lai";
-          }
-          return getCardManualText(c, posLabel);
-        })
-        .join("\n\n");
+            return getCardManualText(c, posLabel);
+          })
+          .join("\n\n");
+      }
     } else {
       cardsDetailFromBook = getCardManualText(hexagram, "Quẻ Chủ");
       if (transformedHexagram) {
@@ -1800,57 +1804,61 @@ app.post("/api/iching/chat", async (req: Request, res: Response) => {
 
       let cardsDetail = "";
       if (Array.isArray(drawnCards) && drawnCards.length > 0) {
-        cardsDetail = drawnCards
-          .map((c: any, i: number) => {
-            let posLabel = `Lá số ${i + 1}`;
-            if (spreadType === "custom" || customPositions) {
-              const pos = customPositions?.[i];
-              posLabel = pos?.purpose || pos?.name || `Lá ${i + 1}`;
-            } else if (drawnCards.length === 7) {
-              const labels = [
-                "Lá 1: Quá Khứ (Cội nguồn)",
-                "Lá 2: Bản Thân Hiện Tại (Tâm thế)",
-                "Lá 3: Diễn Biến Tiếp Theo (Bước ngoặt)",
-                "Lá 4: Minh Triết Gợi Ý (Sách lược)",
-                "Lá 5: Kết Quả (Triển vọng)",
-                "Lá 6: Môi Trường Ngoại Tại (Bối cảnh)",
-                "Lá 7: Thiếu Sót Nội Tại (Điểm mù)",
-              ];
-              posLabel = labels[i] || `Lá ${i + 1}`;
-            } else if (drawnCards.length === 10) {
-              const labels = [
-                "Lá 1: Tình Huống Hiện Tại",
-                `Lá 2: Trọng Tâm (${isCard2Reversed ? "NGƯỢC - Trở ngại / Lực cản cần tháo gỡ" : "XUÔI - Trợ lực / Thuận duyên thúc đẩy"})`,
-                "Lá 3: Yếu Tố Bên Ngoài",
-                "Lá 4: Điều Bạn Không Biết",
-                "Lá 5: Tình Huống Trước Đây",
-                "Lá 6: Tương Lai Tiếp Theo",
-                "Lá 7: Vận Hạn Năm Nay",
-                "Lá 8: Cách Nhìn Của Người Ngoài",
-                "Lá 9: Kết Quả Cuối Cùng",
-                "Lá 10: Lá Bài Khuyên Bảo",
-              ];
-              posLabel = labels[i] || `Lá ${i + 1}`;
-            } else if (drawnCards.length === 3) {
-              if (threeMode === "choice_abc") {
+        if (drawnCards.length === 3 && (spreadType === "khongminh" || threeMode === "tam_tai") && drawnCards[2]) {
+          cardsDetail = getCardManualText(drawnCards[2], "★ Lá 3 (Lá Cuối Cùng) — Quẻ Khổng Minh Thần Toán");
+        } else {
+          cardsDetail = drawnCards
+            .map((c: any, i: number) => {
+              let posLabel = `Lá số ${i + 1}`;
+              if (spreadType === "custom" || customPositions) {
+                const pos = customPositions?.[i];
+                posLabel = pos?.purpose || pos?.name || `Lá ${i + 1}`;
+              } else if (drawnCards.length === 7) {
                 const labels = [
-                  `Lá 1: Lựa chọn A [${choiceALabel || "Phương án A"}]`,
-                  `Lá 2: Lựa chọn B [${choiceBLabel || "Phương án B"}]`,
-                  `Lá 3: Lựa chọn C [${choiceCLabel || "Phương án C"}]`,
+                  "Lá 1: Quá Khứ (Cội nguồn)",
+                  "Lá 2: Bản Thân Hiện Tại (Tâm thế)",
+                  "Lá 3: Diễn Biến Tiếp Theo (Bước ngoặt)",
+                  "Lá 4: Minh Triết Gợi Ý (Sách lược)",
+                  "Lá 5: Kết Quả (Triển vọng)",
+                  "Lá 6: Môi Trường Ngoại Tại (Bối cảnh)",
+                  "Lá 7: Thiếu Sót Nội Tại (Điểm mù)",
                 ];
                 posLabel = labels[i] || `Lá ${i + 1}`;
-              } else {
-                const labels = ["Lá 1: Quá Khứ", "Lá 2: Hiện Tại", "Lá 3: Tương Lai"];
+              } else if (drawnCards.length === 10) {
+                const labels = [
+                  "Lá 1: Tình Huống Hiện Tại",
+                  `Lá 2: Trọng Tâm (${isCard2Reversed ? "NGƯỢC - Trở ngại / Lực cản cần tháo gỡ" : "XUÔI - Trợ lực / Thuận duyên thúc đẩy"})`,
+                  "Lá 3: Yếu Tố Bên Ngoài",
+                  "Lá 4: Điều Bạn Không Biết",
+                  "Lá 5: Tình Huống Trước Đây",
+                  "Lá 6: Tương Lai Tiếp Theo",
+                  "Lá 7: Vận Hạn Năm Nay",
+                  "Lá 8: Cách Nhìn Của Người Ngoài",
+                  "Lá 9: Kết Quả Cuối Cùng",
+                  "Lá 10: Lá Bài Khuyên Bảo",
+                ];
                 posLabel = labels[i] || `Lá ${i + 1}`;
+              } else if (drawnCards.length === 3) {
+                if (threeMode === "choice_abc") {
+                  const labels = [
+                    `Lá 1: Lựa chọn A [${choiceALabel || "Phương án A"}]`,
+                    `Lá 2: Lựa chọn B [${choiceBLabel || "Phương án B"}]`,
+                    `Lá 3: Lựa chọn C [${choiceCLabel || "Phương án C"}]`,
+                  ];
+                  posLabel = labels[i] || `Lá ${i + 1}`;
+                } else {
+                  const labels = ["Lá 1: Quá Khứ", "Lá 2: Hiện Tại", "Lá 3: Tương Lai"];
+                  posLabel = labels[i] || `Lá ${i + 1}`;
+                }
+              } else if (doubleMode === "choice_ab" && i <= 1) {
+                posLabel = i === 0 ? `Lựa chọn A (${choiceALabel || "Phương án A"})` : `Lựa chọn B (${choiceBLabel || "Phương án B"})`;
+              } else if (doubleMode === "present_future" && i <= 1) {
+                posLabel = i === 0 ? "Lá 1: Hiện Tại" : "Lá 2: Tương Lai";
               }
-            } else if (doubleMode === "choice_ab" && i <= 1) {
-              posLabel = i === 0 ? `Lựa chọn A (${choiceALabel || "Phương án A"})` : `Lựa chọn B (${choiceBLabel || "Phương án B"})`;
-            } else if (doubleMode === "present_future" && i <= 1) {
-              posLabel = i === 0 ? "Lá 1: Hiện Tại" : "Lá 2: Tương Lai";
-            }
-            return getCardManualText(c, posLabel);
-          })
-          .join("\n\n");
+              return getCardManualText(c, posLabel);
+            })
+            .join("\n\n");
+        }
       } else if (mainHex) {
         cardsDetail = getCardManualText(mainHex, "Quẻ Chủ");
         if (transformedHexagram) {
@@ -1859,7 +1867,10 @@ app.post("/api/iching/chat", async (req: Request, res: Response) => {
       }
 
       const drawnNums: number[] = Array.isArray(drawnCards)
-        ? drawnCards
+        ? (drawnCards.length === 3 && (spreadType === "khongminh" || threeMode === "tam_tai") && drawnCards[2]
+            ? [drawnCards[2]]
+            : drawnCards
+          )
             .map((c: any) =>
               typeof c?.number === "number"
                 ? c.number

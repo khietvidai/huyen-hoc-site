@@ -70,7 +70,7 @@ export const KhongMinhKinhDichView: React.FC<KhongMinhKinhDichViewProps> = ({
             </h3>
           </div>
           <p className="text-xs text-[#A89882] pl-10">
-            Hệ Thống Luận Đoán Chiêm Bái Khổng Minh & Chu Dịch (Chính — Tông — Hỗ — Thác — Biến)
+            Hệ Thống Luận Đoán Chiêm Bái Khổng Minh & Chu Dịch (Chính — Tông — Hỗ — Thác)
           </p>
         </div>
 
@@ -197,14 +197,28 @@ export const KhongMinhKinhDichView: React.FC<KhongMinhKinhDichViewProps> = ({
               </div>
             </div>
 
-            {/* Quẻ Biến & Lệnh Hành Động Banner */}
-            <div className="bg-gradient-to-r from-[#29170A] via-[#1F1106] to-[#160B04] border border-[#603D1A] p-3.5 sm:p-4 rounded-xl space-y-1.5 shadow-md">
-              <div className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span>QUẺ BIẾN & LỆNH HÀNH ĐỘNG CỐT TỦY</span>
+            {/* Quy Tắc Hành Động Khổng Minh — Kinh Dịch Banner */}
+            <div
+              className={`p-3.5 sm:p-4 rounded-xl space-y-1.5 shadow-md border ${
+                result.oracleBlock.isHung
+                  ? "bg-gradient-to-r from-[#2B1215] via-[#210D10] to-[#17090B] border-rose-500/70"
+                  : "bg-gradient-to-r from-[#13261A] via-[#0F1E14] to-[#0A150E] border-emerald-500/70"
+              }`}
+            >
+              <div
+                className={`text-[11px] font-mono font-bold uppercase tracking-wider flex items-center gap-1.5 ${
+                  result.oracleBlock.isHung ? "text-rose-300" : "text-emerald-300"
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>
+                  {result.oracleBlock.isHung
+                    ? "🔄 QUẺ KHỔNG MINH LÀ HUNG ➔ HÀNH ĐỘNG NGƯỢC LẠI VỚI LỜI KHUYÊN CỦA KINH DỊCH"
+                    : "✅ QUẺ KHỔNG MINH LÀ CÁT ➔ LÀM THEO LỜI KHUYÊN HÀNH ĐỘNG CỦA KINH DỊCH"}
+                </span>
               </div>
-              <p className="text-xs sm:text-sm text-[#FFE8B8] leading-relaxed">
-                {result.transformedCommandText}
+              <p className="text-xs sm:text-sm text-[#FFF2D4] leading-relaxed">
+                {result.actionPrincipleBannerText}
               </p>
             </div>
           </div>
@@ -281,15 +295,39 @@ export const KhongMinhKinhDichView: React.FC<KhongMinhKinhDichViewProps> = ({
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 pt-2">
-                  <div className="bg-[#142318] border border-[#274E31] p-3 rounded-lg text-emerald-100">
-                    <strong className="text-emerald-400 font-mono text-xs uppercase tracking-wide block mb-1">
-                      - ✅ Hành động thuận:
+                  <div
+                    className={`p-3 rounded-lg border ${
+                      !result.oracleBlock.isHung
+                        ? "bg-[#142619] border-2 border-emerald-500 text-emerald-100 shadow-[0_0_16px_rgba(16,185,129,0.2)]"
+                        : "bg-[#1C1410] border-[#3E2A1E] text-[#B8A896] opacity-85"
+                    }`}
+                  >
+                    <strong
+                      className={`font-mono text-xs uppercase tracking-wide block mb-1 ${
+                        !result.oracleBlock.isHung ? "text-emerald-300" : "text-rose-300"
+                      }`}
+                    >
+                      {!result.oracleBlock.isHung
+                        ? "- ✅ Lời khuyên hành động của Kinh Dịch [ÁP DỤNG VÌ QUẺ KHỔNG MINH LÀ CÁT]:"
+                        : "- 🛑 Lời khuyên thuận của Kinh Dịch [KHÔNG LÀM THEO VÌ QUẺ KHỔNG MINH LÀ HUNG]:"}
                     </strong>
                     {result.primaryBlock.activeLineBlock.hanhDongThuan}
                   </div>
-                  <div className="bg-[#261314] border border-[#532628] p-3 rounded-lg text-rose-100">
-                    <strong className="text-rose-400 font-mono text-xs uppercase tracking-wide block mb-1">
-                      - 🛑 Hành động ngược:
+                  <div
+                    className={`p-3 rounded-lg border ${
+                      result.oracleBlock.isHung
+                        ? "bg-[#2B1418] border-2 border-amber-500 text-amber-100 shadow-[0_0_16px_rgba(245,158,11,0.25)]"
+                        : "bg-[#261314] border-[#532628] text-rose-100"
+                    }`}
+                  >
+                    <strong
+                      className={`font-mono text-xs uppercase tracking-wide block mb-1 ${
+                        result.oracleBlock.isHung ? "text-amber-300" : "text-rose-400"
+                      }`}
+                    >
+                      {result.oracleBlock.isHung
+                        ? "- 🔄 Hành động ngược lại lời khuyên Kinh Dịch [ÁP DỤNG VÌ QUẺ KHỔNG MINH LÀ HUNG]:"
+                        : "- 🛑 Hành động ngược lại lời khuyên Kinh Dịch [CẦN TRÁNH]:"}
                     </strong>
                     {result.primaryBlock.activeLineBlock.hanhDongNguoc}
                   </div>
@@ -307,11 +345,11 @@ export const KhongMinhKinhDichView: React.FC<KhongMinhKinhDichViewProps> = ({
             </div>
           </div>
 
-          {/* 3. KHU VỰC 4 QUẺ PHỤ (TÔNG, HỖ, THÁC, BIẾN) */}
+          {/* 3. KHU VỰC 3 QUẺ PHỤ (TÔNG, HỖ, THÁC) */}
           <div className="bg-[#120B06] border border-[#3A2614] p-4 sm:p-6 rounded-xl space-y-5">
             <div className="border-b border-[#2B1B0F] pb-2 flex items-center justify-between flex-wrap gap-2">
               <h4 className="font-serif font-black text-sm sm:text-base text-amber-400 uppercase tracking-wide flex items-center gap-2">
-                <span>--- 4 QUẺ PHỤ (TÔNG, HỖ, THÁC, BIẾN) ---</span>
+                <span>--- 3 QUẺ PHỤ (TÔNG, HỖ, THÁC) ---</span>
               </h4>
               <span className="text-[11px] font-mono text-[#C9A55A] bg-[#221509] px-2.5 py-0.5 rounded border border-[#3E2713]">
                 Tứ Quái Đồng Quan
@@ -389,39 +427,6 @@ export const KhongMinhKinhDichView: React.FC<KhongMinhKinhDichViewProps> = ({
                 </div>
               </div>
             </div>
-
-            {/* 4. Quẻ Biến */}
-            <div className="bg-gradient-to-br from-[#241308] to-[#170F08] p-4 rounded-xl border border-amber-600/50 space-y-2 text-xs sm:text-sm shadow-md">
-              <div className="font-bold text-amber-300 text-sm border-b border-[#3E2310] pb-1.5 flex items-center justify-between flex-wrap gap-2">
-                <span>4. Quẻ Biến (變卦 - Quẻ Kết Quả) [Kết cục tối hậu &amp; Mệnh lệnh hành động]:</span>
-                <span className="text-xs font-mono text-emerald-300 font-bold bg-[#142318] px-2.5 py-0.5 rounded border border-[#274E31]">
-                  {result.auxiliaryBlocks.queBien.chuyenBienViThe}
-                </span>
-              </div>
-              <div className="space-y-1 text-[#D8C9B0] pl-2">
-                <div>• Tên quẻ: <strong className="text-[#F5EAD4]">{result.auxiliaryBlocks.queBien.name}</strong></div>
-                <div>• Tượng &amp; Ý: {result.auxiliaryBlocks.queBien.tuongYMeaning}</div>
-                <div>• Tượng &amp; Ý (Hán Việt): {result.auxiliaryBlocks.queBien.tuongYHanViet}</div>
-                <div>• {result.auxiliaryBlocks.queBien.chuyenBienViThe}</div>
-                <div className="pt-1">
-                  <strong className="text-amber-400">
-                    Lời Hào Biến (Hào {result.auxiliaryBlocks.queBien.respondingLineNum} ({result.auxiliaryBlocks.queBien.respondingLineName}) Quẻ Biến - MỆNH LỆNH HÀNH ĐỘNG):
-                  </strong>
-                  <div className="pl-3 border-l border-amber-500/50 mt-1 space-y-1">
-                    <div>* Hán Việt: {result.auxiliaryBlocks.queBien.hanViet}</div>
-                    <div>* Lời dịch: {result.auxiliaryBlocks.queBien.loiDich}</div>
-                    <div className="p-2 rounded bg-[#1A1006] border border-[#482F16] my-1 font-medium text-amber-200">
-                      * Lời hào cốt lõi / Mệnh lệnh: {result.auxiliaryBlocks.queBien.loiHaoCotLoi}
-                    </div>
-                    <div>* Tiểu Tượng Truyện: {result.auxiliaryBlocks.queBien.tieuTuong}</div>
-                    <div className="pl-3 text-xs italic text-[#C4B39B]">-&gt; Nghĩa là: {result.auxiliaryBlocks.queBien.tieuTuongNghia}</div>
-                    <div>* Áp dụng: {result.auxiliaryBlocks.queBien.apDung}</div>
-                    <div>* Nghĩa lý: {result.auxiliaryBlocks.queBien.nghiaLy}</div>
-                    <div>* Tượng số: {result.auxiliaryBlocks.queBien.tuongSo}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* 4. KHU VỰC TRÍCH QUẺ KHỔNG MINH THẦN TOÁN (QUẺ CHÍNH) */}
@@ -439,7 +444,23 @@ export const KhongMinhKinhDichView: React.FC<KhongMinhKinhDichViewProps> = ({
               <div>
                 Hào {result.activeLine} của quẻ <strong>{result.primaryBlock.hexNameWithHanzi.split(" (")[0]}</strong> ứng với quẻ thứ <strong>{result.oracleBlock.oracleNum}</strong> trong hệ thống Khổng Minh Thần Số.
               </div>
-              <div>- Loại xăm: <strong className="text-amber-400">{result.oracleBlock.oracleType}</strong></div>
+              <div>
+                - Loại xăm:{" "}
+                <strong className={result.oracleBlock.isHung ? "text-rose-400" : "text-emerald-400"}>
+                  {result.oracleBlock.oracleType}
+                </strong>{" "}
+                <span
+                  className={`inline-block ml-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
+                    result.oracleBlock.isHung
+                      ? "bg-rose-950/80 text-rose-200 border-rose-500/70"
+                      : "bg-emerald-950/80 text-emerald-200 border-emerald-500/70"
+                  }`}
+                >
+                  {result.oracleBlock.isHung
+                    ? "🔄 Quẻ Khổng Minh là HUNG ➔ Hành động NGƯỢC LẠI với lời khuyên của Kinh Dịch"
+                    : "✅ Quẻ Khổng Minh là CÁT ➔ Làm THEO lời khuyên hành động của Kinh Dịch"}
+                </span>
+              </div>
 
               {/* Kinh văn chữ Hán & Âm Hán Việt */}
               <div className="bg-[#1A1108] p-4 rounded-xl border border-[#382514] space-y-2 text-center my-2">
@@ -456,43 +477,27 @@ export const KhongMinhKinhDichView: React.FC<KhongMinhKinhDichViewProps> = ({
               </div>
 
               <div className="pt-1">
-                - <strong>Luận giải chi tiết (Bản Thuận):</strong> {result.oracleBlock.detailedExplanation}
-                <div className="pl-3 mt-1.5 space-y-1">
-                  <div className="text-emerald-300">* Nên làm: {result.oracleBlock.doList}</div>
-                  <div className="text-rose-300">* Tránh làm: {result.oracleBlock.avoidList}</div>
-                  <div className="text-amber-300">* Thái độ cần có: {result.oracleBlock.attitude}</div>
+                - <strong>Luận giải chi tiết:</strong> {result.oracleBlock.detailedExplanation}
+                <div className="pl-3 mt-2 space-y-1.5 bg-[#191109] p-3.5 rounded-xl border border-[#3B2613]">
+                  <div className="text-amber-300 font-bold">
+                    ⚡ Quy tắc phối hợp Khổng Minh &amp; Kinh Dịch: {result.oracleBlock.actionPrincipleRule}
+                  </div>
+                  <div className="text-emerald-300">
+                    * <strong>Hành động phải làm ({result.oracleBlock.isHung ? "Ngược lại lời khuyên Kinh Dịch" : "Theo lời khuyên Kinh Dịch"}):</strong>{" "}
+                    {result.oracleBlock.doList}
+                  </div>
+                  <div className="text-rose-300">
+                    * <strong>Điều tuyệt đối tránh:</strong> {result.oracleBlock.avoidList}
+                  </div>
+                  <div className="text-amber-200">
+                    * <strong>Thái độ cần có:</strong> {result.oracleBlock.attitude}
+                  </div>
                 </div>
               </div>
 
               <div>
-                - <strong>Tượng số (Thuận):</strong> {result.oracleBlock.symbolicFigure}
+                - <strong>Tượng số:</strong> {result.oracleBlock.symbolicFigure}
               </div>
-
-              {/* Phiên bản đảo ngược 180 độ (Bản Nghịch) */}
-              {result.oracleBlock.invertedVersion?.poemHanzi && (
-                <div className="bg-gradient-to-b from-[#241012] to-[#14080A] border-2 border-rose-900/80 p-4 sm:p-5 rounded-xl space-y-2.5 mt-3 shadow-lg">
-                  <div className="font-bold text-rose-300 text-xs sm:text-sm uppercase tracking-wide border-b border-rose-950/80 pb-1.5 flex items-center gap-1.5">
-                    <span>🛑 Phiên bản đảo ngược 180 độ (Bản Nghịch):</span>
-                  </div>
-
-                  <div className="space-y-1.5 text-xs sm:text-sm text-rose-100/90 leading-relaxed pl-1">
-                    <div>
-                      * <strong>Thơ nghịch:</strong> {result.oracleBlock.invertedVersion.poemHanzi}{" "}
-                      <strong className="text-rose-300">Âm Hán Việt:</strong> {result.oracleBlock.invertedVersion.poemHaniViet}{" "}
-                      <span className="italic">(Dịch thơ/Diễn xuôi: {result.oracleBlock.invertedVersion.poemMeaning})</span>
-                    </div>
-                    <div>
-                      * <strong>Luận giải nghịch:</strong> {result.oracleBlock.invertedVersion.detailedExplanation}
-                    </div>
-                    <div>
-                      * <strong>Lời khuyên nghịch:</strong> {result.oracleBlock.invertedVersion.actionAdvice}
-                    </div>
-                    <div>
-                      * <strong>Tượng số nghịch:</strong> {result.oracleBlock.invertedVersion.symbolicFigure}
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
