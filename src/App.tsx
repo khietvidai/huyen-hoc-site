@@ -36,7 +36,7 @@ import { Header, NavTab } from "./components/Header";
 import { ImperialPageShell } from "./components/ImperialPageShell";
 import { BrandLockup } from "./components/BrandMark";
 import { zenAudio } from "./utils/zenAudio";
-import { LandingPage } from "./components/LandingPage";
+import { LandingPage, TEMPORARILY_HIDE_OTHER_SPREADS } from "./components/LandingPage";
 import type { WorkspaceTab, DivinationReadingData } from "./components/GoogleWorkspaceModal";
 import { AuthModal } from "./components/AuthModal";
 import { DonateModal } from "./components/DonateModal";
@@ -239,7 +239,12 @@ export default function App() {
     }
     return "home";
   });
-  const [divinationMethod, setDivinationMethod] = useState<DivinationMethodId | null>(null);
+  const [divinationMethod, setDivinationMethod] = useState<DivinationMethodId | null>(() =>
+    TEMPORARILY_HIDE_OTHER_SPREADS ? "khongminh" : null
+  );
+  const visibleDivinationMethods = TEMPORARILY_HIDE_OTHER_SPREADS
+    ? DIVINATION_METHODS.filter((m) => m.id === "khongminh")
+    : DIVINATION_METHODS;
   const [suggestedDrawMode, setSuggestedDrawMode] = useState<
     "single" | "double" | "three" | "seven" | "nine" | "ten" | "twelve" | "custom"
   >("single");
@@ -247,6 +252,17 @@ export default function App() {
   const handleSelectDrawModeFromHome = (
     mode: "single" | "double" | "three" | "seven" | "nine" | "ten" | "twelve" | "custom"
   ) => {
+    if (TEMPORARILY_HIDE_OTHER_SPREADS) {
+      setDivinationMethod("khongminh");
+      setCurrentTab("divination");
+      return;
+    }
+    if (!currentUser) {
+      showToast("🔒 Chỉ thành viên đăng ký / đăng nhập mới sử dụng được full quẻ trận. Vui lòng đăng nhập!");
+      setAuthModalMode("register");
+      setIsAuthModalOpen(true);
+      return;
+    }
     setSuggestedDrawMode(mode);
     setDivinationMethod("cards");
     setCurrentTab("divination");
@@ -519,23 +535,25 @@ export default function App() {
     }, 3000);
   };
 
-  // Mở khóa toàn bộ tính năng cho cả khách vãng lai và hội viên
-  const isVip = true;
+  // Chỉ thành viên đã đăng ký & đăng nhập mới sử dụng full quẻ trận; khách vãng lai chỉ mở Quẻ Khổng Minh
+  const isVip = Boolean(currentUser);
 
   const handleSelectDivinationMethod = (methodId: DivinationMethodId) => {
-    if (methodId !== "cards" && methodId !== "thapla" && methodId !== "nguche" && !isVip) {
-      if (!currentUser) {
-        showToast("Phương pháp này dành riêng cho tài khoản VIP. Vui lòng đăng nhập hoặc đăng ký!");
-        setAuthModalMode("login");
-        setIsAuthModalOpen(true);
-      } else {
-        showToast("Phương pháp này dành riêng cho Hội Viên VIP. Vui lòng nâng cấp gói VIP!");
-        setAuthModalMode("upgrade");
-        setIsAuthModalOpen(true);
-      }
+    if (TEMPORARILY_HIDE_OTHER_SPREADS && methodId !== "khongminh") {
+      setDivinationMethod("khongminh");
       return;
     }
-    const next = divinationMethod === methodId ? null : methodId;
+    if (methodId !== "khongminh" && !isVip) {
+      showToast("🔒 Chế độ này đã khóa! Chỉ thành viên đăng ký, đăng nhập mới sử dụng full quẻ trận.");
+      setAuthModalMode("register");
+      setIsAuthModalOpen(true);
+      return;
+    }
+    const next = TEMPORARILY_HIDE_OTHER_SPREADS
+      ? "khongminh"
+      : divinationMethod === methodId
+      ? null
+      : methodId;
     setDivinationMethod(next);
     if (next) {
       const target = DIVINATION_METHODS.find((m) => m.id === next);
@@ -543,10 +561,12 @@ export default function App() {
     }
   };
 
-  // Tự động chuyển về Bốc Bài Kinh Dịch nếu người dùng không phải VIP
+  // Tự động chuyển về Xăm Khổng Minh nếu tạm ẩn các trận pháp khác hoặc khách vãng lai chưa đăng nhập
   useEffect(() => {
-    if (divinationMethod && divinationMethod !== "cards" && divinationMethod !== "thapla" && divinationMethod !== "nguche" && !isVip) {
-      setDivinationMethod("cards");
+    if (TEMPORARILY_HIDE_OTHER_SPREADS && divinationMethod !== "khongminh") {
+      setDivinationMethod("khongminh");
+    } else if (divinationMethod && divinationMethod !== "khongminh" && !isVip) {
+      setDivinationMethod("khongminh");
     }
   }, [isVip, divinationMethod]);
 
@@ -1275,16 +1295,11 @@ export default function App() {
               const targetDeck = customDeck || DEFAULT_VIP_DECK_ID;
               loadCustomDeck(targetDeck);
             }
-            if (typeof window !== "undefined" && !window.location.pathname.toLowerCase().includes("/en/app")) {
-              window.history.pushState({}, "", "/en/app");
-            }
             showToast(
               user.isAdmin
                 ? `Chào mừng Quản Trị Viên Cửu Nhị (${user.name})!`
                 : `Đăng nhập Cửu Nhị thành công! Kính chào ${user.name}.`
             );
-            // Sau khi bấm đăng nhập thành công nhảy vào trang /en/app của Cửu Nhị
-            setCurrentTab("yilore");
           }}
           onShowToast={showToast}
         />
@@ -1346,7 +1361,7 @@ export default function App() {
         hasActiveReading={!!primaryHexagram}
         historyCount={history.length}
         divinationMethod={divinationMethod}
-        divinationMethods={DIVINATION_METHODS}
+        divinationMethods={visibleDivinationMethods}
         onSelectDivinationMethod={handleSelectDivinationMethod}
       >
         <main className={`relative z-10 flex-1 w-full mx-auto px-3 sm:px-4 py-4 sm:py-6 ${currentTab === "detail" ? "max-w-7xl" : "max-w-6xl"}`}>
@@ -1642,9 +1657,13 @@ export default function App() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5">
               <div className="text-center lg:text-left">
                 <div className="royal-eyebrow lg:before:hidden">Phương thức thỉnh quẻ</div>
-                <h2 className="royal-title mt-3 text-3xl sm:text-4xl">Mười đại pháp khởi quẻ</h2>
+                <h2 className="royal-title mt-3 text-3xl sm:text-4xl">
+                  {TEMPORARILY_HIDE_OTHER_SPREADS ? "Quẻ Khổng Minh Thần Toán" : "Mười đại pháp khởi quẻ"}
+                </h2>
                 <p className="mt-2 text-[13px] text-ivory-500 font-serif">
-                  Chọn một phương thức chiêm đoán để bắt đầu. Bấm lần nữa để bỏ chọn.
+                  {TEMPORARILY_HIDE_OTHER_SPREADS
+                    ? "Tĩnh tâm thỉnh quẻ Tam Tài 3 Lá theo tinh hoa Thần Cơ Diệu Toán."
+                    : "Chọn một phương thức chiêm đoán để bắt đầu. Bấm lần nữa để bỏ chọn."}
                 </p>
               </div>
 
@@ -1681,6 +1700,7 @@ export default function App() {
             </div>
 
             {/* Thanh Thông Báo Phân Quyền Chiêm Bái 3 Tầng */}
+            {!TEMPORARILY_HIDE_OTHER_SPREADS && (
             <div className="mb-4 p-3.5 rounded-xl border border-gold-800/60 bg-gradient-to-r from-obsidian-900/90 via-[#1E1710]/80 to-obsidian-900/90 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs font-serif">
               <div className="flex items-start sm:items-center gap-2.5">
                 <div className="w-7 h-7 rounded-lg bg-gold-500/15 border border-gold-500/40 flex items-center justify-center text-gold-400 shrink-0 mt-0.5 sm:mt-0">
@@ -1693,31 +1713,50 @@ export default function App() {
                     </span>
                     {currentUser?.isMember || currentUser?.isAdmin ? (
                       <span className="text-[10px] uppercase font-sans font-semibold tracking-wide text-amber-300 bg-amber-950/80 border border-amber-500/60 rounded px-1.5 py-0.2">
-                        👑 Tài Khoản VIP
+                        👑 Thành Viên VIP (Full Quẻ Trận)
                       </span>
                     ) : currentUser ? (
-                      <span className="text-[10px] uppercase font-sans font-semibold tracking-wide text-gold-400 bg-gold-950/60 border border-gold-600/50 rounded px-1.5 py-0.2">
-                        ⭐ Tài Khoản Đã Đăng Ký
+                      <span className="text-[10px] uppercase font-sans font-semibold tracking-wide text-emerald-300 bg-emerald-950/80 border border-emerald-600/50 rounded px-1.5 py-0.2">
+                        ⭐ Thành Viên Đã Đăng Nhập (Full Quẻ Trận)
                       </span>
                     ) : (
-                      <span className="text-[10px] uppercase font-sans font-semibold tracking-wide text-emerald-300 bg-emerald-950/80 border border-emerald-600/50 rounded px-1.5 py-0.2">
-                        ✓ Khách Vãng Lai (Đã Mở Khóa Toàn Bộ)
+                      <span className="text-[10px] uppercase font-sans font-semibold tracking-wide text-amber-300 bg-amber-950/80 border border-amber-600/50 rounded px-1.5 py-0.2">
+                        🔒 Khách Vãng Lai (Chỉ Mở Quẻ Khổng Minh)
                       </span>
                     )}
                   </div>
                   <p className="text-ivory-400 text-[11.5px] leading-relaxed">
-                    <span className="text-emerald-400 font-medium">
-                      Chúc mừng! Đã mở khóa toàn bộ 10 đại phương pháp huyền học và 12 trận pháp cho {currentUser ? `tài khoản ${currentUser.name}` : "khách vãng lai"}.
-                    </span>
+                    {currentUser ? (
+                      <span className="text-emerald-400 font-medium">
+                        Chào mừng thành viên {currentUser.name}! Đã mở khóa toàn bộ 10 đại phương pháp huyền học và 12 quẻ trận.
+                      </span>
+                    ) : (
+                      <span className="text-amber-300 font-medium">
+                        Khách vãng lai hiện mở chế độ Xăm Khổng Minh. Vui lòng đăng ký / đăng nhập thành viên để mở khóa sử dụng Full Quẻ Trận!
+                      </span>
+                    )}
                   </p>
                 </div>
               </div>
+              {!currentUser && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAuthModalMode("register");
+                    setIsAuthModalOpen(true);
+                  }}
+                  className="royal-btn-gold !px-4 !py-2 !text-xs font-bold shrink-0 cursor-pointer"
+                >
+                  Đăng Ký / Đăng Nhập Mở Full Trận
+                </button>
+              )}
             </div>
+            )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {DIVINATION_METHODS.map((method) => {
+            <div className={TEMPORARILY_HIDE_OTHER_SPREADS ? "grid grid-cols-1 max-w-2xl mx-auto gap-4" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"}>
+              {visibleDivinationMethods.map((method) => {
                 const isActive = divinationMethod === method.id;
-                const isLocked = method.id !== "cards" && method.id !== "thapla" && method.id !== "nguche" && !isVip;
+                const isLocked = method.id !== "khongminh" && !isVip;
                 return (
                   <button
                     key={method.id}
@@ -1752,8 +1791,12 @@ export default function App() {
                         <div className="flex items-center gap-1.5 bg-[#0D0B09]/80 backdrop-blur-xs rounded px-1.5 py-0.5 border border-gold-800/40">
                           {isLocked ? (
                             <span className="flex items-center gap-1 text-[10px] font-sans font-bold uppercase tracking-wider text-amber-300 bg-amber-950/80 border border-amber-500/50 rounded px-1.5 py-0.5 shadow-xs">
-                              <Lock className="w-2.5 h-2.5 text-amber-400" />
-                              VIP
+                              <Lock aria-hidden="true" className="w-2.5 h-2.5 text-amber-400" />
+                              Thành Viên
+                            </span>
+                          ) : method.id === "khongminh" && !currentUser && !TEMPORARILY_HIDE_OTHER_SPREADS ? (
+                            <span className="text-[10px] uppercase font-sans font-semibold tracking-wider text-emerald-300 border border-emerald-600/80 bg-emerald-950/60 rounded-sm px-1.5 py-0.5">
+                              Mở Tự Do
                             </span>
                           ) : method.id === "cards" ? (
                             <span className="text-[10px] uppercase font-sans font-semibold tracking-wider text-emerald-400 border border-emerald-800/80 bg-emerald-950/50 rounded-sm px-1.5 py-0.5">
@@ -1767,9 +1810,9 @@ export default function App() {
                             <span className="text-[10px] uppercase font-sans font-semibold tracking-wider text-amber-300 border border-amber-700/80 bg-amber-950/60 rounded-sm px-1.5 py-0.5">
                               3 Lá • 12 Mặt
                             </span>
-                          ) : isVip ? (
-                            <span className="flex items-center gap-0.5 text-[10px] uppercase font-sans font-bold tracking-wider text-amber-300 border border-amber-600/70 bg-amber-950/50 rounded-sm px-1.5 py-0.5">
-                              <Crown className="w-2.5 h-2.5 text-amber-400" /> VIP
+                          ) : isVip && !TEMPORARILY_HIDE_OTHER_SPREADS ? (
+                            <span className="flex items-center gap-0.5 text-[10px] uppercase font-sans font-bold tracking-wider text-emerald-300 border border-emerald-600/70 bg-emerald-950/50 rounded-sm px-1.5 py-0.5">
+                              ✓ Đã Mở
                             </span>
                           ) : null}
                           {isActive ? (
@@ -1791,8 +1834,8 @@ export default function App() {
                     <p className="mt-3 text-[12.5px] text-ivory-500 font-serif leading-relaxed">{method.desc}</p>
                     {isLocked && (
                       <div className="mt-auto pt-3 border-t border-amber-950/40 text-[11px] text-amber-400 font-sans font-medium flex items-center gap-1">
-                        <Crown className="w-3 h-3 text-amber-400" />
-                        <span>Dành riêng cho Hội Viên VIP</span>
+                        <Lock aria-hidden="true" className="w-3 h-3 text-amber-400" />
+                        <span>Đăng ký / Đăng nhập thành viên để mở khóa</span>
                       </div>
                     )}
                   </button>
@@ -1836,12 +1879,12 @@ export default function App() {
                       Tâm tĩnh khởi quẻ · Vạn sự tùy duyên
                     </h3>
                     <p className="mt-3 text-sm text-ivory-400 font-serif leading-relaxed max-w-xl mx-auto">
-                      Tâm thanh tịnh, ý thành kính! Bạn hãy bấm chọn một trong các hình thức chiêm đoán phía trên để bắt đầu gieo quẻ:
+                      Tâm thanh tịnh, ý thành kính! Bạn hãy bấm chọn phương thức chiêm đoán phía trên để bắt đầu gieo quẻ:
                     </p>
                     <div className="royal-rule mt-6 text-xs">◆</div>
                     <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
-                      {DIVINATION_METHODS.map((method) => {
-                        const isLocked = method.id !== "cards" && method.id !== "thapla" && method.id !== "nguche" && !isVip;
+                      {visibleDivinationMethods.map((method) => {
+                        const isLocked = method.id !== "khongminh" && !isVip;
                         return (
                           <button
                             key={method.id}
@@ -1860,48 +1903,42 @@ export default function App() {
                 </div>
               )}
 
-              {/* VIP Barrier Fallback if non-VIP opens a VIP method */}
-              {divinationMethod && divinationMethod !== "cards" && divinationMethod !== "thapla" && divinationMethod !== "nguche" && !isVip && (
+              {/* Member Barrier Fallback if guest opens a locked method */}
+              {divinationMethod && divinationMethod !== "khongminh" && !isVip && (
                 <div className="py-12 px-4 text-center max-w-lg mx-auto">
                   <div className="w-16 h-16 rounded-2xl bg-amber-950/60 border border-amber-600/40 text-amber-400 mx-auto flex items-center justify-center shadow-lg mb-4">
-                    <Crown className="w-8 h-8 text-amber-400" />
+                    <Lock className="w-8 h-8 text-amber-400" />
                   </div>
-                  <h3 className="font-display text-2xl text-ivory-100 mb-2">Đặc Quyền Dành Riêng Cho Hội Viên VIP</h3>
+                  <h3 className="font-display text-2xl text-ivory-100 mb-2">Đặc Quyền Thành Viên Cửu Nhị</h3>
                   <p className="text-sm text-ivory-400 font-serif leading-relaxed mb-6">
-                    Phương pháp <strong className="text-gold-300">{DIVINATION_METHODS.find((m) => m.id === divinationMethod)?.title}</strong> chỉ dành cho tài khoản VIP.
-                    {!currentUser
-                      ? " Vui lòng đăng ký hoặc đăng nhập tài khoản VIP để sử dụng tất cả phương pháp huyền học đỉnh cao!"
-                      : " Nâng cấp hội viên VIP ngay hôm nay để mở khóa toàn bộ tất cả phương pháp huyền học!"}
+                    Phương pháp <strong className="text-gold-300">{DIVINATION_METHODS.find((m) => m.id === divinationMethod)?.title}</strong> đã khóa cho khách vãng lai.
+                    Vui lòng đăng ký hoặc đăng nhập thành viên để sử dụng full quẻ trận!
                   </p>
                   <div className="flex flex-wrap items-center justify-center gap-3">
                     <button
                       type="button"
                       onClick={() => {
-                        if (!currentUser) {
-                          setAuthModalMode("login");
-                        } else {
-                          setAuthModalMode("upgrade");
-                        }
+                        setAuthModalMode("register");
                         setIsAuthModalOpen(true);
                       }}
                       className="royal-btn-gold !px-6 !py-2.5 font-bold cursor-pointer"
                     >
                       <Crown className="w-4 h-4 mr-1.5 inline" />
-                      {currentUser ? "Nâng Cấp Hội Viên VIP" : "Đăng Nhập / Đăng Ký VIP"}
+                      Đăng Ký / Đăng Nhập Thành Viên
                     </button>
                     <button
                       type="button"
-                      onClick={() => setDivinationMethod("cards")}
+                      onClick={() => setDivinationMethod("khongminh")}
                       className="royal-btn-ghost !px-5 !py-2.5 text-xs cursor-pointer"
                     >
-                      Quay Lại Bốc Bài Kinh Dịch
+                      Chuyển Sang Xăm Khổng Minh
                     </button>
                   </div>
                 </div>
               )}
 
-              {/* 1. Bốc Bài Kinh Dịch */}
-              {divinationMethod === "cards" && (
+              {/* 1. Bốc Bài Kinh Dịch (Thành viên đã đăng nhập) */}
+              {divinationMethod === "cards" && isVip && (
                 <div id="ban-boc-que" className="scroll-mt-24">
                   <CardDraw
                     isKhongMinhMethod={false}
@@ -1946,8 +1983,8 @@ export default function App() {
                 </div>
               )}
 
-              {/* 2. Tháp La Kinh Dịch (Quẻ Chủ & Quẻ Biến Song Song Trên - Dưới & Dải Hào Từ Biến Dịch) */}
-              {divinationMethod === "thapla" && (
+              {/* 2. Tháp La Kinh Dịch (Thành viên đã đăng nhập) */}
+              {divinationMethod === "thapla" && isVip && (
                 <div id="ban-boc-que-thapla" className="scroll-mt-24">
                   <ThapLaDivination
                     cardImages={cardImages}
@@ -1960,8 +1997,8 @@ export default function App() {
                 </div>
               )}
 
-              {/* 3. Xăm Khổng Minh (Chỉ VIP) */}
-              {divinationMethod === "khongminh" && isVip && (
+              {/* 3. Xăm Khổng Minh (Mở tự do cho tất cả người dùng) */}
+              {divinationMethod === "khongminh" && (
                 <CardDraw
                   key="khongminh-card-draw"
                   isKhongMinhMethod={true}
@@ -2004,8 +2041,8 @@ export default function App() {
                 />
               )}
 
-              {/* 3. Ngự Chế Tân Tập Đoán Dịch Tinh Túy (Bốc 3 lá Thiên - Địa - Nhân, lấy lá cuối làm quẻ, lắc xí ngầu 12 mặt) */}
-              {divinationMethod === "nguche" && (
+              {/* 4. Ngự Chế Tân Tập Đoán Dịch Tinh Túy (Thành viên đã đăng nhập) */}
+              {divinationMethod === "nguche" && isVip && (
                 <CardDraw
                   key="nguche-card-draw"
                   isKhongMinhMethod={false}

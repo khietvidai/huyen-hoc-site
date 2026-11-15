@@ -405,15 +405,10 @@ export function getMovingLineComprehensiveAnalysis(
     tuongY: getKhongMinhTuongY(tongHex.number, tongLine),
   };
 
-  // 3. Tính Quẻ Hỗ (Hạ: 2,3,4; Thượng: 3,4,5)
+  // 3. Tính Quẻ Hỗ (Hạ: 2,3,4; Thượng: 3,4,5) — Theo quy tắc sách Khổng Minh Thần Toán Gia Kinh Dịch (Trang 3): vị trí hào động giữ nguyên không đổi
   const hoLines = [hexLines[1], hexLines[2], hexLines[3], hexLines[2], hexLines[3], hexLines[4]];
   const hoHex = findHexagramByLines(hoLines);
-  const hoLine =
-    activeLine === 1 ? 1 :
-    activeLine === 2 ? 1 :
-    activeLine === 3 ? 2 :
-    activeLine === 4 ? 3 :
-    activeLine === 5 ? 6 : 6;
+  const hoLine = activeLine;
   const hoCanonical = getCanonicalHexagram(hoHex.number);
   const hoYao = hoCanonical?.lines?.[hoLine - 1];
 

@@ -60,6 +60,7 @@ import { ShuffleDeckAnimation } from "./ShuffleDeckAnimation";
 import { TwelveSidedDice } from "./TwelveSidedDice";
 import { zenAudio } from "../utils/zenAudio";
 import { PRESET_DECK_NAMES, DEFAULT_DECK_ID, INITIAL_PRESET_DECKS, cardImageStore, DeckInfo } from "../services/cardImageStore";
+import { TEMPORARILY_HIDE_OTHER_SPREADS } from "./LandingPage";
 
 interface CardDrawProps {
   cardImages?: Record<number, string>;
@@ -147,8 +148,8 @@ export const CardDraw: React.FC<CardDrawProps> = ({
   activeDeckId,
   onActiveDeckChanged,
 }) => {
-  const isRegisteredUser = true;
-  const isVip = true;
+  const isRegisteredUser = Boolean(currentUser);
+  const isVip = Boolean(currentUser);
   const [availableDecks, setAvailableDecks] = useState<DeckInfo[]>(INITIAL_PRESET_DECKS);
   useEffect(() => {
     cardImageStore.getDeckList().then(setAvailableDecks).catch(() => {});
@@ -162,7 +163,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
 
   const handleOpenManager = onOpenDeckManager || onManageDeck || (() => {});
   const [drawMode, setDrawMode] = useState<DrawMode>(() =>
-    isKhongMinhMethod || isNguCheMethod ? "three" : suggestedDrawMode || "single"
+    isKhongMinhMethod || TEMPORARILY_HIDE_OTHER_SPREADS || isNguCheMethod || !isRegisteredUser ? "three" : suggestedDrawMode || "single"
   );
 
   const [showMultiDeckPanel, setShowMultiDeckPanel] = useState<boolean>(false);
@@ -174,6 +175,14 @@ export const CardDraw: React.FC<CardDrawProps> = ({
   } | null>(null);
 
   const handleSelectFiveElementsMode = () => {
+    if (TEMPORARILY_HIDE_OTHER_SPREADS) return;
+    if (!isRegisteredUser) {
+      onRequireAuth?.(
+        "register",
+        "🔒 Chế độ này đã khóa! Chỉ thành viên đăng ký, đăng nhập mới sử dụng full quẻ trận."
+      );
+      return;
+    }
     setCustomCount(5);
     setCustomCountInput("5");
     setCustomPurposes([
@@ -188,14 +197,32 @@ export const CardDraw: React.FC<CardDrawProps> = ({
     setRevealedCards([]);
   };
 
+  const handleSelectKhongMinhMode = () => {
+    setDrawMode("three");
+    setThreeSpreadMode("tam_tai");
+    setSelectedDeckIndices([]);
+    setRevealedCards([]);
+  };
+
   const handleSelectDrawMode = (mode: DrawMode) => {
+    if (TEMPORARILY_HIDE_OTHER_SPREADS) return;
+    if (!isRegisteredUser) {
+      onRequireAuth?.(
+        "register",
+        "🔒 Chế độ này đã khóa! Chỉ thành viên đăng ký, đăng nhập mới sử dụng full quẻ trận."
+      );
+      return;
+    }
+    if (mode === "three" && threeSpreadMode === "tam_tai" && !isKhongMinhMethod) {
+      setThreeSpreadMode("past_present_future");
+    }
     setDrawMode(mode);
     setSelectedDeckIndices([]);
     setRevealedCards([]);
   };
 
   useEffect(() => {
-    if (isKhongMinhMethod) {
+    if (isKhongMinhMethod || TEMPORARILY_HIDE_OTHER_SPREADS || !isRegisteredUser) {
       setDrawMode("three");
       setThreeSpreadMode("tam_tai");
       setSelectedDeckIndices([]);
@@ -213,7 +240,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
       setSelectedDeckIndices([]);
       setRevealedCards([]);
     }
-  }, [isKhongMinhMethod, isNguCheMethod, suggestedDrawMode]);
+  }, [isKhongMinhMethod, isNguCheMethod, isRegisteredUser, suggestedDrawMode]);
 
   useEffect(() => {
     if (suggestedDoubleMode) {
@@ -228,7 +255,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
   }, [suggestedDoubleMode, suggestedChoiceALabel, suggestedChoiceBLabel]);
 
   useEffect(() => {
-    if (isKhongMinhMethod) {
+    if (isKhongMinhMethod || TEMPORARILY_HIDE_OTHER_SPREADS) {
       setThreeSpreadMode("tam_tai");
     } else if (isNguCheMethod) {
       setThreeSpreadMode("ngu_che");
@@ -254,7 +281,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
   const [choiceALabel, setChoiceALabel] = useState<string>("Lựa chọn A");
   const [choiceBLabel, setChoiceBLabel] = useState<string>("Lựa chọn B");
   const [threeSpreadMode, setThreeSpreadMode] = useState<ThreeCardMode>(() =>
-    isKhongMinhMethod ? "tam_tai" : isNguCheMethod ? "ngu_che" : "past_present_future"
+    isKhongMinhMethod || TEMPORARILY_HIDE_OTHER_SPREADS || !isRegisteredUser ? "tam_tai" : isNguCheMethod ? "ngu_che" : "past_present_future"
   );
   const [choiceCLabel, setChoiceCLabel] = useState<string>("Lựa chọn C");
   const [menhBranchNumber, setMenhBranchNumber] = useState<number>(3); // 1..12 (default 3 = Dần)
@@ -1476,7 +1503,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
           )}
 
           {/* Draw Mode Selectors or Khong Minh / Ngu Che Method Banner */}
-          {isKhongMinhMethod ? (
+          {isKhongMinhMethod || TEMPORARILY_HIDE_OTHER_SPREADS ? (
             <div className="flex items-center gap-2.5 bg-gradient-to-r from-[#2A1D11] via-[#1D140C] to-[#120D08] border border-[#5A3F20] px-3.5 py-2 rounded-xl shadow-md">
               <Scroll className="w-4 h-4 text-[#C9A55A] shrink-0" />
               <div className="flex items-center gap-2 flex-wrap">
@@ -1500,52 +1527,72 @@ export const CardDraw: React.FC<CardDrawProps> = ({
               <div className="flex flex-wrap items-center gap-1.5">
                 <button
                   type="button"
+                  aria-disabled={!isRegisteredUser || undefined}
                   onClick={() => handleSelectDrawMode("single")}
-                  className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border ${
+                  className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border flex items-center gap-1 ${
                     drawMode === "single"
                       ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border-[#D4AF37] font-bold shadow-md scale-[1.02]"
                       : "bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#4A3B28] border-[#C4963E]/35 font-medium"
-                  }`}
+                  } ${!isRegisteredUser ? "opacity-80" : ""}`}
                 >
-                  1 Lá · Đơn Quẻ
+                  <span>1 Lá · Đơn Quẻ</span>
+                  {!isRegisteredUser && <Lock aria-hidden="true" className="w-3 h-3 text-amber-600 shrink-0" />}
                 </button>
                 <button
                   type="button"
+                  aria-disabled={!isRegisteredUser || undefined}
                   onClick={() => handleSelectDrawMode("double")}
-                  className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border ${
+                  className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border flex items-center gap-1 ${
                     drawMode === "double"
                       ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border-[#D4AF37] font-bold shadow-md scale-[1.02]"
                       : "bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#4A3B28] border-[#C4963E]/35 font-medium"
-                  }`}
+                  } ${!isRegisteredUser ? "opacity-80" : ""}`}
                 >
-                  2 Lá · Âm Dương
+                  <span>2 Lá · Âm Dương</span>
+                  {!isRegisteredUser && <Lock aria-hidden="true" className="w-3 h-3 text-amber-600 shrink-0" />}
                 </button>
                 <button
                   type="button"
+                  aria-disabled={!isRegisteredUser || undefined}
                   onClick={() => handleSelectDrawMode("three")}
-                  className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border ${
-                    drawMode === "three"
+                  className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border flex items-center gap-1 ${
+                    drawMode === "three" && threeSpreadMode !== "tam_tai"
+                      ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border-[#D4AF37] font-bold shadow-md scale-[1.02]"
+                      : "bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#4A3B28] border-[#C4963E]/35 font-medium"
+                  } ${!isRegisteredUser ? "opacity-80" : ""}`}
+                >
+                  <span>3 Lá · Tam Tài</span>
+                  {!isRegisteredUser && <Lock aria-hidden="true" className="w-3 h-3 text-amber-600 shrink-0" />}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSelectKhongMinhMode}
+                  className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border flex items-center gap-1 ${
+                    drawMode === "three" && threeSpreadMode === "tam_tai"
                       ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border-[#D4AF37] font-bold shadow-md scale-[1.02]"
                       : "bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#4A3B28] border-[#C4963E]/35 font-medium"
                   }`}
                 >
-                  3 Lá · Tam Tài
+                  <span>3 Lá · Khổng Minh</span>
                 </button>
                 <button
                   type="button"
+                  aria-disabled={!isRegisteredUser || undefined}
                   onClick={handleSelectFiveElementsMode}
-                  className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border ${
+                  className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border flex items-center gap-1 ${
                     drawMode === "custom" && customCount === 5
                       ? "bg-gradient-to-b from-[#261E16] to-[#18130E] text-[#F3E5AB] border-[#D4AF37] font-bold shadow-md scale-[1.02]"
                       : "bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#4A3B28] border-[#C4963E]/35 font-medium"
-                  }`}
+                  } ${!isRegisteredUser ? "opacity-80" : ""}`}
                 >
-                  5 Lá · Ngũ Hành
+                  <span>5 Lá · Ngũ Hành</span>
+                  {!isRegisteredUser && <Lock aria-hidden="true" className="w-3 h-3 text-amber-600 shrink-0" />}
                 </button>
 
                 {/* 7 Lá */}
                 <button
                   type="button"
+                  aria-disabled={!isRegisteredUser || undefined}
                   onClick={() => handleSelectDrawMode("seven")}
                   className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border flex items-center gap-1 ${
                     drawMode === "seven"
@@ -1554,12 +1601,13 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   } ${!isRegisteredUser ? "opacity-80" : ""}`}
                 >
                   <span>✦ 7 Lá (Thất Tinh Trận)</span>
-                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-600 shrink-0" />}
+                  {!isRegisteredUser && <Lock aria-hidden="true" className="w-3 h-3 text-amber-600 shrink-0" />}
                 </button>
 
                 {/* 9 Lá */}
                 <button
                   type="button"
+                  aria-disabled={!isRegisteredUser || undefined}
                   onClick={() => handleSelectDrawMode("nine")}
                   className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border flex items-center gap-1 ${
                     drawMode === "nine"
@@ -1568,12 +1616,13 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   } ${!isRegisteredUser ? "opacity-80" : ""}`}
                 >
                   <span>9 Lá (Cửu Cung)</span>
-                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-600 shrink-0" />}
+                  {!isRegisteredUser && <Lock aria-hidden="true" className="w-3 h-3 text-amber-600 shrink-0" />}
                 </button>
 
                 {/* 10 Lá */}
                 <button
                   type="button"
+                  aria-disabled={!isRegisteredUser || undefined}
                   onClick={() => handleSelectDrawMode("ten")}
                   className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border flex items-center gap-1 ${
                     drawMode === "ten"
@@ -1582,12 +1631,13 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   } ${!isRegisteredUser ? "opacity-80" : ""}`}
                 >
                   <span>✦ 10 Lá (Thập Tinh)</span>
-                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-600 shrink-0" />}
+                  {!isRegisteredUser && <Lock aria-hidden="true" className="w-3 h-3 text-amber-600 shrink-0" />}
                 </button>
 
                 {/* 11 Lá */}
                 <button
                   type="button"
+                  aria-disabled={!isRegisteredUser || undefined}
                   onClick={() => handleSelectDrawMode("ten_expanded")}
                   className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border flex items-center gap-1 ${
                     drawMode === "ten_expanded"
@@ -1595,14 +1645,15 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                       : "bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#4A3B28] border-[#C4963E]/35 font-medium"
                   } ${!isRegisteredUser ? "opacity-80" : ""}`}
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-inherit" />
+                  <Sparkles aria-hidden="true" className="w-3.5 h-3.5 text-inherit" />
                   <span>11 Lá (2A &amp; 2B)</span>
-                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-600 shrink-0" />}
+                  {!isRegisteredUser && <Lock aria-hidden="true" className="w-3 h-3 text-amber-600 shrink-0" />}
                 </button>
 
                 {/* 12 Lá */}
                 <button
                   type="button"
+                  aria-disabled={!isRegisteredUser || undefined}
                   onClick={() => handleSelectDrawMode("twelve")}
                   className={`px-3 py-1.5 text-xs font-serif rounded-xl transition-all cursor-pointer border flex items-center gap-1 ${
                     drawMode === "twelve"
@@ -1611,12 +1662,13 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                   } ${!isRegisteredUser ? "opacity-80" : ""}`}
                 >
                   <span>12 Lá (Địa Chi)</span>
-                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-600 shrink-0" />}
+                  {!isRegisteredUser && <Lock aria-hidden="true" className="w-3 h-3 text-amber-600 shrink-0" />}
                 </button>
 
                 {/* Tùy ý số lá */}
                 <button
                   type="button"
+                  aria-disabled={!isRegisteredUser || undefined}
                   onClick={() => {
                     if (customCount === 5) {
                       setCustomCount(6);
@@ -1631,9 +1683,9 @@ export const CardDraw: React.FC<CardDrawProps> = ({
                       : "bg-[#FAF6EE] hover:bg-[#EFE6D5] text-[#4A3B28] border-[#C4963E]/35 font-medium"
                   } ${!isRegisteredUser ? "opacity-80" : ""}`}
                 >
-                  <Sliders className="w-3 h-3 text-inherit" />
+                  <Sliders aria-hidden="true" className="w-3 h-3 text-inherit" />
                   <span>Tùy Ý ({customCount === 5 ? 6 : customCount} Lá)</span>
-                  {!isRegisteredUser && <Lock className="w-3 h-3 text-amber-600 shrink-0" />}
+                  {!isRegisteredUser && <Lock aria-hidden="true" className="w-3 h-3 text-amber-600 shrink-0" />}
                 </button>
               </div>
             </div>
@@ -1972,7 +2024,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
       )}
 
       {/* 3-CARD DRAW SUB-PANEL: TIẾN TRÌNH QUÁ KHỨ - HIỆN TẠI - TƯƠNG LAI HOẶC SO SÁNH 3 LỰA CHỌN A - B - C */}
-      {drawMode === "three" && isKhongMinhMethod && (
+      {drawMode === "three" && (isKhongMinhMethod || threeSpreadMode === "tam_tai") && (
         <motion.div
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
@@ -2072,7 +2124,7 @@ export const CardDraw: React.FC<CardDrawProps> = ({
         </motion.div>
       )}
 
-      {drawMode === "three" && !isKhongMinhMethod && !isNguCheMethod && (
+      {drawMode === "three" && !isKhongMinhMethod && !isNguCheMethod && threeSpreadMode !== "tam_tai" && (
         <motion.div
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}

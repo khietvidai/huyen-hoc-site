@@ -62,6 +62,7 @@ import { KhongMinhSingleHexView } from "./KhongMinhBridgeView";
 import { ChangingLinesGuideView } from "./ChangingLinesGuideView";
 import { TamTaiDiceRollSection, EarthlyBranchDiceItem } from "./TamTaiDiceRollSection";
 import { KhongMinhKinhDichView } from "./KhongMinhKinhDichView";
+import { formatKhongMinhPromptForAI } from "../utils/khongMinhKinhDichFormatter";
 import { NguCheTinhTuySection } from "./NguCheTinhTuySection";
 import { IChingChatbot } from "./IChingChatbot";
 import Markdown from "react-markdown";
@@ -733,6 +734,21 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
   };
 
   const handleCopy = () => {
+    if (threeMode === "tam_tai" || spreadType === "khongminh") {
+      const targetHex = (drawnCards && drawnCards[2]) || tamTaiTargetHex || primaryHexagram;
+      const activeLine = tamTaiChangingLine || changingLines[0] || 2;
+      const kmPrompt = formatKhongMinhPromptForAI({
+        primaryHex: targetHex,
+        activeLine,
+        sourceName: "Lá thứ 3",
+        question,
+      });
+      navigator.clipboard.writeText(kmPrompt);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+      return;
+    }
+
     let spreadInfo = "";
     if (drawnCards && (spreadType === "custom" || customPositions)) {
       const positions = customPositions || [];
@@ -808,10 +824,6 @@ export const HexagramDetail: React.FC<HexagramDetailProps> = ({
           `- Lá 1 (Thiên Đạo): Quẻ #${drawnCards[0].number} ${drawnCards[0].name}\n` +
           `- Lá 2 (Địa Đạo): Quẻ #${drawnCards[1].number} ${drawnCards[1].name}\n` +
           `- Lá 3 (Nhân Đạo • Lá Cuối Cùng Làm Quẻ Chủ): Quẻ #${drawnCards[2].number} ${drawnCards[2].name}\n\n`;
-      } else if (threeMode === "tam_tai" || spreadType === "khongminh") {
-        spreadInfo =
-          `\n【Quẻ Khổng Minh Thần Toán - Bốc 3 Lá, Lấy Lá Cuối Làm Quẻ】:\n` +
-          `- ★ Lá 3 (Quẻ Khổng Minh): Quẻ #${drawnCards[2].number} ${drawnCards[2].name}\n\n`;
       } else {
         spreadInfo =
           `\n【Trận Pháp 3 Lá - Tiến Trình Dòng Thời Gian】:\n` +

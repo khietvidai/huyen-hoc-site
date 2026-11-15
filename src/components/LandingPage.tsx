@@ -9,7 +9,7 @@
  * - Interactive modals: Card Detail Inspector, Coin Toss Divination Studio, Life Config Thermal Receipt
  */
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { Camera, Bookmark, FolderOpen, Clock, Heart, QrCode, Compass } from "lucide-react";
+import { Camera, Bookmark, FolderOpen, Clock, Heart, QrCode, Compass, Lock, User } from "lucide-react";
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
 import { SaveSpreadDialog } from "./SaveSpreadDialog";
@@ -35,7 +35,7 @@ import { NavTab } from "./Header";
 import { HEXAGRAMS, getTransformedHexagram } from "../data/hexagrams";
 import { BOOK_HEXAGRAMS } from "../data/bookHexagrams";
 import { getKhongMinhForHexagram } from "../data/khongMinhBridgeData";
-import { formatKhongMinhKinhDich } from "../utils/khongMinhKinhDichFormatter";
+import { formatKhongMinhKinhDich, formatKhongMinhPromptForAI } from "../utils/khongMinhKinhDichFormatter";
 import {
   NINE_PALACES_POSITIONS,
   TEN_STARS_EXPANDED_POSITIONS,
@@ -1154,8 +1154,8 @@ function generateHexagramPrediction(
     const kmFull = formatKhongMinhKinhDich(hex2, activeLine, sourceTag);
     const isHung = kmFull.oracleBlock.isHung;
     const actionRuleSummary = isHung
-      ? `Quẻ Khổng Minh #${oracleNum} là HUNG (${kmFull.oracleBlock.oracleType}) ➔ Hành động NGƯỢC LẠI với lời khuyên của Kinh Dịch: ${kmFull.oracleBlock.doList} (Tuyệt đối KHÔNG làm theo lời khuyên thuận: "${kmFull.oracleBlock.avoidList}")`
-      : `Quẻ Khổng Minh #${oracleNum} là CÁT (${kmFull.oracleBlock.oracleType}) ➔ Làm THEO lời khuyên hành động của Kinh Dịch: ${kmFull.oracleBlock.doList} (Tránh: "${kmFull.oracleBlock.avoidList}")`;
+      ? `Quẻ Khổng Minh #${oracleNum} là HUNG (${kmFull.oracleBlock.oracleType}) ➔ Hành động NGƯỢC LẠI với hướng tiến hành thuận thông thường của Kinh Dịch: ${kmFull.oracleBlock.doList} (${kmFull.oracleBlock.avoidList})`
+      : `Quẻ Khổng Minh #${oracleNum} là CÁT (${kmFull.oracleBlock.oracleType}) ➔ Làm THEO lời khuyên hành động của Kinh Dịch: ${kmFull.oracleBlock.doList} (Tránh: ${kmFull.oracleBlock.avoidList})`;
 
     if (isQuestionEmpty) {
       return `★ Quẻ Khổng Minh #${oracleNum} (${kmFull.oracleBlock.oracleType} · Lá 3): ${hex2.name} · Động Hào ${activeLine} (${sourceTag}). Xăm từ: "${kmLine?.oracleText || ""}". ⚡ Chỉ dẫn: ${actionRuleSummary}.${EMPTY_QUESTION_REMINDER}`;
@@ -1453,6 +1453,25 @@ async function formatSpreadForAI(
   const cleanedQuestion = userQuestion?.trim();
   const cleanedPrediction = userPrediction?.trim();
   const cleanedAnswer = userAnswer?.trim();
+
+  if (currentMode === "khong_minh") {
+    const c2 = cardsList[2] || cardsList[cardsList.length - 1];
+    const hex2 = HEXAGRAMS.find((h) => h.number === c2?.hexNumber) || HEXAGRAMS[0];
+    const activeLine = c2?.khongMinhLine || c2?.yaoNumber || 2;
+    const isFromMain64 = c2?.khongMinhFromMain64 ?? (c2?.type === "hexagram");
+    const sourceMethod = isFromMain64
+      ? `Bốc trúng 64 Lá Chính ➔ Động Hào ${activeLine}`
+      : `Bốc trúng trực tiếp Lá Hào ${activeLine} (Bộ 384 Hào Từ)`;
+    return formatKhongMinhPromptForAI({
+      primaryHex: hex2,
+      activeLine,
+      sourceName: sourceMethod,
+      question: cleanedQuestion,
+      prediction: cleanedPrediction,
+      answer: cleanedAnswer,
+    });
+  }
+
   // Chỉ tải bài viết bách khoa chuyên sâu khi đã đắc pháp nghi thức (Kính Thiên, Kính Địa, Kính Nhân)
   const articles: (CardArticleData | null)[] = includeFullBakhKhoa
     ? await Promise.all(cardsList.map((c) => fetchCardArticleSections(c)))
@@ -1945,78 +1964,6 @@ async function formatSpreadForAI(
     return lines.join("\n");
   }
 
-  if (currentMode === "khong_minh") {
-    const c2 = cardsList[2] || cardsList[cardsList.length - 1];
-    const hex2 = HEXAGRAMS.find((h) => h.number === c2?.hexNumber) || HEXAGRAMS[0];
-    const activeLine = c2?.khongMinhLine || c2?.yaoNumber || 2;
-    const isFromMain64 = c2?.khongMinhFromMain64 ?? (c2?.type === "hexagram");
-    const sourceMethod = isFromMain64
-      ? `Bốc trúng 64 Lá Chính ➔ Tự động random động Hào ${activeLine}`
-      : `Bốc trúng trực tiếp Lá Hào ${activeLine} (Bộ 384 Hào Từ)`;
-    const kmFull = formatKhongMinhKinhDich(hex2, activeLine, sourceMethod);
-
-    const lines: string[] = [];
-    lines.push(
-      `=== THÔNG TIN TRẢI BÀI QUẺ KHỔNG MINH THẦN TOÁN (LÁ CUỐI CÙNG LÀ QUẺ KHỔNG MINH #${kmFull.oracleBlock.oracleNum}${bakhKhoaNotice}) ===`
-    );
-    if (cleanedQuestion) {
-      lines.push(`【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:`);
-      lines.push(`"${cleanedQuestion}"\n`);
-    }
-    if (cleanedPrediction) {
-      lines.push(`【DỰ ĐOÁN CỦA QUẺ / ĐIỀM BÁO DỊCH LÝ】:`);
-      lines.push(`"${cleanedPrediction}"\n`);
-    }
-    if (cleanedAnswer) {
-      lines.push(`【ĐÁP ÁN / CHIÊM NGHIỆM TỰ ĐIỀN】:`);
-      lines.push(`"${cleanedAnswer}"\n`);
-    }
-    lines.push(
-      `Khẩu quyết: Trận Pháp Quẻ Khổng Minh (Bốc 3 lá bài, lấy duy nhất Lá cuối cùng — Lá 3 làm ★ QUẺ KHỔNG MINH THẦN TOÁN; không dùng thông tin của Lá 1 và Lá 2). Nếu bốc trúng 384 lá Hào Từ thì lấy chính hào đó làm hào động; nếu bốc trúng 64 lá Quẻ Chính thì tự động random động 1 hào bất kỳ (1–6) để ứng chiếu 384 quẻ xăm Gia Cát Khổng Minh.`
-    );
-    lines.push(
-      `* ⚡ QUY TẮC HÀNH ĐỘNG CỐT TỦY: Khi Quẻ Khổng Minh là CÁT thì LÀM THEO lời khuyên hành động của Kinh Dịch; khi Quẻ Khổng Minh là HUNG thì HÀNH ĐỘNG NGƯỢC LẠI với lời khuyên của Kinh Dịch!\n`
-    );
-
-    if (c2) {
-      const pos = KHONG_MINH_POSITIONS[2];
-      const extraBadge = `[★ LÁ CUỐI: QUẺ KHỔNG MINH #${kmFull.oracleBlock.oracleNum} · ĐỘNG HÀO ${activeLine} (${sourceMethod})]`;
-      lines.push(`----------------------------------------`);
-      if (!includeFullBakhKhoa) {
-        lines.push(`▶ Vị trí ${pos.label} [${pos.sub}]: ${pos.desc} ${extraBadge}`);
-        lines.push(`• Quẻ tượng: ${c2.symbol}`);
-        lines.push(`• Tên: ${c2.name}`);
-        lines.push(`• Ý nghĩa: ${c2.sub}`);
-        lines.push(`• Lời giải: ${c2.desc}`);
-      } else {
-        const cardLines = formatCardFullInfoFromHexagram(
-          c2,
-          `Vị trí ${pos.label} [${pos.sub}]: ${pos.desc}`,
-          extraBadge,
-          articles[2]
-        );
-        lines.push(...cardLines);
-      }
-      lines.push("");
-    }
-
-    lines.push(`========================================`);
-    lines.push(`【TOÀN VĂN LUẬN ĐOÁN LÁ CUỐI (LÁ 3) — QUẺ KHỔNG MINH KINH DỊCH #${kmFull.oracleBlock.oracleNum}】:`);
-    lines.push(kmFull.plainText);
-    lines.push("");
-    lines.push(`========================================`);
-    lines.push(`[YÊU CẦU LUẬN GIẢI CHO AI]:`);
-    if (cleanedQuestion) {
-      lines.push(`▶ Trọng tâm giải đáp: Tập trung luận giải và tháo gỡ trực diện câu hỏi/tâm niệm: "${cleanedQuestion}"`);
-    }
-    lines.push(`Xin hãy luận giải sâu sắc Quẻ Khổng Minh Thần Toán (dựa duy nhất vào Lá 3 — Quẻ Khổng Minh #${kmFull.oracleBlock.oracleNum}):`);
-    lines.push(`1. Trọng tâm ★ Lá 3 (Quẻ Khổng Minh Thần Toán #${kmFull.oracleBlock.oracleNum} · ${hex2.name} động Hào ${activeLine}): Phân tích Quẻ Chính, Hào Động ${activeLine}, 3 Quẻ Phụ (Tông - Hỗ - Thác) và Thơ Xăm Khổng Minh Thần Toán #${kmFull.oracleBlock.oracleNum} (${kmFull.oracleBlock.oracleType}).`);
-    lines.push(
-      `2. ⚡ ÁP DỤNG QUY TẮC HÀNH ĐỘNG KHỔNG MINH — KINH DỊCH: Vì Quẻ Khổng Minh #${kmFull.oracleBlock.oracleNum} hiện tại là ${kmFull.oracleBlock.isHung ? `HUNG (${kmFull.oracleBlock.oracleType}), bắt buộc phải khuyên đương số HÀNH ĐỘNG NGƯỢC LẠI với lời khuyên của Kinh Dịch (Thực hiện: "${kmFull.oracleBlock.doList}" — Tuyệt đối KHÔNG làm theo lời khuyên thuận của Kinh Dịch: "${kmFull.oracleBlock.avoidList}")` : `CÁT (${kmFull.oracleBlock.oracleType}), bắt buộc phải khuyên đương số LÀM THEO lời khuyên hành động của Kinh Dịch (Thực hiện: "${kmFull.oracleBlock.doList}" — Tránh: "${kmFull.oracleBlock.avoidList}")`}.`
-    );
-    return lines.join("\n");
-  }
-
   const getSpreadName = (m: SpreadMode) => {
     switch (m) {
       case "1_single": return "1 Lá (Đơn Quẻ Chí Tôn)";
@@ -2135,6 +2082,7 @@ interface RitualHoldButtonProps {
   id: string;
   onClick: (isRitual?: boolean) => void;
   active?: boolean;
+  locked?: boolean;
   className?: string;
   wrapperClassName?: string;
   style?: React.CSSProperties;
@@ -2148,6 +2096,7 @@ const RitualHoldButton: React.FC<RitualHoldButtonProps> = ({
   id,
   onClick,
   active = false,
+  locked = false,
   className = "",
   wrapperClassName = "",
   style,
@@ -2201,6 +2150,7 @@ const RitualHoldButton: React.FC<RitualHoldButtonProps> = ({
   };
 
   const startHold = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (locked) return;
     if (e.button !== 0 && e.pointerType === "mouse") return;
 
     touchStartPosRef.current = { x: e.clientX, y: e.clientY };
@@ -2352,6 +2302,8 @@ const RitualHoldButton: React.FC<RitualHoldButtonProps> = ({
         id={id}
         ref={buttonRef}
         type="button"
+        aria-pressed={active}
+        aria-disabled={locked || undefined}
         title={title || "Kính Thiên, Kính Địa, Kính Nhân"}
         onClick={handleClick}
         onPointerDown={startHold}
@@ -2487,6 +2439,9 @@ function persistDailySpreadState(state: PersistedDailySpreadState): void {
   } catch {}
 }
 
+/** Cờ cấu hình: Tạm ẩn các nút chọn trận pháp thủ công khác trên thanh chọn (chỉ hiện nút Quẻ Khổng Minh), trong khi mỗi lần mở web tự động random 1 trong 11 trận bài */
+export const TEMPORARILY_HIDE_OTHER_SPREADS = true;
+
 function loadOrCreateDailySpreadState(): PersistedDailySpreadState {
   const todayKey = getLocalCalendarDateKey();
   let previousMode: SpreadMode | null = null;
@@ -2499,43 +2454,13 @@ function loadOrCreateDailySpreadState(): PersistedDailySpreadState {
         if (parsed.mode && SPREAD_MODES.includes(parsed.mode)) {
           previousMode = parsed.mode;
         }
-        if (
-          parsed.mode &&
-          SPREAD_MODES.includes(parsed.mode) &&
-          Array.isArray(parsed.cards) &&
-          parsed.cards.length > 0 &&
-          isSameLocalCalendarDay(parsed.dateKey)
-        ) {
-          const restoredMenhBranch =
-            typeof parsed.menhBranchNumber === "number" &&
-            parsed.menhBranchNumber >= 1 &&
-            parsed.menhBranchNumber <= 12
-              ? parsed.menhBranchNumber
-              : parsed.cards.find((c) => c.isMenhCung)?.branchNumber || rollRandomMenhBranch();
-          const restoredCards =
-            parsed.mode === "thap_nhi"
-              ? applyTwelveHousesToCards(parsed.cards, restoredMenhBranch)
-              : parsed.mode === "khong_minh"
-              ? applyKhongMinhToThreeCards(parsed.cards)
-              : parsed.cards;
-          return {
-            dateKey: todayKey,
-            mode: parsed.mode,
-            cards: restoredCards,
-            isCard2Reversed: typeof parsed.isCard2Reversed === "boolean" ? parsed.isCard2Reversed : false,
-            isCard2AReversed: typeof parsed.isCard2AReversed === "boolean" ? parsed.isCard2AReversed : false,
-            isCard2BReversed: typeof parsed.isCard2BReversed === "boolean" ? parsed.isCard2BReversed : false,
-            menhBranchNumber: restoredMenhBranch,
-            isRitualCompleted: Boolean(parsed.isRitualCompleted),
-          };
-        }
       }
     } catch {}
   }
 
-  // Sang ngày mới (hoặc lần đầu tiên mở web): Chọn trận bài khác với ngày hôm trước
+  // Mỗi lần mở / tải lại web: tự động random hiển thị 1 trong 11 trận bài (khác với lần mở liền trước)
   const candidateModes = previousMode ? SPREAD_MODES.filter((m) => m !== previousMode) : SPREAD_MODES;
-  const nextMode =
+  const nextMode: SpreadMode =
     candidateModes.length > 0
       ? candidateModes[Math.floor(Math.random() * candidateModes.length)]
       : SPREAD_MODES[Math.floor(Math.random() * SPREAD_MODES.length)];
@@ -2566,7 +2491,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   onLogout,
   onOpenDonateModal,
 }) => {
-  /* Giữ nguyên trận bài trong suốt cả ngày dù F5 / reset web; chỉ sang ngày hôm sau mới đổi sang trận bài khác */
+  const isRegisteredMember = Boolean(currentUser);
+  const pendingLockedModeRef = useRef<SpreadMode | null>(null);
+
+  /* Mỗi lần vào web khởi mở một quẻ trận ngẫu nhiên mới khác với lần vào trước */
   const [initialDailySpread] = useState<PersistedDailySpreadState>(() => loadOrCreateDailySpreadState());
   const activeSpreadDateRef = useRef<string>(initialDailySpread.dateKey);
 
@@ -2963,6 +2891,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
   const handleLoadSavedSpread = useCallback((item: SavedSpreadItem) => {
     const loadedMode = item.mode && SPREAD_MODES.includes(item.mode as SpreadMode) ? (item.mode as SpreadMode) : mode;
+    if (!TEMPORARILY_HIDE_OTHER_SPREADS && !isRegisteredMember && loadedMode !== "khong_minh") {
+      pendingLockedModeRef.current = loadedMode;
+      setIsSavedSpreadsModalOpen(false);
+      setCopiedToast("🔒 Chỉ thành viên đăng ký / đăng nhập mới sử dụng được full quẻ trận. Vui lòng đăng nhập!");
+      setTimeout(() => setCopiedToast(null), 4000);
+      onOpenAuthModal?.("login");
+      return;
+    }
     setMode(loadedMode);
     const loadedMenh =
       typeof item.menhBranchNumber === "number" && item.menhBranchNumber >= 1 && item.menhBranchNumber <= 12
@@ -3020,7 +2956,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         sec.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     }, 100);
-  }, [mode, menhBranchNumber, handleQuestionChange, handleHexagramPredictionChange, handleCustomAnswerChange]);
+  }, [isRegisteredMember, onOpenAuthModal, mode, menhBranchNumber, handleQuestionChange, handleHexagramPredictionChange, handleCustomAnswerChange]);
 
   const [showPhoneVideoMode, setShowPhoneVideoMode] = useState<boolean>(true);
   const getTodayDragonDateKey = useCallback(() => {
@@ -3145,6 +3081,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
   const handleLoadTempSpread = useCallback((item: TempSpreadItem) => {
     const loadedMode = item.mode && SPREAD_MODES.includes(item.mode as SpreadMode) ? (item.mode as SpreadMode) : mode;
+    if (!TEMPORARILY_HIDE_OTHER_SPREADS && !isRegisteredMember && loadedMode !== "khong_minh") {
+      pendingLockedModeRef.current = loadedMode;
+      setIsTempSpreadsModalOpen(false);
+      setCopiedToast("🔒 Chỉ thành viên đăng ký / đăng nhập mới sử dụng được full quẻ trận. Vui lòng đăng nhập!");
+      setTimeout(() => setCopiedToast(null), 4000);
+      onOpenAuthModal?.("login");
+      return;
+    }
     setMode(loadedMode);
     const loadedMenh =
       typeof item.menhBranchNumber === "number" && item.menhBranchNumber >= 1 && item.menhBranchNumber <= 12
@@ -3203,7 +3147,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         sec.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     }, 100);
-  }, [mode, menhBranchNumber, handleQuestionChange, handleHexagramPredictionChange, handleCustomAnswerChange]);
+  }, [isRegisteredMember, onOpenAuthModal, mode, menhBranchNumber, handleQuestionChange, handleHexagramPredictionChange, handleCustomAnswerChange]);
 
   const handleSaveTempSpreadPermanently = useCallback((item: TempSpreadItem) => {
     saveSpreadItem({
@@ -4267,7 +4211,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     handleShuffleCards(isRitual);
   }, [handleShuffleCards]);
 
-  /* ── Sao chép toàn bộ trải bài cho AI (Đầy đủ thông tin từ Hexagram & Bách khoa) ── */
+  const [copyAiFailed, setCopyAiFailed] = useState(false);
+  const [copyAiLiveStatus, setCopyAiLiveStatus] = useState("");
+  const copyAiStateTimerRef = useRef<number | null>(null);
+  const copyAiToastTimerRef = useRef<number | null>(null);
+  const lastCopyAiLiveMsgRef = useRef("");
+
+  useEffect(() => {
+    return () => {
+      if (copyAiStateTimerRef.current) window.clearTimeout(copyAiStateTimerRef.current);
+      if (copyAiToastTimerRef.current) window.clearTimeout(copyAiToastTimerRef.current);
+    };
+  }, []);
+
+  /* ── Sao chép toàn bộ trải bài cho AI (Quẻ Khổng Minh dùng chuẩn sách Khổng Minh Thần Toán Gia Kinh Dịch) ── */
   const handleCopyCardsForAI = useCallback(async () => {
     if (isDragonLocked) {
       setCopiedToast("🔒 Cửu Nhị Tiểu Long còn đang ngủ! Hãy bấm nút “Gọi Cửu Nhị Tiểu Long Dậy” và chờ 5 giây để mở khóa.");
@@ -4276,13 +4233,25 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     }
     triggerDragonFullAnimations();
     const hasQuestion = !!userIntentQuestion.trim();
-    const hasPrediction = !!hexagramPrediction.trim();
     const hasAnswer = !!userCustomAnswer.trim();
-    if (isRitualCompleted) {
+
+    if (copyAiStateTimerRef.current) {
+      window.clearTimeout(copyAiStateTimerRef.current);
+      copyAiStateTimerRef.current = null;
+    }
+    if (copyAiToastTimerRef.current) {
+      window.clearTimeout(copyAiToastTimerRef.current);
+      copyAiToastTimerRef.current = null;
+    }
+
+    if (mode === "khong_minh") {
+      setCopiedToast("📜 Đang trích xuất hồ sơ Quẻ Khổng Minh Thần Toán Gia Kinh Dịch cho AI...");
+    } else if (isRitualCompleted) {
       setCopiedToast("✨ Đang trích xuất 100% Bách Khoa Toàn Thư Kinh Dịch (Cửu Nhị Luận Giải & FAQ) cho AI...");
     } else {
       setCopiedToast("Đang chuẩn bị dữ liệu quẻ & luận giải tiêu chuẩn cho AI...");
     }
+
     const text = await formatSpreadForAI(
       cards,
       mode,
@@ -4294,7 +4263,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       { isCard2AReversed, isCard2BReversed, menhBranchNumber }
     );
     const ok = await copyToClipboard(text);
+    let liveMsg = ok ? "Đã sao chép quẻ bài và câu hỏi" : "Sao chép thất bại";
+    if (liveMsg === lastCopyAiLiveMsgRef.current) {
+      liveMsg += "\u00A0";
+    }
+    lastCopyAiLiveMsgRef.current = liveMsg;
+    setCopyAiLiveStatus("");
+    window.requestAnimationFrame(() => setCopyAiLiveStatus(liveMsg));
+
     if (ok) {
+      setCopyAiFailed(false);
       setCopiedAI(true);
       if (hasQuestion) {
         setHasCopiedWithQuestion(true);
@@ -4306,7 +4284,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         : hasAnswer
         ? " (kèm Đáp án)"
         : "";
-      if (isRitualCompleted) {
+      if (mode === "khong_minh") {
+        setCopiedToast(
+          `📜 Đã sao chép hồ sơ Quẻ Khổng Minh Thần Toán Gia Kinh Dịch${suffix} cho AI!`
+        );
+      } else if (isRitualCompleted) {
         setCopiedToast(
           `✨ Đã sao chép 100% Bách Khoa Toàn Thư${suffix} cho AI!`
         );
@@ -4315,15 +4297,58 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           `Đã chép thông tin các lá bài${suffix} cho AI!`
         );
       }
-      setTimeout(() => setCopiedAI(false), 2500);
-      setTimeout(() => setCopiedToast(null), 3500);
+    } else {
+      setCopiedAI(false);
+      setCopyAiFailed(true);
+      setCopiedToast("Không thể truy cập bộ nhớ tạm — vui lòng thử bấm sao chép lại!");
     }
+
+    copyAiStateTimerRef.current = window.setTimeout(() => {
+      setCopiedAI(false);
+      setCopyAiFailed(false);
+      setCopyAiLiveStatus("");
+      copyAiStateTimerRef.current = null;
+    }, 2500);
+    copyAiToastTimerRef.current = window.setTimeout(() => {
+      setCopiedToast(null);
+      copyAiToastTimerRef.current = null;
+    }, 3500);
   }, [isDragonLocked, cards, mode, isCard2Reversed, isCard2AReversed, isCard2BReversed, menhBranchNumber, isRitualCompleted, userIntentQuestion, hexagramPrediction, userCustomAnswer, triggerDragonFullAnimations]);
 
-  /* ── Sao chép 1 lá bài đơn lẻ cho AI (Thông tin cơ bản hoặc 100% bách khoa khi đắc pháp) ── */
+  /* ── Sao chép 1 lá bài đơn lẻ cho AI (Chế độ Khổng Minh dùng chuẩn sách Khổng Minh Thần Toán Gia Kinh Dịch) ── */
   const handleCopySingleCardForAI = useCallback(async (card: DynamicCardItem) => {
     triggerDragonFullAnimations();
     const cleanedQuestion = userIntentQuestion.trim();
+
+    if (mode === "khong_minh") {
+      const hexTarget = HEXAGRAMS.find((h) => h.number === card.hexNumber) || HEXAGRAMS[0];
+      const activeLine = card.khongMinhLine || card.yaoNumber || 2;
+      const isFromMain64 = card.khongMinhFromMain64 ?? (card.type === "hexagram");
+      const sourceMethod = isFromMain64
+        ? `Bốc trúng 64 Lá Chính ➔ Động Hào ${activeLine}`
+        : `Bốc trúng trực tiếp Lá Hào ${activeLine} (Bộ 384 Hào Từ)`;
+      const text = formatKhongMinhPromptForAI({
+        primaryHex: hexTarget,
+        activeLine,
+        sourceName: sourceMethod,
+        question: cleanedQuestion,
+        prediction: hexagramPrediction.trim(),
+        answer: userCustomAnswer.trim(),
+      });
+      const ok = await copyToClipboard(text);
+      if (ok) {
+        setCopiedSingle(true);
+        setCopiedToast(
+          cleanedQuestion
+            ? `📜 Đã sao chép Quẻ Khổng Minh (${hexTarget.name} - Hào ${activeLine}) kèm Câu hỏi cho AI!`
+            : `📜 Đã sao chép Quẻ Khổng Minh (${hexTarget.name} - Hào ${activeLine}) cho AI!`
+        );
+        setTimeout(() => setCopiedSingle(false), 2200);
+        setTimeout(() => setCopiedToast(null), 3200);
+      }
+      return;
+    }
+
     const questionHeader = cleanedQuestion
       ? `【NỘI DUNG TÂM NIỆM / CÂU HỎI CỦA ĐƯƠNG SỐ】:\n"${cleanedQuestion}"\n\n`
       : "";
@@ -4384,7 +4409,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
       setTimeout(() => setCopiedSingle(false), 2200);
       setTimeout(() => setCopiedToast(null), 3200);
     }
-  }, [isRitualCompleted, userIntentQuestion, triggerDragonFullAnimations]);
+  }, [mode, isRitualCompleted, userIntentQuestion, hexagramPrediction, userCustomAnswer, triggerDragonFullAnimations]);
 
   /* ── Chụp hình tự động căn trọn vẹn toàn bộ các lá bài đang trải trận ── */
   const handleCaptureCardsSnapshot = useCallback(async (opts?: { silent?: boolean } | React.MouseEvent): Promise<string | null> => {
@@ -7879,7 +7904,19 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
   /* ── Chuyển chế độ và cuộn mượt xuống khu vực trải bài ── */
   const handleSwitchModeAndScroll = useCallback(
-    (newMode: SpreadMode, isRitual: boolean = false) => {
+    (requestedMode: SpreadMode, isRitual: boolean = false) => {
+      const newMode: SpreadMode = TEMPORARILY_HIDE_OTHER_SPREADS ? "khong_minh" : requestedMode;
+      if (!TEMPORARILY_HIDE_OTHER_SPREADS && !isRegisteredMember && newMode !== "khong_minh") {
+        pendingLockedModeRef.current = newMode;
+        const lockedName = SPREAD_MODE_NAMES[newMode] || "Quẻ Trận này";
+        setCopiedToast(
+          `🔒 Đã khóa ${lockedName}: Khách vãng lai chỉ mở Quẻ Khổng Minh — Đăng ký / Đăng nhập thành viên để sử dụng Full Quẻ Trận!`
+        );
+        setTimeout(() => setCopiedToast(null), 4000);
+        onOpenAuthModal?.("register");
+        return;
+      }
+
       // Nếu đang bật giữ nguyên và thao tác trên cùng một chế độ quẻ (ví dụ 3 lá lỡ bấm nhanh mà muốn tam kính):
       // Giữ nguyên 100% các lá bài hiện tại, chỉ cập nhật trạng thái tâm linh (Tam Kính / Đắc Pháp) và cuộn xuống!
       if (isKeepCards && newMode === mode) {
@@ -7947,8 +7984,17 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         sec.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     },
-    [isKeepCards, mode, isCard2AReversed, isCard2BReversed, menhBranchNumber, recordDrawnSpreadToTemp]
+    [isRegisteredMember, onOpenAuthModal, isKeepCards, mode, isCard2AReversed, isCard2BReversed, menhBranchNumber, recordDrawnSpreadToTemp]
   );
+
+  /* Tự động mở khóa và trải đúng trận pháp vừa bấm ngay khi thành viên hoàn tất đăng ký / đăng nhập */
+  useEffect(() => {
+    if (isRegisteredMember && pendingLockedModeRef.current) {
+      const targetMode = pendingLockedModeRef.current;
+      pendingLockedModeRef.current = null;
+      handleSwitchModeAndScroll(targetMode, false);
+    }
+  }, [isRegisteredMember, handleSwitchModeAndScroll]);
 
   /* ── Bật/Tắt giữ nguyên các lá bài hiện tại (Khóa quẻ khi Tam Kính) ── */
   const handleToggleKeepCards = useCallback((isRitual: boolean = false) => {
@@ -8002,10 +8048,12 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
 
     setIsRitualCompleted(isRitual);
     setIsKeepCards(false);
-    // Luôn chọn ngẫu nhiên một trận pháp khác với trận pháp hiện tại để mỗi lần bấm luôn bốc một trận pháp mới lạ
+    // Random bốc sang một trận pháp mới trong 11 trận bài
     const availableModes = SPREAD_MODES.filter((m) => m !== mode);
-    const randomMode =
-      availableModes.length > 0
+    const randomMode: SpreadMode =
+      !TEMPORARILY_HIDE_OTHER_SPREADS && !isRegisteredMember
+        ? "khong_minh"
+        : availableModes.length > 0
         ? availableModes[Math.floor(Math.random() * availableModes.length)]
         : SPREAD_MODES[Math.floor(Math.random() * SPREAD_MODES.length)];
 
@@ -8050,12 +8098,12 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
         ? ` · ★ Lá 3 Quẻ Khổng Minh #${newDrawnCards[2].khongMinhOracleNum || ""} (Động Hào ${newDrawnCards[2].khongMinhLine || 1}${newDrawnCards[2].khongMinhFromMain64 ? " · Random từ 64 Lá Chính" : ""})`
         : "";
     if (isRitual) {
-      setCopiedToast(`✨ Đắc Pháp Tam Kính: Đã bốc ngẫu nhiên ${spreadName}${menhSuffix} (Mở khóa 100% Bách Khoa cho AI)!`);
+      setCopiedToast(`✨ Đắc Pháp Tam Kính: Đã bốc ${spreadName}${menhSuffix}!`);
     } else {
-      setCopiedToast(`🔮 Đã bốc ngẫu nhiên: ${spreadName}${menhSuffix}`);
+      setCopiedToast(`🔮 Đã bốc: ${spreadName}${menhSuffix}`);
     }
     setTimeout(() => setCopiedToast(null), 3500);
-  }, [isKeepCards, mode, isCard2AReversed, isCard2BReversed, menhBranchNumber, recordDrawnSpreadToTemp]);
+  }, [isRegisteredMember, isKeepCards, mode, isCard2AReversed, isCard2BReversed, menhBranchNumber, recordDrawnSpreadToTemp]);
 
   /* ── Coin Toss Handler ── */
   const handleTossCoin = () => {
@@ -8170,7 +8218,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 <div class="cuunhi-guide-card">
                   <div class="cuunhi-guide-row">
                     <span class="cuunhi-guide-pill">👆 Bấm 1 lần</span>
-                    <span><strong>Bốc nhanh:</strong> Rút ngẫu nhiên 1 trong <strong>10 trận pháp</strong> <em>(tắt <strong>✓ Giữ nguyên</strong> nếu muốn đổi bài trong ngày)</em>.</span>
+                    <span><strong>Bốc nhanh:</strong> Rút ngẫu nhiên 1 trong <strong>11 trận pháp</strong> <em>(tắt <strong>✓ Giữ nguyên</strong> nếu muốn đổi bài trong ngày)</em>.</span>
                   </div>
                   <div class="cuunhi-guide-divider"></div>
                   <div class="cuunhi-guide-row">
@@ -8197,8 +8245,10 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   setIsKeepCards(false);
                   setIsRitualCompleted(false);
                   const availableModes = SPREAD_MODES.filter((m) => m !== mode);
-                  const randomMode =
-                    availableModes.length > 0
+                  const randomMode: SpreadMode =
+                    !TEMPORARILY_HIDE_OTHER_SPREADS && !isRegisteredMember
+                      ? "khong_minh"
+                      : availableModes.length > 0
                       ? availableModes[Math.floor(Math.random() * availableModes.length)]
                       : SPREAD_MODES[Math.floor(Math.random() * SPREAD_MODES.length)];
                   setMode(randomMode);
@@ -8306,8 +8356,21 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
             document.body.classList.remove("cuunhi-tour-step-cards", "cuunhi-tour-step-1");
           },
           popover: {
-            title: "✦ Bước 4 · Chọn Nhanh 10 Trận Pháp",
-            description: `
+            title: TEMPORARILY_HIDE_OTHER_SPREADS
+              ? "✦ Bước 4 · Quẻ Khổng Minh Thần Toán (3 Lá)"
+              : "✦ Bước 4 · Chọn Nhanh 10 Trận Pháp",
+            description: TEMPORARILY_HIDE_OTHER_SPREADS
+              ? `
+              <div class="cuunhi-guide-body">
+                <div class="cuunhi-guide-card">
+                  <div class="cuunhi-guide-row">
+                    <span class="cuunhi-guide-pill">3 Lá</span>
+                    <span>Bốc lại <strong>Quẻ Khổng Minh (3 Lá)</strong> — lá thứ 3 cuối cùng định hào &amp; ứng với 384 quẻ xăm Khổng Minh Thần Toán.</span>
+                  </div>
+                </div>
+              </div>
+            `
+              : `
               <div class="cuunhi-guide-body">
                 <div class="cuunhi-guide-card">
                   <div class="cuunhi-guide-row">
@@ -8801,6 +8864,42 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
               </>
             )}
           </button>
+          {/* Nút Đăng ký / Đăng nhập mở khóa Full Quẻ Trận ngay trên Header */}
+          {currentUser ? (
+            <div className="inline-flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => onEnterApp("yilore")}
+                className="inline-flex items-center gap-1.5 text-xs font-serif font-bold text-[#F3E5AB] px-3 py-1.5 rounded-full bg-gradient-to-b from-[#2A2118] to-[#1C1610] border border-[#D4AF37]/80 hover:brightness-110 transition cursor-pointer shadow-xs"
+                title="Thành viên đã mở khóa Full Quẻ Trận · Bấm để mở Sổ Tay Cửu Nhị"
+              >
+                <User aria-hidden="true" className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span className="max-w-[96px] truncate">{currentUser.name}</span>
+              </button>
+              {onLogout && (
+                <button
+                  type="button"
+                  onClick={onLogout}
+                  className="inline-flex items-center justify-center text-[11px] font-semibold text-[#6E5D47] hover:text-[#9E2A2B] px-2 py-1.5 rounded-full hover:bg-[#EFE6D5] transition cursor-pointer"
+                  title="Đăng xuất tài khoản"
+                >
+                  Thoát
+                </button>
+              )}
+            </div>
+          ) : (
+            <button
+              type="button"
+              id="btn-header-auth-unlock"
+              onClick={() => onOpenAuthModal?.("register")}
+              className="inline-flex items-center gap-1.5 text-xs font-serif font-bold text-[#F3E5AB] px-3 py-1.5 rounded-full bg-gradient-to-b from-[#2A2118] to-[#1C1610] border border-[#D4AF37]/80 hover:brightness-110 transition cursor-pointer shadow-xs active:scale-95"
+              title="Đăng ký hoặc đăng nhập thành viên để mở khóa Full Quẻ Trận"
+            >
+              <User aria-hidden="true" className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span className="hidden sm:inline">Đăng ký / Đăng nhập</span>
+              <span className="sm:hidden">Thành viên</span>
+            </button>
+          )}
         </div>
       </header>
 
@@ -8887,7 +8986,9 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   Bốc bài Kinh Dịch, Tinh hoa Phương Đông
                 </span>
                 <span className="text-[11px] sm:text-sm lg:text-base text-white/50 block">
-                  64 Quẻ Chu Dịch · 12 Trận Pháp · Lục Nhâm · Kỳ Môn · Thái Ất
+                  {TEMPORARILY_HIDE_OTHER_SPREADS
+                    ? "64 Quẻ Chu Dịch · 384 Hào Tượng · Quẻ Khổng Minh Thần Toán"
+                    : "64 Quẻ Chu Dịch · 12 Trận Pháp · Lục Nhâm · Kỳ Môn · Thái Ất"}
                 </span>
               </p>
 
@@ -8971,14 +9072,24 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   <div className="text-2xl font-bold tracking-tight text-[#C4963E] sm:text-3xl font-serif">384</div>
                   <div className="text-[10px] sm:text-xs font-medium uppercase tracking-widest text-white/50">Hào Tượng</div>
                 </div>
-                <div>
-                  <div className="text-2xl font-bold tracking-tight text-[#C4963E] sm:text-3xl font-serif">12</div>
-                  <div className="text-[10px] sm:text-xs font-medium uppercase tracking-widest text-white/50">Trận Pháp</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold tracking-tight text-[#C4963E] sm:text-3xl font-serif">9+</div>
-                  <div className="text-[10px] sm:text-xs font-medium uppercase tracking-widest text-white/50">Phương Pháp</div>
-                </div>
+                {!TEMPORARILY_HIDE_OTHER_SPREADS && (
+                  <>
+                    <div>
+                      <div className="text-2xl font-bold tracking-tight text-[#C4963E] sm:text-3xl font-serif">12</div>
+                      <div className="text-[10px] sm:text-xs font-medium uppercase tracking-widest text-white/50">Trận Pháp</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold tracking-tight text-[#C4963E] sm:text-3xl font-serif">9+</div>
+                      <div className="text-[10px] sm:text-xs font-medium uppercase tracking-widest text-white/50">Phương Pháp</div>
+                    </div>
+                  </>
+                )}
+                {TEMPORARILY_HIDE_OTHER_SPREADS && (
+                  <div>
+                    <div className="text-2xl font-bold tracking-tight text-[#C4963E] sm:text-3xl font-serif">384</div>
+                    <div className="text-[10px] sm:text-xs font-medium uppercase tracking-widest text-white/50">Quẻ Xăm Khổng Minh</div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -9612,18 +9723,22 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     <div className="w-2 h-2 rounded-full bg-[#C4963E]" />
                   </div>
                   <span className="text-sm sm:text-base text-[#3D352B]">
-                    Đa dạng phương pháp: Bốc bài, Xăm Khổng Minh, Cỏ Thi, 3 Đồng Xu, Mai Hoa, Lục Nhâm
+                    {TEMPORARILY_HIDE_OTHER_SPREADS
+                      ? "Quẻ Khổng Minh Thần Toán: Bốc 3 lá, lấy lá thứ 3 cuối cùng định hào & 384 quẻ xăm linh ứng"
+                      : "Đa dạng phương pháp: Bốc bài, Xăm Khổng Minh, Cỏ Thi, 3 Đồng Xu, Mai Hoa, Lục Nhâm"}
                   </span>
                 </div>
 
-                <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-[rgba(196,150,62,0.18)] border border-[#C4963E]/40">
-                    <div className="w-2 h-2 rounded-full bg-[#C4963E]" />
+                {!TEMPORARILY_HIDE_OTHER_SPREADS && (
+                  <div className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-[rgba(196,150,62,0.18)] border border-[#C4963E]/40">
+                      <div className="w-2 h-2 rounded-full bg-[#C4963E]" />
+                    </div>
+                    <span className="text-sm sm:text-base text-[#3D352B]">
+                      12 trận pháp trải bài từ đơn giản đến chuyên sâu (Thất Tinh, Cửu Cung, Thập Nhị Cung)
+                    </span>
                   </div>
-                  <span className="text-sm sm:text-base text-[#3D352B]">
-                    12 trận pháp trải bài từ đơn giản đến chuyên sâu (Thất Tinh, Cửu Cung, Thập Nhị Cung)
-                  </span>
-                </div>
+                )}
               </div>
 
               {/* MODULE 1: HƯƠNG ÁN KHỞI NIỆM (TRỤC LỤA GIẤY TUYÊN THÀNH VIỀN KÉP CHỈ VÀNG ĐỒNG BỘ TRANG CHỦ) */}
@@ -9719,7 +9834,11 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                 <div className="flex items-center justify-between border-b border-[#C4963E]/25 pb-2.5">
                   <span className="text-[11px] font-serif font-bold uppercase tracking-[0.18em] text-[#6E4E16] flex items-center gap-1.5">
                     <span className="text-[#B8862D] text-xs">☯</span>
-                    <span>Cửu Nhị Command Dock · Chọn Trận Pháp</span>
+                    <span>
+                      {TEMPORARILY_HIDE_OTHER_SPREADS
+                        ? `Cửu Nhị Command Dock · ${SPREAD_MODE_NAMES[mode] || "Trận Pháp"}`
+                        : "Cửu Nhị Command Dock · Chọn Trận Pháp"}
+                    </span>
                   </span>
                   <div className="flex items-center gap-1.5">
                     {isRitualCompleted && (
@@ -9744,8 +9863,45 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   </div>
                 </div>
 
-                {/* CỤM 1: BẢNG CHỌN NHANH 11 TRẬN PHÁP TRANG CHỦ (GỒM QUẺ KHỔNG MINH 3 LÁ, TRẬN CỬU CUNG 9 LÁ, 11 LÁ & 12 LÁ) */}
-                <div id="cuunhi-spread-selector-grid" className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-1.5">
+                {/* Thanh thông báo trạng thái khóa chế độ cho khách / mở full cho thành viên (tạm ẩn khi chỉ mở Quẻ Khổng Minh) */}
+                {!TEMPORARILY_HIDE_OTHER_SPREADS && (
+                  !isRegisteredMember ? (
+                    <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 rounded-xl bg-[#FAF0D7]/95 border border-[#C4963E]/65 text-[11.5px] font-serif text-[#5C3D0E]">
+                      <span className="flex items-center gap-1.5">
+                        <Lock aria-hidden="true" className="w-3.5 h-3.5 text-[#9E2A2B] shrink-0" />
+                        <span>
+                          Đang mở tự do <strong>Quẻ Khổng Minh (3 Lá)</strong> · Chỉ thành viên <strong>đăng ký, đăng nhập</strong> mới sử dụng <strong>Full Quẻ Trận</strong>
+                        </span>
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => onOpenAuthModal?.("register")}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-b from-[#2A2118] to-[#1C1610] text-[#F3E5AB] border border-[#D4AF37] text-[10.5px] font-bold hover:brightness-110 transition cursor-pointer shrink-0 shadow-2xs"
+                      >
+                        <span>Mở khóa Full Trận →</span>
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-emerald-50/90 border border-emerald-500/50 text-[11.5px] font-serif text-emerald-950">
+                      <span className="flex items-center gap-1.5 font-semibold">
+                        <span aria-hidden="true" className="text-emerald-700 font-bold">✓</span>
+                        <span>
+                          Thành viên <strong>{currentUser?.name}</strong>: Đã mở khóa sử dụng trọn bộ <strong>Full 11 Quẻ Trận</strong>
+                        </span>
+                      </span>
+                    </div>
+                  )
+                )}
+
+                {/* CỤM 1: BẢNG CHỌN TRẬN PHÁP TRANG CHỦ (TẠM ẨN HẾT TẤT CẢ TRẬN PHÁP TRỪ QUẺ KHỔNG MINH KHI BẬT CỜ) */}
+                <div
+                  id="cuunhi-spread-selector-grid"
+                  className={
+                    TEMPORARILY_HIDE_OTHER_SPREADS
+                      ? "grid grid-cols-1"
+                      : "grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-1.5"
+                  }
+                >
                   {(
                     [
                       { id: "1_single" as SpreadMode, short: "1 Lá · Đơn Quẻ" },
@@ -9760,25 +9916,54 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                       { id: "thap_nhi" as SpreadMode, short: "12 Lá · 12 Cung" },
                       { id: "thap_la" as SpreadMode, short: "Tháp La Dịch" },
                     ] as const
-                  ).map((sp) => {
-                    const isActive = mode === sp.id;
-                    return (
-                      <RitualHoldButton
-                        key={sp.id}
-                        id={`cmd-dock-mode-${sp.id}`}
-                        active={isActive}
-                        onClick={(isRitual) => handleSwitchModeAndScroll(sp.id, isRitual)}
-                        className={`inline-flex items-center justify-center gap-1 px-2 py-1.5 rounded-xl text-[11px] font-serif font-bold transition cursor-pointer select-none ${
-                          isActive
-                            ? "bg-gradient-to-b from-[#2A2118] to-[#1C1610] text-[#F3E5AB] border border-[#D4AF37] shadow-sm"
-                            : "bg-[#FAF6EE]/90 hover:bg-[#EFE6D5] text-[#4A3B28] border border-[#C4963E]/35"
-                        }`}
-                        title={`Chuyển sang ${SPREAD_MODE_NAMES[sp.id]} (mỗi vị trí là 1 bộ 448 lá riêng: 384 Hào Từ + 64 Quẻ Chính chia đều tỷ lệ)`}
-                      >
-                        <span className="truncate">{sp.short}</span>
-                      </RitualHoldButton>
-                    );
-                  })}
+                  )
+                    .filter((sp) => !TEMPORARILY_HIDE_OTHER_SPREADS || sp.id === "khong_minh")
+                    .map((sp) => {
+                      const isActive = mode === sp.id;
+                      const isLockedForGuest = !TEMPORARILY_HIDE_OTHER_SPREADS && !isRegisteredMember && sp.id !== "khong_minh";
+                      return (
+                        <RitualHoldButton
+                          key={sp.id}
+                          id={`cmd-dock-mode-${sp.id}`}
+                          active={isActive}
+                          locked={isLockedForGuest}
+                          wrapperClassName={TEMPORARILY_HIDE_OTHER_SPREADS ? "w-full" : undefined}
+                          onClick={(isRitual) => handleSwitchModeAndScroll(sp.id, isRitual)}
+                          className={`inline-flex items-center justify-center gap-1.5 rounded-xl font-serif font-bold transition cursor-pointer select-none ${
+                            TEMPORARILY_HIDE_OTHER_SPREADS
+                              ? "!w-full px-4 py-2.5 text-xs sm:text-sm"
+                              : "px-2 py-1.5 text-[11px]"
+                          } ${
+                            isActive
+                              ? "bg-gradient-to-b from-[#2A2118] to-[#1C1610] text-[#F3E5AB] border border-[#D4AF37] shadow-sm"
+                              : isLockedForGuest
+                              ? "bg-[#F3ECE0]/75 hover:bg-[#EAE0CE] text-[#7A6B56] border border-[#C4963E]/30 opacity-85"
+                              : !isRegisteredMember && sp.id === "khong_minh"
+                              ? "bg-[#FFF7E2] hover:bg-[#F7E8C3] text-[#4A320A] border-2 border-[#B8862D] shadow-2xs"
+                              : "bg-[#FAF6EE]/90 hover:bg-[#EFE6D5] text-[#4A3B28] border border-[#C4963E]/35"
+                          }`}
+                          title={
+                            isLockedForGuest
+                              ? `🔒 Đã khóa ${SPREAD_MODE_NAMES[sp.id]} — Đăng ký / Đăng nhập thành viên để mở khóa Full Quẻ Trận`
+                              : `Bấm để rút mới ${SPREAD_MODE_NAMES[sp.id]} (mỗi vị trí là 1 bộ 448 lá riêng: 384 Hào Từ + 64 Quẻ Chính chia đều tỷ lệ)`
+                          }
+                        >
+                          {TEMPORARILY_HIDE_OTHER_SPREADS && (
+                            <span className="text-[#E5C158] shrink-0">☯</span>
+                          )}
+                          <span className="truncate">
+                            {TEMPORARILY_HIDE_OTHER_SPREADS
+                              ? mode === "khong_minh"
+                                ? "Quẻ Khổng Minh Thần Toán (3 Lá · Bấm Rút Quẻ Mới)"
+                                : "Quẻ Khổng Minh Thần Toán (3 Lá · Bấm Chuyển Sang Quẻ Khổng Minh)"
+                              : sp.short}
+                          </span>
+                          {isLockedForGuest && (
+                            <Lock aria-hidden="true" className="w-3 h-3 text-[#8C6826] shrink-0" />
+                          )}
+                        </RitualHoldButton>
+                      );
+                    })}
                 </div>
 
                 {/* Nút Đổi Chiều Lá 2 khi đang ở Thập Tinh Trận (10 Lá) */}
@@ -9956,43 +10141,59 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                     </button>
                   </div>
 
-                  {/* CỤM 3: HERO CTA - CHÉP TOÀN THƯ CHO AI (ĐIỂM NHẤN SƠN MÀI HỔ PHÁCH × VÀNG KIM HOÀNG GIA) */}
+                  {/* CỤM 3: HERO CTA - CHÉP QUẺ BÀI & CÂU HỎI CHO AI (ĐIỂM NHẤN SƠN MÀI HỔ PHÁCH × VÀNG KIM HOÀNG GIA) */}
                   <div className="relative w-full">
                     <button
                       type="button"
                       id="btn-copy-all-for-ai"
                       onClick={handleCopyCardsForAI}
-                      className={`inline-flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl text-xs sm:text-sm font-serif font-bold transition shadow-md select-none ${
+                      data-copied={copiedAI ? "" : undefined}
+                      data-failed={copyAiFailed ? "" : undefined}
+                      className={`min-w-[24px] min-h-[24px] inline-flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl text-xs sm:text-sm font-serif font-bold transition shadow-md select-none ${
                         copiedAI
                           ? "bg-emerald-700 text-white border border-emerald-400 cursor-pointer active:scale-[0.99]"
+                          : copyAiFailed
+                          ? "bg-rose-700 text-white border border-rose-400 cursor-pointer active:scale-[0.99]"
                           : "text-[#F5E6C4] border border-[#D4AF37]/85 hover:brightness-110 cursor-pointer active:scale-[0.99]"
                       }`}
                       style={
-                        copiedAI
+                        copiedAI || copyAiFailed
                           ? undefined
                           : {
                               background: "linear-gradient(135deg, #2A2118 0%, #1C1610 55%, #261D14 100%)",
                               boxShadow: "0 10px 24px -4px rgba(28, 22, 16, 0.28), inset 0 1px 0 rgba(212, 175, 55, 0.35)",
                             }
                       }
-                      title="Sao chép toàn bộ thông tin các lá bài (kèm câu hỏi & đáp án) để gửi cho AI luận giải"
+                      title="Sao chép hồ sơ Quẻ Khổng Minh Thần Toán Gia Kinh Dịch (kèm câu hỏi & phương pháp luận giải) để gửi cho AI phân tích"
                     >
-                      <span className="text-base text-[#E5C158] shrink-0">
-                        {copiedAI ? "✓" : isRitualCompleted ? "✨" : "⚡"}
+                      <span className="text-base text-[#E5C158] shrink-0" aria-hidden="true">
+                        {copiedAI ? "✓" : copyAiFailed ? "!" : mode === "khong_minh" ? "⚡" : isRitualCompleted ? "✨" : "⚡"}
                       </span>
                       <span>
                         {copiedAI
                           ? "Đã Sao Chép Toàn Bộ Quẻ Cho AI!"
+                          : copyAiFailed
+                          ? "Sao Chép Lỗi — Bấm Để Thử Lại"
+                          : mode === "khong_minh"
+                          ? "Chép Toàn Bộ Quẻ Bài & Câu Hỏi Cho AI"
                           : isRitualCompleted
                           ? "Chép Toàn Thư Bách Khoa Cho AI (Đắc Pháp)"
                           : "Chép Toàn Bộ Quẻ Bài & Câu Hỏi Cho AI"}
                       </span>
-                      {(userIntentQuestion.trim() || userCustomAnswer.trim()) && !copiedAI && (
+                      {(userIntentQuestion.trim() || userCustomAnswer.trim()) && !copiedAI && !copyAiFailed && (
                         <span className="text-[10px] font-sans font-bold text-[#1C1610] bg-[#F3E5AB] px-2 py-0.5 rounded-full border border-[#D4AF37]">
                           +Kèm Tâm Niệm
                         </span>
                       )}
                     </button>
+                    <span
+                      role="status"
+                      className={`sr-only transition-opacity duration-150 ${
+                        copyAiLiveStatus ? "opacity-100" : "opacity-0"
+                      }`}
+                    >
+                      {copyAiLiveStatus}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -10730,7 +10931,7 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   <p className="text-xs text-stone-300 italic">{oracleResult.text}</p>
                 </div>
                 <div className="bg-black/40 rounded-xl p-3 border border-white/5">
-                  <h4 className="text-[11px] font-bold text-[#C4963E] uppercase mb-1">Lời Khuyên Cửu Nhị AI:</h4>
+                  <h4 className="text-[11px] font-bold text-[#C4963E] uppercase mb-1">Lời Khuyên Tiểu Long Cửu Nhị:</h4>
                   <p className="text-xs leading-relaxed text-stone-200">{oracleResult.ai}</p>
                 </div>
                 <button
@@ -10741,7 +10942,9 @@ ${questionInstruction}Xin hãy phân tích chi tiết và sâu sắc lá bài Ki
                   }}
                   className="w-full py-2.5 rounded-xl bg-[#C4963E] text-stone-950 font-bold text-xs hover:bg-[#d4a344] transition shadow cursor-pointer"
                 >
-                  Vào Bàn Bốc Quẻ Chuyên Sâu 12 Trận Pháp →
+                  {TEMPORARILY_HIDE_OTHER_SPREADS
+                    ? "Vào Bàn Bốc Quẻ Khổng Minh Chuyên Sâu →"
+                    : "Vào Bàn Bốc Quẻ Chuyên Sâu 12 Trận Pháp →"}
                 </button>
               </div>
             )}

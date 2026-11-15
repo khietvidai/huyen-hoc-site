@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   X,
   User,
@@ -18,6 +18,7 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { AuthService, AppUser } from "../services/authService";
+import { TEMPORARILY_HIDE_OTHER_SPREADS } from "./LandingPage";
 
 const ZALO_GROUP_LINK = "https://zalo.me/g/vwzsqvnh3gdbzst2psyh";
 
@@ -47,6 +48,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [otpCode, setOtpCode] = useState("");
   const [lastGeneratedOtp, setLastGeneratedOtp] = useState<string | null>(null);
   const [isResending, setIsResending] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setMode(defaultMode);
+      setErrorMsg(null);
+      setRegStep("form");
+      setOtpCode("");
+      setLastGeneratedOtp(null);
+    }
+  }, [isOpen, defaultMode]);
 
   if (!isOpen) return null;
 
@@ -165,12 +176,20 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
           <p className="mt-2 text-[13px] text-ivory-500 font-serif leading-relaxed">
             {mode === "login"
-              ? "Đăng nhập để đọc toàn văn Thuyết Minh & trải nghiệm đầy đủ các tính năng"
+              ? TEMPORARILY_HIDE_OTHER_SPREADS
+                ? "Đăng nhập tài khoản thành viên để đọc Thuyết Minh 64 Quẻ & lưu trữ lịch sử thỉnh quẻ Cửu Nhị"
+                : "Đăng nhập tài khoản thành viên để mở khóa sử dụng trọn bộ tất cả Quẻ Trận & tính năng Cửu Nhị"
               : mode === "register"
               ? regStep === "otp"
-                ? `Mã 6 số đã gửi tới mail: ${email}. Nhập mã để chính thức đăng nhập.`
-                : "Trở thành thành viên để mở khóa toàn văn Thuyết Minh & lưu trữ quẻ gieo"
-              : "Nhận trọn vẹn đặc quyền đọc thuyết minh & lưu trữ quẻ gieo"}
+                ? TEMPORARILY_HIDE_OTHER_SPREADS
+                  ? `Mã 6 số đã gửi tới mail: ${email}. Nhập mã để chính thức đăng nhập tài khoản thành viên.`
+                  : `Mã 6 số đã gửi tới mail: ${email}. Nhập mã để chính thức đăng nhập & mở khóa Full Quẻ Trận.`
+                : TEMPORARILY_HIDE_OTHER_SPREADS
+                ? "Đăng ký thành viên để đọc Thuyết Minh 64 Quẻ, lưu trữ lịch sử thỉnh quẻ & luận giải chuyên sâu"
+                : "Đăng ký thành viên để mở khóa sử dụng Full Quẻ Trận (12 Trận Pháp), đọc Thuyết Minh & lưu trữ quẻ gieo"
+              : TEMPORARILY_HIDE_OTHER_SPREADS
+              ? "Nhận trọn vẹn đặc quyền đọc thuyết minh toàn thư & lưu trữ lịch sử thỉnh quẻ"
+              : "Nhận trọn vẹn đặc quyền sử dụng Full Quẻ Trận, đọc thuyết minh & lưu trữ quẻ gieo"}
           </p>
         </div>
 
@@ -225,7 +244,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-gold-500 shrink-0" />
                 <span>
-                  <strong>Đầy đủ 8 phương thức:</strong> Bốc Bài (12 Trận), Mai Hoa, Lục Hào, Cỏ Thi, Xăm Khổng Minh, Lục Nhâm, Kỳ Môn, Thái Ất.
+                  {TEMPORARILY_HIDE_OTHER_SPREADS ? (
+                    <>
+                      <strong>Trải nghiệm chuyên sâu:</strong> Thỉnh Quẻ Khổng Minh &amp; Luận Giải Tiểu Long Cửu Nhị.
+                    </>
+                  ) : (
+                    <>
+                      <strong>Đầy đủ 8 phương thức:</strong> Bốc Bài (12 Trận), Mai Hoa, Lục Hào, Cỏ Thi, Xăm Khổng Minh, Lục Nhâm, Kỳ Môn, Thái Ất.
+                    </>
+                  )}
                 </span>
               </div>
             </div>
@@ -243,7 +270,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         {mode === "upgrade" ? (
           <div className="space-y-4">
             <p className="text-xs text-ivory-300 font-serif leading-relaxed">
-              Bạn đang ở tài khoản thường. Kích hoạt ngay gói <strong>Hội Viên Thường Niên (1.000.000 VNĐ / 1 Năm)</strong> để nhận trọn vẹn đặc quyền đọc thuyết minh toàn thư và trải nghiệm trọn bộ 8 phương thức chiêm đoán.
+              {TEMPORARILY_HIDE_OTHER_SPREADS ? (
+                <>
+                  Bạn đang ở tài khoản thường. Kích hoạt ngay gói <strong>Hội Viên Thường Niên (1.000.000 VNĐ / 1 Năm)</strong> để nhận trọn vẹn đặc quyền đọc thuyết minh toàn thư và luận giải chuyên sâu.
+                </>
+              ) : (
+                <>
+                  Bạn đang ở tài khoản thường. Kích hoạt ngay gói <strong>Hội Viên Thường Niên (1.000.000 VNĐ / 1 Năm)</strong> để nhận trọn vẹn đặc quyền đọc thuyết minh toàn thư và trải nghiệm trọn bộ 8 phương thức chiêm đoán.
+                </>
+              )}
             </p>
             <button
               type="button"

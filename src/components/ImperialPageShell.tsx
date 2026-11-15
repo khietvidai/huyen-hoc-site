@@ -139,7 +139,18 @@ export const ImperialPageShell: React.FC<ImperialPageShellProps> = ({
 }) => {
   const effectiveKey =
     currentTab === "manual" && manualSubTab === "decks" ? "decks" : currentTab;
-  const meta = TAB_HERO_META[effectiveKey] || TAB_HERO_META.divination;
+  const rawMeta = TAB_HERO_META[effectiveKey] || TAB_HERO_META.divination;
+  const meta =
+    effectiveKey === "divination" && divinationMethods.length <= 1
+      ? {
+          ...rawMeta,
+          highlight: "Quẻ Khổng Minh Thần Toán",
+          chinese: "孔明神數 · 三才玄壇",
+          subtitle:
+            "Tĩnh tâm khởi niệm trên nền Giấy Tuyên Thành Hoàng Kim · Thỉnh Quẻ Khổng Minh Tam Tài 3 Lá kết hợp 64 Quẻ Chu Dịch.",
+          bridgeLabel: "Cửu Nhị Huyền Đàn · Sảnh Khởi Quẻ Khổng Minh",
+        }
+      : rawMeta;
 
   const navItems: {
     id: NavTab;
@@ -477,9 +488,9 @@ export const ImperialPageShell: React.FC<ImperialPageShellProps> = ({
               })}
             </div>
 
-            {/* Hàng 2 (Chỉ hiện ở Tab Bốc Quẻ): Chọn nhanh 10 Pháp Khí Khởi Quẻ */}
+            {/* Hàng 2 (Chỉ hiện ở Tab Bốc Quẻ khi có nhiều hơn 1 pháp khí): Chọn nhanh Pháp Khí Khởi Quẻ */}
             {currentTab === "divination" &&
-              divinationMethods.length > 0 &&
+              divinationMethods.length > 1 &&
               onSelectDivinationMethod && (
                 <div className="pt-2.5 border-t border-[#C4963E]/25 flex flex-col gap-2">
                   <div className="flex items-center justify-between text-[11px] font-serif text-[#6E4E16]">

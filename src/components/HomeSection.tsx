@@ -37,6 +37,7 @@ import {
 } from "../data/manualSpreadExamples";
 import { CardVisual } from "./CardVisual";
 import { AppUser } from "../services/authService";
+import { TEMPORARILY_HIDE_OTHER_SPREADS } from "./LandingPage";
 
 export interface HomeSectionProps {
   onNavigateTab: (tab: NavTab) => void;
@@ -61,8 +62,8 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
   onOpenAuthModal,
   onOpenDonateModal,
 }) => {
-  const isRegistered = true;
-  const isVip = true;
+  const isRegistered = Boolean(currentUser);
+  const isVip = Boolean(currentUser);
   const [activeSpreadTab, setActiveSpreadTab] = useState<SpreadCategory>("summary");
   const [highlight123, setHighlight123] = useState(false);
   const [highlightRitual, setHighlightRitual] = useState(false);
@@ -200,7 +201,9 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
           {[
             { value: "64", label: "Quẻ Chu Dịch", chinese: "六十四卦" },
             { value: "384", label: "Hào Tượng Tinh Vi", chinese: "三百八十四爻" },
-            { value: "12", label: "Trận Pháp Trải Bài", chinese: "十二陣法" },
+            TEMPORARILY_HIDE_OTHER_SPREADS
+              ? { value: "3 Lá", label: "Quẻ Khổng Minh", chinese: "孔明神數" }
+              : { value: "12", label: "Trận Pháp Trải Bài", chinese: "十二陣法" },
             { value: "100%", label: "Nguyên Bản Cổ Thư", chinese: "周易正統" },
           ].map((stat, index) => (
             <div
@@ -345,9 +348,11 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
             },
             {
               step: "Bước 03",
-              title: "Chọn Trận & Rút Bài",
+              title: TEMPORARILY_HIDE_OTHER_SPREADS ? "Rút Bài Khổng Minh" : "Chọn Trận & Rút Bài",
               chinese: "布陣抽籤",
-              desc: "Lựa chọn phương pháp trải bài phù hợp (1 lá, 2 lá, 3 lá hoặc các trận pháp chuyên sâu). Rút các lá bài theo đúng thứ tự vị trí đã định.",
+              desc: TEMPORARILY_HIDE_OTHER_SPREADS
+                ? "Tĩnh tâm thỉnh Quẻ Khổng Minh 3 lá theo đúng trình tự Tam Tài Thiên — Địa — Nhân."
+                : "Lựa chọn phương pháp trải bài phù hợp (1 lá, 2 lá, 3 lá hoặc các trận pháp chuyên sâu). Rút các lá bài theo đúng thứ tự vị trí đã định.",
               icon: Layers,
             },
             {
@@ -382,6 +387,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
       </section>
 
       {/* ================= PHẦN 3: CÁC PHƯƠNG PHÁP & TRẬN PHÁP TRẢI BÀI ================= */}
+      {!TEMPORARILY_HIDE_OTHER_SPREADS && (
       <section className="space-y-6">
         <div className="text-center max-w-2xl mx-auto">
           <div className="royal-eyebrow">Trận pháp I Ching Tarot chuyên sâu</div>
@@ -739,6 +745,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
           </div>
         )}
       </section>
+      )}
 
       {/* ================= PHẦN 4: CTA BỐC QUẺ NGAY ================= */}
       <section className="royal-frame p-6 sm:p-10 text-center relative overflow-hidden">
